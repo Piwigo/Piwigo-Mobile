@@ -357,7 +357,7 @@ class ImageUtilities: NSObject {
     static func getPiwigoURL(_ imageData: Image, ofMinSize size: pwgImageSize) -> URL? {
         // ATTENTION: Some URLs may not be available!
         /// - Check available image sizes from the smallest to the highest resolution
-        /// - The max size of a video or PDF  thumbnail is xxLarge
+        /// - The max size of a video or PDF  thumbnail is xxxxLarge
         let sizes = imageData.sizes
         var pwgURL: NSURL?
         
@@ -466,7 +466,31 @@ class ImageUtilities: NSObject {
         }
         
         // Done if wanted size reached or not an image
-        if (size <= .xxLarge) || imageData.isNotImage, let imageURL = pwgURL {
+        if (size <= .xxLarge), let imageURL = pwgURL {
+            return imageURL as URL
+        }
+        
+        // XXX Large Size
+        if NetworkVars.shared.hasXXXLargeSizeImages,
+           let imageURL = sizes.xxxlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Ensure that at least an URL will be returned
+            pwgURL = imageURL
+        }
+        
+        // Done if wanted size reached or not an image
+        if (size <= .xxxLarge), let imageURL = pwgURL {
+            return imageURL as URL
+        }
+        
+        // XXXX Large Size
+        if NetworkVars.shared.hasXXXXLargeSizeImages,
+           let imageURL = sizes.xxxxlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Ensure that at least an URL will be returned
+            pwgURL = imageURL
+        }
+        
+        // Done if wanted size reached or not an image
+        if (size <= .xxxxLarge) || imageData.isNotImage, let imageURL = pwgURL {
             return imageURL as URL
         }
         
@@ -528,6 +552,10 @@ class ImageUtilities: NSObject {
                     imageData.sizes.xlarge?.dimensionsSwaped()
                 case .xxLarge:
                     imageData.sizes.xxlarge?.dimensionsSwaped()
+                case .xxxLarge:
+                    imageData.sizes.xxxlarge?.dimensionsSwaped()
+                case .xxxxLarge:
+                    imageData.sizes.xxxxlarge?.dimensionsSwaped()
                 case .fullRes:
                     imageData.fullRes?.dimensionsSwaped()
                 }

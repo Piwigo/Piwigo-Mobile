@@ -12334,6 +12334,28 @@
         }
       }
     },
+    "thumbnailSizeXXXLarge" : {
+      "comment" : "Extra Huge",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extra Huge"
+          }
+        }
+      }
+    },
+    "thumbnailSizeXXXXLarge" : {
+      "comment" : "Gigantic",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gigantic"
+          }
+        }
+      }
+    },
     "uploadParameterMissing_message" : {
       "comment" : "Missing upload paremeter",
       "localizations" : {

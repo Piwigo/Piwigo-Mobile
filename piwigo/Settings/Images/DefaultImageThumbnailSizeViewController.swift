@@ -112,7 +112,7 @@ extension DefaultImageThumbnailSizeViewController: UITableViewDataSource {
         switch size {
         case .square, .thumb, .xxSmall, .xSmall, .small, .medium:
             configCell(cell, forSize: size, selectable: true, selected: selected)
-        case .large, .xLarge, .xxLarge, .fullRes:
+        case .large, .xLarge, .xxLarge, .xxxLarge, .xxxxLarge, .fullRes:
             configCell(cell, forSize: size, selectable: false)
         }
     }

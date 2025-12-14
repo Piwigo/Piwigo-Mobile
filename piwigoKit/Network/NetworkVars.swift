@@ -184,7 +184,9 @@ public class NetworkVars: NSObject, @unchecked Sendable {
     public var hasLargeSizeImages = false
     public var hasXLargeSizeImages = false
     public var hasXXLargeSizeImages = false
-    
+    public var hasXXXLargeSizeImages = false
+    public var hasXXXXLargeSizeImages = false
+
     /// — True if the app should log visits and downloads (since Piwigo 14)
     public var saveVisits = false
     

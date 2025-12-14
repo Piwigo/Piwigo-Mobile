@@ -144,8 +144,36 @@ class ExternalDisplayUtilities {
             let size = sizes.xxlarge?.maxSize ?? 1
             // Ensure that at least an URL will be returned
             // and check if this size is more appropriate
-            if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) || imageData.isNotImage {
+            if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
                 pwgSize = .xxLarge
+                pwgURL = imageURL
+                selectedSize = size
+            }
+        }
+        
+        // XXX Large Size
+        if NetworkVars.shared.hasXXXLargeSizeImages,
+           let imageURL = sizes.xxxlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Max dimension of this image
+            let size = sizes.xxxlarge?.maxSize ?? 1
+            // Ensure that at least an URL will be returned
+            // and check if this size is more appropriate
+            if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
+                pwgSize = .xxxLarge
+                pwgURL = imageURL
+                selectedSize = size
+            }
+        }
+        
+        // XXXX Large Size
+        if NetworkVars.shared.hasXXXXLargeSizeImages,
+           let imageURL = sizes.xxxxlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Max dimension of this image
+            let size = sizes.xxxxlarge?.maxSize ?? 1
+            // Ensure that at least an URL will be returned
+            // and check if this size is more appropriate
+            if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) || imageData.isNotImage {
+                pwgSize = .xxxxLarge
                 pwgURL = imageURL
                 selectedSize = size
             }
