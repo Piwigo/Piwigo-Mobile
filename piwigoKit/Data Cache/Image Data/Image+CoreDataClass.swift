@@ -58,6 +58,10 @@ public class Image: NSManagedObject {
         if commentStr != newCommentStr {
             commentStr = newCommentStr
         }
+        let newCommentRaw = imageData.commentRaw?.utf8mb4Encoded ?? ""
+        if commentRaw != newCommentRaw {
+            commentRaw = newCommentRaw
+        }
         let newComment = newCommentStr.attributedPlain
         if comment != newComment {
             comment = newComment

@@ -20,6 +20,7 @@ extension Album {
     @NSManaged public var uuid: String
     @NSManaged public var pwgID: Int32
     @NSManaged public var comment: NSAttributedString
+    @NSManaged public var commentRaw: String
     @NSManaged public var commentStr: String
     @NSManaged public var commentHTML: NSAttributedString
     @NSManaged public var currentCounter: Int64
