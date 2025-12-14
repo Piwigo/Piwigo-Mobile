@@ -72,7 +72,8 @@ public struct ImagesGetInfo: Decodable
 {
     public let id: Int64?                       // 1042
     public var title: String?                   // "Title"
-    public var comment: String?                 // "No description"
+    public var comment: String?                 // "…" i.e. text potentially containing HTML encoded characters, selected language
+    public var commentRaw: String?              // "…" i.e. text potentially containing HTML encoded characters, all languages
     public var visits: Int32?                   // 0
     public var fileName: String?                // "Image.jpg"
     public var datePosted: String?              // "yyyy-MM-dd HH:mm:ss"
@@ -100,6 +101,7 @@ public struct ImagesGetInfo: Decodable
         case id = "id"
         case title = "name"
         case comment = "comment"
+        case commentRaw = "comment_raw"
         case visits = "hit"
         case fileName = "file"
         case datePosted = "date_available"
@@ -137,7 +139,8 @@ extension ImagesGetInfo {
         let created = dateFormatter.string(from: dateCreated)
         let derivatives = Derivatives(squareImage: squareImage, thumbImage: thumbImage)
         
-        self.init(id: id, title: title, comment: "", visits: 0,
+        self.init(id: id, title: title,
+                  comment: "", commentRaw: "", visits: 0,
                   fileName: fileName, datePosted: posted, dateCreated: created,
                   isFavorite: false, downloadUrl: "",
                   fullResWidth: 0, fullResHeight: 0, fullResPath: "",
@@ -152,6 +155,7 @@ extension ImagesGetInfo {
     public mutating func fixingUnknowns() {
         if self.title == nil { self.title = "" }
         if self.comment == nil { self.comment = "" }
+        if self.commentRaw == nil { self.commentRaw = "" }
         if self.visits == nil { self.visits = 0 }
         if self.fileName == nil { self.fileName = "" }
         if self.datePosted == nil {
