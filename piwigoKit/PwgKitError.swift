@@ -9,6 +9,9 @@
 import Foundation
 import Photos
 
+// Constant used to return a PwgKitError
+public let reason = "Piwigo server error"
+
 public enum PwgKitError: Error {
     // Error types
     case fileOperationFailed(innerError: CocoaError)
