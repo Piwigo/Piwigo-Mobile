@@ -1,3 +1,2 @@
-• Lägger till stöd för API-nycklar
+• Kompatibilitet med Piwigo 16
 • Fixar buggar och förbättrar gränssnittet
-• Modernisering av koden

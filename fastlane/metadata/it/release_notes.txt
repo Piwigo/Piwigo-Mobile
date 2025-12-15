@@ -1,3 +1,2 @@
-• Aggiunge il supporto per le chiavi API
-• Corregge bug e migliora l'interfaccia
-• Modernizzazione del codice
+• Compatibilità con Piwigo 16
+• Correzione di bug e miglioramento dell'interfaccia

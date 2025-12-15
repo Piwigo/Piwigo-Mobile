@@ -1,3 +1,2 @@
-• Adds support for API keys
+• Piwigo 16 compatibility
 • Fixes bugs and improves the interface
-• Code modernization
