@@ -635,7 +635,7 @@ extension AlbumViewController
         // Create title label programmatically
         let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         titleLabel.backgroundColor = UIColor.clear
-        titleLabel.textColor = PwgColor.whiteCream
+        titleLabel.textColor = titleColor
         titleLabel.textAlignment = .center
         titleLabel.numberOfLines = 1
         titleLabel.font = UIFont.preferredFont(forTextStyle: .headline)
