@@ -1,13 +1,15 @@
 //
-//  UIColor+AppColors.swift
-//  piwigo
+//  UIColor+AppTools.swift
+//  piwigoKit
 //
-//  Created by Eddy Lelièvre-Berna on 23/02/2020.
-//  Copyright © 2020 Piwigo.org. All rights reserved.
+//  Created by Eddy Lelièvre-Berna on 13/12/2025.
+//  Copyright © 2025 Piwigo.org. All rights reserved.
 //
 
+import Foundation
 import UIKit
 
+// MARK: App Colors
 struct PwgColor {
     
     // MARK: - Text Color
@@ -156,3 +158,108 @@ struct PwgColor {
     }
 }
 
+
+// MARK: - Extension
+extension UIColor {
+    
+    // Calculate relative luminance
+    fileprivate var luminance: CGFloat {
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+        
+        getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        
+        func adjust(component: CGFloat) -> CGFloat {
+            return component <= 0.03928
+                ? component / 12.92
+                : pow((component + 0.055) / 1.055, 2.4)
+        }
+        
+        let r = adjust(component: red)
+        let g = adjust(component: green)
+        let b = adjust(component: blue)
+        
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b
+    }
+    
+    // Get contrast ratio between two colors
+    func contrastRatio(with color: UIColor) -> CGFloat {
+        let lum1 = self.luminance
+        let lum2 = color.luminance
+        let lighter = max(lum1, lum2)
+        let darker = min(lum1, lum2)
+        return (lighter + 0.05) / (darker + 0.05)
+    }
+    
+    // Get optimal text color (black or white)
+    var contrastingTextColor: UIColor {
+        let whiteContrast = self.contrastRatio(with: .white)
+        let blackContrast = self.contrastRatio(with: .black)
+        return whiteContrast > blackContrast ? .white : .black
+    }
+    
+    // Adjust color to meet minimum contrast ratio
+    func adjustedForContrast(against backgroundColor: UIColor, minimumRatio: CGFloat = 4.5) -> UIColor {
+        
+        let currentRatio = self.contrastRatio(with: backgroundColor)
+        
+        // If already meets requirements, return as is
+        if currentRatio >= minimumRatio {
+            return self
+        }
+        
+        // Determine if we need to lighten or darken
+        let bgLuminance = backgroundColor.luminance
+        
+        // Try to preserve hue and saturation, adjust brightness
+        var hue: CGFloat = 0
+        var saturation: CGFloat = 0
+        var brightness: CGFloat = 0
+        var alpha: CGFloat = 0
+        
+        self.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha)
+        
+        // Binary search for the right brightness level
+        var minBrightness: CGFloat = 0
+        var maxBrightness: CGFloat = 1
+        var testBrightness = brightness
+        var iterations = 0
+        let maxIterations = 20
+        
+        while iterations < maxIterations {
+            let testColor = UIColor(
+                hue: hue,
+                saturation: saturation,
+                brightness: testBrightness,
+                alpha: alpha
+            )
+            
+            let testRatio = testColor.contrastRatio(with: backgroundColor)
+            
+            if abs(testRatio - minimumRatio) < 0.1 {
+                return testColor
+            }
+            
+            if testRatio < minimumRatio {
+                // Need more contrast
+                if bgLuminance > 0.5 {
+                    maxBrightness = testBrightness
+                    testBrightness = (minBrightness + testBrightness) / 2
+                } else {
+                    minBrightness = testBrightness
+                    testBrightness = (testBrightness + maxBrightness) / 2
+                }
+            } else {
+                // Has enough contrast
+                return testColor
+            }
+            
+            iterations += 1
+        }
+        
+        // Fallback to simple black or white
+        return backgroundColor.contrastingTextColor
+    }
+}

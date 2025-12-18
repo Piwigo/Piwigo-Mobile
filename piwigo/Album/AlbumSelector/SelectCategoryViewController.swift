@@ -486,7 +486,7 @@ class SelectCategoryViewController: UIViewController {
 
         case .setAutoUploadAlbum:
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSettingsWidth),
-                                 text: String(localized: "settings_autoUploadDestinationInfo", bundle: piwigoKit, comment: "Please select the album…"))
+                                 text: String(localized: "settings_autoUploadDestinationInfo", comment: "Please select the album…"))
             
         case .copyImage:
             let title = inputImages.first?.titleStr ?? ""

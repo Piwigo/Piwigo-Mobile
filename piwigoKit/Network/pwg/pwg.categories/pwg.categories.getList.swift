@@ -27,11 +27,6 @@ public struct CategoriesGetListJSON: Decodable {
         case categories
     }
 
-    private enum ErrorCodingKeys: String, CodingKey {
-        case code = "code"
-        case message = "msg"
-    }
-
     public init(from decoder: Decoder) throws
     {
         // Root container keyed by RootCodingKeys
@@ -57,23 +52,17 @@ public struct CategoriesGetListJSON: Decodable {
         else if (status == "fail")
         {
             // Retrieve Piwigo server error
-            do {
-                // Retrieve Piwigo server error
-                let errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
-                let errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
-                throw PwgKitError.pwgError(code: errorCode, msg: errorMessage)
-            }
-            catch {
-                // Error container keyed by ErrorCodingKeys ("format=json" forgotten in call)
-                let errorContainer = try rootContainer.nestedContainer(keyedBy: ErrorCodingKeys.self, forKey: .errorCode)
-                let errorCode = Int(try errorContainer.decode(String.self, forKey: .code)) ?? NSNotFound
-                let errorMessage = try errorContainer.decode(String.self, forKey: .message)
-                throw PwgKitError.pwgError(code: errorCode, msg: errorMessage)
-            }
+            let errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
+            let errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
+            let pwgError = PwgKitError.pwgError(code: errorCode, msg: errorMessage)
+            let context = DecodingError.Context(codingPath: [], debugDescription: reason, underlyingError: pwgError)
+            throw DecodingError.dataCorrupted(context)
         }
         else {
             // Unexpected Piwigo server error
-            throw PwgKitError.unexpectedError
+            let pwgError = PwgKitError.unexpectedError
+            let context = DecodingError.Context(codingPath: [], debugDescription: reason, underlyingError: pwgError)
+            throw DecodingError.dataCorrupted(context)
         }
     }
 }
@@ -83,7 +72,8 @@ public struct CategoryData: Decodable
     // The following data is returned by pwg.categories.getList
     public var id: Int32?                   // 32
     public let name: String?                // "Insects & Spiders"
-    public let comment: String?             // "…" i.e. text potentially containing HTML encoded characters
+    public let comment: String?             // "…" i.e. text potentially containing HTML encoded characters, selected language
+    public let commentRaw: String?          // "…" i.e. text potentially containing HTML encoded characters, all languages
 //    public let status: String?              // "public"
     public let globalRank: String?          // "11.2.1" i.e. 11th album in root, 2nd sub-album, 1st sub-sub-album
 
@@ -124,7 +114,11 @@ public struct CategoryData: Decodable
     public var hasUploadRights = false
 
     public enum CodingKeys: String, CodingKey {
-        case id, name, comment //, status
+        case id
+        case name
+        case comment
+        case commentRaw = "comment_raw"
+//        case status
         case globalRank = "global_rank"
         
         case upperCat = "id_uppercat"
@@ -152,6 +146,7 @@ public struct CategoryData: Decodable
         id = albumId
         name = pwgSmartAlbum(rawValue: albumId)?.name ?? albumName
         comment = albumComment
+        commentRaw = albumComment
         globalRank = albumId <= 0 ? "0" : (parentId == "0" ? "0" : albumRank + ".0")
         upperCat = parentId
         upperCats = parentIds

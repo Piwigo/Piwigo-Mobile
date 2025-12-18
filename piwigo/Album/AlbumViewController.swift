@@ -403,10 +403,10 @@ class AlbumViewController: UIViewController
         collectionView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         (collectionView?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader) ?? []).forEach { header in
             if let header = header as? AlbumHeaderReusableView {
-                header.applyColorPalette()
+                header.applyColorPalette(withDescription: self.attributedComment())
             }
             else if let header = header as? ImageHeaderReusableView {
-                header.applyColorPalette()
+                header.applyColorPalette(withDescription: self.attributedComment())
                 header.selectButton.setTitle(forState: selectedSections[header.section] ?? .none)
             }
         }

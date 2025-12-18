@@ -1,3 +1,2 @@
-• API-kulcsok támogatása
-• Hibajavítások és a felület fejlesztése
-• Kód modernizálása
+• Piwigo 16 kompatibilitás
+• Hibajavítások és a kezelőfelület javítása

@@ -183,7 +183,6 @@ class ImageViewController: UIViewController {
         }, completion: { [self] _ in
             // Force reload flexible spaces (known iOS bug)
             guard let toolbar = self.navigationController?.toolbar else { return }
-            debugPrint("••> toolbar width: \(toolbar.bounds.width), screen width: \(UIScreen.main.bounds.width)")
             
             // Store current items
             let currentItems = toolbar.items

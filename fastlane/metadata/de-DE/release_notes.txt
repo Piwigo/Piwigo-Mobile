@@ -1,3 +1,2 @@
-• Unterstützung für API-Schlüssel hinzugefügt
+• Piwigo 16 Kompatibilität
 • Fehlerbehebungen und Verbesserungen der Benutzeroberfläche
-• Modernisierung des Codes

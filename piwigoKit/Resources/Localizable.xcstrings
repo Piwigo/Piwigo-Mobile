@@ -11396,7 +11396,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Duże"
+            "value" : "Duży"
           }
         },
         "ru" : {
@@ -11437,7 +11437,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mellem"
+            "value" : "Medium"
           }
         },
         "de" : {
@@ -11479,7 +11479,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Medio"
+            "value" : "Media"
           }
         },
         "ja" : {
@@ -11491,7 +11491,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Middel"
+            "value" : "Medium"
           }
         },
         "pl" : {
@@ -11580,7 +11580,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piccolo"
+            "value" : "Piccola"
           }
         },
         "ja" : {
@@ -11598,7 +11598,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Małe"
+            "value" : "Mały"
           }
         },
         "ru" : {
@@ -11639,7 +11639,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Firkant"
+            "value" : "Kvadratisk"
           }
         },
         "de" : {
@@ -11681,7 +11681,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quadrato"
+            "value" : "Quadrata"
           }
         },
         "ja" : {
@@ -11740,13 +11740,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Miniature"
+            "value" : "Miniaturebillede"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Miniaturfoto"
+            "value" : "Vorschaubild"
           }
         },
         "en" : {
@@ -11782,7 +11782,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anteprima"
+            "value" : "Miniatura"
           }
         },
         "ja" : {
@@ -11812,7 +11812,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Miniatyrbild"
+            "value" : "Miniatyr"
           }
         },
         "zh-Hans" : {
@@ -11942,13 +11942,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ekstra Stor"
+            "value" : "Meget Stor"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Extra Groß"
+            "value" : "Besonders groß"
           }
         },
         "en" : {
@@ -11984,7 +11984,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Molto Grande"
+            "value" : "Grandissima"
           }
         },
         "ja" : {
@@ -12002,7 +12002,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bardzo duże"
+            "value" : "Bardzo duży"
           }
         },
         "ru" : {
@@ -12043,13 +12043,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ekstra Lille"
+            "value" : "Meget Lille"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Extra klein"
+            "value" : "Ziemlich klein"
           }
         },
         "en" : {
@@ -12085,7 +12085,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Molto Piccolo"
+            "value" : "Piccolissima"
           }
         },
         "ja" : {
@@ -12103,7 +12103,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bardzo małe"
+            "value" : "Bardzo mały"
           }
         },
         "ru" : {
@@ -12144,13 +12144,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kæmpe"
+            "value" : "Ekstrem Stor"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Riesig"
+            "value" : "Sehr groß"
           }
         },
         "en" : {
@@ -12204,7 +12204,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ogromne"
+            "value" : "Ogromny"
           }
         },
         "ru" : {
@@ -12216,7 +12216,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enorm"
+            "value" : "Jättestor"
           }
         },
         "zh-Hans" : {
@@ -12245,13 +12245,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lillebitte"
+            "value" : "Ekstrem Lille"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mini"
+            "value" : "Winzig"
           }
         },
         "en" : {
@@ -12287,7 +12287,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Molto piccolo"
+            "value" : "Minuscola"
           }
         },
         "ja" : {
@@ -12299,13 +12299,13 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Heel klein"
+            "value" : "Zeer klein"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Najmniejsze"
+            "value" : "Malutkie"
           }
         },
         "ru" : {
@@ -12330,6 +12330,208 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "最小"
+          }
+        }
+      }
+    },
+    "thumbnailSizeXXXLarge" : {
+      "comment" : "Extra Huge",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ضخم جداً"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekstremt Stort"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extra groß\t"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extra Huge"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extra enorme"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Très énorme"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extra hatalmas"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sangat Besar"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extra grande"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "超巨大"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enorm groot"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekstra ogromna"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Громадный"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extra jättestor"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "超大号"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "超巨型"
+          }
+        }
+      }
+    },
+    "thumbnailSizeXXXXLarge" : {
+      "comment" : "Gigantic",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ضخامة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gigantisk"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gigantisch"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gigantic"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gigantesco"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gigantesque"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gigantikus"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raksasa"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gigante"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "巨大"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gigantisch"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gigantyczne"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Гигантский"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gigantisk"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "巨型"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "巨無霸"
           }
         }
       }

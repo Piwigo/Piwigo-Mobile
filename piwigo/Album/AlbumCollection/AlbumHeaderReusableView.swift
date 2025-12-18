@@ -9,6 +9,7 @@
 //
 
 import UIKit
+import piwigoKit
 
 class AlbumHeaderReusableView: UICollectionReusableView {
 
@@ -18,9 +19,6 @@ class AlbumHeaderReusableView: UICollectionReusableView {
     @MainActor
     func config(withDescription description: NSAttributedString = NSAttributedString(), size: CGSize = CGSize.zero)
     {
-        // Set colors
-        applyColorPalette()
-
         // Set album description label
         albumDesc.contentSize = size
         albumDesc.textContainerInset = .zero
@@ -30,18 +28,20 @@ class AlbumHeaderReusableView: UICollectionReusableView {
             albumDesc.text = ""
             albumDescHeight.constant = 0
         } else {
-            albumDesc.attributedText = description
             albumDescHeight.constant = size.height
         }
+        
+        // Set colors
+        applyColorPalette(withDescription: description)
     }
     
-    func applyColorPalette() {
+    func applyColorPalette(withDescription description: NSAttributedString) {
         if #available(iOS 26.0, *) {
             backgroundColor = .clear
         } else {
             backgroundColor = PwgColor.background.withAlphaComponent(0.75)
         }
-        albumDesc.textColor = PwgColor.header
+        albumDesc.attributedText = description.adaptingTextColorPreservingHue(to: PwgColor.background, defaultColor: PwgColor.header)
         albumDesc.linkTextAttributes = [NSAttributedString.Key.foregroundColor: PwgColor.orange]
     }
 

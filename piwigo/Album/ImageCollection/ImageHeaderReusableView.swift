@@ -35,9 +35,6 @@ class ImageHeaderReusableView: UICollectionReusableView
     {
         // Keep section for future use
         self.section = section
-        
-        // Set colors
-        applyColorPalette()
 
         // Set album description label
         albumDesc?.contentSize = size
@@ -48,10 +45,12 @@ class ImageHeaderReusableView: UICollectionReusableView
             albumDesc?.text = ""
             albumDescHeight?.constant = 0
         } else {
-            albumDesc?.attributedText = description
             albumDescHeight?.constant = size.height
         }
         
+        // Set colors
+        applyColorPalette(withDescription: description)
+
         // Get date labels from images in section
         var dates = ("", "")
         switch sortKey {
@@ -107,7 +106,7 @@ class ImageHeaderReusableView: UICollectionReusableView
     }
     
     @MainActor
-    func applyColorPalette() {
+    func applyColorPalette(withDescription description: NSAttributedString) {
         if #available(iOS 26.0, *) {
             backgroundColor = .clear
         } else {
@@ -118,7 +117,7 @@ class ImageHeaderReusableView: UICollectionReusableView
         selectButton?.backgroundColor = PwgColor.background
         selectButton?.layer.shadowColor = AppVars.shared.isDarkPaletteActive ? UIColor.white.cgColor : UIColor.black.cgColor
         selectButton?.layer.shadowOpacity = AppVars.shared.isDarkPaletteActive ? 0.7 : 0.3
-        albumDesc?.textColor = PwgColor.header
+        albumDesc?.attributedText = description.adaptingTextColorPreservingHue(to: PwgColor.background, defaultColor: PwgColor.header)
         albumDesc?.linkTextAttributes = [NSAttributedString.Key.foregroundColor: PwgColor.orange]
     }
     

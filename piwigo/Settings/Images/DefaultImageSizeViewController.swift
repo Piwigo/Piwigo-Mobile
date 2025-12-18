@@ -110,7 +110,7 @@ extension DefaultImageSizeViewController: UITableViewDataSource {
         switch size {
         case .square, .thumb, .xxSmall, .xSmall, .small:
             configCell(cell, forSize: size, selectable: false)
-        case .medium, .large, .xLarge, .xxLarge, .fullRes:
+        case .medium, .large, .xLarge, .xxLarge, .xxxLarge, .xxxxLarge, .fullRes:
             configCell(cell, forSize: size, selectable: true, selected: selected)
         }
     }

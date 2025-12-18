@@ -27,11 +27,6 @@ public struct TagAddJSON: Decodable {
         case tags
     }
     
-    private enum ErrorCodingKeys: String, CodingKey {
-        case code = "code"
-        case message = "msg"
-    }
-
     public init(from decoder: Decoder) throws
     {
         // Root container keyed by RootCodingKeys
@@ -47,22 +42,17 @@ public struct TagAddJSON: Decodable {
         else if (status == "fail")
         {
             // Retrieve Piwigo server error
-            do {
-                let errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
-                let errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
-                throw PwgKitError.pwgError(code: errorCode, msg: errorMessage)
-            }
-            catch {
-                // Error container keyed by ErrorCodingKeys ("format=json" forgotten in call)
-                let errorContainer = try rootContainer.nestedContainer(keyedBy: ErrorCodingKeys.self, forKey: .errorCode)
-                let errorCode = Int(try errorContainer.decode(String.self, forKey: .code)) ?? NSNotFound
-                let errorMessage = try errorContainer.decode(String.self, forKey: .message)
-                throw PwgKitError.pwgError(code: errorCode, msg: errorMessage)
-            }
+            let errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
+            let errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
+            let pwgError = PwgKitError.pwgError(code: errorCode, msg: errorMessage)
+            let context = DecodingError.Context(codingPath: [], debugDescription: reason, underlyingError: pwgError)
+            throw DecodingError.dataCorrupted(context)
         }
         else {
             // Unexpected Piwigo server error
-            throw PwgKitError.unexpectedError
+            let pwgError = PwgKitError.unexpectedError
+            let context = DecodingError.Context(codingPath: [], debugDescription: reason, underlyingError: pwgError)
+            throw DecodingError.dataCorrupted(context)
         }
     }
 }

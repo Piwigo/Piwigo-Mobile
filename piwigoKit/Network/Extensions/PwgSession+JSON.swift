@@ -42,10 +42,11 @@ extension PwgSession
             // Communication error?
             if let error = error as? URLError {
                 completion(.failure(.requestFailed(innerError: error)))
+                return
             }
             
             // Valid response?
-            guard var jsonData = data, let httpResponse = response as? HTTPURLResponse
+            guard let jsonData = data, let httpResponse = response as? HTTPURLResponse
             else {
                 completion(.failure(.invalidResponse))
                 return
@@ -68,13 +69,13 @@ extension PwgSession
             // Try decoding JSON object
             let decoder = JSONDecoder()
             do {
-                let pwgData = try decoder.decode(jsonObjectClientExpectsToReceive.self, from: jsonData)
+                let pwgData = try decoder.decode(T.self, from: jsonData)
                 
                 // Log returned data
                 let countsOfBytes = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride + jsonData.count * MemoryLayout<Data>.stride
 #if DEBUG
                 let dataStr = String(decoding: jsonData.prefix(100), as: UTF8.self) + "…"
-//                    let dataStr = String(decoding: jsonData, as: UTF8.self)
+//                let dataStr = String(decoding: jsonData, as: UTF8.self)
                 PwgSession.logger.notice("\(method) returned \(countsOfBytes, privacy: .public) bytes: \(dataStr, privacy: .public)")
 #else
                 PwgSession.logger.notice("\(method) returned \(countsOfBytes, privacy: .public) bytes.")
@@ -83,44 +84,24 @@ extension PwgSession
                 // Return decoded object
                 completion(.success(pwgData))
             }
+            catch let DecodingError.dataCorrupted(context) {
+                // Piwigo error?
+                if let pwgError = context.underlyingError as? PwgKitError {
+                    completion(.failure(pwgError))
+                }
+                else {
+                    self.cleanAndRetryDecoding(jsonData, withDecoder: decoder, forMethod: method,
+                                               jsonObjectClientExpectsToReceive: T.self,
+                                               error: DecodingError.dataCorrupted(context), completion: completion)
+                }
+            }
+            catch let error as DecodingError {
+                self.cleanAndRetryDecoding(jsonData, withDecoder: decoder, forMethod: method,
+                                           jsonObjectClientExpectsToReceive: T.self,
+                                           error: error, completion: completion)
+            }
             catch let error {
-                // Log invalid returned data
-#if DEBUG
-                let dataStr = String(decoding: jsonData, as: UTF8.self)
-                PwgSession.logger.notice("\(method) returned the invalid JSON data: \(dataStr, privacy: .public)")
-#else
-                let countsOfBytes = jsonData.count * MemoryLayout<Data>.stride
-                PwgSession.logger.notice("\(method) returned \(countsOfBytes, privacy: .public) bytes of invalid JSON data.")
-#endif
-                
-                // Store invalid JSON data for helping user
-                jsonData.saveInvalidJSON(for: method)
-                
-                // Data filtered, try decoding JSON object
-                do {
-                    // Try extracting a JSON object
-                    guard jsonData.extractingBalancedBraces()
-                    else { throw error }
-                    
-                    let decodedObject = try decoder.decode(jsonObjectClientExpectsToReceive.self, from: jsonData)
-                    
-                    // Return decoded object
-                    completion(.success(decodedObject))
-                }
-                
-                // Still invalid JSON data
-                catch let error as DecodingError {
-                    completion(.failure(.decodingFailed(innerError: error)))
-                }
-                catch let error as URLError {
-                    completion(.failure(.requestFailed(innerError: error)))
-                }
-                catch let error as PwgKitError {
-                    completion(.failure(error))
-                }
-                catch {
-                    completion(.failure(.otherError(innerError: error)))
-                }
+                completion(.failure(.otherError(innerError: error)))
             }
         }
         
@@ -140,7 +121,48 @@ extension PwgSession
         task.resume()
     }
     
-    fileprivate func httpBody(for paramDict: [String: Any]) -> Data?
+    fileprivate
+    func cleanAndRetryDecoding<T: Decodable>(_ jsonData: Data, withDecoder decoder: JSONDecoder, forMethod method: String,
+                                             jsonObjectClientExpectsToReceive: T.Type, error: DecodingError,
+                                             completion: @escaping (Result<T, PwgKitError>) -> Void)
+    {
+        // Log invalid returned data
+#if DEBUG
+        let dataStr = String(decoding: jsonData, as: UTF8.self)
+        PwgSession.logger.notice("\(method) returned the invalid JSON data: \(dataStr, privacy: .public)")
+#else
+        let countsOfBytes = jsonData.count * MemoryLayout<Data>.stride
+        PwgSession.logger.notice("\(method) returned \(countsOfBytes, privacy: .public) bytes of invalid JSON data.")
+#endif
+        
+        // Store invalid JSON data for helping user
+        jsonData.saveInvalidJSON(for: method)
+        
+        // Try cleaning JSON object
+        var cleanData = jsonData
+        guard cleanData.extractingBalancedBraces()
+        else {
+            completion(.failure(.decodingFailed(innerError: error)))
+            return
+        }
+        
+        do {
+            // Try decoding cleaner JSON object
+            let decodedObject = try decoder.decode(T.self, from: cleanData)
+
+            // Return decoded object
+            completion(.success(decodedObject))
+        }
+        catch let error as DecodingError {
+            completion(.failure(.decodingFailed(innerError: error)))
+        }
+        catch let error {
+            completion(.failure(.otherError(innerError: error)))
+        }
+    }
+    
+    fileprivate
+    func httpBody(for paramDict: [String: Any]) -> Data?
     {
         var urlComponents = URLComponents()
         var queryItems: [URLQueryItem] = []

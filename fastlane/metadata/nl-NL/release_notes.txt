@@ -1,3 +1,2 @@
-• Ondersteuning voor API-sleutels toegevoegd
-• Bugs verholpen en interface verbeterd
-• Codemodernisering
+• Compatibiliteit met Piwigo 16
+• Bugfixes en verbeteringen aan de interface

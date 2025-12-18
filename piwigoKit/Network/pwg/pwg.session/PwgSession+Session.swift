@@ -168,7 +168,9 @@ public extension PwgSession {
                 NetworkVars.shared.hasLargeSizeImages   = data.imageSizes?.contains("large") ?? false
                 NetworkVars.shared.hasXLargeSizeImages  = data.imageSizes?.contains("xlarge") ?? false
                 NetworkVars.shared.hasXXLargeSizeImages = data.imageSizes?.contains("xxlarge") ?? false
-                
+                NetworkVars.shared.hasXXXLargeSizeImages = data.imageSizes?.contains("3xlarge") ?? false
+                NetworkVars.shared.hasXXXXLargeSizeImages = data.imageSizes?.contains("4xlarge") ?? false
+
                 // Should the app log visits and downloads? (since Piwigo 14)
                 NetworkVars.shared.saveVisits = data.saveVisits ?? false
 

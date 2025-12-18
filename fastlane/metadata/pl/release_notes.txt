@@ -1,3 +1,2 @@
-• Dodano obsługę kluczy API
+• Kompatybilność z Piwigo 16
 • Poprawki błędów i usprawnienia interfejsu
-• Modernizacja kodu

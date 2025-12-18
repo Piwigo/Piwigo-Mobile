@@ -109,7 +109,7 @@ extension DefaultAlbumThumbnailSizeViewController: UITableViewDataSource {
     private func configCell(_ cell: LabelTableViewCell, forSize size: pwgImageSize,
                             selected: Bool = false) {
         switch size {
-        case .square, .thumb, .xxSmall, .xSmall, .small, .medium, .large, .xLarge, .xxLarge:
+        case .square, .thumb, .xxSmall, .xSmall, .small, .medium, .large, .xLarge, .xxLarge, .xxxLarge, .xxxxLarge:
             configCell(cell, forSize: size, selectable: true, selected: selected)
         case .fullRes:
             configCell(cell, forSize: size, selectable: false)

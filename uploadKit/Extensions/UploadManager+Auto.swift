@@ -22,7 +22,7 @@ extension UploadManager {
 
             // Delete remaining upload requests and inform user
             disableAutoUpload(withTitle: PwgKitError.autoUploadSourceInvalid.localizedDescription,
-                              message: String(localized: "settings_autoUploadSourceInfo", bundle: piwigoKit,
+                              message: String(localized: "settings_autoUploadSourceInfo", bundle: uploadKit,
                                               comment: "Please select the album…"))
             return
         }
@@ -35,7 +35,7 @@ extension UploadManager {
 
             // Delete remaining upload requests and inform user
             disableAutoUpload(withTitle: PwgKitError.autoUploadDestinationInvalid.localizedDescription,
-                              message: String(localized: "settings_autoUploadDestinationInfo", bundle: piwigoKit,
+                              message: String(localized: "settings_autoUploadDestinationInfo", bundle: uploadKit,
                                               comment: "Please select the album…"))
             return
         }

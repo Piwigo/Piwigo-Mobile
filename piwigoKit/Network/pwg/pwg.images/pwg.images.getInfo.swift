@@ -23,11 +23,6 @@ public struct ImagesGetInfoJSON: Decodable {
         case errorMessage = "message"
     }
     
-    private enum ErrorCodingKeys: String, CodingKey {
-        case code = "code"
-        case message = "msg"
-    }
-
     public init(from decoder: Decoder) throws
     {
         // Root container keyed by RootCodingKeys
@@ -47,23 +42,17 @@ public struct ImagesGetInfoJSON: Decodable {
         else if status == "fail"
         {
             // Retrieve Piwigo server error
-            do {
-                // Retrieve Piwigo server error
-                let errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
-                let errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
-                throw PwgKitError.pwgError(code: errorCode, msg: errorMessage)
-            }
-            catch {
-                // Error container keyed by ErrorCodingKeys ("format=json" forgotten in call)
-                let errorContainer = try rootContainer.nestedContainer(keyedBy: ErrorCodingKeys.self, forKey: .errorCode)
-                let errorCode = Int(try errorContainer.decode(String.self, forKey: .code)) ?? NSNotFound
-                let errorMessage = try errorContainer.decode(String.self, forKey: .message)
-                throw PwgKitError.pwgError(code: errorCode, msg: errorMessage)
-            }
+            let errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
+            let errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
+            let pwgError = PwgKitError.pwgError(code: errorCode, msg: errorMessage)
+            let context = DecodingError.Context(codingPath: [], debugDescription: reason, underlyingError: pwgError)
+            throw DecodingError.dataCorrupted(context)
         }
         else {
             // Unexpected Piwigo server error
-            throw PwgKitError.unexpectedError
+            let pwgError = PwgKitError.unexpectedError
+            let context = DecodingError.Context(codingPath: [], debugDescription: reason, underlyingError: pwgError)
+            throw DecodingError.dataCorrupted(context)
         }
     }
 }
@@ -72,7 +61,8 @@ public struct ImagesGetInfo: Decodable
 {
     public let id: Int64?                       // 1042
     public var title: String?                   // "Title"
-    public var comment: String?                 // "No description"
+    public var comment: String?                 // "…" i.e. text potentially containing HTML encoded characters, selected language
+    public var commentRaw: String?              // "…" i.e. text potentially containing HTML encoded characters, all languages
     public var visits: Int32?                   // 0
     public var fileName: String?                // "Image.jpg"
     public var datePosted: String?              // "yyyy-MM-dd HH:mm:ss"
@@ -100,6 +90,7 @@ public struct ImagesGetInfo: Decodable
         case id = "id"
         case title = "name"
         case comment = "comment"
+        case commentRaw = "comment_raw"
         case visits = "hit"
         case fileName = "file"
         case datePosted = "date_available"
@@ -137,7 +128,8 @@ extension ImagesGetInfo {
         let created = dateFormatter.string(from: dateCreated)
         let derivatives = Derivatives(squareImage: squareImage, thumbImage: thumbImage)
         
-        self.init(id: id, title: title, comment: "", visits: 0,
+        self.init(id: id, title: title,
+                  comment: "", commentRaw: "", visits: 0,
                   fileName: fileName, datePosted: posted, dateCreated: created,
                   isFavorite: false, downloadUrl: "",
                   fullResWidth: 0, fullResHeight: 0, fullResPath: "",
@@ -152,6 +144,7 @@ extension ImagesGetInfo {
     public mutating func fixingUnknowns() {
         if self.title == nil { self.title = "" }
         if self.comment == nil { self.comment = "" }
+        if self.commentRaw == nil { self.commentRaw = "" }
         if self.visits == nil { self.visits = 0 }
         if self.fileName == nil { self.fileName = "" }
         if self.datePosted == nil {
@@ -187,6 +180,8 @@ public struct Derivatives: Decodable {
     public var largeImage: Derivative?
     public var xLargeImage: Derivative?
     public var xxLargeImage: Derivative?
+    public var xxxLargeImage: Derivative?
+    public var xxxxLargeImage: Derivative?
 
     public enum CodingKeys: String, CodingKey {
         case squareImage = "square"
@@ -200,6 +195,8 @@ public struct Derivatives: Decodable {
         case largeImage = "large"
         case xLargeImage = "xlarge"
         case xxLargeImage = "xxlarge"
+        case xxxLargeImage = "3xlarge"
+        case xxxxLargeImage = "4xlarge"
     }
 }
 

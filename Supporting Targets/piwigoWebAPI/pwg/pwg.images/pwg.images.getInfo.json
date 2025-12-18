@@ -2,98 +2,110 @@
 "stat":"ok",
 "result":{
     "id":2,
-    "file":"DSCN1408.jpeg",
-    "date_available":"2023-11-02 21:33:55",
-    "date_creation":"2021-07-12 16:18:19",
-    "name":"DSCN1408",
-    "comment":null,
-    "author":null,
+    "file":"Pic du Midi 2.jpg",
+    "date_available":"2017-08-31 22:44:40",
+    "date_creation":"2016-07-25 21:26:52",
+    "name":"Pic du Midi 2",
+    "comment":"<!DOCTYPE html><html lang=\"fr\"><head>    <meta charset=\"UTF-8\">    <title>Exemple avec police</title>    <style>        p {            font-family: 'Comic Sans MS', cursive;           font-size: 18px;            color: #0000FF;        }    </style></head><body>    <p>Great view from Pic du Midi! Visit Piwigo.org</p></body></html>",
+    "author":"Eddy",
     "hit":0,
-    "filesize":299,
-    "width":1280,
-    "height":960,
+    "filesize":1240,
+    "width":2049,
+    "height":1537,
     "coi":null,
     "representative_ext":null,
-    "date_metadata_update":"2023-11-02",
+    "date_metadata_update":"2017-08-31",
     "rating_score":null,
     "level":"0",
     "md5sum":"3175a7347fd5d6348935ec955f52a9e3",
     "added_by":"1",
     "rotation":"0",
-    "latitude":"0.000000",
-    "longitude":"0.000000",
-    "lastmodified":"2023-11-02 21:33:55",
+    "latitude":42.936681,
+    "longitude":0.141467,
+    "lastmodified":"2019-10-30 21:34:09",
     "page_url":"https://.../picture.php?\/2",
     "element_url":"https://.../upload\/2023\/11\/02\/20231102213355-3175a734.jpg",
     "download_url":"https://.../action.php?id=2&part=e&download",
     "derivatives":{
         "square":{
-            "url":"https://.../_data\/i\/upload\/2023\/11\/02\/20231102213355-3175a734-sq.jpg",
+            "url":"https://.../_data/i/upload/2017/08/31/20170831224440-25ec0230-sq.jpg",
             "width":120,
             "height":120
         },
         "thumb":{
-            "url":"https://.../i.php?\/upload\/2023\/11\/02\/20231102213355-3175a734-th.jpg",
+            "url":"https://.../_data/i/upload/2017/08/31/20170831224440-25ec0230-th.jpg",
             "width":144,
             "height":108
         },
         "2small":{
-            "url":"https://.../i.php?\/upload\/2023\/11\/02\/20231102213355-3175a734-2s.jpg",
+            "url":"https://.../_data/i/upload/2017/08/31/20170831224440-25ec0230-2s.jpg",
             "width":240,
             "height":180
         },
         "xsmall":{
-            "url":"https://.../_data\/i\/upload\/2023\/11\/02\/20231102213355-3175a734-xs.jpg",
+            "url":"https://.../_data/i/upload/2017/08/31/20170831224440-25ec0230-xs.jpg",
             "width":432,
             "height":324
         },
         "small":{
-            "url":"https://.../i.php?\/upload\/2023\/11\/02\/20231102213355-3175a734-sm.jpg",
+            "url":"https://.../_data/i/upload/2017/08/31/20170831224440-25ec0230-sm.jpg",
             "width":576,
             "height":432
         },
         "medium":{
-            "url":"https://.../_data\/i\/upload\/2023\/11\/02\/20231102213355-3175a734-me.jpg",
+            "url":"https://.../_data/i/upload/2017/08/31/20170831224440-25ec0230-me.jpg",
             "width":792,
             "height":594
         },
         "large":{
-            "url":"https://.../i.php?\/upload\/2023\/11\/02\/20231102213355-3175a734-la.jpg",
+            "url":"https://.../_data/i/upload/2017/08/31/20170831224440-25ec0230-la.jpg",
             "width":1008,
             "height":756
         },
         "xlarge":{
-            "url":"https://.../i.php?\/upload\/2023\/11\/02\/20231102213355-3175a734-xl.jpg",
+            "url":"https://.../_data/i/upload/2017/08/31/20170831224440-25ec0230-xl.jpg",
             "width":1224,
             "height":918
         },
         "xxlarge":{
-            "url":"https://.../upload\/2023\/11\/02\/20231102213355-3175a734.jpg",
-            "width":"1280",
-            "height":"960"
+            "url":"https://.../_data/i/upload/2017/08/31/20170831224440-25ec0230-xx.jpg",
+            "width":1280,
+            "height":960
+        },
+        "3xlarge": {
+            "url":"https://.../upload/2017/08/31/20170831224440-25ec0230.jpg",
+            "width":"2049",
+            "height":"1537"
+        },
+        "4xlarge": {
+            "url": "https://.../upload/2017/08/31/20170831224440-25ec0230.jpg",
+            "width":"2049",
+            "height":"1537"
         }
     },
+    "name_raw":"Pic du Midi 2",
+    "comment_raw":"<!DOCTYPE html><html lang=\"fr\"><head>    <meta charset=\"UTF-8\">    <title>Exemple avec police</title>    <style>        p {            font-family: 'Comic Sans MS', cursive;            font-size: 18px;            color: #0000FF;        }    </style></head><body>    <p>Great view from Pic du Midi! Visit Piwigo.org</p></body></html>",
     "rates":{
         "score":null,
         "count":0,
         "average":null
     },
     "categories":[{
-        "id":1,
-        "name":"Test",
-        "permalink":null,
-        "uppercats":"1",
-        "global_rank":"2",
-        "url":"https://.../index.php?\/category\/1",
-        "page_url":"https://.../picture.php?\/2\/category\/1"
+        "id":2,
+        "name":"Aerial Views",
+        "permalink":"aerial-views",
+        "uppercats":"2",
+        "global_rank":"14",
+        "url":"https://.../index.php?\/category\/aerial-views",
+        "page_url":"https://.../picture.php?\/2\/category\/aerial-views"
     }],
     "tags":[{
-        "id":102,
-        "name":"Food",
-        "url_name":"food",
+        "id":438,
+        "name":"archiving",
+        "url_name":"archiving",
         "lastmodified":"2021-05-03 06:38:21",
-        "url":"https://.../Dev/index.php?/tags/102-food",
-        "page_url":"https://.../Dev/picture.php?/216/tags/102-food"
+        "url":"https://.../Dev/index.php?/tags/438-archiving",
+        "page_url":"https://.../Dev/picture.php?/2/tags/438-archiving"
     }],
     "comment_post":{
         "author":"Eddy",

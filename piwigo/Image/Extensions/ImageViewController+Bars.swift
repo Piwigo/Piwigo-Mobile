@@ -43,7 +43,7 @@ extension ImageViewController {
                 actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
             }
             actionBarButton?.accessibilityIdentifier = "actions"
-
+            
             // Configure the navigation bar and toolbar
             if #available(iOS 26.0, *) {
                 updateNavBarForAdmin(orientation: orientation)
@@ -76,13 +76,13 @@ extension ImageViewController {
             case .video:
                 /// => [- play mute - delete] or [- play favorite mute - delete] or [share - play mute - delete] or [share - play favorite mute - delete]
                 toolbarItems.append(contentsOf: [playBarButton, favoriteBarButton, muteBarButton, .space(),
-                                                      deleteBarButton])
-
+                                                 deleteBarButton])
+                
             case .pdf:
                 /// PDF   => [- goToPage delete] or [- goToPage favorite delete] or [share - goToPage delete] or [share - goToPage favorite - delete]
                 toolbarItems.append(contentsOf: [goToPageButton, favoriteBarButton, deleteBarButton])
             }
-
+            
             // We present the toolbar only if it contains at least two buttons
             let finalToolbarItems: [UIBarButtonItem] = toolbarItems.compactMap({ $0 })
             if finalToolbarItems.count > 2 {
@@ -118,7 +118,7 @@ extension ImageViewController {
             navigationItem.rightBarButtonItems = [actionBarButton, deleteBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
         }
     }
-
+    
     @MainActor @available(iOS 26.0, *)
     private func updateNavBarForStdUserOrGuest(orientation: UIInterfaceOrientation) {
         // Case of users without admin or upload rights
@@ -131,7 +131,7 @@ extension ImageViewController {
             /// PDF   => [goToPage] or [goToPage favorite]
             var finalToolbarItems = toolbarItems.compactMap { $0 }
             if finalToolbarItems.count == 1 { finalToolbarItems.insert(.space(), at: 0) }
-
+            
             // Share button at right bar button?
             if shareBarButton != nil {
                 // Present the toolbar if we have enough buttons
@@ -192,7 +192,7 @@ extension ImageViewController {
             navigationItem.rightBarButtonItems = [shareBarButton, favoriteBarButton].compactMap { $0 }
         }
     }
-
+    
     @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
     private func updateNavBarOldForAdmin(orientation: UIInterfaceOrientation) {
         // Case of users with admin or upload rights
@@ -252,7 +252,7 @@ extension ImageViewController {
             navigationItem.rightBarButtonItems = [actionBarButton, deleteBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
         }
     }
-
+    
     @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
     private func updateNavBarOldForStdUserOrGuest(orientation: UIInterfaceOrientation) {
         // Case of users without admin or upload rights
@@ -349,8 +349,8 @@ extension ImageViewController {
         muteBarButton?.isEnabled = state
         goToPageButton?.isEnabled = state
     }
-
-
+    
+    
     // MARK: - Title View
     @MainActor
     func setTitleViewFromImageData() {
@@ -361,174 +361,161 @@ extension ImageViewController {
             setTitleViewOld()
         }
     }
-
+    
     @MainActor @available(iOS 26.0, *)
     func setTitleView() {
-        // Get title
-        var title = AttributedString()
+        // Title
+        var title = String()
         if imageData.titleStr.isEmpty {
             // No title => Use file name
-            title = AttributedString(imageData.fileName)
+            title = imageData.fileName
         } else {
-            title = AttributedString(imageData.title)
+            title = imageData.titleStr
         }
         
-        // Apply title attributes
-        title.foregroundColor = .label
-        switch traitCollection.preferredContentSizeCategory {
-        case .extraSmall, .small, .medium, .large:
-            title.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
-        case .extraLarge:
-            title.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
-        case .extraExtraLarge:
-            title.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
-        case .extraExtraExtraLarge:
-            title.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        case .accessibilityMedium:
-            title.font = UIFont.systemFont(ofSize: 19, weight: .semibold)
-        case .accessibilityLarge:
-            title.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
-        default:
-            title.font = UIFont.systemFont(ofSize: 23, weight: .semibold)
+        // No subtitle when using acessibility category or when the creation date is unknown
+        let tooLargeFont = traitCollection.preferredContentSizeCategory >= .accessibilityMedium
+        if tooLargeFont || (imageData.dateCreated < DateUtilities.weekAfterInterval) {
+            navigationItem.titleView = getTitleView(withTitle: title, titleColor: .label,
+                                                    subtitle: "", subTitleColor: .label)
+            return
         }
         
-        // Get subTitle
-        var subTitle = AttributedString()
-        if imageData.dateCreated > DateUtilities.weekAfterInterval { // i.e. a week after unknown date
-            let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
-            let dateFormatter = DateUtilities.dateFormatter
-            if view.traitCollection.userInterfaceIdiom == .pad {
-                dateFormatter.dateStyle = .long
-                dateFormatter.timeStyle = .medium   // Without time zone (unknown)
-                subTitle = AttributedString(dateFormatter.string(from: dateCreated))
-            } else {
-                dateFormatter.dateStyle = .medium
-                dateFormatter.timeStyle = .medium
-                subTitle = AttributedString(dateFormatter.string(from: dateCreated))
-            }
-            // Apply subtitle attributes
-            subTitle.foregroundColor = .label
-            subTitle.font = UIFont.systemFont(ofSize: 10, weight: .regular)
+        // Subtitle
+        var subTitle = String()
+        let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
+        let dateFormatter = DateUtilities.dateFormatter
+        if view.traitCollection.userInterfaceIdiom == .pad {
+            dateFormatter.dateStyle = .long
+            dateFormatter.timeStyle = .medium   // Without time zone (unknown)
+            subTitle = dateFormatter.string(from: dateCreated)
+        } else {
+            dateFormatter.dateStyle = .medium
+            dateFormatter.timeStyle = .medium
+            subTitle = dateFormatter.string(from: dateCreated)
         }
         
-        // Prepare button
-        var config = UIButton.Configuration.glass()
-        config.cornerStyle = .capsule
-        config.attributedTitle = title
-        config.attributedSubtitle = subTitle
-        config.titleAlignment = .center
-        config.titleLineBreakMode = .byTruncatingTail
-        config.subtitleLineBreakMode = .byTruncatingTail
-        let titleButton = UIButton(configuration: config)
-        let maxWidth = view.bounds.width * 0.60
-        titleButton.widthAnchor.constraint(lessThanOrEqualToConstant: maxWidth).isActive = true
-        navigationItem.titleView = titleButton
+        // Prepare title view
+        navigationItem.titleView = getTitleView(withTitle: title, titleColor: .label,
+                                                subtitle: subTitle, subTitleColor: .label)
     }
     
     @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
     func setTitleViewOld() {
-        // Font according to content size category
-        var titleFont: UIFont
-        switch traitCollection.preferredContentSizeCategory {
-        case .extraSmall, .small, .medium, .large:
-            titleFont = UIFont.systemFont(ofSize: 15, weight: .semibold)
-        case .extraLarge:
-            titleFont = UIFont.systemFont(ofSize: 16, weight: .semibold)
-        case .extraExtraLarge:
-            titleFont = UIFont.systemFont(ofSize: 17, weight: .semibold)
-        case .extraExtraExtraLarge:
-            titleFont = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        case .accessibilityMedium:
-            titleFont = UIFont.systemFont(ofSize: 19, weight: .semibold)
-        case .accessibilityLarge:
-            titleFont = UIFont.systemFont(ofSize: 20, weight: .semibold)
-        default:
-            titleFont = UIFont.systemFont(ofSize: 23, weight: .semibold)
+        // Title
+        var title = String()
+        if imageData.titleStr.isEmpty {
+            // No title => Use file name
+            title = imageData.fileName
+        } else {
+            title = imageData.titleStr
         }
-
-        // Create label programmatically
+        
+        // No subtitle when using acessibility category or on iPhone in landscape mode
+        // or when the creation date is unknown
+        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+        let tooLargeFont = traitCollection.preferredContentSizeCategory >= .accessibilityMedium
+        if tooLargeFont || (imageData.dateCreated < DateUtilities.weekAfterInterval) ||
+            (view.traitCollection.userInterfaceIdiom == .phone && orientation.isLandscape) {
+            navigationItem.titleView = getTitleView(withTitle: title, titleColor: .label,
+                                                    subtitle: "", subTitleColor: .label)
+            return
+        }
+        
+        // Subtitle
+        var subTitle = String()
+        let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
+        let dateFormatter = DateUtilities.dateFormatter
+        if view.traitCollection.userInterfaceIdiom == .pad {
+            dateFormatter.dateStyle = .long
+            dateFormatter.timeStyle = .medium   // Without time zone (unknown)
+            subTitle = dateFormatter.string(from: dateCreated)
+        } else {
+            dateFormatter.dateStyle = .medium
+            dateFormatter.timeStyle = .medium
+            subTitle = dateFormatter.string(from: dateCreated)
+        }
+        
+        // Prepare title view
+        navigationItem.titleView = getTitleView(withTitle: title, titleColor: PwgColor.whiteCream,
+                                                subtitle: subTitle, subTitleColor: PwgColor.rightLabel)
+    }
+    
+    // The font size of the title is not updated automatically
+    // for larger accessibility type sizes on iOS 26.0
+    // Title/subtitle inside UIButton leads to top-right buttons misalignment
+    private func getTitleView(withTitle title: String, titleColor: UIColor,
+                              subtitle: String, subTitleColor: UIColor) -> UIView {
+        // Create title label programmatically
         let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         titleLabel.backgroundColor = UIColor.clear
-        titleLabel.textColor = PwgColor.whiteCream
+        titleLabel.textColor = titleColor
         titleLabel.textAlignment = .center
         titleLabel.numberOfLines = 1
+        titleLabel.font = UIFont.preferredFont(forTextStyle: .headline)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.adjustsFontSizeToFitWidth = false
         titleLabel.lineBreakMode = .byTruncatingTail
         titleLabel.allowsDefaultTighteningForTruncation = true
-        if imageData.title.string.isEmpty == false {
-            let wholeRange = NSRange(location: 0, length: imageData.title.string.count)
-            let style = NSMutableParagraphStyle()
-            style.alignment = NSTextAlignment.center
-            let attributes = [
-                NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
-                NSAttributedString.Key.font: titleFont,
-                NSAttributedString.Key.paragraphStyle: style
-            ] as [NSAttributedString.Key : Any]
-            let attTitle = NSMutableAttributedString(attributedString: imageData.title)
-            attTitle.addAttributes(attributes, range: wholeRange)
-            titleLabel.attributedText = attTitle
-        } else {
-            // No title => Use file name
-            titleLabel.font = titleFont
-            titleLabel.text = imageData.fileName
-        }
+        let wholeRange = NSRange(location: 0, length: title.count)
+        let style = NSMutableParagraphStyle()
+        style.alignment = NSTextAlignment.center
+        let attributes = [
+            NSAttributedString.Key.foregroundColor: titleColor,
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .headline),
+            NSAttributedString.Key.paragraphStyle: style
+        ]
+        let attTitle = NSMutableAttributedString(string: title)
+        attTitle.addAttributes(attributes, range: wholeRange)
+        titleLabel.attributedText = attTitle
         titleLabel.sizeToFit()
         
-        // There is no subtitle in landscape mode on iPhone or when the creation date is unknown
-        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-        if ((view.traitCollection.userInterfaceIdiom == .phone) && orientation.isLandscape) ||
-            imageData.dateCreated < DateUtilities.weekAfterInterval { // i.e. a week after unknown date
-            let titleWidth = CGFloat(fmin(titleLabel.bounds.size.width, view.bounds.size.width * 0.4))
+        // No subtitle?
+        guard subtitle.isEmpty == false
+        else {
+            let titleWidth = CGFloat(fmin(titleLabel.bounds.size.width, view.bounds.size.width - 100.0))
             titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
             let oneLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth), height: titleLabel.bounds.size.height))
-            navigationItem.titleView = oneLineTitleView
-            
             oneLineTitleView.addSubview(titleLabel)
             oneLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
             oneLineTitleView.addConstraints(NSLayoutConstraint.constraintCenter(titleLabel)!)
+            return oneLineTitleView
         }
-        else {
-            let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
-            let subTitleLabel = UILabel(frame: CGRect(x: 0.0, y: titleLabel.frame.size.height, width: 0, height: 0))
-            subTitleLabel.backgroundColor = UIColor.clear
-            subTitleLabel.textColor = PwgColor.whiteCream
-            subTitleLabel.textAlignment = .center
-            subTitleLabel.numberOfLines = 1
-            subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-            subTitleLabel.font = .systemFont(ofSize: 10)
-            subTitleLabel.adjustsFontSizeToFitWidth = false
-            subTitleLabel.lineBreakMode = .byTruncatingTail
-            subTitleLabel.allowsDefaultTighteningForTruncation = true
-            let dateFormatter = DateUtilities.dateFormatter
-            if view.traitCollection.userInterfaceIdiom == .pad {
-                dateFormatter.dateStyle = .long
-                dateFormatter.timeStyle = .medium   // Without time zone (unknown)
-                subTitleLabel.text = dateFormatter.string(from: dateCreated)
-            } else {
-                dateFormatter.dateStyle = .medium
-                dateFormatter.timeStyle = .medium
-                subTitleLabel.text = dateFormatter.string(from: dateCreated)
-            }
-            subTitleLabel.sizeToFit()
-            
-            var titleWidth = CGFloat(fmax(subTitleLabel.bounds.size.width, titleLabel.bounds.size.width))
-            titleWidth = fmin(titleWidth, (navigationController?.view.bounds.size.width ?? 0.0) * 0.4)
-            let twoLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth),
-                                                        height: titleLabel.bounds.size.height + subTitleLabel.bounds.size.height))
-            navigationItem.titleView = twoLineTitleView
-            
-            twoLineTitleView.addSubview(titleLabel)
-            twoLineTitleView.addSubview(subTitleLabel)
-            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
-            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(titleLabel)!)
-            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(subTitleLabel)!)
-            
-            let views = ["title": titleLabel,
-                         "subtitle": subTitleLabel]
-            twoLineTitleView.addConstraints(
-                NSLayoutConstraint.constraints(withVisualFormat: "V:|[title][subtitle]|",
-                                               options: [], metrics: nil, views: views))
+
+        // Create subtitle label programmatically
+        let subTitleLabel = UILabel(frame: CGRect(x: 0.0, y: titleLabel.frame.size.height, width: 0, height: 0))
+        subTitleLabel.backgroundColor = UIColor.clear
+        subTitleLabel.textColor = subTitleColor
+        subTitleLabel.textAlignment = .center
+        subTitleLabel.numberOfLines = 1
+        subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        if traitCollection.preferredContentSizeCategory < .extraExtraExtraLarge {
+            subTitleLabel.font = .preferredFont(forTextStyle: .caption2)
+        } else {
+            subTitleLabel.font = .systemFont(ofSize: 15.0)  // instead of 17.0
         }
+        subTitleLabel.adjustsFontSizeToFitWidth = false
+        subTitleLabel.lineBreakMode = .byTruncatingTail
+        subTitleLabel.allowsDefaultTighteningForTruncation = true
+        subTitleLabel.text = subtitle
+        subTitleLabel.sizeToFit()
+        
+        // Create two-line title view
+        var titleWidth = CGFloat(fmax(subTitleLabel.bounds.size.width, titleLabel.bounds.size.width))
+        titleWidth = fmin(titleWidth, view.bounds.size.width - 100.0)
+        titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
+        let twoLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth),
+                                                    height: titleLabel.bounds.size.height + subTitleLabel.bounds.size.height))
+        twoLineTitleView.addSubview(titleLabel)
+        twoLineTitleView.addSubview(subTitleLabel)
+        twoLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
+        twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(titleLabel)!)
+        twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(subTitleLabel)!)
+        let views = ["title": titleLabel,
+                     "subtitle": subTitleLabel]
+        twoLineTitleView.addConstraints(
+            NSLayoutConstraint.constraints(withVisualFormat: "V:|[title][subtitle]|",
+                                           options: [], metrics: nil, views: views))
+        return twoLineTitleView
     }
 }

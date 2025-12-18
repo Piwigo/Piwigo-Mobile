@@ -1,3 +1,2 @@
-• Ajout de la prise en charge des clés API
-• Correction de bugs et amélioration de l'interface
-• Modernisation du code
+• Compatibilité Piwigo 16
+• Corrige des bugs et améliore l'interface

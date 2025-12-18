@@ -473,7 +473,11 @@ private extension DataMigrationVersion {
                     DataMigrator.logger.error("\(logPrefix) 3.5")
                     return .version0J
                 }
-                return .version0L
+                else if appVersion.compare("4.1.3", options: .numeric) == .orderedAscending {
+                    DataMigrator.logger.error("\(logPrefix) 4.1.3")
+                    return .version0L
+                }
+                return .version0N
             }
         }
         return compatibleVersion

@@ -22,37 +22,26 @@ class ImageDescriptionView: UIVisualEffectView {
     }
     
     @MainActor
-    func applyColorPalette() {
-        descTextView.textColor = PwgColor.text
+    func applyColorPalette(withImage image: Image) {
+        // Any description?
+        guard let desc = getDescription(forImage: image)
+        else { return }
+        descTextView.attributedText = desc.adaptingTextColorPreservingHue(to: PwgColor.background, defaultColor: PwgColor.text)
     }
     
     func config(withImage image: Image,
                 inViewController viewController: UIViewController, forVideo: Bool) {
         // Should we present a description?
-        if image.commentHTML.string.isEmpty == false {
-            descTextView.attributedText = image.commentHTML
-        }
-        else if image.comment.string.isEmpty == false {
-            // Configure the description view
-            let wholeRange = NSRange(location: 0, length: image.comment.string.count)
-            let style = NSMutableParagraphStyle()
-            style.alignment = NSTextAlignment.center
-            let footNoteFont = UIFont.preferredFont(forTextStyle: .footnote)
-            let attributes: [NSAttributedString.Key : Any] = [
-                NSAttributedString.Key.foregroundColor: PwgColor.text,
-                NSAttributedString.Key.font: UIFont.systemFont(ofSize: footNoteFont.pointSize, weight: .light),
-                NSAttributedString.Key.paragraphStyle: style
-            ]
-            let desc = NSMutableAttributedString(attributedString: image.comment)
-            desc.addAttributes(attributes, range: wholeRange)
-            descTextView.linkTextAttributes = [NSAttributedString.Key.foregroundColor: PwgColor.orange]
-            descTextView.attributedText = desc
-        } else {
+        guard let desc = getDescription(forImage: image)
+        else {
             // Hide the description view
             descTextView.text = ""
             self.isHidden = true
             return
         }
+        descTextView.isHidden = false
+        descTextView.attributedText = desc.adaptingTextColorPreservingHue(to: PwgColor.background, defaultColor: PwgColor.text)
+        descTextView.linkTextAttributes = [NSAttributedString.Key.foregroundColor: PwgColor.orange]
         
         // Don't show the description only when the bar is hidden
         let navController = viewController.navigationController
@@ -132,5 +121,28 @@ class ImageDescriptionView: UIVisualEffectView {
             // Scroll text to the top
             descTextView.scrollRangeToVisible(NSRange(location: 0, length: 1))
         }
+    }
+    
+    private func getDescription(forImage image: Image) -> NSAttributedString? {
+        // HTML or plain?
+        if image.commentHTML.string.isEmpty == false {
+            return image.commentHTML
+        }
+        else if image.comment.string.isEmpty == false {
+            // Configure the description view
+            let wholeRange = NSRange(location: 0, length: image.comment.string.count)
+            let style = NSMutableParagraphStyle()
+            style.alignment = NSTextAlignment.center
+            let footNoteFont = UIFont.preferredFont(forTextStyle: .footnote)
+            let attributes: [NSAttributedString.Key : Any] = [
+                NSAttributedString.Key.foregroundColor: PwgColor.text,
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: footNoteFont.pointSize, weight: .light),
+                NSAttributedString.Key.paragraphStyle: style
+            ]
+            let desc = NSMutableAttributedString(attributedString: image.comment)
+            desc.addAttributes(attributes, range: wholeRange)
+            return desc
+        }
+        return nil
     }
 }

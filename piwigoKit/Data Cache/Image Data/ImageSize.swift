@@ -19,6 +19,8 @@ public enum pwgImageSize : Int16, CaseIterable, Sendable {
     case large
     case xLarge
     case xxLarge
+    case xxxLarge
+    case xxxxLarge
     case fullRes
 }
 
@@ -52,8 +54,12 @@ extension pwgImageSize {
             width = 918
         case .xxLarge:
             width = 1242
+        case .xxxLarge:
+            width = 1674
+        case .xxxxLarge:
+            width = 2250
         case .fullRes:
-            width = 1242
+            width = 2250
         }
         return width/scale
     }
@@ -81,8 +87,12 @@ extension pwgImageSize {
             width = 1224
         case .xxLarge:
             width = 1656
+        case .xxxLarge:
+            width = 2232
+        case .xxxxLarge:
+            width = 3000
         case .fullRes:
-            width = 1656
+            width = 3000
         }
         return width/scale
     }
@@ -108,6 +118,10 @@ extension pwgImageSize {
             return NetworkVars.shared.hasXLargeSizeImages
         case .xxLarge:
             return NetworkVars.shared.hasXXLargeSizeImages
+        case .xxxLarge:
+            return NetworkVars.shared.hasXXXLargeSizeImages
+        case .xxxxLarge:
+            return NetworkVars.shared.hasXXXXLargeSizeImages
         case .fullRes:
             return true
         }
@@ -156,6 +170,12 @@ extension pwgImageSize {
         case .xxLarge:
             return String(localized: "thumbnailSizeXXLarge", bundle: piwigoKit,
                           comment: "Huge")
+        case .xxxLarge:
+            return String(localized: "thumbnailSizeXXXLarge", bundle: piwigoKit,
+                          comment: "Extra Huge")
+        case .xxxxLarge:
+            return String(localized: "thumbnailSizeXXXXLarge", bundle: piwigoKit,
+                          comment: "Gigantic")
         case .fullRes:
             return String(localized: "thumbnailSizexFullRes", bundle: piwigoKit,
                           comment: "Full Resolution")
@@ -181,6 +201,10 @@ extension pwgImageSize {
             return "xlarge"
         case .xxLarge:
             return "xxlarge"
+        case .xxxLarge:
+            return "3xlarge"
+        case .xxxxLarge:
+            return "4xlarge"
         case .thumb:
             return "thumb"
         }
@@ -207,6 +231,10 @@ extension pwgImageSize {
             return "XLarge"
         case .xxLarge:
             return "XXLarge"
+        case .xxxLarge:
+            return "XXXLarge"
+        case .xxxxLarge:
+            return "XXXXLarge"
         case .fullRes:
             return "FullRes"
         }

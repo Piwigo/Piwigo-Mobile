@@ -21,6 +21,7 @@ extension Image {
     @NSManaged public var title: NSAttributedString
     @NSManaged public var titleStr: String
     @NSManaged public var comment: NSAttributedString
+    @NSManaged public var commentRaw: String
     @NSManaged public var commentStr: String
     @NSManaged public var commentHTML: NSAttributedString
     @NSManaged public var visits: Int32
