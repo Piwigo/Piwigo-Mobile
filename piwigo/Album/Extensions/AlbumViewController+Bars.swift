@@ -485,8 +485,8 @@ extension AlbumViewController
             if prefersLargeTitles {
                 navigationItem.subtitle = nil
             } else {
-                navigationItem.titleView = getTitleView(withTitle: title, titleColor: PwgColor.gray,
-                                                        subtitle: "", subTitleColor: PwgColor.rightLabel)
+                navigationItem.titleView = getTitleView(withTitle: title, titleColor: .label,
+                                                        subtitle: "", subTitleColor: .label)
             }
             return
         }
