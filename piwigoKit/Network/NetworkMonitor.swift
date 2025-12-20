@@ -13,7 +13,7 @@ import Foundation
 public actor NetworkMonitoring {
     public static let shared = NetworkMonitoring()
     
-    private init() { }
+    private init() { }  // Prevents duplicate instances
 }
 
 @NetworkMonitoring
