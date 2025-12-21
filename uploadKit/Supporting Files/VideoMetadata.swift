@@ -131,14 +131,13 @@ extension AVAssetTrack {
 extension FourCharCode {
     // Create a String representation of a FourCC
     func toString() -> String {
-        let bytes: [CChar] = [
-            CChar((self >> 24) & 0xff),
-            CChar((self >> 16) & 0xff),
-            CChar((self >> 8) & 0xff),
-            CChar(self & 0xff),
-            0
+        let bytes: [UInt8] = [
+            UInt8((self >> 24) & 0xff),
+            UInt8((self >> 16) & 0xff),
+            UInt8((self >> 8) & 0xff),
+            UInt8(self & 0xff)
         ]
-        let result = String(cString: bytes)
+        let result = String(decoding: bytes, as: UTF8.self)
         let characterSet = CharacterSet.whitespaces
         return result.trimmingCharacters(in: characterSet)
     }
