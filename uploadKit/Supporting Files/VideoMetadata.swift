@@ -9,24 +9,22 @@
 import AVFoundation
 
 // MARK: Private Metadata Properties
-class VideoMetadata {
-    // MP4 creation date (YY-MM-DD'T'HH:mm:ss format)
-    /// https://en.wikipedia.org/wiki/MP4_file_format
-    fileprivate static var mp4DateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-        formatter.timeZone = TimeZone(abbreviation: "UTC")!
-        return formatter
-    }()
-}
+// MP4 creation date (YY-MM-DD'T'HH:mm:ss format)
+/// https://en.wikipedia.org/wiki/MP4_file_format
+fileprivate let mp4DateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.locale = Locale(identifier: "en_US_POSIX")
+    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+    formatter.timeZone = TimeZone(abbreviation: "UTC")!
+    return formatter
+}()
 
 extension Array where Element == AVMetadataItem {
     // Returns the creation date (time zone info removed to retrieve the 'local' time)
     public func creationDate() -> Date? {
         let items = AVMetadataItem.metadataItems(from: self, filteredByIdentifier: .commonIdentifierCreationDate)
         if let dateCreatedStr = items.first?.stringValue,
-           let dateCreated = VideoMetadata.mp4DateFormatter.date(from: String(dateCreatedStr.prefix(19))) {
+           let dateCreated = mp4DateFormatter.date(from: String(dateCreatedStr.prefix(19))) {
             return dateCreated
         }
         return nil
