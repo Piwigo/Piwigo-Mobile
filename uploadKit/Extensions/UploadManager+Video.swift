@@ -338,7 +338,9 @@ extension UploadManager {
             let exportPreset = self.getExportPreset(for: originalVideo, and: upload)
 
             // Export new video in MP4 format w/ or w/o private metadata
-            export(videoAsset: originalVideo, with: exportPreset, for: upload)
+            Task { @UploadManagement in
+                await export(videoAsset: originalVideo, with: exportPreset, for: upload)
+            }
         }
     }
     
@@ -380,76 +382,66 @@ extension UploadManager {
         return exportPreset
     }
     
-    private func export(videoAsset: AVAsset, with exportPreset:String, for upload: Upload) {
-        autoreleasepool {
-            // Get export session
-            guard let exportSession = AVAssetExportSession(asset: videoAsset,
-                                                           presetName: exportPreset) else {
-                didPrepareVideo(for: upload, .missingAsset)
-                return
-            }
-            
-            // Set parameters
-            exportSession.outputFileType = .mp4
-            exportSession.shouldOptimizeForNetworkUse = true
-            exportSession.timeRange = CMTimeRangeMake(start: .zero, duration: .positiveInfinity)
+    private func export(videoAsset: AVAsset, with exportPreset:String, for upload: Upload) async {
+        // Get export session
+        guard let exportSession = AVAssetExportSession(asset: videoAsset,
+                                                       presetName: exportPreset) else {
+            didPrepareVideo(for: upload, .missingAsset)
+            return
+        }
+        
+        // Set parameters
+        exportSession.outputFileType = .mp4
+        exportSession.shouldOptimizeForNetworkUse = true
+        exportSession.timeRange = CMTimeRangeMake(start: .zero, duration: .positiveInfinity)
 
-            // Strips private metadata if user requested it in Settings
-            // Apple documentation: 'metadataItemFilterForSharing' removes user-identifying metadata items, such as location information and leaves only metadata releated to commerce or playback itself. For example: playback, copyright, and commercial-related metadata, such as a purchaser’s ID as set by a vendor of digital media, along with metadata either derivable from the media itself or necessary for its proper behavior are all left intact.
-            if upload.stripGPSdataOnUpload {
-                exportSession.metadataItemFilter = AVMetadataItemFilter.forSharing()
-            } else {
-                exportSession.metadata = videoAsset.metadata
-            }
+        // Strips private metadata if user requested it in Settings
+        // Apple documentation: 'metadataItemFilterForSharing' removes user-identifying metadata items, such as location information and leaves only metadata releated to commerce or playback itself. For example: playback, copyright, and commercial-related metadata, such as a purchaser’s ID as set by a vendor of digital media, along with metadata either derivable from the media itself or necessary for its proper behavior are all left intact.
+        if upload.stripGPSdataOnUpload {
+            exportSession.metadataItemFilter = AVMetadataItemFilter.forSharing()
+        } else {
+            exportSession.metadata = videoAsset.metadata
+        }
 
-    //        let commonMetadata = videoAsset.commonMetadata
-    //        debugPrint("===>> Common Metadata: \(commonMetadata)")
-    //
-    //        let allMetadata = videoAsset.metadata
-    //        debugPrint("===>> All Metadata: \(allMetadata)")
-    //
-    //        let makeItem =  AVMutableMetadataItem()
-    //        makeItem.identifier = AVMetadataIdentifier.iTunesMetadataArtist
-    //        makeItem.keySpace = AVMetadataKeySpace.iTunes
-    //        makeItem.key = AVMetadataKey.iTunesMetadataKeyArtist as NSCopying & NSObjectProtocol
-    //        makeItem.value = "Piwigo Artist" as NSCopying & NSObjectProtocol
-    //
-    //        let anotherItem =  AVMutableMetadataItem()
-    //        anotherItem.identifier = AVMetadataIdentifier.iTunesMetadataAuthor
-    //        anotherItem.keySpace = AVMetadataKeySpace.iTunes
-    //        anotherItem.key = AVMetadataKey.iTunesMetadataKeyAuthor as NSCopying & NSObjectProtocol
-    //        anotherItem.value = "Piwigo Author" as NSCopying & NSObjectProtocol
-    //
-    //        var newMetadata = commonMetadata
-    //        newMetadata.append(makeItem)
-    //        newMetadata.append(anotherItem)
-    //        debugPrint("===>> new Metadata: \(newMetadata)")
-    //        exportSession.metadata = newMetadata
+//        let commonMetadata = videoAsset.commonMetadata
+//        debugPrint("===>> Common Metadata: \(commonMetadata)")
+//
+//        let allMetadata = videoAsset.metadata
+//        debugPrint("===>> All Metadata: \(allMetadata)")
+//
+//        let makeItem =  AVMutableMetadataItem()
+//        makeItem.identifier = AVMetadataIdentifier.iTunesMetadataArtist
+//        makeItem.keySpace = AVMetadataKeySpace.iTunes
+//        makeItem.key = AVMetadataKey.iTunesMetadataKeyArtist as NSCopying & NSObjectProtocol
+//        makeItem.value = "Piwigo Artist" as NSCopying & NSObjectProtocol
+//
+//        let anotherItem =  AVMutableMetadataItem()
+//        anotherItem.identifier = AVMetadataIdentifier.iTunesMetadataAuthor
+//        anotherItem.keySpace = AVMetadataKeySpace.iTunes
+//        anotherItem.key = AVMetadataKey.iTunesMetadataKeyAuthor as NSCopying & NSObjectProtocol
+//        anotherItem.value = "Piwigo Author" as NSCopying & NSObjectProtocol
+//
+//        var newMetadata = commonMetadata
+//        newMetadata.append(makeItem)
+//        newMetadata.append(anotherItem)
+//        debugPrint("===>> new Metadata: \(newMetadata)")
+//        exportSession.metadata = newMetadata
 
-            // Prepare MIME type
-            upload.mimeType = "video/mp4"
-            upload.fileName = URL(fileURLWithPath: upload.fileName)
-                .deletingPathExtension().appendingPathExtension("MP4").lastPathComponent
+        // Prepare MIME type
+        upload.mimeType = "video/mp4"
+        upload.fileName = URL(fileURLWithPath: upload.fileName)
+            .deletingPathExtension().appendingPathExtension("MP4").lastPathComponent
 
-            // File name of final video data to be stored into Piwigo/Uploads directory
-            exportSession.outputURL = getUploadFileURL(from: upload, deleted: true)
+        // File name of final video data to be stored into Piwigo/Uploads directory
+        let outputURL = getUploadFileURL(from: upload, deleted: false)
+        exportSession.outputURL = outputURL
 
-            // Export temporary video for upload
-            exportSession.exportAsynchronously { [self] in
-                guard exportSession.status == .completed,
-                      let outputURL = exportSession.outputURL else {
-                    // Deletes temporary video file if any
-                    do {
-                        try FileManager.default.removeItem(at: exportSession.outputURL!)
-                    } catch {
-                        
-                    }
-                    // Report error
-                    self.didPrepareVideo(for: upload, .missingAsset)
-                    return
-                }
+        // Export temporary video for upload
+        do {
+            try await exportSession.export(to: outputURL, as: .mp4)
 
-                // Get MD5 checksum and MIME type, update counter
+            // Get MD5 checksum and MIME type, update counter
+            Task { @UploadManagement in
                 self.finalizeImageFile(atURL: outputURL, with: upload) {
                     // Update upload request
                     self.didPrepareVideo(for: upload, nil)
@@ -457,6 +449,13 @@ extension UploadManager {
                     self.didPrepareVideo(for: upload, error)
                 }
             }
+        }
+        catch {
+            // Deletes temporary video file if any
+            try? FileManager.default.removeItem(at: exportSession.outputURL!)
+
+            // Report error
+            self.didPrepareVideo(for: upload, .missingAsset)
         }
     }
 }
