@@ -83,7 +83,7 @@ extension PwgSession {
         // Check if the session is still active and update the server status
         // every 60 seconds or more
         let secondsSinceLastCheck = Date.timeIntervalSinceReferenceDate - (user?.lastUsed ?? 0.0)
-        if PwgSession.shared.hasNetworkConnectionChanged == false,
+        if NetworkVars.shared.hasNetworkConnectionChanged == false,
            NetworkVars.shared.applicationShouldRelogin == false,
            secondsSinceLastCheck < 60 {
             completion()
@@ -91,7 +91,7 @@ extension PwgSession {
         }
         
         // Determine if the session is still active
-        PwgSession.shared.hasNetworkConnectionChanged = false
+        NetworkVars.shared.hasNetworkConnectionChanged = false
         logger.notice("Session: starting checking… \(NetworkVars.shared.isConnectedToWiFi ? "WiFi" : "Cellular")")
         let oldToken = NetworkVars.shared.pwgToken
         PwgSession.shared.sessionGetStatus { pwgUser in

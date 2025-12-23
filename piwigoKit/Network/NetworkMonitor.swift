@@ -31,7 +31,7 @@ public final class NetworkMonitor {
     public func startMonitoring() {
         monitor.pathUpdateHandler = { path in
             // Network connection change
-            PwgSession.shared.hasNetworkConnectionChanged = true
+            NetworkVars.shared.hasNetworkConnectionChanged = true
             
             // Interface type?
             NetworkVars.shared.isConnectedToWiFi = path.usesInterfaceType(.wifi)
