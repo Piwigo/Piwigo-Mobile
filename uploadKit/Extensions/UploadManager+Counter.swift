@@ -1,21 +1,15 @@
 //
-//  UploadCounter.swift
+//  UploadManager+Counter.swift
 //  uploadKit
 //
-//  Created by Eddy Lelièvre-Berna on 08/01/2025.
+//  Created by Eddy Lelièvre-Berna on 23/12/2025.
 //  Copyright © 2025 Piwigo.org. All rights reserved.
 //
 
 import Foundation
 
-// MARK: - Counter for Updating Progress Bars and Managing Tasks
-// Actor to manage upload counters safely
-actor UploadCounterManager {
+extension UploadManager {
     
-    // Upload counters kept in memory during upload
-    // for updating progress bars and managing tasks
-    var uploadCounters = [UploadCounter]()
-
     struct UploadCounter {
         var uid: String
         var bytesSent: Int64        // Bytes sent

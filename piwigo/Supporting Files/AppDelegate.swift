@@ -365,7 +365,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         for _ in 0..<UploadVars.shared.maxNberOfUploadsPerBckgTask {
             let uploadOperation = BlockOperation {
                 // Prepare then transfer image
-                Task {
+                Task { @UploadManagement in
                     await UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
                 }
             }
@@ -380,7 +380,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // Cancel operations
             uploadQueue.cancelAllOperations()
             // Stop network monitoring
-            Task {
+            Task { @UploadManagement in
                 await self.networkMonitor?.stopMonitoring()
             }
         }
@@ -392,7 +392,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             debugPrint("••> Task completed with success.")
             task.setTaskCompleted(success: true)
             // Stop network monitoring
-            Task {
+            Task { @NetworkMonitoring in
                 await self.networkMonitor?.stopMonitoring()
             }
             // Save cached data in the main thread
@@ -478,7 +478,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //            task.setTaskCompleted(success: true)
 //            UploadVars.shared.isExecutingBGContinuedUploadTask = false
 //            // Stop network monitoring
-//            Task {
+//            Task { @NetworkMonitoring in
 //                await self.networkMonitor?.stopMonitoring()
 //            }
 //        }
@@ -490,7 +490,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //            task.setTaskCompleted(success: true)
 //            UploadVars.shared.isExecutingBGContinuedUploadTask = false
 //            // Stop network monitoring
-//            Task {
+//            Task { @NetworkMonitoring in
 //                await self.networkMonitor?.stopMonitoring()
 //            }
 //            // Save cached data in the main thread

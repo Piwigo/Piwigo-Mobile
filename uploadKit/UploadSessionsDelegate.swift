@@ -15,14 +15,11 @@ public final class UploadSessionsDelegate: NSObject, Sendable {
     // Logs networking activities
     /// sudo log collect --device --start '2025-01-11 15:00:00' --output piwigo.logarchive
     static let logger = Logger(subsystem: "org.piwigo.uploadKit", category: String(describing: UploadSessionsDelegate.self))
-
+    
     // Singleton
     public static let shared = UploadSessionsDelegate()
     
-    // Use actor for thread-safe counter management
-    private let counterManager = UploadCounterManager()
-
-
+    
     // MARK: - Cancel Tasks Related to a Specific Upload Request
     /// This method cancels the remaining tasks when the upload is completed.
     func cancelTasksOfUpload(withID uploadIDStr:String, exceptedTaskID: Int) -> Void {
@@ -162,21 +159,21 @@ extension UploadSessionsDelegate: URLSessionTaskDelegate {
         }
 
         // Update counter
-        Task {
+        Task { @UploadManagement in
             // Add chunk to counter if needed (e.g. situation where the app is relauched)
-            await addChunk(chunk, toCounterWithID: identifier)
+            UploadManager.shared.addChunk(chunk, toCounterWithID: identifier)
             
             // Update UploadQueue cell and button shown in root album (or default album)
-            await addBytes(bytesSent, toCounterWithID: identifier)
+            UploadManager.shared.addBytes(bytesSent, toCounterWithID: identifier)
             
             // Update progress bar
-            let progress = await getProgress(forCounterWithID: identifier)
+            let progress = UploadManager.shared.getProgress(forCounterWithID: identifier)
             DispatchQueue.main.async {
                 let uploadInfo: [String : Any] = ["localIdentifier" : identifier,
                                                   "progressFraction" : progress]
                 NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
             }
-
+            
             let numberFormatter = NumberFormatter()
             numberFormatter.numberStyle = NumberFormatter.Style.none
             numberFormatter.usesGroupingSeparator = true
@@ -202,8 +199,8 @@ extension UploadSessionsDelegate: URLSessionTaskDelegate {
         }
 
         // Add chunk to counter if needed (e.g. situation where the app is relauched)
-        Task {
-            await addChunk(chunk, toCounterWithID: identifier)
+        Task { @UploadManagement in
+            UploadManager.shared.addChunk(chunk, toCounterWithID: identifier)
         }
 
         // The below code updates the stored cookie with the pwg_id returned by the server.
@@ -306,40 +303,5 @@ extension UploadSessionsDelegate: URLSessionDataDelegate {
             UploadSessionsDelegate.logger.fault("Unexpected session identifier.")
             preconditionFailure("Unexpected session identifier.")
         }
-    }
-}
-
-
-// MARK: - Counter for Updating Progress Bars and Managing Tasks
-extension UploadSessionsDelegate {
-
-    // Initialise a counter before resuming upload tasks
-    func initCounter(withID identifier: String, totalBytes: Int64 = 0) async {
-        await counterManager.initCounter(withID: identifier, totalBytes: totalBytes)
-    }
-    
-    // Count how many bytes were sent
-    func addBytes(_ bytes: Int64, toCounterWithID identifier: String) async {
-        await counterManager.addBytes(bytes, toCounterWithID: identifier)
-    }
-
-    // Remember which chunks were managed
-    func addChunk(_ chunk: Int, toCounterWithID identifier: String) async {
-        await counterManager.addChunk(chunk, toCounterWithID: identifier)
-    }
-    
-    // Return chunks already managed
-    func getChunks(forCounterWithID identifier: String) async -> Set<Int> {
-        await counterManager.getChunks(forCounterWithID: identifier)
-    }
-    
-    // Returns progress value
-    func getProgress(forCounterWithID identifier: String) async -> Float {
-        await counterManager.getProgress(forCounterWithID: identifier)
-    }
-    
-    // Deallocate a counter upon upload completion
-    func removeCounter(withID identifier: String) async {
-        await counterManager.removeCounter(withID: identifier)
     }
 }

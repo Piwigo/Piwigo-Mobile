@@ -344,7 +344,7 @@
 		AD6E6C4C2E2BF11800600E5A /* UploadToUploadMigrationPolicy_0J_to_0K.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6E6C4B2E2BF11800600E5A /* UploadToUploadMigrationPolicy_0J_to_0K.swift */; };
 		AD6E6C4E2E2C001F00600E5A /* PdfDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6E6C4D2E2C001F00600E5A /* PdfDetailViewController.swift */; };
 		AD6F39942EF81CAC00CE56F0 /* UploadSessionsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6F39932EF81CAC00CE56F0 /* UploadSessionsDelegate.swift */; };
-		AD6F39952EF838C400CE56F0 /* UploadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD67397A2D2EF65D00796243 /* UploadCounter.swift */; };
+		AD6F39992EFAEBE400CE56F0 /* UploadManager+Counter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6F39982EFAEBE400CE56F0 /* UploadManager+Counter.swift */; };
 		AD6FD1FA24BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */; };
 		AD6FD1FC24BF0321009AA3B7 /* UploadSwitchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6FD1FB24BF0321009AA3B7 /* UploadSwitchViewController.swift */; };
 		AD7000CA2E425159007B2791 /* AlbumHeaderReusableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD7000C92E425159007B2791 /* AlbumHeaderReusableView.xib */; };
@@ -1058,7 +1058,6 @@
 		AD64ED2B27946C2500687793 /* AlbumTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumTableViewCell.swift; sourceTree = "<group>"; };
 		AD659805297D98BB002A61D8 /* ImageDownload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownload.swift; sourceTree = "<group>"; };
 		AD665ADA2DC3BD9A00AB085F /* UploadRenameAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadRenameAction.swift; sourceTree = "<group>"; };
-		AD67397A2D2EF65D00796243 /* UploadCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadCounter.swift; sourceTree = "<group>"; };
 		AD673C192A4B80B40080BC0B /* PwgSession+Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PwgSession+Session.swift"; sourceTree = "<group>"; };
 		AD673C1B2A4B81C60080BC0B /* PwgSession+Images.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PwgSession+Images.swift"; sourceTree = "<group>"; };
 		AD673C1D2A4B83170080BC0B /* PwgSession+Reflection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PwgSession+Reflection.swift"; sourceTree = "<group>"; };
@@ -1094,6 +1093,7 @@
 		AD6E6C4B2E2BF11800600E5A /* UploadToUploadMigrationPolicy_0J_to_0K.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadToUploadMigrationPolicy_0J_to_0K.swift; sourceTree = "<group>"; };
 		AD6E6C4D2E2C001F00600E5A /* PdfDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PdfDetailViewController.swift; sourceTree = "<group>"; };
 		AD6F39932EF81CAC00CE56F0 /* UploadSessionsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSessionsDelegate.swift; sourceTree = "<group>"; };
+		AD6F39982EFAEBE400CE56F0 /* UploadManager+Counter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadManager+Counter.swift"; sourceTree = "<group>"; };
 		AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UploadSwitchViewController.storyboard; sourceTree = "<group>"; };
 		AD6FD1FB24BF0321009AA3B7 /* UploadSwitchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSwitchViewController.swift; sourceTree = "<group>"; };
 		AD7000C92E425159007B2791 /* AlbumHeaderReusableView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AlbumHeaderReusableView.xib; sourceTree = "<group>"; };
@@ -1864,7 +1864,6 @@
 			children = (
 				ADC0A1452E55FD5D001E62F5 /* Constants.swift */,
 				AD3335442666CA46000A1487 /* UploadSizes.swift */,
-				AD67397A2D2EF65D00796243 /* UploadCounter.swift */,
 				AD0B6ACA268A2187007DEE70 /* UploadSessions.swift */,
 				AD6F39932EF81CAC00CE56F0 /* UploadSessionsDelegate.swift */,
 				AD0B6ACC268A218F007DEE70 /* UploadManager.swift */,
@@ -2290,6 +2289,7 @@
 				AD0B6AD2268A21AD007DEE70 /* UploadManager+Transfer.swift */,
 				AD0B6AD4268A21B7007DEE70 /* UploadManager+Finisher.swift */,
 				AD0B6AD6268A21C0007DEE70 /* UploadManager+Auto.swift */,
+				AD6F39982EFAEBE400CE56F0 /* UploadManager+Counter.swift */,
 				AD0B6AC8268A2166007DEE70 /* UploadManager+Utilities.swift */,
 			);
 			path = Extensions;
@@ -3879,7 +3879,7 @@
 				AD2C62502A4898A200671582 /* UploadManager+Utilities.swift in Sources */,
 				AD2C62522A4898A200671582 /* UploadManager+Video.swift in Sources */,
 				AD2C624C2A4898A200671582 /* UploadSessions.swift in Sources */,
-				AD6F39952EF838C400CE56F0 /* UploadCounter.swift in Sources */,
+				AD6F39992EFAEBE400CE56F0 /* UploadManager+Counter.swift in Sources */,
 				AD2C62542A4898A200671582 /* VideoMetadata.swift in Sources */,
 				ADC0A1462E55FD5D001E62F5 /* Constants.swift in Sources */,
 			);

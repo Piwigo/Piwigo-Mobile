@@ -177,10 +177,8 @@ extension UploadManager {
     
     func transfertImage(for upload: Upload) {
         // Initialise or reset counter of progress bar in case we repeat the transfer
-        Task {
-            await UploadSessionsDelegate.shared.initCounter(withID: upload.localIdentifier)
-        }
-
+        initCounter(withID: upload.localIdentifier)
+        
         // Choose recent method when called by:
         /// - admins as from Piwigo server 11 or previous versions with the uploadAsync plugin installed.
         /// - Community users as from Piwigo 12.
@@ -258,9 +256,7 @@ extension UploadManager {
         // Prepare first chunk
         PwgSession.checkSession(ofUser: upload.user) {
             // Set total number of bytes to upload
-            Task {
-                await UploadSessionsDelegate.shared.initCounter(withID: upload.localIdentifier, totalBytes: Int64(imageData.count))
-            }
+            self.initCounter(withID: upload.localIdentifier, totalBytes: Int64(imageData.count))
             // Start uploading
             self.sendInForeground(chunk: 0, of: chunks, for: upload)
         } failure: { error in
@@ -353,9 +349,7 @@ extension UploadManager {
         // Remember the total number of bytes to upload
         if chunk+1 < chunks {
             let totalBytes = Int64(imageData.count) + (bytesToSend - Int64(chunkSize)) * Int64(chunks)
-            Task {
-                await UploadSessionsDelegate.shared.initCounter(withID: upload.localIdentifier, totalBytes: totalBytes)
-            }
+            initCounter(withID: upload.localIdentifier, totalBytes: totalBytes)
         }
 
         // Resume task
@@ -671,22 +665,20 @@ extension UploadManager {
         }
         
         // Remember the total number of bytes to upload and that this chunk is treated
-        Task {
-            if chunks == 1 {
-                // Only one chunk to upload
-                await UploadSessionsDelegate.shared.initCounter(withID: upload.localIdentifier, totalBytes: bytesToSend)
-            } else {
-                // Several chunks to upload
-                let totalBytes = Int64(imageData.count) + (bytesToSend - Int64(chunkSize)) * Int64(chunks)
-                await UploadSessionsDelegate.shared.initCounter(withID: upload.localIdentifier, totalBytes: totalBytes)
-            }
-            await UploadSessionsDelegate.shared.addChunk(chunk, toCounterWithID: upload.localIdentifier)
+        if chunks == 1 {
+            // Only one chunk to upload
+            initCounter(withID: upload.localIdentifier, totalBytes: bytesToSend)
+        } else {
+            // Several chunks to upload
+            let totalBytes = Int64(imageData.count) + (bytesToSend - Int64(chunkSize)) * Int64(chunks)
+            initCounter(withID: upload.localIdentifier, totalBytes: totalBytes)
         }
-
+        addChunk(chunk, toCounterWithID: upload.localIdentifier)
+        
         // Resume task of first chunk
         task.resume()
         UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | Task \(task.taskIdentifier) resumed (\(chunk+1)/\(chunks))")
-
+        
         // Release memory
         imageData.removeAll()
     }
@@ -785,13 +777,11 @@ extension UploadManager {
                 }
                 
                 // Remember the total number of bytes to upload and that this chunk is treated
-                Task {
-                    if chunk+1 < chunks {
-                        let totalBytes = Int64(imageData.count) + (bytesToSend - Int64(chunkSize)) * Int64(chunks)
-                        await UploadSessionsDelegate.shared.initCounter(withID: upload.localIdentifier, totalBytes: totalBytes)
-                    }
-                    await UploadSessionsDelegate.shared.addChunk(chunk, toCounterWithID: upload.localIdentifier)
+                if chunk+1 < chunks {
+                    let totalBytes = Int64(imageData.count) + (bytesToSend - Int64(chunkSize)) * Int64(chunks)
+                    initCounter(withID: upload.localIdentifier, totalBytes: totalBytes)
                 }
+                addChunk(chunk, toCounterWithID: upload.localIdentifier)
 
                 // Resume task
                 task.resume()
@@ -1037,30 +1027,28 @@ extension UploadManager {
                 // Still some work to do?
                 if chunksToUpload.isEmpty == false {
                     // Determine how many tasks are running or scheduled
+                    let alreadyManagedChunks = getChunks(forCounterWithID: upload.localIdentifier)
                     bckgSession.getTasksWithCompletionHandler { _, uploadTasks, _ in
-                        Task {
-                            // Get list of active tasks
-                            let activeChunks = Set(uploadTasks.compactMap({ $0.originalRequest })
-                                .filter({ $0.value(forHTTPHeaderField: pwgHTTPuploadID) == objectURIstr })
-                                .compactMap({ $0.value(forHTTPHeaderField: pwgHTTPchunk )}).compactMap({ Int($0) }))
-                            
-                            // Get list of chunks being treated (might be only one or none when retrying)
-                            let treatedChunks = await UploadSessionsDelegate.shared.getChunks(forCounterWithID: upload.localIdentifier)
-                                .subtracting(uploadedChunks)
-                            
-                            // Determine (roughly) how many tasks are running
-                            let nberActiveTasks = activeChunks.union(treatedChunks).count
-                            
-                            // Launch up to 4 tasks in parallel
-                            let chunksToTreat = chunksToUpload.subtracting(activeChunks).subtracting(treatedChunks).sorted()
-                            let chunksToResume = Set(chunksToTreat[0..<min(chunksToTreat.count, max(0, 4 - nberActiveTasks))])
-                            let uploadID = upload.objectID
-                            Task { @UploadManagement in
-                                UploadManager.logger.notice("\(md5sum, privacy: .public) | \(chunksToResume) i.e. \(chunksToResume.count) chunk(s) to resume")
-                                if chunksToResume.isEmpty == false,
-                                   let uploadToPass = try? self.uploadBckgContext.existingObject(with: uploadID) as? Upload {
-                                    self.sendInBackground(chunkSet: chunksToResume, of: chunks, for: uploadToPass)
-                                }
+                        // Get list of active tasks
+                        let activeChunks = Set(uploadTasks.compactMap({ $0.originalRequest })
+                            .filter({ $0.value(forHTTPHeaderField: pwgHTTPuploadID) == objectURIstr })
+                            .compactMap({ $0.value(forHTTPHeaderField: pwgHTTPchunk )}).compactMap({ Int($0) }))
+                        
+                        // Get list of chunks being treated (might be only one or none when retrying)
+                        let treatedChunks = alreadyManagedChunks.subtracting(uploadedChunks)
+                        
+                        // Determine (roughly) how many tasks are running
+                        let nberActiveTasks = activeChunks.union(treatedChunks).count
+                        
+                        // Launch up to 4 tasks in parallel
+                        let chunksToTreat = chunksToUpload.subtracting(activeChunks).subtracting(treatedChunks).sorted()
+                        let chunksToResume = Set(chunksToTreat[0..<min(chunksToTreat.count, max(0, 4 - nberActiveTasks))])
+                        let uploadID = upload.objectID
+                        Task { @UploadManagement in
+                            UploadManager.logger.notice("\(md5sum, privacy: .public) | \(chunksToResume) i.e. \(chunksToResume.count) chunk(s) to resume")
+                            if chunksToResume.isEmpty == false,
+                               let uploadToPass = try? self.uploadBckgContext.existingObject(with: uploadID) as? Upload {
+                                self.sendInBackground(chunkSet: chunksToResume, of: chunks, for: uploadToPass)
                             }
                         }
                     }
@@ -1131,9 +1119,7 @@ extension UploadManager {
             deleteFilesInUploadsDirectory(withPrefix: imageFile)
 
             // Clear bytes and chunk counter
-            Task {
-                await UploadSessionsDelegate.shared.removeCounter(withID: upload.localIdentifier)
-            }
+            removeCounter(withID: upload.localIdentifier)
         }
         catch {
             // Error type?

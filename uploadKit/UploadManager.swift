@@ -60,6 +60,10 @@ public final class UploadManager: NSObject {
         return numberFormatter
     }()
     
+    // Upload counters kept in memory during upload
+    // for updating progress bars and managing tasks
+    var uploadCounters = [UploadCounter]()
+    
     // Constants used to manage foreground tasks
     let maxNberPreparedUploads = 10             // Maximum number of images prepared in advance
     let maxNberOfTransfers = 1                  // Maximum number of transfers executed in parallel
