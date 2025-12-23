@@ -21,7 +21,7 @@ class ImageHeaderReusableView: UICollectionReusableView
     var section = 0
     private var locationHash = Int.zero
     
-    weak var imageHeaderDelegate: ImageHeaderDelegate?
+    weak var imageHeaderDelegate: (any ImageHeaderDelegate)?
 
     @IBOutlet weak var albumDesc: UITextView!
     @IBOutlet weak var albumDescHeight: NSLayoutConstraint!

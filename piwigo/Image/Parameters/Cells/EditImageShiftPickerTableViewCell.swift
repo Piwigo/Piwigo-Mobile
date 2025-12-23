@@ -17,7 +17,7 @@ import piwigoKit
 
 class EditImageShiftPickerTableViewCell: UITableViewCell
 {
-    weak var delegate: EditImageShiftPickerDelegate?
+    weak var delegate: (any EditImageShiftPickerDelegate)?
 
     private var pickerRefDate = Date()
     @IBOutlet private weak var addRemoveTimeButton: UISegmentedControl!

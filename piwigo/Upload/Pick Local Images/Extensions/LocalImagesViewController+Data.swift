@@ -491,7 +491,7 @@ extension LocalImagesViewController
 // MARK: - Uploads Provider NSFetchedResultsControllerDelegate
 extension LocalImagesViewController: NSFetchedResultsControllerDelegate
 {
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+    func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 
         switch type {
         case .insert:
@@ -559,7 +559,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
         }
     }
 
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
         debugPrint("••• LocalImagesViewController controller:didChangeContent...")
         // Update navigation bar
         updateActionButton()

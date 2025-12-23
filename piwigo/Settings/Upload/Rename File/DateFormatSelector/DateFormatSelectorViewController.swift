@@ -24,7 +24,7 @@ class DateFormatSelectorViewController: UIViewController {
         case count
     }
     
-    weak var delegate: SelectDateFormatDelegate?
+    weak var delegate: (any SelectDateFormatDelegate)?
     
     @IBOutlet weak var tableView: UITableView!
     

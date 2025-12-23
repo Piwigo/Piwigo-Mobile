@@ -79,7 +79,7 @@ class ShareMetadataViewController: UIViewController {
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
         // Reload the tableview on orientation change, to match the new width of the table.

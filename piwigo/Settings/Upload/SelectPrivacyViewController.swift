@@ -17,7 +17,7 @@ protocol SelectPrivacyDelegate: NSObjectProtocol {
 
 class SelectPrivacyViewController: UIViewController {
     
-    weak var delegate: SelectPrivacyDelegate?
+    weak var delegate: (any SelectPrivacyDelegate)?
 
     @IBOutlet var privacyTableView: UITableView!
     

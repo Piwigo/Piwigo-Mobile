@@ -21,7 +21,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
     var section = 0
     private var locationHash = Int.zero
 
-    @objc weak var headerDelegate: LocalImagesHeaderDelegate?
+    @objc weak var headerDelegate: (any LocalImagesHeaderDelegate)?
     
     @IBOutlet weak var mainLabel: UILabel!
     @IBOutlet weak var detailLabel: UILabel!

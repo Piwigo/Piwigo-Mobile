@@ -17,7 +17,7 @@ protocol UploadPhotoSizeDelegate: NSObjectProtocol {
 
 class UploadPhotoSizeViewController: UIViewController {
 
-    weak var delegate: UploadPhotoSizeDelegate?
+    weak var delegate: (any UploadPhotoSizeDelegate)?
     
     @IBOutlet var tableView: UITableView!
     

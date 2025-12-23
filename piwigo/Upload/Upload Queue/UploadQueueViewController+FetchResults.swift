@@ -15,7 +15,7 @@ import uploadKit
 // MARK: - Uploads Provider NSFetchedResultsControllerDelegate
 extension UploadQueueViewController: NSFetchedResultsControllerDelegate
 {
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+    func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>,
                     didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
         // Expected controller?
         guard controller == uploads else { return }

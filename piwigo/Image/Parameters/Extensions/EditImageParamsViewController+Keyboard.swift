@@ -20,7 +20,7 @@ extension EditImageParamsViewController
         else { return }
         
         // Calc intersection between the keyboard's frame and the view's bounds
-        let toCoordinateSpace: UICoordinateSpace = parentVC.view
+        let toCoordinateSpace: any UICoordinateSpace = parentVC.view
         let convertedViewFrame = view.convert(view.bounds, to: toCoordinateSpace)
         let fromCoordinateSpace = window.screen.coordinateSpace
         let convertedKeyboardFrameEnd = fromCoordinateSpace.convert(kbInfo, to: toCoordinateSpace)
@@ -41,7 +41,7 @@ extension EditImageParamsViewController
         // If necessary, scroll the table so that the cell remains visible
         if view.traitCollection.userInterfaceIdiom == .phone,
            let cell = editImageParamsTableView.cellForRow(at: editedRow) {
-            let toCoordinateSpace: UICoordinateSpace = view
+            let toCoordinateSpace: any UICoordinateSpace = view
             let convertedCellFrame = cell.convert(cell.bounds, to: toCoordinateSpace)
             let barHeight = convertedCellFrame.origin.y - cell.frame.origin.y   // status & navigation bars
             let availableHeight = editImageParamsTableView.bounds.height - barHeight - kbInfo.height

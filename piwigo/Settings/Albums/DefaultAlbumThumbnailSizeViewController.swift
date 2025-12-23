@@ -17,7 +17,7 @@ protocol DefaultAlbumThumbnailSizeDelegate: NSObjectProtocol {
 
 class DefaultAlbumThumbnailSizeViewController: UIViewController {
     
-    weak var delegate: DefaultAlbumThumbnailSizeDelegate?
+    weak var delegate: (any DefaultAlbumThumbnailSizeDelegate)?
     private lazy var currentThumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
     private lazy var optimumSize = AlbumUtilities.optimumAlbumThumbnailSizeForDevice()
     private lazy var scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))

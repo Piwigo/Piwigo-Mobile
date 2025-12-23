@@ -16,7 +16,7 @@ protocol LockOptionsDelegate: NSObjectProtocol {
 
 class LockOptionsViewController: UIViewController {
     
-    weak var delegate: LockOptionsDelegate?
+    weak var delegate: (any LockOptionsDelegate)?
     
     var context = LAContext()
     var contextErrorMsg = ""

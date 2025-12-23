@@ -45,7 +45,7 @@ class SettingsViewController: UIViewController {
         case author
     }
     
-    weak var settingsDelegate: ChangedSettingsDelegate?
+    weak var settingsDelegate: (any ChangedSettingsDelegate)?
     
     @IBOutlet var settingsTableView: UITableView!
     
@@ -452,7 +452,7 @@ class SettingsViewController: UIViewController {
 
 // MARK: - MFMailComposeViewControllerDelegate
 extension SettingsViewController: MFMailComposeViewControllerDelegate {
-    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: (any Error)?) {
         // Check the result or perform other tasks.
 
         // Dismiss the mail compose view controller.

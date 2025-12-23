@@ -14,7 +14,7 @@ protocol VideoControlsDelegate: NSObjectProtocol {
 
 class VideoControlsView: UIVisualEffectView {
     
-    weak var videoControlsDelegate: VideoControlsDelegate?
+    weak var videoControlsDelegate: (any VideoControlsDelegate)?
     
     @IBOutlet weak var startLabel: UILabel!
     @IBOutlet weak var timeSlider: UISlider!

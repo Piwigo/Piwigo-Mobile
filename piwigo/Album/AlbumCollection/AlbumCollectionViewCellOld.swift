@@ -19,7 +19,7 @@ protocol PushAlbumCollectionViewCellDelegate: NSObjectProtocol {
 
 class AlbumCollectionViewCellOld: UICollectionViewCell
 {
-    weak var pushAlbumDelegate: PushAlbumCollectionViewCellDelegate?
+    weak var pushAlbumDelegate: (any PushAlbumCollectionViewCellDelegate)?
     
     var albumData: Album? {
         didSet {

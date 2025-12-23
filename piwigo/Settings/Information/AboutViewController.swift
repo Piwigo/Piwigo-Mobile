@@ -67,7 +67,7 @@ class AboutViewController: UIViewController, UITextViewDelegate {
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
         // Update Piwigo authors label

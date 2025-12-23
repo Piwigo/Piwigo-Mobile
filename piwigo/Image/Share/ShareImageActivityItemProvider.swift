@@ -31,7 +31,7 @@ protocol ShareImageActivityItemProviderDelegate: NSObjectProtocol {
 class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendable {
     
     // MARK: - Initialisation
-    weak var delegate: ShareImageActivityItemProviderDelegate?
+    weak var delegate: (any ShareImageActivityItemProviderDelegate)?
 
     private var imageData: Image                        // Core Data image
     private var alertTitle: String?                     // Used if task cancels or fails
@@ -365,7 +365,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
 
         // Inform user in case of error after dismissing activity view controller
         if let alertTitle = alertTitle {
-            if delegate?.responds(to: #selector(ShareImageActivityItemProviderDelegate.showError(withTitle:andMessage:))) ?? false {
+            if delegate?.responds(to: #selector((any ShareImageActivityItemProviderDelegate).showError(withTitle:andMessage:))) ?? false {
                 delegate?.showError(withTitle: alertTitle, andMessage: alertMessage)
             }
         }

@@ -17,7 +17,7 @@ protocol ImageDetailDelegate: NSObjectProtocol {
 
 class ImageViewController: UIViewController {
     
-    weak var imgDetailDelegate: ImageDetailDelegate?
+    weak var imgDetailDelegate: (any ImageDetailDelegate)?
     var images: NSFetchedResultsController<Image>!
     var categoryId = Int32.zero
     var indexPath = IndexPath(item: 0, section: 0)
@@ -173,7 +173,7 @@ class ImageViewController: UIViewController {
         setEnableStateOfButtons(imageData.fileSize != Int64.zero)
     }
 
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
         coordinator.animate(alongsideTransition: { [self] _ in

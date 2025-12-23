@@ -17,7 +17,7 @@ protocol DefaultImageSizeDelegate: NSObjectProtocol {
 
 class DefaultImageSizeViewController: UIViewController {
     
-    weak var delegate: DefaultImageSizeDelegate?
+    weak var delegate: (any DefaultImageSizeDelegate)?
     private lazy var currentImageSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
     private lazy var optimumSize = ImageUtilities.optimumImageSizeForDevice()
     private lazy var scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))

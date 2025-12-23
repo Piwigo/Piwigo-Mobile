@@ -309,7 +309,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
                 let imageAsset = self.fetchedImages[index]
                 PHPhotoLibrary.shared().performChanges {
                     // Delete images from the library
-                    PHAssetChangeRequest.deleteAssets([imageAsset] as NSFastEnumeration)
+                    PHAssetChangeRequest.deleteAssets([imageAsset] as (any NSFastEnumeration))
                 }
             }
         }

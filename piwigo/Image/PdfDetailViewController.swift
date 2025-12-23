@@ -20,7 +20,7 @@ protocol PdfDetailDelegate: NSObjectProtocol {
 
 class PdfDetailViewController: UIViewController
 {
-    weak var pdfDetailDelegate: PdfDetailDelegate?
+    weak var pdfDetailDelegate: (any PdfDetailDelegate)?
     
     var indexPath = IndexPath(item: 0, section: 0)
     var imageData: Image! {
@@ -82,7 +82,7 @@ class PdfDetailViewController: UIViewController
         self.setExternalPdfView()
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
         // Get content position

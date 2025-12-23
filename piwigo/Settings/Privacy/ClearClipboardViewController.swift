@@ -84,7 +84,7 @@ protocol ClearClipboardDelegate: NSObjectProtocol {
 
 class ClearClipboardViewController: UIViewController {
     
-    weak var delegate: ClearClipboardDelegate?
+    weak var delegate: (any ClearClipboardDelegate)?
     
     @IBOutlet var delayTableView: UITableView!
     

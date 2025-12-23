@@ -17,7 +17,7 @@ protocol UploadVideoSizeDelegate: NSObjectProtocol {
 
 class UploadVideoSizeViewController: UIViewController {
 
-    weak var delegate: UploadVideoSizeDelegate?
+    weak var delegate: (any UploadVideoSizeDelegate)?
     
     @IBOutlet var tableView: UITableView!
     

@@ -97,7 +97,7 @@ class ImageDetailViewController: UIViewController
         self.setExternalImageView()
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
         // Animate change of view size and reposition image

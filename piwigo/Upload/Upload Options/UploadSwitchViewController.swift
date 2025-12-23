@@ -18,7 +18,7 @@ import uploadKit
 
 class UploadSwitchViewController: UIViewController {
     
-    weak var delegate: UploadSwitchDelegate?
+    weak var delegate: (any UploadSwitchDelegate)?
 
     private var cancelBarButton: UIBarButtonItem?
     private var uploadBarButton: UIBarButtonItem?

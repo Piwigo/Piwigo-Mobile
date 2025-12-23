@@ -475,7 +475,7 @@ class LoginUtilities: NSObject {
     }
     
     @MainActor
-    static func getHttpCredentialsAlert(textFieldDelegate: UITextFieldDelegate?,
+    static func getHttpCredentialsAlert(textFieldDelegate: (any UITextFieldDelegate)?,
                                         username: String, password: String,
                                         cancelAction: @escaping ((UIAlertAction) -> Void),
                                         loginAction: @escaping ((UIAlertAction) -> Void)) -> UIAlertController {

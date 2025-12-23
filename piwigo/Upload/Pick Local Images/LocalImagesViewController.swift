@@ -85,7 +85,7 @@ class LocalImagesViewController: UIViewController
     // MARK: - View
     var categoryId: Int32 = AlbumVars.shared.defaultCategory
     var categoryCurrentCounter: Int64 = UploadVars.shared.categoryCounterInit
-    weak var albumDelegate: AlbumViewControllerDelegate?
+    weak var albumDelegate: (any AlbumViewControllerDelegate)?
     var imageCollectionId: String = String()
     var imageCollectionName: String = String()
     
@@ -247,7 +247,7 @@ class LocalImagesViewController: UIViewController
         }
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
         // Save position of collection view

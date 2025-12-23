@@ -201,7 +201,7 @@ class UploadImageTableViewCell: UITableViewCell {
         PHImageManager.default().requestImage(for: imageAsset, targetSize: squareSize, contentMode: .aspectFill, options: cropToSquare, resultHandler: { result, info in
             DispatchQueue.main.async {
                 guard let image = result else {
-                    if let error = info?[PHImageErrorKey] as? Error {
+                    if let error = info?[PHImageErrorKey] as? (any Error) {
                         debugPrint("••> Error : \(error.localizedDescription)")
                     }
                     self.changeCellImageIfNeeded(withImage: pwgImageType.image.placeHolder)

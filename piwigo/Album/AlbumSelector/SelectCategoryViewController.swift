@@ -34,9 +34,9 @@ protocol SelectCategoryImageRemovedDelegate: NSObjectProtocol {
 
 class SelectCategoryViewController: UIViewController {
 
-    weak var delegate: SelectCategoryDelegate?
-    weak var imageCopiedDelegate: SelectCategoryImageCopiedDelegate?
-    weak var imageRemovedDelegate: SelectCategoryImageRemovedDelegate?
+    weak var delegate: (any SelectCategoryDelegate)?
+    weak var imageCopiedDelegate: (any SelectCategoryImageCopiedDelegate)?
+    weak var imageRemovedDelegate: (any SelectCategoryImageRemovedDelegate)?
 
     var wantedAction: pwgCategorySelectAction = .none  // Action to perform after category selection
     var selectedCategoryId = Int32.min
@@ -409,7 +409,7 @@ class SelectCategoryViewController: UIViewController {
         }
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
         // Reload the tableview on orientation change, to match the new width of the table.

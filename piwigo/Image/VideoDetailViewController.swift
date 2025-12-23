@@ -92,7 +92,7 @@ class VideoDetailViewController: UIViewController
         self.configExternalVideoViews()
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
         // Animate change of view size and reposition video
@@ -467,7 +467,7 @@ extension VideoDetailViewController: VideoControlsDelegate
 extension VideoDetailViewController: VideoDetailDelegate
 {
     @MainActor
-    func config(currentTime: TimeInterval, duration: TimeInterval, delegate: VideoControlsDelegate) {
+    func config(currentTime: TimeInterval, duration: TimeInterval, delegate: any VideoControlsDelegate) {
         videoControls?.config(currentTime: currentTime, duration: duration)
     }
     

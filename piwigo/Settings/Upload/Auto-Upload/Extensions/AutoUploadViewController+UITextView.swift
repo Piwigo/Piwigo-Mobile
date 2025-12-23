@@ -41,7 +41,7 @@ extension AutoUploadViewController
 
         // Calc intersection between the keyboard's frame and the view's bounds
         let fromCoordinateSpace = window.screen.coordinateSpace
-        let toCoordinateSpace: UICoordinateSpace = autoUploadTableView
+        let toCoordinateSpace: any UICoordinateSpace = autoUploadTableView
         let convertedKeyboardFrameEnd = fromCoordinateSpace.convert(kbInfo, to: toCoordinateSpace)
         let viewIntersection = autoUploadTableView.bounds.intersection(convertedKeyboardFrameEnd)
 

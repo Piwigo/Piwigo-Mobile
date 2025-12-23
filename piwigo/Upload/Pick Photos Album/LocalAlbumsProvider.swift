@@ -229,7 +229,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
      A delegate to give consumers a chance to update
      the user interface when content changes.
      */
-    @objc weak var fetchedLocalAlbumsDelegate: LocalAlbumsProviderDelegate?
+    @objc weak var fetchedLocalAlbumsDelegate: (any LocalAlbumsProviderDelegate)?
     
     func photoLibraryDidChange(_ changeInstance: PHChange) {
         // Check each of the fetches for changes,

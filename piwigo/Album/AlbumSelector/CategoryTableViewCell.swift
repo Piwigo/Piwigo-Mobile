@@ -21,7 +21,7 @@ protocol CategoryCellDelegate: NSObjectProtocol {
 
 class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
     
-    weak var delegate: CategoryCellDelegate?
+    weak var delegate: (any CategoryCellDelegate)?
     
     @IBOutlet weak var albumLabel: UILabel!
     @IBOutlet weak var leadingConstraint: NSLayoutConstraint!

@@ -13,7 +13,7 @@ extension AlbumViewController: UIViewControllerTransitioningDelegate {
 
     public func animationController(forPresented presented: UIViewController,
                                     presenting: UIViewController,
-                                    source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+                                    source: UIViewController) -> (any UIViewControllerAnimatedTransitioning)? {
         guard let albumViewController = presenting.children.last as? AlbumViewController,
               let imageNavViewController = presented as? UINavigationController,
               let albumViewSnapshot = self.albumViewSnapshot,
@@ -30,7 +30,7 @@ extension AlbumViewController: UIViewControllerTransitioningDelegate {
         return imageAnimator
     }
 
-    public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    public func animationController(forDismissed dismissed: UIViewController) -> (any UIViewControllerAnimatedTransitioning)? {
         guard let imageNavViewController = dismissed as? UINavigationController,
               let albumViewSnapshot = self.albumViewSnapshot,
               let cellImageViewSnapshot = self.cellImageViewSnapshot,

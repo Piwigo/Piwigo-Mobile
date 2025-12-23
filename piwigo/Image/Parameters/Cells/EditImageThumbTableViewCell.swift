@@ -18,7 +18,7 @@ import piwigoKit
 
 class EditImageThumbTableViewCell: UITableViewCell, UICollectionViewDelegate
 {
-    weak var delegate: EditImageThumbnailCellDelegate?
+    weak var delegate: (any EditImageThumbnailCellDelegate)?
     
     @IBOutlet private var editImageThumbCollectionView: UICollectionView!
 

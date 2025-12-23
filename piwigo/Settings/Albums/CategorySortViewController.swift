@@ -17,7 +17,7 @@ protocol CategorySortDelegate: NSObjectProtocol {
 
 class CategorySortViewController: UIViewController {
     
-    weak var sortDelegate: CategorySortDelegate?
+    weak var sortDelegate: (any CategorySortDelegate)?
     private lazy var currentDefaultSort = AlbumVars.shared.defaultSort
     
     @IBOutlet var sortSelectTableView: UITableView!

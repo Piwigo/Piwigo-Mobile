@@ -22,7 +22,7 @@ class EditImageParamsViewController: UIViewController
 {
     var images = [Image]()
     var hasTagCreationRights = false
-    weak var delegate: EditImageParamsDelegate?
+    weak var delegate: (any EditImageParamsDelegate)?
     
     @IBOutlet weak var editImageParamsTableView: UITableView!
     private let kEditImageParamsViewWidth: CGFloat = 512.0
@@ -155,7 +155,7 @@ class EditImageParamsViewController: UIViewController
                                                name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
         // Reload the tableview on orientation change, to match the new width of the table.

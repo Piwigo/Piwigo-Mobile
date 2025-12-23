@@ -65,12 +65,12 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
     }
 
     // Return animation duration
-    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+    func transitionDuration(using transitionContext: (any UIViewControllerContextTransitioning)?) -> TimeInterval {
         return Self.duration
     }
 
     // Transition logic and animation
-    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+    func animateTransition(using transitionContext: any UIViewControllerContextTransitioning) {
         autoreleasepool {
             // Retrieve window and image or video detail view
             guard let window = albumViewController.view.window ?? imageNavViewController.view.window,
@@ -109,7 +109,7 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
         }
     }
     
-    private func presentOrDismissView(using transitionContext: UIViewControllerContextTransitioning,
+    private func presentOrDismissView(using transitionContext: any UIViewControllerContextTransitioning,
                                       imageViewController: ImageViewController,
                                       detailViewController: UIViewController,
                                       imageViewSnapshot: UIView,
@@ -128,7 +128,7 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
         }
     }
     
-    private func presentImageView(using transitionContext: UIViewControllerContextTransitioning,
+    private func presentImageView(using transitionContext: any UIViewControllerContextTransitioning,
                                   imageViewController: ImageViewController,
                                   detailViewController: UIViewController,
                                   imageViewSnapshot: UIView,
@@ -223,7 +223,7 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
         })
     }
 
-    private func dismissImageView(using transitionContext: UIViewControllerContextTransitioning,
+    private func dismissImageView(using transitionContext: any UIViewControllerContextTransitioning,
                                   imageViewController: ImageViewController,
                                   detailViewController: UIViewController,
                                   imageViewSnapshot: UIView,

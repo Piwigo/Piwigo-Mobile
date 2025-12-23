@@ -14,7 +14,7 @@ import UIKit
 // MARK: NSFetchedResultsControllerDelegate Methods
 extension AlbumViewController: NSFetchedResultsControllerDelegate
 {
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+    func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>,
                     didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
         // Data source configured?
         guard let dataSource = collectionView?.dataSource as? DataSource

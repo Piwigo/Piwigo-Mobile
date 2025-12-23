@@ -18,7 +18,7 @@ extension LoginViewController
 
         // Calc intersection between the keyboard's frame and the view's bounds
         let fromCoordinateSpace = window.screen.coordinateSpace
-        let toCoordinateSpace: UICoordinateSpace = scrollView
+        let toCoordinateSpace: any UICoordinateSpace = scrollView
         let convertedKeyboardFrameEnd = fromCoordinateSpace.convert(kbInfo, to: toCoordinateSpace)
         let viewIntersection = scrollView.bounds.intersection(convertedKeyboardFrameEnd)
 

@@ -14,7 +14,7 @@ import piwigoKit
 // MARK: - NSFetchedResultsControllerDelegate
 extension SelectCategoryViewController: NSFetchedResultsControllerDelegate
 {
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+    func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>,
                     didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
 //        // Expected controller?
 //        guard controller == uploads else { return }
@@ -72,7 +72,7 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate
     }
     
     // Exclusively for iOS 12.x
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
         // Check that this update should be managed by this view controller
         if (wantedAction == .setAlbumThumbnail) && (controller == recentAlbums) {
             return
@@ -84,7 +84,7 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate
     }
     
     // Exclusively for iOS 12.x
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+    func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 
         // Check that this update should be managed by this view controller
         if (wantedAction == .setAlbumThumbnail) && (controller == recentAlbums) {
@@ -136,7 +136,7 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate
     }
     
     // Exclusively for iOS 12.x
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
         // Check that this update should be managed by this view controller
         if (wantedAction == .setAlbumThumbnail) && (controller == recentAlbums) {
             return

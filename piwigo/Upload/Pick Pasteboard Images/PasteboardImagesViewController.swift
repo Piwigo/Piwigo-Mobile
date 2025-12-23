@@ -58,7 +58,7 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
     // MARK: - Variables and Cached Values
     var categoryId: Int32 = AlbumVars.shared.defaultCategory
     var categoryCurrentCounter: Int64 = UploadVars.shared.categoryCounterInit
-    weak var albumDelegate: AlbumViewControllerDelegate?
+    weak var albumDelegate: (any AlbumViewControllerDelegate)?
     var reUploadAllowed = false
 
     let pendingOperations = PendingOperations()     // Operations in queue for preparing files and cache
@@ -217,7 +217,7 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
         }
     }
 
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
         // Save position of collection view

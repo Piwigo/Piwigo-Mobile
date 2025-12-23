@@ -12,14 +12,14 @@ import piwigoKit
 
 protocol VideoDetailDelegate: NSObjectProtocol {
     @MainActor
-    func config(currentTime: TimeInterval, duration: TimeInterval, delegate: VideoControlsDelegate)
+    func config(currentTime: TimeInterval, duration: TimeInterval, delegate: any VideoControlsDelegate)
     @MainActor
     func setCurrentTime(_ value: Double)
 }
 
 class ExternalDisplayViewController: UIViewController {
     
-    weak var videoDetailDelegate: VideoDetailDelegate?
+    weak var videoDetailDelegate: (any VideoDetailDelegate)?
 
     var imageData: Image? {
         didSet {

@@ -16,7 +16,7 @@ import piwigoKit
 
 class EditImageShiftTimePickerTableViewCell: UITableViewCell {
     
-    weak var delegate: EditImageShiftTimeDelegate?
+    weak var delegate: (any EditImageShiftTimeDelegate)?
     
     @IBOutlet private weak var shiftPicker: UIPickerView!
     

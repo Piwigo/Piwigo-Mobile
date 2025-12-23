@@ -18,7 +18,7 @@ protocol TagsViewControllerDelegate: NSObjectProtocol {
 
 class TagsViewController: UITableViewController {
     
-    weak var delegate: TagsViewControllerDelegate?
+    weak var delegate: (any TagsViewControllerDelegate)?
     private var updateOperations = [BlockOperation]()
     
     // Called before uploading images (Tag class)
@@ -377,14 +377,14 @@ class TagsViewController: UITableViewController {
 // MARK: - NSFetchedResultsControllerDelegate
 extension TagsViewController: NSFetchedResultsControllerDelegate
 {    
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
         // Initialise update operations
         updateOperations = []
         // Begin the update
         tagsTableView?.beginUpdates()
     }
     
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+    func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 
         // Initialisation
         var hasTagsInSection1 = false
@@ -431,7 +431,7 @@ extension TagsViewController: NSFetchedResultsControllerDelegate
         }
     }
     
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
         // Perform all updates
         tagsTableView?.performBatchUpdates { [weak self] in
             self?.updateOperations.forEach { $0.start() }

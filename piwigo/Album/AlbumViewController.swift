@@ -26,7 +26,7 @@ protocol AlbumViewControllerDelegate: NSObjectProtocol {
 
 class AlbumViewController: UIViewController
 {
-    weak var albumDelegate: AlbumViewControllerDelegate?
+    weak var albumDelegate: (any AlbumViewControllerDelegate)?
 
     @IBOutlet weak var noAlbumLabel: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
@@ -620,7 +620,7 @@ class AlbumViewController: UIViewController
         //#endif
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
         // Hide HUD if needded
@@ -1211,7 +1211,7 @@ class AlbumViewController: UIViewController
 
 // MARK: - MFMailComposeViewControllerDelegate
 extension AlbumViewController: MFMailComposeViewControllerDelegate {
-    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: (any Error)?) {
         // Check the result or perform other tasks.
 
         // Dismiss the mail compose view controller.

@@ -20,7 +20,7 @@ import uploadKit
 class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendable {
 
     // MARK: - Initialisation
-    weak var delegate: ShareImageActivityItemProviderDelegate?
+    weak var delegate: (any ShareImageActivityItemProviderDelegate)?
 
     private var imageData: Image                        // Core Data image
     private var exportSession: AVAssetExportSession?    // Export session
