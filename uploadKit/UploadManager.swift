@@ -224,7 +224,7 @@ public final class UploadManager: NSObject {
 // MARK: - NSFetchedResultsControllerDelegate
 extension UploadManager: @UploadManagement NSFetchedResultsControllerDelegate {
     
-    public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+    public func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         
         switch type {
         case .insert:

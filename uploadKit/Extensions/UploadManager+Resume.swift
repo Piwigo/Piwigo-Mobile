@@ -204,7 +204,7 @@ extension UploadManager
         DispatchQueue.main.async {
             PHPhotoLibrary.shared().performChanges {
                 // Delete images from the library
-                PHAssetChangeRequest.deleteAssets(assetsToDelete as NSFastEnumeration)
+                PHAssetChangeRequest.deleteAssets(assetsToDelete as (any NSFastEnumeration))
             }
             completionHandler: { success, error in
                 Task { @UploadManagement in

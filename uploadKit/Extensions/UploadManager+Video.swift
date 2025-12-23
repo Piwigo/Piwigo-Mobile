@@ -298,7 +298,7 @@ extension UploadManager {
 //                UploadVars.shared.isExecutingBGContinuedUploadTask */ {
 //                debugPrint("\(self.dbg()) exits retrieveVideoAssetFrom in", queueName())
                 // Any error?
-                if let error = info?[PHImageErrorKey] as? Error {
+            if let error = info?[PHImageErrorKey] as? (any Error) {
                     if let photosError = error as? PHPhotosError {
                         completionHandler(nil, options, .photosError(innerError: photosError))
                     } else {
@@ -311,7 +311,7 @@ extension UploadManager {
                 Task { @UploadManagement in
 //                    debugPrint("\(self.dbg()) exits retrieveVideoAssetFrom in", queueName())
                     // Any error?
-                    if let error = info?[PHImageErrorKey] as? Error {
+                    if let error = info?[PHImageErrorKey] as? (any Error) {
                         if let photosError = error as? PHPhotosError {
                             completionHandler(nil, options, .photosError(innerError: photosError))
                         } else {

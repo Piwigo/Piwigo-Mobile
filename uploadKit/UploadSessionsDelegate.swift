@@ -55,7 +55,7 @@ extension UploadSessionsDelegate: URLSessionDelegate {
 //        UploadSessions.logger.notice("Session will begin delayed request (back to online).")
 //    }
 
-    public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
+    public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: (any Error)?) {
         UploadSessionsDelegate.logger.notice("Session invalidated.")
     }
     
@@ -189,7 +189,7 @@ extension UploadSessionsDelegate: URLSessionTaskDelegate {
         }
     }
     
-    public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+    public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: (any Error)?) {
         
         // Get upload info from the task
         guard let identifier = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPimageID),
