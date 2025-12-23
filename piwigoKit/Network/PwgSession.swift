@@ -10,11 +10,6 @@ import os
 import Foundation
 import UniformTypeIdentifiers
 
-// Custom HTTP header for cancelling tasks related with a specific album
-public let HTTPCatID = "X-PWG-categoryID"
-
-// HTTP header used by API keys
-public let HTTPAPIKey = "X-PIWIGO-API"
 
 public final class PwgSession: NSObject {
     
@@ -68,18 +63,4 @@ public final class PwgSession: NSObject {
     
     // Active downloads
     lazy var activeDownloads: [URL : ImageDownload] = [ : ]
-    
-    // Will tell if the network connection has changed
-    lazy var hasNetworkConnectionChanged = false
-    
-    // Will accept the image formats supported by UIImage
-    lazy var acceptedTypes: String = {
-        // Image types
-        let imageTypes = [UTType.heic, UTType.heif, UTType.ico, UTType.icns, UTType.png, UTType.gif, UTType.jpeg, UTType.webP, UTType.tiff, UTType.bmp, UTType.svg, UTType.rawImage].compactMap {$0.tags[.mimeType]}.flatMap({$0})
-        var acceptedTypes = imageTypes.map({$0 + " ,"}).reduce("", +)
-        
-        // Add text types for handling Piwigo errors and redirects
-        acceptedTypes += "text/plain, text/html"
-        return acceptedTypes
-    }()
 }
