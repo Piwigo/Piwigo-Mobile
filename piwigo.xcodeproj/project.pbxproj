@@ -303,7 +303,6 @@
 		AD61D3142571598000B8DEA0 /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD61D3132571598000B8DEA0 /* HelpViewController.swift */; };
 		AD62CC8426828CD400CA66C5 /* Data+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD07A23525CF07D8000EE016 /* Data+AppTools.swift */; };
 		AD62CC8526828D5E00CA66C5 /* URL+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD07A23325CF024A000EE016 /* URL+AppTools.swift */; };
-		AD67397B2D2EF65D00796243 /* UploadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD67397A2D2EF65D00796243 /* UploadCounter.swift */; };
 		AD673C1A2A4B80B40080BC0B /* PwgSession+Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD673C192A4B80B40080BC0B /* PwgSession+Session.swift */; };
 		AD673C1C2A4B81C60080BC0B /* PwgSession+Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD673C1B2A4B81C60080BC0B /* PwgSession+Images.swift */; };
 		AD673C1E2A4B83170080BC0B /* PwgSession+Reflection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD673C1D2A4B83170080BC0B /* PwgSession+Reflection.swift */; };
@@ -344,6 +343,8 @@
 		AD6E6C4A2E2BE76E00600E5A /* UserGroupToUserGroupMigrationPolicy_Copy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6E6C492E2BE76E00600E5A /* UserGroupToUserGroupMigrationPolicy_Copy.swift */; };
 		AD6E6C4C2E2BF11800600E5A /* UploadToUploadMigrationPolicy_0J_to_0K.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6E6C4B2E2BF11800600E5A /* UploadToUploadMigrationPolicy_0J_to_0K.swift */; };
 		AD6E6C4E2E2C001F00600E5A /* PdfDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6E6C4D2E2C001F00600E5A /* PdfDetailViewController.swift */; };
+		AD6F39942EF81CAC00CE56F0 /* UploadSessionsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6F39932EF81CAC00CE56F0 /* UploadSessionsDelegate.swift */; };
+		AD6F39952EF838C400CE56F0 /* UploadCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD67397A2D2EF65D00796243 /* UploadCounter.swift */; };
 		AD6FD1FA24BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */; };
 		AD6FD1FC24BF0321009AA3B7 /* UploadSwitchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6FD1FB24BF0321009AA3B7 /* UploadSwitchViewController.swift */; };
 		AD7000CA2E425159007B2791 /* AlbumHeaderReusableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD7000C92E425159007B2791 /* AlbumHeaderReusableView.xib */; };
@@ -1092,6 +1093,7 @@
 		AD6E6C492E2BE76E00600E5A /* UserGroupToUserGroupMigrationPolicy_Copy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserGroupToUserGroupMigrationPolicy_Copy.swift; sourceTree = "<group>"; };
 		AD6E6C4B2E2BF11800600E5A /* UploadToUploadMigrationPolicy_0J_to_0K.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadToUploadMigrationPolicy_0J_to_0K.swift; sourceTree = "<group>"; };
 		AD6E6C4D2E2C001F00600E5A /* PdfDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PdfDetailViewController.swift; sourceTree = "<group>"; };
+		AD6F39932EF81CAC00CE56F0 /* UploadSessionsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSessionsDelegate.swift; sourceTree = "<group>"; };
 		AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UploadSwitchViewController.storyboard; sourceTree = "<group>"; };
 		AD6FD1FB24BF0321009AA3B7 /* UploadSwitchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSwitchViewController.swift; sourceTree = "<group>"; };
 		AD7000C92E425159007B2791 /* AlbumHeaderReusableView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AlbumHeaderReusableView.xib; sourceTree = "<group>"; };
@@ -1864,6 +1866,7 @@
 				AD3335442666CA46000A1487 /* UploadSizes.swift */,
 				AD67397A2D2EF65D00796243 /* UploadCounter.swift */,
 				AD0B6ACA268A2187007DEE70 /* UploadSessions.swift */,
+				AD6F39932EF81CAC00CE56F0 /* UploadSessionsDelegate.swift */,
 				AD0B6ACC268A218F007DEE70 /* UploadManager.swift */,
 				AD7F1C142B667BAF008E100E /* Extensions */,
 				AD7F1C152B667BD2008E100E /* Resources */,
@@ -3861,10 +3864,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AD6F39942EF81CAC00CE56F0 /* UploadSessionsDelegate.swift in Sources */,
 				AD2C624E2A4898A200671582 /* ImageMetadata.swift in Sources */,
 				AD7DE0932A8589A000C1424E /* Notification.Name+AppTools.swift in Sources */,
 				AD2C625E2A48A02800671582 /* UploadSizes.swift in Sources */,
-				AD67397B2D2EF65D00796243 /* UploadCounter.swift in Sources */,
 				AD2C624A2A4898A200671582 /* UploadManager.swift in Sources */,
 				AD2C624B2A4898A200671582 /* UploadManager+Auto.swift in Sources */,
 				AD2C62562A4898A200671582 /* UploadManager+Finisher.swift in Sources */,
@@ -3876,6 +3879,7 @@
 				AD2C62502A4898A200671582 /* UploadManager+Utilities.swift in Sources */,
 				AD2C62522A4898A200671582 /* UploadManager+Video.swift in Sources */,
 				AD2C624C2A4898A200671582 /* UploadSessions.swift in Sources */,
+				AD6F39952EF838C400CE56F0 /* UploadCounter.swift in Sources */,
 				AD2C62542A4898A200671582 /* VideoMetadata.swift in Sources */,
 				ADC0A1462E55FD5D001E62F5 /* Constants.swift in Sources */,
 			);
@@ -4571,8 +4575,8 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_STRICT_CONCURRENCY = minimal;
-				SWIFT_VERSION = 5.0;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -4623,8 +4627,8 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_STRICT_CONCURRENCY = minimal;
-				SWIFT_VERSION = 5.0;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

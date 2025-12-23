@@ -107,7 +107,7 @@ class AutoUploadViewController: UIViewController {
                                                name: UIResponder.keyboardWillHideNotification, object: nil)
 
         // Pause UploadManager while changing settings
-        UploadManager.shared.isPaused = true
+        UploadVars.shared.isPaused = true
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -126,9 +126,11 @@ class AutoUploadViewController: UIViewController {
            visibleVC is TagsViewController { return }
 
         // Restart UploadManager activities
-        UploadManager.shared.backgroundQueue.async {
-            UploadManager.shared.isPaused = false
-            UploadManager.shared.findNextImageToUpload()
+        Task { @UploadManagement in
+            UploadVars.shared.isPaused = false
+//            if #unavailable(iOS 26.0) {
+                UploadManager.shared.findNextImageToUpload()
+//            }
         }
     }
 

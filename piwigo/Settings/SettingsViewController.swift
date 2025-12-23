@@ -139,8 +139,9 @@ class SettingsViewController: UIViewController {
             self.videoCacheSize = server.getCacheSizeOfVideos()
             self.dataCacheSize = server.getAlbumImageCount()
             if self.hasUploadRights() {
-                self.uploadCacheSize = server.getUploadCount()
-                + " | " + UploadManager.shared.getUploadsDirectorySize()
+                let uploadsDirectory = DataDirectories.appUploadsDirectory
+                let uploadsDirectorySize = ByteCountFormatter.string(fromByteCount: Int64(uploadsDirectory.folderSize), countStyle: .file)
+                self.uploadCacheSize = server.getUploadCount() + " | " + uploadsDirectorySize
             }
         })
         
@@ -293,8 +294,9 @@ class SettingsViewController: UIViewController {
         super.viewWillDisappear(animated)
         
         // Update upload counter in case user cleared the cache
-        UploadManager.shared.updateNberOfUploadsToComplete()
-        
+        Task { @UploadManagement in
+            UploadManager.shared.updateNberOfUploadsToComplete()
+        }
         // Did the user change the recent period?
         let recentPeriodIndex = CacheVars.shared.recentPeriodIndex
         if hasUploadRights(), oldRecentPeriodIndex != recentPeriodIndex {

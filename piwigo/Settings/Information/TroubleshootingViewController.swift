@@ -143,7 +143,7 @@ class TroubleshootingViewController: UIViewController {
                 someLogs = entries.filter({$0.category == String(describing: PwgSession.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
                 // uploadKit — UploadSessions
-                someLogs = entries.filter({$0.category == String(describing: UploadSessions.self)})
+                someLogs = entries.filter({$0.category == String(describing: UploadSessionsDelegate.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
                 // uploadKit — UploadManager
                 someLogs = entries.filter({$0.category == String(describing: UploadManager.self)})

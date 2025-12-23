@@ -19,13 +19,6 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         return DataController.shared.mainContext
     }()
     
-
-    // MARK: - Core Data Providers
-    private lazy var uploadProvider: UploadProvider = {
-        let provider : UploadProvider = UploadManager.shared.uploadProvider
-        return provider
-    }()
-
     
     // MARK: - Handle Intent
     func handle(intent: AutoUploadIntent, completion: @escaping (AutoUploadIntentResponse) -> Void) {
@@ -53,7 +46,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
             UploadVars.shared.autoUploadAlbumId = ""               // Unknown source Photos album
             
             // Delete remaining upload requests
-            UploadManager.shared.backgroundQueue.async {
+            Task { @UploadManagement in
                 UploadManager.shared.disableAutoUpload()
             }
             
@@ -69,7 +62,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
             UploadVars.shared.autoUploadCategoryId = Int32.min    // Unknown destination Piwigo album
 
             // Delete remaining upload requests
-            UploadManager.shared.backgroundQueue.async {
+            Task { @UploadManagement in
                 UploadManager.shared.disableAutoUpload()
             }
 
@@ -79,14 +72,14 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         }
         
         // Extract images not already in the upload queue
-        UploadManager.shared.backgroundQueue.async { [unowned self] in
+        Task { @UploadManagement in
             // Get new local images to be uploaded
             let uploadRequestsToAppend = UploadManager.shared.getNewRequests(inCollection: collection,
                                                                              toBeUploadedIn: categoryId)
                 .compactMap{ $0 }
             
             // Append auto-upload requests to database
-            self.uploadProvider.importUploads(from: uploadRequestsToAppend) { error in
+            UploadManager.shared.uploadProvider.importUploads(from: uploadRequestsToAppend) { error in
                 // Show an alert if there was an error.
                 guard let error = error else {
                     // Initialise upload operations
@@ -121,15 +114,19 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         /// - considers only auto-upload requests
         /// - called by an extension (don't try to append auto-upload requests again)
         let initOperation = BlockOperation {
-            UploadManager.shared.initialiseBckgTask(autoUploadOnly: true,
-                                                    triggeredByExtension: true)
+            Task { @UploadManagement in
+                await UploadManager.shared.initialiseBckgTask(autoUploadOnly: true,
+                                                              triggeredByExtension: true)
+            }
         }
         uploadOperations.append(initOperation)
 
         // Check and resume transfers
         let resumeOperation = BlockOperation {
             // Transfer image
-            UploadManager.shared.resumeTransfers()
+            Task { @UploadManagement in
+                await UploadManager.shared.resumeTransfers()
+            }
         }
         resumeOperation.addDependency(uploadOperations.last!)
         uploadOperations.append(resumeOperation)
@@ -137,7 +134,9 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         // Prepares one image maximum due to the 10s limit
         let uploadOperation = BlockOperation {
             // Prepare image
-            UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
+            Task { @UploadManagement in
+                await UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
+            }
         }
         uploadOperation.addDependency(uploadOperations.last!)
         uploadOperations.append(uploadOperation)

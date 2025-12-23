@@ -9,7 +9,7 @@
 import CoreData
 import Foundation
 import Photos
-import piwigoKit
+@preconcurrency import piwigoKit
 
 extension UploadManager
 {
@@ -19,10 +19,14 @@ extension UploadManager
         guard NetworkVars.shared.fixUserIsAPIKeyV412 == false
         else { return }
         
+        // Wait until continued background task finishes
+//        guard UploadVars.shared.isExecutingBGContinuedUploadTask == false
+//        else { return }
+        
         // Reset flags
-        isPaused = false
+        UploadVars.shared.isPaused = false
         isPreparing = false; isFinishing = false
-        isExecutingBackgroundUploadTask = false
+        UploadVars.shared.isExecutingBGUploadTask = false
         isUploading = Set<NSManagedObjectID>()
         
         // Reset predicates in case user switched to another Piwigo
@@ -43,36 +47,36 @@ extension UploadManager
         // Get active upload tasks
         bckgSession.getAllTasks { uploadTasks in
             // Loop over the tasks
-            for task in uploadTasks {
-                switch task.state {
-                case .running:
-                    // Retrieve upload request properties
-                    guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
-                          let objectURI = URL(string: objectURIstr),
-                          let uploadID = self.uploadBckgContext.persistentStoreCoordinator?
-                              .managedObjectID(forURIRepresentation: objectURI)
-                    else {
-                        UploadManager.logger.notice("Task \(task.taskIdentifier, privacy: .public) not associated to an upload!")
+            Task { @UploadManagement in
+                for task in uploadTasks {
+                    switch task.state {
+                    case .running:
+                        // Retrieve upload request properties
+                        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
+                              let objectURI = URL(string: objectURIstr),
+                              let uploadID = self.uploadBckgContext.persistentStoreCoordinator?
+                                .managedObjectID(forURIRepresentation: objectURI)
+                        else {
+                            UploadManager.logger.notice("Task \(task.taskIdentifier, privacy: .public) not associated to an upload!")
+                            continue
+                        }
+                        
+                        // Task associated to an upload
+                        UploadManager.logger.notice("Task \(task.taskIdentifier, privacy: .public) is uploading \(uploadID)")
+                        self.isUploading.insert(uploadID)
+                        
+                    default:
                         continue
                     }
-                    
-                    // Task associated to an upload
-                    UploadManager.logger.notice("Task \(task.taskIdentifier, privacy: .public) is uploading \(uploadID)")
-                    self.isUploading.insert(uploadID)
-                    
-                default:
-                    continue
                 }
-            }
-            
-            // Logs
-            if let uploadObjects = self.uploads.fetchedObjects,
-               let completedObjects = self.completed.fetchedObjects {
-                UploadManager.logger.notice("\(uploadObjects.count, privacy: .public) pending and \(completedObjects.count, privacy: .public) completed upload requests in cache.")
-            }
-            
-            // Resume operations
-            UploadManager.shared.backgroundQueue.async {
+                
+                // Logs
+                if let uploadObjects = self.uploads.fetchedObjects,
+                   let completedObjects = self.completed.fetchedObjects {
+                    UploadManager.logger.notice("\(uploadObjects.count, privacy: .public) pending and \(completedObjects.count, privacy: .public) completed upload requests in cache.")
+                }
+                
+                // Resume operations
                 self.resumeOperations()
             }
         }
@@ -85,16 +89,18 @@ extension UploadManager
         // Propose to delete uploaded image of the photo Library once a day
         if Date().timeIntervalSinceReferenceDate > UploadVars.shared.dateOfLastPhotoLibraryDeletion + TimeInterval(86400) {
             // Are there images to delete from the Photo Library?
-            let assetsToDelete = (completed.fetchedObjects ?? [])
+            let uploadsToDelete = (completed.fetchedObjects ?? [])
                 .filter({$0.deleteImageAfterUpload == true})
                 .filter({isDeleting.contains($0.objectID) == false})
-            if assetsToDelete.count > 0 {
+            if uploadsToDelete.count > 0 {
                 // Store date of deletion
                 UploadVars.shared.dateOfLastPhotoLibraryDeletion = Date().timeIntervalSinceReferenceDate
                 
                 // Suggest to delete assets from the Photo Library
-                UploadManager.logger.notice("\(assetsToDelete.count, privacy: .public) assets identified for deletion from the Photo Library.")
-                deleteAssets(associatedToUploads: assetsToDelete)
+                UploadManager.logger.notice("\(uploadsToDelete.count, privacy: .public) assets identified for deletion from the Photo Library.")
+                let uploadIDs = uploadsToDelete.map(\.objectID)
+                let uploadLocalIDs = uploadsToDelete.map(\.localIdentifier)
+                deleteAssets(associatedToUploads: uploadIDs, uploadLocalIDs)
             }
         }
         
@@ -123,9 +129,12 @@ extension UploadManager
         toDelete.append(contentsOf: (uploads.fetchedObjects ?? []).filter({$0.requestState == 13}))
         
         // Delete upload requests
-        uploadProvider.delete(uploadRequests: toDelete) { [self] _ in
+        let uploadsToDate = Set(toDelete).map({$0.objectID})
+        uploadProvider.delete(uploadsWithID: Array(uploadsToDate)) { [self] _ in
             // Restart activities
-            self.findNextImageToUpload()
+//            if #unavailable(iOS 26.0) {
+                self.findNextImageToUpload()
+//            }
             
             // Append auto-upload requests if requested
             if UploadVars.shared.isAutoUploadActive {
@@ -177,18 +186,17 @@ extension UploadManager
     
     
     // MARK: - Clean Photo Library
-    public func deleteAssets(associatedToUploads uploads: [Upload], and assets: [String] = []) -> Void {
+    public func deleteAssets(associatedToUploads uploadIDs: [NSManagedObjectID], _ uploadLocalIDs: [String] = [], and assetIDs: [String] = []) -> Void {
         // Remember which uploads are concerned to avoid duplicate deletions
-        isDeleting = Set(uploads.map({$0.objectID}))
+        isDeleting = Set(uploadIDs)
         
         // Combine unique assets to delete
-        let uploadedImageIDs = uploads.map({$0.localIdentifier})
-        var imageIDs = Set(uploadedImageIDs)
-        imageIDs.formUnion(assets)
+        var imageIDs = Set(uploadLocalIDs)
+        imageIDs.formUnion(assetIDs)
         let assetsToDelete = PHAsset.fetchAssets(withLocalIdentifiers: Array(imageIDs), options: nil)
         if assetsToDelete.count == 0 {
             // Assets already deleted
-            self.deleteUploadsInRightQueue(uploads)
+            self.deleteUploadsInRightQueue(uploadIDs)
             return
         }
         
@@ -199,67 +207,44 @@ extension UploadManager
                 PHAssetChangeRequest.deleteAssets(assetsToDelete as NSFastEnumeration)
             }
             completionHandler: { success, error in
-                if success {
-                    self.deleteUploadsInRightQueue(uploads)
-                } else {
-                    self.disableDeleteAfterUpload(uploads)
+                Task { @UploadManagement in
+                    if success {
+                        self.deleteUploadsInRightQueue(uploadIDs)
+                    } else {
+                        self.disableDeleteAfterUpload(uploadIDs)
+                    }
                 }
             }
         }
     }
     
-    private func deleteUploadsInRightQueue(_ uploads: [Upload]) {
+    private func deleteUploadsInRightQueue(_ uploadIDs: [NSManagedObjectID]) {
         // Empty array?
-        if uploads.isEmpty {
+        if uploadIDs.isEmpty {
             self.isDeleting = Set()
             return
         }
         
-        // Delete upload requests in appropriate context
-        if let taskContext = uploads.first?.managedObjectContext,
-           taskContext == self.uploadBckgContext {
-            DispatchQueue.global(qos: .background).async {
-                self.uploadProvider.delete(uploadRequests: uploads) { _ in
-                    self.isDeleting = Set()
-                }
-            }
-        } else {
-            DispatchQueue.main.async {
-                self.uploadProvider.delete(uploadRequests: uploads) { _ in
-                    self.isDeleting = Set()
-                }
-            }
+        // Delete upload requests w/o reporting potential error
+        uploadProvider.delete(uploadsWithID: uploadIDs) { _ in
+            self.isDeleting = Set()
         }
     }
     
-    private func disableDeleteAfterUpload(_ uploads: [Upload]) {
+    private func disableDeleteAfterUpload(_ uploadIDs: [NSManagedObjectID]) {
         // Empty array?
-        if uploads.isEmpty {
+        if uploadIDs.isEmpty {
             self.isDeleting = Set()
             return
         }
         
-        // Delete upload requests in appropriate context
-        guard let taskContext = uploads.first?.managedObjectContext
-        else { self.isDeleting = Set(); return }
-        
-        // Update upload requests in appropriate context
-        if taskContext == self.uploadBckgContext {
-            DispatchQueue.global(qos: .background).async {
-                uploads.forEach { upload in
-                    upload.deleteImageAfterUpload = false
-                }
-                taskContext.saveIfNeeded()
-                self.isDeleting = Set()
-            }
-        } else {
-            DispatchQueue.main.async {
-                uploads.forEach { upload in
-                    upload.deleteImageAfterUpload = false
-                }
-                taskContext.saveIfNeeded()
-                self.isDeleting = Set()
+        // Update upload requests
+        uploadIDs.forEach { id in
+            if let upload = try? self.uploadBckgContext.existingObject(with: id) as? Upload {
+                upload.deleteImageAfterUpload = false
             }
         }
+        uploadProvider.bckgContext.saveIfNeeded()
+        isDeleting = Set()
     }
 }

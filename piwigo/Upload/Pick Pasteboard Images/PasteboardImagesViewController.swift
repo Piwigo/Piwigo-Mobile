@@ -135,11 +135,9 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
                 var identifier = ""
                 // Movies first because movies may contain images
                 if UIPasteboard.general.contains(pasteboardTypes: [UTType.movie.identifier], inItemSet: indexSet) {
-                    identifier = String(format: "%@%@%@%ld", UploadManager.shared.kClipboardPrefix,
-                                        pbDateTime, UploadManager.shared.kMovieSuffix, idx)
+                    identifier = String(format: "%@%@%@%ld", kClipboardPrefix, pbDateTime, kMovieSuffix, idx)
                 } else {
-                    identifier = String(format: "%@%@%@%ld", UploadManager.shared.kClipboardPrefix,
-                                        pbDateTime, UploadManager.shared.kImageSuffix, idx)
+                    identifier = String(format: "%@%@%@%ld", kClipboardPrefix, pbDateTime, kImageSuffix, idx)
                 }
                 let newObject = PasteboardObject(identifier: identifier, types: types[idx])
                 pbObjects.append(newObject)
@@ -250,10 +248,12 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
 
         // Resume upload operations in background queue
         // and update badge and upload button of album navigator
-        UploadManager.shared.backgroundQueue.async {
-            UploadManager.shared.isPaused = false
-            UploadManager.shared.isExecutingBackgroundUploadTask = false
-            UploadManager.shared.findNextImageToUpload()
+        Task { @UploadManagement in
+            UploadVars.shared.isPaused = false
+            UploadVars.shared.isExecutingBGUploadTask = false
+//            if #unavailable(iOS 26.0) {
+                UploadManager.shared.findNextImageToUpload()
+//            }
         }
     }
 

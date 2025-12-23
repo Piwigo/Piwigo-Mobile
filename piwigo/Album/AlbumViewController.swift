@@ -862,10 +862,12 @@ class AlbumViewController: UIViewController
 
         // Resume upload operations in background queue
         // and update badge and upload button of album navigator
-        UploadManager.shared.backgroundQueue.async {
-            UploadManager.shared.isPaused = false
-            UploadManager.shared.isExecutingBackgroundUploadTask = false
-            UploadManager.shared.findNextImageToUpload()
+        Task { @UploadManagement in
+            UploadVars.shared.isPaused = false
+            UploadVars.shared.isExecutingBGUploadTask = false
+//            if #unavailable(iOS 26.0) {
+                UploadManager.shared.findNextImageToUpload()
+//            }
         }
     }
 

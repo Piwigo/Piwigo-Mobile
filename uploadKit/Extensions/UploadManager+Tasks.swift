@@ -24,6 +24,7 @@ extension UploadManager
     ///
     /// - Uploads can also be performed in the background with the method pwg.images.uploadAsync
     ///   and the BackgroundTasks farmework
+//    @available(iOS, introduced: 13.0, obsoleted: 26.0, message:  "Use the BGContinuedProcessingTask instead")
     public func findNextImageToUpload() -> Void {
         // Perform fetches
         do {
@@ -37,26 +38,29 @@ extension UploadManager
         // Update counter and app badge
         self.updateNberOfUploadsToComplete()
 
-        // Check current queue
-        UploadManager.logger.notice("findNextImageToUpload() in \(queueName(), privacy: .public), \((self.uploads.fetchedObjects ?? []).count, privacy: .public) pending and \((self.completed.fetchedObjects ?? []).count, privacy: .public) completed upload requests, preparing:\(self.isPreparing ? "Yes" : "No", privacy: .public), uploading: \(self.isUploading.count, privacy: .public), finishing:\(self.isFinishing ? "Yes" : "No", privacy: .public)")
-        
         // Pause upload manager if:
         /// - app not in the foreground anymore
         /// - executing a background task
         /// - in Low Power mode
         /// - Wi-Fi required but unavailable
-        if isPaused || isExecutingBackgroundUploadTask ||
+        if UploadVars.shared.isPaused ||
+            UploadVars.shared.isExecutingBGUploadTask ||
+//            UploadVars.shared.isExecutingBGContinuedUploadTask ||
             ProcessInfo.processInfo.isLowPowerModeEnabled ||
             (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
             return
         }
+        
+        // Check current queue
+        let fetchedUploads = uploads.fetchedObjects ?? []
+        UploadManager.logger.notice("findNextImageToUpload() in \(queueName(), privacy: .public), \(fetchedUploads.count, privacy: .public) pending and \((self.completed.fetchedObjects ?? []).count, privacy: .public) completed upload requests, preparing:\(self.isPreparing ? "Yes" : "No", privacy: .public), uploading: \(self.isUploading.count, privacy: .public), finishing:\(self.isFinishing ? "Yes" : "No", privacy: .public)")
         
         // for debugging background tasks
 //        return
 
         // Interrupted work should be set as if an error was encountered
         /// - case of finishing uploads
-        let finishing = (uploads.fetchedObjects ?? []).filter({$0.state == .finishing})
+        let finishing = fetchedUploads.filter({$0.state == .finishing})
         if !isFinishing, finishing.count > 0 {
             // Transfers encountered an error
             finishing.forEach({ upload in
@@ -67,7 +71,7 @@ extension UploadManager
             return
         }
         /// - case of transfers (a few transfers may be running in parallel)
-        let uploading = (uploads.fetchedObjects ?? []).filter({$0.state == .uploading})
+        let uploading = fetchedUploads.filter({$0.state == .uploading})
         if isUploading.isEmpty == false, uploading.count > 0 {
             for upload in uploading {
                 if isUploading.contains(upload.objectID) == false {
@@ -79,7 +83,7 @@ extension UploadManager
             return
         }
         /// - case of upload preparation
-        let preparing = (uploads.fetchedObjects ?? []).filter({$0.state == .preparing})
+        let preparing = fetchedUploads.filter({$0.state == .preparing})
         if isPreparing == false, preparing.count > 0 {
             // Preparations encountered an error
             preparing.forEach { upload in
@@ -91,7 +95,7 @@ extension UploadManager
         }
         
         // How many upload requests did fail?
-        let failedUploads = (uploads.fetchedObjects ?? [])
+        let failedUploads = fetchedUploads
             .filter({[.preparingError, .preparingFail,
                       .uploadingError, .uploadingFail].contains($0.state)}).count
         
@@ -105,10 +109,10 @@ extension UploadManager
         /// - uploading with pwg.images.upload because the title cannot be set during the upload.
         /// - uploading with pwg.images.uploadAsync to empty the lounge as from the version 12 of the Piwigo server.
         if !isFinishing,
-           let uploaded = (uploads.fetchedObjects ?? []).first(where: {$0.state == .uploaded}) {
+           let uploaded = fetchedUploads.first(where: {$0.state == .uploaded}) {
             
             // Pause upload manager if the app is not in the foreground anymore
-            if isPaused {
+            if UploadVars.shared.isPaused {
                 return
             }
             
@@ -119,42 +123,46 @@ extension UploadManager
         
         // Not transferring and file ready for transfer?
         if isUploading.count < maxNberOfTransfers,
-           let prepared = (uploads.fetchedObjects ?? []).first(where: {$0.state == .prepared}) {
+           let prepared = fetchedUploads.first(where: {$0.state == .prepared}) {
             
             // Pause upload manager if the app is not in the foreground anymore
-            if isPaused {
+            if UploadVars.shared.isPaused {
                 return
             }
             
             // Upload file ready, so we start the transfer
-            self.launchTransfer(of: prepared)
+            Task { @UploadManagement in
+                launchTransfer(of: prepared)
+            }
             return
         }
         
         // Not preparing and upload request waiting?
-        let nberPrepared = (uploads.fetchedObjects ?? []).filter({$0.state == .prepared}).count
+        let nberPrepared = fetchedUploads.filter({$0.state == .prepared}).count
         if !isPreparing, nberPrepared < maxNberPreparedUploads,
-           let waiting = (uploads.fetchedObjects ?? []).first(where: {$0.state == .waiting}) {
+           let waiting = fetchedUploads.first(where: {$0.state == .waiting}) {
             
             // Pause upload manager if the app is not in the foreground anymore
-            if isPaused {
+            if UploadVars.shared.isPaused {
                 return
             }
             
             // Prepare the next upload
-            self.prepare(waiting)
+            Task { @UploadManagement in
+                await prepare(waiting)
+            }
             return
         }
         
         // No more image to transfer ;-)
         // Moderate images uploaded by Community regular user
         // Considers only uploads to the server to which the user is logged in
-        let finished = (uploads.fetchedObjects ?? []).filter({$0.state == .finished})
+        let finished = fetchedUploads.filter({$0.state == .finished})
         if NetworkVars.shared.userStatus == .normal,
            NetworkVars.shared.usesCommunityPluginV29, finished.count > 0 {
             
             // Pause upload manager if the app is not in the foreground anymore
-            if isPaused {
+            if UploadVars.shared.isPaused {
                 return
             }
             
@@ -168,15 +176,17 @@ extension UploadManager
         // Note that some uploads may have failed and wait a user decision.
         let states: [pwgUploadState] = [.waiting, .preparing, .prepared,
                                         .uploading, .uploaded, .finishing]
-        if (uploads.fetchedObjects ?? []).filter({states.contains($0.state)}).count > 0 { return }
+        if fetchedUploads.filter({states.contains($0.state)}).count > 0 { return }
         
         // Upload requests are completed
         // Considers only uploads to the server to which the user is logged in
         // Are there images to delete from the Photo Library?
-        let toDelete = (completed.fetchedObjects ?? [])
+        let uploadsToDelete = (completed.fetchedObjects ?? [])
             .filter({$0.deleteImageAfterUpload == true})
             .filter({isDeleting.contains($0.objectID) == false})
-        deleteAssets(associatedToUploads: toDelete)
+        let uploadIDs = uploadsToDelete.map(\.objectID)
+        let uploadLocalIDs = uploadsToDelete.map(\.localIdentifier)
+        deleteAssets(associatedToUploads: uploadIDs, uploadLocalIDs)
     }
     
     func moderateCompletedUploads(_ uploads: [Upload]) -> Void
@@ -207,9 +217,11 @@ extension UploadManager
                     categoryImages.forEach({$0.setState(.moderated, save: true)})
                     
                     // Delete image in Photo Library if wanted
-                    let toDelete = categoryImages.filter({$0.deleteImageAfterUpload == true})
+                    let uploadsToDelete = categoryImages.filter({$0.deleteImageAfterUpload == true})
                         .filter({validatedIDs.contains($0.imageId)})
-                    self.deleteAssets(associatedToUploads: toDelete)
+                    let uploadIDs = uploadsToDelete.map(\.objectID)
+                    let uploadLocalIDs = uploadsToDelete.map(\.localIdentifier)
+                    self.deleteAssets(associatedToUploads: uploadIDs, uploadLocalIDs)
                 }
             }
         } failure: { _ in }
@@ -233,7 +245,7 @@ extension UploadManager
      - e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateExpirationForTaskWithIdentifier:@"org.piwigo.uploadManager"]
      */
     public func initialiseBckgTask(autoUploadOnly: Bool = false,
-                                   triggeredByExtension: Bool = false) -> Void {
+                                   triggeredByExtension: Bool = false) async -> Void {
         // Perform fetch
         do {
             try uploads.performFetch()
@@ -244,18 +256,11 @@ extension UploadManager
         
         // Update counter and app badge
         self.updateNberOfUploadsToComplete()
-
-        // Decisions will be taken for a background task
-        isExecutingBackgroundUploadTask = true
         
         // Append auto-upload requests if not called by In-App intent or Extension
         if UploadVars.shared.isAutoUploadActive && !triggeredByExtension {
             appendAutoUploadRequests()
         }
-        
-        // Reset variables
-        countOfBytesPrepared = 0
-        countOfBytesToUpload = 0
         
         // Reset flags and requests to prepare and transfer
         isUploading = Set<NSManagedObjectID>()
@@ -299,81 +304,94 @@ extension UploadManager
         uploadRequestsToPrepare = Set(toPrepare[..<min(diff, toPrepare.count)])
     }
     
-    public func resumeTransfers() -> Void {
+    public func resumeTransfers() async -> Void {
         // Get active upload tasks and initialise isUploading
         frgdSession.getAllTasks { [unowned self] uploadTasks in
             // Loop over the tasks launched in the foreground
-            for task in uploadTasks {
-                switch task.state {
-                case .running:
-                    // Retrieve upload request properties
-                    guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
-                          let objectURI = URL(string: objectURIstr),
-                          let uploadID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI)
-                    else {
-                        UploadManager.logger.notice("resumeTransfers(): Foreground task \(task.taskIdentifier) not associated to an upload!")
-                        continue
-                    }
-
-                    // Remembers that this upload request is being dealt with
-                    UploadManager.logger.notice("resumeTransfers(): Foreground task \(task.taskIdentifier, privacy: .public) is uploading: \(uploadID)")
-                    self.isUploading.insert(uploadID)
-                    
-                    // Avoids duplicates
-                    uploadRequestsToTransfer.remove(uploadID)
-                    uploadRequestsToPrepare.remove(uploadID)
-                    
-                default:
-                    continue
-                }
-            }
-            
-            // Continue with background tasks
-            bckgSession.getAllTasks { [unowned self] uploadTasks in
-                // Loop over the tasks
+            Task { @UploadManagement in
                 for task in uploadTasks {
                     switch task.state {
                     case .running:
                         // Retrieve upload request properties
                         guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
                               let objectURI = URL(string: objectURIstr),
-                              let uploadID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI)
+                              let uploadID = UploadManager.shared.uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI)
                         else {
-                            UploadManager.logger.notice("resumeTransfers(): Background task \(task.taskIdentifier) not associated to an upload!")
+                            UploadManager.logger.notice("resumeTransfers(): Foreground task \(task.taskIdentifier) not associated to an upload!")
                             continue
                         }
-
+                        
                         // Remembers that this upload request is being dealt with
-                        UploadManager.logger.notice("resumeTransfers(): Background task \(task.taskIdentifier, privacy: .public) is uploading: \(uploadID)")
-                        self.isUploading.insert(uploadID)
+                        UploadManager.logger.notice("resumeTransfers(): Foreground task \(task.taskIdentifier, privacy: .public) is uploading: \(uploadID)")
+                        UploadManager.shared.isUploading.insert(uploadID)
                         
                         // Avoids duplicates
-                        uploadRequestsToTransfer.remove(uploadID)
-                        uploadRequestsToPrepare.remove(uploadID)
+                        UploadManager.shared.uploadRequestsToTransfer.remove(uploadID)
+                        UploadManager.shared.uploadRequestsToPrepare.remove(uploadID)
                         
                     default:
                         continue
                     }
                 }
-                
-                // Relaunch transfers if necessary and possible
-                if self.isUploading.count < maxNberOfTransfers,
-                   let uploadID = self.uploadRequestsToTransfer.first,
-                   let upload = (uploads.fetchedObjects ?? []).first(where: {$0.objectID == uploadID}) {
-                    // Launch transfer
-                    self.launchTransfer(of: upload)
+            }
+            
+            // Continue with background tasks
+            bckgSession.getAllTasks { [unowned self] uploadTasks in
+                // Loop over the tasks
+                Task { @UploadManagement in
+                    for task in uploadTasks {
+                        switch task.state {
+                        case .running:
+                            // Retrieve upload request properties
+                            guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
+                                  let objectURI = URL(string: objectURIstr),
+                                  let uploadID = UploadManager.shared.uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI)
+                            else {
+                                UploadManager.logger.notice("resumeTransfers(): Background task \(task.taskIdentifier) not associated to an upload!")
+                                continue
+                            }
+                            
+                            // Remembers that this upload request is being dealt with
+                            UploadManager.logger.notice("resumeTransfers(): Background task \(task.taskIdentifier, privacy: .public) is uploading: \(uploadID)")
+                            self.isUploading.insert(uploadID)
+                            
+                            // Avoids duplicates
+                            UploadManager.shared.uploadRequestsToTransfer.remove(uploadID)
+                            UploadManager.shared.uploadRequestsToPrepare.remove(uploadID)
+                            
+                        default:
+                            continue
+                        }
+                    }
+                    
+                    // Relaunch transfers if necessary and possible
+                    if self.isUploading.count < maxNberOfTransfers,
+                       let uploadID = self.uploadRequestsToTransfer.first,
+                       let upload = (uploads.fetchedObjects ?? []).first(where: {$0.objectID == uploadID}) {
+                        // Launch transfer
+                        launchTransfer(of: upload)
+                    }
                 }
             }
         }
     }
     
-    public func appendUploadRequestsToPrepareToBckgTask() -> Void {
+    public func appendUploadRequestsToPrepareToBckgTask() async -> Void {
         // Add image preparation followed by transfer operations
-        if countOfBytesPrepared < UInt64(maxCountOfBytesToUpload),
-           let uploadID = uploadRequestsToPrepare.first,
-           let upload = (uploads.fetchedObjects ?? []).first(where: {$0.objectID == uploadID}) {
-            // Prepare image for transfer
-            prepare(upload)
+        if UploadVars.shared.isExecutingBGUploadTask {
+            // Fallback on previous version
+            if countOfBytesPrepared < UInt64(maxCountOfBytesToUpload),
+               let uploadID = uploadRequestsToPrepare.first,
+               let upload = (uploads.fetchedObjects ?? []).first(where: {$0.objectID == uploadID}) {
+                // Prepare image for transfer
+                await prepare(upload)
+            }
+//        } else if UploadVars.shared.isExecutingBGContinuedUploadTask {
+//            if let uploadID = uploadRequestsToPrepare.first,
+//               let upload = (uploads.fetchedObjects ?? []).first(where: {$0.objectID == uploadID}) {
+//                // Prepare image for transfer
+//                await prepare(upload)
+//            }
         }
         if uploadRequestsToPrepare.isEmpty == false {
             // Remove objectID
@@ -390,14 +408,16 @@ extension UploadManager
         toDelete.append(contentsOf: (completed.fetchedObjects ?? []).filter({imageIDs.contains($0.imageId)}))
         // Keep auto-upload requests so that they are not re-uploaded
         toDelete.removeAll(where: {$0.markedForAutoUpload == true})
-        uploadProvider.delete(uploadRequests: toDelete) { _ in }
+        let uploadIDsToDelete = Set(toDelete.map(\.objectID))
+        uploadProvider.delete(uploadsWithID: Array(uploadIDsToDelete)) { _ in }
     }
     
     public func deleteImpossibleUploads() {
         let states: [pwgUploadState] = [.preparingFail, .formatError,
                                         .uploadingFail, .finishingFail]
         let toDelete = (uploads.fetchedObjects ?? []).filter({states.contains($0.state)})
-        uploadProvider.delete(uploadRequests: toDelete) { _ in
+        let uploadIDsToDelete = Set(toDelete.map(\.objectID))
+        uploadProvider.delete(uploadsWithID: Array(uploadIDsToDelete)) { _ in
             self.updateNberOfUploadsToComplete()
         }
     }

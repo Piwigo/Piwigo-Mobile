@@ -10,6 +10,12 @@ import os
 import Foundation
 import UniformTypeIdentifiers
 
+// Custom HTTP header for cancelling tasks related with a specific album
+public let HTTPCatID = "X-PWG-categoryID"
+
+// HTTP header used by API keys
+public let HTTPAPIKey = "X-PIWIGO-API"
+
 //@globalActor
 //public actor NetworkActor {
 //    public static let shared = NetworkActor()

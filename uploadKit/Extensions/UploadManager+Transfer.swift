@@ -8,7 +8,7 @@
 
 import BackgroundTasks
 import CoreData
-import piwigoKit
+@preconcurrency import piwigoKit
 
 extension UploadManager {
     
@@ -17,7 +17,9 @@ extension UploadManager {
         UploadManager.logger.notice("Launch transfer of \(upload.fileName, privacy: .public) if needed (\(upload.md5Sum, privacy: .public))")
         
         // Update list of transfers
-        if isUploading.contains(upload.objectID) { return }
+        if isUploading.contains(upload.objectID) {
+            return
+        }
         isUploading.insert(upload.objectID)
 
         // Check user entity
@@ -41,15 +43,27 @@ extension UploadManager {
         upload.setState(.uploading, save: true)
         
         // Is this image already stored on the Piwigo server?
-        PwgSession.checkSession(ofUser: user) {
-            PwgSession.shared.getIDofImage(withMD5: upload.md5Sum) { imageID in
-                self.backgroundQueue.async {
-                    if let imageID = imageID {
-                        // Already stored on the Piwigo server ► Copy to Album
-                        self.copyImageWithID(imageID, for: upload)
+        Task.detached {
+            PwgSession.checkSession(ofUser: user) {
+                PwgSession.shared.getIDofImage(withMD5: upload.md5Sum) { imageID in
+                    Task { @UploadManagement in
+                        if let imageID = imageID {
+                            // Already stored on the Piwigo server ► Copy to Album
+                            self.copyImageWithID(imageID, for: upload)
+                        } else {
+                            // Upload new image to the Piwigo server
+                            self.transfertImage(for: upload)
+                        }
+                    }
+                } failure: { error in
+                    if error.failedAuthentication {
+                        upload.setState(.uploadingFail, error: error, save: true)
                     } else {
-                        // Upload new image to the Piwigo server
-                        self.transfertImage(for: upload)
+                        upload.setState(.uploadingError, error: error, save: true)
+                    }
+                    Task { @UploadManagement in
+                        self.uploadBckgContext.saveIfNeeded()
+                        self.didEndTransfer(for: upload)
                     }
                 }
             } failure: { error in
@@ -58,20 +72,10 @@ extension UploadManager {
                 } else {
                     upload.setState(.uploadingError, error: error, save: true)
                 }
-                self.backgroundQueue.async {
+                Task { @UploadManagement in
                     self.uploadBckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload)
                 }
-            }
-        } failure: { error in
-            if error.failedAuthentication {
-                upload.setState(.uploadingFail, error: error, save: true)
-            } else {
-                upload.setState(.uploadingError, error: error, save: true)
-            }
-            self.backgroundQueue.async {
-                self.uploadBckgContext.saveIfNeeded()
-                self.didEndTransfer(for: upload)
             }
         }
     }
@@ -80,8 +84,9 @@ extension UploadManager {
         // Retrieve image data from the Piwigo server, storing in cache
         imageProvider.getInfos(forID: imageID, inCategoryId: upload.category) {
             // Update UploadQueue cell and button shown in root album (or default album)
+            let uploadLocalID = upload.localIdentifier
             DispatchQueue.main.async {
-                let uploadInfo: [String : Any] = ["localIdentifier" : upload.localIdentifier,
+                let uploadInfo: [String : Any] = ["localIdentifier" : uploadLocalID,
                                                   "progressFraction" : 0.5]
                 NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
             }
@@ -92,7 +97,7 @@ extension UploadManager {
                   let albumData = self.albumProvider.getAlbum(ofUser: upload.user, withId: upload.category)
             else {
                 upload.setState(.uploadingFail, error: .missingAsset, save: true)
-                self.backgroundQueue.async {
+                Task { @UploadManagement in
                     self.uploadBckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload)
                 }
@@ -107,8 +112,9 @@ extension UploadManager {
             // Check if the category already contains that image
             if categoryIds.count == categoryCount {
                 // Update UploadQueue cell and button shown in root album (or default album)
+                let uploadLocalID = upload.localIdentifier
                 DispatchQueue.main.async {
-                    let uploadInfo: [String : Any] = ["localIdentifier" : upload.localIdentifier,
+                    let uploadInfo: [String : Any] = ["localIdentifier" : uploadLocalID,
                                                       "progressFraction" : 1.0]
                     NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
                 }
@@ -116,7 +122,7 @@ extension UploadManager {
                 // Job done
                 upload.imageId = imageID
                 upload.setState(.moderated, save: true)
-                self.backgroundQueue.async {
+                Task { @UploadManagement in
                     self.uploadBckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload)
                 }
@@ -132,14 +138,15 @@ extension UploadManager {
             // Send request to Piwigo server
             PwgSession.shared.setInfos(with: paramsDict) { [self] in
                 // Update UploadQueue cell and button shown in root album (or default album)
+                let uploadLocalID = upload.localIdentifier
                 DispatchQueue.main.async {
-                    let uploadInfo: [String : Any] = ["localIdentifier" : upload.localIdentifier,
+                    let uploadInfo: [String : Any] = ["localIdentifier" : uploadLocalID,
                                                       "progressFraction" : 1.0]
                     NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
                 }
 
                 // Update cached data
-                self.backgroundQueue.async {
+                Task { @UploadManagement in
                     // Add image to album
                     albumData.addToImages(imageData)
                     
@@ -149,21 +156,19 @@ extension UploadManager {
                     // Copy complete
                     upload.imageId = imageID
                     upload.setState(.moderated, save: true)
-                    self.backgroundQueue.async {
-                        self.uploadBckgContext.saveIfNeeded()
-                        self.didEndTransfer(for: upload)
-                    }
+                    uploadBckgContext.saveIfNeeded()
+                    didEndTransfer(for: upload)
                 }
             } failure: { error in
                 upload.setState(.uploadingError, error: error, save: true)
-                self.backgroundQueue.async {
+                Task { @UploadManagement in
                     self.uploadBckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload)
                 }
             }
         } failure: { error in
             upload.setState(.uploadingError, error: error, save: true)
-            self.backgroundQueue.async {
+            Task { @UploadManagement in
                 self.uploadBckgContext.saveIfNeeded()
                 self.didEndTransfer(for: upload)
             }
@@ -172,12 +177,16 @@ extension UploadManager {
     
     func transfertImage(for upload: Upload) {
         // Initialise or reset counter of progress bar in case we repeat the transfer
-        UploadSessions.shared.initCounter(withID: upload.localIdentifier)
+        Task {
+            await UploadSessionsDelegate.shared.initCounter(withID: upload.localIdentifier)
+        }
 
         // Choose recent method when called by:
         /// - admins as from Piwigo server 11 or previous versions with the uploadAsync plugin installed.
         /// - Community users as from Piwigo 12.
-        if NetworkVars.shared.usesUploadAsync || isExecutingBackgroundUploadTask {
+        if NetworkVars.shared.usesUploadAsync ||
+            UploadVars.shared.isExecutingBGUploadTask /* ||
+            UploadVars.shared.isExecutingBGContinuedUploadTask */ {
             // Prepare transfer
             self.transferInBackground(for: upload)
         } else {
@@ -185,9 +194,10 @@ extension UploadManager {
             self.transferInForeground(for: upload)
         }
         
-        // Do not prepare next image in background task (already scheduled)
-        if self.isExecutingBackgroundUploadTask { return }
-
+        // Do not prepare next image in background tasks (already scheduled)
+        if UploadVars.shared.isExecutingBGUploadTask /* ||
+            UploadVars.shared.isExecutingBGContinuedUploadTask */ { return }
+        
         // Stop here if there no image to prepare
         let waiting = (uploads.fetchedObjects ?? []).filter({$0.state == .waiting})
         if waiting.isEmpty { return }
@@ -197,13 +207,14 @@ extension UploadManager {
                                         .uploadingError, .uploadingFail,
                                         .finishingError]
         let failed = (uploads.fetchedObjects ?? []).filter({states.contains($0.state)})
-        if !self.isPreparing, failed.count < maxNberOfFailedUploads,
+        if !isPreparing, failed.count < maxNberOfFailedUploads,
            let upload = waiting.first {
 
             // Prepare the next upload
-            self.isPreparing = true
-            self.prepare(upload)
-            return
+            isPreparing = true
+            Task { @UploadManagement in
+                await prepare(upload)
+            }
         }
     }
 
@@ -247,7 +258,9 @@ extension UploadManager {
         // Prepare first chunk
         PwgSession.checkSession(ofUser: upload.user) {
             // Set total number of bytes to upload
-            UploadSessions.shared.initCounter(withID: upload.localIdentifier, totalBytes: Int64(imageData.count))
+            Task {
+                await UploadSessionsDelegate.shared.initCounter(withID: upload.localIdentifier, totalBytes: Int64(imageData.count))
+            }
             // Start uploading
             self.sendInForeground(chunk: 0, of: chunks, for: upload)
         } failure: { error in
@@ -330,7 +343,7 @@ extension UploadManager {
         
         // As soon as a task is created, the timeout counter starts
         let task = frgdSession.uploadTask(with: request, from: httpBody)
-        task.taskDescription = UploadSessions.shared.uploadSessionIdentifier
+        task.taskDescription = uploadSessionIdentifier
 
         // Tell the system how many bytes are expected to be exchanged
         let bytesToSend = Int64(httpBody.count + (request.allHTTPHeaderFields ?? [:]).count)
@@ -340,7 +353,9 @@ extension UploadManager {
         // Remember the total number of bytes to upload
         if chunk+1 < chunks {
             let totalBytes = Int64(imageData.count) + (bytesToSend - Int64(chunkSize)) * Int64(chunks)
-            UploadSessions.shared.initCounter(withID: upload.localIdentifier, totalBytes: totalBytes)
+            Task {
+                await UploadSessionsDelegate.shared.initCounter(withID: upload.localIdentifier, totalBytes: totalBytes)
+            }
         }
 
         // Resume task
@@ -386,13 +401,13 @@ extension UploadManager {
 
                 // Update upload request status
                 if let error = error {
-                    self.backgroundQueue.async {
+                    Task { @UploadManagement in
                         if error.failedAuthentication {
                             upload.setState(.uploadingFail, error: error, save: true)
                         } else {
                             upload.setState(.uploadingError, error: error, save: true)
                         }
-                        self.backgroundQueue.async {
+                        Task { @UploadManagement in
                             self.uploadBckgContext.saveIfNeeded()
                             self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
                         }
@@ -400,7 +415,7 @@ extension UploadManager {
                 }
                 else {
                     upload.setState(.uploadingError, error: .operationFailed, save: false)
-                    self.backgroundQueue.async {
+                    Task { @UploadManagement in
                         self.uploadBckgContext.saveIfNeeded()
                         self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
                     }
@@ -410,8 +425,10 @@ extension UploadManager {
             catch {
                 UploadManager.logger.notice("Failed to retrieve Core Data object from task \(task.taskIdentifier, privacy: .public)")
                 // In foreground, consider next image
-                self.backgroundQueue.async {
-                    self.findNextImageToUpload()
+                Task { @UploadManagement in
+//                    if #unavailable(iOS 26.0) {
+                        self.findNextImageToUpload()
+//                    }
                 }
                 return
             }
@@ -464,7 +481,7 @@ extension UploadManager {
                 // Update upload request status
                 UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | Task \(task.taskIdentifier, privacy: .public) returned an Empty JSON object")
                 upload.setState(.uploadingError, error: .emptyJSONobject, save: false)
-                self.backgroundQueue.async {
+                Task { @UploadManagement in
                     self.uploadBckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
                 }
@@ -478,9 +495,9 @@ extension UploadManager {
                 let dataStr = String(decoding: data, as: UTF8.self)
                 UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | Task \(task.taskIdentifier, privacy: .public) returned the invalid JSON object: \(dataStr, privacy: .public)")
                 upload.setState(.uploadingError, error: .invalidJSONobject, save: false)
-                self.backgroundQueue.async {
-                    self.uploadBckgContext.saveIfNeeded()
-                    self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
+                Task { @UploadManagement in
+                    uploadBckgContext.saveIfNeeded()
+                    didEndTransfer(for: upload, taskID: task.taskIdentifier)
                 }
                 return
             }
@@ -492,7 +509,7 @@ extension UploadManager {
 
                 // Upload completed?
                 if chunk + 1 < chunks {
-                    self.backgroundQueue.async {
+                    Task { @UploadManagement in
                         self.sendInForeground(chunk: chunk + 1, of: chunks, for: upload)
                     }
                     return
@@ -519,9 +536,9 @@ extension UploadManager {
                 // Update state of upload
                 upload.imageId = uploadJSON.data.image_id!
                 upload.setState(.uploaded, save: false)
-                backgroundQueue.async {
-                    self.uploadBckgContext.saveIfNeeded()
-                    self.didEndTransfer(for: upload)
+                Task { @UploadManagement in
+                    uploadBckgContext.saveIfNeeded()
+                    didEndTransfer(for: upload)
                 }
             } catch {
                 // Error type?
@@ -535,17 +552,19 @@ extension UploadManager {
                     // Data cannot be digested, image still ready for upload
                     upload.setState(.uploadingError, error: .wrongJSONobject, save: false)
                 }
-                backgroundQueue.async {
-                    self.uploadBckgContext.saveIfNeeded()
-                    self.didEndTransfer(for: upload)
+                Task { @UploadManagement in
+                    uploadBckgContext.saveIfNeeded()
+                    didEndTransfer(for: upload)
                 }
             }
         }
         catch {
             UploadManager.logger.notice("Failed to retrieve Core Data object from task \(task.taskIdentifier, privacy: .public)")
             // In foreground, consider next image
-            self.backgroundQueue.async {
-                self.findNextImageToUpload()
+            Task { @UploadManagement in
+//                if #unavailable(iOS 26.0) {
+                    findNextImageToUpload()
+//                }
             }
         }
     }
@@ -638,7 +657,7 @@ extension UploadManager {
 
         // As soon as tasks are created, the timeout counter starts
         let task = bckgSession.uploadTask(with: request, fromFile: chunkURL)
-        task.taskDescription = UploadSessions.shared.uploadBckgSessionIdentifier
+        task.taskDescription = uploadBckgSessionIdentifier
 
         // Tell the system how many bytes are expected to be uploaded
         let bytesToSend = Int64(httpBody.count + (request.allHTTPHeaderFields ?? [:]).count)
@@ -646,21 +665,23 @@ extension UploadManager {
         task.countOfBytesClientExpectsToReceive = 600
         
         // Adds bytes expected to be sent to counter
-        if isExecutingBackgroundUploadTask {
+        if UploadVars.shared.isExecutingBGUploadTask {
             countOfBytesToUpload += httpBody.count
             UploadManager.logger.notice("transferInBackground() | countOfBytesToUpload: \(self.countOfBytesToUpload)")
         }
         
         // Remember the total number of bytes to upload and that this chunk is treated
-        if chunks == 1 {
-            // Only one chunk to upload
-            UploadSessions.shared.initCounter(withID: upload.localIdentifier, totalBytes: bytesToSend)
-        } else {
-            // Several chunks to upload
-            let totalBytes = Int64(imageData.count) + (bytesToSend - Int64(chunkSize)) * Int64(chunks)
-            UploadSessions.shared.initCounter(withID: upload.localIdentifier, totalBytes: totalBytes)
+        Task {
+            if chunks == 1 {
+                // Only one chunk to upload
+                await UploadSessionsDelegate.shared.initCounter(withID: upload.localIdentifier, totalBytes: bytesToSend)
+            } else {
+                // Several chunks to upload
+                let totalBytes = Int64(imageData.count) + (bytesToSend - Int64(chunkSize)) * Int64(chunks)
+                await UploadSessionsDelegate.shared.initCounter(withID: upload.localIdentifier, totalBytes: totalBytes)
+            }
+            await UploadSessionsDelegate.shared.addChunk(chunk, toCounterWithID: upload.localIdentifier)
         }
-        UploadSessions.shared.addChunk(chunk, toCounterWithID: upload.localIdentifier)
 
         // Resume task of first chunk
         task.resume()
@@ -750,7 +771,7 @@ extension UploadManager {
 
                 // As soon as tasks are created, the timeout counter starts
                 let task = bckgSession.uploadTask(with: request, fromFile: fileURL)
-                task.taskDescription = UploadSessions.shared.uploadBckgSessionIdentifier
+                task.taskDescription = uploadBckgSessionIdentifier
 
                 // Tell the system how many bytes are expected to be uploaded
                 let bytesToSend = Int64(httpBody.count + (request.allHTTPHeaderFields ?? [:]).count)
@@ -758,17 +779,19 @@ extension UploadManager {
                 task.countOfBytesClientExpectsToReceive = 600
                 
                 // Adds bytes expected to be sent to counter
-                if isExecutingBackgroundUploadTask {
+                if UploadVars.shared.isExecutingBGUploadTask {
                     countOfBytesToUpload += httpBody.count
                     UploadManager.logger.notice("sendInBackground() | countOfBytesToUpload: \(self.countOfBytesToUpload)")
                 }
                 
                 // Remember the total number of bytes to upload and that this chunk is treated
-                if chunk+1 < chunks {
-                    let totalBytes = Int64(imageData.count) + (bytesToSend - Int64(chunkSize)) * Int64(chunks)
-                    UploadSessions.shared.initCounter(withID: upload.localIdentifier, totalBytes: totalBytes)
+                Task {
+                    if chunk+1 < chunks {
+                        let totalBytes = Int64(imageData.count) + (bytesToSend - Int64(chunkSize)) * Int64(chunks)
+                        await UploadSessionsDelegate.shared.initCounter(withID: upload.localIdentifier, totalBytes: totalBytes)
+                    }
+                    await UploadSessionsDelegate.shared.addChunk(chunk, toCounterWithID: upload.localIdentifier)
                 }
-                UploadSessions.shared.addChunk(chunk, toCounterWithID: upload.localIdentifier)
 
                 // Resume task
                 task.resume()
@@ -872,12 +895,15 @@ extension UploadManager {
             else {
                 UploadManager.logger.notice("Failed to retrieve Core Data object from task \(task.taskIdentifier, privacy: .public)")
                 // Investigate next upload request?
-                if self.isExecutingBackgroundUploadTask {
+                if UploadVars.shared.isExecutingBGUploadTask /* ||
+                    UploadVars.shared.isExecutingBGContinuedUploadTask */ {
                     // In background task — stop here
                 } else {
                     // In foreground, consider next image
-                    self.backgroundQueue.async {
-                        self.findNextImageToUpload()
+                    Task { @UploadManagement in
+//                        if #unavailable(iOS 26.0) {
+                            self.findNextImageToUpload()
+//                        }
                     }
                 }
                 return
@@ -890,14 +916,14 @@ extension UploadManager {
                 } else {
                     upload.setState(.uploadingError, error: error, save: true)
                 }
-                self.backgroundQueue.async {
+                Task { @UploadManagement in
                     self.uploadBckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
                 }
             }
             else {
                 upload.setState(.uploadingError, error: .operationFailed, save: false)
-                self.backgroundQueue.async {
+                Task { @UploadManagement in
                     self.uploadBckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
                 }
@@ -946,12 +972,15 @@ extension UploadManager {
         guard let upload = (uploads.fetchedObjects ?? []).first(where: {$0.objectID == uploadID}) else {
             UploadManager.logger.notice("Failed to retrieve Core Data object from task \(task.taskIdentifier, privacy: .public)")
             // Investigate next upload request?
-            if self.isExecutingBackgroundUploadTask {
+            if UploadVars.shared.isExecutingBGUploadTask /* ||
+                UploadVars.shared.isExecutingBGContinuedUploadTask */ {
                 // In background task — stop here
             } else {
                 // In foreground, consider next image
-                self.backgroundQueue.async {
-                    self.findNextImageToUpload()
+                Task { @UploadManagement in
+//                    if #unavailable(iOS 26.0) {
+                        self.findNextImageToUpload()
+//                    }
                 }
             }
             return
@@ -967,7 +996,7 @@ extension UploadManager {
             // Update upload request status
             UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | Task \(task.taskIdentifier, privacy: .public) returned an Empty JSON object")
             upload.setState(.uploadingError, error: .emptyJSONobject, save: false)
-            self.backgroundQueue.async {
+            Task { @UploadManagement in
                 self.uploadBckgContext.saveIfNeeded()
                 self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
             }
@@ -979,7 +1008,7 @@ extension UploadManager {
             let dataStr = String(decoding: data, as: UTF8.self)
             UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | Task \(task.taskIdentifier, privacy: .public) returned the invalid JSON object: \(dataStr, privacy: .public)")
             upload.setState(.uploadingError, error: .invalidJSONobject, save: false)
-            self.backgroundQueue.async {
+            Task { @UploadManagement in
                 self.uploadBckgContext.saveIfNeeded()
                 self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
             }
@@ -1009,24 +1038,30 @@ extension UploadManager {
                 if chunksToUpload.isEmpty == false {
                     // Determine how many tasks are running or scheduled
                     bckgSession.getTasksWithCompletionHandler { _, uploadTasks, _ in
-                        // Get list of active tasks
-                        let activeChunks = Set(uploadTasks.compactMap({ $0.originalRequest })
-                            .filter({ $0.value(forHTTPHeaderField: pwgHTTPuploadID) == objectURIstr })
-                            .compactMap({ $0.value(forHTTPHeaderField: pwgHTTPchunk )}).compactMap({ Int($0) }))
-                        
-                        // Get list of chunks being treated (might be only one or none when retrying)
-                        let treatedChunks = UploadSessions.shared.getChunks(forCounterWithID: upload.localIdentifier)
-                            .subtracting(uploadedChunks)
-                        
-                        // Determine (roughly) how many tasks are running
-                        let nberActiveTasks = activeChunks.union(treatedChunks).count
-
-                        // Launch up to 4 tasks in parallel
-                        let chunksToTreat = chunksToUpload.subtracting(activeChunks).subtracting(treatedChunks).sorted()
-                        let chunksToResume = Set(chunksToTreat[0..<min(chunksToTreat.count, max(0, 4 - nberActiveTasks))])
-                        UploadManager.logger.notice("\(md5sum, privacy: .public) | \(chunksToResume) i.e. \(chunksToResume.count) chunk(s) to resume")
-                        if chunksToResume.isEmpty == false {
-                            self.sendInBackground(chunkSet: chunksToResume, of: chunks, for: upload)
+                        Task {
+                            // Get list of active tasks
+                            let activeChunks = Set(uploadTasks.compactMap({ $0.originalRequest })
+                                .filter({ $0.value(forHTTPHeaderField: pwgHTTPuploadID) == objectURIstr })
+                                .compactMap({ $0.value(forHTTPHeaderField: pwgHTTPchunk )}).compactMap({ Int($0) }))
+                            
+                            // Get list of chunks being treated (might be only one or none when retrying)
+                            let treatedChunks = await UploadSessionsDelegate.shared.getChunks(forCounterWithID: upload.localIdentifier)
+                                .subtracting(uploadedChunks)
+                            
+                            // Determine (roughly) how many tasks are running
+                            let nberActiveTasks = activeChunks.union(treatedChunks).count
+                            
+                            // Launch up to 4 tasks in parallel
+                            let chunksToTreat = chunksToUpload.subtracting(activeChunks).subtracting(treatedChunks).sorted()
+                            let chunksToResume = Set(chunksToTreat[0..<min(chunksToTreat.count, max(0, 4 - nberActiveTasks))])
+                            let uploadID = upload.objectID
+                            Task { @UploadManagement in
+                                UploadManager.logger.notice("\(md5sum, privacy: .public) | \(chunksToResume) i.e. \(chunksToResume.count) chunk(s) to resume")
+                                if chunksToResume.isEmpty == false,
+                                   let uploadToPass = try? self.uploadBckgContext.existingObject(with: uploadID) as? Upload {
+                                    self.sendInBackground(chunkSet: chunksToResume, of: chunks, for: uploadToPass)
+                                }
+                            }
                         }
                     }
                     return
@@ -1035,7 +1070,7 @@ extension UploadManager {
             
             // Upload completed
             // Cancel other tasks related to this request if any
-            UploadSessions.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: task.taskIdentifier)
+            UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: task.taskIdentifier)
 
             // Collect image data
             if var getInfos = uploadJSON.data, let imageId = getInfos.id,
@@ -1080,9 +1115,9 @@ extension UploadManager {
                 upload.setState(.finished, save: false)
             }
 
-            self.backgroundQueue.async {
-                self.uploadBckgContext.saveIfNeeded()
-                self.didEndTransfer(for: upload)
+            Task { @UploadManagement in
+                uploadBckgContext.saveIfNeeded()
+                didEndTransfer(for: upload)
             }
             
             // Delete uploaded file
@@ -1096,7 +1131,9 @@ extension UploadManager {
             deleteFilesInUploadsDirectory(withPrefix: imageFile)
 
             // Clear bytes and chunk counter
-            UploadSessions.shared.removeCounter(withID: upload.localIdentifier)
+            Task {
+                await UploadSessionsDelegate.shared.removeCounter(withID: upload.localIdentifier)
+            }
         }
         catch {
             // Error type?
@@ -1112,9 +1149,9 @@ extension UploadManager {
                 UploadManager.logger.notice("\(md5sum, privacy: .public) | Wrong JSON object!")
                 upload.setState(.uploadingError, error: .wrongJSONobject, save: false)
             }
-            self.backgroundQueue.async {
-                self.uploadBckgContext.saveIfNeeded()
-                self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
+            Task { @UploadManagement in
+                uploadBckgContext.saveIfNeeded()
+                didEndTransfer(for: upload, taskID: task.taskIdentifier)
             }
         }
     }
@@ -1130,8 +1167,8 @@ extension UploadManager {
             // Cancel related tasks
             if taskID != Int.max {
                 let objectURIstr = upload.objectID.uriRepresentation().absoluteString
-                UploadSessions.shared.cancelTasksOfUpload(withID: objectURIstr,
-                                                          exceptedTaskID: taskID
+                UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr,
+                                                                  exceptedTaskID: taskID
                 )
             }
 
@@ -1154,9 +1191,11 @@ extension UploadManager {
         }
         
         // Pursue the work…
-        if isExecutingBackgroundUploadTask {
+        if UploadVars.shared.isExecutingBGUploadTask /* ||
+            UploadVars.shared.isExecutingBGContinuedUploadTask */ {
             finishTransfer(of: upload)
-        } else if !isPreparing, isUploading.count <= maxNberOfTransfers, !isFinishing {
+        }
+        else if !isPreparing, isUploading.count <= maxNberOfTransfers, !isFinishing {
             // In foreground, always consider next file
             findNextImageToUpload()
         }

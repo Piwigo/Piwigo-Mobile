@@ -47,14 +47,16 @@ extension UploadManager {
         // Record upload requests in database
         uploadProvider.importUploads(from: uploadRequestsToAppend) { error in
             // Job done in background task
-            if self.isExecutingBackgroundUploadTask { return }
+            if UploadVars.shared.isExecutingBGUploadTask { return }
 
             // Restart upload manager if no error
             guard let error = error else {
                 // Restart UploadManager activities
-                UploadManager.shared.backgroundQueue.async {
-                    UploadManager.shared.isPaused = false
-                    UploadManager.shared.findNextImageToUpload()
+                Task { @UploadManagement in
+                    UploadVars.shared.isPaused = false
+//                    if #unavailable(iOS 26.0) {
+                        UploadManager.shared.findNextImageToUpload()
+//                    }
                 }
                 return
             }
@@ -104,7 +106,7 @@ extension UploadManager {
                 uploadRequestsToAppend.append(uploadRequest)
 
                 // Check if we have reached the max number of requests to append
-                if uploadRequestsToAppend.count >= UploadManager.shared.maxNberOfAutoUploadsPerCheck {
+                if uploadRequestsToAppend.count >= maxNberOfUploadsPerSeries {
                     stop.pointee = true
                 }
             }
@@ -129,7 +131,7 @@ extension UploadManager {
         // If the Settings or Settings/AutoUpload view is displayed:
         /// - switch off Auto-Upload control
         /// - inform user in case of error
-        if !self.isExecutingBackgroundUploadTask {
+        if !UploadVars.shared.isExecutingBGUploadTask {
             DispatchQueue.main.async {
                 let userInfo: [String : Any] = ["title"   : title,
                                                 "message" : message];
@@ -139,17 +141,19 @@ extension UploadManager {
         }
 
         // Remove non-completed upload requests marked for auto-upload from the upload queue
-        let toDelete = (uploads.fetchedObjects ?? []).filter({$0.markedForAutoUpload == true})
-        uploadProvider.delete(uploadRequests: toDelete) { [self] error in
+        let uploadsToDelete = (uploads.fetchedObjects ?? []).filter({$0.markedForAutoUpload == true}).map(\.objectID)
+        uploadProvider.delete(uploadsWithID: uploadsToDelete) { error in
             // Job done in background task
-            if self.isExecutingBackgroundUploadTask { return }
+            if UploadVars.shared.isExecutingBGUploadTask { return }
 
             // Error encountered?
             guard let error = error else {
                 // Restart UploadManager activities
-                UploadManager.shared.backgroundQueue.async {
-                    UploadManager.shared.isPaused = false
-                    UploadManager.shared.findNextImageToUpload()
+                Task { @UploadManagement in
+                    UploadVars.shared.isPaused = false
+//                    if #unavailable(iOS 26.0) {
+                        UploadManager.shared.findNextImageToUpload()
+//                    }
                 }
                 return
             }

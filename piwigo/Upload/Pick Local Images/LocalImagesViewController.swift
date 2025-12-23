@@ -77,7 +77,6 @@ class LocalImagesViewController: UIViewController
     var imagesBeingTouched = [IndexPath]()          // Array of indexPaths of touched images
     var uploadRequests = [UploadProperties]()       // Array of images to upload
     
-    var uploadsToDelete = [Upload]()
     lazy var imageCellSize: CGSize = getImageCellSize()
     let defaultImageHeaderHeight: CGFloat = 42.0
     lazy var imageHeaderHeight: CGFloat = defaultImageHeaderHeight
@@ -279,10 +278,12 @@ class LocalImagesViewController: UIViewController
         
         // Resume upload operations in background queue
         // and update badge and upload button of album navigator
-        UploadManager.shared.backgroundQueue.async {
-            UploadManager.shared.isPaused = false
-            UploadManager.shared.isExecutingBackgroundUploadTask = false
-            UploadManager.shared.findNextImageToUpload()
+        Task { @UploadManagement in
+            UploadVars.shared.isPaused = false
+            UploadVars.shared.isExecutingBGUploadTask = false
+//            if #unavailable(iOS 26.0) {
+                UploadManager.shared.findNextImageToUpload()
+//            }
         }
     }
     

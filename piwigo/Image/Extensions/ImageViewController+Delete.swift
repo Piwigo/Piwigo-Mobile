@@ -191,7 +191,7 @@ extension ImageViewController
                     
                     // If this image was uploaded with the iOS app,
                     // delete upload request from cache so that it can be re-uploaded.
-                    UploadManager.shared.backgroundQueue.async {
+                    Task { @UploadManagement in
                         UploadManager.shared.deleteUploadsOfDeletedImages(withIDs: [imageID])
                     }
                     

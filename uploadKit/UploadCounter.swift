@@ -9,37 +9,40 @@
 import Foundation
 
 // MARK: - Counter for Updating Progress Bars and Managing Tasks
-// Upload counters kept in memory during upload
-struct UploadCounter {
-    var uid: String
-    var bytesSent: Int64        // Bytes sent
-    var totalBytes: Int64       // Bytes to upload
-    var chunks: Set<Int>        // Chunk IDs of resumed tasks
-    var progress: Float {
-        get {
-            return min(Float(bytesSent) / Float(totalBytes), 1.0)
+// Actor to manage upload counters safely
+actor UploadCounterManager {
+    
+    // Upload counters kept in memory during upload
+    // for updating progress bars and managing tasks
+    var uploadCounters = [UploadCounter]()
+
+    struct UploadCounter {
+        var uid: String
+        var bytesSent: Int64        // Bytes sent
+        var totalBytes: Int64       // Bytes to upload
+        var chunks: Set<Int>        // Chunk IDs of resumed tasks
+        var progress: Float {
+            get {
+                return min(Float(bytesSent) / Float(totalBytes), 1.0)
+            }
+        }
+        
+        init(identifier: String, totalBytes: Int64 = 0) {
+            self.uid = identifier
+            self.bytesSent = Int64.zero
+            self.totalBytes = totalBytes
+            self.chunks = Set<Int>()
+        }
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            return lhs.uid == rhs.uid
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(uid)
         }
     }
     
-    init(identifier: String, totalBytes: Int64 = 0) {
-        self.uid = identifier
-        self.bytesSent = Int64.zero
-        self.totalBytes = totalBytes
-        self.chunks = Set<Int>()
-    }
-}
-
-extension UploadCounter: Hashable {
-    static func == (lhs: Self, rhs: Self) -> Bool {
-        return lhs.uid == rhs.uid
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(uid)
-    }
-}
-
-extension UploadSessions {
     // Initialise a counter before resuming upload tasks
     func initCounter(withID identifier: String, totalBytes: Int64 = 0) {
         if let index = uploadCounters.firstIndex(where: {$0.uid == identifier}) {

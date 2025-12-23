@@ -54,7 +54,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
     
     
     // MARK: - Context Menus
-    @available(iOS, introduced: 13.0, deprecated: 16.0, message: "")
+    @available(iOS, introduced: 13.0, obsoleted: 16.0, message: "")
     func collectionView(_ collectionView: UICollectionView,
                         contextMenuConfigurationForItemAt indexPath: IndexPath,
                         point: CGPoint) -> UIContextMenuConfiguration? {
@@ -300,7 +300,9 @@ extension LocalImagesViewController: UICollectionViewDelegate
             // Get image identifier and check if this image has been uploaded
             if let upload = (self.uploads.fetchedObjects ?? []).filter({$0.localIdentifier == cell.localIdentifier}).first {
                 // Delete uploaded image
-                UploadManager.shared.deleteAssets(associatedToUploads: [upload])
+                Task { @UploadManagement in
+                    UploadManager.shared.deleteAssets(associatedToUploads: [upload.objectID], [upload.localIdentifier])
+                }
             } else {
                 // Delete images from Photo Library
                 let index = self.getImageIndex(for: indexPath)

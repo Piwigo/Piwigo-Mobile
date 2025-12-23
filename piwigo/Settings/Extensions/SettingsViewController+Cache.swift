@@ -183,8 +183,9 @@ extension SettingsViewController
                         self.mainContext.saveIfNeeded()
                         
                         // Refresh upload cache cell
-                        self.uploadCacheSize = server.getUploadCount()
-                            + " | " + UploadManager.shared.getUploadsDirectorySize()
+                        let uploadsDirectory = DataDirectories.appUploadsDirectory
+                        let uploadsDirectorySize = ByteCountFormatter.string(fromByteCount: Int64(uploadsDirectory.folderSize), countStyle: .file)
+                        self.uploadCacheSize = server.getUploadCount() + " | " + uploadsDirectorySize
                         
                         // Hide HUD on completion
                         self.navigationController?.hideHUD { }

@@ -50,7 +50,7 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
     
     
     // MARK: - Context Menus
-    @available(iOS, introduced: 13.0, deprecated: 16.0, message: "")
+    @available(iOS, introduced: 13.0, obsoleted: 16.0, message: "")
     func collectionView(_ collectionView: UICollectionView,
                         contextMenuConfigurationForItemAt indexPath: IndexPath,
                         point: CGPoint) -> UIContextMenuConfiguration? {

@@ -8,22 +8,22 @@
 
 import Foundation
 import Photos
-import piwigoKit
+@preconcurrency import piwigoKit
 
 extension UploadManager
 {
     // MARK: - Prepare Image/Video
-    func prepare(_ upload: Upload) -> Void {
+    func prepare(_ upload: Upload) async -> Void {
         UploadManager.logger.notice("Prepare image/video for upload \(upload.objectID.uriRepresentation())")
         
         // Update upload status
         isPreparing = true
         upload.setState(.preparing, save: true)
-
+        
         // Add category ID to list of recently used albums
         let userInfo = ["categoryId": upload.category]
         NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
-
+        
         // Determine from where the file comes from:
         // => Photo Library: use PHAsset local identifier
         // => UIPasteborad: use identifier of type "Clipboard-yyyyMMdd-HHmmssSSSS-typ-#"
@@ -32,13 +32,13 @@ extension UploadManager
         //    where "typ" is "img" (photo) or "mov" (video).
         if upload.localIdentifier.hasPrefix(kIntentPrefix) {
             // Case of an image submitted by an intent
-            prepareImageFromIntent(for: upload)
+            await prepareImageFromIntent(for: upload)
         } else if upload.localIdentifier.hasPrefix(kClipboardPrefix) {
             // Case of an image retrieved from the pasteboard
-            prepareImageInPasteboard(for: upload)
+            await prepareImageInPasteboard(for: upload)
         } else {
             // Case of an image from the local Photo Library
-            prepareImageInPhotoLibrary(for: upload)
+            await prepareImageInPhotoLibrary(for: upload)
         }
     }
     
@@ -86,12 +86,12 @@ extension UploadManager
         return fileName
     }
     
-    private func prepareImageFromIntent(for upload: Upload) {
+    private func prepareImageFromIntent(for upload: Upload) async {
         // Determine non-empty unique file name and extension from identifier
         var files = [URL]()
         do {
             // Get complete filename by searching in the Uploads directory
-            files = try FileManager.default.contentsOfDirectory(at: uploadsDirectory,
+            files = try FileManager.default.contentsOfDirectory(at: DataDirectories.appUploadsDirectory,
                         includingPropertiesForKeys: nil,
                         options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
         }
@@ -104,7 +104,7 @@ extension UploadManager
             upload.setState(.preparingFail, error: .missingAsset, save: true)
             
             // Investigate next upload request?
-            self.didEndPreparation()
+            await didEndPreparation()
             return
         }
         
@@ -121,12 +121,12 @@ extension UploadManager
         }
     }
     
-    private func prepareImageInPasteboard(for upload: Upload) {
+    private func prepareImageInPasteboard(for upload: Upload) async {
         // Determine non-empty unique file name and extension from identifier
         var files = [URL]()
         do {
             // Get complete filename by searching in the Uploads directory
-            files = try FileManager.default.contentsOfDirectory(at: uploadsDirectory,
+            files = try FileManager.default.contentsOfDirectory(at: DataDirectories.appUploadsDirectory,
                         includingPropertiesForKeys: nil,
                         options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
         }
@@ -139,7 +139,7 @@ extension UploadManager
             upload.setState(.preparingFail, error: .missingAsset, save: true)
             
             // Investigate next upload request?
-            self.didEndPreparation()
+            await didEndPreparation()
             return
         }
         let fileName = fileURL.lastPathComponent
@@ -182,7 +182,7 @@ extension UploadManager
             upload.setState(.formatError, error: .unacceptedImageFormat, save: true)
             
             // Update upload request
-            didEndPreparation()
+            await didEndPreparation()
         }
         else if fileName.contains("mov") {
             upload.fileType = pwgImageFileType.video.rawValue
@@ -220,25 +220,25 @@ extension UploadManager
             upload.setState(.formatError, error: .unacceptedVideoFormat, save: true)
             
             // Investigate next upload request?
-            self.didEndPreparation()
+            await didEndPreparation()
         }
         else {
             // Unknown type
             upload.setState(.formatError, error: .unacceptedDataFormat, save: true)
             
             // Investigate next upload request?
-            self.didEndPreparation()
+            await didEndPreparation()
         }
     }
     
-    private func prepareImageInPhotoLibrary(for upload: Upload) {
+    private func prepareImageInPhotoLibrary(for upload: Upload) async {
         // Retrieve image asset
         let assets = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil)
         guard assets.count > 0, let originalAsset = assets.firstObject else {
             // Asset not available… deleted?
             upload.setState(.preparingFail, error: .missingAsset, save: true)
             
-            self.didEndPreparation()
+            await didEndPreparation()
             return
         }
 
@@ -303,8 +303,10 @@ extension UploadManager
                     }
                 }
                 
-                upload.fileName = utf8mb3Filename
-                self.dispatchAsset(originalAsset, atURL:fileURL, for: upload)
+                Task { @UploadManagement in
+                    upload.fileName = utf8mb3Filename
+                    await self.dispatchAsset(originalAsset, atURL:fileURL, for: upload)
+                }
             }
         }
         else {
@@ -312,14 +314,14 @@ extension UploadManager
             upload.setState(.preparingFail, error: .missingAsset, save: true)
             
             // Investigate next upload request?
-            self.didEndPreparation()
+            await didEndPreparation()
         }
         
         // Release memory
         resources.removeAll(keepingCapacity: false)
     }
     
-    private func dispatchAsset(_ originalAsset:PHAsset, atURL uploadFileURL:URL, for upload: Upload) {
+    private func dispatchAsset(_ originalAsset:PHAsset, atURL uploadFileURL:URL, for upload: Upload) async {
         // Rename file if requested by user
         upload.fileName = renamedFile(for: upload)
 
@@ -348,7 +350,7 @@ extension UploadManager
             upload.setState(.formatError, error: .unacceptedImageFormat, save: true)
             
             // Investigate next upload request?
-            self.didEndPreparation()
+            await didEndPreparation()
 
         case .video:
             upload.fileType = pwgImageFileType.video.rawValue
@@ -372,14 +374,14 @@ extension UploadManager
             upload.setState(.formatError, error: .unacceptedVideoFormat, save: true)
             
             // Investigate next upload request?
-            self.didEndPreparation()
+            await didEndPreparation()
 
         case .audio:
             // Update state of upload: Not managed by Piwigo iOS yet…
             upload.setState(.formatError, error: .unacceptedAudioFormat, save: true)
             
             // Investigate next upload request?
-            self.didEndPreparation()
+            await didEndPreparation()
 
         case .unknown:
             fallthrough
@@ -388,16 +390,16 @@ extension UploadManager
             upload.setState(.formatError, error: .unacceptedDataFormat, save: true)
             
             // Investigate next upload request?
-            self.didEndPreparation()
+            await didEndPreparation()
         }
     }
 
     
     // MARK: - End of Preparation
-    func didEndPreparation() {
+    func didEndPreparation() async {
         // Running in background or foreground?
         isPreparing = false
-        if isExecutingBackgroundUploadTask {
+        if UploadVars.shared.isExecutingBGUploadTask {
             if countOfBytesToUpload < maxCountOfBytesToUpload {
                 // In background task, launch a transfer if possible
                 let prepared = (uploads.fetchedObjects ?? []).filter({$0.state == .prepared})
@@ -411,6 +413,18 @@ extension UploadManager
                     launchTransfer(of: upload)
                 }
             }
+//        } else if UploadVars.shared.isExecutingBGContinuedUploadTask {
+//            // In continued background task, launch a transfer if possible
+//            let prepared = (uploads.fetchedObjects ?? []).filter({$0.state == .prepared})
+//            let states: [pwgUploadState] = [.preparingError, .preparingFail,
+//                                            .uploadingError, .uploadingFail,
+//                                            .finishingError]
+//            let failed = (uploads.fetchedObjects ?? []).filter({states.contains($0.state)})
+//            if isUploading.count < maxNberOfTransfers,
+//               failed.count < maxNberOfFailedUploads,
+//               let upload = prepared.first {
+//                launchTransfer(of: upload)
+//            }
         } else {
             // In foreground, always consider next file
             if isUploading.count <= maxNberOfTransfers, !isFinishing {

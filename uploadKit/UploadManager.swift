@@ -14,7 +14,15 @@ import CoreData
 import MobileCoreServices
 import piwigoKit
 
-public class UploadManager: NSObject {
+@globalActor
+public actor UploadManagement {
+    public static let shared = UploadManagement()
+    
+    private init() { }  // Prevents duplicate instances
+}
+
+@UploadManagement
+public final class UploadManager: NSObject {
     
     // Logs networking activities
     /// sudo log collect --device --start '2025-01-11 15:00:00' --output piwigo.logarchive
@@ -23,14 +31,7 @@ public class UploadManager: NSObject {
     // Singleton
     public static let shared = UploadManager()
     
-    // MARK: - Constants
-    // Constants used to name and identify media
-    let kOriginalSuffix = "-original"
-    public let kIntentPrefix = "Intent-"
-    public let kClipboardPrefix = "Clipboard-"
-    public let kImageSuffix = "-img-"
-    public let kMovieSuffix = "-mov-"
-    
+    // MARK: - Constants    
     // Constants returning the list of:
     /// - image formats which can be converted with iOS
     /// - movie formats which can be converted with iOS
@@ -63,11 +64,7 @@ public class UploadManager: NSObject {
     let maxNberPreparedUploads = 10             // Maximum number of images prepared in advance
     let maxNberOfTransfers = 1                  // Maximum number of transfers executed in parallel
     public let maxNberOfFailedUploads = 5       // Stop transfers after 5 failures
-    
-    // Constants used to manage background tasks
-    public let maxCountOfBytesToUpload = 100 * 1024 * 1024  // Up to 100 MB transferred in a series
-    public let maxNberOfAutoUploadsPerCheck = 500           // i.e. do not add more than 500 requests at a time
-    
+        
     
     // MARK: - Upload Request States
     /** The manager prepares an image for upload and then launches the transfer.
@@ -77,32 +74,17 @@ public class UploadManager: NSObject {
     - isFinishing is set to true when the photo/video parameters are going to be set,
       and false when this job has completed or failed.
     */
-    public var isPaused = false                             // Flag used to pause uploads when
-                                                            // - sorting local device images
-                                                            // - adding upload requests
-                                                            // - modifying auto-upload settings
-                                                            // - cancelling upload tasks
-                                                            // - the app is about to become inactive
     var isPreparing = false                                 // Prepare one image at once
     var isUploading = Set<NSManagedObjectID>()              // IDs of queued transfers
     var isFinishing = false                                 // Finish transfer one image at once
     var isDeleting = Set<NSManagedObjectID>()               // IDs of uploads to be deleted
     
-    public var isExecutingBackgroundUploadTask = false      // True if called by the background task
     public var countOfBytesPrepared = UInt64(0)             // Total amount of bytes of prepared files
     public var countOfBytesToUpload = 0                     // Total amount of bytes to be sent
     public var uploadRequestsToPrepare = Set<NSManagedObjectID>()
     public var uploadRequestsToTransfer = Set<NSManagedObjectID>()
-    
-    /// Background queue in which uploads are managed
-    public let backgroundQueue: DispatchQueue = {
-        return DispatchQueue(label: "org.piwigo.uploadBckgQueue", qos: .background)
-    }()
-    
+        
     /// Uploads directory, sessions and JSON decoder
-    public let uploadsDirectory: URL = DataDirectories.appUploadsDirectory
-    public let frgdSession: URLSession = UploadSessions.shared.frgdSession
-    public let bckgSession: URLSession = UploadSessions.shared.bckgSession
     let decoder = JSONDecoder()
     
     /// Number of pending upload requests
@@ -240,18 +222,18 @@ public class UploadManager: NSObject {
 
 
 // MARK: - NSFetchedResultsControllerDelegate
-extension UploadManager: NSFetchedResultsControllerDelegate {
+extension UploadManager: @UploadManagement NSFetchedResultsControllerDelegate {
     
     public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         
         switch type {
         case .insert:
             // Check whether this upload request can be launched in the foreground
-            if isExecutingBackgroundUploadTask == false {
-                backgroundQueue.async {
-                    self.findNextImageToUpload()
+//            if #unavailable(iOS 26.0) {
+                if UploadVars.shared.isExecutingBGUploadTask == false {
+                    findNextImageToUpload()
                 }
-            }
+//            }
             // Update number of uploads to complete
             updateNberOfUploadsToComplete()
 

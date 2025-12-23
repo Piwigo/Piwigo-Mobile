@@ -269,11 +269,13 @@ class UploadQueueViewController: UIViewController {
             if failedUploads > 0 {
                 let titleResume = failedUploads > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber(value: failedUploads), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
                 let resumeAction = UIAlertAction(title: titleResume, style: .default, handler: { action in
-                    UploadManager.shared.backgroundQueue.async {
+                    Task { @UploadManagement in
                         // Resume all failed uploads
                         UploadManager.shared.resumeAllFailedUploads()
                         // Relaunch uploads
-                        UploadManager.shared.findNextImageToUpload()
+//                        if #unavailable(iOS 26.0) {
+                            UploadManager.shared.findNextImageToUpload()
+//                        }
                     }
                 })
                 alert.addAction(resumeAction)
@@ -286,7 +288,7 @@ class UploadQueueViewController: UIViewController {
             if impossibleUploads > 0 {
                 let titleClear = impossibleUploads > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber(value: impossibleUploads), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
                 let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { action in
-                    UploadManager.shared.backgroundQueue.async {
+                    Task { @UploadManagement in
                         // Delete all impossible upload requests
                         UploadManager.shared.deleteImpossibleUploads()
                     }

@@ -82,7 +82,7 @@ extension LocalImagesViewController {
         }
     }
     
-    @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
+    @MainActor @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Specific to iOS 15 to 18")
     func setTitleView(withCount count: Int? = nil) {
         // Create label programmatically
         let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))

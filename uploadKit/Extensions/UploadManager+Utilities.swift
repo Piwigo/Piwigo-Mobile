@@ -30,7 +30,7 @@ extension UploadManager {
             fileName = "file-".appending(String(Int64(upload.creationDate)))
         }
         fileName.append(suffix)
-        let fileURL = uploadsDirectory.appendingPathComponent(fileName)
+        let fileURL = DataDirectories.appUploadsDirectory.appendingPathComponent(fileName)
         
         // Should we delete it?
         if deleteIt {
@@ -105,7 +105,8 @@ extension UploadManager {
         let fileManager = FileManager.default
         do {
             // Get list of files
-            var filesToDelete = try fileManager.contentsOfDirectory(at: self.uploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+            let uploadsDirectory = DataDirectories.appUploadsDirectory
+            var filesToDelete = try fileManager.contentsOfDirectory(at: uploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
             if prefix.isEmpty == false {
                 // Will delete files with given prefix only
                 filesToDelete.removeAll(where: { !$0.lastPathComponent.hasPrefix(prefix) })
@@ -120,7 +121,7 @@ extension UploadManager {
             filesToDelete.removeAll()
             
             // For debugging
-//            let leftFiles = try fileManager.contentsOfDirectory(at: self.uploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+//            let leftFiles = try fileManager.contentsOfDirectory(at: uploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
 //            debugPrint("\(dbg()) Remaining files in cache: \(leftFiles)")
         } catch {
             UploadManager.logger.notice("Could not clear the Uploads folder: \(error)")
@@ -130,10 +131,6 @@ extension UploadManager {
         if let completion = completion {
             completion()
         }
-    }
-    
-    public func getUploadsDirectorySize() -> String {
-        return ByteCountFormatter.string(fromByteCount: Int64(uploadsDirectory.folderSize), countStyle: .file)
     }
 }
 
@@ -165,4 +162,3 @@ public extension String {
         }
     }
 }
-

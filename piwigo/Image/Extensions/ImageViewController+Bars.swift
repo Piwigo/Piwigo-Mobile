@@ -193,7 +193,7 @@ extension ImageViewController {
         }
     }
     
-    @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
+    @MainActor @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Specific to iOS 15 to 18")
     private func updateNavBarOldForAdmin(orientation: UIInterfaceOrientation) {
         // Case of users with admin or upload rights
         if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
@@ -253,7 +253,7 @@ extension ImageViewController {
         }
     }
     
-    @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
+    @MainActor @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Specific to iOS 15 to 18")
     private func updateNavBarOldForStdUserOrGuest(orientation: UIInterfaceOrientation) {
         // Case of users without admin or upload rights
         if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
@@ -400,7 +400,7 @@ extension ImageViewController {
                                                 subtitle: subTitle, subTitleColor: .label)
     }
     
-    @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
+    @MainActor @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Specific to iOS 15 to 18")
     func setTitleViewOld() {
         // Title
         var title = String()

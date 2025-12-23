@@ -78,7 +78,7 @@ class UploadImageTableViewCell: UITableViewCell {
         // => Photo Library: use PHAsset local identifier
         // => UIPasteborad: use identifier of type "Clipboard-yyyyMMdd-HHmmssSSSS-typ-#"
         //    where "typ" is "img" (photo) or "mov" (video).
-        if upload.localIdentifier.contains(UploadManager.shared.kClipboardPrefix) {
+        if upload.localIdentifier.contains(kClipboardPrefix) {
             // Case of an image retrieved from the pasteboard
             prepareThumbnailFromFile(for: upload, availableWidth: availableWidth)
         } else {
@@ -96,7 +96,7 @@ class UploadImageTableViewCell: UITableViewCell {
     /// Case of an image from the pasteboard
     private func prepareThumbnailFromFile(for upload:Upload, availableWidth:Int) {
         // Get file URL from identifier
-        let fileURL = UploadManager.shared.uploadsDirectory
+        let fileURL = DataDirectories.appUploadsDirectory
             .appendingPathComponent(upload.localIdentifier)
         
         // Task depends on file type

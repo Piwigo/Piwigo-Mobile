@@ -168,7 +168,7 @@ extension AlbumViewController
         }
     }
     
-    @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
+    @MainActor @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Specific to iOS 15 to 18")
     private func initNavBarsOldInPreviewMode() {
         // Left side of navigation bar
         if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
@@ -245,7 +245,7 @@ extension AlbumViewController
         selectBarButton?.isEnabled = albumData.nbImages != 0
     }
     
-    @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
+    @MainActor @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Specific to iOS 15 to 18")
     private func updateRightBarOldInPreviewMode() {
         // Hide toolbar unless it is displaying the image detail view
         if let displayedVC = navigationController?.viewControllers.last,
@@ -549,7 +549,7 @@ extension AlbumViewController
         self.view?.window?.windowScene?.subtitle = subTitle
     }
     
-    @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
+    @MainActor @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Specific to iOS 15 to 18")
     func setTitleViewOld(progress: Float = 0) {
         // Title
         if [0, pwgSmartAlbum.search.rawValue].contains(categoryId) {

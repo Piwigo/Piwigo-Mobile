@@ -10,7 +10,7 @@ import AVFoundation
 import MobileCoreServices
 import Photos
 import CoreData
-import piwigoKit
+@preconcurrency import piwigoKit
 
 extension UploadManager {
     
@@ -196,9 +196,9 @@ extension UploadManager {
             upload.setState(.prepared, save: false)
         }
 
-        self.backgroundQueue.async {
+        Task { @UploadManagement in
             self.uploadBckgContext.saveIfNeeded()
-            self.didEndPreparation()
+            await self.didEndPreparation()
         }
     }
 
@@ -254,7 +254,7 @@ extension UploadManager {
         // Available export session presets?
         PHImageManager.default().requestAVAsset(forVideo: imageAsset,
                                                 options: options,
-                                                resultHandler: { [self] avasset, audioMix, info in
+                                                resultHandler: { avasset, audioMix, info in
             // ====>> For debugging…
 //            if let metadata = avasset?.metadata {
 //                debugPrint("=> Metadata: \(metadata)\r=> Creation date: \(metadata.creationDate() ?? DateUtilities.unknownDate)")
@@ -294,7 +294,8 @@ extension UploadManager {
             // <<==== End of code for debugging
             
             // resultHandler performed on another thread!
-            if self.isExecutingBackgroundUploadTask {
+            if UploadVars.shared.isExecutingBGUploadTask /* ||
+//                UploadVars.shared.isExecutingBGContinuedUploadTask */ {
 //                debugPrint("\(self.dbg()) exits retrieveVideoAssetFrom in", queueName())
                 // Any error?
                 if let error = info?[PHImageErrorKey] as? Error {
@@ -307,7 +308,7 @@ extension UploadManager {
                     completionHandler(avasset, options, nil)
                 }
             } else {
-                self.backgroundQueue.async {
+                Task { @UploadManagement in
 //                    debugPrint("\(self.dbg()) exits retrieveVideoAssetFrom in", queueName())
                     // Any error?
                     if let error = info?[PHImageErrorKey] as? Error {

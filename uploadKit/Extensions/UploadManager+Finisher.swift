@@ -37,22 +37,38 @@ extension UploadManager {
         isFinishing = false
         
         // Foreground or background task?
-        if isExecutingBackgroundUploadTask {
+        if UploadVars.shared.isExecutingBGUploadTask {
             // In background task, launch a transfer if possible
             if countOfBytesToUpload < maxCountOfBytesToUpload {
                 let prepared = (uploads.fetchedObjects ?? []).filter({$0.state == .prepared})
                 let states: [pwgUploadState] = [.preparingError, .preparingFail,
-                                               .uploadingError, .uploadingFail,
-                                               .finishingError]
+                                                .uploadingError, .uploadingFail,
+                                                .finishingError]
                 let failed = (uploads.fetchedObjects ?? []).filter({states.contains($0.state)})
                 if isUploading.count < maxNberOfTransfers,
                    failed.count < maxNberOfFailedUploads,
                    let upload = prepared.first {
-                    launchTransfer(of: upload)
+                    Task { @UploadManagement in
+                        launchTransfer(of: upload)
+                    }
                 }
             } else {
                 UploadManager.logger.notice("Background task stopped (\(self.countOfBytesToUpload, privacy: .public) bytes transferred)")
             }
+//        } else if UploadVars.shared.isExecutingBGContinuedUploadTask {
+//            // In continued background task, launch a transfer if possible
+//            let prepared = (uploads.fetchedObjects ?? []).filter({$0.state == .prepared})
+//            let states: [pwgUploadState] = [.preparingError, .preparingFail,
+//                                            .uploadingError, .uploadingFail,
+//                                            .finishingError]
+//            let failed = (uploads.fetchedObjects ?? []).filter({states.contains($0.state)})
+//            if isUploading.count < maxNberOfTransfers,
+//               failed.count < maxNberOfFailedUploads,
+//               let upload = prepared.first {
+//                Task { @UploadManagement in
+//                    launchTransfer(of: upload)
+//                }
+//            }
         } else if !isPreparing, isUploading.count <= maxNberOfTransfers {
             findNextImageToUpload()
         }
@@ -171,10 +187,8 @@ extension UploadManager {
         }
 
         // Consider next image
-        backgroundQueue.async {
-            self.uploadBckgContext.saveIfNeeded()
-            self.didFinishTransfer()
-        }
+        uploadBckgContext.saveIfNeeded()
+        didFinishTransfer()
     }
 
 

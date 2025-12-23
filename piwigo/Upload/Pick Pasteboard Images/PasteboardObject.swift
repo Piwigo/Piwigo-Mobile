@@ -182,7 +182,7 @@ class ObjectPreparation : Operation, @unchecked Sendable {
 //        let start = CFAbsoluteTimeGetCurrent()
 
         // Set file URL
-        let fileURL = UploadManager.shared.uploadsDirectory
+        let fileURL = DataDirectories.appUploadsDirectory
             .appendingPathComponent(pbObject.identifier)
 
         // Delete file if it already exists (incomplete previous attempt?)

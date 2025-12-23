@@ -297,75 +297,29 @@ public class UploadProvider: NSObject {
     }
     
     /**
-     Delete a batch of upload requests from the Core Data store on a queue,
-     processing the record in batches to avoid a high memory footprint.
+     Delete a batch of upload requests from the Core Data store on a background queue.
      */
-    public func delete(uploadRequests: [Upload],
+    public func delete(uploadsWithID: [NSManagedObjectID],
                        completion: @escaping (PwgKitError?) -> Void) {
-        
-        guard uploadRequests.isEmpty == false else {
+        // Any upload request to delete?
+        guard uploadsWithID.isEmpty == false else {
             completion(nil)
             return
         }
         
-        // Create the queue context.
-        guard let taskContext = uploadRequests.first?.managedObjectContext else {
-            completion(PwgKitError.uploadDeletionError)
-            return
-        }
-        
-        // Process records in batches to avoid a high memory footprint.
-        let batchSize = 256
-        let count = uploadRequests.count
-        
-        // Determine the total number of batches.
-        var numBatches = count / batchSize
-        numBatches += count % batchSize > 0 ? 1 : 0
-        
-        // Loop over the batches
-        for batchNumber in 0 ..< numBatches {
-            
-            // Determine the range for this batch.
-            let batchStart = batchNumber * batchSize
-            let batchEnd = batchStart + min(batchSize, count - batchNumber * batchSize)
-            let range = batchStart..<batchEnd
-            
-            // Create a batch for this range.
-            let uploadsBatch = Array(uploadRequests[range])
-            
-            // Stop the entire deletion if any batch is unsuccessful.
-            if !deleteOneBatch(uploadsBatch, taskContext: taskContext) {
-                completion(PwgKitError.uploadDeletionError)
-            }
-        }
-        completion(nil)
-    }
-    
-    /**
-     Delete one batch of upload requests on a queue. After saving,
-     resets the context to clean up the cache and lower the memory footprint.
-     
-     NSManagedObjectContext.performAndWait doesn't rethrow so this function
-     catches throws within the closure and uses a return value to indicate
-     whether the import is successful.
-     */
-    private func deleteOneBatch(_ uploadBatch: [Upload],
-                                taskContext: NSManagedObjectContext) -> Bool {
-        // Check imput and current queue
-        if uploadBatch.isEmpty { return true }
-        
-        var success = false
-        taskContext.performAndWait {
+        // Delete all upload requests in a batch
+        do {
             // Create batch delete request
-            let batchDeleteRequest = NSBatchDeleteRequest(objectIDs: uploadBatch.map({$0.objectID}))
+            let batchDeleteRequest = NSBatchDeleteRequest(objectIDs: uploadsWithID)
             
             // Execute batch delete request
             // Associated files will be deleted
-            try? taskContext.executeAndMergeChanges(using: batchDeleteRequest)
-            
-            success = true
+            try bckgContext.executeAndMergeChanges(using: batchDeleteRequest)
+            completion(nil)
         }
-        return success
+        catch let error {
+            completion(PwgKitError.otherError(innerError: error))
+        }
     }
     
     /**

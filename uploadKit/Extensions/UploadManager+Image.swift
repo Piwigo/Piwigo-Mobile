@@ -97,9 +97,9 @@ extension UploadManager {
             upload.setState(.prepared, save: false)
         }
         
-        self.backgroundQueue.async {
+        Task { @UploadManagement in
             self.uploadBckgContext.saveIfNeeded()
-            self.didEndPreparation()
+            await self.didEndPreparation()
         }
     }
 

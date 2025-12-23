@@ -6,6 +6,7 @@
 //  Copyright © 2025 Piwigo.org. All rights reserved.
 //
 
+import CoreData
 import Foundation
 import Photos
 import UIKit
@@ -249,7 +250,7 @@ extension LocalImagesViewController {
     
     @objc func deleteUploadedImages() {
         // Delete uploaded images (fetched on the main queue)
-        uploadsToDelete = [Upload]()
+        var uploadsToDelete = [Upload]()
         let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
         let completed = (uploads.fetchedObjects ?? []).filter({[.finished, .moderated].contains($0.state)})
         for index in 0..<indexedUploads.count {
@@ -275,8 +276,10 @@ extension LocalImagesViewController {
             style: .cancel, handler: { action in })
         let deleteAction = UIAlertAction(title: title, style: .destructive, handler: { action in
             // Delete images and upload requests
-            UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.deleteAssets(associatedToUploads: self.uploadsToDelete, and: assetsToDelete)
+            let uploadIDs = uploadsToDelete.map(\.objectID)
+            let uploadLocalIDs = uploadsToDelete.map(\.localIdentifier)
+            Task { @UploadManagement in
+                UploadManager.shared.deleteAssets(associatedToUploads: uploadIDs, uploadLocalIDs, and: assetsToDelete)
             }
         })
         alert.addAction(defaultAction)

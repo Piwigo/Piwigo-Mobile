@@ -91,35 +91,43 @@ extension LocalImagesViewController: UploadSwitchDelegate
         UIApplication.shared.isIdleTimerDisabled = (uploadRequests.isEmpty == false)
         
         // Add selected images to upload queue
-        UploadManager.shared.backgroundQueue.async {
-            self.uploadProvider.importUploads(from: self.uploadRequests) { error in
+        Task { @UploadManagement in
+            await uploadProvider.importUploads(from: self.uploadRequests) { error in
                 // Deselect cells and reset upload queue
                 DispatchQueue.main.async {
                     self.cancelSelect()
-                }
-                self.uploadRequests = []
-                
-                // Error encountered?
-                guard let error = error else {
-                    // Restart UploadManager activities
-                    UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.isPaused = false
-                        UploadManager.shared.findNextImageToUpload()
-                    }
-                    return
-                }
-                DispatchQueue.main.async {
-                    let title = PwgKitError.uploadCreationError.localizedDescription
-                    self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {
-                        // Restart UploadManager activities
-                        UploadManager.shared.backgroundQueue.async {
-                            UploadManager.shared.isPaused = false
-                            UploadManager.shared.findNextImageToUpload()
+                    self.uploadRequests = []
+                    
+                    // Error encountered?
+                    if let error {
+                        let title = PwgKitError.uploadCreationError.localizedDescription
+                        self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {
+                            // Restart UploadManager activities
+                            self.restartUploadManager()
                         }
+                    }
+                    else {
+                        // Restart UploadManager activities
+                        self.restartUploadManager()
                     }
                 }
             }
         }
+    }
+    
+    private func restartUploadManager() {
+//        if #available(iOS 26.0, *) {
+//            DispatchQueue.main.async {
+//                let appDelegate = UIApplication.shared.delegate as! AppDelegate
+//                appDelegate.scheduleContinuedUpload()
+//            }
+//        } else {
+            // Fallback on previous version
+            Task { @UploadManagement in
+                UploadVars.shared.isPaused = false
+                UploadManager.shared.findNextImageToUpload()
+            }
+//        }
     }
     
     @objc func uploadSettingsDidDisappear() {

@@ -72,7 +72,7 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
             UploadVars.shared.autoUploadAlbumId = ""               // Unknown source Photos album
             
             // Delete remaining upload requests
-            UploadManager.shared.backgroundQueue.async {
+            Task { @UploadManagement in
                 UploadManager.shared.disableAutoUpload()
             }
             
@@ -87,7 +87,7 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
             UploadVars.shared.autoUploadCategoryId = Int32.min    // Unknown destination Piwigo album
             
             // Delete remaining upload requests
-            UploadManager.shared.backgroundQueue.async {
+            Task { @UploadManagement in
                 UploadManager.shared.disableAutoUpload()
             }
             
@@ -96,15 +96,15 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
         }
         
         // Get new local images to be uploaded
-        let uploadRequestsToAppend = UploadManager.shared.getNewRequests(inCollection: collection,
-                                                                         toBeUploadedIn: categoryId)
+        let uploadRequestsToAppend = await UploadManager.shared.getNewRequests(inCollection: collection,
+                                                                               toBeUploadedIn: categoryId)
         
         // Append auto-upload requests to database
         do {
             let count = try await UploadManager.shared.uploadProvider.importUploads(from: uploadRequestsToAppend)
 
             // Launch upload operations in background thread
-            UploadManager.shared.backgroundQueue.async {
+            Task { @UploadManagement in
                 launchUploadOperations()
             }
             
@@ -124,15 +124,19 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
         /// - considers only auto-upload requests
         /// - called by an extension (don't try to append auto-upload requests again)
         let initOperation = BlockOperation {
-            UploadManager.shared.initialiseBckgTask(autoUploadOnly: true,
-                                                    triggeredByExtension: true)
+            Task { @UploadManagement in
+                await UploadManager.shared.initialiseBckgTask(autoUploadOnly: true,
+                                                              triggeredByExtension: true)
+            }
         }
         uploadOperations.append(initOperation)
 
         // Check and resume transfers
         let resumeOperation = BlockOperation {
             // Transfer image
-            UploadManager.shared.resumeTransfers()
+            Task { @UploadManagement in
+                await UploadManager.shared.resumeTransfers()
+            }
         }
         resumeOperation.addDependency(uploadOperations.last!)
         uploadOperations.append(resumeOperation)
@@ -140,7 +144,9 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
         // Prepares one image maximum due to the 10s limit
         let uploadOperation = BlockOperation {
             // Prepare image
-            UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
+            Task { @UploadManagement in
+                await UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
+            }
         }
         uploadOperation.addDependency(uploadOperations.last!)
         uploadOperations.append(uploadOperation)

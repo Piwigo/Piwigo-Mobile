@@ -262,7 +262,7 @@ class ImageUtilities: NSObject {
     }
     
     // https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/dq_context/dq_context.html#//apple_ref/doc/uid/TP30001066-CH203-BCIBHHBB
-    @available(iOS, introduced: 12.0, deprecated: 15.0, message: "")
+    @available(iOS, introduced: 12.0, obsoleted: 15.0, message: "")
     public static func supportsPixelFormat(ofCGImage image: CGImage) -> Bool {
         guard let colorSpace = image.colorSpace else {
             return false

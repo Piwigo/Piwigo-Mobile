@@ -25,7 +25,15 @@ public class UploadVars: NSObject, @unchecked Sendable {
     public static let shared = UploadVars()
     
     // Constants
+//    public var isExecutingBGContinuedUploadTask = false     // True when the task is running (since iOS 26)
+    public var isExecutingBGUploadTask = false              // True if called by the background task (before iOS 26)
     public let maxNberOfUploadsPerBckgTask = 100            // i.e. up to 100 requests per bckg task
+    public var isPaused = false                             // Flag used to pause uploads when
+                                                            // - sorting local device images
+                                                            // - adding upload requests
+                                                            // - modifying auto-upload settings
+                                                            // - cancelling upload tasks
+                                                            // - the app is about to become inactive
 
     // Remove deprecated stored objects if needed
     override init() {

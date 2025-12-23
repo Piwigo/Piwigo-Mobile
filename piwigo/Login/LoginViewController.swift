@@ -524,7 +524,7 @@ class LoginViewController: UIViewController {
     @MainActor
     func logging(inConnectionError error: PwgKitError) {
         // Do not present error message when executing background task
-        if UploadManager.shared.isExecutingBackgroundUploadTask {
+        if UploadVars.shared.isExecutingBGUploadTask {
             hideLoading()
             return
         }

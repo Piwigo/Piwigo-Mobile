@@ -46,7 +46,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
             if fileTypes.contains(fileUrl.pathExtension.lowercased()) {
 
                 // Delete file of same name in Uploads directory if it already exists (incomplete previous attempt?)
-                let fileUploadsUrl = UploadManager.shared.uploadsDirectory
+                let fileUploadsUrl = DataDirectories.appUploadsDirectory
                     .appendingPathComponent(fileUrl.lastPathComponent)
                 do { try FileManager.default.removeItem(at: fileUploadsUrl) } catch { }
 
@@ -94,9 +94,9 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
             }
             
             // Set file URL in Uploads directory
-            let identifier = String(format: "%@%@%@%ld", UploadManager.shared.kIntentPrefix,
-                                    actionDateTime, UploadManager.shared.kImageSuffix, idx)
-            let fileUploadsUrl = UploadManager.shared.uploadsDirectory
+            let identifier = String(format: "%@%@%@%ld", kIntentPrefix,
+                                    actionDateTime, kImageSuffix, idx)
+            let fileUploadsUrl = DataDirectories.appUploadsDirectory
                 .appendingPathComponent(identifier)
 
             // Delete file if it already exists (incomplete previous attempt?)
@@ -140,7 +140,9 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
                 // Add operation setting flag and selecting upload requests
                 let initOperation = BlockOperation {
                     // Initialse variables and determine upload requests to prepare and transfer
-                    UploadManager.shared.initialiseBckgTask(triggeredByExtension: true)
+                    Task { @UploadManagement in
+                        await UploadManager.shared.initialiseBckgTask(triggeredByExtension: true)
+                    }
                 }
 
                 // Initialise list of operations
@@ -150,7 +152,9 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
                 // Resume transfers
                 let resumeOperation = BlockOperation {
                     // Transfer image
-                    UploadManager.shared.resumeTransfers()
+                    Task { @UploadManagement in
+                        await UploadManager.shared.resumeTransfers()
+                    }
                 }
                 resumeOperation.addDependency(uploadOperations.last!)
                 uploadOperations.append(resumeOperation)
@@ -159,7 +163,9 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
                 for _ in 0..<UploadVars.shared.maxNberOfUploadsPerBckgTask {
                     let uploadOperation = BlockOperation {
                         // Transfer image
-                        UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
+                        Task { @UploadManagement in
+                            await UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
+                        }
                     }
                     uploadOperation.addDependency(uploadOperations.last!)
                     uploadOperations.append(uploadOperation)
@@ -171,7 +177,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
                 lastOperation.completionBlock = {
                     debugPrint("••> Task completed with success.")
                     // Save cached data in the main thread
-                    DispatchQueue.main.async {
+                    Task { @MainActor in
                         self.mainContext.saveIfNeeded()
                     }
                 }
@@ -186,11 +192,9 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
             }
             
             // Error encountered…
-            DispatchQueue.main.async {
-                let msg = PwgKitError.uploadCreationError.localizedDescription
-                let errorMsg = String(format: "%@: %@", msg, error.localizedDescription)
-                completion(UploadPhotosIntentResponse.failure(error: errorMsg))
-            }
+            let msg = PwgKitError.uploadCreationError.localizedDescription
+            let errorMsg = String(format: "%@: %@", msg, error.localizedDescription)
+            completion(UploadPhotosIntentResponse.failure(error: errorMsg))
         }
     }
 }

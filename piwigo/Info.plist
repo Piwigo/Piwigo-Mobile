@@ -7,6 +7,9 @@
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>org.piwigo.uploadManager</string>
+		<string>org.piwigo.uploadManagerContinued</string>
+		<string>net.lelievre-berna.piwigo.uploadManager</string>
+		<string>net.lelievre-berna.piwigo.uploadManagerContinued</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>

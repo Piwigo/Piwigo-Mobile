@@ -42,11 +42,9 @@ extension PasteboardImagesViewController {
                 var identifier = ""
                 // Movies first because objects may contain both movies and images
                 if UIPasteboard.general.contains(pasteboardTypes: [UTType.movie.identifier], inItemSet: indexSet) {
-                    identifier = String(format: "%@%@%@%ld", UploadManager.shared.kClipboardPrefix,
-                                        pbDateTime, UploadManager.shared.kMovieSuffix, idx)
+                    identifier = String(format: "%@%@%@%ld", kClipboardPrefix, pbDateTime, kMovieSuffix, idx)
                 } else {
-                    identifier = String(format: "%@%@%@%ld", UploadManager.shared.kClipboardPrefix,
-                                        pbDateTime, UploadManager.shared.kImageSuffix, idx)
+                    identifier = String(format: "%@%@%@%ld", kClipboardPrefix, pbDateTime, kImageSuffix, idx)
                 }
                 let newObject = PasteboardObject(identifier: identifier, types: types[idx])
                 pbObjects.append(newObject)
@@ -130,9 +128,11 @@ extension PasteboardImagesViewController {
                 }
                 
                 // Restart upload manager
-                UploadManager.shared.backgroundQueue.async {
-                    UploadManager.shared.isPaused = false
-                    UploadManager.shared.findNextImageToUpload()
+                Task { @UploadManagement in
+                    UploadVars.shared.isPaused = false
+//                    if #unavailable(iOS 26.0) {
+                        UploadManager.shared.findNextImageToUpload()
+//                    }
                 }
             }
         }
