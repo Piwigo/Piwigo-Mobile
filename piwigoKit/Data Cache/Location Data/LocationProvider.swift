@@ -278,7 +278,7 @@ public class LocationProvider: NSObject {
         let fetchRequest = Location.fetchRequest()
 
         // Create batch delete request
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<any NSFetchRequestResult>)
 
         // Execute batch delete request
         try? mainContext.executeAndMergeChanges(using: batchDeleteRequest)

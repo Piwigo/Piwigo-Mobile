@@ -132,7 +132,7 @@ public class UserProvider: NSObject {
         // Delete the User object w/o loading it into memory
         /// - deletes associated albums in cascade
         /// - deletes associated upload requests in cascade if not already re-attributed to Piwigo user
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<any NSFetchRequestResult>)
         try? bckgContext.executeAndMergeChanges(using: batchDeleteRequest)
     }
     

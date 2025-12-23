@@ -19,7 +19,7 @@ extension PwgSession: URLSessionDelegate {
 //        debugPrint("    > The upload session will begin delayed request (back to online)")
 //    }
 
-    public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
+    public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: (any Error)?) {
         PwgSession.logger.notice("Session invalidated.")
         activeDownloads = [ : ]
     }
