@@ -16,15 +16,7 @@ public let HTTPCatID = "X-PWG-categoryID"
 // HTTP header used by API keys
 public let HTTPAPIKey = "X-PIWIGO-API"
 
-//@globalActor
-//public actor NetworkActor {
-//    public static let shared = NetworkActor()
-//    
-//    private init() { }
-//}
-
-//@NetworkActor
-public final class PwgSession: NSObject { //}, Sendable {
+public final class PwgSession: NSObject {
     
     // Logs networking activities
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
