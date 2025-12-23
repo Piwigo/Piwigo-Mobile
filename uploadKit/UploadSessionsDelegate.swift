@@ -312,33 +312,6 @@ extension UploadSessionsDelegate: URLSessionDataDelegate {
 
 // MARK: - Counter for Updating Progress Bars and Managing Tasks
 extension UploadSessionsDelegate {
-    // Upload counters kept in memory during upload
-    struct UploadCounter: Sendable, Equatable, Hashable {
-        var uid: String
-        var bytesSent: Int64        // Bytes sent
-        var totalBytes: Int64       // Bytes to upload
-        var chunks: Set<Int>        // Chunk IDs of resumed tasks
-        var progress: Float {
-            get {
-                return min(Float(bytesSent) / Float(totalBytes), 1.0)
-            }
-        }
-        
-        init(identifier: String, totalBytes: Int64 = 0) {
-            self.uid = identifier
-            self.bytesSent = Int64.zero
-            self.totalBytes = totalBytes
-            self.chunks = Set<Int>()
-        }
-
-        static func == (lhs: Self, rhs: Self) -> Bool {
-            return lhs.uid == rhs.uid
-        }
-        
-        func hash(into hasher: inout Hasher) {
-            hasher.combine(uid)
-        }
-    }
 
     // Initialise a counter before resuming upload tasks
     func initCounter(withID identifier: String, totalBytes: Int64 = 0) async {
