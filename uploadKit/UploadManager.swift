@@ -10,7 +10,6 @@
 import os
 import Foundation
 import CoreData
-import MobileCoreServices
 import piwigoKit
 
 @globalActor
