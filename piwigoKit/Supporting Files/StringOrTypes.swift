@@ -12,7 +12,7 @@ public enum StringOrBool: Codable {
     case boolean(Bool)
     case string(String)
     
-    public init(from decoder: Decoder) throws {
+    public init(from decoder: any Decoder) throws {
         let container = try decoder.singleValueContainer()
         if let x = try? container.decode(Bool.self) {
             self = .boolean(x)
@@ -25,7 +25,7 @@ public enum StringOrBool: Codable {
         throw DecodingError.typeMismatch(StringOrBool.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for Value"))
     }
     
-    public func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: any Encoder) throws {
         var container = encoder.singleValueContainer()
         switch self {
         case .boolean(let x):
@@ -58,7 +58,7 @@ public enum StringOrInt: Codable {
     case integer(Int)
     case string(String)
 
-    public init(from decoder: Decoder) throws {
+    public init(from decoder: any Decoder) throws {
         let container = try decoder.singleValueContainer()
         if let x = try? container.decode(Int.self) {
             self = .integer(x)
@@ -71,7 +71,7 @@ public enum StringOrInt: Codable {
         throw DecodingError.typeMismatch(StringOrInt.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for Value"))
     }
 
-    public func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: any Encoder) throws {
         var container = encoder.singleValueContainer()
         switch self {
         case .integer(let x):
@@ -126,7 +126,7 @@ public enum StringOrDouble: Codable {
         self = .double(0)
     }
     
-    public init(from decoder: Decoder) throws {
+    public init(from decoder: any Decoder) throws {
         let container = try decoder.singleValueContainer()
         if let x = try? container.decode(Double.self) {
             self = .double(x)
@@ -139,7 +139,7 @@ public enum StringOrDouble: Codable {
         throw DecodingError.typeMismatch(StringOrInt.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for Value"))
     }
 
-    public func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: any Encoder) throws {
         var container = encoder.singleValueContainer()
         switch self {
         case .double(let x):

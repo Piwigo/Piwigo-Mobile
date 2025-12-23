@@ -35,7 +35,7 @@ public struct CommunitySessionGetStatusJSON: Decodable
         case message = "msg"
     }
 
-    public init(from decoder: Decoder) throws
+    public init(from decoder: any Decoder) throws
     {
         // Root container keyed by RootCodingKeys
         let rootContainer = try decoder.container(keyedBy: RootCodingKeys.self)

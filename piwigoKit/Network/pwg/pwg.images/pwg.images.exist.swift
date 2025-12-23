@@ -24,7 +24,7 @@ public struct ImagesExistJSON: Decodable {
         case errorMessage = "message"
     }
 
-    public init(from decoder: Decoder) throws
+    public init(from decoder: any Decoder) throws
     {
         // Root container keyed by RootCodingKeys
         let rootContainer = try decoder.container(keyedBy: RootCodingKeys.self)
@@ -67,7 +67,7 @@ public struct ImageExist {
             values = []
         }
         
-        public init(from decoder: Decoder) throws {
+        public init(from decoder: any Decoder) throws {
             do {
                 let container = try decoder.singleValueContainer()
                 let dictionary = try container.decode([String : StringOrInt].self)

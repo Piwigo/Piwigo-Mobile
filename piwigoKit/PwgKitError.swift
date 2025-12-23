@@ -19,7 +19,7 @@ public enum PwgKitError: Error {
     case invalidStatusCode(statusCode: Int)
     case requestFailed(innerError: URLError)
     case decodingFailed(innerError: DecodingError)
-    case otherError(innerError: Error)
+    case otherError(innerError: any Error)
     
     // Piwigo errors
     case pwgError(code: Int, msg: String)
