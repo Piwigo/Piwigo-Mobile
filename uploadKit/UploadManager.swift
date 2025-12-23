@@ -9,7 +9,6 @@
 
 import os
 import Foundation
-import Photos
 import CoreData
 import MobileCoreServices
 import piwigoKit
@@ -31,45 +30,14 @@ public final class UploadManager: NSObject {
     // Singleton
     public static let shared = UploadManager()
     
-    // MARK: - Constants    
-    // Constants returning the list of:
-    /// - image formats which can be converted with iOS
-    /// - movie formats which can be converted with iOS
-    /// See: https://developer.apple.com/documentation/uniformtypeidentifiers/system-declared_uniform_type_identifiers
-    lazy var acceptedImageExtensions: [String] = {
-        var utiTypes: [UTType] = [.ico, .icns,
-                                  .png, .gif, .jpeg, .webP, .tiff, .bmp, .svg, .rawImage,
-                                  .heic, .heif]
-        if #available(iOS 18.2, *) {
-            utiTypes += [.jpegxl]
-        }
-        return utiTypes.flatMap({$0.tags[.filenameExtension] ?? []})
-    }()
-    lazy var acceptedMovieExtensions: [String] = {
-        let utiTypes: [UTType] = [.quickTimeMovie,
-                                  .mpeg, .mpeg2Video, .mpeg2TransportStream,
-                                  .mpeg4Movie, .appleProtectedMPEG4Video, .avi]
-        return utiTypes.flatMap({$0.tags[.filenameExtension] ?? []})
-    }()
-    
-    // For producing filename suffixes
-    lazy var chunkFormatter: NumberFormatter = {
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .none
-        numberFormatter.minimumIntegerDigits = 5
-        return numberFormatter
-    }()
-    
     // Upload counters kept in memory during upload
     // for updating progress bars and managing tasks
     var uploadCounters = [UploadCounter]()
     
-    // Constants used to manage foreground tasks
-    let maxNberPreparedUploads = 10             // Maximum number of images prepared in advance
-    let maxNberOfTransfers = 1                  // Maximum number of transfers executed in parallel
-    public let maxNberOfFailedUploads = 5       // Stop transfers after 5 failures
-        
+    // JSON decoder
+    let decoder = JSONDecoder()
     
+
     // MARK: - Upload Request States
     /** The manager prepares an image for upload and then launches the transfer.
     - isPreparing is set to true when a photo/video is going to be prepared,
@@ -88,9 +56,6 @@ public final class UploadManager: NSObject {
     public var uploadRequestsToPrepare = Set<NSManagedObjectID>()
     public var uploadRequestsToTransfer = Set<NSManagedObjectID>()
         
-    /// Uploads directory, sessions and JSON decoder
-    let decoder = JSONDecoder()
-    
     /// Number of pending upload requests
     public func updateNberOfUploadsToComplete() {
         // Get number of uploads to complete
