@@ -134,17 +134,25 @@ class TroubleshootingViewController: UIViewController {
                 let duration = (CFAbsoluteTimeGetCurrent() - timeCounter) * CFAbsoluteTime(1000)
                 debugPrint("••> completed in \(duration.rounded()) ms")
                 let entries = allEntries.compactMap({$0 as? OSLogEntryLog})
+                
                 // piwigoKit — Core Data
                 var someLogs = entries.filter({$0.category == String(describing: DataMigrator.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
                 someLogs = entries.filter({$0.category == String(describing: Image.self)})
                 if someLogs.isEmpty ==  false { self.pwgLogs.append(someLogs)}
-                // piwigoKit — Networking
-                someLogs = entries.filter({$0.category == String(describing: PwgSession.self)})
+                
+                // piwigoKit — Session Delegate
+                someLogs = entries.filter({$0.category == String(describing: PwgSessionDelegate.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                // uploadKit — UploadSessions
+                
+                // piwigoKit — JSON Manager
+                someLogs = entries.filter({$0.category == String(describing: JSONManager.self)})
+                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
+                
+                // uploadKit — Upload Sessions Delegate
                 someLogs = entries.filter({$0.category == String(describing: UploadSessionsDelegate.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
+                
                 // uploadKit — UploadManager
                 someLogs = entries.filter({$0.category == String(describing: UploadManager.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }

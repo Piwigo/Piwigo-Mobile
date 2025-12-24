@@ -1,5 +1,5 @@
 //
-//  PwgSession+DataDelegate.swift
+//  PwgSessionDelegate+Data.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 08/05/2024.
@@ -9,10 +9,10 @@
 import Foundation
 
 // MARK: - Session Data Delegate
-extension PwgSession: URLSessionDataDelegate {
+extension PwgSessionDelegate: URLSessionDataDelegate {
         
     public func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        PwgSession.logger.notice("Task-level authentication requested.")
+        PwgSessionDelegate.logger.notice("Task-level authentication requested.")
         // Check authentication method
         let authMethod = challenge.protectionSpace.authenticationMethod
         guard [NSURLAuthenticationMethodHTTPBasic, NSURLAuthenticationMethodHTTPDigest].contains(authMethod) else {

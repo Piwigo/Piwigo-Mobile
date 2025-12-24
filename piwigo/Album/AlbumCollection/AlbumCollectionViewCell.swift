@@ -57,8 +57,8 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         let cellSize = CGSizeMake(self.albumThumbnail.bounds.size.width * scale, self.albumThumbnail.bounds.size.height * scale)
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
         imageURL = albumData?.thumbnailUrl as? URL
-        PwgSession.shared.getImage(withID: albumData?.thumbnailId, ofSize: thumbSize, type: .album,
-                                   atURL: imageURL, fromServer: albumData?.user?.server?.uuid) { [weak self] cachedImageURL in
+        PwgSessionDelegate.shared.getImage(withID: albumData?.thumbnailId, ofSize: thumbSize, type: .album,
+                                           atURL: imageURL, fromServer: albumData?.user?.server?.uuid) { [weak self] cachedImageURL in
             // Process image in the background (.userInitiated leads to concurrency issues)
             // Can be called too many times leading to thread management issues
             guard let self = self else { return }
@@ -134,7 +134,7 @@ class AlbumCollectionViewCell: UICollectionViewCell {
 
         // Pause the ongoing image download if needed
         if let imageURL = self.imageURL {
-            PwgSession.shared.pauseDownload(atURL: imageURL)
+            PwgSessionDelegate.shared.pauseDownload(atURL: imageURL)
         }
         
         // Reset cell

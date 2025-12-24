@@ -126,7 +126,7 @@ class TagsViewController: UITableViewController {
         
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        PwgSession.checkSession(ofUser: user) {
+        JSONManager.shared.checkSession(ofUser: user) {
             TagProvider().fetchTags(asAdmin: self.user.hasAdminRights) { [self] error in
                 guard let error = error else { return }     // Done if no error
                 DispatchQueue.main.async { [self] in

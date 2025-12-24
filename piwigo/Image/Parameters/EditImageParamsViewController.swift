@@ -293,7 +293,7 @@ class EditImageParamsViewController: UIViewController
         
         // Update all images
         let index = 0
-        PwgSession.checkSession(ofUser: user) { [self] in
+        JSONManager.shared.checkSession(ofUser: user) { [self] in
             DispatchQueue.main.async { [self] in
                 self.updateImageProperties(fromIndex: index)
             }
@@ -426,8 +426,8 @@ class EditImageParamsViewController: UIViewController
         }
         
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [self] in
-            PwgSession.shared.setInfos(with: paramsDict) { [self] in
+        JSONManager.shared.checkSession(ofUser: user) { [self] in
+            JSONManager.shared.setInfos(with: paramsDict) { [self] in
                 Task { @MainActor in
                     // Update image title?
                     if shouldUpdateTitle,

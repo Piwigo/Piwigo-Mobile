@@ -171,8 +171,8 @@ class PdfDetailViewController: UIViewController
         } else {
             // Download PDF document
             if let imageURL = self.imageURL {
-                PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: .fullRes, type: .image, atURL: imageURL,
-                                           fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
+                PwgSessionDelegate.shared.getImage(withID: imageData.pwgID, ofSize: .fullRes, type: .image, atURL: imageURL,
+                                                   fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
                     // Show download progress
                     DispatchQueue.main.async { [weak self] in
                         guard let self = self else { return }

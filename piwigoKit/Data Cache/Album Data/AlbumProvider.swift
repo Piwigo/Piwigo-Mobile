@@ -80,7 +80,7 @@ public final class AlbumProvider {
         ]
         
         // Launch the HTTP(S) request
-        let JSONsession = PwgSession.shared
+        let JSONsession = JSONManager.shared
         JSONsession.postRequest(withMethod: pwgCategoriesGetList, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesGetListJSON.self,
                                 countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { result in
@@ -124,7 +124,7 @@ public final class AlbumProvider {
         let paramsDict: [String : Any] = ["cat_id"    : parentId,
                                           "recursive" : recursively]
         
-        let JSONsession = PwgSession.shared
+        let JSONsession = JSONManager.shared
         JSONsession.postRequest(withMethod: kCommunityCategoriesGetList, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CommunityCategoriesGetListJSON.self,
                                 countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { result in

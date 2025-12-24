@@ -294,7 +294,7 @@ class ImageViewController: UIViewController {
     private func retrieveImageData(_ imageData: Image, isIncomplete: Bool) {
         // Retrieve image/video infos
         DispatchQueue.global(qos: .userInteractive).async { [self] in
-            PwgSession.checkSession(ofUser: user) { [self] in
+            JSONManager.shared.checkSession(ofUser: user) { [self] in
                 let imageID = imageData.pwgID
                 ImageProvider().getInfos(forID: imageID, inCategoryId: self.categoryId) { [self] in
                     DispatchQueue.main.async { [self] in
@@ -382,9 +382,9 @@ class ImageViewController: UIViewController {
     }
 
     func logImageVisitIfNeeded(_ imageID: Int64, asDownload: Bool = false) {
-        PwgSession.checkSession(ofUser: user) { [self] in
+        JSONManager.shared.checkSession(ofUser: user) { [self] in
             if NetworkVars.shared.saveVisits {
-                PwgSession.shared.logVisitOfImage(withID: imageID, asDownload: asDownload) {
+                JSONManager.shared.logVisitOfImage(withID: imageID, asDownload: asDownload) {
                     // Statistics updated
                 } failure: { [self] error in
                     // Session logout required?
@@ -546,12 +546,12 @@ extension ImageViewController: UIPageViewControllerDelegate
         if let imageDVC = pageViewController.viewControllers?.first as? ImageDetailViewController,
            let imageURL = imageDVC.imageURL {
             // Pause download
-            PwgSession.shared.pauseDownload(atURL: imageURL)
+            PwgSessionDelegate.shared.pauseDownload(atURL: imageURL)
         }
         else if let pdfDVC = pageViewController.viewControllers?.first as? PdfDetailViewController,
                 let imageURL = pdfDVC.imageURL {
             // Pause download
-            PwgSession.shared.pauseDownload(atURL: imageURL)
+            PwgSessionDelegate.shared.pauseDownload(atURL: imageURL)
         }
     }
     

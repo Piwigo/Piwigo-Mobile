@@ -48,8 +48,8 @@ class ImagePreviewViewController: UIViewController
             
             // Download high-resolution image
             if let imageURL = ImageUtilities.getPiwigoURL(imageData, ofMinSize: previewSize) {
-                PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, type: .image, atURL: imageURL,
-                                           fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] cachedImageURL in
+                PwgSessionDelegate.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, type: .image, atURL: imageURL,
+                                                   fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] cachedImageURL in
                     // Downsample image in the background
                     guard let self = self else { return }
                     DispatchQueue.global(qos: .userInitiated).async { [self] in

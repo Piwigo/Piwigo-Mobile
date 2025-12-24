@@ -138,8 +138,8 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
 
         // Download image synchronously if not in cache
         let sema = DispatchSemaphore(value: 0)
-        PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, type: .album, atURL: imageURL,
-                                   fromServer: serverID, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
+        PwgSessionDelegate.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, type: .album, atURL: imageURL,
+                                           fromServer: serverID, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
             // Notify the delegate on the main thread to show how it makes progress.
             self?.updateProgressView(with: Float((0.75 * fractionCompleted)))
         } completion: { [unowned self] fileURL in
@@ -356,7 +356,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         // Will cancel share when operation starts
         isCancelledByUser = true
         // Cancel image file download
-        PwgSession.shared.cancelDownload(atURL: pwgImageURL)
+        PwgSessionDelegate.shared.cancelDownload(atURL: pwgImageURL)
     }
 
     @objc func didFinishSharingImage() {

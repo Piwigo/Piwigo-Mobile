@@ -169,8 +169,8 @@ class ImageDetailViewController: UIViewController
             // Download high-resolution image
             imageURL = ImageUtilities.getPiwigoURL(self.imageData, ofMinSize: previewSize)
             if let imageURL = self.imageURL {
-                PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, type: .image, atURL: imageURL,
-                                           fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
+                PwgSessionDelegate.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, type: .image, atURL: imageURL,
+                                                   fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
                     self?.updateProgressView(with: fractionCompleted)
                 } completion: { [weak self] cachedImageURL in
                     self?.downsampleImage(atURL: cachedImageURL)

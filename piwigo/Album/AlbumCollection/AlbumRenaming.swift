@@ -120,7 +120,7 @@ class AlbumRenaming: NSObject
         topViewController.showHUD(withTitle: NSLocalizedString("renameCategoryHUD_label", comment: "Renaming Album…"))
 
         // Rename album, modify comment
-        PwgSession.checkSession(ofUser: user) { [self] in
+        JSONManager.shared.checkSession(ofUser: user) { [self] in
             AlbumUtilities.setInfos(self.albumData.pwgID, withName: albumName, description: albumComment) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Hide swipe buttons

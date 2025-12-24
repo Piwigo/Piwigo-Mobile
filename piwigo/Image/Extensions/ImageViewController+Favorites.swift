@@ -37,7 +37,7 @@ extension ImageViewController
         favoriteBarButton?.isEnabled = false
 
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [self] in
+        JSONManager.shared.checkSession(ofUser: user) { [self] in
             ImageUtilities.addToFavorites(imageData) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Update Favorite smart album
@@ -100,7 +100,7 @@ extension ImageViewController
         favoriteBarButton?.isEnabled = false
 
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [self] in
+        JSONManager.shared.checkSession(ofUser: user) { [self] in
             ImageUtilities.removeFromFavorites(imageData) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Update Favorite smart album

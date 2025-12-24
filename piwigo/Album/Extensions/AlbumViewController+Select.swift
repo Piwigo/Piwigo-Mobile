@@ -351,7 +351,7 @@ extension AlbumViewController
                           inMode: imageIDsToRetrieve.count > 1 ? .determinate : .indeterminate)
             
             // Retrieve image data if needed
-            PwgSession.checkSession(ofUser: user) {  [self] in
+            JSONManager.shared.checkSession(ofUser: user) {  [self] in
                 DispatchQueue.main.async { [self] in
                     self.retrieveData(ofImagesWithID: imageIDsToRetrieve, among: imageIDs,
                                       beforeAction: action, contextually: contextually)

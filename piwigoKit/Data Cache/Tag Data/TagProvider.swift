@@ -22,7 +22,7 @@ public final class TagProvider {
     */
     public func fetchTags(asAdmin: Bool, completion: @escaping (PwgKitError?) -> Void) {
         // Launch the HTTP(S) request
-        let JSONsession = PwgSession.shared
+        let JSONsession = JSONManager.shared
         JSONsession.postRequest(withMethod: asAdmin ? pwgTagsGetAdminList : pwgTagsGetList, paramDict: [:],
                                 jsonObjectClientExpectsToReceive: TagJSON.self,
                                 countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { result in
@@ -212,7 +212,7 @@ public final class TagProvider {
     public func addTag(with name: String, completion: @escaping (PwgKitError?) -> Void) {
                 
         // Add tag on server
-        let JSONsession = PwgSession.shared
+        let JSONsession = JSONManager.shared
         JSONsession.postRequest(withMethod: pwgTagsAdd, paramDict: ["name" : name],
                                 jsonObjectClientExpectsToReceive: TagAddJSON.self,
                                 countOfBytesClientExpectsToReceive: 3000) { result in

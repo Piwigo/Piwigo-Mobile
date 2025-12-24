@@ -122,9 +122,9 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         let scale = max(imageThumbnail.traitCollection.displayScale, 1.0)
         let cellSize = CGSizeMake(imageThumbnail.bounds.size.width * scale, imageThumbnail.bounds.size.height * scale)
         let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
-        PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: thumbnailSize, type: .image,
-                                   atURL: ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumbnailSize),
-                                   fromServer: imageData.server?.uuid) { [weak self] cachedImageURL in
+        PwgSessionDelegate.shared.getImage(withID: imageData.pwgID, ofSize: thumbnailSize, type: .image,
+                                           atURL: ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumbnailSize),
+                                           fromServer: imageData.server?.uuid) { [weak self] cachedImageURL in
             self?.downsampleImage(atURL: cachedImageURL, to: cellSize)
         } failure: { [weak self] _ in
             self?.setThumbnailWithImage(pwgImageType.image.placeHolder)
@@ -220,7 +220,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                                           "file" : fileName,
                                           "single_value_mode" : "replace"]
         // Launch request
-        let JSONsession = PwgSession.shared
+        let JSONsession = JSONManager.shared
         JSONsession.postRequest(withMethod: pwgImagesSetInfo, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in

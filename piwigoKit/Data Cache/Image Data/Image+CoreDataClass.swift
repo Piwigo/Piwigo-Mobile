@@ -179,7 +179,7 @@ public class Image: NSManagedObject {
         }
 
         // Full resolution image
-        let fullResUrl = PwgSession.encodedImageURL(imageData.fullResPath ?? "")
+        let fullResUrl = JSONManager.encodedImageURL(imageData.fullResPath ?? "")
         let newFull = Resolution(imageWidth: imageData.fullResWidth ?? 1,
                                  imageHeight: imageData.fullResHeight ?? 1,
                                  imageURL: NSURL(string: fullResUrl?.absoluteString ?? ""))
@@ -191,7 +191,7 @@ public class Image: NSManagedObject {
 
         // Derivatives
         let squareRes = imageData.derivatives.squareImage
-        let squareUrl = PwgSession.encodedImageURL(squareRes?.url ?? "")
+        let squareUrl = JSONManager.encodedImageURL(squareRes?.url ?? "")
         let newSquare = Resolution(imageWidth: squareRes?.width?.intValue ?? 1,
                                    imageHeight: squareRes?.height?.intValue ?? 1,
                                    imageURL: NSURL(string: squareUrl?.absoluteString ?? ""))
@@ -200,7 +200,7 @@ public class Image: NSManagedObject {
         }
         
         let thumbRes = imageData.derivatives.thumbImage
-        let thumbUrl = PwgSession.encodedImageURL(thumbRes?.url ?? "")
+        let thumbUrl = JSONManager.encodedImageURL(thumbRes?.url ?? "")
         let newThumb = Resolution(imageWidth: thumbRes?.width?.intValue ?? 1,
                                   imageHeight: thumbRes?.height?.intValue ?? 1,
                                   imageURL: NSURL(string: thumbUrl?.absoluteString ?? ""))
@@ -209,7 +209,7 @@ public class Image: NSManagedObject {
         }
         
         let mediumRes = imageData.derivatives.mediumImage
-        let mediumUrl = PwgSession.encodedImageURL(mediumRes?.url ?? "")
+        let mediumUrl = JSONManager.encodedImageURL(mediumRes?.url ?? "")
         let newMedium = Resolution(imageWidth: mediumRes?.width?.intValue ?? 1,
                                    imageHeight: mediumRes?.height?.intValue ?? 1,
                                    imageURL: NSURL(string: mediumUrl?.absoluteString ?? ""))
@@ -218,7 +218,7 @@ public class Image: NSManagedObject {
         }
         
         let smallRes = imageData.derivatives.smallImage
-        let smallUrl = PwgSession.encodedImageURL(smallRes?.url ?? "")
+        let smallUrl = JSONManager.encodedImageURL(smallRes?.url ?? "")
         let newSmall = Resolution(imageWidth: smallRes?.width?.intValue ?? 1,
                                   imageHeight: smallRes?.height?.intValue ?? 1,
                                   imageURL: NSURL(string: smallUrl?.absoluteString ?? ""))
@@ -227,7 +227,7 @@ public class Image: NSManagedObject {
         }
         
         let xsmallRes = imageData.derivatives.xSmallImage
-        let xsmallUrl = PwgSession.encodedImageURL(xsmallRes?.url ?? "")
+        let xsmallUrl = JSONManager.encodedImageURL(xsmallRes?.url ?? "")
         let newXsmall = Resolution(imageWidth: xsmallRes?.width?.intValue ?? 1,
                                    imageHeight: xsmallRes?.height?.intValue ?? 1,
                                    imageURL: NSURL(string: xsmallUrl?.absoluteString ?? ""))
@@ -236,7 +236,7 @@ public class Image: NSManagedObject {
         }
         
         let xxsmallRes = imageData.derivatives.xxSmallImage
-        let xxsmallUrl = PwgSession.encodedImageURL(xxsmallRes?.url ?? "")
+        let xxsmallUrl = JSONManager.encodedImageURL(xxsmallRes?.url ?? "")
         let newXxsmall = Resolution(imageWidth: xxsmallRes?.width?.intValue ?? 1,
                                     imageHeight: xxsmallRes?.height?.intValue ?? 1,
                                     imageURL: NSURL(string: xxsmallUrl?.absoluteString ?? ""))
@@ -245,7 +245,7 @@ public class Image: NSManagedObject {
         }
         
         let largeRes = imageData.derivatives.largeImage
-        let largeUrl = PwgSession.encodedImageURL(largeRes?.url ?? "")
+        let largeUrl = JSONManager.encodedImageURL(largeRes?.url ?? "")
         let newLarge = Resolution(imageWidth: largeRes?.width?.intValue ?? 1,
                                   imageHeight: largeRes?.height?.intValue ?? 1,
                                   imageURL: NSURL(string: largeUrl?.absoluteString ?? ""))
@@ -254,7 +254,7 @@ public class Image: NSManagedObject {
         }
         
         let xlargeRes = imageData.derivatives.xLargeImage
-        let xlargeUrl = PwgSession.encodedImageURL(xlargeRes?.url ?? "")
+        let xlargeUrl = JSONManager.encodedImageURL(xlargeRes?.url ?? "")
         let newXlarge = Resolution(imageWidth: xlargeRes?.width?.intValue ?? 1,
                                    imageHeight: xlargeRes?.height?.intValue ?? 1,
                                    imageURL: NSURL(string: xlargeUrl?.absoluteString ?? ""))
@@ -263,7 +263,7 @@ public class Image: NSManagedObject {
         }
         
         let xxlargeRes = imageData.derivatives.xxLargeImage
-        let xxlargeUrl = PwgSession.encodedImageURL(xxlargeRes?.url ?? "")
+        let xxlargeUrl = JSONManager.encodedImageURL(xxlargeRes?.url ?? "")
         let newXxlarge = Resolution(imageWidth: xxlargeRes?.width?.intValue ?? 1,
                                     imageHeight: xxlargeRes?.height?.intValue ?? 1,
                                     imageURL: NSURL(string: xxlargeUrl?.absoluteString ?? ""))
@@ -272,7 +272,7 @@ public class Image: NSManagedObject {
         }
         
         let xxxlargeRes = imageData.derivatives.xxxLargeImage
-        let xxxlargeUrl = PwgSession.encodedImageURL(xxxlargeRes?.url ?? "")
+        let xxxlargeUrl = JSONManager.encodedImageURL(xxxlargeRes?.url ?? "")
         let newXxxlarge = Resolution(imageWidth: xxxlargeRes?.width?.intValue ?? 1,
                                     imageHeight: xxxlargeRes?.height?.intValue ?? 1,
                                     imageURL: NSURL(string: xxxlargeUrl?.absoluteString ?? ""))
@@ -281,7 +281,7 @@ public class Image: NSManagedObject {
         }
         
         let xxxxlargeRes = imageData.derivatives.xxxxLargeImage
-        let xxxxlargeUrl = PwgSession.encodedImageURL(xxxxlargeRes?.url ?? "")
+        let xxxxlargeUrl = JSONManager.encodedImageURL(xxxxlargeRes?.url ?? "")
         let newXxxxlarge = Resolution(imageWidth: xxxxlargeRes?.width?.intValue ?? 1,
                                     imageHeight: xxxxlargeRes?.height?.intValue ?? 1,
                                     imageURL: NSURL(string: xxxxlargeUrl?.absoluteString ?? ""))
@@ -300,7 +300,7 @@ public class Image: NSManagedObject {
         }
         
         // Download URL not nil and modified?
-        let newDownloadUrl = PwgSession.encodedImageURL(imageData.downloadUrl ?? "")
+        let newDownloadUrl = JSONManager.encodedImageURL(imageData.downloadUrl ?? "")
         if newDownloadUrl != nil, downloadUrl != newDownloadUrl {
             downloadUrl = newDownloadUrl
         }

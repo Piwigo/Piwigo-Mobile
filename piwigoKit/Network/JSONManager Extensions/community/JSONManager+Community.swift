@@ -1,5 +1,5 @@
 //
-//  PwgSession+Community.swift
+//  JSONManager+Community.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 27/06/2023.
@@ -9,11 +9,11 @@
 import os
 import Foundation
 
-public extension PwgSession {
+public extension JSONManager {
     
     func communityGetStatus(completion: @escaping () -> Void,
                             failure: @escaping (PwgKitError) -> Void) {
-        PwgSession.logger.notice("Session: getting Community status…")
+        JSONManager.logger.notice("Session: getting Community status…")
         // Launch request
         postRequest(withMethod: kCommunitySessionGetStatus, paramDict: [:],
                     jsonObjectClientExpectsToReceive: CommunitySessionGetStatusJSON.self,

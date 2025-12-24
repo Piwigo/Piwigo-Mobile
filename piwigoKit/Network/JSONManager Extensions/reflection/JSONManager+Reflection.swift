@@ -1,5 +1,5 @@
 //
-//  PwgSession+Reflection.swift
+//  JSONManager+Reflection.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 27/06/2023.
@@ -9,7 +9,7 @@
 import os
 import Foundation
 
-public extension PwgSession {
+public extension JSONManager {
     
     func getMethods(completion: @escaping () -> Void,
                     failure: @escaping (PwgKitError) -> Void) {
@@ -34,7 +34,7 @@ public extension PwgSession {
                 // Check if the pwg.users.api_key.revoke method is available (since Piwigo 16.0)
                 NetworkVars.shared.usesAPIkeys = pwgData.data.contains("pwg.users.api_key.revoke")
                 
-                PwgSession.logger.notice("""
+                JSONManager.logger.notice("""
                         Community plugin installed: \(NetworkVars.shared.usesCommunityPluginV29, privacy: .public)
                         uploadAsync method available: \(NetworkVars.shared.usesUploadAsync, privacy: .public)
                         calculateOrphans method available: \(NetworkVars.shared.usesCalcOrphans, privacy: .public)

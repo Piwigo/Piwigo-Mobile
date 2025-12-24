@@ -1,5 +1,5 @@
 //
-//  PwgSession+History.swift
+//  JSONManager+History.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 26/11/2023.
@@ -9,7 +9,7 @@
 import os
 import Foundation
 
-public extension PwgSession {
+public extension JSONManager {
     
     func logVisitOfImage(withID imageID: Int64, asDownload: Bool,
                          completion: @escaping () -> Void,

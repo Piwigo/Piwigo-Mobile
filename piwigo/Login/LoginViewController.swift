@@ -250,7 +250,7 @@ class LoginViewController: UIViewController {
     @MainActor
     func requestServerMethods() {
         // Collect list of methods supplied by Piwigo server
-        PwgSession.requestServerMethods { [self] in
+        JSONManager.shared.requestServerMethods { [self] in
             // Pursue logging in…
             DispatchQueue.main.async {
                 self.performLogin()
@@ -294,7 +294,7 @@ class LoginViewController: UIViewController {
             title: NSLocalizedString("alertOkButton", comment: "OK"),
             style: .default, handler: { [self] action in
                 // Cancel task and relaunch login
-                PwgSession.shared.dataSession.getAllTasks { tasks in
+                dataSession.getAllTasks { tasks in
                     // Cancel task
                     tasks.forEach({ $0.cancel() })
                     // Will accept certificate
@@ -379,7 +379,7 @@ class LoginViewController: UIViewController {
             updateHUD(detail: NSLocalizedString("login_newSession", comment: "Opening Session"))
 
             // Perform login
-            PwgSession.shared.sessionLogin(withUsername: username, password: password) { [self] in
+            JSONManager.shared.sessionLogin(withUsername: username, password: password) { [self] in
                 // Session now opened
                 NetworkVars.shared.username = username
 
@@ -435,7 +435,7 @@ class LoginViewController: UIViewController {
             updateHUD(detail: NSLocalizedString("login_communityParameters", comment: "Community Parameters"))
 
             // Community extension installed, get real user's status
-            PwgSession.shared.communityGetStatus { [self] in
+            JSONManager.shared.communityGetStatus { [self] in
                 // Check Piwigo version, get token, available sizes, etc.
                 DispatchQueue.main.async { [self] in
                     self.getSessionStatus()
@@ -462,7 +462,7 @@ class LoginViewController: UIViewController {
         // Update HUD during login
         updateHUD(detail: NSLocalizedString("login_serverParameters", comment: "Piwigo Parameters"))
 
-        PwgSession.shared.sessionGetStatus() { [self] user in
+        JSONManager.shared.sessionGetStatus() { [self] user in
             // Update Piwigo username (≠ credential)
             NetworkVars.shared.user = user
             
@@ -533,7 +533,7 @@ class LoginViewController: UIViewController {
         updateHUD(detail: NSLocalizedString("internetCancellingConnection_button", comment: "Cancelling Connection…"))
 
         // Propagate user's request
-        PwgSession.shared.dataSession.getAllTasks() { tasks in
+        dataSession.getAllTasks() { tasks in
             tasks.forEach { $0.cancel() }
         }
     }

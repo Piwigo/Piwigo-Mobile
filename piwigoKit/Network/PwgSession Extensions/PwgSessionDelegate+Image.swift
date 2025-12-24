@@ -1,5 +1,5 @@
 //
-//  PwgSession+Image.swift
+//  PwgSessionDelegate+Image.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 08/05/2024.
@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 // MARK: - Download Image
-extension PwgSession
+extension PwgSessionDelegate
 {
     public func getImage(withID imageID: Int64?, ofSize imageSize: pwgImageSize, type: pwgImageType,
                          atURL imageURL: URL?, fromServer serverID: String?, fileSize: Int64 = NSURLSessionTransferSizeUnknown,
@@ -38,20 +38,20 @@ extension PwgSession
                 let diff = abs((Double(cachedFileSize) - Double(fileSize)) / Double(fileSize))
 //                debugPrint("••> Image \(fileURL.lastPathComponent): \((diff * 1000).rounded(.awayFromZero)/10)%) retrieved from cache.")
                 if diff < 0.1 {     // i.e. 10%
-                    self.activeDownloads.removeValue(forKey: imageURL)
+                    PwgSessionDelegate.activeDownloads.removeValue(forKey: imageURL)
                     completion(fileURL)
                     return
                 }
             } else {
 //                debugPrint("••> return cached image \(String(describing: download.fileURL.lastPathComponent)) i.e., downloaded from \(imageURL)")
-                self.activeDownloads.removeValue(forKey: imageURL)
+                PwgSessionDelegate.activeDownloads.removeValue(forKey: imageURL)
                 completion(fileURL)
                 return
             }
         }
         
         // Does this download instance already exist?
-        guard let download = self.activeDownloads[imageURL]
+        guard let download = PwgSessionDelegate.activeDownloads[imageURL]
         else {
             // Create Download instance
             let download = ImageDownload(type: type, atURL: imageURL, fileSize: fileSize, toCacheAt: fileURL,
@@ -75,30 +75,30 @@ extension PwgSession
                 }
             case .suspended:
                 #if DEBUG
-                PwgSession.logger.notice("Resume suspended download of image \(fileURL.lastPathComponent) (\(self.activeDownloads.count) active downloads)")
+                PwgSessionDelegate.logger.notice("Resume suspended download of image \(fileURL.lastPathComponent) (\(PwgSessionDelegate.activeDownloads.count) active downloads)")
                 #endif
                 task.resume()
             case .completed:
                 #if DEBUG
-                PwgSession.logger.notice("Delete download instance of image \(fileURL.lastPathComponent) (\(self.activeDownloads.count) active downloads)")
+                PwgSessionDelegate.logger.notice("Delete download instance of image \(fileURL.lastPathComponent) (\(PwgSessionDelegate.activeDownloads.count) active downloads)")
                 #endif
-                self.activeDownloads[imageURL] = nil
+                PwgSessionDelegate.activeDownloads[imageURL] = nil
             default:
                 if let resumeData = download.resumeData {
                     #if DEBUG
-                    PwgSession.logger.notice("Resume download of image \(fileURL.lastPathComponent) (\(self.activeDownloads.count) active downloads)")
+                    PwgSessionDelegate.logger.notice("Resume download of image \(fileURL.lastPathComponent) (\(PwgSessionDelegate.activeDownloads.count) active downloads)")
                     #endif
-                    download.task = self.dataSession.downloadTask(withResumeData: resumeData)
+                    download.task = dataSession.downloadTask(withResumeData: resumeData)
                 } else {
                     #if DEBUG
-                    PwgSession.logger.notice("Relaunch download of image \(fileURL.lastPathComponent) (\(self.activeDownloads.count) active downloads)")
+                    PwgSessionDelegate.logger.notice("Relaunch download of image \(fileURL.lastPathComponent) (\(PwgSessionDelegate.activeDownloads.count) active downloads)")
                     #endif
                     launchDownload(download)
                 }
             }
         } else {
             #if DEBUG
-            PwgSession.logger.notice("Relaunch download of image \(fileURL.lastPathComponent) (\(self.activeDownloads.count) active downloads)")
+            PwgSessionDelegate.logger.notice("Relaunch download of image \(fileURL.lastPathComponent) (\(PwgSessionDelegate.activeDownloads.count) active downloads)")
             #endif
             launchDownload(download)
         }
@@ -115,21 +115,21 @@ extension PwgSession
         request.addValue("utf-8", forHTTPHeaderField: "Accept-Charset")
 
         // Create and resume download task
-        download.task = self.dataSession.downloadTask(with: request)
+        download.task = dataSession.downloadTask(with: request)
         download.task?.countOfBytesClientExpectsToSend = Int64((request.allHTTPHeaderFields ?? [:]).count)
         download.task?.countOfBytesClientExpectsToReceive = download.fileSize
         download.task?.resume()
         
         // Keep download instance in memory
-        self.activeDownloads[imageURL] = download
+        PwgSessionDelegate.activeDownloads[imageURL] = download
 //        #if DEBUG
-//        PwgSession.logger.notice("Launch download of image \(download.fileURL.lastPathComponent) (\(self.activeDownloads.count) active downloads)")
+//        PwgSessionDelegate.logger.notice("Launch download of image \(download.fileURL.lastPathComponent) (\(self.activeDownloads.count) active downloads)")
 //        #endif
     }
     
     public func pauseDownload(atURL imageURL: URL) {
         // Retrieve download instance
-        guard let download = activeDownloads[imageURL]
+        guard let download = PwgSessionDelegate.activeDownloads[imageURL]
         else { return }
         
         // Cancel the download request
@@ -139,12 +139,12 @@ extension PwgSession
             download.task?.cancel(byProducingResumeData: { data in
                 if let data = data {
 #if DEBUG
-                    PwgSession.logger.notice("Pause download of image \(download.fileURL.lastPathComponent) with resume data (\(self.activeDownloads.count) active downloads)")
+                    PwgSessionDelegate.logger.notice("Pause download of image \(download.fileURL.lastPathComponent) with resume data (\(PwgSessionDelegate.activeDownloads.count) active downloads)")
 #endif
                     download.resumeData = data
                 } else {
 #if DEBUG
-                    PwgSession.logger.notice("Cancel download of image \(download.fileURL.lastPathComponent) without resume data (\(self.activeDownloads.count) active downloads)")
+                    PwgSessionDelegate.logger.notice("Cancel download of image \(download.fileURL.lastPathComponent) without resume data (\(PwgSessionDelegate.activeDownloads.count) active downloads)")
 #endif
                     download.task?.cancel()
                     download.task = nil
@@ -161,25 +161,25 @@ extension PwgSession
     
     public func cancelDownload(atURL imageURL: URL) {
         // Retrieve download instance
-        guard let download = activeDownloads[imageURL]
+        guard let download = PwgSessionDelegate.activeDownloads[imageURL]
         else { return }
 
         // Cancel the download request
         #if DEBUG
-        PwgSession.logger.notice("Cancel download of image \(download.fileURL.lastPathComponent) (\(self.activeDownloads.count) active downloads)")
+        PwgSessionDelegate.logger.notice("Cancel download of image \(download.fileURL.lastPathComponent) (\(PwgSessionDelegate.activeDownloads.count) active downloads)")
         #endif
         download.task?.cancel()
         download.task = nil
     }
 }
 
-// MARK: - Session
-extension PwgSession: URLSessionTaskDelegate {
+// MARK: - Session Task Delegate
+extension PwgSessionDelegate: URLSessionTaskDelegate {
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: (any Error)?) {
         // Retrieve the original URL of this task
 //        debugPrint("••> Did complete task #\(task.taskIdentifier) with error: \(error?.localizedDescription ?? "none")")
         guard let imageURL = task.originalRequest?.url ?? task.currentRequest?.url,
-              let download = activeDownloads[imageURL]
+              let download = PwgSessionDelegate.activeDownloads[imageURL]
         else { return }
 
         // Manage the error type
@@ -216,7 +216,7 @@ extension PwgSession: URLSessionTaskDelegate {
 
 
 // MARK: - Session Download Delegate
-extension PwgSession: URLSessionDownloadDelegate {
+extension PwgSessionDelegate: URLSessionDownloadDelegate {
     
     public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask,
                     didWriteData bytesWritten: Int64, totalBytesWritten: Int64,
@@ -225,7 +225,7 @@ extension PwgSession: URLSessionDownloadDelegate {
 //        debugPrint("••> Progress task #\(downloadTask.taskIdentifier): \(totalBytesWritten) total bytes downloaded from \(String(describing: downloadTask.originalRequest?.url ?? downloadTask.currentRequest?.url))")
 //        activeDownloads.forEach { (key, _) in debugPrint("   Key: \(key)") }
         guard let imageURL = downloadTask.originalRequest?.url ?? downloadTask.currentRequest?.url,
-              let download = activeDownloads[imageURL]
+              let download = PwgSessionDelegate.activeDownloads[imageURL]
         else { return }
 
         // Update progress bar if any
@@ -246,7 +246,7 @@ extension PwgSession: URLSessionDownloadDelegate {
         // Retrieve the URL of this task
 //        debugPrint("••> Task #\(downloadTask.taskIdentifier) did finish downloading to \(location)")
         guard let imageURL = downloadTask.originalRequest?.url ?? downloadTask.currentRequest?.url,
-              let download = activeDownloads[imageURL],
+              let download = PwgSessionDelegate.activeDownloads[imageURL],
               let fileURL = download.fileURL
         else { return }
 

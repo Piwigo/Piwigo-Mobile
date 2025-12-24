@@ -51,7 +51,7 @@ class AlbumUtilities: NSObject {
                                           "comment" : description,
                                           "status"  : status]
         
-        let JSONsession = PwgSession.shared
+        let JSONsession = JSONManager.shared
         JSONsession.postRequest(withMethod: pwgCategoriesAdd, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesAddJSON.self,
                                 countOfBytesClientExpectsToReceive: 1040) { result in
@@ -91,7 +91,7 @@ class AlbumUtilities: NSObject {
                                           "pwg_token"   : NetworkVars.shared.pwgToken
         ]
         
-        let JSONsession = PwgSession.shared
+        let JSONsession = JSONManager.shared
         JSONsession.postRequest(withMethod: pwgCategoriesSetInfo, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesSetInfoJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in
@@ -117,7 +117,7 @@ class AlbumUtilities: NSObject {
                                           "parent"      : newParentId,
                                           "pwg_token"   : NetworkVars.shared.pwgToken]
         
-        let JSONsession = PwgSession.shared
+        let JSONsession = JSONManager.shared
         JSONsession.postRequest(withMethod: pwgCategoriesMove, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesMoveJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in
@@ -141,7 +141,7 @@ class AlbumUtilities: NSObject {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id": catID]
         
-        let JSONsession = PwgSession.shared
+        let JSONsession = JSONManager.shared
         JSONsession.postRequest(withMethod: pwgCategoriesCalcOrphans, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesCalcOrphansJSON.self,
                                 countOfBytesClientExpectsToReceive: 2100) { result in
@@ -171,7 +171,7 @@ class AlbumUtilities: NSObject {
                                           "photo_deletion_mode" : mode.pwgArg,
                                           "pwg_token"           : NetworkVars.shared.pwgToken]
         
-        let JSONsession = PwgSession.shared
+        let JSONsession = JSONManager.shared
         JSONsession.postRequest(withMethod: pwgCategoriesDelete, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesDeleteJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in
@@ -199,7 +199,7 @@ class AlbumUtilities: NSObject {
         let paramsDict: [String : Any] = ["category_id" : albumData.pwgID,
                                           "image_id"    : imageData.pwgID]
         
-        let JSONsession = PwgSession.shared
+        let JSONsession = JSONManager.shared
         JSONsession.postRequest(withMethod: pwgCategoriesSetRepresentative, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesSetRepresentativeJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in

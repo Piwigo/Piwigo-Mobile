@@ -1,5 +1,5 @@
 //
-//  PwgSession+Images.swift
+//  JSONManager+Images.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 27/06/2023.
@@ -9,7 +9,7 @@
 import os
 import Foundation
 
-public extension PwgSession {
+public extension JSONManager {
     
     func getIDofImage(withMD5 md5sum: String,
                       completion: @escaping (Int64?) -> Void,

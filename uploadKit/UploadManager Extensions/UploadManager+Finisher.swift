@@ -99,7 +99,7 @@ extension UploadManager {
             "multiple_value_mode" : "replace"]
         
         // Launch request
-        let JSONsession = PwgSession.shared
+        let JSONsession = JSONManager.shared
         JSONsession.postRequest(withMethod: pwgImagesSetInfo, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { [self] result in
@@ -135,7 +135,7 @@ extension UploadManager {
             self.didFinishTransfer(for: upload, error: nil)
             return
         }
-        PwgSession.checkSession(ofUser: user) { [self] in
+        JSONManager.shared.checkSession(ofUser: user) { [self] in
             Task { @UploadManagement in
                 self.processImages(withIds: "\(upload.imageId)",
                                    inCategory: upload.category) { [self] _ in
@@ -154,7 +154,7 @@ extension UploadManager {
                        inCategory categoryId: Int32,
                        completion: @escaping (PwgKitError?) -> Void) -> (Void) {
         // Launch request
-        let JSONsession = PwgSession.shared
+        let JSONsession = JSONManager.shared
         let paramDict: [String : Any] = ["image_id": imageIds,
                                          "pwg_token": NetworkVars.shared.pwgToken,
                                          "category_id": "\(NSNumber(value: categoryId))"]
@@ -205,7 +205,7 @@ extension UploadManager {
                         completionHandler: @escaping (Bool, [Int64]) -> Void) -> (Void) {
         // Launch request
         UploadManager.logger.notice("moderateImages() in \(queueName(), privacy: .public)")
-        let JSONsession = PwgSession.shared
+        let JSONsession = JSONManager.shared
         let paramDict: [String : Any] = ["image_id": imageIds,
                                          "pwg_token": NetworkVars.shared.pwgToken,
                                          "category_id": "\(NSNumber(value: categoryId))"]

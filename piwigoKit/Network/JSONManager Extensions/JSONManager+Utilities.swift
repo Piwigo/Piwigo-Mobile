@@ -1,5 +1,5 @@
 //
-//  PwgSession+Utilities.swift
+//  JSONManager+Utilities.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 08/06/2021.
@@ -11,17 +11,17 @@ import CoreData
 import Foundation
 import UIKit
 
-extension PwgSession {
-    // MARK: Session Management
-    public static
-    func requestServerMethods(completion: @escaping () -> Void,
-                              didRejectCertificate: @escaping (PwgKitError) -> Void,
-                              didFailHTTPauthentication: @escaping (PwgKitError) -> Void,
-                              didFailSecureConnection: @escaping (PwgKitError) -> Void,
-                              failure: @escaping (PwgKitError) -> Void) {
+extension JSONManager {
+    
+    // MARK: Piwigo Session Management
+    public func requestServerMethods(completion: @escaping () -> Void,
+                                     didRejectCertificate: @escaping (PwgKitError) -> Void,
+                                     didFailHTTPauthentication: @escaping (PwgKitError) -> Void,
+                                     didFailSecureConnection: @escaping (PwgKitError) -> Void,
+                                     failure: @escaping (PwgKitError) -> Void) {
         // Collect list of methods supplied by Piwigo server
         // => Determine if Community extension 2.9a or later is installed and active
-        PwgSession.shared.getMethods {
+        getMethods {
             // Known methods, pursue logging in…
             completion()
         } failure: { error in
@@ -75,10 +75,9 @@ extension PwgSession {
     }
     
     // Re-login if session was closed
-    public static
-    func checkSession(ofUser user: User?,
-                      completion: @escaping () -> Void,
-                      failure: @escaping (PwgKitError) -> Void) {
+    public func checkSession(ofUser user: User?,
+                             completion: @escaping () -> Void,
+                             failure: @escaping (PwgKitError) -> Void) {
         
         // Check if the session is still active and update the server status
         // every 60 seconds or more
@@ -92,22 +91,22 @@ extension PwgSession {
         
         // Determine if the session is still active
         NetworkVars.shared.hasNetworkConnectionChanged = false
-        logger.notice("Session: starting checking… \(NetworkVars.shared.isConnectedToWiFi ? "WiFi" : "Cellular")")
+        PwgSessionDelegate.logger.notice("Session: starting checking… \(NetworkVars.shared.isConnectedToWiFi ? "WiFi" : "Cellular")")
         let oldToken = NetworkVars.shared.pwgToken
-        PwgSession.shared.sessionGetStatus { pwgUser in
+        JSONManager.shared.sessionGetStatus { [self] pwgUser in
 #if DEBUG
-            logger.notice("Session: \"\(NetworkVars.shared.user, privacy: .public)\" vs \"\(pwgUser, privacy: .public)\", \"\(oldToken, privacy: .public)\" vs \"\(NetworkVars.shared.pwgToken, privacy: .public)\"")
+            JSONManager.logger.notice("Session: \"\(NetworkVars.shared.user, privacy: .public)\" vs \"\(pwgUser, privacy: .public)\", \"\(oldToken, privacy: .public)\" vs \"\(NetworkVars.shared.pwgToken, privacy: .public)\"")
 #else
-            logger.notice("Session: \"\(NetworkVars.shared.user, privacy: .private(mask: .hash))\" vs \"\(pwgUser, privacy: .private(mask: .hash))\", \"\(oldToken, privacy: .private(mask: .hash))\" vs \"\(NetworkVars.shared.pwgToken, privacy: .private(mask: .hash))\"")
+            JSONManager.shared.logger.notice("Session: \"\(NetworkVars.shared.user, privacy: .private(mask: .hash))\" vs \"\(pwgUser, privacy: .private(mask: .hash))\", \"\(oldToken, privacy: .private(mask: .hash))\" vs \"\(NetworkVars.shared.pwgToken, privacy: .private(mask: .hash))\"")
 #endif
             if pwgUser != NetworkVars.shared.user || oldToken.isEmpty || NetworkVars.shared.pwgToken != oldToken {
                 // Collect list of methods supplied by Piwigo server
                 // => Determine if Community extension 2.9a or later is installed and active
-                requestServerMethods {
+                requestServerMethods { [self] in
                     // Known methods, perform re-login
                     // Don't use userStatus as it may not be known after Core Data migration
                     if NetworkVars.shared.username.isEmpty || NetworkVars.shared.username.lowercased() == "guest" {
-                        logger.notice("Session: logged as Guest")
+                        PwgSessionDelegate.logger.notice("Session: logged as Guest")
                         // Session now opened
                         getPiwigoConfig(forUser: user) {
                             // Update date of accesss to the server by guest
@@ -124,11 +123,11 @@ extension PwgSession {
                         // Perform login
                         let username = NetworkVars.shared.username
                         let password = KeychainUtilities.password(forService: NetworkVars.shared.serverPath, account: username)
-                        PwgSession.shared.sessionLogin(withUsername: username, password: password) {
+                        sessionLogin(withUsername: username, password: password) { [self] in
 #if DEBUG
-                            logger.notice("Session: logged as \(NetworkVars.shared.username, privacy: .public)")
+                            PwgSessionDelegate.logger.notice("Session: logged as \(NetworkVars.shared.username, privacy: .public)")
 #else
-                            logger.notice("Session: logged as \(NetworkVars.shared.username, privacy: .private(mask: .hash))")
+                            PwgSessionDelegate.logger.notice("Session: logged as \(NetworkVars.shared.username, privacy: .private(mask: .hash))")
 #endif
                             // Session now opened
                             getPiwigoConfig(forUser: user) {
@@ -166,13 +165,12 @@ extension PwgSession {
         }
     }
     
-    fileprivate static
-    func getPiwigoConfig(forUser user: User?,
-                         completion: @escaping () -> Void,
-                         failure: @escaping (PwgKitError) -> Void) {
+    fileprivate func getPiwigoConfig(forUser user: User?,
+                                     completion: @escaping () -> Void,
+                                     failure: @escaping (PwgKitError) -> Void) {
         // Check Piwigo version, get token, available sizes, etc.
         if NetworkVars.shared.usesCommunityPluginV29 {
-            PwgSession.shared.communityGetStatus {
+            communityGetStatus { [self] in
                 getPiwigoStatus(forUser: user, completion: completion, failure: failure)
             }
             failure: { error in
@@ -183,12 +181,11 @@ extension PwgSession {
         }
     }
     
-    fileprivate static
-    func getPiwigoStatus(forUser user: User?,
-                         completion: @escaping () -> Void,
-                         failure: @escaping (PwgKitError) -> Void)
+    fileprivate func getPiwigoStatus(forUser user: User?,
+                                     completion: @escaping () -> Void,
+                                     failure: @escaping (PwgKitError) -> Void)
     {
-        PwgSession.shared.sessionGetStatus { userName in
+        sessionGetStatus { userName in
             // Set Piwigo user
             NetworkVars.shared.user = userName
             
@@ -199,17 +196,17 @@ extension PwgSession {
                     let bckgContext = DataController.shared.newTaskContext()
                     
                     // Attribute upload requests to appropriate user if necessary
-                    logger.debug("Session: attributing API Key upload requests to user…")
+                    JSONManager.logger.debug("Session: attributing API Key upload requests to user…")
                     UploadProvider().attributeAPIKeyUploadRequests(toUserWithID: userID,
                                                                    inContext: bckgContext)
                     
                     // Delete API Key user (and albums in cascade)
-                    logger.debug("Session: deleting API Key user…")
+                    JSONManager.logger.debug("Session: deleting API Key user…")
                     UserProvider().deleteUser(withUsername: NetworkVars.shared.username,
                                               inContext: bckgContext)
                     
                     // Job completed
-                    logger.debug("Session: API Key user deleted")
+                    JSONManager.logger.debug("Session: API Key user deleted")
                     NetworkVars.shared.fixUserIsAPIKeyV412 = false
                     
                     // Try to resume upload requests if the low power mode is not enabled
@@ -257,7 +254,7 @@ extension PwgSession {
             serverComponents = components
         } else {
             // URL not RFC compliant! - Try to fix it manually
-            PwgSession.logger.notice("Received invalid URL: \(originalURL ?? "", privacy: .public)")
+            JSONManager.logger.notice("Received invalid URL: \(originalURL ?? "", privacy: .public)")
             
             guard let fixedComponents = fixInvalidURL(patchedURL) else {
                 return nil
@@ -300,7 +297,7 @@ extension PwgSession {
         #if DEBUG
         if let originalURL = originalURL,
            finalURL.absoluteString != originalURL {
-            PwgSession.logger.notice("Invalid URL \"\(originalURL, privacy: .public)\" replaced by \(finalURL.absoluteString, privacy: .public)")
+            JSONManager.logger.notice("Invalid URL \"\(originalURL, privacy: .public)\" replaced by \(finalURL.absoluteString, privacy: .public)")
         }
         #endif
         
@@ -309,7 +306,7 @@ extension PwgSession {
 
     private static
     func fixInvalidURL(_ urlString: String) -> URLComponents? {
-        var leftURL = urlString
+         var leftURL = urlString
         
         // Remove protocol header
         var scheme = "https"

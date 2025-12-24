@@ -1,5 +1,5 @@
 //
-//  PwgSession+Root.swift
+//  JSONManager+Root.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 19/12/2023.
@@ -9,14 +9,13 @@
 import os
 import Foundation
 
-public extension PwgSession {
+public extension JSONManager {
     
     func getInfos() {
         // Collect stats from server
-        let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: pwgGetInfos, paramDict: [:],
-                                jsonObjectClientExpectsToReceive: GetInfosJSON.self,
-                                countOfBytesClientExpectsToReceive: 8448) { result in
+        postRequest(withMethod: pwgGetInfos, paramDict: [:],
+                    jsonObjectClientExpectsToReceive: GetInfosJSON.self,
+                    countOfBytesClientExpectsToReceive: 8448) { result in
             switch result {
             case .success(let pwgData):
                 // Collect statistics

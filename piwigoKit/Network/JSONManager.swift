@@ -1,16 +1,24 @@
 //
-//  PwgSession+JSON.swift
+//  JSONManager.swift
 //  piwigoKit
 //
-//  Created by Eddy Lelièvre-Berna on 08/05/2024.
-//  Copyright © 2024 Piwigo.org. All rights reserved.
+//  Created by Eddy Lelièvre-Berna on 24/12/2025.
+//  Copyright © 2025 Piwigo.org. All rights reserved.
 //
 
+import os
 import Foundation
 
-// MARK: - JSON Requests
-extension PwgSession
-{
+public final class JSONManager {
+    
+    // Logs JSON activities
+    /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
+    static let logger = Logger(subsystem: "org.piwigo.piwigoKit", category: String(describing: JSONManager.self))
+
+    // Singleton
+    public static let shared = JSONManager()
+
+    // Common functions for retrieving JSON data
     public func postRequest<T: Decodable>(withMethod method: String, paramDict: [String: Any],
                                           jsonObjectClientExpectsToReceive: T.Type,
                                           countOfBytesClientExpectsToReceive: Int64,
@@ -76,9 +84,9 @@ extension PwgSession
 #if DEBUG
                 let dataStr = String(decoding: jsonData.prefix(100), as: UTF8.self) + "…"
 //                let dataStr = String(decoding: jsonData, as: UTF8.self)
-                PwgSession.logger.notice("\(method) returned \(countsOfBytes, privacy: .public) bytes: \(dataStr, privacy: .public)")
+                PwgSessionDelegate.logger.notice("\(method) returned \(countsOfBytes, privacy: .public) bytes: \(dataStr, privacy: .public)")
 #else
-                PwgSession.logger.notice("\(method) returned \(countsOfBytes, privacy: .public) bytes.")
+                PwgSessionDelegate.logger.notice("\(method) returned \(countsOfBytes, privacy: .public) bytes.")
 #endif
                 
                 // Return decoded object
@@ -129,10 +137,10 @@ extension PwgSession
         // Log invalid returned data
 #if DEBUG
         let dataStr = String(decoding: jsonData, as: UTF8.self)
-        PwgSession.logger.notice("\(method) returned the invalid JSON data: \(dataStr, privacy: .public)")
+        PwgSessionDelegate.logger.notice("\(method) returned the invalid JSON data: \(dataStr, privacy: .public)")
 #else
         let countsOfBytes = jsonData.count * MemoryLayout<Data>.stride
-        PwgSession.logger.notice("\(method) returned \(countsOfBytes, privacy: .public) bytes of invalid JSON data.")
+        PwgSessionDelegate.logger.notice("\(method) returned \(countsOfBytes, privacy: .public) bytes of invalid JSON data.")
 #endif
         
         // Store invalid JSON data for helping user

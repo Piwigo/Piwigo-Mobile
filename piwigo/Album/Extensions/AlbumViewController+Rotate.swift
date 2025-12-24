@@ -95,7 +95,7 @@ extension AlbumViewController
         }
 
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [self] in
+        JSONManager.shared.checkSession(ofUser: user) { [self] in
             ImageUtilities.rotate(imageData, by: angle) { [self] in
                 // Update HUD
                 DispatchQueue.main.async { [self] in

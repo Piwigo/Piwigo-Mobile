@@ -1,15 +1,30 @@
 //
-//  PwgSession+Delegate.swift
+//  PwgSessionDelegate.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 08/05/2024.
 //  Copyright © 2024 Piwigo.org. All rights reserved.
 //
 
+import os
 import Foundation
 
+public final class PwgSessionDelegate: NSObject, Sendable {
+    
+    // Logs networking activities
+    /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
+    static let logger = Logger(subsystem: "org.piwigo.piwigoKit", category: String(describing: PwgSessionDelegate.self))
+    
+    // Singleton
+    public static let shared = PwgSessionDelegate()
+    
+    // Active downloads
+    static var activeDownloads: [URL : ImageDownload] = [ : ]
+}
+
+
 // MARK: - Session Delegate
-extension PwgSession: URLSessionDelegate {
+extension PwgSessionDelegate: URLSessionDelegate {
 
 //    public func urlSession(_ session: URLSession, taskIsWaitingForConnectivity task: URLSessionTask) {
 //        debugPrint("    > The upload session is waiting for connectivity (offline mode)")
@@ -20,13 +35,13 @@ extension PwgSession: URLSessionDelegate {
 //    }
 
     public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: (any Error)?) {
-        PwgSession.logger.notice("Session invalidated.")
-        activeDownloads = [ : ]
+        PwgSessionDelegate.logger.notice("Session invalidated.")
+        PwgSessionDelegate.activeDownloads = [ : ]
     }
     
     public func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge,
                     completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        PwgSession.logger.notice("Session-level authentication requested by server.")
+        PwgSessionDelegate.logger.notice("Session-level authentication requested by server.")
         // Get protection space for current domain
         let protectionSpace = challenge.protectionSpace
         guard protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust else {

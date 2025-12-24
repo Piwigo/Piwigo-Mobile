@@ -62,7 +62,7 @@ extension ImageViewController
         showHUD(withTitle: NSLocalizedString("rotateSingleImageHUD_rotating", comment: "Rotating Photo…"))
         
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [self] in
+        JSONManager.shared.checkSession(ofUser: user) { [self] in
             ImageUtilities.rotate(imageData, by: angle) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Rotate image view

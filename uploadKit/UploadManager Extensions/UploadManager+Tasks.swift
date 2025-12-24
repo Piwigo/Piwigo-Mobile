@@ -203,7 +203,7 @@ extension UploadManager
         }
 
         // Moderate images by category
-        PwgSession.checkSession(ofUser: user) {
+        JSONManager.shared.checkSession(ofUser: user) {
             for categoryId in categories {
                 // Set list of images to moderate in that category
                 let categoryImages = uploads.filter({$0.category == categoryId})

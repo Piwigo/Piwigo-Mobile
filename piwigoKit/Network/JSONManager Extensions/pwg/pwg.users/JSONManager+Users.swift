@@ -1,5 +1,5 @@
 //
-//  PwgSession+Users.swift
+//  JSONManager+Users.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 26/03/2025.
@@ -9,20 +9,19 @@
 import os
 import Foundation
 
-public extension PwgSession {
+public extension JSONManager {
     
-    static func getUsersInfo(forUserName username: String,
-                             completion: @escaping (UsersGetInfo) -> Void,
-                             failure: @escaping () -> Void) {
+    func getUsersInfo(forUserName username: String,
+                      completion: @escaping (UsersGetInfo) -> Void,
+                      failure: @escaping () -> Void) {
         
         // Prepare parameters for retrieving user infos
         let paramsDict: [String : Any] = ["username" : username,
                                           "display"  : "all"]
         // Collect stats from server
-        let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: pwgUsersGetList, paramDict: paramsDict,
-                                jsonObjectClientExpectsToReceive: UsersGetListJSON.self,
-                                countOfBytesClientExpectsToReceive: 10800) { result in
+        postRequest(withMethod: pwgUsersGetList, paramDict: paramsDict,
+                    jsonObjectClientExpectsToReceive: UsersGetListJSON.self,
+                    countOfBytesClientExpectsToReceive: 10800) { result in
             switch result {
             case .success(let pwgData):
                 // Update current recentPeriodIndex
@@ -42,9 +41,9 @@ public extension PwgSession {
         }
     }
     
-    static func setRecentPeriod(_ recentPeriod: Int, forUserWithID pwgID: Int16,
-                                completion: @escaping (Bool) -> Void,
-                                failure: @escaping (PwgKitError) -> Void) {
+    func setRecentPeriod(_ recentPeriod: Int, forUserWithID pwgID: Int16,
+                         completion: @escaping (Bool) -> Void,
+                         failure: @escaping (PwgKitError) -> Void) {
         
         // Prepare parameters for updating user parameters
         let paramsDict: [String : Any] = ["user_id"       : pwgID,
@@ -52,8 +51,7 @@ public extension PwgSession {
                                           "pwg_token"     : NetworkVars.shared.pwgToken]
 
         // Collect stats from server
-        let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: pwgUsersSetInfo, paramDict: paramsDict,
+        postRequest(withMethod: pwgUsersSetInfo, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: UsersGetListJSON.self,
                                 countOfBytesClientExpectsToReceive: 10800) { result in
             switch result {

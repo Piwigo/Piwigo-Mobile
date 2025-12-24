@@ -53,8 +53,8 @@ extension SelectCategoryViewController
                                           "multiple_value_mode" : "replace"]
         
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) {
-            PwgSession.shared.setInfos(with: paramsDict) {
+        JSONManager.shared.checkSession(ofUser: user) {
+            JSONManager.shared.setInfos(with: paramsDict) {
                 DispatchQueue.main.async {
                     // Add image to album
                     albumData.addToImages(imageData)
@@ -83,7 +83,7 @@ extension SelectCategoryViewController
         // Send request to Piwigo server
         let albumID = albumData.pwgID
         let imageIDs = self.inputImages.map({ $0.pwgID })
-        PwgSession.checkSession(ofUser: user) { [self] in
+        JSONManager.shared.checkSession(ofUser: user) { [self] in
             ImageUtilities.setCategory(albumID, forImageIDs: imageIDs, withAction: .associate) {
                 DispatchQueue.main.async { [self] in
                     // Add image to album
@@ -196,8 +196,8 @@ extension SelectCategoryViewController
                                           "multiple_value_mode" : "replace"]
         
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [self] in
-            PwgSession.shared.setInfos(with: paramsDict) { [self] in
+        JSONManager.shared.checkSession(ofUser: user) { [self] in
+            JSONManager.shared.setInfos(with: paramsDict) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Add image to target album
                     albumData.addToImages(imageData)
@@ -233,7 +233,7 @@ extension SelectCategoryViewController
         let albumID = albumData.pwgID
         let imageIDs = self.inputImages.map({ $0.pwgID })
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [self] in
+        JSONManager.shared.checkSession(ofUser: user) { [self] in
             ImageUtilities.setCategory(albumID, forImageIDs: imageIDs, withAction: .dissociate) {
                 DispatchQueue.main.async { [self] in
                     // Remove images from album

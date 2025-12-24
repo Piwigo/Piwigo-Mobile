@@ -177,8 +177,8 @@ extension AlbumViewController
         ]
 
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [self] in
-            PwgSession.shared.setInfos(with: paramsDict) { [self] in
+        JSONManager.shared.checkSession(ofUser: user) { [self] in
+            JSONManager.shared.setInfos(with: paramsDict) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Remove image from source album
                     imageData.removeFromAlbums(albumData)
@@ -253,7 +253,7 @@ extension AlbumViewController
         // Send request to Piwigo server
         let albumID = albumData.pwgID
         let imageIDs = toRemove.map({ $0.pwgID })
-        PwgSession.checkSession(ofUser: user) { [self] in
+        JSONManager.shared.checkSession(ofUser: user) { [self] in
             ImageUtilities.setCategory(albumID, forImageIDs: imageIDs, withAction: .dissociate) {
                 DispatchQueue.main.async { [self] in
                     // Remove images from album
@@ -314,7 +314,7 @@ extension AlbumViewController
         }
 
         // Let's delete all images at once
-        PwgSession.checkSession(ofUser: user) { [self] in
+        JSONManager.shared.checkSession(ofUser: user) { [self] in
             ImageUtilities.delete(toDelete) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Save image IDs for marking Upload requests in the background

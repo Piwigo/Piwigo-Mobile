@@ -95,8 +95,8 @@ extension ImageViewController
                                           "multiple_value_mode" : "replace"]
         
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [self] in
-            PwgSession.shared.setInfos(with: paramsDict) { [self] in
+        JSONManager.shared.checkSession(ofUser: user) { [self] in
+            JSONManager.shared.setInfos(with: paramsDict) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Retrieve album
                     if let albums = imageData.albums,
@@ -169,7 +169,7 @@ extension ImageViewController
         showHUD(withTitle: imageData.isVideo ? NSLocalizedString("deleteSingleVideoHUD_deleting", comment: "Deleting Video…") : NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Photo…"))
         
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [self] in
+        JSONManager.shared.checkSession(ofUser: user) { [self] in
             ImageUtilities.delete(Set([imageData])) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Save image ID for marking Upload request in the background

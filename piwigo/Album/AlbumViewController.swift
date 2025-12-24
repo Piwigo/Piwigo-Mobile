@@ -697,7 +697,7 @@ class AlbumViewController: UIViewController
 
         // Cancel remaining tasks
         let catIDstr = String(self.categoryId)
-        PwgSession.shared.dataSession.getAllTasks { tasks in
+        dataSession.getAllTasks { tasks in
             // Select tasks related with this album if any
             let tasksToCancel = tasks.filter({ $0.originalRequest?
                 .value(forHTTPHeaderField: HTTPCatID) == catIDstr })
@@ -789,7 +789,7 @@ class AlbumViewController: UIViewController
         }
         
         // Fetch album data and then image data
-        PwgSession.checkSession(ofUser: self.user) { [self] in
+        JSONManager.shared.checkSession(ofUser: self.user) { [self] in
             DispatchQueue.main.async { [self] in
                 self.fetchAlbumsAndImages()
             }

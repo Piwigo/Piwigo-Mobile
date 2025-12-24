@@ -104,7 +104,7 @@ public class Album: NSManagedObject {
         if thumbnailId != newThumbailId {
             thumbnailId = newThumbailId
         }
-        let newThumbnailUrl = PwgSession.encodedImageURL(albumData.thumbnailUrl ?? "")
+        let newThumbnailUrl = JSONManager.encodedImageURL(albumData.thumbnailUrl ?? "")
         if thumbnailUrl != newThumbnailUrl {
             thumbnailUrl = newThumbnailUrl
         }

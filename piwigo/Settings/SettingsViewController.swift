@@ -143,11 +143,11 @@ class SettingsViewController: UIViewController {
         if user.hasAdminRights {
             operations.append(BlockOperation { [self] in
                 // Check session before collecting server statistics
-                PwgSession.checkSession(ofUser: self.user) {
+                JSONManager.shared.checkSession(ofUser: self.user) {
                     // Collect stats from server and store them in cache
-                    PwgSession.shared.getInfos()
+                    JSONManager.shared.getInfos()
                     // Collect recentPeriod chosen by user
-                    PwgSession.getUsersInfo(forUserName: self.user.username) { usersData in
+                    JSONManager.shared.getUsersInfo(forUserName: self.user.username) { usersData in
                         // Is the retrieved recent period different?
                         guard let nberOfDays = usersData.recentPeriod?.intValue,
                               let index = CacheVars.shared.recentPeriodList.firstIndex(of: nberOfDays),
@@ -296,9 +296,9 @@ class SettingsViewController: UIViewController {
         if hasUploadRights(), oldRecentPeriodIndex != recentPeriodIndex {
             // Update recent period on Piwigo server
             DispatchQueue.global(qos: .background).async { [self] in
-                PwgSession.checkSession(ofUser: user) {
+                JSONManager.shared.checkSession(ofUser: user) {
                     let periodInDays = CacheVars.shared.recentPeriodList[recentPeriodIndex]
-                    PwgSession.setRecentPeriod(periodInDays, forUserWithID: self.user.id) { success in
+                    JSONManager.shared.setRecentPeriod(periodInDays, forUserWithID: self.user.id) { success in
                         // No reporting
                     } failure: { error in
                         // No reporting
@@ -381,7 +381,7 @@ class SettingsViewController: UIViewController {
             self.navigationController?.showHUD(withTitle: title)
             
             // Perform Logout
-            PwgSession.shared.sessionLogout {
+            JSONManager.shared.sessionLogout {
                 // Close session
                 DispatchQueue.main.async { [self] in
                     self.navigationController?.hideHUD(afterDelay: pwgDelayHUD) {

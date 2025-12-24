@@ -103,7 +103,7 @@ class TagSelectorViewController: UIViewController {
 
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        PwgSession.checkSession(ofUser: user) { [self] in
+        JSONManager.shared.checkSession(ofUser: user) { [self] in
             TagProvider().fetchTags(asAdmin: false) { [self] error in
                 DispatchQueue.main.async { [self] in
                     guard let error = error else { return }

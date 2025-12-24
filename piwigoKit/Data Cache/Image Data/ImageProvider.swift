@@ -125,7 +125,7 @@ public final class ImageProvider {
         }
         
         // Launch the HTTP(S) request
-        let JSONsession = PwgSession.shared
+        let JSONsession = JSONManager.shared
         JSONsession.postRequest(withMethod: method, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesGetImagesJSON.self,
                                 countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { result in
@@ -203,7 +203,7 @@ public final class ImageProvider {
         let paramsDict: [String : Any] = ["image_id" : imageId]
         
         // Launch request
-        let JSONsession = PwgSession.shared
+        let JSONsession = JSONManager.shared
         JSONsession.postRequest(withMethod: pwgImagesGetInfo, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesGetInfoJSON.self,
                                 countOfBytesClientExpectsToReceive: 50000) { result in

@@ -69,7 +69,7 @@ extension AlbumViewController
         }
 
         // Add image to favorites
-        PwgSession.checkSession(ofUser: user) { [self] in
+        JSONManager.shared.checkSession(ofUser: user) { [self] in
             ImageUtilities.addToFavorites(imageData) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Update HUD
@@ -176,7 +176,7 @@ extension AlbumViewController
         }
 
         // Remove image to favorites
-        PwgSession.checkSession(ofUser: user) { [self] in
+        JSONManager.shared.checkSession(ofUser: user) { [self] in
             ImageUtilities.removeFromFavorites(imageData) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Update HUD

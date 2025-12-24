@@ -1,5 +1,5 @@
 //
-//  PwgSession+Session.swift
+//  JSONManager+Session.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 27/06/2023.
@@ -9,15 +9,15 @@
 import os
 import Foundation
 
-public extension PwgSession {
+public extension JSONManager {
     
     func sessionLogin(withUsername username:String, password:String,
                       completion: @escaping () -> Void,
                       failure: @escaping (PwgKitError) -> Void) {
 #if DEBUG
-        PwgSession.logger.notice("Session: logging in with username: \(username, privacy: .public)…")
+        JSONManager.logger.notice("Session: logging in with username: \(username, privacy: .public)…")
 #else
-        PwgSession.logger.notice("Session: logging in with username: \(username, privacy: .private(mask: .hash))…")
+        JSONManager.logger.notice("Session: logging in with username: \(username, privacy: .private(mask: .hash))…")
 #endif
         // Prepare parameters for retrieving image/video infos
         let paramsDict: [String : Any] = ["username" : username,
@@ -46,7 +46,7 @@ public extension PwgSession {
     
     func sessionGetStatus(completion: @escaping (String) -> Void,
                           failure: @escaping (PwgKitError) -> Void) {
-        PwgSession.logger.notice("Session: getting status…")
+        JSONManager.logger.notice("Session: getting status…")
         // Launch request
         postRequest(withMethod: pwgSessionGetStatus, paramDict: [:],
                     jsonObjectClientExpectsToReceive: SessionGetStatusJSON.self,
@@ -187,7 +187,7 @@ public extension PwgSession {
 
     func sessionLogout(completion: @escaping () -> Void,
                        failure: @escaping (PwgKitError) -> Void) {
-        PwgSession.logger.notice("Session: closing…")
+        JSONManager.logger.notice("Session: closing…")
         // Launch request
         postRequest(withMethod: pwgSessionLogout, paramDict: [:],
                     jsonObjectClientExpectsToReceive: SessionLogoutJSON.self,

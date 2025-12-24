@@ -1,5 +1,5 @@
 //
-//  PwgSession+Groups.swift
+//  JSONManager+Groups.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 14/06/2025.
@@ -8,16 +8,15 @@
 
 import Foundation
 
-public extension PwgSession {
+public extension JSONManager {
     
-    static func getGroupsInfo(completion: @escaping ([GroupsGetInfo]) -> Void,
-                              failure: @escaping (PwgKitError) -> Void) {
+    func getGroupsInfo(completion: @escaping ([GroupsGetInfo]) -> Void,
+                       failure: @escaping (PwgKitError) -> Void) {
         
         // Collect data from server
-        let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: pwgGroupsGetList, paramDict: [:],
-                                jsonObjectClientExpectsToReceive: GroupsGetListJSON.self,
-                                countOfBytesClientExpectsToReceive: 10800) { result in
+        postRequest(withMethod: pwgGroupsGetList, paramDict: [:],
+                    jsonObjectClientExpectsToReceive: GroupsGetListJSON.self,
+                    countOfBytesClientExpectsToReceive: 10800) { result in
             switch result {
             case .success(let pwgData):
                 // Update current recentPeriodIndex

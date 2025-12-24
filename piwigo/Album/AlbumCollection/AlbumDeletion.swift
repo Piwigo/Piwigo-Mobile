@@ -188,7 +188,7 @@ class AlbumDeletion: NSObject
         // Delete the category
         let title = NSLocalizedString("deleteCategoryError_title", comment: "Delete Fail")
         let message = NSLocalizedString("deleteCategoryError_message", comment: "Failed to delete your album")
-        PwgSession.checkSession(ofUser: user) { [self] in
+        JSONManager.shared.checkSession(ofUser: user) { [self] in
             AlbumUtilities.delete(albumData.pwgID, inMode: deletionMode) { [self] in
                 // Auto-upload already disabled by AlbumProvider if necessary
                 // Also remove this album from the auto-upload destination

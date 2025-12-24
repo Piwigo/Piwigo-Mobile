@@ -363,7 +363,7 @@ class SelectCategoryViewController: UIViewController {
         // Use the AlbumProvider to fetch album data recursively. On completion,
         // handle general UI updates and error alerts on the main queue.
         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
-        PwgSession.checkSession(ofUser: user) { [self] in
+        JSONManager.shared.checkSession(ofUser: user) { [self] in
             // Fetch albums recursively
             AlbumProvider().fetchAlbums(forUser: user, inParentWithId: 0, recursively: true,
                                         thumbnailSize: thumnailSize) { [self] error in

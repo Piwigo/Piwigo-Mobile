@@ -112,7 +112,7 @@ extension AlbumViewController
         showHUD(withTitle: NSLocalizedString("createNewAlbumHUD_label", comment: "Creating Album…"))
 
         // Create album
-        PwgSession.checkSession(ofUser: user) { [self] in
+        JSONManager.shared.checkSession(ofUser: user) { [self] in
             AlbumUtilities.create(withName: albumName, description: albumComment,
                                   status: "public", inAlbumWithId: albumData.pwgID) { [self] newCatId in
                 // Album successfully created ▶ Add new album to cache and update parent albums

@@ -24,7 +24,7 @@ class ImageUtilities: NSObject {
                                           "pwg_token" : NetworkVars.shared.pwgToken,
                                           "rotate_hd" : true]
         
-        let JSONsession = PwgSession.shared
+        let JSONsession = JSONManager.shared
         JSONsession.postRequest(withMethod: pwgImageRotate, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImageRotateJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in
@@ -55,7 +55,7 @@ class ImageUtilities: NSObject {
                                           "action"      : action.rawValue,
                                           "pwg_token"   : NetworkVars.shared.pwgToken]
         
-        let JSONsession = PwgSession.shared
+        let JSONsession = JSONManager.shared
         JSONsession.postRequest(withMethod: pwgImagesSetCategory, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesSetCategoryJSON.self,
                                 countOfBytesClientExpectsToReceive: pwgImagesSetCategoryBytes) { result in
@@ -81,7 +81,7 @@ class ImageUtilities: NSObject {
         let paramsDict: [String : Any] = ["image_id"  : listOfImageIds,
                                           "pwg_token" : NetworkVars.shared.pwgToken]
         
-        let JSONsession = PwgSession.shared
+        let JSONsession = JSONManager.shared
         JSONsession.postRequest(withMethod: pwgImagesDelete, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesDeleteJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in
@@ -107,7 +107,7 @@ class ImageUtilities: NSObject {
         // Prepare parameters for retrieving image/video infos
         let paramsDict: [String : Any] = ["image_id"  : imageData.pwgID]
         
-        let JSONsession = PwgSession.shared
+        let JSONsession = JSONManager.shared
         JSONsession.postRequest(withMethod: pwgUsersFavoritesAdd, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: FavoritesAddRemoveJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in
@@ -131,7 +131,7 @@ class ImageUtilities: NSObject {
         // Prepare parameters for retrieving image/video infos
         let paramsDict: [String : Any] = ["image_id"  : imageData.pwgID]
         
-        let JSONsession = PwgSession.shared
+        let JSONsession = JSONManager.shared
         JSONsession.postRequest(withMethod: pwgUsersFavoritesRemove, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: FavoritesAddRemoveJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in

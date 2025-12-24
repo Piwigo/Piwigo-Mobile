@@ -44,8 +44,8 @@ extension UploadManager {
         
         // Is this image already stored on the Piwigo server?
         Task.detached {
-            PwgSession.checkSession(ofUser: user) {
-                PwgSession.shared.getIDofImage(withMD5: upload.md5Sum) { imageID in
+            JSONManager.shared.checkSession(ofUser: user) {
+                JSONManager.shared.getIDofImage(withMD5: upload.md5Sum) { imageID in
                     Task { @UploadManagement in
                         if let imageID = imageID {
                             // Already stored on the Piwigo server ► Copy to Album
@@ -136,7 +136,7 @@ extension UploadManager {
                                               "multiple_value_mode" : "replace"]
             
             // Send request to Piwigo server
-            PwgSession.shared.setInfos(with: paramsDict) { [self] in
+            JSONManager.shared.setInfos(with: paramsDict) { [self] in
                 // Update UploadQueue cell and button shown in root album (or default album)
                 let uploadLocalID = upload.localIdentifier
                 DispatchQueue.main.async {
@@ -254,7 +254,7 @@ extension UploadManager {
         }
 
         // Prepare first chunk
-        PwgSession.checkSession(ofUser: upload.user) {
+        JSONManager.shared.checkSession(ofUser: upload.user) {
             // Set total number of bytes to upload
             self.initCounter(withID: upload.localIdentifier, totalBytes: Int64(imageData.count))
             // Start uploading

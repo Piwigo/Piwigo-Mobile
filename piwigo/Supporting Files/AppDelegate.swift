@@ -208,7 +208,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         // Cancel tasks and close session
-        PwgSession.shared.dataSession.invalidateAndCancel()
+        dataSession.invalidateAndCancel()
 
         // Unregister network connection changes
         Task { @MainActor in
