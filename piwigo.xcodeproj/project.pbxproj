@@ -1869,11 +1869,9 @@
 				ADC0A1452E55FD5D001E62F5 /* Constants.swift */,
 				AD3335442666CA46000A1487 /* UploadSizes.swift */,
 				AD0B6ACA268A2187007DEE70 /* UploadSessions.swift */,
-				AD6F39932EF81CAC00CE56F0 /* UploadSessionsDelegate.swift */,
-				AD7E064E2EFBE1C5003F8A61 /* UploadSessionsDelegate+Task.swift */,
-				AD7E06502EFBE1FC003F8A61 /* UploadSessionsDelegate+Data.swift */,
+				AD7E06522EFBE36E003F8A61 /* UploadSessions Delegate */,
 				AD0B6ACC268A218F007DEE70 /* UploadManager.swift */,
-				AD7F1C142B667BAF008E100E /* Extensions */,
+				AD7F1C142B667BAF008E100E /* UploadManager Extensions */,
 				AD7F1C152B667BD2008E100E /* Resources */,
 				AD7DE0912A85898D00C1424E /* Supporting Files */,
 				AD2C625C2A4899F700671582 /* Info.plist */,
@@ -2261,6 +2259,16 @@
 			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		AD7E06522EFBE36E003F8A61 /* UploadSessions Delegate */ = {
+			isa = PBXGroup;
+			children = (
+				AD6F39932EF81CAC00CE56F0 /* UploadSessionsDelegate.swift */,
+				AD7E064E2EFBE1C5003F8A61 /* UploadSessionsDelegate+Task.swift */,
+				AD7E06502EFBE1FC003F8A61 /* UploadSessionsDelegate+Data.swift */,
+			);
+			path = "UploadSessions Delegate";
+			sourceTree = "<group>";
+		};
 		AD7E9AE52A6D7A3D0079BE8F /* Video */ = {
 			isa = PBXGroup;
 			children = (
@@ -2284,7 +2292,7 @@
 			path = piwigoAppPreviews;
 			sourceTree = "<group>";
 		};
-		AD7F1C142B667BAF008E100E /* Extensions */ = {
+		AD7F1C142B667BAF008E100E /* UploadManager Extensions */ = {
 			isa = PBXGroup;
 			children = (
 				ADF351D229A422AC009B7CAA /* UploadManager+Resume.swift */,
@@ -2298,7 +2306,7 @@
 				AD6F39982EFAEBE400CE56F0 /* UploadManager+Counter.swift */,
 				AD0B6AC8268A2166007DEE70 /* UploadManager+Utilities.swift */,
 			);
-			path = Extensions;
+			path = "UploadManager Extensions";
 			sourceTree = "<group>";
 		};
 		AD7F1C152B667BD2008E100E /* Resources */ = {
