@@ -149,6 +149,10 @@ class TroubleshootingViewController: UIViewController {
                 someLogs = entries.filter({$0.category == String(describing: JSONManager.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
                 
+                // piwigoKit — Image Downloader
+                someLogs = entries.filter({$0.category == String(describing: ImageDownloader.self)})
+                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
+                
                 // uploadKit — Upload Sessions Delegate
                 someLogs = entries.filter({$0.category == String(describing: UploadSessionsDelegate.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }

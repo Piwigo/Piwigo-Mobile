@@ -135,8 +135,8 @@ class ImageCollectionViewCell: UICollectionViewCell {
         let scale = max(traitCollection.displayScale, 1.0)
         let cellSize = CGSizeMake(self.bounds.size.width * scale, self.bounds.size.height * scale)
         imageURL = ImageUtilities.getPiwigoURL(imageData, ofMinSize: size)
-        PwgSessionDelegate.shared.getImage(withID: imageData.pwgID, ofSize: size, type: .image, atURL: imageURL,
-                                           fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] cachedImageURL in
+        ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: size, type: .image, atURL: imageURL,
+                                        fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] cachedImageURL in
             // Downsample image in the background
             guard let self = self else { return }
             DispatchQueue.global(qos: .userInitiated).async { [self] in
@@ -251,7 +251,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
 
         // Pause the ongoing image download if needed
         if let imageURL = self.imageURL {
-            PwgSessionDelegate.shared.pauseDownload(atURL: imageURL)
+            ImageDownloader.shared.pauseDownload(atURL: imageURL)
         }
 
         // Reset cell

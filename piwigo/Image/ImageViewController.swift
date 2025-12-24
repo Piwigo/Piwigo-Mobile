@@ -546,12 +546,12 @@ extension ImageViewController: UIPageViewControllerDelegate
         if let imageDVC = pageViewController.viewControllers?.first as? ImageDetailViewController,
            let imageURL = imageDVC.imageURL {
             // Pause download
-            PwgSessionDelegate.shared.pauseDownload(atURL: imageURL)
+            ImageDownloader.shared.pauseDownload(atURL: imageURL)
         }
         else if let pdfDVC = pageViewController.viewControllers?.first as? PdfDetailViewController,
                 let imageURL = pdfDVC.imageURL {
             // Pause download
-            PwgSessionDelegate.shared.pauseDownload(atURL: imageURL)
+            ImageDownloader.shared.pauseDownload(atURL: imageURL)
         }
     }
     
