@@ -80,7 +80,7 @@ class ImageHeaderReusableView: UICollectionReusableView
         else {
             // Determine location from images in section
             let location = AlbumUtilities.getLocation(of: images)
-            LocationProvider.shared.getPlaceName(for: location) { [self] placeName, streetName in
+            LocationProvider().getPlaceName(for: location) { [self] placeName, streetName in
                 if placeName.isEmpty {
                     self.detailLabel?.text = dates.1
                 } else if streetName.isEmpty {

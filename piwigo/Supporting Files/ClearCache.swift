@@ -126,11 +126,11 @@ class ClearCache: NSObject {
         // Cancel tasks
         cancelTasks {
             // Erase data
-            UploadProvider.shared.clearAll()
-            LocationProvider.shared.clearAll()
-            TagProvider.shared.clearAll()
-            ImageProvider.shared.clearAll()
-            AlbumProvider.shared.clearAll()
+            UploadProvider().clearAll()
+            LocationProvider().clearAll()
+            TagProvider().clearAll()
+            ImageProvider().clearAll()
+            AlbumProvider().clearAll()
             
             // Clean directories (if anything left)
             cleanDirectories {
@@ -144,7 +144,7 @@ class ClearCache: NSObject {
         // Cancel tasks
         cancelTasks {
             // Erase Upload database
-            UploadProvider.shared.clearAll()
+            UploadProvider().clearAll()
             
             // Clean directories (if anything left)
             cleanDirectories {

@@ -53,14 +53,14 @@ extension SelectCategoryViewController
                                           "multiple_value_mode" : "replace"]
         
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [self] in
-            PwgSession.shared.setInfos(with: paramsDict) { [self] in
-                DispatchQueue.main.async { [self] in
+        PwgSession.checkSession(ofUser: user) {
+            PwgSession.shared.setInfos(with: paramsDict) {
+                DispatchQueue.main.async {
                     // Add image to album
                     albumData.addToImages(imageData)
                     
                     // Update albums
-                    self.albumProvider.updateAlbums(addingImages: 1, toAlbum: albumData)
+                    try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: albumData)
                     
                     // Set album thumbnail with first copied image if necessary
                     if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
@@ -91,7 +91,7 @@ extension SelectCategoryViewController
                     
                     // Update albums
                     let nberOfImages = Int64(self.inputImages.count)
-                    self.albumProvider.updateAlbums(addingImages: nberOfImages, toAlbum: albumData)
+                    try? AlbumProvider().updateAlbums(addingImages: nberOfImages, toAlbum: albumData)
                     
                     // Set album thumbnail with first copied image if necessary
                     if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil,
@@ -203,7 +203,7 @@ extension SelectCategoryViewController
                     albumData.addToImages(imageData)
                     
                     // Update target albums
-                    self.albumProvider.updateAlbums(addingImages: 1, toAlbum: albumData)
+                    try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: albumData)
                     
                     // Set album thumbnail with first copied image if necessary
                     if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
@@ -216,7 +216,7 @@ extension SelectCategoryViewController
                     imageData.removeFromAlbums(self.inputAlbum)
                     
                     // Update albums
-                    self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: self.inputAlbum)
+                    try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: self.inputAlbum)
                 }
                 completion()
             } failure: { error in
@@ -241,7 +241,7 @@ extension SelectCategoryViewController
                     
                     // Update albums
                     let nberOfImages = Int64(self.inputImages.count)
-                    self.albumProvider.updateAlbums(removingImages: nberOfImages, fromAlbum: albumData)
+                    try? AlbumProvider().updateAlbums(removingImages: nberOfImages, fromAlbum: albumData)
 
                     // Close HUD, save modified data
                     self.didMoveImagesWithSuccess()

@@ -14,12 +14,8 @@ let pwgMaxNberOfLocationsToDecode: Int = 10
 let a: Double = 6378137.0               // Equatorial radius in meters
 let e2: Double = 0.00669437999014       // Earth eccentricity squared
 
-public class LocationProvider: NSObject {
-    
-    // MARK: - Singleton
-    public static let shared = LocationProvider()
-    
-    
+public final class LocationProvider: NSObject {
+        
     // MARK: - Initialisation
     public override init() {
         // Prepare list of operations
@@ -33,17 +29,7 @@ public class LocationProvider: NSObject {
     private var queue = OperationQueue()
     private var queuedLocations: Set<LocationProperties>
 
-    
-    // MARK: - Core Data object context
-    private lazy var mainContext: NSManagedObjectContext = {
-        return DataController.shared.mainContext
-    }()
-
-    private lazy var bckgContext: NSManagedObjectContext = {
-        return DataController.shared.newTaskContext()
-    }()
-
-    
+        
     // MARK: - Fetch Place Names
     /**
      Submits a reverse-geocoding request for the specified location, imports it into Core Data,
@@ -58,6 +44,7 @@ public class LocationProvider: NSObject {
             let semaphore = DispatchSemaphore(value: 0)
 
             // Initialisation
+            let bckgContext = DataController.shared.newTaskContext()
             let newLocation = CLLocation(latitude: location.latitude!, longitude: location.longitude!)
 
             // Request place name
@@ -169,7 +156,7 @@ public class LocationProvider: NSObject {
                                                              longitude: location.longitude,
                                                              radius: region.radius,
                                                              placeName: placeName, streetName: streetName)
-                        self.importOneLocation(newLocation, taskContext: self.bckgContext) {
+                        self.importOneLocation(newLocation, taskContext: bckgContext) {
                             // Remove location from queue
                             self.queuedLocations.remove(location)
                             // Update corresponding headers
@@ -252,7 +239,7 @@ public class LocationProvider: NSObject {
     /**
         Return number of locations stored in cache
      */
-    public func getObjectCount() -> Int64 {
+    public func getObjectCount(inContext taskContext: NSManagedObjectContext) -> Int64 {
 
         // Create a fetch request for the Tag entity
         let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Location")
@@ -260,7 +247,7 @@ public class LocationProvider: NSObject {
         
         // Fetch number of objects
         do {
-            let countResult = try bckgContext.fetch(fetchRequest)
+            let countResult = try taskContext.fetch(fetchRequest)
             return countResult.first!.int64Value
         }
         catch let error {
@@ -281,7 +268,8 @@ public class LocationProvider: NSObject {
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<any NSFetchRequestResult>)
 
         // Execute batch delete request
-        try? mainContext.executeAndMergeChanges(using: batchDeleteRequest)
+        let bckgContext = DataController.shared.newTaskContext()
+        try? bckgContext.executeAndMergeChanges(using: batchDeleteRequest)
     }
 
 
@@ -290,6 +278,7 @@ public class LocationProvider: NSObject {
      Routine returning the place name of a location
      This routine adds an operation fetching the place name if necessary
      */
+    @MainActor
     public func getPlaceName(for location: CLLocation,
                              completion: @escaping (String, String) -> Void,
                              pending: @escaping (Int) -> Void,
@@ -317,31 +306,26 @@ public class LocationProvider: NSObject {
         compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [latitudeMinPredicate,latitudeMaxPredicate,longitudeMinPredicate, longitudeMaxPredicate])
         fetchRequest.predicate = compoundPredicate
         
-        // Create a fetched results controller and set its fetch request, context, and delegate.
-        let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                            managedObjectContext: mainContext,
-                                              sectionNameKeyPath: nil, cacheName: nil)
-        
-        // Perform the fetch.
-        do {
-            try controller.performFetch()
-        } catch {
-            fatalError("Unresolved error: \(error.localizedDescription)")
-        }
-        let knownPlaceNames = controller.fetchedObjects ?? []
-        
         // Loop over known places
-        for knownPlace: Location in knownPlaceNames {
-            // Known location
-            let knownLatitude = knownPlace.latitude
-            let knownLongitude = knownPlace.longitude
-            let knownLocation = CLLocation(latitude: knownLatitude, longitude: knownLongitude)
+        let mainContext = DataController.shared.mainContext
+        do {
+            let knownPlaceNames = try mainContext.fetch(Location.fetchRequest())
+            for knownPlace: Location in knownPlaceNames {
+                // Known location
+                let knownLatitude = knownPlace.latitude
+                let knownLongitude = knownPlace.longitude
+                let knownLocation = CLLocation(latitude: knownLatitude, longitude: knownLongitude)
 
-            // Do we know the place of this location?
-            if location.distance(from: knownLocation) <= knownPlace.radius {
-                completion(knownPlace.placeName, knownPlace.streetName)
-                return
+                // Do we know the place of this location?
+                if location.distance(from: knownLocation) <= knownPlace.radius {
+                    completion(knownPlace.placeName, knownPlace.streetName)
+                    return
+                }
             }
+        }
+        catch {
+            failure()
+            return
         }
         
         // Place names unknown —> Prepare fetch

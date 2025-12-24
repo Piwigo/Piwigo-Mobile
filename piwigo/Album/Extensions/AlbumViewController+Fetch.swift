@@ -302,7 +302,7 @@ extension AlbumViewController
     /// The below methods are only called if the Piwigo server version is between 2.10.0 and 13.0.0.
     func loadFavoritesInBckg() {
         // Check that an album of favorites exists in cache (create it if necessary)
-        guard let album = self.albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) else {
+        guard let album = try? AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) else {
             // Remove favorite album from list of album being fetched
             AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.favorites.rawValue)
             return
@@ -356,17 +356,19 @@ extension AlbumViewController
             }
             
             // Done fetching images
+            let bckgContext = DataController.shared.newTaskContext()
             // ► Remove non-fetched images from album
-            let images = imageProvider.getImages(inContext: albumBckgContext, withIds: newImageIds)
-            album.removeFromImages(images)
+            if let images = try? ImageProvider().getImages(inContext: bckgContext, withIds: newImageIds) {
+                album.removeFromImages(images)
+            }
             // ► Remember when favorites were fetched
             album.dateGetImages = Date().timeIntervalSinceReferenceDate
             // ► Remove favorite album from list of album being fetched
             AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.favorites.rawValue)
             
             // Save changes
-            albumBckgContext.saveIfNeeded()
-            DispatchQueue.main.async { [self] in
+            bckgContext.saveIfNeeded()
+            Task { @MainActor in
                 self.mainContext.saveIfNeeded()
             }
         } failure: { error in

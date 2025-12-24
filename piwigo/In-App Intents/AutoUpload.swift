@@ -101,7 +101,7 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
         
         // Append auto-upload requests to database
         do {
-            let count = try await UploadManager.shared.uploadProvider.importUploads(from: uploadRequestsToAppend)
+            let count = try await UploadProvider().importUploads(from: uploadRequestsToAppend)
 
             // Launch upload operations in background thread
             Task { @UploadManagement in

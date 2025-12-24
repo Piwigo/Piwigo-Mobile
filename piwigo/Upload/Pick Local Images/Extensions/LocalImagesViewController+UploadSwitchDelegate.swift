@@ -92,7 +92,7 @@ extension LocalImagesViewController: UploadSwitchDelegate
         
         // Add selected images to upload queue
         Task { @UploadManagement in
-            await uploadProvider.importUploads(from: self.uploadRequests) { error in
+            await UploadProvider().importUploads(from: self.uploadRequests) { error in
                 // Deselect cells and reset upload queue
                 DispatchQueue.main.async {
                     self.cancelSelect()

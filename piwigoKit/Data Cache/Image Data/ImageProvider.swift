@@ -9,41 +9,12 @@
 import CoreData
 import Foundation
 
-public class ImageProvider: NSObject {
+public final class ImageProvider {
     
-    // MARK: - Singleton
-    public static let shared = ImageProvider()
-    
-    
-    // MARK: - Core Data Object Contexts
-    private lazy var mainContext: NSManagedObjectContext = {
-        return DataController.shared.mainContext
-    }()
-    
-    private lazy var bckgContext: NSManagedObjectContext = {
-        return DataController.shared.newTaskContext()
-    }()
-    
-    
-    // MARK: - Core Data Providers
-    private lazy var albumProvider: AlbumProvider = {
-        let provider : AlbumProvider = AlbumProvider.shared
-        return provider
-    }()
-    
-    private lazy var userProvider: UserProvider = {
-        let provider : UserProvider = UserProvider.shared
-        return provider
-    }()
-    
-    private lazy var tagProvider: TagProvider = {
-        let provider : TagProvider = TagProvider.shared
-        return provider
-    }()
-    
+    public init() {}    // To make this class public
     
     // MARK: - Get Images
-    public func getObjectCount() -> Int64 {
+    public func getObjectCount(inContext taskContext: NSManagedObjectContext) -> Int64 {
 
         // Create a fetch request for the Image entity
         let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Image")
@@ -54,17 +25,17 @@ public class ImageProvider: NSObject {
 
         // Fetch number of objects
         do {
-            let countResult = try bckgContext.fetch(fetchRequest)
+            let countResult = try taskContext.fetch(fetchRequest)
             return countResult.first!.int64Value
         }
         catch let error {
-            debugPrint("••> Could not ftech image count, \(error.localizedDescription)")
+            debugPrint("••> Could not fetch image count, \(error.localizedDescription)")
         }
         return Int64.zero
     }
 
-    func frcOfImage(inContext taskContext: NSManagedObjectContext,
-                    withIds imageIds: Set<Int64>) -> NSFetchedResultsController<Image> {
+    func fetchRequestOfImage(inContext taskContext: NSManagedObjectContext,
+                             withIds imageIds: Set<Int64>) -> NSFetchRequest<Image> {
         let fetchRequest = Image.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Image.pwgID), ascending: true)]
         
@@ -76,37 +47,30 @@ public class ImageProvider: NSObject {
         andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 
-        // Create a fetched results controller and set its fetch request and context.
-        let image = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                               managedObjectContext: taskContext,
-                                               sectionNameKeyPath: nil, cacheName: nil)
-        return image
+        return fetchRequest
     }
     
     public func getImages(inContext taskContext: NSManagedObjectContext,
-                          withIds imageIds: Set<Int64>) -> Set<Image> {
-        
-        // Initialisation
-        var cachedImages = [Image]()
+                          withIds imageIds: Set<Int64>) throws -> Set<Image> {
         
         // Retrieve image objects
-        taskContext.performAndWait {
+        try taskContext.performAndWait {
             
-            // Create a fetched results controller and set its fetch request, context, and delegate.
-            let controller = frcOfImage(inContext: taskContext, withIds: imageIds)
-            
-            // Perform the fetch.
+            // Create a fetch request for the Album entity
+            let fetchRequest = fetchRequestOfImage(inContext: taskContext, withIds: imageIds)
+
+            // Return the Album entity if possible
             do {
-                try controller.performFetch()
-            } catch {
-                fatalError("Unresolved error: \(error.localizedDescription)")
+                let images = try taskContext.fetch(fetchRequest)
+                return Set(images)
             }
-            
-            // Return image objects
-            cachedImages = controller.fetchedObjects ?? []
+            catch let error as PwgKitError {
+                throw error
+            }
+            catch let error {
+                throw PwgKitError.otherError(innerError: error)
+            }
         }
-        
-        return Set(cachedImages)
     }
     
     
@@ -210,7 +174,7 @@ public class ImageProvider: NSObject {
                 catch {
                     failure(.otherError(innerError: error))
                 }
-
+                
             case .failure(let error):
                 /// - Network communication errors
                 /// - Returned JSON data is empty
@@ -278,8 +242,9 @@ public class ImageProvider: NSObject {
                               sort: pwgImageSort, fromRank rank: Int64 = Int64.min) throws {
         // We shall perform at least one import in case where
         // the user did delete all images
-        guard imageArray.isEmpty == false else {
-            _ = importOneBatch([ImagesGetInfo](), inAlbum: albumId, sort: sort)
+        guard imageArray.isEmpty == false
+        else {
+            _ = try importOneBatch([ImagesGetInfo](), inAlbum: albumId, sort: sort)
             return
         }
         
@@ -305,11 +270,9 @@ public class ImageProvider: NSObject {
             
             // Stop the entire import if any batch is unsuccessful.
             let startRank = rank + Int64(batchStart)
-            if !importOneBatch(imagesBatch, inAlbum: albumId,
+            try importOneBatch(imagesBatch, inAlbum: albumId,
                                withAlbumUpdate: withAlbumUpdate,
-                               sort: sort, fromRank: startRank) {
-                return
-            }
+                               sort: sort, fromRank: startRank)
         }
     }
     
@@ -324,15 +287,12 @@ public class ImageProvider: NSObject {
      */
     private func importOneBatch(_ imagesBatch: [ImagesGetInfo],
                                 inAlbum albumId: Int32, withAlbumUpdate: Bool = false,
-                                sort: pwgImageSort, fromRank startRank: Int64 = Int64.min) -> Bool {
-        // Initialisation
-        var success = false
+                                sort: pwgImageSort, fromRank startRank: Int64 = Int64.min) throws {
         
         // Get current user object (will create server and user objects if needed)
-        guard let user = userProvider.getUserAccount(inContext: bckgContext) else {
-            debugPrint("ImageProvider.importOneBatch() unresolved error: Could not get user object!")
-            return false
-        }
+        let bckgContext = DataController.shared.newTaskContext()
+        guard let user = try UserProvider().getUserAccount(inContext: bckgContext)
+        else { throw PwgKitError.userCreationError }
         if user.isFault {
             // user is not fired yet.
             user.willAccessValue(forKey: nil)
@@ -340,10 +300,8 @@ public class ImageProvider: NSObject {
         }
         
         // Get album of selected ID (should exist at this stage)
-        guard let album = user.albums?.first(where: {$0.pwgID == albumId}) else {
-            debugPrint("ImageProvider.importOneBatch() unresolved error: Could not get album object!")
-            return false
-        }
+        guard let album = user.albums?.first(where: {$0.pwgID == albumId})
+        else { throw PwgKitError.albumCreationError }
         if album.isFault {
             // album is not fired yet.
             album.willAccessValue(forKey: nil)
@@ -353,28 +311,21 @@ public class ImageProvider: NSObject {
         // Import tags which are not yet in cache
         let imageTags = imagesBatch.compactMap({$0.tags}).reduce([],+)
         let isAdmin = [pwgUserStatus.admin.rawValue, pwgUserStatus.webmaster.rawValue].contains(user.status)
-        let _ = tagProvider.importOneBatch(imageTags, asAdmin: isAdmin, tagIDs: Set<Int32>())
+        let _ = try TagProvider().importOneBatch(imageTags, asAdmin: isAdmin, tagIDs: Set<Int32>())
 
         // Get favorite album if possible (will not prevent import)
-        let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue)
+        let favAlbum = try AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue)
         
         // taskContext.performAndWait runs on the URLSession's delegate queue
         // so it won’t block the main thread.
-        bckgContext.performAndWait {
+        try bckgContext.performAndWait {
             
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let imageIds = Set(imagesBatch.compactMap({$0.id}))
-            let controller = frcOfImage(inContext: self.bckgContext, withIds: imageIds)
-            
-            // Perform the fetch.
-            do {
-                try controller.performFetch()
-            } catch {
-                fatalError("Unresolved error: \(error.localizedDescription)")
-            }
-            let cachedImages:[Image] = controller.fetchedObjects ?? []
+            let fetchRequest = fetchRequestOfImage(inContext: bckgContext, withIds: imageIds)
             
             // Loop over new images
+            let cachedImages:[Image] = try bckgContext.fetch(fetchRequest)
             var rank = startRank
             for imageData in imagesBatch {
                 
@@ -410,28 +361,20 @@ public class ImageProvider: NSObject {
                                                        sort: sort, rank: rank,
                                                        user: user, albums: albums)
                     }
-                    catch PwgKitError.missingImageData {
+                    catch let error as PwgKitError {
                         // Could not perform the update
-                        debugPrint(PwgKitError.missingImageData.localizedDescription)
+                        throw error
                     }
-                    catch {
-                        debugPrint(error.localizedDescription)
+                    catch let error {
+                        throw PwgKitError.otherError(innerError: error)
                     }
                 }
                 else {
                     // Create a Sizes managed object on the private queue context.
-                    guard let sizes = NSEntityDescription.insertNewObject(forEntityName: "Sizes",
-                                                                          into: bckgContext) as? Sizes else {
-                        debugPrint(PwgKitError.creationImageError.localizedDescription)
-                        return
-                    }
-
+                    let sizes = Sizes(context: bckgContext)
+                    
                     // Create an Image managed object on the private queue context.
-                    guard let image = NSEntityDescription.insertNewObject(forEntityName: "Image",
-                                                                          into: bckgContext) as? Image else {
-                        debugPrint(PwgKitError.creationImageError.localizedDescription)
-                        return
-                    }
+                    let image = Image(context: bckgContext)
                     
                     // Populate the Image's properties using the raw data.
                     image.sizes = sizes
@@ -443,34 +386,35 @@ public class ImageProvider: NSObject {
                         // Update album data if asked
                         if withAlbumUpdate {
                             // Add image to cached albums
-                            albums.forEach { album in
-                                self.albumProvider.updateAlbums(addingImages: 1, toAlbum: album)
+                            try albums.forEach { album in
+                                try AlbumProvider().updateAlbums(addingImages: 1, toAlbum: album)
                             }
                         }
                     }
-                    catch PwgKitError.missingImageData {
+                    catch let error as PwgKitError {
                         // Delete invalid Image from the private queue context.
-                        debugPrint(PwgKitError.missingImageData.localizedDescription)
                         bckgContext.delete(image)
+                        throw error
                     }
                     catch {
-                        debugPrint(error.localizedDescription)
+                        // Delete invalid Image from the private queue context.
+                        bckgContext.delete(image)
+                        throw PwgKitError.otherError(innerError: error)
                     }
                 }
             }
             
             // Save all insertions from the context to the store.
             bckgContext.saveIfNeeded()
-//            DispatchQueue.main.async {
-//                self.mainContext.saveIfNeeded()
-//            }
 
             // Reset the taskContext to free the cache and lower the memory footprint.
             bckgContext.reset()
-            
-            success = true
+
+            // Save cached data in the main thread
+            Task { @MainActor in
+                DataController.shared.mainContext.saveIfNeeded()
+            }
         }
-        return success
     }
     
     
@@ -493,6 +437,7 @@ public class ImageProvider: NSObject {
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<any NSFetchRequestResult>)
 
         // Execute batch delete request
+        let bckgContext = DataController.shared.newTaskContext()
         try? bckgContext.executeAndMergeChanges(using: batchDeleteRequest)
     }
         
@@ -510,6 +455,7 @@ public class ImageProvider: NSObject {
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<any NSFetchRequestResult>)
 
         // Execute batch delete request
-        try? mainContext.executeAndMergeChanges(using: batchDeleteRequest)
+        let bckgContext = DataController.shared.newTaskContext()
+        try? bckgContext.executeAndMergeChanges(using: batchDeleteRequest)
     }
 }

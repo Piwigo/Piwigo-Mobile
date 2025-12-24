@@ -24,12 +24,6 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
         return context
     }()
 
-    // MARK: - Core Data Providers
-    lazy var uploadProvider: UploadProvider = {
-        let provider = UploadProvider.shared
-        return provider
-    }()
-    
     lazy var fetchUploadRequest: NSFetchRequest = {
         let fetchRequest = Upload.fetchRequest()
         // Priority to uploads requested manually, oldest ones first

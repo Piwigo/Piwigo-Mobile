@@ -195,13 +195,18 @@ extension PwgSession {
             // Are cached data associated to an API public key?
             if NetworkVars.shared.fixUserIsAPIKeyV412, let userID = user?.objectID {
                 DispatchQueue.global(qos: .background).async {
+                    // Retrieve background context
+                    let bckgContext = DataController.shared.newTaskContext()
+                    
                     // Attribute upload requests to appropriate user if necessary
                     logger.debug("Session: attributing API Key upload requests to user…")
-                    UploadProvider.shared.attributeAPIKeyUploadRequests(toUserWithID: userID)
+                    UploadProvider().attributeAPIKeyUploadRequests(toUserWithID: userID,
+                                                                   inContext: bckgContext)
                     
                     // Delete API Key user (and albums in cascade)
                     logger.debug("Session: deleting API Key user…")
-                    UserProvider.shared.deleteUser(withName: NetworkVars.shared.username)
+                    UserProvider().deleteUser(withUsername: NetworkVars.shared.username,
+                                              inContext: bckgContext)
                     
                     // Job completed
                     logger.debug("Session: API Key user deleted")

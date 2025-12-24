@@ -130,7 +130,7 @@ extension UploadManager
         
         // Delete upload requests
         let uploadsToDate = Set(toDelete).map({$0.objectID})
-        uploadProvider.delete(uploadsWithID: Array(uploadsToDate)) { [self] _ in
+        UploadProvider().delete(uploadsWithID: Array(uploadsToDate)) { [self] _ in
             // Restart activities
 //            if #unavailable(iOS 26.0) {
                 self.findNextImageToUpload()
@@ -226,7 +226,7 @@ extension UploadManager
         }
         
         // Delete upload requests w/o reporting potential error
-        uploadProvider.delete(uploadsWithID: uploadIDs) { _ in
+        UploadProvider().delete(uploadsWithID: uploadIDs) { _ in
             self.isDeleting = Set()
         }
     }
@@ -244,7 +244,7 @@ extension UploadManager
                 upload.deleteImageAfterUpload = false
             }
         }
-        uploadProvider.bckgContext.saveIfNeeded()
+        uploadBckgContext.saveIfNeeded()
         isDeleting = Set()
     }
 }

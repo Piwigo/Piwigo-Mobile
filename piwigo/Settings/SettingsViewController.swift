@@ -111,13 +111,6 @@ class SettingsViewController: UIViewController {
     }()
     
     
-    // MARK: - Core Data Providers
-    lazy var albumProvider: AlbumProvider = {
-        let provider : AlbumProvider = AlbumProvider.shared
-        return provider
-    }()
-    
-    
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -137,11 +130,12 @@ class SettingsViewController: UIViewController {
             sizes = self.getPhotoSizes()
             self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
             self.videoCacheSize = server.getCacheSizeOfVideos()
-            self.dataCacheSize = server.getAlbumImageCount()
+            let bckgContext = DataController.shared.newTaskContext()
+            self.dataCacheSize = server.getAlbumImageCount(inContext: bckgContext)
             if self.hasUploadRights() {
                 let uploadsDirectory = DataDirectories.appUploadsDirectory
                 let uploadsDirectorySize = ByteCountFormatter.string(fromByteCount: Int64(uploadsDirectory.folderSize), countStyle: .file)
-                self.uploadCacheSize = server.getUploadCount() + " | " + uploadsDirectorySize
+                self.uploadCacheSize = server.getUploadCount(inContext: bckgContext) + " | " + uploadsDirectorySize
             }
         })
         

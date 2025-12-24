@@ -10,6 +10,7 @@ import CoreData
 import Foundation
 import piwigoKit
 
+@MainActor
 class AlbumViewData: NSObject
 {
     private var albumData: Album

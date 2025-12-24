@@ -54,25 +54,25 @@ public class Server: NSManagedObject {
     
     
     // MARK: - Cache Management
-    public func getAlbumImageCount() -> String {
+    public func getAlbumImageCount(inContext taskContext: NSManagedObjectContext) -> String {
         // WAL checkpointing is not controllable ► not an appropriate solution
 //        let dataURL = DataDirectories.appGroupDirectory
 //        let folderSize = dataURL.folderSize
 //        return ByteCountFormatter.string(fromByteCount: Int64(folderSize), countStyle: .file)
         
         // Calculate number of objects in background thread
-        var totalCount = LocationProvider.shared.getObjectCount()
-        totalCount += AlbumProvider.shared.getObjectCount()
-        totalCount += ImageProvider.shared.getObjectCount()
-        totalCount += TagProvider.shared.getObjectCount()
+        var totalCount = LocationProvider().getObjectCount(inContext: taskContext)
+        totalCount += AlbumProvider().getObjectCount(inContext: taskContext)
+        totalCount += ImageProvider().getObjectCount(inContext: taskContext)
+        totalCount += TagProvider().getObjectCount(inContext: taskContext)
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         return formatter.string(from: totalCount as NSNumber) ?? "NaN"
     }
 
-    public func getUploadCount() -> String {
+    public func getUploadCount(inContext taskContext: NSManagedObjectContext) -> String {
         // Calculate number of objects in background thread
-        let uploadCount = UploadProvider.shared.getObjectCount()
+        let uploadCount = UploadProvider().getObjectCount(inContext: taskContext)
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         return formatter.string(from: uploadCount as NSNumber) ?? "NaN"

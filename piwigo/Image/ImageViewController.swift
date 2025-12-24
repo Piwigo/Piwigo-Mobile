@@ -37,18 +37,6 @@ class ImageViewController: UIViewController {
     }()
 
     
-    // MARK: - Core Data Providers
-    lazy var albumProvider: AlbumProvider = {
-        let provider : AlbumProvider = AlbumProvider.shared
-        return provider
-    }()
-    
-    lazy var imageProvider: ImageProvider = {
-        let provider : ImageProvider = ImageProvider.shared
-        return provider
-    }()
-
-    
     // MARK: - Navigation Bar & Toolbar Buttons
     var actionBarButton: UIBarButtonItem?               // - for copying or moving images to other albums
                                                         // - for setting the image as album thumbnail
@@ -308,7 +296,7 @@ class ImageViewController: UIViewController {
         DispatchQueue.global(qos: .userInteractive).async { [self] in
             PwgSession.checkSession(ofUser: user) { [self] in
                 let imageID = imageData.pwgID
-                self.imageProvider.getInfos(forID: imageID, inCategoryId: self.categoryId) { [self] in
+                ImageProvider().getInfos(forID: imageID, inCategoryId: self.categoryId) { [self] in
                     DispatchQueue.main.async { [self] in
                         // Look for the corresponding view controller
                         guard let vcs = self.pageViewController?.viewControllers else { return }

@@ -184,7 +184,7 @@ extension AlbumViewController
                     imageData.removeFromAlbums(albumData)
                     
                     // Update albums
-                    self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: albumData)
+                    try? self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: albumData)
 
                     // Next image
                     imagesToRemove.removeFirst()
@@ -261,7 +261,7 @@ extension AlbumViewController
                     
                     // Update albums
                     let nberOfImages = Int64(toRemove.count)
-                    self.albumProvider.updateAlbums(removingImages: nberOfImages, fromAlbum: self.albumData)
+                    try? self.albumProvider.updateAlbums(removingImages: nberOfImages, fromAlbum: self.albumData)
 
                     // Continue with deletion if needed
                     self.deleteImages(toDelete)
@@ -329,7 +329,7 @@ extension AlbumViewController
                         if let albums = imageData.albums {
                             // Remove image from cached albums
                             albums.forEach { album in
-                                self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: album)
+                                try? self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: album)
                             }
                         }
                     }

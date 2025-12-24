@@ -12,162 +12,78 @@ public enum pwgUserStatus: String, CaseIterable, Sendable {
     case guest, generic, normal, admin, webmaster
 }
 
-public class UserProvider: NSObject {
+public final class UserProvider {
     
-    // MARK: - Singleton
-    public static let shared = UserProvider()
-    
-    
-    // MARK: - Core Data Object Contexts
-    private lazy var mainContext: NSManagedObjectContext = {
-        return DataController.shared.mainContext
-    }()
-    
-    private lazy var bckgContext: NSManagedObjectContext = {
-        return DataController.shared.newTaskContext()
-    }()
-    
-    
-    // MARK: - Core Data Providers
-    private lazy var serverProvider: ServerProvider = {
-        let provider : ServerProvider = ServerProvider.shared
-        return provider
-    }()
-    
-    
+    public init() {}    // To make this class public
+
     // MARK: - Manage User Account Object
     /**
      Returns a User Account instance
      - Will create a Server object if it does not already exist.
      - Will create a User Account object if it does not already exist.
      */
-    public func getUserAccount(inContext taskContext: NSManagedObjectContext,
-                               afterUpdate doUpdate: Bool = false) -> User? {
-        // Initialisation
-        var currentUser: User?
-        let path = NetworkVars.shared.serverPath
-        let username = NetworkVars.shared.user
-        
-        // Perform the fetch
-        taskContext.performAndWait {
-            // Create a fetch request for the User entity
-            let fetchRequest = User.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(User.username), ascending: true,
-                                                             selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
-            
-            // Look for a user account of the server at path
-            var andPredicates = [NSPredicate]()
-            andPredicates.append(NSPredicate(format: "server.path == %@", path))
-            andPredicates.append(NSPredicate(format: "username == %@", username))
-            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-            fetchRequest.fetchLimit = 1
-
-            // Create a fetched results controller and set its fetch request, context, and delegate.
-            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                        managedObjectContext: taskContext,
-                                                        sectionNameKeyPath: nil, cacheName: nil)
-            // Perform the fetch.
-            do {
-                try controller.performFetch()
-            } catch {
-                debugPrint("••> getUserAccount() unresolved error: \(error.localizedDescription)")
-                return
-            }
-            
-            // Did we find a User instance?
-            if let cachedUser: User = (controller.fetchedObjects ?? []).first {
-                if doUpdate {
-                    let now = Date.timeIntervalSinceReferenceDate
-                    cachedUser.lastUsed = now
-                    cachedUser.server?.lastUsed = now
-                    cachedUser.status = NetworkVars.shared.userStatus.rawValue
-                }
-                currentUser = cachedUser
-            } else {
-                // Get the Server managed object on the current queue context.
-                // Create a User managed object on the current queue context.
-                guard let server = serverProvider.getServer(inContext: taskContext, atPath: path),
-                      let user = NSEntityDescription.insertNewObject(forEntityName: "User",
-                                                                     into: taskContext) as? User else {
-                    debugPrint(PwgKitError.userCreationError.localizedDescription)
-                    return
-                }
-                
-                // Populate the User's properties using the data.
-                do {
-                    try user.update(username: username, ofServer: server)
-                    currentUser = user
-                }
-                catch {
-                    debugPrint(error.localizedDescription)
-                    taskContext.delete(user)
-                }
-            }
-            
-            // Save all insertions from the context to the store.
-            taskContext.saveIfNeeded()
-            if Thread.isMainThread == false {
-                DispatchQueue.main.async {
-                    self.mainContext.saveIfNeeded()
-                }
-            }
-        }
-        
-        return currentUser
-    }
-    
-    func deleteUser(withName username: String) {
-        // Create a fetch request for the User entity
+    private func fetchRequestOfUser(withUsername username: String = NetworkVars.shared.user,
+                                    ofServerAtPath path: String = NetworkVars.shared.serverPath) -> NSFetchRequest<User> {
+        // Create a fetch request sorted by username
         let fetchRequest = User.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(User.username), ascending: true,
                                                          selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
-        
-        // Look for a user account of the server at path
+
+        // Select user:
+        /// — from the current server which is accessible to the current user
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "server.path == %@", path))
         andPredicates.append(NSPredicate(format: "username == %@", username))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         fetchRequest.fetchLimit = 1
+        return fetchRequest
+    }
+    
+    public func getUserAccount(of username: String = NetworkVars.shared.user,
+                               ofServerAtPath path: String = NetworkVars.shared.serverPath,
+                               inContext taskContext: NSManagedObjectContext,
+                               afterUpdate doUpdate: Bool = false) throws -> User? {
+        // Synchronous execution
+        return try taskContext.performAndWait { () -> User? in
+            // Create a fetch request for the User entity
+            let fetchRequest = fetchRequestOfUser(withUsername: username, ofServerAtPath: path)
+            
+            // Return the User entity if possible
+            let user = try taskContext.fetch(fetchRequest).first
+            if let user {
+                if doUpdate {
+                    let now = Date.timeIntervalSinceReferenceDate
+                    user.lastUsed = now
+                    user.server?.lastUsed = now
+                    user.status = NetworkVars.shared.userStatus.rawValue
+                    taskContext.saveIfNeeded()
+                }
+                return user
+            }
+            
+            // Get the Server managed object on the current queue context.
+            let server = try ServerProvider().getServer(inContext: taskContext)
+            guard let server else { throw PwgKitError.serverCreationError}
+
+            // Create a User object on the current queue context
+            let newUser = User(context: taskContext)
+            try newUser.update(username: username, ofServer: server)
+            taskContext.saveIfNeeded()
+            return newUser
+        }
+    }
+    
+    func deleteUser(withUsername username: String = NetworkVars.shared.user,
+                    ofServerAtPath path: String = NetworkVars.shared.serverPath,
+                    inContext taskContext: NSManagedObjectContext) {
         
+        // Create a fetch request for the User entity
+        let fetchRequest = fetchRequestOfUser(withUsername: username, ofServerAtPath: path)
+
         // Delete the User object w/o loading it into memory
         /// - deletes associated albums in cascade
         /// - deletes associated upload requests in cascade if not already re-attributed to Piwigo user
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<any NSFetchRequestResult>)
-        try? bckgContext.executeAndMergeChanges(using: batchDeleteRequest)
+        try? taskContext.executeAndMergeChanges(using: batchDeleteRequest)
     }
-    
-    /**
-     Returns all User Account instances of a server
-     */
-//    public func getUserAccounts(inContext taskContext: NSManagedObjectContext,
-//                                atPath path: String = NetworkVars.shared.serverPath) -> Set<User> {
-//        var users = Set<User>()
-//        
-//        // Perform the fetch
-//        taskContext.performAndWait {
-//            // Create a fetch request for the User entity
-//            let fetchRequest = User.fetchRequest()
-//            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(User.username), ascending: true,
-//                                                             selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
-//            
-//            // Look for all user accounts of the server at path
-//            fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath)
-//
-//            // Create a fetched results controller and set its fetch request, context, and delegate.
-//            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-//                                                        managedObjectContext: taskContext,
-//                                                        sectionNameKeyPath: nil, cacheName: nil)
-//            // Perform the fetch.
-//            do {
-//                try controller.performFetch()
-//            } catch {
-//                fatalError("Unresolved error \(error)")
-//            }
-//            
-//            // Return user instances
-//            users = Set(controller.fetchedObjects ?? [])
-//        }
-//        
-//        return users
-//    }
 }

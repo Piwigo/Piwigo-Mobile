@@ -136,9 +136,11 @@ extension UploadManager {
             return
         }
         PwgSession.checkSession(ofUser: user) { [self] in
-            self.processImages(withIds: "\(upload.imageId)",
-                               inCategory: upload.category) { [self] _ in
-                self.didFinishTransfer(for: upload, error: nil)
+            Task { @UploadManagement in
+                self.processImages(withIds: "\(upload.imageId)",
+                                   inCategory: upload.category) { [self] _ in
+                    self.didFinishTransfer(for: upload, error: nil)
+                }
             }
         } failure: { [self] _ in
             // Cannot empty the lounge

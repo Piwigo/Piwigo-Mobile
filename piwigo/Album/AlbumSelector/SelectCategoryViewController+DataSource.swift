@@ -78,7 +78,9 @@ extension SelectCategoryViewController: UITableViewDataSource
                    catIds.count > indexPath.row {
                     catId = catIds[indexPath.row]
                 }
-                albumData = albumProvider.getAlbum(ofUser: user, withId: catId)!
+                guard let selectedAlbum = try? AlbumProvider().getAlbum(ofUser: user, withId: catId)
+                else { return cell }
+                albumData = selectedAlbum
             } else if hasRecentAlbums {
                 // Recent albums
                 albumData = recentAlbums.object(at: indexPath)

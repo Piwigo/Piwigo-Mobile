@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import piwigoKit
 
 extension TagsViewController
 {
@@ -60,7 +61,7 @@ extension TagsViewController
 
         // Add new tag
         DispatchQueue.global(qos: .userInteractive).async {
-            self.tagProvider.addTag(with: tagName) { error in
+            TagProvider().addTag(with: tagName) { error in
                 DispatchQueue.main.async {
                     guard let error = error else {
                         self.updateHUDwithSuccess {

@@ -37,18 +37,6 @@ class TagSelectorViewController: UIViewController {
     }()
     
     
-    // MARK: - Core Data Providers
-    private lazy var tagProvider: TagProvider = {
-        let provider : TagProvider = TagProvider.shared
-        return provider
-    }()
-    
-    private lazy var albumProvider: AlbumProvider = {
-        let provider : AlbumProvider = AlbumProvider.shared
-        return provider
-    }()
-    
-    
     // MARK: - Fetched Results Controller
     lazy var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)
@@ -116,7 +104,7 @@ class TagSelectorViewController: UIViewController {
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
         PwgSession.checkSession(ofUser: user) { [self] in
-            self.tagProvider.fetchTags(asAdmin: false) { [self] error in
+            TagProvider().fetchTags(asAdmin: false) { [self] error in
                 DispatchQueue.main.async { [self] in
                     guard let error = error else { return }
                     didFetchTagsWithError(error)
@@ -293,7 +281,7 @@ extension TagSelectorViewController: UITableViewDelegate
         let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.tagId)
         
         // Check that an album of tagged images exists in cache (create it if necessary)
-        guard let _ = albumProvider.getAlbum(ofUser: user, withId: catID, name: tag.tagName) else {
+        guard let _ = try? AlbumProvider().getAlbum(ofUser: user, withId: catID, name: tag.tagName) else {
             return
         }
         

@@ -41,11 +41,11 @@ extension ImageViewController
             ImageUtilities.addToFavorites(imageData) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Update Favorite smart album
-                    if let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) {
+                    if let favAlbum = try? AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) {
                         // Add image to favorites album
                         favAlbum.addToImages(imageData)
                         // Update favorites album data
-                        self.albumProvider.updateAlbums(addingImages: 1, toAlbum: favAlbum)
+                        try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: favAlbum)
                         // Save changes
                         self.mainContext.saveIfNeeded()
                         // Set button
@@ -104,11 +104,11 @@ extension ImageViewController
             ImageUtilities.removeFromFavorites(imageData) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Update Favorite smart album
-                    if let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) {
+                    if let favAlbum = try? AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) {
                         // Remove image from favorites album
                         favAlbum.removeFromImages(imageData)
                         // Update favorites album data
-                        self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: favAlbum)
+                        try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: favAlbum)
                         // Save changes
                         self.mainContext.saveIfNeeded()
                         // Back to favorites album or set favorite button?

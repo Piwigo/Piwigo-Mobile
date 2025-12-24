@@ -38,13 +38,6 @@ class TagsViewController: UITableViewController {
     }()
     
     
-    // MARK: - Core Data Providers
-    lazy var tagProvider: TagProvider = {
-        let provider : TagProvider = TagProvider.shared
-        return provider
-    }()
-    
-    
     // MARK: - Core Data Source
     lazy var tagPredicates: [NSPredicate] = {
         let andPredicates = [NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath)]
@@ -134,7 +127,7 @@ class TagsViewController: UITableViewController {
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
         PwgSession.checkSession(ofUser: user) {
-            self.tagProvider.fetchTags(asAdmin: self.user.hasAdminRights) { [self] error in
+            TagProvider().fetchTags(asAdmin: self.user.hasAdminRights) { [self] error in
                 guard let error = error else { return }     // Done if no error
                 DispatchQueue.main.async { [self] in
                     didFetchTagsWithError(error)

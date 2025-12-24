@@ -15,6 +15,7 @@ import uploadKit
 class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
 
     // MARK: - Core Data Object Contexts
+    @MainActor
     private lazy var mainContext: NSManagedObjectContext = {
         return DataController.shared.mainContext
     }()
@@ -79,7 +80,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                 .compactMap{ $0 }
             
             // Append auto-upload requests to database
-            UploadManager.shared.uploadProvider.importUploads(from: uploadRequestsToAppend) { error in
+            UploadProvider().importUploads(from: uploadRequestsToAppend) { error in
                 // Show an alert if there was an error.
                 guard let error = error else {
                     // Initialise upload operations

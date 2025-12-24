@@ -55,7 +55,8 @@ extension UploadManager
         
         // Get album current counter value
         var currentCounter = UploadVars.shared.categoryCounterInit
-        if let album = albumProvider.getAlbum(ofUser: upload.user, withId: upload.category) {
+        if let user = upload.user,
+           let album = try? AlbumProvider().getAlbum(ofUser: user, withId: upload.category) {
             // Album available ► Get current counter
             if album.isFault {
                 // The album is not fired yet.

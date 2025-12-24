@@ -27,17 +27,6 @@ class AutoUploadViewController: UIViewController {
         return context
     }()
 
-
-    // MARK: - Core Data Providers
-    lazy var albumProvider: AlbumProvider = {
-        let provider : AlbumProvider = AlbumProvider.shared
-        return provider
-    }()
-    lazy var tagProvider: TagProvider = {
-        let provider : TagProvider = TagProvider.shared
-        return provider
-    }()
-
     private lazy var hasTagCreationRights: Bool = {
         // Depends on the user's rights
         switch NetworkVars.shared.userStatus {

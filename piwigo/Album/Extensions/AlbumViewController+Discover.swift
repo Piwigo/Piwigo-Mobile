@@ -63,7 +63,7 @@ extension AlbumViewController
                               image: UIImage(systemName: "heart"),
                               identifier: actionId, handler: { [self] action in
             // Check that an album of favorites exists in cache (create it if necessary)
-            guard let _ = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) else {
+            guard let _ = try? AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) else {
                 return
             }
             
@@ -129,7 +129,7 @@ extension AlbumViewController
 {
     func discoverImages(inCategoryId categoryId: Int32) {
         // Check that a discover album exists in cache (create it if necessary)
-        guard let _ = albumProvider.getAlbum(ofUser: user, withId: categoryId) else {
+        guard let _ = try? AlbumProvider().getAlbum(ofUser: user, withId: categoryId) else {
             return
         }
         

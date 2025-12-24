@@ -105,7 +105,7 @@ extension ImageViewController
                         album.removeFromImages(imageData)
                         
                         // Update albums
-                        self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: album)
+                        try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: album)
                         
                         // Save changes
                         self.mainContext.saveIfNeeded()
@@ -182,7 +182,7 @@ extension ImageViewController
                     if let albums = imageData.albums {
                         // Remove image from cached albums
                         albums.forEach { album in
-                            self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: album)
+                            try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: album)
                         }
                     }
                     

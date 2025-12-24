@@ -79,13 +79,6 @@ class EditImageParamsViewController: UIViewController
     }()
 
     
-    // MARK: - Core Data Providers
-    private lazy var albumProvider: AlbumProvider = {
-        let provider : AlbumProvider = AlbumProvider.shared
-        return provider
-    }()
-
-
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -435,7 +428,7 @@ class EditImageParamsViewController: UIViewController
         // Send request to Piwigo server
         PwgSession.checkSession(ofUser: user) { [self] in
             PwgSession.shared.setInfos(with: paramsDict) { [self] in
-                DispatchQueue.main.async { [self] in
+                Task { @MainActor in
                     // Update image title?
                     if shouldUpdateTitle,
                        let newTitle = paramsDict["name"] as? String {
@@ -476,7 +469,7 @@ class EditImageParamsViewController: UIViewController
                                 imageData.removeFromAlbums(albumData)
                                 
                                 // Update albums
-                                self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: albumData)
+                                try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: albumData)
                             }
                         }
                         // Loop over the added tags
@@ -488,11 +481,11 @@ class EditImageParamsViewController: UIViewController
                             }
                             // Add image to album of tagged images if it exists
                             let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.tagId)
-                            if let albumData = self.albumProvider.getAlbum(ofUser: user, withId: catID) {
+                            if let albumData = try? AlbumProvider().getAlbum(ofUser: user, withId: catID) {
                                 imageData.addToAlbums(albumData)
                                 
                                 // Update albums
-                                self.albumProvider.updateAlbums(addingImages: 1, toAlbum: albumData)
+                                try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: albumData)
                             }
                         }
                     }
@@ -507,7 +500,7 @@ class EditImageParamsViewController: UIViewController
                     }
                     
                     // Save changes
-                    mainContext.saveIfNeeded()
+                    self.mainContext.saveIfNeeded()
                     
                     // Notify album/image view of modification
                     self.delegate?.didChangeImageParameters(imageData)

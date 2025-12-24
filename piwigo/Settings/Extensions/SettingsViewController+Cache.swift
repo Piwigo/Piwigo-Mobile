@@ -95,7 +95,7 @@ extension SettingsViewController
                     self.mainContext.saveIfNeeded()
 
                     // Refresh Settings cell related with data
-                    self.dataCacheSize = server.getAlbumImageCount()
+                    self.dataCacheSize = server.getAlbumImageCount(inContext: self.mainContext)
 
                     // Hide HUD on completion
                     self.navigationController?.hideHUD { }
@@ -185,7 +185,7 @@ extension SettingsViewController
                         // Refresh upload cache cell
                         let uploadsDirectory = DataDirectories.appUploadsDirectory
                         let uploadsDirectorySize = ByteCountFormatter.string(fromByteCount: Int64(uploadsDirectory.folderSize), countStyle: .file)
-                        self.uploadCacheSize = server.getUploadCount() + " | " + uploadsDirectorySize
+                        self.uploadCacheSize = server.getUploadCount(inContext: self.mainContext) + " | " + uploadsDirectorySize
                         
                         // Hide HUD on completion
                         self.navigationController?.hideHUD { }
@@ -214,13 +214,13 @@ extension SettingsViewController
                     server.clearCachedImages(ofSizes: Set(pwgImageSize.allCases), exceptVideos: false)
                     
                     // Refresh variables and cells
-                    self.dataCacheSize = server.getAlbumImageCount()
+                    self.dataCacheSize = server.getAlbumImageCount(inContext: self.mainContext)
                     var sizes = self.getThumbnailSizes()
                     self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
                     sizes = self.getPhotoSizes()
                     self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
                     self.videoCacheSize = server.getCacheSizeOfVideos()
-                    self.uploadCacheSize = server.getUploadCount()
+                    self.uploadCacheSize = server.getUploadCount(inContext: self.mainContext)
                     
                     // Hide HUD on completion
                     self.navigationController?.hideHUD { }

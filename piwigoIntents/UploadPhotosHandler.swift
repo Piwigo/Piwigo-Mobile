@@ -14,20 +14,6 @@ import uploadKit
 @available(iOSApplicationExtension 13.0, *)
 class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
     
-    // MARK: - Core Data Object Contexts
-    @MainActor
-    private lazy var mainContext: NSManagedObjectContext = {
-        return DataController.shared.mainContext
-    }()
-    
-
-    // MARK: - Core Data Providers
-    lazy var uploadProvider: UploadProvider = {
-        let provider = UploadProvider.shared
-        return provider
-    }()
-
-    
     // MARK: - Handle Intent
     func handle(intent: UploadPhotosIntent, completion: @escaping (UploadPhotosIntentResponse) -> Void)
     {
@@ -63,7 +49,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
         
         // We collect the list of images in the upload queue
         // so that we can check which ones are already in the upload queue.
-        let uploadsInQueue: [String] = uploadProvider.getAllMd5sum()
+        let uploadsInQueue: [String] = UploadProvider().getAllMd5sum()
 
         // Get date of action for preparing identifier
         let dateFormatter = DateFormatter()
@@ -79,7 +65,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
         var selectedImages = [UploadProperties]()      // Array of images to upload
         for idx in 0..<selectedFiles.count {
             // Determine MD5 checksum
-            let error: Error?, md5Sum: String!
+            let error: (any Error)?, md5Sum: String!
             (md5Sum, error) = selectedFiles[idx].MD5checksum
             if let error = error {
                 // Could not determine the MD5 checksum
@@ -130,7 +116,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
         }
 
         // Add selected images to upload queue
-        uploadProvider.importUploads(from: selectedImages) { error in
+        UploadProvider().importUploads(from: selectedImages) { error in
             // Show an alert if there was an error.
             guard let error = error else {
                 // Create the operation queue
@@ -178,7 +164,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
                     debugPrint("••> Task completed with success.")
                     // Save cached data in the main thread
                     Task { @MainActor in
-                        self.mainContext.saveIfNeeded()
+                        DataController.shared.mainContext.saveIfNeeded()
                     }
                 }
 

@@ -8,72 +8,45 @@
 
 import CoreData
 
-public class ServerProvider: NSObject {
+public final class ServerProvider {
     
-    // MARK: - Singleton
-    public static let shared = ServerProvider()
-    
-    
+    public init() {}    // To make this class public
+
     // MARK: - Get/Create Server Object
     /**
      Returns the Server object at path.
      Will create the Server object if it does not exist before returning it.
      */
+    private func fetchRequestOfServer(atPath path: String = NetworkVars.shared.serverPath) -> NSFetchRequest<Server> {
+        // Create a fetch request sorted by path
+        let fetchRequest = Server.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Server.path), ascending: true,
+                                                         selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
+        
+        // Look for the Server located at the provided path
+        fetchRequest.predicate = NSPredicate(format: "path == %@", path)
+        fetchRequest.fetchLimit = 1
+        return fetchRequest
+    }
+    
     public func getServer(inContext taskContext: NSManagedObjectContext,
-                          atPath path:String = NetworkVars.shared.serverPath) -> Server? {
-        // Initialisation
-        var currentServer: Server?
-        
-        // Perform the fetch
-        taskContext.performAndWait {
+                          atPath path: String = NetworkVars.shared.serverPath) throws -> Server? {
+        // Synchronous execution
+        try taskContext.performAndWait {
             // Create a fetch request for the Server entity
-            let fetchRequest = Server.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Server.path), ascending: true,
-                                            selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
+            let fetchRequest = fetchRequestOfServer(atPath: path)
+            
+            // Return the Server entity if possible
+            let server = try taskContext.fetch(fetchRequest).first
+            if let server { return server }
+            
+            // Create a Server object on the current queue context
+            let newServer = Server(context: taskContext)
 
-            // Look for the server located at the provided path
-            fetchRequest.predicate = NSPredicate(format: "path == %@", path)
-            fetchRequest.fetchLimit = 1
-
-            // Create a fetched results controller and set its fetch request and context.
-            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                managedObjectContext: taskContext,
-                                                  sectionNameKeyPath: nil, cacheName: nil)
-            // Perform the fetch.
-            do {
-                try controller.performFetch()
-            } catch {
-                fatalError("Unresolved error \(error.localizedDescription)")
-            }
-
-            // Did we find a Server instance?
-            if let cachedServer: Server = (controller.fetchedObjects ?? []).first {
-                currentServer = cachedServer
-            } else {
-                // Create a Server object on the current queue context.
-                guard let server = NSEntityDescription.insertNewObject(forEntityName: "Server",
-                                                                       into: taskContext) as? Server else {
-                    debugPrint(PwgKitError.serverCreationError.localizedDescription)
-                    return
-                }
-                
-                // Populate the Server's properties using default values
-                do {
-                    try server.update(withPath: path)
-                    currentServer = server
-                }
-                catch PwgKitError.wrongServerURL {
-                    // Delete invalid Server from the private queue context.
-                    debugPrint(PwgKitError.wrongServerURL.localizedDescription)
-                    taskContext.delete(server)
-                }
-                catch {
-                    debugPrint(error.localizedDescription)
-                    taskContext.delete(server)
-                }
-            }
+            // Return the new Server object or an error
+            try newServer.update(withPath: path)
+            taskContext.saveIfNeeded()
+            return newServer
         }
-        
-        return currentServer
     }
 }

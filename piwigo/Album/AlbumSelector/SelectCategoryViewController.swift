@@ -52,18 +52,6 @@ class SelectCategoryViewController: UIViewController {
     }()
 
     
-    // MARK: - Core Data Providers
-    lazy var albumProvider: AlbumProvider = {
-        let provider : AlbumProvider = AlbumProvider.shared
-        return provider
-    }()
-
-    lazy var imageProvider: ImageProvider = {
-        let provider : ImageProvider = ImageProvider.shared
-        return provider
-    }()
-
-    
     // MARK: - Core Data Source
     typealias DataSource = UITableViewDiffableDataSource<String, NSManagedObjectID>
     /// Stored properties cannot be marked potentially unavailable with '@available'.
@@ -177,7 +165,7 @@ class SelectCategoryViewController: UIViewController {
             }
             // Actual default album or actual album in which photos are auto-uploaded
             // to be replaced by the selected one
-            guard let album = albumProvider.getAlbum(ofUser: user, withId: albumId) else {
+            guard let album = try?  AlbumProvider().getAlbum(ofUser: user, withId: albumId) else {
                 return false
             }
             if album.isFault {
@@ -207,7 +195,7 @@ class SelectCategoryViewController: UIViewController {
             commonCatIDs = Set((imageData.albums ?? Set<Album>()).map({$0.pwgID}))
             inputImages = Set([imageData])
             // Album from which the image has been selected
-            guard let album = albumProvider.getAlbum(ofUser: user, withId: albumId) else {
+            guard let album = try? AlbumProvider().getAlbum(ofUser: user, withId: albumId) else {
                 return false
             }
             if album.isFault {
@@ -220,6 +208,7 @@ class SelectCategoryViewController: UIViewController {
         case .copyImages, .moveImages:
             guard let array = parameter as? [Any],
                   let imageIDs = array[0] as? Set<Int64>,
+                  let images = try? ImageProvider().getImages(inContext: mainContext, withIds: imageIDs),
                   let albumId = array[1] as? Int32 else {
                 debugPrint("Input parameter expected to be of type [[NSNumber], Int32]")
                 return false
@@ -230,14 +219,14 @@ class SelectCategoryViewController: UIViewController {
                 debugPrint("List of image IDs should not be empty")
                 return false
             }
-            inputImages = imageProvider.getImages(inContext: mainContext, withIds: imageIDs)
+            inputImages = images
             nberOfImages = Int64(inputImages.count)
             if inputImages.isEmpty {
                 debugPrint("No image in cache with these IDs: \(inputImageIds)")
                 return false
             }
             // Album from which the images have been selected
-            guard let album = albumProvider.getAlbum(ofUser: user, withId: albumId) else {
+            guard let album = try? AlbumProvider().getAlbum(ofUser: user, withId: albumId) else {
                 return false
             }
             if album.isFault {
@@ -285,7 +274,7 @@ class SelectCategoryViewController: UIViewController {
         categoriesTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
 
         // Check that a root album exists in cache (create it if necessary)
-        guard let _ = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.root.rawValue) else {
+        guard let _ = try? AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.root.rawValue) else {
             return
         }
         
@@ -376,8 +365,8 @@ class SelectCategoryViewController: UIViewController {
         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
         PwgSession.checkSession(ofUser: user) { [self] in
             // Fetch albums recursively
-            albumProvider.fetchAlbums(forUser: user, inParentWithId: 0, recursively: true,
-                                      thumbnailSize: thumnailSize) { [self] error in
+            AlbumProvider().fetchAlbums(forUser: user, inParentWithId: 0, recursively: true,
+                                        thumbnailSize: thumnailSize) { [self] error in
                 DispatchQueue.main.async { [self] in
                     guard let error = error
                     else {

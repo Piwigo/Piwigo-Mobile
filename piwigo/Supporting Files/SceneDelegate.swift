@@ -446,7 +446,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     
                     // Check that an album of favorites exists in cache (create it if necessary)
                     guard let albumVC = navController.viewControllers.first as? AlbumViewController,
-                          let _ = albumVC.albumProvider.getAlbum(ofUser: albumVC.user, withId: pwgSmartAlbum.favorites.rawValue)
+                          let _ = try? AlbumProvider().getAlbum(ofUser: albumVC.user, withId: pwgSmartAlbum.favorites.rawValue)
                     else { return false }
                     
                     // Present favorite images

@@ -27,12 +27,6 @@ class AlbumDeletion: NSObject
     private var deleteAction: UIAlertAction?
     private var nbOrphans = Int64.min
     
-    // MARK: - Core Data Providers
-    private lazy var albumProvider: AlbumProvider = {
-        let provider : AlbumProvider = AlbumProvider.shared
-        return provider
-    }()
-
     @MainActor
     func displayAlert(completion: @escaping (Bool) -> Void)
     {
@@ -232,8 +226,8 @@ class AlbumDeletion: NSObject
             
             // Use the AlbumProvider to fetch album data. On completion,
             // handle general UI updates and error alerts on the main queue.
-            albumProvider.fetchAlbums(forUser: user, inParentWithId: parentID,
-                                      thumbnailSize: thumnailSize) { [self] error in
+            AlbumProvider().fetchAlbums(forUser: user, inParentWithId: parentID,
+                                        thumbnailSize: thumnailSize) { [self] error in
                 // ► Remove album from list of albums being fetched
                 AlbumVars.shared.isFetchingAlbumData.remove(parentID)
                 

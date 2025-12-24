@@ -48,7 +48,7 @@ class LoginViewController: UIViewController {
 
     // MARK: - Core Data Providers
     private lazy var userProvider: UserProvider = {
-        let provider : UserProvider = UserProvider.shared
+        let provider : UserProvider = UserProvider()
         return provider
     }()
 
@@ -408,11 +408,20 @@ class LoginViewController: UIViewController {
             
             DispatchQueue.main.async { [self] in
                 // Create/update guest account in persistent cache, create Server if necessary.
-                // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
-                let _ = self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
-
-                // Check Piwigo version, get token, available sizes, etc.
-                self.getCommunityStatus()
+                do {
+                    // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
+                    let _ = try self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
+                    
+                    // Check Piwigo version, get token, available sizes, etc.
+                    self.getCommunityStatus()
+                }
+                catch let error as PwgKitError {
+                    // Login request failed
+                    logging(inConnectionError: error)
+                }
+                catch let error {
+                    logging(inConnectionError: PwgKitError.otherError(innerError: error))
+                }
             }
         }
     }
@@ -491,8 +500,16 @@ class LoginViewController: UIViewController {
         isAlreadyTryingToLogin = false
 
         // Create/update User account in persistent cache, create Server if necessary.
-        // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
-        let _ = self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
+        do {
+            // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
+            let _ = try self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
+        }
+        catch let error as PwgKitError {
+            logging(inConnectionError: error)
+        }
+        catch let error {
+            logging(inConnectionError: PwgKitError.otherError(innerError: error))
+        }
 
         // Check image size availabilities
         let scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))

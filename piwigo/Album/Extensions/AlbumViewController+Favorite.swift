@@ -76,11 +76,11 @@ extension AlbumViewController
                     navigationController?.updateHUD(withProgress: 1.0 - Float(remainingIDs.count) / total)
                     
                     // Image added to favorites ► Add it in the background
-                    if let favAlbum = self.albumProvider.getAlbum(ofUser: self.user, withId: pwgSmartAlbum.favorites.rawValue) {
+                    if let favAlbum = try? AlbumProvider().getAlbum(ofUser: self.user, withId: pwgSmartAlbum.favorites.rawValue) {
                         // Remove image from favorites album
                         favAlbum.addToImages(imageData)
                         // Update favorites album data
-                        self.albumProvider.updateAlbums(addingImages: 1, toAlbum: favAlbum)
+                        try? self.albumProvider.updateAlbums(addingImages: 1, toAlbum: favAlbum)
                     }
                     
                     // pwg.users.favorites… methods available from Piwigo version 2.10
@@ -183,11 +183,11 @@ extension AlbumViewController
                     navigationController?.updateHUD(withProgress: 1.0 - Float(remainingIDs.count) / total)
                     
                     // Image removed from favorites ► Remove it in the foreground
-                    if let favAlbum = self.albumProvider.getAlbum(ofUser: self.user, withId: pwgSmartAlbum.favorites.rawValue) {
+                    if let favAlbum = try? AlbumProvider().getAlbum(ofUser: self.user, withId: pwgSmartAlbum.favorites.rawValue) {
                         // Remove image from favorites album
                         favAlbum.removeFromImages(imageData)
                         // Update favorites album data
-                        self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: favAlbum)
+                        try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: favAlbum)
                     }
                     
                     // pwg.users.favorites… methods available from Piwigo version 2.10

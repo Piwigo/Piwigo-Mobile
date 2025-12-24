@@ -39,7 +39,7 @@ extension ImageViewController
         var children: [UIMenuElement] = []
         for albumId in albumIDs {
             // Get album in cache
-            guard let album = albumProvider.getAlbum(ofUser: user, withId: albumId)
+            guard let album = try? AlbumProvider().getAlbum(ofUser: user, withId: albumId)
             else { continue }
             
             // Create dynamic action
@@ -89,8 +89,8 @@ extension ImageViewController
         setEnableStateOfButtons(false)
         
         // Get source and destination albums
-        guard let sourceAlbum = self.albumProvider.getAlbum(withId: categoryId),
-              let destinationAlbum = self.albumProvider.getAlbum(withId: albumId)
+        guard let sourceAlbum = try? AlbumProvider().getAlbum(ofUser: user, withId: categoryId),
+              let destinationAlbum = try? AlbumProvider().getAlbum(ofUser: user, withId: albumId)
         else { return }
         
         // Get common path (don't use Set() which does not retain the order)

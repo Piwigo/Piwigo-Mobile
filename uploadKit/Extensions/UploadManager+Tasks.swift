@@ -409,7 +409,7 @@ extension UploadManager
         // Keep auto-upload requests so that they are not re-uploaded
         toDelete.removeAll(where: {$0.markedForAutoUpload == true})
         let uploadIDsToDelete = Set(toDelete.map(\.objectID))
-        uploadProvider.delete(uploadsWithID: Array(uploadIDsToDelete)) { _ in }
+        UploadProvider().delete(uploadsWithID: Array(uploadIDsToDelete)) { _ in }
     }
     
     public func deleteImpossibleUploads() {
@@ -417,7 +417,7 @@ extension UploadManager
                                         .uploadingFail, .finishingFail]
         let toDelete = (uploads.fetchedObjects ?? []).filter({states.contains($0.state)})
         let uploadIDsToDelete = Set(toDelete.map(\.objectID))
-        uploadProvider.delete(uploadsWithID: Array(uploadIDsToDelete)) { _ in
+        UploadProvider().delete(uploadsWithID: Array(uploadIDsToDelete)) { _ in
             self.updateNberOfUploadsToComplete()
         }
     }

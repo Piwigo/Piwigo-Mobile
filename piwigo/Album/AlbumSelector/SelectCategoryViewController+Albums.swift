@@ -32,8 +32,8 @@ extension SelectCategoryViewController
                 // Use the AlbumProvider to fetch album data. On completion,
                 // handle general UI updates and error alerts on the main queue.
                 let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                albumProvider.fetchAlbums(forUser: user, inParentWithId: 0, recursively: true,
-                                          thumbnailSize: thumnailSize) { [self] error in
+                AlbumProvider().fetchAlbums(forUser: user, inParentWithId: 0, recursively: true,
+                                            thumbnailSize: thumnailSize) { [self] error in
                     // ► Remove current album from list of album being fetched
                     AlbumVars.shared.isFetchingAlbumData.remove(0)
 

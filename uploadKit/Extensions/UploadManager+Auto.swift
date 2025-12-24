@@ -45,7 +45,7 @@ extension UploadManager {
             .compactMap{ $0 }
         
         // Record upload requests in database
-        uploadProvider.importUploads(from: uploadRequestsToAppend) { error in
+        UploadProvider().importUploads(from: uploadRequestsToAppend) { error in
             // Job done in background task
             if UploadVars.shared.isExecutingBGUploadTask { return }
 
@@ -142,7 +142,7 @@ extension UploadManager {
 
         // Remove non-completed upload requests marked for auto-upload from the upload queue
         let uploadsToDelete = (uploads.fetchedObjects ?? []).filter({$0.markedForAutoUpload == true}).map(\.objectID)
-        uploadProvider.delete(uploadsWithID: uploadsToDelete) { error in
+        UploadProvider().delete(uploadsWithID: uploadsToDelete) { error in
             // Job done in background task
             if UploadVars.shared.isExecutingBGUploadTask { return }
 

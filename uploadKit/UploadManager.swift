@@ -90,31 +90,9 @@ public final class UploadManager: NSObject {
     }
     
     
-    // MARK: - Core Data Providers
-    lazy var userProvider: UserProvider = {
-        return UserProvider.shared
-    }()
-    
-    lazy var albumProvider: AlbumProvider = {
-        return AlbumProvider.shared
-    }()
-    
-    lazy var imageProvider: ImageProvider = {
-        return ImageProvider.shared
-    }()
-    
-    lazy var tagProvider: TagProvider = {
-        return TagProvider.shared
-    }()
-    
-    public lazy var uploadProvider: UploadProvider = {
-        return UploadProvider.shared
-    }()
-    
-    
     // MARK: - Core Data Object Context
     lazy var uploadBckgContext: NSManagedObjectContext = {
-        return uploadProvider.bckgContext
+        return DataController.shared.newTaskContext()
     }()
     
     

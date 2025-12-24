@@ -87,7 +87,7 @@ extension PasteboardImagesViewController: UploadSwitchDelegate
         
         // Add selected images to upload queue
         DispatchQueue.global().async {
-            self.uploadProvider.importUploads(from: self.uploadRequests) { error in
+            UploadProvider().importUploads(from: self.uploadRequests) { error in
                 // Deselect cells and reset upload queue
                 DispatchQueue.main.async {
                     self.cancelSelect()

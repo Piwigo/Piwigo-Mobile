@@ -87,7 +87,7 @@ extension AutoUploadViewController: UITableViewDataSource
             case 1 /* Select Piwigo album*/ :
                 title = NSLocalizedString("settings_autoUploadDestination", comment: "Destination")
                 let categoryId = UploadVars.shared.autoUploadCategoryId
-                if let albumData = albumProvider.getAlbum(ofUser: user, withId: categoryId) {
+                if let albumData = try? AlbumProvider().getAlbum(ofUser: user, withId: categoryId) {
                     detail = albumData.name
                 } else {
                     // Did not find the Piwigo album
@@ -111,7 +111,7 @@ extension AutoUploadViewController: UITableViewDataSource
                 else { preconditionFailure("Could not load LabelTableViewCell")}
                 // Retrieve tags and switch to old cache data format
                 let title = NSLocalizedString("editImageDetails_tags", comment: "Tags")
-                let tags = tagProvider.getTags(withIDs: UploadVars.shared.autoUploadTagIds, taskContext: mainContext)
+                let tags = (try? TagProvider().getTags(withIDs: UploadVars.shared.autoUploadTagIds, taskContext: mainContext)) ?? []
                 let tagList: String = tags.compactMap({"\($0.tagName), "}).reduce("", +)
                 let detail = String(tagList.dropLast(2))
                 cell.configure(with: title, detail: detail)

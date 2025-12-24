@@ -82,7 +82,7 @@ extension UploadManager {
     
     func copyImageWithID(_ imageID: Int64, for upload: Upload) {
         // Retrieve image data from the Piwigo server, storing in cache
-        imageProvider.getInfos(forID: imageID, inCategoryId: upload.category) {
+        ImageProvider().getInfos(forID: imageID, inCategoryId: upload.category) {
             // Update UploadQueue cell and button shown in root album (or default album)
             let uploadLocalID = upload.localIdentifier
             DispatchQueue.main.async {
@@ -92,9 +92,9 @@ extension UploadManager {
             }
 
             // Get image and album objects in cache
-            let imageSet = self.imageProvider.getImages(inContext: self.uploadBckgContext, withIds: Set([imageID]))
-            guard let imageData = imageSet.first, let albums = imageData.albums,
-                  let albumData = self.albumProvider.getAlbum(ofUser: upload.user, withId: upload.category)
+            guard let imageSet = try? ImageProvider().getImages(inContext: self.uploadBckgContext, withIds: Set([imageID])),
+                  let imageData = imageSet.first, let albums = imageData.albums, let user = upload.user,
+                  let albumData = try? AlbumProvider().getAlbum(ofUser: user, withId: upload.category)
             else {
                 upload.setState(.uploadingFail, error: .missingAsset, save: true)
                 Task { @UploadManagement in
@@ -151,7 +151,7 @@ extension UploadManager {
                     albumData.addToImages(imageData)
                     
                     // Update albums
-                    self.albumProvider.updateAlbums(addingImages: 1, toAlbum: albumData)
+                    try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: albumData)
                     
                     // Copy complete
                     upload.imageId = imageID
@@ -523,8 +523,8 @@ extension UploadManager {
                                                  privacyLevel: String(upload.privacyLevel),
                                                  squareImage: square, thumbImage: thumb)
                     // Add image to cache
-                    imageProvider.didUploadImage(newImage, asVideo: upload.isVideo,
-                                                 inAlbumId: upload.category)
+                    ImageProvider().didUploadImage(newImage, asVideo: upload.isVideo,
+                                                   inAlbumId: upload.category)
                 }
 
                 // Update state of upload
@@ -1074,7 +1074,7 @@ extension UploadManager {
                 upload.comment    = getInfos.comment?.utf8mb4Encoded ?? ""
                 if let tags = getInfos.tags {
                     let tagIDs = tags.compactMap({$0.id}).map({$0.stringValue + ","}).reduce("", +).dropLast()
-                    let newTagIDs = tagProvider.getTags(withIDs: String(tagIDs), taskContext: uploadBckgContext).map({$0.objectID})
+                    let newTagIDs = (try? TagProvider().getTags(withIDs: String(tagIDs), taskContext: uploadBckgContext).map({$0.objectID})) ?? []
                     var newTags = Set<Tag>()
                     newTagIDs.forEach({
                         if let copy = upload.managedObjectContext?.object(with: $0) as? Tag {
@@ -1085,11 +1085,11 @@ extension UploadManager {
                 }
                 
                 // Add uploaded image to cache and update UI if needed
-                if let user = userProvider.getUserAccount(inContext: uploadBckgContext),
+                if let user = try? UserProvider().getUserAccount(inContext: uploadBckgContext),
                    user.hasAdminRights {
                     getInfos.fixingUnknowns()
-                    imageProvider.didUploadImage(getInfos, asVideo: upload.isVideo,
-                                                 inAlbumId: upload.category)
+                    ImageProvider().didUploadImage(getInfos, asVideo: upload.isVideo,
+                                                   inAlbumId: upload.category)
                 }
             }
 
