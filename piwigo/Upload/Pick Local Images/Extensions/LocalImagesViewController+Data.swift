@@ -121,7 +121,7 @@ extension LocalImagesViewController
 
         // Resume upload operations in background queue
         // and update badge and upload button of album navigator
-        Task { @UploadManagement in
+        Task { @UploadManagerActor in
             UploadVars.shared.isPaused = false
             UploadVars.shared.isExecutingBGUploadTask = false
 //            if #unavailable(iOS 26.0) {

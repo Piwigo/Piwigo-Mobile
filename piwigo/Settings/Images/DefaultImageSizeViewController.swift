@@ -159,13 +159,13 @@ extension DefaultImageSizeViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let (title, text) = getContentOfHeader()
-        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
+        return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
                                                         width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let (title, text) = getContentOfHeader()
-        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
+        return TableViewUtilities.viewOfHeader(withTitle: title, text: text)
     }
 
     
@@ -194,11 +194,11 @@ extension DefaultImageSizeViewController: UITableViewDelegate {
     // MARK: - Footer
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         let footer = NSLocalizedString("defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
-        return TableViewUtilities.shared.heightOfFooter(withText: footer, width: tableView.frame.width)
+        return TableViewUtilities.heightOfFooter(withText: footer, width: tableView.frame.width)
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let footer = NSLocalizedString("defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
-        return TableViewUtilities.shared.viewOfFooter(withText: footer, alignment: .center)
+        return TableViewUtilities.viewOfFooter(withText: footer, alignment: .center)
     }
 }

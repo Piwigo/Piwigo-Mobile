@@ -29,13 +29,13 @@ extension AutoUploadViewController: UITableViewDelegate
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let title = getContentOfHeader(inSection: section)
-        return TableViewUtilities.shared.heightOfHeader(withTitle: title,
+        return TableViewUtilities.heightOfHeader(withTitle: title,
                                                         width: tableView.frame.size.width)
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let title = getContentOfHeader(inSection: section)
-        return TableViewUtilities.shared.viewOfHeader(withTitle: title)
+        return TableViewUtilities.viewOfHeader(withTitle: title)
     }
     
     
@@ -80,12 +80,12 @@ extension AutoUploadViewController: UITableViewDelegate
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         let footer = getContentOfFooter(inSection: section)
-        return TableViewUtilities.shared.heightOfFooter(withText: footer, width: tableView.frame.width)
+        return TableViewUtilities.heightOfFooter(withText: footer, width: tableView.frame.width)
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let footer = getContentOfFooter(inSection: section)
-        return TableViewUtilities.shared.viewOfFooter(withText: footer, alignment: .center)
+        return TableViewUtilities.viewOfFooter(withText: footer, alignment: .center)
     }
     
     

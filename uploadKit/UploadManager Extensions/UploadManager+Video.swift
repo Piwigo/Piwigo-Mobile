@@ -196,7 +196,7 @@ extension UploadManager {
             upload.setState(.prepared, save: false)
         }
 
-        Task { @UploadManagement in
+        Task { @UploadManagerActor in
             self.uploadBckgContext.saveIfNeeded()
             await self.didEndPreparation()
         }
@@ -308,7 +308,7 @@ extension UploadManager {
                     completionHandler(avasset, options, nil)
                 }
             } else {
-                Task { @UploadManagement in
+                Task { @UploadManagerActor in
 //                    debugPrint("\(self.dbg()) exits retrieveVideoAssetFrom in", queueName())
                     // Any error?
                     if let error = info?[PHImageErrorKey] as? (any Error) {
@@ -339,7 +339,7 @@ extension UploadManager {
             let exportPreset = self.getExportPreset(for: originalVideo, and: upload)
 
             // Export new video in MP4 format w/ or w/o private metadata
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 await export(videoAsset: originalVideo, with: exportPreset, for: upload)
             }
         }
@@ -442,7 +442,7 @@ extension UploadManager {
             try await exportSession.export(to: outputURL, as: .mp4)
 
             // Get MD5 checksum and MIME type, update counter
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 self.finalizeImageFile(atURL: outputURL, with: upload) {
                     // Update upload request
                     self.didPrepareVideo(for: upload, nil)

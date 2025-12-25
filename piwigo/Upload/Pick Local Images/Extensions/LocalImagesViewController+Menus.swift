@@ -278,7 +278,7 @@ extension LocalImagesViewController {
             // Delete images and upload requests
             let uploadIDs = uploadsToDelete.map(\.objectID)
             let uploadLocalIDs = uploadsToDelete.map(\.localIdentifier)
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 UploadManager.shared.deleteAssets(associatedToUploads: uploadIDs, uploadLocalIDs, and: assetsToDelete)
             }
         })

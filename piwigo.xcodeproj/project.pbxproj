@@ -396,6 +396,11 @@
 		AD7E06542EFBF31F003F8A61 /* JSONManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E06532EFBF31F003F8A61 /* JSONManager.swift */; };
 		AD7E06572EFBFD7D003F8A61 /* PwgSessionDelegate+Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E06562EFBFD7D003F8A61 /* PwgSessionDelegate+Task.swift */; };
 		AD7E06592EFBFECA003F8A61 /* ImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E06582EFBFECA003F8A61 /* ImageDownloader.swift */; };
+		AD7E065B2EFD50C9003F8A61 /* JSONManager+Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E065A2EFD50C9003F8A61 /* JSONManager+Image.swift */; };
+		AD7E065D2EFD66CB003F8A61 /* JSONManager+Categories.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E065C2EFD66CB003F8A61 /* JSONManager+Categories.swift */; };
+		AD7E065E2EFD66CB003F8A61 /* JSONManager+Categories.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E065C2EFD66CB003F8A61 /* JSONManager+Categories.swift */; };
+		AD7E06602EFD8E8E003F8A61 /* JSONManager+Tags.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E065F2EFD8E8E003F8A61 /* JSONManager+Tags.swift */; };
+		AD7E06612EFD8E8E003F8A61 /* JSONManager+Tags.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E065F2EFD8E8E003F8A61 /* JSONManager+Tags.swift */; };
 		AD7E9AE72A6D7AEA0079BE8F /* PlayerViewControllerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E9AE62A6D7AEA0079BE8F /* PlayerViewControllerCoordinator.swift */; };
 		AD7E9AE92A6D7B330079BE8F /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E9AE82A6D7B330079BE8F /* Video.swift */; };
 		AD7E9AEB2A6D7BDC0079BE8F /* PlaybackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E9AEA2A6D7BDC0079BE8F /* PlaybackController.swift */; };
@@ -1153,6 +1158,9 @@
 		AD7E06532EFBF31F003F8A61 /* JSONManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONManager.swift; sourceTree = "<group>"; };
 		AD7E06562EFBFD7D003F8A61 /* PwgSessionDelegate+Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PwgSessionDelegate+Task.swift"; sourceTree = "<group>"; };
 		AD7E06582EFBFECA003F8A61 /* ImageDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloader.swift; sourceTree = "<group>"; };
+		AD7E065A2EFD50C9003F8A61 /* JSONManager+Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSONManager+Image.swift"; sourceTree = "<group>"; };
+		AD7E065C2EFD66CB003F8A61 /* JSONManager+Categories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSONManager+Categories.swift"; sourceTree = "<group>"; };
+		AD7E065F2EFD8E8E003F8A61 /* JSONManager+Tags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSONManager+Tags.swift"; sourceTree = "<group>"; };
 		AD7E9AE62A6D7AEA0079BE8F /* PlayerViewControllerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewControllerCoordinator.swift; sourceTree = "<group>"; };
 		AD7E9AE82A6D7B330079BE8F /* Video.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		AD7E9AEA2A6D7BDC0079BE8F /* PlaybackController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackController.swift; sourceTree = "<group>"; };
@@ -1958,6 +1966,7 @@
 			isa = PBXGroup;
 			children = (
 				AD3EE6002B811349002B5CDB /* pwg.image.rotate.swift */,
+				AD7E065A2EFD50C9003F8A61 /* JSONManager+Image.swift */,
 			);
 			path = pwg.image;
 			sourceTree = "<group>";
@@ -2022,6 +2031,7 @@
 				ADB2C3D2291D9967009542FB /* pwg.categories.calculateOrphans.swift */,
 				AD7A8FE62849256800171592 /* pwg.categories.setRepresentative.swift */,
 				AD6759AB28D77033009C69EC /* pwg.categories.getImages.swift */,
+				AD7E065C2EFD66CB003F8A61 /* JSONManager+Categories.swift */,
 			);
 			path = pwg.categories;
 			sourceTree = "<group>";
@@ -2462,6 +2472,7 @@
 				AD5F64E824C6024200660BE3 /* pwg.tags.add.swift */,
 				AD5F64EC24C607FC00660BE3 /* pwg.tags.getList.swift */,
 				AD23882828FAB8A10037696E /* pwg.tags.getImages.swift */,
+				AD7E065F2EFD8E8E003F8A61 /* JSONManager+Tags.swift */,
 			);
 			path = pwg.tags;
 			sourceTree = "<group>";
@@ -3727,9 +3738,11 @@
 				AD98E53728BBC94E008C846A /* UserProvider.swift in Sources */,
 				AD0B62E92DEAF960001E9684 /* UploadRenameAction+DateFormat.swift in Sources */,
 				AD0B62EB2DEAF98A001E9684 /* UploadRenameAction+TimeFormat.swift in Sources */,
+				AD7E06612EFD8E8E003F8A61 /* JSONManager+Tags.swift in Sources */,
 				AD0B62EF2DEAFBDC001E9684 /* UploadRenameAction+CounterFormat.swift in Sources */,
 				AD541F5A2EEF06D200C87DC9 /* SizesToSizesMigrationPolicy_0M_to_0N.swift in Sources */,
 				ADDC36D428D10DD700E5AE4B /* DescriptionValueTransformer.swift in Sources */,
+				AD7E065E2EFD66CB003F8A61 /* JSONManager+Categories.swift in Sources */,
 				AD243D9228E05F60002DCC5F /* RelativeURLValueTransformer.swift in Sources */,
 				ADDC36BC28CCC12800E5AE4B /* ResolutionValueTransformer.swift in Sources */,
 				AD129E6628C34FE8007A2A52 /* NSManagedObjectContext+AppTools.swift in Sources */,
@@ -3754,6 +3767,7 @@
 				AD7E06592EFBFECA003F8A61 /* ImageDownloader.swift in Sources */,
 				ADB007FB2D7E048A004A84A7 /* AlbumToAlbumMigrationPolicy_0F_to_0H.swift in Sources */,
 				ADB007DC2D7C8682004A84A7 /* MappingModel_0F_to_0H.xcmappingmodel in Sources */,
+				AD7E065B2EFD50C9003F8A61 /* JSONManager+Image.swift in Sources */,
 				ADDF397F2D74988A008E2037 /* ImageToImageMigrationPolicy_0F_to_0G.swift in Sources */,
 				ADDF397D2D7494A5008E2037 /* AlbumToAlbumMigrationPolicy_0F_to_0G.swift in Sources */,
 				ADDF39812D74BEDD008E2037 /* MappingModel_0F_to_0G.xcmappingmodel in Sources */,
@@ -3847,6 +3861,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AD5172202ED319D00024F172 /* AlbumSmart.swift in Sources */,
+				AD7E06602EFD8E8E003F8A61 /* JSONManager+Tags.swift in Sources */,
 				AD51721F2ED319A80024F172 /* Constants.swift in Sources */,
 				AD51721E2ED319880024F172 /* PwgKitError.swift in Sources */,
 				AD51721D2ED319580024F172 /* StringOrTypes.swift in Sources */,
@@ -3883,6 +3898,7 @@
 				AD5FB3792D9477EE00802895 /* pwg.users.getList.swift in Sources */,
 				ADDD2106270A0FB900CACFF2 /* pwg.users.favorites.addRemove.swift in Sources */,
 				AD11E46124A930B000C8876F /* piwigoWebAPI.swift in Sources */,
+				AD7E065D2EFD66CB003F8A61 /* JSONManager+Categories.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

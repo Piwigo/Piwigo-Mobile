@@ -541,7 +541,7 @@ extension AlbumViewController
         // Set subtitle
         if prefersLargeTitles {
             navigationItem.subtitle = subTitle
-            navigationItem.largeAttributedSubtitle = TableViewUtilities.shared.largeAttributedSubTitleForAlbum(subTitle)
+            navigationItem.largeAttributedSubtitle = TableViewUtilities.largeAttributedSubTitleForAlbum(subTitle)
         } else {
             navigationItem.titleView = getTitleView(withTitle: title, titleColor: .label,
                                                     subtitle: subTitle, subTitleColor: .label)

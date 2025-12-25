@@ -11,25 +11,14 @@ import Foundation
 
 public extension JSONManager {
     
-    func logVisitOfImage(withID imageID: Int64, asDownload: Bool,
-                         completion: @escaping () -> Void,
-                         failure: @escaping (PwgKitError) -> Void) {
+    @concurrent
+    func logVisitOfImage(withID imageID: Int64, asDownload: Bool) async throws(PwgKitError) {
         // Launch request
         let paramDict: [String : Any] = ["image_id": imageID,
                                          "is_download": asDownload]
-        postRequest(withMethod: pwgHistoryLog, paramDict: paramDict,
-                    jsonObjectClientExpectsToReceive: HistoryLogJSON.self,
-                    countOfBytesClientExpectsToReceive: pwgHistoryLogBytes) { result in
-            switch result {
-            case .success:
-                completion()
-                
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                failure(error)
-            }
-        }
+        
+        _ = try await postRequest(withMethod: pwgHistoryLog, paramDict: paramDict,
+                                  jsonObjectClientExpectsToReceive: HistoryLogJSON.self,
+                                  countOfBytesClientExpectsToReceive: pwgHistoryLogBytes)
     }
 }

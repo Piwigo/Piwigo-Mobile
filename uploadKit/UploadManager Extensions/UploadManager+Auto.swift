@@ -52,7 +52,7 @@ extension UploadManager {
             // Restart upload manager if no error
             guard let error = error else {
                 // Restart UploadManager activities
-                Task { @UploadManagement in
+                Task { @UploadManagerActor in
                     UploadVars.shared.isPaused = false
 //                    if #unavailable(iOS 26.0) {
                         UploadManager.shared.findNextImageToUpload()
@@ -149,7 +149,7 @@ extension UploadManager {
             // Error encountered?
             guard let error = error else {
                 // Restart UploadManager activities
-                Task { @UploadManagement in
+                Task { @UploadManagerActor in
                     UploadVars.shared.isPaused = false
 //                    if #unavailable(iOS 26.0) {
                         UploadManager.shared.findNextImageToUpload()

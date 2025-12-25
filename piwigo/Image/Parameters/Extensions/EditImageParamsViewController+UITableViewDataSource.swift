@@ -193,9 +193,7 @@ extension EditImageParamsViewController: UITableViewDataSource
         var dateStr = ""
         let formatStyle = Date.FormatStyle(timeZone: TimeZone(abbreviation: "UTC")!)
         if let date = date, date > DateUtilities.weekAfter {
-            let indexPath = IndexPath(row: EditImageParamsOrder.datePicker.rawValue, section: 0)
-            let isShiftPicker = editImageParamsTableView.cellForRow(at: indexPath) is EditImageShiftDatePickerTableViewCell
-            if hasDatePicker && !isShiftPicker {
+            if hasDatePicker {
                 dateStr = date.formatted(formatStyle .weekday(.wide))
             }
             else {

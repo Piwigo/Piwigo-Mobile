@@ -514,7 +514,7 @@ extension SettingsViewController: UITableViewDataSource
                     if switchState == false {
                         // Update upload tasks in background queue
                         // May not restart the uploads
-                        Task { @UploadManagement in
+                        Task { @UploadManagerActor in
 //                            if #unavailable(iOS 26.0) {
                                 UploadManager.shared.findNextImageToUpload()
 //                            }

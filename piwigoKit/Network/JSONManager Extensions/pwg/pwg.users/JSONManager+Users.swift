@@ -11,60 +11,57 @@ import Foundation
 
 public extension JSONManager {
     
-    func getUsersInfo(forUserName username: String,
-                      completion: @escaping (UsersGetInfo) -> Void,
-                      failure: @escaping () -> Void) {
+    @concurrent
+    func getUsersInfo(forUserName username: String) async throws -> UsersGetInfo {
         
-        // Prepare parameters for retrieving user infos
+        // Prepare parameters
         let paramsDict: [String : Any] = ["username" : username,
                                           "display"  : "all"]
         // Collect stats from server
-        postRequest(withMethod: pwgUsersGetList, paramDict: paramsDict,
-                    jsonObjectClientExpectsToReceive: UsersGetListJSON.self,
-                    countOfBytesClientExpectsToReceive: 10800) { result in
-            switch result {
-            case .success(let pwgData):
-                // Update current recentPeriodIndex
-                if let usersData = pwgData.users.first {
-                    completion(usersData)
-                } else {
-                    failure()
-                }
-
-            case .failure:
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                /// -> nothing presented in the footer
-                failure()
-            }
+        let pwgData = try await postRequest(withMethod: pwgUsersGetList, paramDict: paramsDict,
+                                            jsonObjectClientExpectsToReceive: UsersGetListJSON.self,
+                                            countOfBytesClientExpectsToReceive: 10800)
+        
+        // Update current recentPeriodIndex
+        if let usersData = pwgData.users.first {
+            return usersData
         }
+        throw PwgKitError.emptyJSONobject
     }
     
-    func setRecentPeriod(_ recentPeriod: Int, forUserWithID pwgID: Int16,
-                         completion: @escaping (Bool) -> Void,
-                         failure: @escaping (PwgKitError) -> Void) {
+    @concurrent
+    func setRecentPeriod(_ recentPeriod: Int, forUserWithID pwgID: Int16) async throws(PwgKitError) {
         
-        // Prepare parameters for updating user parameters
+        // Prepare parameters
         let paramsDict: [String : Any] = ["user_id"       : pwgID,
                                           "recent_period" : recentPeriod,
                                           "pwg_token"     : NetworkVars.shared.pwgToken]
-
+        
         // Collect stats from server
-        postRequest(withMethod: pwgUsersSetInfo, paramDict: paramsDict,
-                                jsonObjectClientExpectsToReceive: UsersGetListJSON.self,
-                                countOfBytesClientExpectsToReceive: 10800) { result in
-            switch result {
-            case .success:
-                // Update current recentPeriodIndex
-                completion(true)
-
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                failure(error)
-            }
-        }
+        _ = try await postRequest(withMethod: pwgUsersSetInfo, paramDict: paramsDict,
+                                  jsonObjectClientExpectsToReceive: UsersGetListJSON.self,
+                                  countOfBytesClientExpectsToReceive: 10800)
+    }
+    
+    @concurrent
+    func addToFavorites(_ imageData: Image) async throws(PwgKitError) {
+        // Prepare parameters
+        let paramsDict: [String : Any] = ["image_id"  : imageData.pwgID]
+        
+        // Add image to favorites
+        _ = try await postRequest(withMethod: pwgUsersFavoritesAdd, paramDict: paramsDict,
+                                  jsonObjectClientExpectsToReceive: FavoritesAddRemoveJSON.self,
+                                  countOfBytesClientExpectsToReceive: 1000)
+    }
+    
+    @concurrent
+    func removeFromFavorites(_ imageData: Image) async throws(PwgKitError) {
+        // Prepare parameters
+        let paramsDict: [String : Any] = ["image_id"  : imageData.pwgID]
+        
+        // Remove image from favorites
+        _ = try await postRequest(withMethod: pwgUsersFavoritesRemove, paramDict: paramsDict,
+                                  jsonObjectClientExpectsToReceive: FavoritesAddRemoveJSON.self,
+                                  countOfBytesClientExpectsToReceive: 1000)
     }
 }

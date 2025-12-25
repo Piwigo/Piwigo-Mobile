@@ -119,7 +119,7 @@ extension PasteboardImagesViewController: UploadSwitchDelegate
 //            }
 //        } else {
             // Fallback on previous version
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 UploadVars.shared.isPaused = false
                 UploadManager.shared.findNextImageToUpload()
             }

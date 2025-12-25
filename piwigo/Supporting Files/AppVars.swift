@@ -1,5 +1,5 @@
 //
-//  AppVars.shared.swift
+//  AppVars.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 01/06/2021.
@@ -16,14 +16,14 @@ let pwgPadSubViewWidth = CGFloat(425.0)
 /// - Preferred Settings view width on iPad
 let pwgPadSettingsWidth = CGFloat(512.0)
 
-
-class AppVars: NSObject {
-    
+// Mark AppVars as Sendable since Apple documents UserDefaults as thread-safe
+final class AppVars: @unchecked Sendable {
+        
     // Singleton
     static let shared = AppVars()
     
     // Remove deprecated stored objects if needed
-    override init() {
+    init() {
         // Deprecated data?
         if let _ = UserDefaults.standard.object(forKey: "memoryCache") {
             UserDefaults.standard.removeObject(forKey: "memoryCache")

@@ -12,9 +12,9 @@ import Foundation
 extension PwgSessionDelegate: URLSessionTaskDelegate {
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: (any Error)?) {
         // Retrieve the original URL of this task
-//        debugPrint("••> Did complete task #\(task.taskIdentifier) with error: \(error?.localizedDescription ?? "none")")
+        debugPrint("••> Did complete task #\(task.taskIdentifier) with error: \(error?.localizedDescription ?? "none")")
         guard let imageURL = task.originalRequest?.url ?? task.currentRequest?.url,
-              let download = PwgSessionDelegate.activeDownloads[imageURL]
+              let download = ImageDownloader.activeDownloads[imageURL]
         else { return }
 
         // Manage the error type
@@ -60,7 +60,7 @@ extension PwgSessionDelegate: URLSessionDownloadDelegate {
 //        debugPrint("••> Progress task #\(downloadTask.taskIdentifier): \(totalBytesWritten) total bytes downloaded from \(String(describing: downloadTask.originalRequest?.url ?? downloadTask.currentRequest?.url))")
 //        activeDownloads.forEach { (key, _) in debugPrint("   Key: \(key)") }
         guard let imageURL = downloadTask.originalRequest?.url ?? downloadTask.currentRequest?.url,
-              let download = PwgSessionDelegate.activeDownloads[imageURL]
+              let download = ImageDownloader.activeDownloads[imageURL]
         else { return }
 
         // Update progress bar if any
@@ -81,7 +81,7 @@ extension PwgSessionDelegate: URLSessionDownloadDelegate {
         // Retrieve the URL of this task
 //        debugPrint("••> Task #\(downloadTask.taskIdentifier) did finish downloading to \(location)")
         guard let imageURL = downloadTask.originalRequest?.url ?? downloadTask.currentRequest?.url,
-              let download = PwgSessionDelegate.activeDownloads[imageURL],
+              let download = ImageDownloader.activeDownloads[imageURL],
               let fileURL = download.fileURL
         else { return }
 

@@ -44,7 +44,7 @@ extension AutoUploadViewController: UITableViewDataSource
             cell.cellSwitch.setOn(UploadVars.shared.isAutoUploadActive, animated: true)
             cell.cellSwitchBlock = { switchState in
                 // Enable/disable auto-upload option
-                Task { @UploadManagement in
+                Task { @UploadManagerActor in
                     if switchState {
                         // Enable auto-uploading
                         UploadVars.shared.isAutoUploadActive = true

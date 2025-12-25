@@ -62,9 +62,16 @@ extension ImageViewController
         showHUD(withTitle: NSLocalizedString("rotateSingleImageHUD_rotating", comment: "Rotating Photo…"))
         
         // Send request to Piwigo server
-        JSONManager.shared.checkSession(ofUser: user) { [self] in
-            ImageUtilities.rotate(imageData, by: angle) { [self] in
-                DispatchQueue.main.async { [self] in
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                
+                // Rotate thumbnails
+                try await JSONManager.shared.rotate(imageData, by: angle)
+                
+                // Update UI
+                await MainActor.run {
                     // Rotate image view
                     if let imageDVC = pageViewController?.viewControllers?.first as? ImageDetailViewController {
                         // Zoom out if needed
@@ -75,7 +82,7 @@ extension ImageViewController
                             self.updateHUDwithSuccess { [self] in
                                 self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                                     // Re-enable buttons
-                                    setEnableStateOfButtons(true)
+                                    self.setEnableStateOfButtons(true)
                                 }
                             }
                         }
@@ -94,13 +101,8 @@ extension ImageViewController
                     // Save changes
                     self.mainContext.saveIfNeeded()
                 }
-            } failure: { [self] error in
-                DispatchQueue.main.async { [self] in
-                    self.rotateImageInDatabaseError(error)
-                }
             }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
+            catch let error as PwgKitError {
                 self.rotateImageInDatabaseError(error)
             }
         }

@@ -138,48 +138,49 @@ class SettingsViewController: UIViewController {
                 self.uploadCacheSize = server.getUploadCount(inContext: bckgContext) + " | " + uploadsDirectorySize
             }
         })
-        
+        let queue: OperationQueue = OperationQueue()
+        queue.maxConcurrentOperationCount = .max
+        queue.qualityOfService = .userInitiated
+        queue.addOperations(operations, waitUntilFinished: false)
+
         // Retrieve data from server
         if user.hasAdminRights {
-            operations.append(BlockOperation { [self] in
-                // Check session before collecting server statistics
-                JSONManager.shared.checkSession(ofUser: self.user) {
+            Task.detached { [self] in
+                do {
+                    // Check session
+                    try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID, lastConnected: self.user.lastUsed)
+                    
                     // Collect stats from server and store them in cache
-                    JSONManager.shared.getInfos()
+                    try await JSONManager.shared.getInfos()
+                    
                     // Collect recentPeriod chosen by user
-                    JSONManager.shared.getUsersInfo(forUserName: self.user.username) { usersData in
+                    let usersData = try await JSONManager.shared.getUsersInfo(forUserName: self.user.username)
+                    
+                    // Update current index and reload corresponding cell
+                    await MainActor.run { [self] in
                         // Is the retrieved recent period different?
                         guard let nberOfDays = usersData.recentPeriod?.intValue,
                               let index = CacheVars.shared.recentPeriodList.firstIndex(of: nberOfDays),
                               index != self.oldRecentPeriodIndex
                         else { return }
                         
-                        // Update current index and reload corresponding cell
-                        DispatchQueue.main.async { [self] in
-                            self.user.id = usersData.id ?? Int16.zero
-                            self.user.managedObjectContext?.saveIfNeeded()
-                            self.oldRecentPeriodIndex = index
-                            CacheVars.shared.recentPeriodIndex = index
-                            let indexPath = IndexPath(row: 3, section: SettingsSection.albums.rawValue)
-                            if let cell = self.settingsTableView.cellForRow(at: indexPath) as? SliderTableViewCell {
-                                cell.updateDisplayedValue(Float(index))
-                            }
+                        // Update data
+                        self.user.id = usersData.id ?? Int16.zero
+                        self.user.managedObjectContext?.saveIfNeeded()
+                        self.oldRecentPeriodIndex = index
+                        CacheVars.shared.recentPeriodIndex = index
+                        let indexPath = IndexPath(row: 3, section: SettingsSection.albums.rawValue)
+                        if let cell = self.settingsTableView.cellForRow(at: indexPath) as? SliderTableViewCell {
+                            cell.updateDisplayedValue(Float(index))
                         }
-                    } failure: {
-                        // No error report
                     }
-                } failure: { _ in
-                    /// - Network communication errors
-                    /// - Returned JSON data is empty
-                    /// - Cannot decode data returned by Piwigo server
-                    /// -> no error report
                 }
-            })
+                catch {
+                    // -> no error report
+                    print("Error retrieving server info: \(error)")
+                }
+            }
         }
-        let queue: OperationQueue = OperationQueue()
-        queue.maxConcurrentOperationCount = .max
-        queue.qualityOfService = .userInitiated
-        queue.addOperations(operations, waitUntilFinished: false)
         
         // Title
         title = NSLocalizedString("tabBar_preferences", comment: "Settings")
@@ -288,22 +289,23 @@ class SettingsViewController: UIViewController {
         super.viewWillDisappear(animated)
         
         // Update upload counter in case user cleared the cache
-        Task { @UploadManagement in
+        Task { @UploadManagerActor in
             UploadManager.shared.updateNberOfUploadsToComplete()
         }
         // Did the user change the recent period?
         let recentPeriodIndex = CacheVars.shared.recentPeriodIndex
         if hasUploadRights(), oldRecentPeriodIndex != recentPeriodIndex {
             // Update recent period on Piwigo server
-            DispatchQueue.global(qos: .background).async { [self] in
-                JSONManager.shared.checkSession(ofUser: user) {
+            Task.detached {
+                do {
+                    // Check session
+                    try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID, lastConnected: self.user.lastUsed)
+                    
+                    // Update server data
                     let periodInDays = CacheVars.shared.recentPeriodList[recentPeriodIndex]
-                    JSONManager.shared.setRecentPeriod(periodInDays, forUserWithID: self.user.id) { success in
-                        // No reporting
-                    } failure: { error in
-                        // No reporting
-                    }
-                } failure: { error in
+                    try await JSONManager.shared.setRecentPeriod(periodInDays, forUserWithID: self.user.id)
+                }
+                catch {
                     // No reporting
                 }
             }
@@ -379,24 +381,29 @@ class SettingsViewController: UIViewController {
             // Show HUD
             let title = NSLocalizedString("login_closeSession", comment: "Closing Session...")
             self.navigationController?.showHUD(withTitle: title)
-            
-            // Perform Logout
-            JSONManager.shared.sessionLogout {
-                // Close session
-                DispatchQueue.main.async { [self] in
-                    self.navigationController?.hideHUD(afterDelay: pwgDelayHUD) {
-                        ClearCache.closeSession()
+
+            // Perform Logout on background
+            Task.detached {
+                do {
+                    try await JSONManager.shared.sessionLogout()
+                    
+                    // Close UI session
+                    await MainActor.run {
+                        self.navigationController?.hideHUD(afterDelay: pwgDelayHUD) {
+                            ClearCache.closeSession()
+                        }
                     }
                 }
-            } failure: { error in
-                // Failed! This may be due to the replacement of a self-signed certificate.
-                // So we inform the user that there may be something wrong with the server,
-                // or simply a connection drop.
-                DispatchQueue.main.async { [self] in
-                    self.navigationController?.hideHUD {
-                        self.navigationController?.dismissPiwigoError(withTitle: NSLocalizedString("logoutFail_title", comment: "Logout Failed"),
-                                                                      message: error.localizedDescription) {
-                            ClearCache.closeSession()
+                catch {
+                    // Failed! This may be due to the replacement of a self-signed certificate.
+                    // So we inform the user that there may be something wrong with the server,
+                    // or simply a connection drop.
+                    await MainActor.run {
+                        self.navigationController?.hideHUD {
+                            self.navigationController?.dismissPiwigoError(withTitle: NSLocalizedString("logoutFail_title", comment: "Logout Failed"),
+                                                                          message: error.localizedDescription) {
+                                ClearCache.closeSession()
+                            }
                         }
                     }
                 }

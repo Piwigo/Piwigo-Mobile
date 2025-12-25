@@ -23,51 +23,39 @@ extension SelectCategoryViewController
         NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
 
         // Move album
-        JSONManager.shared.checkSession(ofUser: user) { [self] in
-            AlbumUtilities.move(self.inputAlbum.pwgID,
-                                intoAlbumWithId: parentData.pwgID) { [self] in
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                
+                // Move album
+                try await JSONManager.shared.move(self.inputAlbum.pwgID, intoAlbumWithId: parentData.pwgID)
+                
                 // Remember that the app is fetching all album data
                 AlbumVars.shared.isFetchingAlbumData.insert(0)
 
-                // Use the AlbumProvider to fetch album data. On completion,
-                // handle general UI updates and error alerts on the main queue.
+                // Fetch album data recursively
                 let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                AlbumProvider().fetchAlbums(forUser: user, inParentWithId: 0, recursively: true,
-                                            thumbnailSize: thumnailSize) { [self] error in
-                    // ► Remove current album from list of album being fetched
-                    AlbumVars.shared.isFetchingAlbumData.remove(0)
+                try await AlbumProvider().fetchAlbums(forUser: user, inParentWithId: 0, recursively: true,
+                                                      thumbnailSize: thumnailSize)
+                
+                // Remove current album from list of album being fetched
+                AlbumVars.shared.isFetchingAlbumData.remove(0)
 
-                    // Check error
-                    guard let error = error else {
-                        // No error ► Hide HUD
-                        DispatchQueue.main.async { [self] in
-                            self.updateHUDwithSuccess() { [self] in
-                                self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
-                                    self.dismiss(animated: true)
-                                }
-                            }
+                // Update cache and UI
+                await MainActor.run {
+                    self.updateHUDwithSuccess() { [self] in
+                        self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
+                            self.dismiss(animated: true)
                         }
-                        return
-                    }
-                    
-                    // Show the error
-                    DispatchQueue.main.async { [self] in
-                        self.hideHUD { [self] in
-                            self.showError(error)
-                        }
-                    }
-                }
-            } failure: { [self] error in
-                DispatchQueue.main.async { [self] in
-                    self.hideHUD { [self] in
-                        self.showError(error)
                     }
                 }
             }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
-                self.hideHUD { [self] in
-                    self.showError(error)
+            catch let error as PwgKitError {
+                await MainActor.run {
+                    self.hideHUD { [self] in
+                        self.showError(error)
+                    }
                 }
             }
         }
@@ -83,11 +71,24 @@ extension SelectCategoryViewController
         showHUD(withTitle: NSLocalizedString("categoryImageSetHUD_updating", comment:"Updating Album Thumbnail…"))
         
         // Set image as representative
-        JSONManager.shared.checkSession(ofUser: user) { [self] in
-            AlbumUtilities.setRepresentative(albumData, with: imageData) { [self] in
-                DispatchQueue.main.async { [self] in
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                
+                // Set album representative
+                try await JSONManager.shared.setRepresentative(albumData, with: imageData)
+                
+                // Update cache and UI
+                await MainActor.run { [self] in
+                    // Album thumbnail successfully changed ▶ Update catagory in cache
+                    albumData.thumbnailId = imageData.pwgID
+                    let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+                    albumData.thumbnailUrl = ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumnailSize) as NSURL?
+                    
                     // Save changes
                     self.mainContext.saveIfNeeded()
+                    
                     // Close HUD
                     self.updateHUDwithSuccess() { [self] in
                         self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
@@ -95,16 +96,9 @@ extension SelectCategoryViewController
                         }
                     }
                 }
-            } failure: { [self] error in
-                DispatchQueue.main.async { [self] in
-                    self.hideHUD {
-                        self.showError(error)
-                    }
-                }
             }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
-                self.hideHUD {
+            catch let error as PwgKitError {
+                await MainActor.run { [self] in
                     self.showError(error)
                 }
             }

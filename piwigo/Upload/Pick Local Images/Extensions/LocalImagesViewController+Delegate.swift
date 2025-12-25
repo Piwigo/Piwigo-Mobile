@@ -300,7 +300,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
             // Get image identifier and check if this image has been uploaded
             if let upload = (self.uploads.fetchedObjects ?? []).filter({$0.localIdentifier == cell.localIdentifier}).first {
                 // Delete uploaded image
-                Task { @UploadManagement in
+                Task { @UploadManagerActor in
                     UploadManager.shared.deleteAssets(associatedToUploads: [upload.objectID], [upload.localIdentifier])
                 }
             } else {

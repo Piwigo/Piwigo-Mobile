@@ -279,7 +279,7 @@ class EditImageParamsViewController: UIViewController
     }
 
     @MainActor
-    @objc func doneEdit() {
+    @objc func doneEdit() async {
         // Display HUD during the update
         if images.count > 1 {
             showHUD(withTitle: NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"),
@@ -293,22 +293,24 @@ class EditImageParamsViewController: UIViewController
         
         // Update all images
         let index = 0
-        JSONManager.shared.checkSession(ofUser: user) { [self] in
-            DispatchQueue.main.async { [self] in
-                self.updateImageProperties(fromIndex: index)
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
+                                                          lastConnected: self.user.lastUsed)
+                
+                // Update image properties
+                await self.updateImageProperties(fromIndex: index)
             }
-        } failure: { [self] error in
-            // Display error
-            DispatchQueue.main.async { [self] in
-                self.hideHUD {
-                    self.showUpdatePropertiesError(error, atIndex: index)
-                }
+            catch let error as PwgKitError {
+                await self.hideHUD()
+                await self.showUpdatePropertiesError(error, atIndex: index)
             }
         }
     }
 
     @MainActor
-    func updateImageProperties(fromIndex index: Int) {
+    func updateImageProperties(fromIndex index: Int) async {
         // Any further image to update?
         if index == images.count {
             // Done, save, hide HUD and dismiss controller
@@ -326,25 +328,20 @@ class EditImageParamsViewController: UIViewController
 
         // Update image info on server
         /// The cache will be updated by the parent view controller.
-        setProperties(ofImage: images[index]) { [self] in
-            DispatchQueue.main.async { [self] in
-                // Next image?
-                self.updateHUD(withProgress: Float(index + 1) / Float(images.count))
-                self.updateImageProperties(fromIndex: index + 1)
-            }
+        do {
+            try await setProperties(ofImage: images[index])
+            // Next image?
+            self.updateHUD(withProgress: Float(index + 1) / Float(images.count))
+            await self.updateImageProperties(fromIndex: index + 1)
         }
-        failure: { [self] error in
-            // Display error
-            DispatchQueue.main.async { [self] in
-                self.hideHUD {
-                    self.showUpdatePropertiesError(error, atIndex: index)
-                }
-            }
+        catch {
+            await self.hideHUD()
+            await self.showUpdatePropertiesError(error, atIndex: index)
         }
     }
 
     @MainActor
-    private func showUpdatePropertiesError(_ error: PwgKitError, atIndex index: Int) {
+    private func showUpdatePropertiesError(_ error: PwgKitError, atIndex index: Int) async {
         // If there are images left, propose in addition to bypass the one creating problems
         // Session logout required?
         if error.requiresLogout {
@@ -356,13 +353,11 @@ class EditImageParamsViewController: UIViewController
         let title = NSLocalizedString("editImageDetailsError_title", comment: "Failed to Update")
         let message = NSLocalizedString("editImageDetailsError_message", comment: "Failed to update your changes with your server.")
         if index + 1 < images.count {
-            cancelDismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) {
-            } dismiss: { [self] in
-                // Bypass this image
-                if index + 1 < images.count {
-                    // Next image
-                    updateImageProperties(fromIndex: index + 1)
-                }
+            await cancelDismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { }
+            // Bypass this image
+            if index + 1 < images.count {
+                // Next image
+                await updateImageProperties(fromIndex: index + 1)
             }
         } else {
             dismissPiwigoError(withTitle: title, message: message,
@@ -371,9 +366,7 @@ class EditImageParamsViewController: UIViewController
         }
     }
     
-    private func setProperties(ofImage imageData: Image,
-                               completion: @escaping () -> Void,
-                               failure: @escaping (PwgKitError) -> Void) {
+    private func setProperties(ofImage imageData: Image) async throws(PwgKitError) {
         // Image ID
         var paramsDict: [String : Any] = ["image_id" : imageData.pwgID,
                                           "single_value_mode"   : "replace",
@@ -425,94 +418,91 @@ class EditImageParamsViewController: UIViewController
             paramsDict["pwg_token"] = NetworkVars.shared.pwgToken
         }
         
-        // Send request to Piwigo server
-        JSONManager.shared.checkSession(ofUser: user) { [self] in
-            JSONManager.shared.setInfos(with: paramsDict) { [self] in
-                Task { @MainActor in
-                    // Update image title?
-                    if shouldUpdateTitle,
-                       let newTitle = paramsDict["name"] as? String {
-                        imageData.titleStr = newTitle.utf8mb4Encoded
-                        imageData.title = imageData.titleStr.attributedPlain
-                    }
-                    
-                    // Update image author? (We should never set NSNotFound in the database)
-                    if shouldUpdateAuthor || imageData.author == "NSNotFound" {
-                        imageData.author = commonAuthor
-                    }
-                    
-                    // Update image creation date?
-                    if shouldUpdateDateCreated {
-                        imageData.dateCreated += timeOffset
-                    }
-                    
-                    // Update image privacy level?
-                    if shouldUpdatePrivacyLevel,
-                       commonPrivacyLevel != pwgPrivacy.unknown.rawValue {
-                        imageData.privacyLevel = commonPrivacyLevel
-                    }
-                    
-                    // Update image tags?
-                    if shouldUpdateTags {
-                        // Loop over the removed tags
-                        for tag in removedTags {
-                            // Dissociate tag from image
-                            imageData.removeFromTags(tag)
-                            if tag.numberOfImagesUnderTag != Int64.max,
-                               tag.numberOfImagesUnderTag > (Int64.min + 1) {   // Avoids possible crash
-                                tag.numberOfImagesUnderTag -= 1
-                            }
-                            // Remove image from album of tagged images
-                            let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.tagId)
-                            if let albums = imageData.albums,
-                               let albumData = albums.first(where: {$0.pwgID == catID}) {
-                                imageData.removeFromAlbums(albumData)
-                                
-                                // Update albums
-                                try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: albumData)
-                            }
-                        }
-                        // Loop over the added tags
-                        for tag in addedTags {
-                            // Associate tag to image
-                            imageData.addToTags(tag)
-                            if tag.numberOfImagesUnderTag < (Int64.max - 1) {   // Avoids possible crash
-                                tag.numberOfImagesUnderTag += 1
-                            }
-                            // Add image to album of tagged images if it exists
-                            let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.tagId)
-                            if let albumData = try? AlbumProvider().getAlbum(ofUser: user, withId: catID) {
-                                imageData.addToAlbums(albumData)
-                                
-                                // Update albums
-                                try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: albumData)
-                            }
-                        }
-                    }
-                    
-                    // Update image description?
-                    if shouldUpdateComment,
-                       let newComment = paramsDict["comment"] as? String {
-                        imageData.commentStr = newComment.utf8mb4Encoded
-                        imageData.commentRaw = imageData.commentStr
-                        imageData.comment = imageData.commentStr.attributedPlain
-                        imageData.commentHTML = imageData.commentStr.attributedHTML
-                    }
-                    
-                    // Save changes
-                    self.mainContext.saveIfNeeded()
-                    
-                    // Notify album/image view of modification
-                    self.delegate?.didChangeImageParameters(imageData)
+        // Send requests to Piwigo server
+        Task {
+            // Check session
+            try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+            
+            // Set image properties
+            _ = try await JSONManager.shared.setInfos(with: paramsDict)
+            
+            await MainActor.run { [self] in
+                // Update image title?
+                if shouldUpdateTitle,
+                   let newTitle = paramsDict["name"] as? String {
+                    imageData.titleStr = newTitle.utf8mb4Encoded
+                    imageData.title = imageData.titleStr.attributedPlain
                 }
-                
-                // Image properties successfully updated
-                completion()
-            } failure: { error in
-                failure(error)
+
+                // Update image author? (We should never set NSNotFound in the database)
+                if shouldUpdateAuthor || imageData.author == "NSNotFound" {
+                    imageData.author = commonAuthor
+                }
+
+                // Update image creation date?
+                if shouldUpdateDateCreated {
+                    imageData.dateCreated += timeOffset
+                }
+
+                // Update image privacy level?
+                if shouldUpdatePrivacyLevel,
+                   commonPrivacyLevel != pwgPrivacy.unknown.rawValue {
+                    imageData.privacyLevel = commonPrivacyLevel
+                }
+
+                // Update image tags?
+                if shouldUpdateTags {
+                    // Loop over the removed tags
+                    for tag in removedTags {
+                        // Dissociate tag from image
+                        imageData.removeFromTags(tag)
+                        if tag.numberOfImagesUnderTag != Int64.max,
+                           tag.numberOfImagesUnderTag > (Int64.min + 1) {   // Avoids possible crash
+                            tag.numberOfImagesUnderTag -= 1
+                        }
+                        // Remove image from album of tagged images
+                        let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.tagId)
+                        if let albums = imageData.albums,
+                           let albumData = albums.first(where: {$0.pwgID == catID}) {
+                            imageData.removeFromAlbums(albumData)
+
+                            // Update albums
+                            try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: albumData)
+                        }
+                    }
+                    // Loop over the added tags
+                    for tag in addedTags {
+                        // Associate tag to image
+                        imageData.addToTags(tag)
+                        if tag.numberOfImagesUnderTag < (Int64.max - 1) {   // Avoids possible crash
+                            tag.numberOfImagesUnderTag += 1
+                        }
+                        // Add image to album of tagged images if it exists
+                        let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.tagId)
+                        if let albumData = try? AlbumProvider().getAlbum(ofUser: user, withId: catID) {
+                            imageData.addToAlbums(albumData)
+
+                            // Update albums
+                            try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: albumData)
+                        }
+                    }
+                }
+
+                // Update image description?
+                if shouldUpdateComment,
+                   let newComment = paramsDict["comment"] as? String {
+                    imageData.commentStr = newComment.utf8mb4Encoded
+                    imageData.commentRaw = imageData.commentStr
+                    imageData.comment = imageData.commentStr.attributedPlain
+                    imageData.commentHTML = imageData.commentStr.attributedHTML
+                }
+
+                // Save changes
+                self.mainContext.saveIfNeeded()
+
+                // Notify album/image view of modification
+                self.delegate?.didChangeImageParameters(imageData)
             }
-        } failure: { error in
-            failure(error)
         }
     }
 }

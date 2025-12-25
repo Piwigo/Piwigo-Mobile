@@ -33,13 +33,13 @@ final class ImageDownload {
     let fileSize: Int64
     let fileURL: URL!
     let placeHolder: UIImage!
-    var progressHandler: ((Float) -> Void)?
-    var completionHandler: ((URL) -> Void)!
-    var failureHandler: ((PwgKitError) -> Void)!
     var task: URLSessionDownloadTask?
     var resumeData: Data?
     var progress = Float.zero
-    
+    var progressHandler: ((Float) -> Void)?
+    var failureHandler: ((PwgKitError) -> Void)!
+    var completionHandler: ((URL) -> Void)!
+
     
     // MARK: - Initialization
     init(type: pwgImageType, atURL imageURL: URL, fileSize: Int64 = .zero, toCacheAt fileURL: URL,

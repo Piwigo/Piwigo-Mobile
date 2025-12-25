@@ -19,10 +19,11 @@ public final class JSONManager: @unchecked Sendable {
     public static let shared = JSONManager()
 
     // Common functions for retrieving JSON data
-    public func postRequest<T: Decodable>(withMethod method: String, paramDict: [String: Any],
-                                          jsonObjectClientExpectsToReceive: T.Type,
-                                          countOfBytesClientExpectsToReceive: Int64,
-                                          completion: @escaping (Result<T, PwgKitError>) -> Void) {
+    public nonisolated
+    func postRequest<T: Decodable>(withMethod method: String, paramDict: [String: Any],
+                                   jsonObjectClientExpectsToReceive: T.Type,
+                                   countOfBytesClientExpectsToReceive: Int64) async throws(PwgKitError) -> T {
+        
         // Create POST request
         let url = URL(string: NetworkVars.shared.service + "/ws.php?format=json&method=\(method)")
         var request = URLRequest(url: url!)
@@ -30,7 +31,7 @@ public final class JSONManager: @unchecked Sendable {
         request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue("utf-8", forHTTPHeaderField: "Accept-Charset")
-
+        
         // Identify requests performed for a specific album
         // so that they can be easily cancelled.
         if [pwgCategoriesGetList, pwgCategoriesGetImages].contains(method),
@@ -43,90 +44,116 @@ public final class JSONManager: @unchecked Sendable {
         
         // Combine percent encoded parameters
         request.httpBody = httpBody(for: paramDict)
-
-        // Launch the HTTP(S) request
-        let task = dataSession.dataTask(with: request) { data, response, error in
-            
-            // Communication error?
-            if let error = error as? URLError {
-                completion(.failure(.requestFailed(innerError: error)))
-                return
-            }
-            
-            // Valid response?
-            guard let jsonData = data, let httpResponse = response as? HTTPURLResponse
-            else {
-                completion(.failure(.invalidResponse))
-                return
-            }
-            
-            // Absence of HTTP error?
-            guard (200...299).contains(httpResponse.statusCode)
-            else {
-                completion(.failure(.invalidStatusCode(statusCode: httpResponse.statusCode)))
-                return
-            }
         
-            // Data received?
-            guard jsonData.isEmpty == false
-            else {
-                completion(.failure(.emptyJSONobject))
-                return
-            }
-
-            // Try decoding JSON object
-            let decoder = JSONDecoder()
-            do {
-                let pwgData = try decoder.decode(T.self, from: jsonData)
-                
-                // Log returned data
-                let countsOfBytes = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride + jsonData.count * MemoryLayout<Data>.stride
+        // Do {} below is used to allow typed throws
+        // withCheckedThrowingContinuation() requires any Error
+        do {
+            // Launch the HTTP(S) request
+            return try await withCheckedThrowingContinuation { continuation in
+                let task = dataSession.dataTask(with: request) { data, response, error in
+                    
+                    // Communication error?
+                    if let error = error as? URLError {
+                        continuation.resume(throwing: PwgKitError.requestFailed(innerError: error))
+                        return
+                    }
+                    
+                    // Valid response?
+                    guard let jsonData = data, let httpResponse = response as? HTTPURLResponse
+                    else {
+                        continuation.resume(throwing: PwgKitError.invalidResponse)
+                        return
+                    }
+                    
+                    // Absence of HTTP error?
+                    guard (200...299).contains(httpResponse.statusCode)
+                    else {
+                        continuation.resume(throwing: PwgKitError.invalidStatusCode(statusCode: httpResponse.statusCode))
+                        return
+                    }
+                    
+                    // Data received?
+                    guard jsonData.isEmpty == false
+                    else {
+                        continuation.resume(throwing: PwgKitError.emptyJSONobject)
+                        return
+                    }
+                    
+                    // Try decoding JSON object
+                    let decoder = JSONDecoder()
+                    do {
+                        let pwgData = try decoder.decode(T.self, from: jsonData)
+                        
+                        // Log returned data
+                        let countsOfBytes = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride + jsonData.count * MemoryLayout<Data>.stride
 #if DEBUG
-                let dataStr = String(decoding: jsonData.prefix(100), as: UTF8.self) + "…"
-//                let dataStr = String(decoding: jsonData, as: UTF8.self)
-                JSONManager.logger.notice("\(method) returned \(countsOfBytes, privacy: .public) bytes: \(dataStr, privacy: .public)")
+                        let dataStr = String(decoding: jsonData.prefix(100), as: UTF8.self) + "…"
+                        //                let dataStr = String(decoding: jsonData, as: UTF8.self)
+                        JSONManager.logger.notice("\(method) returned \(countsOfBytes, privacy: .public) bytes: \(dataStr, privacy: .public)")
 #else
-                JSONManager.logger.notice("\(method) returned \(countsOfBytes, privacy: .public) bytes.")
+                        JSONManager.logger.notice("\(method) returned \(countsOfBytes, privacy: .public) bytes.")
 #endif
+                        
+                        // Return decoded object
+                        continuation.resume(returning: pwgData)
+                    }
+                    catch let DecodingError.dataCorrupted(context) {
+                        // Piwigo error?
+                        if let pwgError = context.underlyingError as? PwgKitError {
+                            continuation.resume(throwing: pwgError)
+                        }
+                        else {
+                            self.cleanAndRetryDecoding(jsonData, withDecoder: decoder, forMethod: method,
+                                                       jsonObjectClientExpectsToReceive: T.self,
+                                                       error: DecodingError.dataCorrupted(context)) { result in
+                                switch result {
+                                case .success(let decodedData):
+                                    continuation.resume(returning: decodedData)
+                                case .failure(let error):
+                                    continuation.resume(throwing: error)
+                                }
+                            }
+                        }
+                    }
+                    catch let error as DecodingError {
+                        self.cleanAndRetryDecoding(jsonData, withDecoder: decoder, forMethod: method,
+                                                   jsonObjectClientExpectsToReceive: T.self,
+                                                   error: error) { result in
+                            switch result {
+                            case .success(let decodedData):
+                                continuation.resume(returning: decodedData)
+                            case .failure(let error):
+                                continuation.resume(throwing: error)
+                            }
+                        }
+                    }
+                    catch let error {
+                        continuation.resume(throwing: PwgKitError.otherError(innerError: error))
+                    }
+                }
                 
-                // Return decoded object
-                completion(.success(pwgData))
-            }
-            catch let DecodingError.dataCorrupted(context) {
-                // Piwigo error?
-                if let pwgError = context.underlyingError as? PwgKitError {
-                    completion(.failure(pwgError))
+                // Tell the system how many bytes are expected to be exchanged
+                task.countOfBytesClientExpectsToSend = Int64((request.httpBody ?? Data()).count +
+                                                             (request.allHTTPHeaderFields ?? [:]).count)
+                task.countOfBytesClientExpectsToReceive = countOfBytesClientExpectsToReceive
+                
+                // Sets the task description from the method
+                if let pos = method.lastIndex(of: "=") {
+                    task.taskDescription = String(method[pos...].dropFirst())
+                } else {
+                    task.taskDescription = method.components(separatedBy: "=").last
                 }
-                else {
-                    self.cleanAndRetryDecoding(jsonData, withDecoder: decoder, forMethod: method,
-                                               jsonObjectClientExpectsToReceive: T.self,
-                                               error: DecodingError.dataCorrupted(context), completion: completion)
-                }
-            }
-            catch let error as DecodingError {
-                self.cleanAndRetryDecoding(jsonData, withDecoder: decoder, forMethod: method,
-                                           jsonObjectClientExpectsToReceive: T.self,
-                                           error: error, completion: completion)
-            }
-            catch let error {
-                completion(.failure(.otherError(innerError: error)))
+                
+                // Execute the task
+                task.resume()
             }
         }
-        
-        // Tell the system how many bytes are expected to be exchanged
-        task.countOfBytesClientExpectsToSend = Int64((request.httpBody ?? Data()).count +
-                                                     (request.allHTTPHeaderFields ?? [:]).count)
-        task.countOfBytesClientExpectsToReceive = countOfBytesClientExpectsToReceive
-
-        // Sets the task description from the method
-        if let pos = method.lastIndex(of: "=") {
-            task.taskDescription = String(method[pos...].dropFirst())
-        } else {
-            task.taskDescription = method.components(separatedBy: "=").last
+        catch let error as PwgKitError {
+            throw error
         }
-        
-        // Execute the task
-        task.resume()
+        catch {
+            throw PwgKitError.otherError(innerError: error)
+        }
     }
     
     fileprivate

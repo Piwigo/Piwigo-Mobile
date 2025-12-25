@@ -47,7 +47,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
             UploadVars.shared.autoUploadAlbumId = ""               // Unknown source Photos album
             
             // Delete remaining upload requests
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 UploadManager.shared.disableAutoUpload()
             }
             
@@ -63,7 +63,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
             UploadVars.shared.autoUploadCategoryId = Int32.min    // Unknown destination Piwigo album
 
             // Delete remaining upload requests
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 UploadManager.shared.disableAutoUpload()
             }
 
@@ -73,7 +73,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         }
         
         // Extract images not already in the upload queue
-        Task { @UploadManagement in
+        Task { @UploadManagerActor in
             // Get new local images to be uploaded
             let uploadRequestsToAppend = UploadManager.shared.getNewRequests(inCollection: collection,
                                                                              toBeUploadedIn: categoryId)
@@ -115,7 +115,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         /// - considers only auto-upload requests
         /// - called by an extension (don't try to append auto-upload requests again)
         let initOperation = BlockOperation {
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 await UploadManager.shared.initialiseBckgTask(autoUploadOnly: true,
                                                               triggeredByExtension: true)
             }
@@ -125,7 +125,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         // Check and resume transfers
         let resumeOperation = BlockOperation {
             // Transfer image
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 await UploadManager.shared.resumeTransfers()
             }
         }
@@ -135,7 +135,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         // Prepares one image maximum due to the 10s limit
         let uploadOperation = BlockOperation {
             // Prepare image
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 await UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
             }
         }

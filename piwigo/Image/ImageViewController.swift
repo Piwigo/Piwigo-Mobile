@@ -293,73 +293,66 @@ class ImageViewController: UIViewController {
     
     private func retrieveImageData(_ imageData: Image, isIncomplete: Bool) {
         // Retrieve image/video infos
-        DispatchQueue.global(qos: .userInteractive).async { [self] in
-            JSONManager.shared.checkSession(ofUser: user) { [self] in
-                let imageID = imageData.pwgID
-                ImageProvider().getInfos(forID: imageID, inCategoryId: self.categoryId) { [self] in
-                    DispatchQueue.main.async { [self] in
-                        // Look for the corresponding view controller
-                        guard let vcs = self.pageViewController?.viewControllers else { return }
-                        for vc in vcs {
-                            if let pvc = vc as? ImageDetailViewController, pvc.imageData.pwgID == imageID,
-                               let updatedImage = self.images.fetchedObjects?.first(where: { $0.pwgID == imageID }) {
-                                // Update image data
-                                if updatedImage.isFault {
-                                    // The image is not fired yet.
-                                    updatedImage.willAccessValue(forKey: nil)
-                                    updatedImage.didAccessValue(forKey: nil)
-                                }
-                                pvc.imageData = updatedImage
-                                // Update navigation bar and enable buttons
-                                self.updateNavBar()
-                                self.setEnableStateOfButtons(true)
-                                break
-                            } else if let pvc = vc as? VideoDetailViewController, pvc.imageData.pwgID == imageID,
-                                      let updatedImage = self.images.fetchedObjects?.first(where: { $0.pwgID == imageID }){
-                                // Update image data
-                                if updatedImage.isFault {
-                                    // The image is not fired yet.
-                                    updatedImage.willAccessValue(forKey: nil)
-                                    updatedImage.didAccessValue(forKey: nil)
-                                }
-                                pvc.imageData = updatedImage
-                                // Update navigation bar and enable buttons
-                                self.updateNavBar()
-                                self.setEnableStateOfButtons(true)
-                                break
-                            } else if let pvc = vc as? PdfDetailViewController, pvc.imageData.pwgID == imageID,
-                                      let updatedImage = self.images.fetchedObjects?.first(where: { $0.pwgID == imageID }){
-                                // Update image data
-                                if updatedImage.isFault {
-                                    updatedImage.willAccessValue(forKey: nil)
-                                    updatedImage.didAccessValue(forKey: nil)
-                                }
-                                pvc.imageData = updatedImage
-                                // Update navigation bar and enable buttons
-                                self.updateNavBar()
-                                self.setEnableStateOfButtons(true)
-                                break
+        let imageID = imageData.pwgID
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                
+                // Get complete image data
+                try await ImageProvider().getInfos(forID: imageID, inCategoryId: self.categoryId)
+                
+                // Update UI and cache
+                await MainActor.run { [self] in
+                    // Look for the corresponding view controller
+                    guard let vcs = self.pageViewController?.viewControllers else { return }
+                    for vc in vcs {
+                        if let pvc = vc as? ImageDetailViewController, pvc.imageData.pwgID == imageID,
+                           let updatedImage = self.images.fetchedObjects?.first(where: { $0.pwgID == imageID }) {
+                            // Update image data
+                            if updatedImage.isFault {
+                                // The image is not fired yet.
+                                updatedImage.willAccessValue(forKey: nil)
+                                updatedImage.didAccessValue(forKey: nil)
                             }
+                            pvc.imageData = updatedImage
+                            // Update navigation bar and enable buttons
+                            self.updateNavBar()
+                            self.setEnableStateOfButtons(true)
+                            break
+                        } else if let pvc = vc as? VideoDetailViewController, pvc.imageData.pwgID == imageID,
+                                  let updatedImage = self.images.fetchedObjects?.first(where: { $0.pwgID == imageID }){
+                            // Update image data
+                            if updatedImage.isFault {
+                                // The image is not fired yet.
+                                updatedImage.willAccessValue(forKey: nil)
+                                updatedImage.didAccessValue(forKey: nil)
+                            }
+                            pvc.imageData = updatedImage
+                            // Update navigation bar and enable buttons
+                            self.updateNavBar()
+                            self.setEnableStateOfButtons(true)
+                            break
+                        } else if let pvc = vc as? PdfDetailViewController, pvc.imageData.pwgID == imageID,
+                                  let updatedImage = self.images.fetchedObjects?.first(where: { $0.pwgID == imageID }){
+                            // Update image data
+                            if updatedImage.isFault {
+                                updatedImage.willAccessValue(forKey: nil)
+                                updatedImage.didAccessValue(forKey: nil)
+                            }
+                            pvc.imageData = updatedImage
+                            // Update navigation bar and enable buttons
+                            self.updateNavBar()
+                            self.setEnableStateOfButtons(true)
+                            break
                         }
                     }
-                } failure: { [self] error in
+                }
+            }
+            catch let error as PwgKitError {
+                await MainActor.run {
                     // Display error only when image data is incomplete
                     if isIncomplete {
-                        DispatchQueue.main.async { [self] in
-                            self.retrieveImageDataError(error)
-                        }
-                    }
-                }
-            } failure: { [self] error in
-                // Don't display an error if there is no Internet connection
-                if [NSURLErrorDataNotAllowed,
-                    NSURLErrorNotConnectedToInternet,
-                    NSURLErrorInternationalRoamingOff].contains((error as NSError).code) {
-                    return
-                }
-                // Display error only once and when image data is incomplete
-                if isIncomplete  {
-                    DispatchQueue.main.async { [self] in
                         self.retrieveImageDataError(error)
                     }
                 }
@@ -382,30 +375,27 @@ class ImageViewController: UIViewController {
     }
 
     func logImageVisitIfNeeded(_ imageID: Int64, asDownload: Bool = false) {
-        JSONManager.shared.checkSession(ofUser: user) { [self] in
-            if NetworkVars.shared.saveVisits {
-                JSONManager.shared.logVisitOfImage(withID: imageID, asDownload: asDownload) {
-                    // Statistics updated
-                } failure: { [self] error in
-                    // Session logout required?
-                    DispatchQueue.main.async { [self] in
-                        if error.requiresLogout {
-                            ClearCache.closeSessionWithPwgError(from: self, error: error)
-                            return
-                        }
+        // Should we really log visits?
+        guard NetworkVars.shared.saveVisits
+        else { return }
+        
+        Task.detached {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID, lastConnected: self.user.lastUsed)
+                
+                // Update server statistics
+                try await JSONManager.shared.logVisitOfImage(withID: imageID, asDownload: asDownload)
+            }
+            catch let error as PwgKitError {
+                // Statistics not updated ► No error reported
+                await MainActor.run {
+                    if error.requiresLogout {
+                        ClearCache.closeSessionWithPwgError(from: self, error: error)
+                        return
                     }
-                    // Statistics not updated ► No error reported
                 }
             }
-        } failure: { [self] error in
-            // Session logout required?
-            DispatchQueue.main.async { [self] in
-                if error.requiresLogout {
-                    ClearCache.closeSessionWithPwgError(from: self, error: error)
-                    return
-                }
-            }
-            // Statistics not updated ► No error reported
         }
     }
 
@@ -721,7 +711,7 @@ extension ImageViewController: UIPageViewControllerDataSource
 
 
 // MARK: - SelectCategoryDelegate Methods
-extension ImageViewController: SelectCategoryDelegate
+extension ImageViewController: @MainActor SelectCategoryDelegate
 {
     func didSelectCategory(withId category: Int32) {
         setEnableStateOfButtons(true)

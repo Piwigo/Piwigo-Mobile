@@ -13,13 +13,13 @@ import CoreData
 import piwigoKit
 
 @globalActor
-public actor UploadManagement {
-    public static let shared = UploadManagement()
+public actor UploadManagerActor {
+    public static let shared = UploadManagerActor()
     
     private init() { }  // Prevents duplicate instances
 }
 
-@UploadManagement
+@UploadManagerActor
 public final class UploadManager: NSObject {
     
     // Logs networking activities
@@ -168,7 +168,7 @@ public final class UploadManager: NSObject {
 
 
 // MARK: - NSFetchedResultsControllerDelegate
-extension UploadManager: @UploadManagement NSFetchedResultsControllerDelegate {
+extension UploadManager: @UploadManagerActor NSFetchedResultsControllerDelegate {
     
     public func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         

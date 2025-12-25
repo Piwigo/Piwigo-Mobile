@@ -38,7 +38,7 @@ class LockOptionsViewController: UIViewController {
 
         // Evaluate biometrics policy
         var error: NSError?
-        let _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
+        _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
         contextErrorMsg = error?.localizedDescription ?? ""
     }
     
@@ -183,13 +183,13 @@ extension LockOptionsViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let title = getContentOfHeader(inSection: section)
-        return TableViewUtilities.shared.heightOfHeader(withTitle: title,
+        return TableViewUtilities.heightOfHeader(withTitle: title,
                                                         width: tableView.frame.size.width)
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let title = getContentOfHeader(inSection: section)
-        return TableViewUtilities.shared.viewOfHeader(withTitle: title)
+        return TableViewUtilities.viewOfHeader(withTitle: title)
     }
     
     
@@ -245,12 +245,12 @@ extension LockOptionsViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         let text = getContentOfFooter(inSection: section)
-        return TableViewUtilities.shared.heightOfFooter(withText: text,
+        return TableViewUtilities.heightOfFooter(withText: text,
                                                         width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let text = getContentOfFooter(inSection: section)
-        return TableViewUtilities.shared.viewOfFooter(withText: text)
+        return TableViewUtilities.viewOfFooter(withText: text)
     }
 }

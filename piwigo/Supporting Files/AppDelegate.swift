@@ -340,7 +340,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
             // Initialise variables and determine upload requests to prepare and transfer
             UploadVars.shared.isExecutingBGUploadTask = true
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 UploadManager.shared.countOfBytesPrepared = 0
                 UploadManager.shared.countOfBytesToUpload = 0
                 await UploadManager.shared.initialiseBckgTask()
@@ -354,7 +354,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Resume transfers
         let resumeOperation = BlockOperation {
             // Transfer image
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 await UploadManager.shared.resumeTransfers()
             }
         }
@@ -365,7 +365,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         for _ in 0..<UploadVars.shared.maxNberOfUploadsPerBckgTask {
             let uploadOperation = BlockOperation {
                 // Prepare then transfer image
-                Task { @UploadManagement in
+                Task { @UploadManagerActor in
                     await UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
                 }
             }
@@ -380,7 +380,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // Cancel operations
             uploadQueue.cancelAllOperations()
             // Stop network monitoring
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 await self.networkMonitor?.stopMonitoring()
             }
         }
@@ -426,7 +426,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //            }
 //            // Initialise variables and determine upload requests to prepare and transfer
 //            UploadVars.shared.isExecutingBGContinuedUploadTask = true
-//            Task { @UploadManagement in
+//            Task { @UploadManagerActor in
 //                await UploadManager.shared.initialiseBckgTask()
 //            }
 //        }
@@ -438,7 +438,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        // Resume transfers
 //        let resumeOperation = BlockOperation {
 //            // Transfer image
-//            Task { @UploadManagement in
+//            Task { @UploadManagerActor in
 //                await UploadManager.shared.resumeTransfers()
 //            }
 //        }
@@ -456,7 +456,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        for _ in 0..<nberOfUploadsToComplete {
 //            let uploadOperation = BlockOperation {
 //                // Prepare then transfer image
-//                Task { @UploadManagement in
+//                Task { @UploadManagerActor in
 //                    await UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
 //                }
 //            }
@@ -548,7 +548,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // Inform user
             visibleVC.dismissPiwigoError(withTitle: title, message: message, errorMessage: errorMsg ?? "") {
                 // Restart UploadManager activities
-                Task { @UploadManagement in
+                Task { @UploadManagerActor in
                     UploadVars.shared.isPaused = false
 //                    if #unavailable(iOS 26.0) {
                         UploadManager.shared.findNextImageToUpload()
@@ -774,7 +774,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @objc func checkSessionWhenLeavingLowPowerMode() {
         if !ProcessInfo.processInfo.isLowPowerModeEnabled {
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 UploadManager.shared.resumeAll()
             }
         }
@@ -801,7 +801,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Resume upload operations in background queue
         // and update badge, upload button of album navigator
-        Task { @UploadManagement in
+        Task { @UploadManagerActor in
             UploadManager.shared.resumeAll()
         }
         

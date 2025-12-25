@@ -17,9 +17,6 @@ public final class PwgSessionDelegate: NSObject, Sendable {
     
     // Singleton
     public static let shared = PwgSessionDelegate()
-    
-    // Active downloads
-    static var activeDownloads: [URL : ImageDownload] = [ : ]
 }
 
 
@@ -36,7 +33,7 @@ extension PwgSessionDelegate: URLSessionDelegate {
 
     public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: (any Error)?) {
         PwgSessionDelegate.logger.notice("Session invalidated.")
-        PwgSessionDelegate.activeDownloads = [ : ]
+        ImageDownloader.activeDownloads = [ : ]
     }
     
     public func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge,

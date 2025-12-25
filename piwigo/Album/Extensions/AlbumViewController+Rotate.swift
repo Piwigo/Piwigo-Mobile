@@ -94,15 +94,21 @@ extension AlbumViewController
             return
         }
 
-        // Send request to Piwigo server
-        JSONManager.shared.checkSession(ofUser: user) { [self] in
-            ImageUtilities.rotate(imageData, by: angle) { [self] in
-                // Update HUD
-                DispatchQueue.main.async { [self] in
+        // Send requests to Piwigo server
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                
+                // Rotate thumbnails
+                try await JSONManager.shared.rotate(imageData, by: angle)
+                
+                // Update UI
+                await MainActor.run {
                     // Update progress indicator
                     let progress: Float = 1 - Float(remainingIDs.count) / total
                     self.navigationController?.updateHUD(withProgress: progress)
-                    
+
                     // Check if we already have the image in cache
                     if let wantedImage = imageData.cachedThumbnail(ofSize: self.imageSize) {
                         // Downsample thumbnail (should not be needed)
@@ -120,19 +126,14 @@ extension AlbumViewController
                             }
                         }
                     }
-                    
+
                     // Next image
                     remainingIDs.removeFirst()
                     deselectImages(withIDs: Set([imageID]))
                     rotateImages(withID: remainingIDs, by: angle, total: total)
                 }
-            } failure: { [self] error in
-                DispatchQueue.main.async { [self] in
-                    rotateImagesInDatabaseError(error)
-                }
             }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
+            catch let error as PwgKitError {
                 rotateImagesInDatabaseError(error)
             }
         }

@@ -197,7 +197,7 @@ class LoginViewController: UIViewController {
     private func updateContentSizes(for contentSizeCategory: UIContentSizeCategory) {
         // Set cell size according to the selected category
         /// https://developer.apple.com/design/human-interface-guidelines/typography#Specifications
-        let fieldHeight = TableViewUtilities.shared.rowHeight(forContentSizeCategory: contentSizeCategory)
+        let fieldHeight = TableViewUtilities.rowHeight(forContentSizeCategory: contentSizeCategory)
         serverTextFiledHeight.constant = fieldHeight
         userTextFieldHeight.constant = fieldHeight
         passwordTextFieldHeight.constant = fieldHeight
@@ -247,33 +247,71 @@ class LoginViewController: UIViewController {
         requestServerMethods()
     }
     
-    @MainActor
     func requestServerMethods() {
-        // Collect list of methods supplied by Piwigo server
-        JSONManager.shared.requestServerMethods { [self] in
-            // Pursue logging in…
-            DispatchQueue.main.async {
-                self.performLogin()
+        // Collect list of methods supplied by Piwigo server on background
+        Task.detached {
+            do {
+                try await JSONManager.shared.getMethods()
+                
+                // Pursue logging in…
+                await MainActor.run {
+                    self.performLogin()
+                }
             }
-        } didRejectCertificate: { [self] error in
-            // The SSL certificate is not trusted
-            DispatchQueue.main.async {
-                self.requestCertificateApproval(afterError: error)
-            }
-        } didFailHTTPauthentication: { [self] error in
-            // Without prior knowledge, the app already tried Piwigo credentials
-            // but unsuccessfully, so we request HTTP credentials
-            DispatchQueue.main.async {
-                self.requestHttpCredentials(afterError: error)
-            }
-        } didFailSecureConnection: { [self] error in
-            // Suggest HTTP connection if HTTPS attempt failed
-            DispatchQueue.main.async {
-                self.requestNonSecuredAccess(afterError: error)
-            }
-        } failure: { [self] error in
-            DispatchQueue.main.async {
-                self.logging(inConnectionError: error)
+            catch let error as PwgKitError {
+                await MainActor.run {
+                    // If Piwigo uses a non-trusted certificate, ask permission
+                    if NetworkVars.shared.didRejectCertificate {
+                        // The SSL certificate is not trusted
+                        self.requestCertificateApproval(afterError: error)
+                        return
+                    }
+
+                    // HTTP Basic authentication required?
+                    if error.failedAuthentication || NetworkVars.shared.didFailHTTPauthentication {
+                        // Without prior knowledge, the app already tried Piwigo credentials
+                        // but unsuccessfully, so we request HTTP credentials
+                        self.requestHttpCredentials(afterError: error)
+                        return
+                    }
+
+                    switch (error as NSError).code {
+                    case NSURLErrorClientCertificateRejected, NSURLErrorServerCertificateHasBadDate,
+                         NSURLErrorServerCertificateHasUnknownRoot, NSURLErrorServerCertificateNotYetValid,
+                         NSURLErrorServerCertificateUntrusted:
+                        // The SSL certificate is not trusted
+                        self.requestCertificateApproval(afterError: error)
+                        return
+                    case NSURLErrorUserAuthenticationRequired:
+                        // Without prior knowledge, the app already tried Piwigo credentials
+                        // but unsuccessfully, so must now request HTTP credentials
+                        self.requestHttpCredentials(afterError: error)
+                        return
+                    case NSURLErrorCannotConnectToHost,    // Happens when the server does not reply to the request (HTTP or HTTPS)
+                         NSURLErrorSecureConnectionFailed:
+                        // HTTPS request failed ?
+                        if NetworkVars.shared.serverProtocol == "https://" {
+                            // Suggest HTTP connection if HTTPS attempt failed
+                            self.requestNonSecuredAccess(afterError: error)
+                        }
+                        return
+                    case NSURLErrorUserCancelledAuthentication:
+                        self.logging(inConnectionError: error)
+                        return
+                    case NSURLErrorBadServerResponse, NSURLErrorBadURL, NSURLErrorCallIsActive,
+                         NSURLErrorCannotDecodeContentData, NSURLErrorCannotDecodeRawData,
+                         NSURLErrorCannotFindHost, NSURLErrorCannotParseResponse, NSURLErrorClientCertificateRequired,
+                         NSURLErrorDataLengthExceedsMaximum, NSURLErrorDataNotAllowed, NSURLErrorDNSLookupFailed,
+                         NSURLErrorHTTPTooManyRedirects, NSURLErrorInternationalRoamingOff, NSURLErrorNetworkConnectionLost,
+                         NSURLErrorNotConnectedToInternet, NSURLErrorRedirectToNonExistentLocation,
+                         NSURLErrorRequestBodyStreamExhausted, NSURLErrorTimedOut, NSURLErrorUnknown, NSURLErrorUnsupportedURL,
+                         NSURLErrorZeroByteResource:
+                        self.logging(inConnectionError: error)
+                        return
+                    default:
+                        self.logging(inConnectionError: error)
+                    }
+                }
             }
         }
     }
@@ -378,24 +416,26 @@ class LoginViewController: UIViewController {
             // Update HUD during login
             updateHUD(detail: NSLocalizedString("login_newSession", comment: "Opening Session"))
 
-            // Perform login
-            JSONManager.shared.sessionLogin(withUsername: username, password: password) { [self] in
-                // Session now opened
-                NetworkVars.shared.username = username
+            Task.detached {
+                do {
+                    // Perform login
+                    try await JSONManager.shared.sessionLogin(withUsername: username, password: password)
+                    // Session now opened
+                    NetworkVars.shared.username = username
 
-                // Create/update User account in persistent cache, create Server if necessary.
-                // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
-                DispatchQueue.main.async { [self] in
-                    // First determine user rights if Community extension installed
-                    self.getCommunityStatus()
+                    await MainActor.run { [self] in
+                        // First determine user rights if Community extension installed
+                        self.getCommunityStatus()
+                    }
                 }
-            } failure: { [self] error in
-                // Don't keep unaccepted credentials
-                KeychainUtilities.deletePassword(forService: NetworkVars.shared.serverPath,
-                                                 account: username)
-                DispatchQueue.main.async { [self] in
-                    // Login request failed
-                    logging(inConnectionError: error)
+                catch let error as PwgKitError {
+                    // Don't keep unaccepted credentials
+                    KeychainUtilities.deletePassword(forService: NetworkVars.shared.serverPath,
+                                                     account: username)
+                    await MainActor.run { [self] in
+                        // Login request failed
+                        self.logging(inConnectionError: error)
+                    }
                 }
             }
         } else {
@@ -406,22 +446,17 @@ class LoginViewController: UIViewController {
             NetworkVars.shared.username = ""
             NetworkVars.shared.userStatus = .guest
             
-            DispatchQueue.main.async { [self] in
-                // Create/update guest account in persistent cache, create Server if necessary.
-                do {
-                    // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
-                    let _ = try self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
-                    
-                    // Check Piwigo version, get token, available sizes, etc.
-                    self.getCommunityStatus()
-                }
-                catch let error as PwgKitError {
-                    // Login request failed
-                    logging(inConnectionError: error)
-                }
-                catch let error {
-                    logging(inConnectionError: PwgKitError.otherError(innerError: error))
-                }
+            // Create/update guest account in persistent cache, create Server if necessary.
+            do {
+                // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
+                _ = try self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
+                
+                // Check Piwigo version, get token, available sizes, etc.
+                self.getCommunityStatus()
+            }
+            catch {
+                // Login request failed
+                logging(inConnectionError: error)
             }
         }
     }
@@ -434,25 +469,28 @@ class LoginViewController: UIViewController {
             // Update HUD during login
             updateHUD(detail: NSLocalizedString("login_communityParameters", comment: "Community Parameters"))
 
-            // Community extension installed, get real user's status
-            JSONManager.shared.communityGetStatus { [self] in
-                // Check Piwigo version, get token, available sizes, etc.
-                DispatchQueue.main.async { [self] in
-                    self.getSessionStatus()
+            Task.detached {
+                do {
+                    // Community extension installed, get real user's status
+                    try await JSONManager.shared.communityGetStatus()
+                    
+                    await MainActor.run { [self] in
+                        // Check Piwigo version, get token, available sizes, etc.
+                        self.getSessionStatus()
+                    }
                 }
-            } failure: { [self] error in
-                // Inform user that server failed to retrieve Community parameters
-                DispatchQueue.main.async { [self] in
-                    self.isAlreadyTryingToLogin = false
-                    self.logging(inConnectionError: error)
+                catch let error as PwgKitError {
+                    // Inform user that server failed to retrieve Community parameters
+                    await MainActor.run { [self] in
+                        self.isAlreadyTryingToLogin = false
+                        self.logging(inConnectionError: error)
+                    }
                 }
             }
         } else {
             // Community extension not installed
             // Check Piwigo version, get token, available sizes, etc.
-            DispatchQueue.main.async { [self] in
-                self.getSessionStatus()
-            }
+            self.getSessionStatus()
         }
     }
 
@@ -462,35 +500,38 @@ class LoginViewController: UIViewController {
         // Update HUD during login
         updateHUD(detail: NSLocalizedString("login_serverParameters", comment: "Piwigo Parameters"))
 
-        JSONManager.shared.sessionGetStatus() { [self] user in
-            // Update Piwigo username (≠ credential)
-            NetworkVars.shared.user = user
-            
-            DispatchQueue.main.async { [self] in
-                // Should this server be updated?
-                let now: Double = Date().timeIntervalSinceReferenceDate
-                if now > NetworkVars.shared.dateOfLastUpdateRequest + AppVars.shared.pwgOneMonth,
-                   NetworkVars.shared.pwgVersion.compare(pwgRecentVersion, options: .numeric) == .orderedAscending {
-                    // Store date of last upgrade request
-                    NetworkVars.shared.dateOfLastUpdateRequest = now
-                    
-                    // Piwigo server update recommanded ► Inform user
-                    hideHUD() {
-                        self.dismissPiwigoError(withTitle: NSLocalizedString("serverVersionOld_title", comment: "Server Update Available"), message: String.localizedStringWithFormat(NSLocalizedString("serverVersionOld_message", comment: "Your Piwigo server version is %@. Please ask the administrator to update it."), NetworkVars.shared.pwgVersion), completion: {
-                                // Piwigo server version is still appropriate.
-                                self.launchApp()
-                        })
+        Task.detached {
+            do {
+                // Update Piwigo username (≠ credential)
+                NetworkVars.shared.user = try await JSONManager.shared.sessionGetStatus()
+
+                await MainActor.run { [self] in
+                    // Should this server be updated?
+                    let now: Double = Date().timeIntervalSinceReferenceDate
+                    if now > NetworkVars.shared.dateOfLastUpdateRequest + AppVars.shared.pwgOneMonth,
+                       NetworkVars.shared.pwgVersion.compare(pwgRecentVersion, options: .numeric) == .orderedAscending {
+                        // Store date of last upgrade request
+                        NetworkVars.shared.dateOfLastUpdateRequest = now
+                        
+                        // Piwigo server update recommanded ► Inform user
+                        self.hideHUD() {
+                            self.dismissPiwigoError(withTitle: NSLocalizedString("serverVersionOld_title", comment: "Server Update Available"), message: String.localizedStringWithFormat(NSLocalizedString("serverVersionOld_message", comment: "Your Piwigo server version is %@. Please ask the administrator to update it."), NetworkVars.shared.pwgVersion), completion: {
+                                    // Piwigo server version is still appropriate.
+                                    self.launchApp()
+                            })
+                        }
+                    } else {
+                        // Piwigo server version is appropriate.
+                        self.launchApp()
                     }
-                } else {
-                    // Piwigo server version is appropriate.
-                    self.launchApp()
                 }
             }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
-                self.isAlreadyTryingToLogin = false
-                // Display error message
-                self.logging(inConnectionError: error)
+            catch let error as PwgKitError {
+                await MainActor.run { [self] in
+                    self.isAlreadyTryingToLogin = false
+                    // Display error message
+                    self.logging(inConnectionError: error)
+                }
             }
         }
     }
@@ -502,15 +543,12 @@ class LoginViewController: UIViewController {
         // Create/update User account in persistent cache, create Server if necessary.
         do {
             // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
-            let _ = try self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
+            _ = try self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
         }
-        catch let error as PwgKitError {
+        catch {
             logging(inConnectionError: error)
         }
-        catch let error {
-            logging(inConnectionError: PwgKitError.otherError(innerError: error))
-        }
-
+        
         // Check image size availabilities
         let scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))
         LoginUtilities.checkAvailableSizes(forScale: scale)

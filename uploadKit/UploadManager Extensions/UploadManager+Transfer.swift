@@ -43,36 +43,30 @@ extension UploadManager {
         upload.setState(.uploading, save: true)
         
         // Is this image already stored on the Piwigo server?
-        Task.detached {
-            JSONManager.shared.checkSession(ofUser: user) {
-                JSONManager.shared.getIDofImage(withMD5: upload.md5Sum) { imageID in
-                    Task { @UploadManagement in
-                        if let imageID = imageID {
-                            // Already stored on the Piwigo server ► Copy to Album
-                            self.copyImageWithID(imageID, for: upload)
-                        } else {
-                            // Upload new image to the Piwigo server
-                            self.transfertImage(for: upload)
-                        }
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                
+                // Check whether an image with that MD5 checksum exists on the server
+                let imageID = try await JSONManager.shared.getIDofImage(withMD5: upload.md5Sum)
+                Task { @UploadManagerActor in
+                    if let imageID {
+                        // Already stored on the Piwigo server ► Copy to Album
+                        await self.copyImageWithID(imageID, for: upload)
+                    } else {
+                        // Upload new image to the Piwigo server
+                        await self.transfertImage(for: upload)
                     }
-                } failure: { error in
+                }
+            }
+            catch let error as PwgKitError {
+                Task { @UploadManagerActor in
                     if error.failedAuthentication {
                         upload.setState(.uploadingFail, error: error, save: true)
                     } else {
                         upload.setState(.uploadingError, error: error, save: true)
                     }
-                    Task { @UploadManagement in
-                        self.uploadBckgContext.saveIfNeeded()
-                        self.didEndTransfer(for: upload)
-                    }
-                }
-            } failure: { error in
-                if error.failedAuthentication {
-                    upload.setState(.uploadingFail, error: error, save: true)
-                } else {
-                    upload.setState(.uploadingError, error: error, save: true)
-                }
-                Task { @UploadManagement in
                     self.uploadBckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload)
                 }
@@ -80,102 +74,119 @@ extension UploadManager {
         }
     }
     
-    func copyImageWithID(_ imageID: Int64, for upload: Upload) {
+    func copyImageWithID(_ imageID: Int64, for upload: Upload) async {
         // Retrieve image data from the Piwigo server, storing in cache
-        ImageProvider().getInfos(forID: imageID, inCategoryId: upload.category) {
+        do {
+            // Check session
+            guard let userID = upload.user?.objectID,
+                  let lastUsed = upload.user?.lastUsed
+            else {
+                Task { @UploadManagerActor in
+                    upload.setState(.uploadingError, error: .missingUploadData, save: true)
+                    self.uploadBckgContext.saveIfNeeded()
+                    self.didEndTransfer(for: upload)
+                }
+                return
+            }
+            try await JSONManager.shared.checkSession(ofUserWithID: userID, lastConnected: lastUsed)
+            
+            // Get complete image data
+            try await ImageProvider().getInfos(forID: imageID, inCategoryId: upload.category)
+            
             // Update UploadQueue cell and button shown in root album (or default album)
             let uploadLocalID = upload.localIdentifier
-            DispatchQueue.main.async {
+            await MainActor.run {
                 let uploadInfo: [String : Any] = ["localIdentifier" : uploadLocalID,
                                                   "progressFraction" : 0.5]
                 NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
             }
 
             // Get image and album objects in cache
-            guard let imageSet = try? ImageProvider().getImages(inContext: self.uploadBckgContext, withIds: Set([imageID])),
-                  let imageData = imageSet.first, let albums = imageData.albums, let user = upload.user,
-                  let albumData = try? AlbumProvider().getAlbum(ofUser: user, withId: upload.category)
-            else {
-                upload.setState(.uploadingFail, error: .missingAsset, save: true)
-                Task { @UploadManagement in
+            Task { @UploadManagerActor in
+                guard let imageSet = try? ImageProvider().getImages(inContext: self.uploadBckgContext, withIds: Set([imageID])),
+                      let imageData = imageSet.first, let albums = imageData.albums, let user = upload.user,
+                      let albumData = try? AlbumProvider().getAlbum(ofUser: user, withId: upload.category)
+                else {
+                    upload.setState(.uploadingFail, error: .missingAsset, save: true)
                     self.uploadBckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload)
-                }
-                return
-            }
-            
-            // Append selected category ID to image category list
-            var categoryIds = Set(albums.compactMap({$0.pwgID}))
-            let categoryCount = categoryIds.count
-            categoryIds.insert(upload.category)
-            
-            // Check if the category already contains that image
-            if categoryIds.count == categoryCount {
-                // Update UploadQueue cell and button shown in root album (or default album)
-                let uploadLocalID = upload.localIdentifier
-                DispatchQueue.main.async {
-                    let uploadInfo: [String : Any] = ["localIdentifier" : uploadLocalID,
-                                                      "progressFraction" : 1.0]
-                    NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
-                }
-                
-                // Job done
-                upload.imageId = imageID
-                upload.setState(.moderated, save: true)
-                Task { @UploadManagement in
-                    self.uploadBckgContext.saveIfNeeded()
-                    self.didEndTransfer(for: upload)
-                }
-                return
-            }
-            
-            // Prepare parameters for copying the image/video to the selected category
-            let newImageCategories = categoryIds.compactMap({ String($0) }).joined(separator: ";")
-            let paramsDict: [String : Any] = ["image_id"            : imageData.pwgID,
-                                              "categories"          : newImageCategories,
-                                              "multiple_value_mode" : "replace"]
-            
-            // Send request to Piwigo server
-            JSONManager.shared.setInfos(with: paramsDict) { [self] in
-                // Update UploadQueue cell and button shown in root album (or default album)
-                let uploadLocalID = upload.localIdentifier
-                DispatchQueue.main.async {
-                    let uploadInfo: [String : Any] = ["localIdentifier" : uploadLocalID,
-                                                      "progressFraction" : 1.0]
-                    NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
+                    return
                 }
 
-                // Update cached data
-                Task { @UploadManagement in
-                    // Add image to album
-                    albumData.addToImages(imageData)
+                // Append selected category ID to image category list
+                var categoryIds = Set(albums.compactMap({$0.pwgID}))
+                let categoryCount = categoryIds.count
+                categoryIds.insert(upload.category)
+                
+                // Check if the category already contains that image
+                if categoryIds.count == categoryCount {
+                    // Update UploadQueue cell and button shown in root album (or default album)
+                    let uploadLocalID = upload.localIdentifier
+                    DispatchQueue.main.async {
+                        let uploadInfo: [String : Any] = ["localIdentifier" : uploadLocalID,
+                                                          "progressFraction" : 1.0]
+                        NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
+                    }
                     
-                    // Update albums
-                    try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: albumData)
-                    
-                    // Copy complete
+                    // Job done
                     upload.imageId = imageID
                     upload.setState(.moderated, save: true)
-                    uploadBckgContext.saveIfNeeded()
-                    didEndTransfer(for: upload)
-                }
-            } failure: { error in
-                upload.setState(.uploadingError, error: error, save: true)
-                Task { @UploadManagement in
                     self.uploadBckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload)
+                    return
+                }
+
+                // Prepare parameters for copying the image/video to the selected category
+                let newImageCategories = categoryIds.compactMap({ String($0) }).joined(separator: ";")
+                let paramsDict: [String : Any] = ["image_id"            : imageData.pwgID,
+                                                  "categories"          : newImageCategories,
+                                                  "multiple_value_mode" : "replace"]
+                
+                // Copy image
+                try await JSONManager.shared.setInfos(with: paramsDict)
+
+                // Update cache and UI
+                let uploadLocalID = upload.localIdentifier
+                let albumDataID = albumData.objectID
+                let imageDataID = imageData.objectID
+                await MainActor.run {
+                    // Update UploadQueue cell and button shown in root album (or default album)
+                    let uploadInfo: [String : Any] = ["localIdentifier" : uploadLocalID,
+                                                      "progressFraction" : 1.0]
+                    NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
+                    
+                    // Update cached data
+                    Task { @UploadManagerActor in
+                        // Update cache
+                        if let album = try? uploadBckgContext.existingObject(with: albumDataID) as? Album,
+                           let image = try? uploadBckgContext.existingObject(with: imageDataID) as? Image {
+
+                            // Add image to album
+                            album.addToImages(image)
+
+                            // Update albums
+                            try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: album)
+                        }
+                        
+                        // Copy complete
+                        upload.imageId = imageID
+                        upload.setState(.moderated, save: true)
+                        self.uploadBckgContext.saveIfNeeded()
+                        self.didEndTransfer(for: upload)
+                    }
                 }
             }
-        } failure: { error in
-            upload.setState(.uploadingError, error: error, save: true)
-            Task { @UploadManagement in
+        }
+        catch let error {
+            Task { @UploadManagerActor in
+                upload.setState(.uploadingError, error: error, save: true)
                 self.uploadBckgContext.saveIfNeeded()
                 self.didEndTransfer(for: upload)
             }
         }
     }
     
-    func transfertImage(for upload: Upload) {
+    func transfertImage(for upload: Upload) async {
         // Initialise or reset counter of progress bar in case we repeat the transfer
         initCounter(withID: upload.localIdentifier)
         
@@ -189,7 +200,7 @@ extension UploadManager {
             self.transferInBackground(for: upload)
         } else {
             // Transfer image
-            self.transferInForeground(for: upload)
+            await self.transferInForeground(for: upload)
         }
         
         // Do not prepare next image in background tasks (already scheduled)
@@ -210,7 +221,7 @@ extension UploadManager {
 
             // Prepare the next upload
             isPreparing = true
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 await prepare(upload)
             }
         }
@@ -218,7 +229,7 @@ extension UploadManager {
 
     
     // MARK: - Transfer in Foreground
-    func transferInForeground(for upload: Upload) {
+    func transferInForeground(for upload: Upload) async {
         // Get URL of file to upload
         /// This file will be deleted once the transfer is completed successfully
         let fileURL = getUploadFileURL(from: upload)
@@ -254,15 +265,31 @@ extension UploadManager {
         }
 
         // Prepare first chunk
-        JSONManager.shared.checkSession(ofUser: upload.user) {
-            // Set total number of bytes to upload
-            self.initCounter(withID: upload.localIdentifier, totalBytes: Int64(imageData.count))
-            // Start uploading
-            self.sendInForeground(chunk: 0, of: chunks, for: upload)
-        } failure: { error in
-            // Report error
-            upload.setState(.preparingFail, error: error, save: true)
+        guard let userID = upload.user?.objectID,
+              let lastUsed = upload.user?.lastUsed else {
+            upload.setState(.preparingFail, error: .missingUploadParameter, save: true)
             self.didEndTransfer(for: upload)
+            return
+        }
+        do {
+            // Check session
+            try await JSONManager.shared.checkSession(ofUserWithID: userID,
+                                                      lastConnected: lastUsed)
+
+            Task { @UploadManagerActor in
+                // Set total number of bytes to upload
+                self.initCounter(withID: upload.localIdentifier, totalBytes: Int64(imageData.count))
+                
+                // Start uploading
+                self.sendInForeground(chunk: 0, of: chunks, for: upload)
+            }
+        }
+        catch let error {
+            Task { @UploadManagerActor in
+                // Report error
+                upload.setState(.preparingFail, error: error, save: true)
+                self.didEndTransfer(for: upload)
+            }
         }
     }
 
@@ -395,13 +422,13 @@ extension UploadManager {
 
                 // Update upload request status
                 if let error = error {
-                    Task { @UploadManagement in
+                    Task { @UploadManagerActor in
                         if error.failedAuthentication {
                             upload.setState(.uploadingFail, error: error, save: true)
                         } else {
                             upload.setState(.uploadingError, error: error, save: true)
                         }
-                        Task { @UploadManagement in
+                        Task { @UploadManagerActor in
                             self.uploadBckgContext.saveIfNeeded()
                             self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
                         }
@@ -409,7 +436,7 @@ extension UploadManager {
                 }
                 else {
                     upload.setState(.uploadingError, error: .operationFailed, save: false)
-                    Task { @UploadManagement in
+                    Task { @UploadManagerActor in
                         self.uploadBckgContext.saveIfNeeded()
                         self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
                     }
@@ -419,7 +446,7 @@ extension UploadManager {
             catch {
                 UploadManager.logger.notice("Failed to retrieve Core Data object from task \(task.taskIdentifier, privacy: .public)")
                 // In foreground, consider next image
-                Task { @UploadManagement in
+                Task { @UploadManagerActor in
 //                    if #unavailable(iOS 26.0) {
                         self.findNextImageToUpload()
 //                    }
@@ -475,7 +502,7 @@ extension UploadManager {
                 // Update upload request status
                 UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | Task \(task.taskIdentifier, privacy: .public) returned an Empty JSON object")
                 upload.setState(.uploadingError, error: .emptyJSONobject, save: false)
-                Task { @UploadManagement in
+                Task { @UploadManagerActor in
                     self.uploadBckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
                 }
@@ -489,7 +516,7 @@ extension UploadManager {
                 let dataStr = String(decoding: data, as: UTF8.self)
                 UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | Task \(task.taskIdentifier, privacy: .public) returned the invalid JSON object: \(dataStr, privacy: .public)")
                 upload.setState(.uploadingError, error: .invalidJSONobject, save: false)
-                Task { @UploadManagement in
+                Task { @UploadManagerActor in
                     uploadBckgContext.saveIfNeeded()
                     didEndTransfer(for: upload, taskID: task.taskIdentifier)
                 }
@@ -503,7 +530,7 @@ extension UploadManager {
 
                 // Upload completed?
                 if chunk + 1 < chunks {
-                    Task { @UploadManagement in
+                    Task { @UploadManagerActor in
                         self.sendInForeground(chunk: chunk + 1, of: chunks, for: upload)
                     }
                     return
@@ -530,7 +557,7 @@ extension UploadManager {
                 // Update state of upload
                 upload.imageId = uploadJSON.data.image_id!
                 upload.setState(.uploaded, save: false)
-                Task { @UploadManagement in
+                Task { @UploadManagerActor in
                     uploadBckgContext.saveIfNeeded()
                     didEndTransfer(for: upload)
                 }
@@ -546,7 +573,7 @@ extension UploadManager {
                     // Data cannot be digested, image still ready for upload
                     upload.setState(.uploadingError, error: .wrongJSONobject, save: false)
                 }
-                Task { @UploadManagement in
+                Task { @UploadManagerActor in
                     uploadBckgContext.saveIfNeeded()
                     didEndTransfer(for: upload)
                 }
@@ -555,7 +582,7 @@ extension UploadManager {
         catch {
             UploadManager.logger.notice("Failed to retrieve Core Data object from task \(task.taskIdentifier, privacy: .public)")
             // In foreground, consider next image
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
 //                if #unavailable(iOS 26.0) {
                     findNextImageToUpload()
 //                }
@@ -890,7 +917,7 @@ extension UploadManager {
                     // In background task — stop here
                 } else {
                     // In foreground, consider next image
-                    Task { @UploadManagement in
+                    Task { @UploadManagerActor in
 //                        if #unavailable(iOS 26.0) {
                             self.findNextImageToUpload()
 //                        }
@@ -906,14 +933,14 @@ extension UploadManager {
                 } else {
                     upload.setState(.uploadingError, error: error, save: true)
                 }
-                Task { @UploadManagement in
+                Task { @UploadManagerActor in
                     self.uploadBckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
                 }
             }
             else {
                 upload.setState(.uploadingError, error: .operationFailed, save: false)
-                Task { @UploadManagement in
+                Task { @UploadManagerActor in
                     self.uploadBckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
                 }
@@ -967,7 +994,7 @@ extension UploadManager {
                 // In background task — stop here
             } else {
                 // In foreground, consider next image
-                Task { @UploadManagement in
+                Task { @UploadManagerActor in
 //                    if #unavailable(iOS 26.0) {
                         self.findNextImageToUpload()
 //                    }
@@ -986,7 +1013,7 @@ extension UploadManager {
             // Update upload request status
             UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | Task \(task.taskIdentifier, privacy: .public) returned an Empty JSON object")
             upload.setState(.uploadingError, error: .emptyJSONobject, save: false)
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 self.uploadBckgContext.saveIfNeeded()
                 self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
             }
@@ -998,7 +1025,7 @@ extension UploadManager {
             let dataStr = String(decoding: data, as: UTF8.self)
             UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | Task \(task.taskIdentifier, privacy: .public) returned the invalid JSON object: \(dataStr, privacy: .public)")
             upload.setState(.uploadingError, error: .invalidJSONobject, save: false)
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 self.uploadBckgContext.saveIfNeeded()
                 self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
             }
@@ -1044,7 +1071,7 @@ extension UploadManager {
                         let chunksToTreat = chunksToUpload.subtracting(activeChunks).subtracting(treatedChunks).sorted()
                         let chunksToResume = Set(chunksToTreat[0..<min(chunksToTreat.count, max(0, 4 - nberActiveTasks))])
                         let uploadID = upload.objectID
-                        Task { @UploadManagement in
+                        Task { @UploadManagerActor in
                             UploadManager.logger.notice("\(md5sum, privacy: .public) | \(chunksToResume) i.e. \(chunksToResume.count) chunk(s) to resume")
                             if chunksToResume.isEmpty == false,
                                let uploadToPass = try? self.uploadBckgContext.existingObject(with: uploadID) as? Upload {
@@ -1103,7 +1130,7 @@ extension UploadManager {
                 upload.setState(.finished, save: false)
             }
 
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 uploadBckgContext.saveIfNeeded()
                 didEndTransfer(for: upload)
             }
@@ -1135,7 +1162,7 @@ extension UploadManager {
                 UploadManager.logger.notice("\(md5sum, privacy: .public) | Wrong JSON object!")
                 upload.setState(.uploadingError, error: .wrongJSONobject, save: false)
             }
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 uploadBckgContext.saveIfNeeded()
                 didEndTransfer(for: upload, taskID: task.taskIdentifier)
             }

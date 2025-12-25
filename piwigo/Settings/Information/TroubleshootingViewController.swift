@@ -325,14 +325,14 @@ extension TroubleshootingViewController: UITableViewDelegate
         if title.isEmpty, text.isEmpty {
             return CGFloat(1)
         } else {
-            return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
+            return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
                                                             width: tableView.frame.size.width)
         }
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let (title, text) = getContentOfHeader(inSection: section)
-        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
+        return TableViewUtilities.viewOfHeader(withTitle: title, text: text)
     }
     
     

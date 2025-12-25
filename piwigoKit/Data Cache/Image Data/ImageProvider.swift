@@ -79,108 +79,54 @@ public final class ImageProvider {
      Fetches the image feed from the remote Piwigo server, and imports it into Core Data.
      */
     public func fetchImages(ofAlbumWithId albumId: Int32, withQuery query: String,
-                            sort: pwgImageSort, fromPage page:Int, perPage: Int,
-                            completion: @escaping (Set<Int64>, Int64, Bool) -> Void,
-                            failure: @escaping (PwgKitError) -> Void) {
+                            sort: pwgImageSort, fromPage page:Int, perPage: Int) async throws(PwgKitError) -> (Set<Int64>, Int64, Bool) {
         debugPrint("••> Fetch images of album \(albumId) at page \(page)…")
-        // Prepare parameters for collecting image data
-        var method = pwgCategoriesGetImages
-        var paramsDict: [String : Any] = [
-            "per_page"  : perPage,
-            "page"      : page,
-            "order"     : sort.param
-        ]
-        switch albumId {
-        case pwgSmartAlbum.search.rawValue:
-            method = pwgImagesSearch
-            paramsDict["query"] = "*" + query + "*"
 
-        case pwgSmartAlbum.visits.rawValue:
-            paramsDict["recursive"] = true
-            paramsDict["f_min_hit"] = 1
-            
-        case pwgSmartAlbum.best.rawValue:
-            paramsDict["recursive"] = true
-            paramsDict["f_min_rate"] = 1
-            
-        case pwgSmartAlbum.recent.rawValue:
-            let recentPeriod = CacheVars.shared.recentPeriodList[CacheVars.shared.recentPeriodIndex]
-            let maxPeriod = CacheVars.shared.recentPeriodList.last ?? 99
-            let nberDays = recentPeriod == 0 ? maxPeriod : recentPeriod
-            let daysAgo1 = Date(timeIntervalSinceNow: TimeInterval(-3600 * 24 * nberDays))
-            let daysAgo2 = Calendar.current.date(byAdding: .day, value: -nberDays, to: Date()) ?? daysAgo1
-            let dateAvailableString = DateUtilities.string(from: daysAgo2.timeIntervalSinceReferenceDate)
-            paramsDict["recursive"] = true
-            paramsDict["f_min_date_available"] = dateAvailableString
-            
-        case pwgSmartAlbum.favorites.rawValue:
-            method = pwgUsersFavoritesGetList
-            
-        case Int32.min...pwgSmartAlbum.tagged.rawValue:
-            method = pwgTagsGetImages
-            paramsDict["tag_id"] = pwgSmartAlbum.tagged.rawValue - albumId
-            
-        default:    // Standard Piwigo album
-            paramsDict["cat_id"] = albumId
-        }
-        
-        // Launch the HTTP(S) request
-        let JSONsession = JSONManager.shared
-        JSONsession.postRequest(withMethod: method, paramDict: paramsDict,
-                                jsonObjectClientExpectsToReceive: CategoriesGetImagesJSON.self,
-                                countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { result in
-            switch result {
-            case .success(let pwgData):
-                // Import image data into Core Data.
-                do {
-                    if [.rankAscending, .random].contains(sort) {
-                        let startRank = Int64(page * perPage)
-                        try self.importImages(pwgData.data, inAlbum: albumId,
-                                              sort: sort, fromRank: startRank)
-                    } else {
-                        try self.importImages(pwgData.data, inAlbum: albumId, sort: sort)
-                    }
-                    
-                    // Retrieve total number of images
-                    var totalCount = Int64.zero
-                    if albumId == pwgSmartAlbum.favorites.rawValue {
-                        totalCount = pwgData.paging?.count ?? Int64.zero
-                    } else {
-                        // Bug leading to server providing wrong total_count value
-                        // Discovered in Piwigo 13.5.0, appeared in 13.0.0, fixed in 13.6.0.
-                        // See https://github.com/Piwigo/Piwigo/issues/1871
-                        if NetworkVars.shared.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending ||
-                            NetworkVars.shared.pwgVersion.compare("13.5.0", options: .numeric) == .orderedDescending {
-                            totalCount = pwgData.paging?.totalCount?.int64Value ?? Int64.zero
-                        } else {
-                            totalCount = pwgData.paging?.count ?? Int64.zero
-                        }
-                    }
-                    
-                    // Retrieve IDs of fetched images
-                    let fetchedImageIds = Set(pwgData.data.compactMap({$0.id}))
-                    
-                    // Determine if the user has the right to download images
-                    var hasDownloadRight = false
-                    if pwgData.data.isEmpty == false,
-                       pwgData.data.firstIndex(where: { $0.downloadUrl == nil }) == nil {
-                        hasDownloadRight = true
-                    }
-                    completion(fetchedImageIds, totalCount, hasDownloadRight)
-                }
-                catch let error as PwgKitError {
-                    failure(error)
-                }
-                catch {
-                    failure(.otherError(innerError: error))
-                }
-                
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                failure(error)
+        // Fetch image data
+        let (paging, data) = try await JSONManager.shared.getImages(ofAlbumWithId: albumId, withQuery: query, sort: sort, fromPage: page, perPage: perPage)
+
+        // Import image data into Core Data.
+        do {
+            if [.rankAscending, .random].contains(sort) {
+                let startRank = Int64(page * perPage)
+                try self.importImages(data, inAlbum: albumId,
+                                      sort: sort, fromRank: startRank)
+            } else {
+                try self.importImages(data, inAlbum: albumId, sort: sort)
             }
+
+            // Retrieve total number of images
+            var totalCount = Int64.zero
+            if albumId == pwgSmartAlbum.favorites.rawValue {
+                totalCount = paging.count
+            } else {
+                // Bug leading to server providing wrong total_count value
+                // Discovered in Piwigo 13.5.0, appeared in 13.0.0, fixed in 13.6.0.
+                // See https://github.com/Piwigo/Piwigo/issues/1871
+                if NetworkVars.shared.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending ||
+                    NetworkVars.shared.pwgVersion.compare("13.5.0", options: .numeric) == .orderedDescending {
+                    totalCount = paging.totalCount?.int64Value ?? Int64.zero
+                } else {
+                    totalCount = paging.count
+                }
+            }
+
+            // Retrieve IDs of fetched images
+            let fetchedImageIds = Set(data.compactMap({$0.id}))
+
+            // Determine if the user has the right to download images
+            var hasDownloadRight = false
+            if data.isEmpty == false,
+               data.firstIndex(where: { $0.downloadUrl == nil }) == nil {
+                hasDownloadRight = true
+            }
+            return (fetchedImageIds, totalCount, hasDownloadRight)
+        }
+        catch let error as PwgKitError {
+            throw error
+        }
+        catch {
+            throw .otherError(innerError: error)
         }
     }
     
@@ -196,38 +142,21 @@ public final class ImageProvider {
     /**
      Retrieves the complete image feed from the remote Piwigo server, and imports it into Core Data.
      */
-    public func getInfos(forID imageId: Int64, inCategoryId albumId: Int32,
-                         completion: @escaping () -> Void,
-                         failure: @escaping (PwgKitError) -> Void) {
-        // Prepare parameters for retrieving image/video infos
-        let paramsDict: [String : Any] = ["image_id" : imageId]
-        
-        // Launch request
-        let JSONsession = JSONManager.shared
-        JSONsession.postRequest(withMethod: pwgImagesGetInfo, paramDict: paramsDict,
-                                jsonObjectClientExpectsToReceive: ImagesGetInfoJSON.self,
-                                countOfBytesClientExpectsToReceive: 50000) { result in
-            switch result {
-            case .success(let pwgData):
-                // Import the imageJSON into Core Data
-                // The provided sort option will not change the rankManual/rankRandom values.
-                do {
-                    try self.importImages([pwgData.data], inAlbum: albumId, sort: .albumDefault)
-                    completion()
-                }
-                catch let error as PwgKitError {
-                    failure(error)
-                }
-                catch {
-                    failure(.otherError(innerError: error))
-                }
+    @concurrent
+    public func getInfos(forID imageId: Int64, inCategoryId albumId: Int32) async throws(PwgKitError) {
+        // Retrieve image data
+        let pwgData = try await JSONManager.shared.getInfos(forID: imageId)
 
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                failure(error)
-            }
+        // Import the imageJSON into Core Data
+        do {
+            // The provided sort option will not change the rankManual/rankRandom values.
+            try self.importImages([pwgData], inAlbum: albumId, sort: .albumDefault)
+        }
+        catch let error as PwgKitError {
+            throw error
+        }
+        catch {
+            throw .otherError(innerError: error)
         }
     }
     
@@ -311,7 +240,7 @@ public final class ImageProvider {
         // Import tags which are not yet in cache
         let imageTags = imagesBatch.compactMap({$0.tags}).reduce([],+)
         let isAdmin = [pwgUserStatus.admin.rawValue, pwgUserStatus.webmaster.rawValue].contains(user.status)
-        let _ = try TagProvider().importOneBatch(imageTags, asAdmin: isAdmin, tagIDs: Set<Int32>())
+        _ = try TagProvider().importOneBatch(imageTags, asAdmin: isAdmin, tagIDs: Set<Int32>())
 
         // Get favorite album if possible (will not prevent import)
         let favAlbum = try AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue)

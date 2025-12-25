@@ -1,5 +1,5 @@
 //
-//  NetworkVars.shared.swift
+//  NetworkVars.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 24/05/2021.
@@ -12,7 +12,7 @@ import SystemConfiguration
 
 // Mark NetworkVars as Sendable since Apple documents UserDefaults as thread-safe
 // and pwgUserStatus is Sendable
-public class NetworkVars: NSObject, @unchecked Sendable {
+public class NetworkVars: @unchecked Sendable {
     
     // Singleton
     public static let shared = NetworkVars()

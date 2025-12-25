@@ -220,30 +220,26 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                                           "file" : fileName,
                                           "single_value_mode" : "replace"]
         // Launch request
-        let JSONsession = JSONManager.shared
-        JSONsession.postRequest(withMethod: pwgImagesSetInfo, paramDict: paramsDict,
-                                jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { result in
-            switch result {
-            case .success:
-                // Filename successfully changed
-                DispatchQueue.main.async {
+        Task {
+            do {
+                // Set image properties
+                try await JSONManager.shared.setInfos(with: paramsDict)
+
+                // Update cache and UI
+                await MainActor.run {
                     topViewController?.updateHUDwithSuccess { [self] in
                         topViewController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                             // Adopt new original filename
                             imageFile.text = fileName
-                            
+
                             // Update parent image view
                             delegate?.didRenameFileOfImage(withId: imageID, andFilename: fileName)
                         }
                     }
                 }
-            
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                DispatchQueue.main.async {
+            }
+            catch let error as PwgKitError {
+                await MainActor.run {
                     topViewController?.hideHUD {
                         topViewController?.dismissPiwigoError(
                             withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),

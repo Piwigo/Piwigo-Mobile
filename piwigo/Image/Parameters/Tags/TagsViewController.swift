@@ -126,16 +126,18 @@ class TagsViewController: UITableViewController {
         
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        JSONManager.shared.checkSession(ofUser: user) {
-            TagProvider().fetchTags(asAdmin: self.user.hasAdminRights) { [self] error in
-                guard let error = error else { return }     // Done if no error
-                DispatchQueue.main.async { [self] in
-                    didFetchTagsWithError(error)
-                }
+        Task.detached {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
+                                                          lastConnected: self.user.lastUsed)
+                // Fetch tag data
+                try await TagProvider().fetchTags(asAdmin: self.user.hasAdminRights)
             }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
-                didFetchTagsWithError(error)
+            catch let error as PwgKitError {
+                await MainActor.run { [self] in
+                    self.didFetchTagsWithError(error)
+                }
             }
         }
         
@@ -269,13 +271,13 @@ class TagsViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let title = getContentOfHeader(inSection: section)
-        return TableViewUtilities.shared.heightOfHeader(withTitle: title,
+        return TableViewUtilities.heightOfHeader(withTitle: title,
                                                         width: tableView.frame.size.width)
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let title = getContentOfHeader(inSection: section)
-        return TableViewUtilities.shared.viewOfHeader(withTitle: title)
+        return TableViewUtilities.viewOfHeader(withTitle: title)
     }
     
     

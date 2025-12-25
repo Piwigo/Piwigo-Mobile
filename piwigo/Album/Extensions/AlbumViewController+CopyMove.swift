@@ -70,7 +70,7 @@ extension AlbumViewController
 
 
 // MARK: - SelectCategoryDelegate Methods
-extension AlbumViewController: SelectCategoryDelegate
+extension AlbumViewController: @MainActor SelectCategoryDelegate
 {
     func didSelectCategory(withId category: Int32) {
         if category == Int32.min {
@@ -83,7 +83,7 @@ extension AlbumViewController: SelectCategoryDelegate
 
 
 // MARK: - PushAlbumCollectionViewCellDelegate
-extension AlbumViewController: PushAlbumCollectionViewCellDelegate
+extension AlbumViewController: @MainActor PushAlbumCollectionViewCellDelegate
 {
     func pushAlbumView(_ viewController: UIViewController?,
                        completion: @escaping (Bool) -> Void) {

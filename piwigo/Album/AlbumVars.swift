@@ -1,5 +1,5 @@
 //
-//  AlbumVars.shared.swift
+//  AlbumVars.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 25/05/2021.
@@ -10,13 +10,22 @@ import Foundation
 import UIKit
 import piwigoKit
 
-class AlbumVars: NSObject {
+// Mark AlbumVars as Sendable since Apple documents UserDefaults as thread-safe
+// and pwgImageSize, pwgImageSort, pwgImageGroup are Sendable
+final class AlbumVars: @unchecked Sendable {
         
     // Singleton
     static let shared = AlbumVars()
     
     // Remove deprecated stored objects if needed
-    override init() {
+    init() {
+        // Not yet initialised data?
+        if UserDefaults.standard.object(forKey: "defaultThumbnailSize") == nil {
+            DispatchQueue.main.async {
+                let rawValue = AlbumUtilities.optimumThumbnailSizeForDevice().rawValue
+                UserDefaults.standard.set(rawValue, forKey: "defaultThumbnailSize")
+            }
+        }
         // Deprecated data?
         if let _ = UserDefaults.standard.object(forKey: "recentPeriod") {
             UserDefaults.standard.removeObject(forKey: "recentPeriod")
@@ -83,7 +92,7 @@ class AlbumVars: NSObject {
     var displayImageTitles: Bool
 
     /// - Image thumbnail size determined from the available image sizes
-    @UserDefault("defaultThumbnailSize", defaultValue: AlbumUtilities.optimumThumbnailSizeForDevice().rawValue)
+    @UserDefault("defaultThumbnailSize", defaultValue: pwgImageSize.thumb.rawValue)
     var defaultThumbnailSize: Int16
 
     /// - Number of images per row in portrait mode

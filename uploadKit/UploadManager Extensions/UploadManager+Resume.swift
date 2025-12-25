@@ -47,7 +47,7 @@ extension UploadManager
         // Get active upload tasks
         bckgSession.getAllTasks { uploadTasks in
             // Loop over the tasks
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 for task in uploadTasks {
                     switch task.state {
                     case .running:
@@ -207,7 +207,7 @@ extension UploadManager
                 PHAssetChangeRequest.deleteAssets(assetsToDelete as (any NSFastEnumeration))
             }
             completionHandler: { success, error in
-                Task { @UploadManagement in
+                Task { @UploadManagerActor in
                     if success {
                         self.deleteUploadsInRightQueue(uploadIDs)
                     } else {

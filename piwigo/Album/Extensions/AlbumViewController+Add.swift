@@ -111,16 +111,29 @@ extension AlbumViewController
         // Display HUD during the update
         showHUD(withTitle: NSLocalizedString("createNewAlbumHUD_label", comment: "Creating Album…"))
 
-        // Create album
-        JSONManager.shared.checkSession(ofUser: user) { [self] in
-            AlbumUtilities.create(withName: albumName, description: albumComment,
-                                  status: "public", inAlbumWithId: albumData.pwgID) { [self] newCatId in
+        // Send request to Piwigo server
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                
+                // Create album
+                let newCatId = try await JSONManager.shared.create(withName: albumName, description: albumComment,
+                                                                   status: "public", inAlbumWithId: albumData.pwgID)
+                
                 // Album successfully created ▶ Add new album to cache and update parent albums
                 self.albumProvider.addAlbum(newCatId, withName: albumName, comment: albumComment,
                                             inAlbumWithObjectID: albumData.objectID,
                                             forUserWithObjectID: user.objectID)
-                // Hide HUD
-                DispatchQueue.main.async { [self] in
+                
+                // Add it to list of recently used albums
+                let userInfo = ["categoryId" : NSNumber.init(value: newCatId)]
+                NotificationCenter.default.post(name: Notification.Name.pwgAddRecentAlbum,
+                                                object: nil, userInfo: userInfo)
+
+                // Update UI
+                await MainActor.run {
+                    // Hide HUD
                     updateHUDwithSuccess() { [self] in
                         hideHUD(afterDelay: pwgDelayHUD) { [self] in
                             // Reset buttons
@@ -134,13 +147,8 @@ extension AlbumViewController
                         }
                     }
                 }
-            } failure: { [self] error in
-                DispatchQueue.main.async { [self] in
-                    self.addCategoryError(error)
-                }
             }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
+            catch let error as PwgKitError {
                 self.addCategoryError(error)
             }
         }

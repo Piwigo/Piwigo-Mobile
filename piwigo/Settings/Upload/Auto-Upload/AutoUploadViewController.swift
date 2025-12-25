@@ -115,7 +115,7 @@ class AutoUploadViewController: UIViewController {
            visibleVC is TagsViewController { return }
 
         // Restart UploadManager activities
-        Task { @UploadManagement in
+        Task { @UploadManagerActor in
             UploadVars.shared.isPaused = false
 //            if #unavailable(iOS 26.0) {
                 UploadManager.shared.findNextImageToUpload()

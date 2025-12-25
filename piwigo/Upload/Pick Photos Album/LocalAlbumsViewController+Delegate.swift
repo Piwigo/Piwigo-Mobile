@@ -18,7 +18,7 @@ extension LocalAlbumsViewController: UITableViewDelegate {
         // Get title of section
         let albumType = albumTypeFor(section: section)
         let title = LocalAlbumsProvider.shared.titleForFooterInSectionOf(albumType: albumType)
-        return TableViewUtilities.shared.heightOfHeader(withTitle: title,
+        return TableViewUtilities.heightOfHeader(withTitle: title,
                                                         width: tableView.frame.size.width)
     }
     
@@ -26,7 +26,7 @@ extension LocalAlbumsViewController: UITableViewDelegate {
         // Get title of section
         let albumType = albumTypeFor(section: section)
         let title = LocalAlbumsProvider.shared.titleForHeaderInSectionOf(albumType: albumType)
-        return TableViewUtilities.shared.viewOfHeader(withTitle: title)
+        return TableViewUtilities.viewOfHeader(withTitle: title)
     }
     
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
@@ -110,7 +110,7 @@ extension LocalAlbumsViewController: UITableViewDelegate {
         // Get footer of section
         let albumType = albumTypeFor(section: section)
         let footer = LocalAlbumsProvider.shared.titleForFooterInSectionOf(albumType: albumType)
-        return TableViewUtilities.shared.heightOfFooter(withText: footer,
+        return TableViewUtilities.heightOfFooter(withText: footer,
                                                         width: tableView.frame.width)
     }
 
@@ -118,6 +118,6 @@ extension LocalAlbumsViewController: UITableViewDelegate {
         // Get footer of section
         let albumType = albumTypeFor(section: section)
         let footer = LocalAlbumsProvider.shared.titleForFooterInSectionOf(albumType: albumType)
-        return TableViewUtilities.shared.viewOfFooter(withText: footer, alignment: .center)
+        return TableViewUtilities.viewOfFooter(withText: footer, alignment: .center)
     }
 }

@@ -127,11 +127,14 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
         else { return nil }
 
         // Determine number of orphans if album deleted
-        DispatchQueue.global(qos: .userInteractive).async { [self] in
+        Task { [self] in
             self.nbOrphans = Int64.min
-            AlbumUtilities.calcOrphans(albumData.pwgID) { [self] nbOrphans in
-                self.nbOrphans = nbOrphans
-            } failure: { _ in }
+            do {
+                self.nbOrphans = try await JSONManager.shared.calcOrphans(albumData.pwgID)
+            }
+            catch {
+                debugPrint("Could not retrieve number of orphans: \(error)")
+            }
         }
 
         // Symbol configuration

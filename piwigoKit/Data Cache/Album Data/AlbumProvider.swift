@@ -65,122 +65,81 @@ public final class AlbumProvider {
     /**
      Fetches the album feed from the remote Piwigo server, and imports it into Core Data.
      */
+    @concurrent
     public func fetchAlbums(forUser user: User, inParentWithId parentId: Int32, recursively: Bool = false,
-                            thumbnailSize: pwgImageSize, completion: @escaping (PwgKitError?) -> Void) {
+                            thumbnailSize: pwgImageSize) async throws(PwgKitError) {
         // Smart album requested?
         if parentId < 0 { fatalError("••> Cannot fetch data of smart album!") }
         debugPrint("••> Fetch albums in parent with ID: \(parentId)")
         
-        // Prepare parameters for collecting recursively album data
-        let paramsDict: [String : Any] = [
-            "cat_id"            : parentId,
-            "recursive"         : recursively,
-            "faked_by_community": NetworkVars.shared.usesCommunityPluginV29 ? "false" : "true",
-            "thumbnail_size"    : thumbnailSize.argument
-        ]
-        
         // Launch the HTTP(S) request
-        let JSONsession = JSONManager.shared
-        JSONsession.postRequest(withMethod: pwgCategoriesGetList, paramDict: paramsDict,
-                                jsonObjectClientExpectsToReceive: CategoriesGetListJSON.self,
-                                countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { result in
-            switch result {
-            case .success(let pwgData):
-                // Import album data into Core Data.
-                do {
-                    // Update albums if Community installed (not needed for admins)
-                    if user.hasAdminRights == false,
-                       NetworkVars.shared.usesCommunityPluginV29 {
-                        // Non-admin user and Community installed —> collect Community albums
-                        self.fetchCommunityAlbums(inParentWithId: parentId, recursively: recursively,
-                                                  albums: pwgData.data, completion: completion)
-                        return
-                    }
-                    
-                    // Import the albumJSON into Core Data.
-                    try self.importAlbums(pwgData.data, recursively: recursively, inParent: parentId)
-                    completion(nil)
-                }
-                catch let error as PwgKitError {
-                    completion(error)
-                }
-                catch {
-                    completion(.otherError(innerError: error))
-                }
-                
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                completion(error)
+        let pwgData = try await JSONManager.shared.getAlbums(inParentWithId: parentId,
+                                                             recursively: recursively,
+                                                             thumbnailSize: thumbnailSize)
+        // Import album data into Core Data.
+        do {
+            // Update albums if Community installed (not needed for admins)
+            if user.hasAdminRights == false,
+               NetworkVars.shared.usesCommunityPluginV29 {
+                // Non-admin user and Community installed —> collect Community albums
+                try await self.fetchCommunityAlbums(inParentWithId: parentId, recursively: recursively,
+                                                    albums: pwgData)
+                return
             }
+
+            // Import the albumJSON into Core Data.
+            try self.importAlbums(pwgData, recursively: recursively, inParent: parentId)
+        }
+        catch let error as PwgKitError {
+            throw error
+        }
+        catch {
+            throw .otherError(innerError: error)
         }
     }
     
     private func fetchCommunityAlbums(inParentWithId parentId: Int32, recursively: Bool = false,
-                                      albums: [CategoryData], completion: @escaping (PwgKitError?) -> Void) {
+                                      albums: [CategoryData]) async throws(PwgKitError) {
         debugPrint("••> Fetch Community albums in parent with ID: \(parentId)")
         // Prepare parameters
         let paramsDict: [String : Any] = ["cat_id"    : parentId,
                                           "recursive" : recursively]
         
-        let JSONsession = JSONManager.shared
-        JSONsession.postRequest(withMethod: kCommunityCategoriesGetList, paramDict: paramsDict,
-                                jsonObjectClientExpectsToReceive: CommunityCategoriesGetListJSON.self,
-                                countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { result in
-            switch result {
-            case .success(let pwgData):
-                // Import Community albums into Core Data.
-                do {
-                    // No Community albums?
-                    if pwgData.data.isEmpty == true {
-                        try self.importAlbums(albums, recursively: recursively, inParent: parentId)
-                        completion(nil)
-                        return
-                    }
-                    
-                    // Update album list
-                    var combinedAlbums = albums
-                    for comAlbum in pwgData.data {
-                        if let index = combinedAlbums.firstIndex(where: { $0.id == comAlbum.id }) {
-                            combinedAlbums[index].hasUploadRights = true
-                        } else {
-                            var newAlbum = comAlbum
-                            newAlbum.hasUploadRights = true
-                            combinedAlbums.append(newAlbum)
-                        }
-                    }
-                    try self.importAlbums(combinedAlbums, recursively: recursively, inParent: parentId)
-                    completion(nil)
+        let pwgData = try await JSONManager.shared.postRequest(withMethod: kCommunityCategoriesGetList, paramDict: paramsDict,
+                                                               jsonObjectClientExpectsToReceive: CommunityCategoriesGetListJSON.self,
+                                                               countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown)
+
+        // Import Community albums into Core Data.
+        do {
+            // No Community albums?
+            if pwgData.data.isEmpty == true {
+                try self.importAlbums(albums, recursively: recursively, inParent: parentId)
+                return
+            }
+
+            // Update album list
+            var combinedAlbums = albums
+            for comAlbum in pwgData.data {
+                if let index = combinedAlbums.firstIndex(where: { $0.id == comAlbum.id }) {
+                    combinedAlbums[index].hasUploadRights = true
+                } else {
+                    var newAlbum = comAlbum
+                    newAlbum.hasUploadRights = true
+                    combinedAlbums.append(newAlbum)
                 }
-                catch {
-                    // Data cannot be digested
-                    do {
-                        try self.importAlbums(albums, recursively: recursively, inParent: parentId)
-                        completion(nil)
-                    }
-                    catch let error as PwgKitError {
-                        completion(error)
-                    }
-                    catch {
-                        completion(.otherError(innerError: error))
-                    }
-                }
-                
-            case .failure:
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                do {
-                    try self.importAlbums(albums, recursively: recursively, inParent: parentId)
-                    completion(nil)
-                }
-                catch let error as PwgKitError {
-                    completion(error)
-                }
-                catch {
-                    completion(.otherError(innerError: error))
-                }
+            }
+            try self.importAlbums(combinedAlbums, recursively: recursively, inParent: parentId)
+        }
+        catch {
+            // Data cannot be digested
+            do {
+                try self.importAlbums(albums, recursively: recursively, inParent: parentId)
+            }
+            catch let error as PwgKitError {
+                throw error
+            }
+            catch {
+                throw .otherError(innerError: error)
             }
         }
     }

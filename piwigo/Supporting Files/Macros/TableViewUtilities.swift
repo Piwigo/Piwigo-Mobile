@@ -8,19 +8,16 @@
 
 import UIKit
 
-class TableViewUtilities: NSObject {
+final class TableViewUtilities {
     
-    // Singleton
-    static let shared = TableViewUtilities()
-
     // Constants
-    let margin: CGFloat = 20.0
+    static let margin: CGFloat = 20.0
 
     
     // MARK: - Title & Subtitle
     // NB: For some reason, the UIBarAppearance defined in UINavigationBar+AppTools is not applied.
     @available(iOS 26.0, *)
-    func largeAttributedSubTitleForAlbum(_ subtitle: String?) -> AttributedString {
+    static func largeAttributedSubTitleForAlbum(_ subtitle: String?) -> AttributedString {
         guard let subtitle, subtitle.isEmpty == false else { return AttributedString("") }
 
         // Get title
@@ -33,7 +30,8 @@ class TableViewUtilities: NSObject {
     
     // MARK: - Headers
     // Returns the height of a header containing a title and/or a subtitle
-    func heightOfHeader(withTitle title: String, text: String = "",
+    @MainActor
+    static func heightOfHeader(withTitle title: String, text: String = "",
                         width: CGFloat = CGFloat.zero) -> CGFloat {
         // Initialise drawing context
         let context = NSStringDrawingContext()
@@ -43,8 +41,8 @@ class TableViewUtilities: NSObject {
         /// The minimum width of a screen is of 320 pixels.
         /// See https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/adaptivity-and-layout/
         var height: CGFloat = CGFloat.zero
-        let minWidth: CGFloat = 320.0 - 2 * (margin + TableViewUtilities.rowCornerRadius)
-        let maxWidth = CGFloat(fmax(width - 2.0 * (margin + TableViewUtilities.rowCornerRadius), minWidth))
+        let minWidth: CGFloat = 320.0 - 2 * (margin + rowCornerRadius)
+        let maxWidth = CGFloat(fmax(width - 2.0 * (margin + rowCornerRadius), minWidth))
         let widthConstraint: CGSize = CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
 
         // Add title height
@@ -64,7 +62,8 @@ class TableViewUtilities: NSObject {
         return CGFloat(fmax(TableViewUtilities.rowHeight, ceil(height)))
     }
     
-    func viewOfHeader(withTitle title: String, text: String = "") -> UIView? {
+    @MainActor
+    static func viewOfHeader(withTitle title: String, text: String = "") -> UIView? {
         // Check header content
         if title.isEmpty, text.isEmpty { return nil }
 
@@ -133,7 +132,7 @@ class TableViewUtilities: NSObject {
         }
     }()
     
-    func rowHeight(forContentSizeCategory contentSizeCategory: UIContentSizeCategory) -> CGFloat {
+    static func rowHeight(forContentSizeCategory contentSizeCategory: UIContentSizeCategory) -> CGFloat {
         let rowHeight = TableViewUtilities.rowHeight
         switch contentSizeCategory {
         case .extraSmall:
@@ -181,7 +180,8 @@ class TableViewUtilities: NSObject {
     
     // MARK: - Footers
     // Returns the height of a footer containing some text
-    func heightOfFooter(withText text: String,
+    @MainActor
+    static func heightOfFooter(withText text: String,
                         width: CGFloat = CGFloat.zero) -> CGFloat {
 
         // Check header content
@@ -194,8 +194,8 @@ class TableViewUtilities: NSObject {
         // Initialise variables and width constraint
         /// The minimum width of a screen is of 320 pixels.
         /// See https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/adaptivity-and-layout/
-        let minWidth: CGFloat = 320.0 - 2 * (margin + TableViewUtilities.rowCornerRadius)
-        let maxWidth = CGFloat(fmax(width - 2.0 * (margin + TableViewUtilities.rowCornerRadius), minWidth))
+        let minWidth: CGFloat = 320.0 - 2 * (margin + rowCornerRadius)
+        let maxWidth = CGFloat(fmax(width - 2.0 * (margin + rowCornerRadius), minWidth))
         let widthConstraint: CGSize = CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
 
         // Add title height
@@ -206,7 +206,8 @@ class TableViewUtilities: NSObject {
         return CGFloat(fmax(TableViewUtilities.rowHeight, ceil(height) + 10.0))
     }
     
-    func viewOfFooter(withText text: String = "", alignment: NSTextAlignment = .left) -> UIView? {
+    @MainActor
+    static func viewOfFooter(withText text: String = "", alignment: NSTextAlignment = .left) -> UIView? {
         // Check header content
         if text.isEmpty { return nil }
 

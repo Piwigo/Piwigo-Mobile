@@ -304,7 +304,7 @@ extension UploadManager
                     }
                 }
                 
-                Task { @UploadManagement in
+                Task { @UploadManagerActor in
                     upload.fileName = utf8mb3Filename
                     await self.dispatchAsset(originalAsset, atURL:fileURL, for: upload)
                 }

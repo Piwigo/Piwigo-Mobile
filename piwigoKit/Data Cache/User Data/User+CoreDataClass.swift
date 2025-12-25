@@ -118,12 +118,4 @@ extension User {
         }
         return true
     }
-    
-    public func setLastUsedToNow() {
-        let dateOfLogin = Date.timeIntervalSinceReferenceDate
-        self.lastUsed = dateOfLogin
-        if let server = self.server {
-            server.lastUsed = dateOfLogin
-        }
-    }
 }

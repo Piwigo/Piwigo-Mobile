@@ -31,11 +31,11 @@ extension UploadSessionsDelegate: URLSessionDataDelegate {
         let sessionIdentifier = (dataTask.taskDescription ?? "").components(separatedBy: " ").first
         switch sessionIdentifier {
         case uploadSessionIdentifier:
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 UploadManager.shared.didCompleteUploadTask(dataTask, withData: data)
             }
         case uploadBckgSessionIdentifier:
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 UploadManager.shared.didCompleteBckgUploadTask(dataTask, withData: data)
             }
         default:

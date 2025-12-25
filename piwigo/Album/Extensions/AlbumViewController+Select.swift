@@ -351,14 +351,21 @@ extension AlbumViewController
                           inMode: imageIDsToRetrieve.count > 1 ? .determinate : .indeterminate)
             
             // Retrieve image data if needed
-            JSONManager.shared.checkSession(ofUser: user) {  [self] in
-                DispatchQueue.main.async { [self] in
-                    self.retrieveData(ofImagesWithID: imageIDsToRetrieve, among: imageIDs,
-                                      beforeAction: action, contextually: contextually)
-                }
-            } failure: { [self] error in
-                DispatchQueue.main.async { [self] in
-                    retrieveImageDataError(error, contextually: contextually)
+            Task.detached {
+                do {
+                    // Check session
+                    try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
+                                                              lastConnected: self.user.lastUsed)
+                    
+                    // Retrieve image data
+                    await MainActor.run { [self] in
+                        self.retrieveData(ofImagesWithID: imageIDsToRetrieve, among: imageIDs,
+                                          beforeAction: action, contextually: contextually)
+                    }
+                } catch let error as PwgKitError {
+                    await MainActor.run { [self] in
+                        self.retrieveImageDataError(error, contextually: contextually)
+                    }
                 }
             }
         }
@@ -382,22 +389,28 @@ extension AlbumViewController
         }
         
         // Image data are not complete when retrieved using pwg.categories.getImages
-        imageProvider.getInfos(forID: imageID, inCategoryId: self.albumData.pwgID) { [self] in
-            DispatchQueue.main.async { [self] in
-                // Image info retrieved
-                remainingIDs.remove(imageID)
+        Task {
+            do {
+                // Get complete image data
+                try await imageProvider.getInfos(forID: imageID, inCategoryId: self.albumData.pwgID)
                 
-                // Update HUD
-                let progress: Float = Float(1) - Float(remainingIDs.count) / Float(imageIDs.count)
-                self.navigationController?.updateHUD(withProgress: progress)
-
-                // Next image
-                retrieveData(ofImagesWithID: remainingIDs, among: imageIDs,
-                             beforeAction: action, contextually: contextually)
-            }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
-                retrieveImageDataError(error, contextually: contextually)
+                // Proceed with next image
+                await MainActor.run { [self] in
+                    // Image info retrieved
+                    remainingIDs.remove(imageID)
+                    
+                    // Update HUD
+                    let progress: Float = Float(1) - Float(remainingIDs.count) / Float(imageIDs.count)
+                    self.navigationController?.updateHUD(withProgress: progress)
+                    
+                    // Next image
+                    retrieveData(ofImagesWithID: remainingIDs, among: imageIDs,
+                                 beforeAction: action, contextually: contextually)
+                }
+            } catch let error as PwgKitError {
+                await MainActor.run { [self] in
+                    retrieveImageDataError(error, contextually: contextually)
+                }
             }
         }
     }

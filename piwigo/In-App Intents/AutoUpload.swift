@@ -72,7 +72,7 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
             UploadVars.shared.autoUploadAlbumId = ""               // Unknown source Photos album
             
             // Delete remaining upload requests
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 UploadManager.shared.disableAutoUpload()
             }
             
@@ -87,7 +87,7 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
             UploadVars.shared.autoUploadCategoryId = Int32.min    // Unknown destination Piwigo album
             
             // Delete remaining upload requests
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 UploadManager.shared.disableAutoUpload()
             }
             
@@ -104,7 +104,7 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
             let count = try await UploadProvider().importUploads(from: uploadRequestsToAppend)
 
             // Launch upload operations in background thread
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 launchUploadOperations()
             }
             
@@ -124,7 +124,7 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
         /// - considers only auto-upload requests
         /// - called by an extension (don't try to append auto-upload requests again)
         let initOperation = BlockOperation {
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 await UploadManager.shared.initialiseBckgTask(autoUploadOnly: true,
                                                               triggeredByExtension: true)
             }
@@ -134,7 +134,7 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
         // Check and resume transfers
         let resumeOperation = BlockOperation {
             // Transfer image
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 await UploadManager.shared.resumeTransfers()
             }
         }
@@ -144,7 +144,7 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
         // Prepares one image maximum due to the 10s limit
         let uploadOperation = BlockOperation {
             // Prepare image
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 await UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
             }
         }

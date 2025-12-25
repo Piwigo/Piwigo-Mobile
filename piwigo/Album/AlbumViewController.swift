@@ -789,25 +789,30 @@ class AlbumViewController: UIViewController
         }
         
         // Fetch album data and then image data
-        JSONManager.shared.checkSession(ofUser: self.user) { [self] in
-            DispatchQueue.main.async { [self] in
-                self.fetchAlbumsAndImages()
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
+                                                          lastConnected: self.user.lastUsed)
+                // Fetch album and image data
+                await self.fetchAlbumsAndImages()
             }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
-                // End refreshing if needed
-                self.collectionView?.refreshControl?.endRefreshing()
-                
-                // Session logout required?
-                if error.requiresLogout {
-                    ClearCache.closeSessionWithPwgError(from: self, error: error)
-                    return
-                }
-
-                // Report error
-                let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
-                self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {
-                    self.navigationController?.hideHUD { }
+            catch let error as PwgKitError {
+                await MainActor.run {
+                    // End refreshing if needed
+                    self.collectionView?.refreshControl?.endRefreshing()
+                    
+                    // Session logout required?
+                    if error.requiresLogout {
+                        ClearCache.closeSessionWithPwgError(from: self, error: error)
+                        return
+                    }
+                    
+                    // Report error
+                    let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
+                    self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {
+                        self.navigationController?.hideHUD { }
+                    }
                 }
             }
         }
@@ -832,7 +837,7 @@ class AlbumViewController: UIViewController
         self.startFetchingAlbumAndImages(withHUD: true)
     }
     
-    @objc func fetchCompleted() {
+    @objc func fetchCompleted() async {
         DispatchQueue.main.async { [self] in
             // Hide HUD if needed
             self.navigationController?.hideHUD { }
@@ -856,7 +861,7 @@ class AlbumViewController: UIViewController
 
         // Resume upload operations in background queue
         // and update badge and upload button of album navigator
-        Task { @UploadManagement in
+        Task { @UploadManagerActor in
             UploadVars.shared.isPaused = false
             UploadVars.shared.isExecutingBGUploadTask = false
 //            if #unavailable(iOS 26.0) {
@@ -875,9 +880,7 @@ class AlbumViewController: UIViewController
                 // Remember that the app is fetching favorites
                 AlbumVars.shared.isFetchingAlbumData.insert(pwgSmartAlbum.favorites.rawValue)
                 // Fetch favorites in the background
-                DispatchQueue.global(qos: .background).async { [self] in
-                    self.loadFavoritesInBckg()
-                }
+                await self.loadFavoritesInBckg()
             }
         } catch { }
     }
@@ -1221,7 +1224,7 @@ class AlbumViewController: UIViewController
 
 
 // MARK: - MFMailComposeViewControllerDelegate
-extension AlbumViewController: MFMailComposeViewControllerDelegate {
+extension AlbumViewController: @MainActor MFMailComposeViewControllerDelegate {
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: (any Error)?) {
         // Check the result or perform other tasks.
 

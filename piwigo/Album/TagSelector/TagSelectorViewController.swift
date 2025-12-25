@@ -103,16 +103,18 @@ class TagSelectorViewController: UIViewController {
 
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        JSONManager.shared.checkSession(ofUser: user) { [self] in
-            TagProvider().fetchTags(asAdmin: false) { [self] error in
-                DispatchQueue.main.async { [self] in
-                    guard let error = error else { return }
-                    didFetchTagsWithError(error)
-                }
+        Task.detached {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
+                                                          lastConnected: self.user.lastUsed)
+                // Fetch tag data
+                try await TagProvider().fetchTags(asAdmin: false)
             }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
-                didFetchTagsWithError(error)
+            catch let error as PwgKitError {
+                await MainActor.run { [self] in
+                    self.didFetchTagsWithError(error)
+                }
             }
         }
         
@@ -261,14 +263,14 @@ extension TagSelectorViewController: UITableViewDelegate
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         let footer = getContentOfFooter()
-        let height = TableViewUtilities.shared.heightOfFooter(withText: footer)
+        let height = TableViewUtilities.heightOfFooter(withText: footer)
         return CGFloat(fmax(44.0, height))
     }
     
     // Return the footer view
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let text = getContentOfFooter()
-        return TableViewUtilities.shared.viewOfFooter(withText: text, alignment: .center)
+        return TableViewUtilities.viewOfFooter(withText: text, alignment: .center)
     }
     
     // Display images tagged with the tag selected a row of the table

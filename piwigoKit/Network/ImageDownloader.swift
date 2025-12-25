@@ -61,55 +61,53 @@ public final class ImageDownloader {
         }
         
         // Does this download instance already exist?
-        guard let download = PwgSessionDelegate.activeDownloads[imageURL]
+        if let download = ImageDownloader.activeDownloads[imageURL] {
+            // Update handlers
+            download.progressHandler = progress
+            
+            // What should we do with this download instance?
+            if let task = download.task {
+                switch task.state {
+                case .running:
+                    if let progressHandler = download.progressHandler {
+                        progressHandler(download.progress)
+                    }
+                case .suspended:
+                    #if DEBUG
+                    ImageDownloader.logger.notice("Resume suspended download of image \(fileURL.lastPathComponent) (\(ImageDownloader.activeDownloads.count) active downloads)")
+                    #endif
+                    task.resume()
+                case .completed:
+                    #if DEBUG
+                    ImageDownloader.logger.notice("Delete download instance of image \(fileURL.lastPathComponent) (\(ImageDownloader.activeDownloads.count) active downloads)")
+                    #endif
+                    ImageDownloader.activeDownloads[imageURL] = nil
+                default:
+                    if let resumeData = download.resumeData {
+                        #if DEBUG
+                        ImageDownloader.logger.notice("Resume download of image \(fileURL.lastPathComponent) (\(ImageDownloader.activeDownloads.count) active downloads)")
+                        #endif
+                        download.task = dataSession.downloadTask(withResumeData: resumeData)
+                        task.resume()
+                    } else {
+                        #if DEBUG
+                        ImageDownloader.logger.notice("Relaunch download of image \(fileURL.lastPathComponent) (\(ImageDownloader.activeDownloads.count) active downloads)")
+                        #endif
+                        launchDownload(download)
+                    }
+                }
+            } else {
+                #if DEBUG
+                ImageDownloader.logger.notice("Relaunch download of image \(fileURL.lastPathComponent) (\(ImageDownloader.activeDownloads.count) active downloads)")
+                #endif
+                launchDownload(download)
+            }
+        }
         else {
             // Create Download instance
             let download = ImageDownload(type: type, atURL: imageURL, fileSize: fileSize, toCacheAt: fileURL,
                                          progress: progress, completion: completion, failure: failure)
             // Launch image download
-            launchDownload(download)
-            return
-        }
-        
-        // Update handlers
-        download.progressHandler = progress
-        download.completionHandler = completion
-        download.failureHandler = failure
-        
-        // What should we do with this download instance?
-        if let task = download.task {
-            switch task.state {
-            case .running:
-                if let progressHandler = download.progressHandler {
-                    progressHandler(download.progress)
-                }
-            case .suspended:
-                #if DEBUG
-                ImageDownloader.logger.notice("Resume suspended download of image \(fileURL.lastPathComponent) (\(ImageDownloader.activeDownloads.count) active downloads)")
-                #endif
-                task.resume()
-            case .completed:
-                #if DEBUG
-                ImageDownloader.logger.notice("Delete download instance of image \(fileURL.lastPathComponent) (\(ImageDownloader.activeDownloads.count) active downloads)")
-                #endif
-                ImageDownloader.activeDownloads[imageURL] = nil
-            default:
-                if let resumeData = download.resumeData {
-                    #if DEBUG
-                    ImageDownloader.logger.notice("Resume download of image \(fileURL.lastPathComponent) (\(ImageDownloader.activeDownloads.count) active downloads)")
-                    #endif
-                    download.task = dataSession.downloadTask(withResumeData: resumeData)
-                } else {
-                    #if DEBUG
-                    ImageDownloader.logger.notice("Relaunch download of image \(fileURL.lastPathComponent) (\(ImageDownloader.activeDownloads.count) active downloads)")
-                    #endif
-                    launchDownload(download)
-                }
-            }
-        } else {
-            #if DEBUG
-            ImageDownloader.logger.notice("Relaunch download of image \(fileURL.lastPathComponent) (\(ImageDownloader.activeDownloads.count) active downloads)")
-            #endif
             launchDownload(download)
         }
     }
@@ -132,9 +130,9 @@ public final class ImageDownloader {
         
         // Keep download instance in memory
         ImageDownloader.activeDownloads[imageURL] = download
-//        #if DEBUG
-//        PwgSessionDelegate.logger.notice("Launch download of image \(download.fileURL.lastPathComponent) (\(self.activeDownloads.count) active downloads)")
-//        #endif
+#if DEBUG
+        ImageDownloader.logger.notice("Launch download of image \(download.fileURL.lastPathComponent) (\(ImageDownloader.activeDownloads.count) active downloads)")
+#endif
     }
     
     public func pauseDownload(atURL imageURL: URL) {
@@ -171,13 +169,13 @@ public final class ImageDownloader {
     
     public func cancelDownload(atURL imageURL: URL) {
         // Retrieve download instance
-        guard let download = PwgSessionDelegate.activeDownloads[imageURL]
+        guard let download = ImageDownloader.activeDownloads[imageURL]
         else { return }
 
         // Cancel the download request
-        #if DEBUG
+#if DEBUG
         ImageDownloader.logger.notice("Cancel download of image \(download.fileURL.lastPathComponent) (\(ImageDownloader.activeDownloads.count) active downloads)")
-        #endif
+#endif
         download.task?.cancel()
         download.task = nil
     }

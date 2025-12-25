@@ -136,7 +136,7 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
             self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadPdfFail_message", comment: "Failed to download PDF file!\n%@"), error.localizedDescription)
             sema.signal()
         }
-        let _ = sema.wait(timeout: .distantFuture)
+        _ = sema.wait(timeout: .distantFuture)
 
         // Cancel item task if PDF file could not be retrieved
         if alertTitle != nil {

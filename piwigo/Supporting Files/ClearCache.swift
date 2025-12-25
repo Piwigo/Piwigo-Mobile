@@ -155,7 +155,7 @@ class ClearCache: NSObject {
     }
     
     static func cancelTasks(completion: @escaping () -> Void) {
-        Task { @UploadManagement in
+        Task { @UploadManagerActor in
             // Stop upload manager
             UploadVars.shared.isPaused = true
             
@@ -163,12 +163,12 @@ class ClearCache: NSObject {
             bckgSession.getAllTasks { tasks in
                 tasks.forEach({$0.cancel()})
                 
-                Task { @UploadManagement in
+                Task { @UploadManagerActor in
                     frgdSession.getAllTasks { tasks in
                         tasks.forEach({$0.cancel()})
                         
                         // Update badge and upload queue button
-                        Task { @UploadManagement in
+                        Task { @UploadManagerActor in
 //                            if #unavailable(iOS 26.0) {
                                 UploadManager.shared.findNextImageToUpload()
 //                            }
@@ -186,7 +186,7 @@ class ClearCache: NSObject {
     }
     
     static func cleanDirectories(completion: @escaping () -> Void) {
-        Task { @UploadManagement in
+        Task { @UploadManagerActor in
             // Clean up Uploads directory (if any left)
             UploadManager.shared.deleteFilesInUploadsDirectory() {
                 // Clean up /tmp directory

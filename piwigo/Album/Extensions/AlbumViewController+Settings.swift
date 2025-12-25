@@ -182,7 +182,7 @@ extension AlbumViewController
 
 
 // MARK: - ChangedSettingsDelegate Methods
-extension AlbumViewController: ChangedSettingsDelegate
+extension AlbumViewController: @MainActor ChangedSettingsDelegate
 {
     func didChangeDefaultAlbum() {
         // Change default album

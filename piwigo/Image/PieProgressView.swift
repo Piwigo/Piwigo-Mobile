@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PieProgressView: UIView {
+final class PieProgressView: UIView {
 
     fileprivate var progressLayer = CAShapeLayer()
 

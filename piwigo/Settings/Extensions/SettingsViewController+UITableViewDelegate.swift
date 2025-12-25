@@ -60,14 +60,14 @@ extension SettingsViewController: UITableViewDelegate
         if title.isEmpty, text.isEmpty {
             return CGFloat(1)
         } else {
-            return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
+            return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
                                                             width: tableView.frame.size.width)
         }
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let (title, text) = getContentOfHeader(inSection: section)
-        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
+        return TableViewUtilities.viewOfHeader(withTitle: title, text: text)
     }
     
     
@@ -200,13 +200,13 @@ extension SettingsViewController: UITableViewDelegate
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         let text = getContentOfFooter(inSection: section)
-        return TableViewUtilities.shared.heightOfFooter(withText: text,
+        return TableViewUtilities.heightOfFooter(withText: text,
                                                         width: tableView.frame.width)
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let text = getContentOfFooter(inSection: section)
-        return TableViewUtilities.shared.viewOfFooter(withText: text, alignment: .center)
+        return TableViewUtilities.viewOfFooter(withText: text, alignment: .center)
     }
     
     

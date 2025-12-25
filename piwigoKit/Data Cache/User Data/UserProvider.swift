@@ -42,34 +42,64 @@ public final class UserProvider {
     public func getUserAccount(of username: String = NetworkVars.shared.user,
                                ofServerAtPath path: String = NetworkVars.shared.serverPath,
                                inContext taskContext: NSManagedObjectContext,
-                               afterUpdate doUpdate: Bool = false) throws -> User? {
-        // Synchronous execution
-        return try taskContext.performAndWait { () -> User? in
-            // Create a fetch request for the User entity
-            let fetchRequest = fetchRequestOfUser(withUsername: username, ofServerAtPath: path)
-            
-            // Return the User entity if possible
-            let user = try taskContext.fetch(fetchRequest).first
-            if let user {
-                if doUpdate {
-                    let now = Date.timeIntervalSinceReferenceDate
-                    user.lastUsed = now
-                    user.server?.lastUsed = now
-                    user.status = NetworkVars.shared.userStatus.rawValue
-                    taskContext.saveIfNeeded()
+                               afterUpdate doUpdate: Bool = false) throws(PwgKitError) -> User? {
+        // Do {} below is used to allow typed throws
+        do {
+            // Synchronous execution
+            return try taskContext.performAndWait { () -> User? in
+                // Create a fetch request for the User entity
+                let fetchRequest = fetchRequestOfUser(withUsername: username, ofServerAtPath: path)
+                
+                // Return the User entity if possible
+                let user = try taskContext.fetch(fetchRequest).first
+                if let user {
+                    if doUpdate {
+                        let now = Date.timeIntervalSinceReferenceDate
+                        user.lastUsed = now
+                        user.server?.lastUsed = now
+                        user.status = NetworkVars.shared.userStatus.rawValue
+                        taskContext.saveIfNeeded()
+                    }
+                    return user
                 }
-                return user
+                
+                // Get the Server managed object on the current queue context.
+                let server = try ServerProvider().getServer(inContext: taskContext)
+                guard let server else { throw PwgKitError.serverCreationError}
+                
+                // Create a User object on the current queue context
+                let newUser = User(context: taskContext)
+                try newUser.update(username: username, ofServer: server)
+                taskContext.saveIfNeeded()
+                return newUser
             }
-            
-            // Get the Server managed object on the current queue context.
-            let server = try ServerProvider().getServer(inContext: taskContext)
-            guard let server else { throw PwgKitError.serverCreationError}
-
-            // Create a User object on the current queue context
-            let newUser = User(context: taskContext)
-            try newUser.update(username: username, ofServer: server)
+        }
+        catch let error as PwgKitError {
+            throw error
+        }
+        catch {
+            throw PwgKitError.otherError(innerError: error)
+        }
+    }
+    
+    func updateUser(withID objectID: NSManagedObjectID, status: Bool,
+                    inContext taskContext: NSManagedObjectContext) {
+        
+        do {
+            guard let user = try taskContext.existingObject(with: objectID) as? User
+            else { return }
+            let dateOfLogin = Date.timeIntervalSinceReferenceDate
+            user.lastUsed = dateOfLogin
+            if status {
+                user.status = NetworkVars.shared.userStatus.rawValue
+            }
+            if let server = user.server {
+                server.lastUsed = dateOfLogin
+            }
             taskContext.saveIfNeeded()
-            return newUser
+        }
+        catch {
+            print("Error updating User: \(error)")
         }
     }
     

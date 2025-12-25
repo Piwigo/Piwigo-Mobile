@@ -91,7 +91,7 @@ extension LocalImagesViewController: UploadSwitchDelegate
         UIApplication.shared.isIdleTimerDisabled = (uploadRequests.isEmpty == false)
         
         // Add selected images to upload queue
-        Task { @UploadManagement in
+        Task { @UploadManagerActor in
             await UploadProvider().importUploads(from: self.uploadRequests) { error in
                 // Deselect cells and reset upload queue
                 DispatchQueue.main.async {
@@ -123,7 +123,7 @@ extension LocalImagesViewController: UploadSwitchDelegate
 //            }
 //        } else {
             // Fallback on previous version
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 UploadVars.shared.isPaused = false
                 UploadManager.shared.findNextImageToUpload()
             }

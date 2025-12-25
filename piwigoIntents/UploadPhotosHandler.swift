@@ -126,7 +126,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
                 // Add operation setting flag and selecting upload requests
                 let initOperation = BlockOperation {
                     // Initialse variables and determine upload requests to prepare and transfer
-                    Task { @UploadManagement in
+                    Task { @UploadManagerActor in
                         await UploadManager.shared.initialiseBckgTask(triggeredByExtension: true)
                     }
                 }
@@ -138,7 +138,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
                 // Resume transfers
                 let resumeOperation = BlockOperation {
                     // Transfer image
-                    Task { @UploadManagement in
+                    Task { @UploadManagerActor in
                         await UploadManager.shared.resumeTransfers()
                     }
                 }
@@ -149,7 +149,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
                 for _ in 0..<UploadVars.shared.maxNberOfUploadsPerBckgTask {
                     let uploadOperation = BlockOperation {
                         // Transfer image
-                        Task { @UploadManagement in
+                        Task { @UploadManagerActor in
                             await UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
                         }
                     }

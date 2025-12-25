@@ -26,7 +26,7 @@ extension pwgAlbumGroup
 
 
 // Grouping options when sorting images by date
-public enum pwgImageGroup: Int16, CaseIterable {
+public enum pwgImageGroup: Int16, CaseIterable, Sendable {
     case none = 0
     case day
     case week

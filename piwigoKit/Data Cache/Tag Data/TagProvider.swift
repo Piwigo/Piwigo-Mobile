@@ -20,32 +20,24 @@ public final class TagProvider {
      The API method for admin pwg.tags.getAdminList does not return the number of tagged photos,
      so we must call pwg.tags.getList to present tagged photos when the user has admin rights.
     */
-    public func fetchTags(asAdmin: Bool, completion: @escaping (PwgKitError?) -> Void) {
-        // Launch the HTTP(S) request
-        let JSONsession = JSONManager.shared
-        JSONsession.postRequest(withMethod: asAdmin ? pwgTagsGetAdminList : pwgTagsGetList, paramDict: [:],
-                                jsonObjectClientExpectsToReceive: TagJSON.self,
-                                countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { result in
-            switch result {
-            case .success(let pwgData):
-                // Import tag data into Core Data.
-                do {
-                    try self.importTags(from: pwgData.data, asAdmin: asAdmin)
-                    completion(nil)
-                }
-                catch let error as PwgKitError {
-                    completion(error)
-                }
-                catch {
-                    completion(.otherError(innerError: error))
-                }
-                
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                completion(error)
+    @concurrent
+    public func fetchTags(asAdmin: Bool) async throws(PwgKitError) {
+        // Fetch tag data
+        do {
+            if asAdmin {
+                let pwgData = try await JSONManager.shared.fetchTags()
+                try self.importTags(from: pwgData, asAdmin: true)
             }
+            else {
+                let pwgData = try await JSONManager.shared.fetchTagsAsAdmin()
+                try self.importTags(from: pwgData, asAdmin: false)
+            }
+        }
+        catch let error as PwgKitError {
+            throw error
+        }
+        catch {
+            throw .otherError(innerError: error)
         }
     }
     
@@ -209,42 +201,18 @@ public final class TagProvider {
     /**
      Adds a tag to the remote Piwigo server, and imports it into Core Data.
     */
-    public func addTag(with name: String, completion: @escaping (PwgKitError?) -> Void) {
-                
+    @concurrent
+    public func addTag(with name: String) async throws(PwgKitError) {
         // Add tag on server
-        let JSONsession = JSONManager.shared
-        JSONsession.postRequest(withMethod: pwgTagsAdd, paramDict: ["name" : name],
-                                jsonObjectClientExpectsToReceive: TagAddJSON.self,
-                                countOfBytesClientExpectsToReceive: 3000) { result in
-            switch result {
-            case .success(let pwgData):
-                // Import the tagJSON into Core Data.
-                guard let tagId = pwgData.data.id else {
-                    completion(PwgKitError.missingTagData)
-                    return
-                }
-                let newTag = TagProperties(id: StringOrInt.integer(Int(tagId)),
-                                           name: name.utf8mb4Encoded,
-                                           lastmodified: "", counter: 0, url_name: "", url: "")
-
-                // Import the new tag in a private queue context
-                do {
-                    let _ = try self.importOneBatch([newTag], asAdmin: true, tagIDs: Set<Int32>())
-                    completion(nil)
-                }
-                catch let error as PwgKitError {
-                    completion(error)
-                }
-                catch {
-                    completion(PwgKitError.otherError(innerError: error))
-                }
-                
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                completion(error)
-            }
+        do {
+            let newTag = try await JSONManager.shared.addTag(with: name)
+            _ = try self.importOneBatch([newTag], asAdmin: true, tagIDs: Set<Int32>())
+        }
+        catch let error as PwgKitError {
+            throw error
+        }
+        catch {
+            throw .otherError(innerError: error)
         }
     }
     

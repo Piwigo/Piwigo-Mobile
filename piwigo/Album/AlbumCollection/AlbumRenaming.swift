@@ -120,9 +120,16 @@ class AlbumRenaming: NSObject
         topViewController.showHUD(withTitle: NSLocalizedString("renameCategoryHUD_label", comment: "Renaming Album…"))
 
         // Rename album, modify comment
-        JSONManager.shared.checkSession(ofUser: user) { [self] in
-            AlbumUtilities.setInfos(self.albumData.pwgID, withName: albumName, description: albumComment) { [self] in
-                DispatchQueue.main.async { [self] in
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                
+                // Update album data
+                try await JSONManager.shared.setInfos(albumData.pwgID, withName: albumName, description: albumComment)
+                
+                // Update cache and UI
+                await MainActor.run { [self] in
                     // Hide swipe buttons
                     completion(true)
 
@@ -137,20 +144,17 @@ class AlbumRenaming: NSObject
                         albumData.commentHTML = albumComment.attributedHTML
                     }
                     self.mainContext.saveIfNeeded()
-                    
+
                     // Hide HUD
                     self.topViewController.updateHUDwithSuccess() {
                         self.topViewController.hideHUD(afterDelay: pwgDelayHUD) { }
                     }
                 }
-            } failure: { [self] error in
-                DispatchQueue.main.async { [self] in
+            }
+            catch let error as PwgKitError {
+                await MainActor.run { [self] in
                     self.renameCategoryError(error, completion: completion)
                 }
-            }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
-                self.renameCategoryError(error, completion: completion)
             }
         }
     }

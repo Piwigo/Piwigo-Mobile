@@ -11,31 +11,47 @@ import Foundation
 
 public extension JSONManager {
     
-    func communityGetStatus(completion: @escaping () -> Void,
-                            failure: @escaping (PwgKitError) -> Void) {
+    @concurrent
+    func communityGetStatus() async throws(PwgKitError) {
         JSONManager.logger.notice("Session: getting Community status…")
         // Launch request
-        postRequest(withMethod: kCommunitySessionGetStatus, paramDict: [:],
-                    jsonObjectClientExpectsToReceive: CommunitySessionGetStatusJSON.self,
-                    countOfBytesClientExpectsToReceive: kCommunitySessionGetStatusBytes) { result in
-            switch result {
-            case .success(let pwgData):
-                // Update user's status
-                guard pwgData.realUser.isEmpty == false,
-                      let userStatus = pwgUserStatus(rawValue: pwgData.realUser)
-                else {
-                    failure(.unknownUserStatus)
-                    return
-                }
-                NetworkVars.shared.userStatus = userStatus
-                completion()
-
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                failure(error)
+        let pwgData = try await postRequest(withMethod: kCommunitySessionGetStatus, paramDict: [:],
+                                            jsonObjectClientExpectsToReceive: CommunitySessionGetStatusJSON.self,
+                                            countOfBytesClientExpectsToReceive: kCommunitySessionGetStatusBytes)
+        // Update user's status
+        guard pwgData.realUser.isEmpty == false,
+              let userStatus = pwgUserStatus(rawValue: pwgData.realUser)
+        else {
+            throw .unknownUserStatus
+        }
+        NetworkVars.shared.userStatus = userStatus
+    }
+    
+    /**
+     When the Community plugin is installed (v2.9+) on the server,
+     one must inform the moderator that a number of images have been uploaded.
+     This informs the moderator that uploaded images are waiting for a validation.
+     */
+    @concurrent
+    func moderateImages(withIds imageIds: String, inCategory categoryId: Int32) async throws(PwgKitError) -> [Int64] {
+        // Prepare parameters
+        let paramDict: [String : Any] = ["image_id": imageIds,
+                                         "pwg_token": NetworkVars.shared.pwgToken,
+                                         "category_id": "\(NSNumber(value: categoryId))"]
+        
+        // Moderate uploaded images
+        let pwgData = try await postRequest(withMethod: kCommunityImagesUploadCompleted, paramDict: paramDict,
+                                            jsonObjectClientExpectsToReceive: CommunityImagesUploadCompletedJSON.self,
+                                            countOfBytesClientExpectsToReceive: 1000)
+        
+        // Return validated image IDs
+        var validatedIDs = [Int64]()
+        pwgData.data.forEach { (pendingData) in
+            if let imageIDstr = pendingData.id, let imageID = Int64(imageIDstr),
+               let pendingState = pendingData.state, pendingState == "validated" {
+                validatedIDs.append(imageID)
             }
         }
+        return validatedIDs
     }
 }

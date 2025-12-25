@@ -48,13 +48,13 @@ extension SelectCategoryViewController: UITableViewDelegate
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let (title, text) = getContentOfHeader(inSection: section)
-        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
+        return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
                                                         width: tableView.frame.size.width)
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let (title, text) = getContentOfHeader(inSection: section)
-        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
+        return TableViewUtilities.viewOfHeader(withTitle: title, text: text)
     }
     
     
@@ -184,13 +184,16 @@ extension SelectCategoryViewController: UITableViewDelegate
             } else {
                 message = String(format: NSLocalizedString("setDefaultCategory_message", comment: "Are you sure you want to set the album %@ as default album?"), albumData.name)
             }
-            requestConfirmation(withTitle: title, message: message,
-                                forCategory: albumData, at: indexPath, handler: { [self] _ in
-                // Set new Default Album
-                self.delegate?.didSelectCategory(withId: albumData.pwgID)
-                // Return to Settings
-                self.navigationController?.popViewController(animated: true)
-            })
+            Task {
+                let confirmed = await requestConfirmation(withTitle: title, message: message,
+                                                          forCategory: albumData, at: indexPath)
+                if confirmed {
+                    // Set new Default Album
+                    self.delegate?.didSelectCategory(withId: albumData.pwgID)
+                    // Return to Settings
+                    self.navigationController?.popViewController(animated: true)
+                }
+            }
 
         case .moveAlbum:
             // Do nothing if this is the current default category
@@ -212,21 +215,27 @@ extension SelectCategoryViewController: UITableViewDelegate
             // Ask user to confirm
             let title = NSLocalizedString("moveCategory", comment: "Move Album")
             let message = String(format: NSLocalizedString("moveCategory_message", comment: "Are you sure you want to move \"%@\" into the album \"%@\"?"), inputAlbum.name, albumData.name)
-            requestConfirmation(withTitle: title, message: message,
-                                forCategory: albumData, at: indexPath) { [self] _ in
-                // Move album to selected category
-                self.moveCategory(intoCategory: albumData)
+            Task {
+                let confirmed = await requestConfirmation(withTitle: title, message: message,
+                                                          forCategory: albumData, at: indexPath)
+                if confirmed {
+                    // Move album to selected category
+                    self.moveCategory(intoCategory: albumData)
+                }
             }
 
         case .setAlbumThumbnail:
             // Ask user to confirm
             let title = NSLocalizedString("categoryImageSet_title", comment:"Album Thumbnail")
             let message = String(format: NSLocalizedString("categoryImageSet_message", comment:"Are you sure you want to set this image for the album \"%@\"?"), albumData.name)
-            requestConfirmation(withTitle: title, message: message,
-                                forCategory: albumData, at: indexPath, handler: { [self] _ in
-                // Set image as thumbnail of selected album
-                self.setRepresentative(for: albumData)
-            })
+            Task {
+                let confirmed = await requestConfirmation(withTitle: title, message: message,
+                                                          forCategory: albumData, at: indexPath)
+                if confirmed {
+                    // Set image as thumbnail of selected album
+                    self.setRepresentative(for: albumData)
+                }
+            }
 
         case .setAutoUploadAlbum:
             // Do nothing if this is the root album
@@ -246,16 +255,19 @@ extension SelectCategoryViewController: UITableViewDelegate
             let title = NSLocalizedString("copyImage_title", comment:"Copy to Album")
             let imageTitle = inputImages.first?.titleStr ?? inputImages.first?.fileName ?? ""
             let message = String(format: NSLocalizedString("copySingleImage_message", comment:"Are you sure you want to copy the photo \"%@\" to the album \"%@\"?"), imageTitle.isEmpty ? inputImages.first?.fileName ?? "-?-" : imageTitle, albumData.name)
-            requestConfirmation(withTitle: title, message: message,
-                                forCategory: albumData, at: indexPath) { [self] _ in
-                // Display HUD
-                self.showHUD(withTitle: NSLocalizedString("copySingleImageHUD_copying", comment:"Copying Photo…"))
-
-                // Copy single image to selected album
-                if NetworkVars.shared.usesSetCategory {
-                    self.associateImages(toAlbum: albumData)
-                } else {
-                    self.copyImages(toAlbum: albumData)
+            Task {
+                let confirmed = await requestConfirmation(withTitle: title, message: message,
+                                                          forCategory: albumData, at: indexPath)
+                if confirmed {
+                    // Display HUD
+                    self.showHUD(withTitle: NSLocalizedString("copySingleImageHUD_copying", comment:"Copying Photo…"))
+                    
+                    // Copy single image to selected album
+                    if NetworkVars.shared.usesSetCategory {
+                        self.associateImages(toAlbum: albumData)
+                    } else {
+                        await self.copyImages(toAlbum: albumData)
+                    }
                 }
             }
 
@@ -269,16 +281,19 @@ extension SelectCategoryViewController: UITableViewDelegate
             let title = NSLocalizedString("moveImage_title", comment:"Move to Album")
             let imageTitle = inputImages.first?.titleStr ?? inputImages.first?.fileName ?? ""
             let message = String(format: NSLocalizedString("moveSingleImage_message", comment:"Are you sure you want to move the photo \"%@\" to the album \"%@\"?"), imageTitle.isEmpty ? inputImages.first?.fileName ?? "-?-" : imageTitle, albumData.name)
-            requestConfirmation(withTitle: title, message: message,
-                                forCategory: albumData, at: indexPath) { [self] _ in
-                // Display HUD
-                self.showHUD(withTitle: NSLocalizedString("moveSingleImageHUD_moving", comment:"Moving Photo…"))
-
-                // Move single image to selected album
-                if NetworkVars.shared.usesSetCategory {
-                    self.associateImages(toAlbum: albumData, andDissociateFromPreviousAlbum: true)
-                } else {
-                    self.moveImages(toAlbum: albumData)
+            Task {
+                let confirmed = await requestConfirmation(withTitle: title, message: message,
+                                                          forCategory: albumData, at: indexPath)
+                if confirmed {
+                    // Display HUD
+                    self.showHUD(withTitle: NSLocalizedString("moveSingleImageHUD_moving", comment:"Moving Photo…"))
+                    
+                    // Move single image to selected album
+                    if NetworkVars.shared.usesSetCategory {
+                        self.associateImages(toAlbum: albumData, andDissociateFromPreviousAlbum: true)
+                    } else {
+                        await self.moveImages(toAlbum: albumData)
+                    }
                 }
             }
 
@@ -291,17 +306,20 @@ extension SelectCategoryViewController: UITableViewDelegate
             // Ask user to confirm
             let title = NSLocalizedString("copyImage_title", comment:"Copy to Album")
             let message = String(format: NSLocalizedString("copySeveralImages_message", comment:"Are you sure you want to copy the photos to the album \"%@\"?"), albumData.name)
-            requestConfirmation(withTitle: title, message: message,
-                                forCategory: albumData, at: indexPath) { [self] _ in
-                // Display HUD
-                self.showHUD(withTitle: NSLocalizedString("copySeveralImagesHUD_copying", comment: "Copying Photos…"),
-                             inMode: NetworkVars.shared.usesSetCategory ? .indeterminate : .determinate)
-                
-                // Copy several images to selected album
-                if NetworkVars.shared.usesSetCategory {
-                    self.associateImages(toAlbum: albumData)
-                } else {
-                    self.copyImages(toAlbum: albumData)
+            Task {
+                let confirmed = await requestConfirmation(withTitle: title, message: message,
+                                                          forCategory: albumData, at: indexPath)
+                if confirmed {
+                    // Display HUD
+                    self.showHUD(withTitle: NSLocalizedString("copySeveralImagesHUD_copying", comment: "Copying Photos…"),
+                                 inMode: NetworkVars.shared.usesSetCategory ? .indeterminate : .determinate)
+                    
+                    // Copy several images to selected album
+                    if NetworkVars.shared.usesSetCategory {
+                        self.associateImages(toAlbum: albumData)
+                    } else {
+                        await self.copyImages(toAlbum: albumData)
+                    }
                 }
             }
 
@@ -314,17 +332,20 @@ extension SelectCategoryViewController: UITableViewDelegate
             // Ask user to confirm
             let title = NSLocalizedString("moveImage_title", comment:"Move to Album")
             let message = String(format: NSLocalizedString("moveSeveralImages_message", comment:"Are you sure you want to move the photos to the album \"%@\"?"), albumData.name)
-            requestConfirmation(withTitle: title, message: message,
-                                forCategory: albumData, at: indexPath) { [self] _ in
-                // Display HUD
-                self.showHUD(withTitle: NSLocalizedString("moveSeveralImagesHUD_moving", comment: "Moving Photos…"),
-                             inMode: NetworkVars.shared.usesSetCategory ? .indeterminate : .determinate)
-
-                // Move several images to selected album
-                if NetworkVars.shared.usesSetCategory {
-                    self.associateImages(toAlbum: albumData, andDissociateFromPreviousAlbum: true)
-                } else {
-                    self.moveImages(toAlbum: albumData)
+            Task {
+                let confirmed = await requestConfirmation(withTitle: title, message: message,
+                                                          forCategory: albumData, at: indexPath)
+                if confirmed {
+                    // Display HUD
+                    self.showHUD(withTitle: NSLocalizedString("moveSeveralImagesHUD_moving", comment: "Moving Photos…"),
+                                 inMode: NetworkVars.shared.usesSetCategory ? .indeterminate : .determinate)
+                    
+                    // Move several images to selected album
+                    if NetworkVars.shared.usesSetCategory {
+                        self.associateImages(toAlbum: albumData, andDissociateFromPreviousAlbum: true)
+                    } else {
+                        await self.moveImages(toAlbum: albumData)
+                    }
                 }
             }
 
@@ -335,29 +356,33 @@ extension SelectCategoryViewController: UITableViewDelegate
     
     @MainActor
     private func requestConfirmation(withTitle title:String, message:String,
-                                     forCategory albumData: Album, at indexPath:IndexPath,
-                                     handler:((UIAlertAction) -> Void)? = nil) -> Void {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
-        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
-                                         style: .cancel, handler: {_ in
-                                            // Forget the choice
-                                            self.selectedCategoryId = Int32.min
-                                         })
-        let performAction = UIAlertAction(title: NSLocalizedString("alertYesButton", comment: "Yes"), style: .default, handler:handler)
-    
-        // Add actions
-        alert.addAction(cancelAction)
-        alert.addAction(performAction)
-
-        // Present popover view
-        alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        alert.popoverPresentationController?.sourceView = categoriesTableView
-        alert.popoverPresentationController?.sourceRect = categoriesTableView.rectForRow(at: indexPath)
-        alert.popoverPresentationController?.permittedArrowDirections = [.down, .up]
-        present(alert, animated: true, completion: {
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                                     forCategory albumData: Album, at indexPath:IndexPath) async -> Bool {
+        await withCheckedContinuation { continuation in
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+            let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+                                             style: .cancel, handler: {_ in
+                // Forget the choice
+                self.selectedCategoryId = Int32.min
+                continuation.resume(returning: false)
+            })
+            let performAction = UIAlertAction(title: NSLocalizedString("alertYesButton", comment: "Yes"), style: .default, handler: { _ in
+                continuation.resume(returning: true)
+            })
+            
+            // Add actions
+            alert.addAction(cancelAction)
+            alert.addAction(performAction)
+            
+            // Present popover view
             alert.view.tintColor = PwgColor.tintColor
-        })
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+            alert.popoverPresentationController?.sourceView = categoriesTableView
+            alert.popoverPresentationController?.sourceRect = categoriesTableView.rectForRow(at: indexPath)
+            alert.popoverPresentationController?.permittedArrowDirections = [.down, .up]
+            present(alert, animated: true, completion: {
+                // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                alert.view.tintColor = PwgColor.tintColor
+            })
+        }
     }
 }

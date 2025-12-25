@@ -47,7 +47,7 @@ extension UploadSessionsDelegate: URLSessionTaskDelegate {
         }
 
         // Update counter
-        Task { @UploadManagement in
+        Task { @UploadManagerActor in
             // Add chunk to counter if needed (e.g. situation where the app is relauched)
             UploadManager.shared.addChunk(chunk, toCounterWithID: identifier)
             
@@ -87,7 +87,7 @@ extension UploadSessionsDelegate: URLSessionTaskDelegate {
         }
 
         // Add chunk to counter if needed (e.g. situation where the app is relauched)
-        Task { @UploadManagement in
+        Task { @UploadManagerActor in
             UploadManager.shared.addChunk(chunk, toCounterWithID: identifier)
         }
 
@@ -142,11 +142,11 @@ extension UploadSessionsDelegate: URLSessionTaskDelegate {
         let sessionIdentifier = (task.taskDescription ?? "").components(separatedBy: " ").first
         switch sessionIdentifier {
         case uploadSessionIdentifier:
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 UploadManager.shared.didCompleteUploadTask(task, withError: pwgError)
             }
         case uploadBckgSessionIdentifier:
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 UploadManager.shared.didCompleteBckgUploadTask(task, withError: pwgError)
             }
         default:

@@ -94,23 +94,29 @@ extension ImageViewController
                                           "categories"          : newImageCategories,
                                           "multiple_value_mode" : "replace"]
         
-        // Send request to Piwigo server
-        JSONManager.shared.checkSession(ofUser: user) { [self] in
-            JSONManager.shared.setInfos(with: paramsDict) { [self] in
-                DispatchQueue.main.async { [self] in
+        // Send requests to Piwigo server
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                
+                // Set image properties
+                _ = try await JSONManager.shared.setInfos(with: paramsDict)
+                
+                await MainActor.run { [self] in
                     // Retrieve album
                     if let albums = imageData.albums,
                        let album = albums.first(where: {$0.pwgID == categoryId}) {
                         // Remove image from album
                         album.removeFromImages(imageData)
-                        
+
                         // Update albums
                         try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: album)
-                        
+
                         // Save changes
                         self.mainContext.saveIfNeeded()
                     }
-                    
+
                     // Hide HUD
                     self.updateHUDwithSuccess { [self] in
                         self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
@@ -119,14 +125,11 @@ extension ImageViewController
                         }
                     }
                 }
-            } failure: { [self] error in
-                DispatchQueue.main.async { [self] in
+            }
+            catch let error as PwgKitError {
+                await MainActor.run { [self] in
                     self.removeImageFromAlbumError(error)
                 }
-            }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
-                self.removeImageFromAlbumError(error)
             }
         }
     }
@@ -169,15 +172,22 @@ extension ImageViewController
         showHUD(withTitle: imageData.isVideo ? NSLocalizedString("deleteSingleVideoHUD_deleting", comment: "Deleting Video…") : NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Photo…"))
         
         // Send request to Piwigo server
-        JSONManager.shared.checkSession(ofUser: user) { [self] in
-            ImageUtilities.delete(Set([imageData])) { [self] in
-                DispatchQueue.main.async { [self] in
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                
+                // Delete images
+                _ = try await JSONManager.shared.delete(Set([imageData]))
+                
+                // Update cache and UI
+                await MainActor.run { [self] in
                     // Save image ID for marking Upload request in the background
                     let imageID = imageData.pwgID
-                    
+
                     // Delete image from cache (also deletes image files)
                     self.mainContext.delete(imageData)
-                    
+
                     // Retrieve albums associated to the deleted image
                     if let albums = imageData.albums {
                         // Remove image from cached albums
@@ -185,16 +195,16 @@ extension ImageViewController
                             try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: album)
                         }
                     }
-                    
+
                     // Save changes
                     self.mainContext.saveIfNeeded()
-                    
+
                     // If this image was uploaded with the iOS app,
                     // delete upload request from cache so that it can be re-uploaded.
-                    Task { @UploadManagement in
+                    Task { @UploadManagerActor in
                         UploadManager.shared.deleteUploadsOfDeletedImages(withIDs: [imageID])
                     }
-                    
+
                     // Hide HUD
                     self.updateHUDwithSuccess { [self] in
                         self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
@@ -203,13 +213,7 @@ extension ImageViewController
                         }
                     }
                 }
-            } failure: { [self] error in
-                DispatchQueue.main.async { [self] in
-                    self.deleteImageFromDatabaseError(error)
-                }
-            }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
+            } catch let error as PwgKitError {
                 self.deleteImageFromDatabaseError(error)
             }
         }

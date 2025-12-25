@@ -17,7 +17,7 @@ extension UploadQueueViewController: UITableViewDelegate
     // MARK: - UITableView - Headers
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let sectionKey = SectionKeys(rawValue: diffableDataSource.snapshot().sectionIdentifiers[section]) ?? SectionKeys.Section4
-        return TableViewUtilities.shared.heightOfHeader(withTitle: sectionKey.name,
+        return TableViewUtilities.heightOfHeader(withTitle: sectionKey.name,
                                                         width: tableView.frame.size.width)
     }
     
@@ -54,7 +54,7 @@ extension UploadQueueViewController: UITableViewDelegate
         // Create retry upload action
         let retry = UIContextualAction(style: .normal, title: nil,
                                        handler: { action, view, completionHandler in
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 UploadManager.shared.resumeFailedUpload(withID: upload.localIdentifier)
 //                if #unavailable(iOS 26.0) {
                     UploadManager.shared.findNextImageToUpload()
@@ -71,7 +71,7 @@ extension UploadQueueViewController: UITableViewDelegate
             let savingContext = upload.managedObjectContext
             savingContext?.delete(upload)
             savingContext?.saveIfNeeded()
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 UploadManager.shared.resumeFailedUpload(withID: upload.localIdentifier)
 //                if #unavailable(iOS 26.0) {
                     UploadManager.shared.findNextImageToUpload()

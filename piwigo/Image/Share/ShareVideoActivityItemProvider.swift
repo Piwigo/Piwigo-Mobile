@@ -138,7 +138,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!\n%@"), error.localizedDescription)
             sema.signal()
         }
-        let _ = sema.wait(timeout: .distantFuture)
+        _ = sema.wait(timeout: .distantFuture)
         
         // Cancel item task if we could not retrieve the file
         if alertTitle != nil {
@@ -358,7 +358,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
                 sema.signal()
             }
         }
-        let _ = sema.wait(timeout: .distantFuture)
+        _ = sema.wait(timeout: .distantFuture)
     }
     
     private func preprocessingDidEnd() {

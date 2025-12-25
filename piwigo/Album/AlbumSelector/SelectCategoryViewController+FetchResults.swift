@@ -12,7 +12,7 @@ import UIKit
 import piwigoKit
 
 // MARK: - NSFetchedResultsControllerDelegate
-extension SelectCategoryViewController: NSFetchedResultsControllerDelegate
+extension SelectCategoryViewController: @MainActor NSFetchedResultsControllerDelegate
 {
     func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>,
                     didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {

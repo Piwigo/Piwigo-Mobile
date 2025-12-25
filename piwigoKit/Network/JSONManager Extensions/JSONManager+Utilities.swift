@@ -14,212 +14,116 @@ import UIKit
 extension JSONManager {
     
     // MARK: Piwigo Session Management
-    public func requestServerMethods(completion: @escaping () -> Void,
-                                     didRejectCertificate: @escaping (PwgKitError) -> Void,
-                                     didFailHTTPauthentication: @escaping (PwgKitError) -> Void,
-                                     didFailSecureConnection: @escaping (PwgKitError) -> Void,
-                                     failure: @escaping (PwgKitError) -> Void) {
-        // Collect list of methods supplied by Piwigo server
-        // => Determine if Community extension 2.9a or later is installed and active
-        getMethods {
-            // Known methods, pursue logging in…
-            completion()
-        } failure: { error in
-            // If Piwigo uses a non-trusted certificate, ask permission
-            if NetworkVars.shared.didRejectCertificate {
-                // The SSL certificate is not trusted
-                didRejectCertificate(error)
-                return
-            }
-
-            // HTTP Basic authentication required?
-            if error.failedAuthentication || NetworkVars.shared.didFailHTTPauthentication {
-                // Without prior knowledge, the app already tried Piwigo credentials
-                // but unsuccessfully, so we request HTTP credentials
-                didFailHTTPauthentication(error)
-                return
-            }
-
-            switch (error as NSError).code {
-            case NSURLErrorUserAuthenticationRequired:
-                // Without prior knowledge, the app already tried Piwigo credentials
-                // but unsuccessfully, so must now request HTTP credentials
-                didFailHTTPauthentication(error)
-                return
-            case NSURLErrorUserCancelledAuthentication:
-                failure(error)
-                return
-            case NSURLErrorBadServerResponse, NSURLErrorBadURL, NSURLErrorCallIsActive, NSURLErrorCannotDecodeContentData, NSURLErrorCannotDecodeRawData, NSURLErrorCannotFindHost, NSURLErrorCannotParseResponse, NSURLErrorClientCertificateRequired, NSURLErrorDataLengthExceedsMaximum, NSURLErrorDataNotAllowed, NSURLErrorDNSLookupFailed, NSURLErrorHTTPTooManyRedirects, NSURLErrorInternationalRoamingOff, NSURLErrorNetworkConnectionLost, NSURLErrorNotConnectedToInternet, NSURLErrorRedirectToNonExistentLocation, NSURLErrorRequestBodyStreamExhausted, NSURLErrorTimedOut, NSURLErrorUnknown, NSURLErrorUnsupportedURL, NSURLErrorZeroByteResource:
-                failure(error)
-                return
-            case NSURLErrorCannotConnectToHost,    // Happens when the server does not reply to the request (HTTP or HTTPS)
-                NSURLErrorSecureConnectionFailed:
-                // HTTPS request failed ?
-                if NetworkVars.shared.serverProtocol == "https://" {
-                    // Suggest HTTP connection if HTTPS attempt failed
-                    didFailSecureConnection(error)
-                    return
-                }
-                return
-            case NSURLErrorClientCertificateRejected, NSURLErrorServerCertificateHasBadDate, NSURLErrorServerCertificateHasUnknownRoot, NSURLErrorServerCertificateNotYetValid, NSURLErrorServerCertificateUntrusted:
-                // The SSL certificate is not trusted
-                didRejectCertificate(error)
-                return
-            default:
-                break
-            }
-
-            // Display error message
-            failure(error)
-        }
-    }
-    
     // Re-login if session was closed
-    public func checkSession(ofUser user: User?,
-                             completion: @escaping () -> Void,
-                             failure: @escaping (PwgKitError) -> Void) {
-        
+    @concurrent
+    public func checkSession(ofUserWithID objectID: NSManagedObjectID,
+                             lastConnected lastUsed: TimeInterval) async throws(PwgKitError) {
+                
         // Check if the session is still active and update the server status
         // every 60 seconds or more
-        let secondsSinceLastCheck = Date.timeIntervalSinceReferenceDate - (user?.lastUsed ?? 0.0)
+        let secondsSinceLastCheck = Date.timeIntervalSinceReferenceDate - lastUsed
         if NetworkVars.shared.hasNetworkConnectionChanged == false,
            NetworkVars.shared.applicationShouldRelogin == false,
            secondsSinceLastCheck < 60 {
-            completion()
             return
         }
         
         // Determine if the session is still active
         NetworkVars.shared.hasNetworkConnectionChanged = false
-        PwgSessionDelegate.logger.notice("Session: starting checking… \(NetworkVars.shared.isConnectedToWiFi ? "WiFi" : "Cellular")")
+        JSONManager.logger.notice("Session: starting checking… \(NetworkVars.shared.isConnectedToWiFi ? "WiFi" : "Cellular")")
         let oldToken = NetworkVars.shared.pwgToken
-        JSONManager.shared.sessionGetStatus { [self] pwgUser in
+        let pwgUser = try await JSONManager.shared.sessionGetStatus()
 #if DEBUG
-            JSONManager.logger.notice("Session: \"\(NetworkVars.shared.user, privacy: .public)\" vs \"\(pwgUser, privacy: .public)\", \"\(oldToken, privacy: .public)\" vs \"\(NetworkVars.shared.pwgToken, privacy: .public)\"")
+        JSONManager.logger.notice("Session: \"\(NetworkVars.shared.user, privacy: .public)\" vs \"\(pwgUser, privacy: .public)\", \"\(oldToken, privacy: .public)\" vs \"\(NetworkVars.shared.pwgToken, privacy: .public)\"")
 #else
-            JSONManager.shared.logger.notice("Session: \"\(NetworkVars.shared.user, privacy: .private(mask: .hash))\" vs \"\(pwgUser, privacy: .private(mask: .hash))\", \"\(oldToken, privacy: .private(mask: .hash))\" vs \"\(NetworkVars.shared.pwgToken, privacy: .private(mask: .hash))\"")
+        JSONManager.shared.logger.notice("Session: \"\(NetworkVars.shared.user, privacy: .private(mask: .hash))\" vs \"\(pwgUser, privacy: .private(mask: .hash))\", \"\(oldToken, privacy: .private(mask: .hash))\" vs \"\(NetworkVars.shared.pwgToken, privacy: .private(mask: .hash))\"")
 #endif
-            if pwgUser != NetworkVars.shared.user || oldToken.isEmpty || NetworkVars.shared.pwgToken != oldToken {
-                // Collect list of methods supplied by Piwigo server
-                // => Determine if Community extension 2.9a or later is installed and active
-                requestServerMethods { [self] in
-                    // Known methods, perform re-login
-                    // Don't use userStatus as it may not be known after Core Data migration
-                    if NetworkVars.shared.username.isEmpty || NetworkVars.shared.username.lowercased() == "guest" {
-                        PwgSessionDelegate.logger.notice("Session: logged as Guest")
-                        // Session now opened
-                        getPiwigoConfig(forUser: user) {
-                            // Update date of accesss to the server by guest
-                            DispatchQueue.main.async {
-                                user?.setLastUsedToNow()
-                                user?.status = NetworkVars.shared.userStatus.rawValue
-                            }
-                            NetworkVars.shared.applicationShouldRelogin = false
-                            completion()
-                        } failure: { error in
-                            failure(error)
-                        }
-                    } else {
-                        // Perform login
-                        let username = NetworkVars.shared.username
-                        let password = KeychainUtilities.password(forService: NetworkVars.shared.serverPath, account: username)
-                        sessionLogin(withUsername: username, password: password) { [self] in
-#if DEBUG
-                            PwgSessionDelegate.logger.notice("Session: logged as \(NetworkVars.shared.username, privacy: .public)")
-#else
-                            PwgSessionDelegate.logger.notice("Session: logged as \(NetworkVars.shared.username, privacy: .private(mask: .hash))")
-#endif
-                            // Session now opened
-                            getPiwigoConfig(forUser: user) {
-                                // Update date of accesss to the server by user
-                                DispatchQueue.main.async {
-                                    user?.setLastUsedToNow()
-                                    user?.status = NetworkVars.shared.userStatus.rawValue
-                                }
-                                NetworkVars.shared.applicationShouldRelogin = false
-                                completion()
-                            } failure: { error in
-                                failure(error)
-                            }
-                        } failure: { error in
-                            failure(error)
-                        }
-                    }
-                } didRejectCertificate: { error in
-                    failure(error)
-                } didFailHTTPauthentication: { error in
-                    failure(error)
-                } didFailSecureConnection: { error in
-                    failure(error)
-                } failure: { error in
-                    failure(error)
-                }
-            } else {
-                DispatchQueue.main.async {
-                    user?.setLastUsedToNow()
-                }
-                completion()
+        if pwgUser != NetworkVars.shared.user || oldToken.isEmpty || NetworkVars.shared.pwgToken != oldToken {
+            // Collect list of methods supplied by Piwigo server
+            // => Determine if Community extension 2.9a or later is installed and active
+            try await getMethods()
+            
+            // Known methods, perform re-login
+            // Don't use userStatus as it may not be known after Core Data migration
+            if NetworkVars.shared.username.isEmpty || NetworkVars.shared.username.lowercased() == "guest" {
+                
+                // Session opened for guest
+                JSONManager.logger.notice("Session: logged as Guest")
+                try await getPiwigoConfigForUser(withID: objectID)
+                
+                // Update date of accesss to the server by guest
+                updateUser(withID: objectID, includingStatus: true)
+                NetworkVars.shared.applicationShouldRelogin = false
             }
-        } failure: { error in
-            failure(error)
+            else {
+                // Perform login
+                let username = NetworkVars.shared.username
+                let password = KeychainUtilities.password(forService: NetworkVars.shared.serverPath, account: username)
+                try await sessionLogin(withUsername: username, password: password)
+#if DEBUG
+                JSONManager.logger.notice("Session: logged as \(NetworkVars.shared.username, privacy: .public)")
+#else
+                JSONManager.logger.notice("Session: logged as \(NetworkVars.shared.username, privacy: .private(mask: .hash))")
+#endif
+                // Session now opened
+                try await getPiwigoConfigForUser(withID: objectID)
+                
+                // Update date of accesss to the server by guest
+                updateUser(withID: objectID, includingStatus: true)
+                NetworkVars.shared.applicationShouldRelogin = false
+            }
+        }
+        else {
+            updateUser(withID: objectID, includingStatus: false)
         }
     }
     
-    fileprivate func getPiwigoConfig(forUser user: User?,
-                                     completion: @escaping () -> Void,
-                                     failure: @escaping (PwgKitError) -> Void) {
+    fileprivate func updateUser(withID objectID: NSManagedObjectID, includingStatus status: Bool) {
+        let bckgContext = DataController.shared.newTaskContext()
+        UserProvider().updateUser(withID: objectID,status: status, inContext: bckgContext)
+    }
+    
+    fileprivate func getPiwigoConfigForUser(withID objectID: NSManagedObjectID) async throws(PwgKitError) {
         // Check Piwigo version, get token, available sizes, etc.
         if NetworkVars.shared.usesCommunityPluginV29 {
-            communityGetStatus { [self] in
-                getPiwigoStatus(forUser: user, completion: completion, failure: failure)
-            }
-            failure: { error in
-                failure(error)
-            }
-        } else {
-            getPiwigoStatus(forUser: user, completion: completion, failure: failure)
+            try await JSONManager.shared.communityGetStatus()
         }
+        try await getPiwigoStatusForUser(withID: objectID)
     }
     
-    fileprivate func getPiwigoStatus(forUser user: User?,
-                                     completion: @escaping () -> Void,
-                                     failure: @escaping (PwgKitError) -> Void)
+    fileprivate func getPiwigoStatusForUser(withID objectID: NSManagedObjectID) async throws(PwgKitError)
     {
-        sessionGetStatus { userName in
-            // Set Piwigo user
-            NetworkVars.shared.user = userName
-            
-            // Are cached data associated to an API public key?
-            if NetworkVars.shared.fixUserIsAPIKeyV412, let userID = user?.objectID {
-                DispatchQueue.global(qos: .background).async {
-                    // Retrieve background context
-                    let bckgContext = DataController.shared.newTaskContext()
-                    
-                    // Attribute upload requests to appropriate user if necessary
-                    JSONManager.logger.debug("Session: attributing API Key upload requests to user…")
-                    UploadProvider().attributeAPIKeyUploadRequests(toUserWithID: userID,
-                                                                   inContext: bckgContext)
-                    
-                    // Delete API Key user (and albums in cascade)
-                    JSONManager.logger.debug("Session: deleting API Key user…")
-                    UserProvider().deleteUser(withUsername: NetworkVars.shared.username,
-                                              inContext: bckgContext)
-                    
-                    // Job completed
-                    JSONManager.logger.debug("Session: API Key user deleted")
-                    NetworkVars.shared.fixUserIsAPIKeyV412 = false
-                    
-                    // Try to resume upload requests if the low power mode is not enabled
-                    let name = Notification.Name.NSProcessInfoPowerStateDidChange
-                    NotificationCenter.default.post(name: name, object: nil)
-                }
+        // Retrieve the username
+        let userName = try await JSONManager.shared.sessionGetStatus()
+        
+        // Set Piwigo user
+        NetworkVars.shared.user = userName
+        
+        // Are cached data associated to an API public key?
+        // (pursue logging in without waiting for the fix to complete)
+        if NetworkVars.shared.fixUserIsAPIKeyV412 {
+            DispatchQueue.global(qos: .background).async {
+                // Retrieve background context
+                let bckgContext = DataController.shared.newTaskContext()
+                
+                // Attribute upload requests to appropriate user if necessary
+                JSONManager.logger.debug("Session: attributing API Key upload requests to user…")
+                UploadProvider().attributeAPIKeyUploadRequests(toUserWithID: objectID,
+                                                               inContext: bckgContext)
+                
+                // Delete API Key user (and albums in cascade)
+                JSONManager.logger.debug("Session: deleting API Key user…")
+                UserProvider().deleteUser(withUsername: NetworkVars.shared.username,
+                                          inContext: bckgContext)
+                
+                // Job completed
+                JSONManager.logger.debug("Session: API Key user deleted")
+                NetworkVars.shared.fixUserIsAPIKeyV412 = false
+                
+                // Try to resume upload requests if the low power mode is not enabled
+                let name = Notification.Name.NSProcessInfoPowerStateDidChange
+                NotificationCenter.default.post(name: name, object: nil)
             }
-            
-            // Pursue logging in without waiting for the fix to complete
-            completion()
-        }
-        failure: { error in
-            failure(error)
         }
     }
     

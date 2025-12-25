@@ -97,7 +97,7 @@ extension UploadManager {
             upload.setState(.prepared, save: false)
         }
         
-        Task { @UploadManagement in
+        Task { @UploadManagerActor in
             self.uploadBckgContext.saveIfNeeded()
             await self.didEndPreparation()
         }

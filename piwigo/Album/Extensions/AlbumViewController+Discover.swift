@@ -153,7 +153,7 @@ extension AlbumViewController
 
 
 // MARK: - TagSelectorViewDelegate Methods
-extension AlbumViewController: TagSelectorViewDelegate
+extension AlbumViewController: @MainActor TagSelectorViewDelegate
 {
     func pushTaggedImagesView(_ viewController: UIViewController) {
         // Push sub-album view

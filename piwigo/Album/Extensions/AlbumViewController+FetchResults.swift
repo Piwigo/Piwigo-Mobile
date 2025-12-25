@@ -12,7 +12,7 @@ import piwigoKit
 import UIKit
 
 // MARK: NSFetchedResultsControllerDelegate Methods
-extension AlbumViewController: NSFetchedResultsControllerDelegate
+extension AlbumViewController: @MainActor NSFetchedResultsControllerDelegate
 {
     func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>,
                     didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {

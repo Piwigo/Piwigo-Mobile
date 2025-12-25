@@ -9,13 +9,13 @@
 import Foundation
 
 // Mark CacheVars as Sendable since Apple documents UserDefaults as thread-safe
-public class CacheVars: NSObject, @unchecked Sendable {
+public class CacheVars: @unchecked Sendable {
     
     // Singleton
     public static let shared = CacheVars()
     
     // Remove deprecated stored objects if needed
-    override init() {
+    init() {
         // Deprecated data?
         if let _ = UserDefaults.standard.object(forKey: "couldNotMigrateCoreDataStore") {
             UserDefaults.standard.removeObject(forKey: "couldNotMigrateCoreDataStore")

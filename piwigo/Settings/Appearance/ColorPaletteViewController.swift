@@ -144,12 +144,12 @@ extension ColorPaletteViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let title = getContentOfHeader()
-        return TableViewUtilities.shared.heightOfHeader(withTitle: title,
+        return TableViewUtilities.heightOfHeader(withTitle: title,
                                                         width: tableView.frame.size.width)
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let title = getContentOfHeader()
-        return TableViewUtilities.shared.viewOfHeader(withTitle: title)
+        return TableViewUtilities.viewOfHeader(withTitle: title)
     }
 }

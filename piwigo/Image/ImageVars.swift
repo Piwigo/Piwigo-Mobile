@@ -9,13 +9,21 @@
 import Foundation
 import piwigoKit
 
-class ImageVars: NSObject {
+// Mark ImageVars as Sendable since Apple documents UserDefaults as thread-safe
+final class ImageVars: @unchecked Sendable {
     
     // Singleton
     static let shared = ImageVars()
-    
+
     // Remove deprecated stored objects if needed
-//    override init() {
+    init() {
+        // Not yet initialised data?
+        if UserDefaults.standard.object(forKey: "defaultImagePreviewSize") == nil {
+            DispatchQueue.main.async {
+                let rawValue = ImageUtilities.optimumImageSizeForDevice().rawValue
+                UserDefaults.standard.set(rawValue, forKey: "defaultImagePreviewSize")
+            }
+        }
 //        // Deprecated data?
 //        if let _ = UserDefaults.standard.object(forKey: "test") {
 //            UserDefaults.standard.removeObject(forKey: "test")
@@ -23,12 +31,12 @@ class ImageVars: NSObject {
 //        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
 //            UserDefaults.dataSuite.removeObject(forKey: "test")
 //        }
-//    }
+    }
 
     // MARK: - Vars in UserDefaults / Standard
     // Images variables stored in UserDefaults / Standard
     /// - Size of the image file presented in preview mode on the main screen (i.e. full screen mode)
-    @UserDefault("defaultImagePreviewSize", defaultValue: ImageUtilities.optimumImageSizeForDevice().rawValue)
+    @UserDefault("defaultImagePreviewSize", defaultValue: pwgImageSize.medium.rawValue)
     var defaultImagePreviewSize: Int16
 
     /// - Share image by AirDrop with metadata by default

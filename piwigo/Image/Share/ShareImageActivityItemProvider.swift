@@ -151,7 +151,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!\n%@"), error.localizedDescription)
             sema.signal()
         }
-        let _ = sema.wait(timeout: .distantFuture)
+        _ = sema.wait(timeout: .distantFuture)
 
         // Cancel item task if image could not be retrieved
         if alertTitle != nil {

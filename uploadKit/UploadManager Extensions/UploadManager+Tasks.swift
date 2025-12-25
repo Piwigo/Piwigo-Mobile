@@ -131,7 +131,7 @@ extension UploadManager
             }
             
             // Upload file ready, so we start the transfer
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 launchTransfer(of: prepared)
             }
             return
@@ -148,7 +148,7 @@ extension UploadManager
             }
             
             // Prepare the next upload
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 await prepare(waiting)
             }
             return
@@ -203,19 +203,26 @@ extension UploadManager
         }
 
         // Moderate images by category
-        JSONManager.shared.checkSession(ofUser: user) {
-            for categoryId in categories {
-                // Set list of images to moderate in that category
-                let categoryImages = uploads.filter({$0.category == categoryId})
-                let imageIds = String(categoryImages.map({ "\($0.imageId)," }).reduce("", +).dropLast())
-                
-                // Moderate uploaded images
-                self.moderateImages(withIds: imageIds, inCategory: categoryId) { (success, validatedIDs) in
-                    if !success { return }    // Will retry later
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+
+                // Loop over albums
+                for categoryId in categories {
+                    // Set list of images to moderate in that category
+                    let categoryImages = uploads.filter({$0.category == categoryId})
+                    let imageIDs = String(categoryImages.map({ "\($0.imageId)," }).reduce("", +).dropLast())
+
+                    // Moderate updated images
+                    let validatedIDs = try await JSONManager.shared.moderateImages(withIds: imageIDs, inCategory: categoryId)
+
+                    // Loop over moderated images
+                    let validatedImages = categoryImages.filter({validatedIDs.contains($0.imageId)})
                     
                     // Update state of upload requests
-                    categoryImages.forEach({$0.setState(.moderated, save: true)})
-                    
+                    validatedImages.forEach({$0.setState(.moderated, save: true)})
+
                     // Delete image in Photo Library if wanted
                     let uploadsToDelete = categoryImages.filter({$0.deleteImageAfterUpload == true})
                         .filter({validatedIDs.contains($0.imageId)})
@@ -224,7 +231,10 @@ extension UploadManager
                     self.deleteAssets(associatedToUploads: uploadIDs, uploadLocalIDs)
                 }
             }
-        } failure: { _ in }
+            catch {
+                // No report — Will retry later
+            }
+        }
     }
     
     
@@ -308,7 +318,7 @@ extension UploadManager
         // Get active upload tasks and initialise isUploading
         frgdSession.getAllTasks { [unowned self] uploadTasks in
             // Loop over the tasks launched in the foreground
-            Task { @UploadManagement in
+            Task { @UploadManagerActor in
                 for task in uploadTasks {
                     switch task.state {
                     case .running:
@@ -338,7 +348,7 @@ extension UploadManager
             // Continue with background tasks
             bckgSession.getAllTasks { [unowned self] uploadTasks in
                 // Loop over the tasks
-                Task { @UploadManagement in
+                Task { @UploadManagerActor in
                     for task in uploadTasks {
                         switch task.state {
                         case .running:

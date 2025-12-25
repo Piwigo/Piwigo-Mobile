@@ -128,6 +128,7 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
         }
     }
     
+    @MainActor
     private func presentImageView(using transitionContext: any UIViewControllerContextTransitioning,
                                   imageViewController: ImageViewController,
                                   detailViewController: UIViewController,
@@ -208,21 +209,23 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
                 toolbarFadeView?.alpha = 1
             }
         }, completion: { _ in
-            // Remove views which performed the transition
-            self.cellImageViewSnapshot.removeFromSuperview()
-            imageViewSnapshot.removeFromSuperview()
-            fadeView.removeFromSuperview()
-            navBarFadeView?.removeFromSuperview()
-            toolbarFadeView?.removeFromSuperview()
+            DispatchQueue.main.async {
+                // Remove views which performed the transition
+                self.cellImageViewSnapshot.removeFromSuperview()
+                imageViewSnapshot.removeFromSuperview()
+                fadeView.removeFromSuperview()
+                navBarFadeView?.removeFromSuperview()
+                toolbarFadeView?.removeFromSuperview()
 
-            // Final view was transparent during the transition
-            toView.alpha = 1
-            
-            // Tell transitionContext that transition finished
-            transitionContext.completeTransition(true)
+                // Final view was transparent during the transition
+                toView.alpha = 1
+                
+                // Tell transitionContext that transition finished
+                transitionContext.completeTransition(true)
+            }
         })
     }
-
+    
     private func dismissImageView(using transitionContext: any UIViewControllerContextTransitioning,
                                   imageViewController: ImageViewController,
                                   detailViewController: UIViewController,
@@ -303,16 +306,18 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
                 toolbarFadeView?.alpha = 0
             }
         }, completion: { _ in
-            // Remove views which performed the transition
-            self.cellImageViewSnapshot.removeFromSuperview()
-            fadeView.removeFromSuperview()
-            navBarFadeView.removeFromSuperview()
-            imageViewSnapshot.removeFromSuperview()
-            imgNavBarFadeView?.removeFromSuperview()
-            toolbarFadeView?.removeFromSuperview()
-            
-            // Tell transitionContext that transition finished
-            transitionContext.completeTransition(true)
+            DispatchQueue.main.async {
+                // Remove views which performed the transition
+                self.cellImageViewSnapshot.removeFromSuperview()
+                fadeView.removeFromSuperview()
+                navBarFadeView.removeFromSuperview()
+                imageViewSnapshot.removeFromSuperview()
+                imgNavBarFadeView?.removeFromSuperview()
+                toolbarFadeView?.removeFromSuperview()
+                
+                // Tell transitionContext that transition finished
+                transitionContext.completeTransition(true)
+            }
         })
     }
 }

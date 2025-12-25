@@ -363,22 +363,23 @@ class SelectCategoryViewController: UIViewController {
         // Use the AlbumProvider to fetch album data recursively. On completion,
         // handle general UI updates and error alerts on the main queue.
         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
-        JSONManager.shared.checkSession(ofUser: user) { [self] in
-            // Fetch albums recursively
-            AlbumProvider().fetchAlbums(forUser: user, inParentWithId: 0, recursively: true,
-                                        thumbnailSize: thumnailSize) { [self] error in
-                DispatchQueue.main.async { [self] in
-                    guard let error = error
-                    else {
-                        navigationController?.hideHUD { }
-                        return
-                    }
-                    didFetchAlbumsWithError(error: error)
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
+                                                          lastConnected: self.user.lastUsed)
+                
+                // Fetch albums recursively
+                try await AlbumProvider().fetchAlbums(forUser: self.user, inParentWithId: 0, recursively: true,
+                                                      thumbnailSize: thumnailSize)
+                
+                await MainActor.run { [self] in
+                    self.navigationController?.hideHUD { }
                 }
-            }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
-                didFetchAlbumsWithError(error: error)
+            } catch let error as PwgKitError {
+                await MainActor.run { [self] in
+                    self.didFetchAlbumsWithError(error: error)
+                }
             }
         }
     }
@@ -567,7 +568,7 @@ class SelectCategoryViewController: UIViewController {
 
 
 // MARK: - CategoryCellDelegate Methods
-extension SelectCategoryViewController: CategoryCellDelegate {
+extension SelectCategoryViewController: @MainActor CategoryCellDelegate {
     // Called when the user taps a sub-category button
     func tappedDisclosure(of parentAlbum: Album) {
         // Update list of albums showing sub-albums

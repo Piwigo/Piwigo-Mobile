@@ -453,7 +453,7 @@ extension VideoDetailViewController: UIScrollViewDelegate
 
 
 // MARK: - VideoControlsDelegate Methods
-extension VideoDetailViewController: VideoControlsDelegate
+extension VideoDetailViewController: @MainActor VideoControlsDelegate
 {
     func didChangeTime(value: Double) {
         if let video = video {

@@ -60,15 +60,23 @@ extension TagsViewController
         showHUD(withTitle: NSLocalizedString("tagsAddHUD_label", comment: "Creating Tag…"))
 
         // Add new tag
-        DispatchQueue.global(qos: .userInteractive).async {
-            TagProvider().addTag(with: tagName) { error in
-                DispatchQueue.main.async {
-                    guard let error = error else {
-                        self.updateHUDwithSuccess {
-                            self.hideHUD(afterDelay: pwgDelayHUD, completion: {})
-                        }
-                        return
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                
+                // Add tag to server and cache
+                try await TagProvider().addTag(with: tagName)
+                
+                // Update UI
+                await MainActor.run {
+                    self.updateHUDwithSuccess {
+                        self.hideHUD(afterDelay: pwgDelayHUD, completion: {})
                     }
+                }
+            }
+            catch let error as PwgKitError {
+                await MainActor.run {
                     self.hideHUD {
                         self.dismissPiwigoError(
                             withTitle: NSLocalizedString("tagsAddError_title", comment: "Create Fail"),

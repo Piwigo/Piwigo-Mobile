@@ -97,13 +97,21 @@ extension UIViewController {
         }
     }
 
+    @available(*, renamed: "hideHUD()")
     @MainActor
     func hideHUD(completion: @escaping () -> Void) {
+        Task {
+            await hideHUD()
+            completion()
+        }
+    }
+    
+    @MainActor
+    func hideHUD() async {
         // Hide and remove the HUD
         if let hud = self.view.viewWithTag(pwgTagHUD) as? PiwigoHUD {
             hud.hide()
         }
-        completion()
     }
 
     
@@ -126,9 +134,19 @@ extension UIViewController {
                                 actions: [dismissAction])
     }
 
+    @available(*, renamed: "cancelDismissPiwigoError(withTitle:message:errorMessage:cancel:)")
     @MainActor
     func cancelDismissPiwigoError(withTitle title:String, message:String = "", errorMessage:String = "",
                                   cancel: @escaping () -> Void, dismiss: @escaping () -> Void) {
+        Task {
+            await cancelDismissPiwigoError(withTitle: title, message: message, errorMessage: errorMessage, cancel: cancel)
+            dismiss()
+        }
+    }
+    
+    @MainActor
+    func cancelDismissPiwigoError(withTitle title:String, message:String = "", errorMessage:String = "",
+                                  cancel: @escaping () -> Void) async {
         // Prepare message
         var wholeMessage = message
         if errorMessage.count > 0 {
@@ -138,12 +156,14 @@ extension UIViewController {
         // Prepare actions
         let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment:"Cancel"),
                                          style: .cancel) { _ in cancel() }
-        let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
-                                          style: .default) { _ in dismiss() }
-
-        // Present alert
-        self.presentPiwigoAlert(withTitle: title, message: wholeMessage,
-                                actions: [cancelAction, dismissAction])
+        return await withCheckedContinuation { continuation in
+            let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
+                                              style: .default) { _ in continuation.resume(returning: ()) }
+            
+            // Present alert
+            self.presentPiwigoAlert(withTitle: title, message: wholeMessage,
+                                    actions: [cancelAction, dismissAction])
+        }
     }
 
     @MainActor
