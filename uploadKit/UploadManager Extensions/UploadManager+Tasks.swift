@@ -184,9 +184,22 @@ extension UploadManager
         let uploadsToDelete = (completed.fetchedObjects ?? [])
             .filter({$0.deleteImageAfterUpload == true})
             .filter({isDeleting.contains($0.objectID) == false})
-        let uploadIDs = uploadsToDelete.map(\.objectID)
-        let uploadLocalIDs = uploadsToDelete.map(\.localIdentifier)
-        deleteAssets(associatedToUploads: uploadIDs, uploadLocalIDs)
+            .filter({$0.localIdentifier.contains(kClipboardPrefix) == false})
+        if uploadsToDelete.count == 0 { return }
+        
+        // Delete upload requests with assets
+        let objectURIs = uploadsToDelete.map({ $0.objectID.uriRepresentation().absoluteString + "," }).reduce("",+)
+        let localIDs = uploadsToDelete.map({ $0.localIdentifier + "," }).reduce ("",+)
+        let userInfo: [String : Any] = ["objectURIs" : objectURIs,
+                                        "localIDs" : localIDs];
+        NotificationCenter.default.post(name: .pwgDeleteUploadRequestsAndAssets,
+                                        object: nil, userInfo: userInfo)
+        // Code below crashes with Xcode 26.2 (17C52)
+//        let uploadIDs = uploadsToDelete.map(\.objectID)
+//        let uploadLocalIDs = uploadsToDelete.map(\.localIdentifier)
+//        Task { @MainActor in
+//            await self.deleteAssets(associatedToUploads: uploadIDs, uploadLocalIDs)
+//        }
     }
     
     func moderateCompletedUploads(_ uploads: [Upload]) -> Void
@@ -226,9 +239,18 @@ extension UploadManager
                     // Delete image in Photo Library if wanted
                     let uploadsToDelete = categoryImages.filter({$0.deleteImageAfterUpload == true})
                         .filter({validatedIDs.contains($0.imageId)})
-                    let uploadIDs = uploadsToDelete.map(\.objectID)
-                    let uploadLocalIDs = uploadsToDelete.map(\.localIdentifier)
-                    self.deleteAssets(associatedToUploads: uploadIDs, uploadLocalIDs)
+                    let objectURIs = uploadsToDelete.map({ $0.objectID.uriRepresentation().absoluteString + "," }).reduce("",+)
+                    let localIDs = uploadsToDelete.map({ $0.localIdentifier + "," }).reduce ("",+)
+                    let userInfo: [String : Any] = ["objectURIs" : objectURIs,
+                                                    "localIDs" : localIDs];
+                    NotificationCenter.default.post(name: .pwgDeleteUploadRequestsAndAssets,
+                                                    object: nil, userInfo: userInfo)
+                    // Code below crashes with Xcode 26.2 (17C52)
+            //        let uploadIDs = uploadsToDelete.map(\.objectID)
+            //        let uploadLocalIDs = uploadsToDelete.map(\.localIdentifier)
+            //        Task { @MainActor in
+            //            await self.deleteAssets(associatedToUploads: uploadIDs, uploadLocalIDs)
+            //        }
                 }
             }
             catch {

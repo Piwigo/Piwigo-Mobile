@@ -97,10 +97,19 @@ extension UploadManager
                 UploadVars.shared.dateOfLastPhotoLibraryDeletion = Date().timeIntervalSinceReferenceDate
                 
                 // Suggest to delete assets from the Photo Library
-                UploadManager.logger.notice("\(uploadsToDelete.count, privacy: .public) assets identified for deletion from the Photo Library.")
-                let uploadIDs = uploadsToDelete.map(\.objectID)
-                let uploadLocalIDs = uploadsToDelete.map(\.localIdentifier)
-                deleteAssets(associatedToUploads: uploadIDs, uploadLocalIDs)
+                UploadManager.logger.notice("resumeOperations() identified \(uploadsToDelete.count, privacy: .public) assets for deletion from the Photo Library.")
+                let objectURIs = uploadsToDelete.map({ $0.objectID.uriRepresentation().absoluteString + "," }).reduce("",+)
+                let localIDs = uploadsToDelete.map({ $0.localIdentifier + "," }).reduce ("",+)
+                let userInfo: [String : Any] = ["objectURIs" : objectURIs,
+                                                "localIDs" : localIDs];
+                NotificationCenter.default.post(name: .pwgDeleteUploadRequestsAndAssets,
+                                                object: nil, userInfo: userInfo)
+                // Code below crashes with Xcode 26.2 (17C52)
+//                let uploadIDs = uploadsToDelete.map(\.objectID)
+//                let uploadLocalIDs = uploadsToDelete.map(\.localIdentifier)
+//                Task { @MainActor in
+//                    await self.deleteAssets(associatedToUploads: uploadIDs, uploadLocalIDs)
+//                }
             }
         }
         
@@ -186,39 +195,39 @@ extension UploadManager
     
     
     // MARK: - Clean Photo Library
-    public func deleteAssets(associatedToUploads uploadIDs: [NSManagedObjectID], _ uploadLocalIDs: [String] = [], and assetIDs: [String] = []) -> Void {
+//    @MainActor
+//    func deleteAssets(associatedToUploads uploadIDs: [NSManagedObjectID], _ uploadLocalIDs: [String]) async -> Void {
+//        // Remember which uploads are concerned to avoid duplicate deletions
+//        Task { @UploadManagerActor in
+//            willDeleteAsssets(associatedToUploads: uploadIDs)
+//        }
+//        
+//        // Delete assets in the main thread
+//        do {
+//            // Delete image from Photo Library
+//            let assetsToDelete = PHAsset.fetchAssets(withLocalIdentifiers: Array(uploadLocalIDs), options: nil)
+//            try await PHPhotoLibrary.shared().performChanges {
+//                PHAssetChangeRequest.deleteAssets(assetsToDelete as (any NSFastEnumeration))
+//            }
+//            
+//            // Delete associated upload request if any
+//            Task { @UploadManagerActor in
+//                deleteUploads(uploadIDs)
+//            }
+//        }
+//        catch {
+//            Task { @UploadManagerActor in
+//                disableDeleteAfterUpload(uploadIDs)
+//            }
+//        }
+//    }
+    
+    public func willDeleteAsssets(associatedToUploads uploadIDs: [NSManagedObjectID]) {
         // Remember which uploads are concerned to avoid duplicate deletions
         isDeleting = Set(uploadIDs)
-        
-        // Combine unique assets to delete
-        var imageIDs = Set(uploadLocalIDs)
-        imageIDs.formUnion(assetIDs)
-        let assetsToDelete = PHAsset.fetchAssets(withLocalIdentifiers: Array(imageIDs), options: nil)
-        if assetsToDelete.count == 0 {
-            // Assets already deleted
-            self.deleteUploadsInRightQueue(uploadIDs)
-            return
-        }
-        
-        // Delete images from Photo Library
-        DispatchQueue.main.async {
-            PHPhotoLibrary.shared().performChanges {
-                // Delete images from the library
-                PHAssetChangeRequest.deleteAssets(assetsToDelete as (any NSFastEnumeration))
-            }
-            completionHandler: { success, error in
-                Task { @UploadManagerActor in
-                    if success {
-                        self.deleteUploadsInRightQueue(uploadIDs)
-                    } else {
-                        self.disableDeleteAfterUpload(uploadIDs)
-                    }
-                }
-            }
-        }
     }
     
-    private func deleteUploadsInRightQueue(_ uploadIDs: [NSManagedObjectID]) {
+    public func deleteUploads(_ uploadIDs: [NSManagedObjectID]) {
         // Empty array?
         if uploadIDs.isEmpty {
             self.isDeleting = Set()
@@ -231,7 +240,7 @@ extension UploadManager
         }
     }
     
-    private func disableDeleteAfterUpload(_ uploadIDs: [NSManagedObjectID]) {
+    public func disableDeleteAfterUpload(_ uploadIDs: [NSManagedObjectID]) {
         // Empty array?
         if uploadIDs.isEmpty {
             self.isDeleting = Set()

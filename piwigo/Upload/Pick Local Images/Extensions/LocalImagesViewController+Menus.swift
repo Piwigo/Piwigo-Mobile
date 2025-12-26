@@ -260,11 +260,13 @@ extension LocalImagesViewController {
             }
         }
         
-        // Delete selected images
-        let assetsToDelete = selectedImages.compactMap({$0?.localIdentifier}).compactMap({$0})
+        // Also delete selected images
+        var assetIDsToDelete = Set(uploadsToDelete.map(\.localIdentifier))
+        let selectedAssetIDs = selectedImages.compactMap({$0?.localIdentifier}).compactMap({$0})
+        assetIDsToDelete.formUnion(selectedAssetIDs)
         
         // Anything to delete? (should always be true)
-        if assetsToDelete.isEmpty, uploadsToDelete.isEmpty {
+        if assetIDsToDelete.isEmpty, uploadsToDelete.isEmpty {
             return
         }
         
@@ -277,9 +279,27 @@ extension LocalImagesViewController {
         let deleteAction = UIAlertAction(title: title, style: .destructive, handler: { action in
             // Delete images and upload requests
             let uploadIDs = uploadsToDelete.map(\.objectID)
-            let uploadLocalIDs = uploadsToDelete.map(\.localIdentifier)
+            let assetsToDelete = PHAsset.fetchAssets(withLocalIdentifiers: Array(assetIDsToDelete), options: nil)
             Task { @UploadManagerActor in
-                UploadManager.shared.deleteAssets(associatedToUploads: uploadIDs, uploadLocalIDs, and: assetsToDelete)
+                UploadManager.shared.willDeleteAsssets(associatedToUploads: uploadIDs)
+            }
+            Task { @MainActor in
+                do {
+                    // Delete image from Photo Library
+                    try await PHPhotoLibrary.shared().performChanges {
+                        PHAssetChangeRequest.deleteAssets(assetsToDelete as (any NSFastEnumeration))
+                    }
+                    
+                    // Delete associated upload request if any
+                    Task { @UploadManagerActor in
+                        UploadManager.shared.deleteUploads(uploadIDs)
+                    }
+                }
+                catch {
+                    Task { @UploadManagerActor in
+                        UploadManager.shared.disableDeleteAfterUpload(uploadIDs)
+                    }
+                }
             }
         })
         alert.addAction(defaultAction)

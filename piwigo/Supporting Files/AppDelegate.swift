@@ -13,6 +13,7 @@ import CoreHaptics
 import Foundation
 import Intents
 import LocalAuthentication
+import Photos
 import UIKit
 
 import piwigoKit
@@ -101,6 +102,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Register auto-upload appender failures
         NotificationCenter.default.addObserver(self, selector: #selector(displayAutoUploadErrorAndResume),
                                                name: Notification.Name.pwgAppendAutoUploadRequestsFailed, object: nil)
+        
+        // Register deletion of upload requests and assets (requires execution on the main thread)
+        NotificationCenter.default.addObserver(forName: Notification.Name.pwgDeleteUploadRequestsAndAssets, object: nil, queue: .main) { notification in
+            guard let objectURIs = notification.userInfo?["objectURIs"] as? String,
+                  let localIDs = notification.userInfo?["localIDs"] as? String
+            else { return }
+            let uploadURIs: [String] = objectURIs.components(separatedBy: ",").dropLast()
+            let uploadLocalIDs: [String] = localIDs.components(separatedBy: ",").dropLast()
+            self.deleteAssets(associatedToUploads: uploadURIs, uploadLocalIDs)
+        }
+//        NotificationCenter.default.addObserver(self, selector: #selector(deleteAssetsAssociatedToUploads),
+//                                               name: Notification.Name.pwgDeleteUploadRequestsAndAssets, object: nil)
         return true
     }
 
@@ -580,7 +593,45 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
-
+    
+    // Function moved to AppDelegate and called by notification center on main thread
+    // because calling it on the main thread in the UploadManager crashes.
+    func deleteAssets(associatedToUploads uploadURIs: [String], _ uploadLocalIDs: [String]) {
+        // Remember which uploads are concerned to avoid duplicate deletions
+        var uploadIDs = [NSManagedObjectID]()
+        Task { @UploadManagerActor in
+            uploadURIs.forEach { uploadURIstr in
+                if let objectURI = URL(string: uploadURIstr),
+                   let uploadID = UploadManager.shared.uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) {
+                    uploadIDs.append(uploadID)
+                }
+            }
+            UploadManager.shared.willDeleteAsssets(associatedToUploads: uploadIDs)
+        }
+        
+        // Retrieve assets
+        let assetsToDelete = PHAsset.fetchAssets(withLocalIdentifiers: uploadLocalIDs, options: nil)
+        
+        // Delete images from the library (can't use an async function here)
+        PHPhotoLibrary.shared().performChanges {
+            PHAssetChangeRequest.deleteAssets(assetsToDelete as (any NSFastEnumeration))
+        }
+        completionHandler: { success, error in
+            let myUploadIDs = uploadIDs
+            Task { @UploadManagerActor in
+                if success {
+                    Task { @UploadManagerActor in
+                        UploadManager.shared.deleteUploads(myUploadIDs)
+                    }
+                } else {
+                    Task { @UploadManagerActor in
+                        UploadManager.shared.disableDeleteAfterUpload(myUploadIDs)
+                    }
+                }
+            }
+        }
+    }
+    
     
     // MARK: - Intents
     func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {

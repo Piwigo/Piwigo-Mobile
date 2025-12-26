@@ -297,19 +297,35 @@ extension LocalImagesViewController: UICollectionViewDelegate
     private func deleteAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
         return UIAction(title: NSLocalizedString("localImages_deleteTitle", comment: "Remove from Camera Roll"),
                         image: UIImage(systemName: "trash"), attributes: .destructive) { action in
-            // Get image identifier and check if this image has been uploaded
-            if let upload = (self.uploads.fetchedObjects ?? []).filter({$0.localIdentifier == cell.localIdentifier}).first {
-                // Delete uploaded image
+            // Get asset to delete
+            let index = self.getImageIndex(for: indexPath)
+            let imageAsset = self.fetchedImages[index]
+            let uploadID = (self.uploads.fetchedObjects ?? []).filter({$0.localIdentifier == cell.localIdentifier}).first?.objectID
+            if let uploadID {
                 Task { @UploadManagerActor in
-                    UploadManager.shared.deleteAssets(associatedToUploads: [upload.objectID], [upload.localIdentifier])
+                    UploadManager.shared.willDeleteAsssets(associatedToUploads: [uploadID])
                 }
-            } else {
-                // Delete images from Photo Library
-                let index = self.getImageIndex(for: indexPath)
-                let imageAsset = self.fetchedImages[index]
-                PHPhotoLibrary.shared().performChanges {
-                    // Delete images from the library
-                    PHAssetChangeRequest.deleteAssets([imageAsset] as (any NSFastEnumeration))
+            }
+            Task { @MainActor in
+                do {
+                    // Delete image from Photo Library
+                    try await PHPhotoLibrary.shared().performChanges {
+                        PHAssetChangeRequest.deleteAssets([imageAsset] as (any NSFastEnumeration))
+                    }
+                    
+                    // Delete associated upload request if any
+                    if let uploadID {
+                        Task { @UploadManagerActor in
+                            UploadManager.shared.deleteUploads([uploadID])
+                        }
+                    }
+                }
+                catch {
+                    if let uploadID {
+                        Task { @UploadManagerActor in
+                            UploadManager.shared.disableDeleteAfterUpload([uploadID])
+                        }
+                    }
                 }
             }
         }
