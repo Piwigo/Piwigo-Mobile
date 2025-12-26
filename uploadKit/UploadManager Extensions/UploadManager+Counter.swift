@@ -79,7 +79,7 @@ extension UploadManager {
             uploadCounters[index].bytesSent += bytes
 #if DEBUG
             let value = UploadSessionsDelegate.bytesFormatter.string(from: NSNumber(value: bytes)) ?? ""
-            UploadManager.logger.notice("\(identifier, privacy: .public) | Added \(bytes, privacy: .public) bytes to counter.")
+            UploadManager.logger.notice("\(identifier, privacy: .public) | Added \(value, privacy: .public) bytes to counter.")
 #endif
         }
         else {
