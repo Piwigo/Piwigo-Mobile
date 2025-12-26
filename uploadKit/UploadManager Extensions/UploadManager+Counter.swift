@@ -41,14 +41,14 @@ extension UploadManager {
             uploadCounters[index].bytesSent = Int64.zero
             uploadCounters[index].totalBytes = Int64.zero
 #if DEBUG
-            UploadManager.logger.notice("\(identifier, privacy: .public) | Did reset byte counts for counter.")
+            UploadManager.logger.notice("\(identifier, privacy: .public) • Did reset byte counts for counter")
 #endif
         }
         else {
             let newCounter = UploadCounter(identifier: identifier)
             uploadCounters.append(newCounter)
 #if DEBUG
-            UploadManager.logger.notice("\(identifier, privacy: .public)| Initialised counter.")
+            UploadManager.logger.notice("\(identifier, privacy: .public) • Initialised counter")
 #endif
         }
     }
@@ -59,7 +59,7 @@ extension UploadManager {
             uploadCounters[index].totalBytes = totalBytes
 #if DEBUG
             let value = UploadSessionsDelegate.bytesFormatter.string(from: NSNumber(value: totalBytes)) ?? ""
-            UploadManager.logger.notice("\(identifier, privacy: .public) | Did set totalBytes of counter to \(value, privacy: .public) bytes.")
+            UploadManager.logger.notice("\(identifier, privacy: .public) • Did set totalBytes of counter to \(value, privacy: .public) bytes")
 #endif
         }
         else {  // Situation where the app was relauched
@@ -68,7 +68,7 @@ extension UploadManager {
             uploadCounters.append(newCounter)
 #if DEBUG
             let value = UploadSessionsDelegate.bytesFormatter.string(from: NSNumber(value: totalBytes)) ?? ""
-            UploadManager.logger.notice("\(identifier, privacy: .public) | Reinitialised counter with \(value, privacy: .public) total bytes.")
+            UploadManager.logger.notice("\(identifier, privacy: .public) • Reinitialised counter with \(value, privacy: .public) total bytes")
 #endif
         }
     }
@@ -79,7 +79,7 @@ extension UploadManager {
             uploadCounters[index].bytesSent += bytes
 #if DEBUG
             let value = UploadSessionsDelegate.bytesFormatter.string(from: NSNumber(value: bytes)) ?? ""
-            UploadManager.logger.notice("\(identifier, privacy: .public) | Added \(value, privacy: .public) bytes to counter.")
+            UploadManager.logger.notice("\(identifier, privacy: .public) • Added \(value, privacy: .public) bytes to counter")
 #endif
         }
         else {
@@ -88,7 +88,7 @@ extension UploadManager {
             uploadCounters.append(newCounter)
 #if DEBUG
             let value = UploadSessionsDelegate.bytesFormatter.string(from: NSNumber(value: bytes)) ?? ""
-            UploadManager.logger.notice("\(identifier, privacy: .public) | Reinitialised counter with \(value, privacy: .public) bytes uploaded.")
+            UploadManager.logger.notice("\(identifier, privacy: .public) • Reinitialised counter with \(value, privacy: .public) bytes uploaded")
 #endif
             debugPrint("[UploadManager] Initialised counter for \(identifier)")
         }
@@ -107,7 +107,7 @@ extension UploadManager {
         if let index = uploadCounters.firstIndex(where: {$0.uid == identifier}) {
             uploadCounters.remove(at: index)
 #if DEBUG
-            UploadManager.logger.notice("\(identifier, privacy: .public) | Removed counter.")
+            UploadManager.logger.notice("\(identifier, privacy: .public) | Removed counter")
 #endif
         }
     }

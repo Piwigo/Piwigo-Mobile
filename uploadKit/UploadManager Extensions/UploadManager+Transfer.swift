@@ -14,7 +14,7 @@ extension UploadManager {
     
     // MARK: - Transfer Image if Necessary
     public func launchTransfer(of upload: Upload) -> Void {
-        UploadManager.logger.notice("Launch transfer of \(upload.fileName, privacy: .public) if needed (\(upload.md5Sum, privacy: .public))")
+        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Launch transfer of \(upload.fileName, privacy: .public)")
         
         // Update list of transfers
         if isUploading.contains(upload.objectID) {
@@ -188,7 +188,7 @@ extension UploadManager {
     
     func transfertImage(for upload: Upload) async {
         // Initialise or reset counter of progress bar in case we repeat the transfer
-        initCounter(withID: upload.localIdentifier)
+        initCounter(withID: upload.objectID.uriRepresentation().absoluteString)
         
         // Choose recent method when called by:
         /// - admins as from Piwigo server 11 or previous versions with the uploadAsync plugin installed.
@@ -323,7 +323,7 @@ extension UploadManager {
         let offset = chunkSize * chunk
         let thisChunkSize = length - offset > chunkSize ? chunkSize : length - offset
         var chunkData = imageData.subdata(in: offset..<offset + thisChunkSize)
-        UploadManager.logger.notice("sendInForeground() chunk #\(chunk+1, privacy: .public) with chunkSize:\(chunkSize, privacy: .public), thisChunkSize:\(thisChunkSize, privacy: .public), total:\(length, privacy: .public)")
+        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • sendInForeground() chunk #\(chunk+1, privacy: .public) with chunkSize:\(chunkSize, privacy: .public), thisChunkSize:\(thisChunkSize, privacy: .public), total:\(length, privacy: .public)")
         
         // Prepare URL
         let url = URL(string: NetworkVars.shared.service + "/ws.php?\(pwgImagesUpload)")
@@ -376,11 +376,11 @@ extension UploadManager {
         // Update the total number of bytes to upload if needed
         if chunk+1 < chunks {
             let totalBytes = Int64(imageData.count) + (bytesToSend - Int64(chunkSize)) * Int64(chunks)
-            self.setTotalBytes(totalBytes, forCounterWithID: upload.localIdentifier)
+            self.setTotalBytes(totalBytes, forCounterWithID: upload.objectID.uriRepresentation().absoluteString)
         }
         
         // Resume task
-        UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | Task \(task.taskIdentifier) resumed (\(chunk+1)/\(chunks))")
+        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Task \(task.taskIdentifier) resumed (\(chunk+1)/\(chunks))")
         task.resume()
 
         // Release memory
@@ -407,7 +407,7 @@ extension UploadManager {
             guard let objectURI = URL(string: objectURIstr),
                   let uploadID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI)
             else {
-                UploadManager.logger.notice("Task \(task.taskIdentifier, privacy: .public) not associated to an upload!")
+                UploadManager.logger.notice("\(objectURIstr) • Task \(task.taskIdentifier, privacy: .public) not associated to an upload!")
                 return
             }
 
@@ -444,7 +444,7 @@ extension UploadManager {
                 return
             }
             catch {
-                UploadManager.logger.notice("Failed to retrieve Core Data object from task \(task.taskIdentifier, privacy: .public)")
+                UploadManager.logger.notice("\(objectURIstr) • Failed to retrieve Core Data object from task \(task.taskIdentifier, privacy: .public)")
                 // In foreground, consider next image
                 Task { @UploadManagerActor in
 //                    if #unavailable(iOS 26.0) {
@@ -459,7 +459,7 @@ extension UploadManager {
         if chunk + 1 < chunks { return }
 
         // Delete uploaded files from Piwigo/Uploads directory
-        UploadManager.logger.notice("Did complete task \(task.taskIdentifier, privacy: .public), delete files")
+        UploadManager.logger.notice("\(objectURIstr) • Did complete task \(task.taskIdentifier, privacy: .public), delete files…")
         var imageFile = ""
         if #available(iOS 16.0, *) {
             imageFile = identifier.replacing("/", with: "-")
@@ -484,7 +484,7 @@ extension UploadManager {
         guard let objectURI = URL(string: objectURIstr),
               let uploadID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI)
         else {
-            UploadManager.logger.notice("Task \(task.taskIdentifier, privacy: .public) not associated to an upload!")
+            UploadManager.logger.notice("\(objectURIstr) • Task \(task.taskIdentifier, privacy: .public) not associated to an upload!")
             return
         }
 
@@ -500,7 +500,7 @@ extension UploadManager {
             // Check returned data
             if data.isEmpty {
                 // Update upload request status
-                UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | Task \(task.taskIdentifier, privacy: .public) returned an Empty JSON object")
+                UploadManager.logger.notice("\(objectURIstr) • Task \(task.taskIdentifier, privacy: .public) returned an Empty JSON object")
                 upload.setState(.uploadingError, error: .emptyJSONobject, save: false)
                 Task { @UploadManagerActor in
                     self.uploadBckgContext.saveIfNeeded()
@@ -514,7 +514,7 @@ extension UploadManager {
             guard jsonData.extractingBalancedBraces() else {
                 // Update upload request status
                 let dataStr = String(decoding: data, as: UTF8.self)
-                UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | Task \(task.taskIdentifier, privacy: .public) returned the invalid JSON object: \(dataStr, privacy: .public)")
+                UploadManager.logger.notice("\(objectURIstr) • Task \(task.taskIdentifier, privacy: .public) returned the invalid JSON object: \(dataStr, privacy: .public)")
                 upload.setState(.uploadingError, error: .invalidJSONobject, save: false)
                 Task { @UploadManagerActor in
                     uploadBckgContext.saveIfNeeded()
@@ -580,7 +580,7 @@ extension UploadManager {
             }
         }
         catch {
-            UploadManager.logger.notice("Failed to retrieve Core Data object from task \(task.taskIdentifier, privacy: .public)")
+            UploadManager.logger.notice("\(objectURIstr) • Failed to retrieve Core Data object from task \(task.taskIdentifier, privacy: .public)")
             // In foreground, consider next image
             Task { @UploadManagerActor in
 //                if #unavailable(iOS 26.0) {
@@ -688,22 +688,22 @@ extension UploadManager {
         // Adds bytes expected to be sent to counter
         if UploadVars.shared.isExecutingBGUploadTask {
             countOfBytesToUpload += httpBody.count
-            UploadManager.logger.notice("transferInBackground() | countOfBytesToUpload: \(self.countOfBytesToUpload)")
+            UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Added \(self.countOfBytesToUpload) bytes to countOfBytesToUpload")
         }
         
         // Remember the total number of bytes to upload
         if chunks == 1 {
             // Only one chunk to upload
-            self.setTotalBytes(bytesToSend, forCounterWithID: upload.localIdentifier)
+            self.setTotalBytes(bytesToSend, forCounterWithID: upload.objectID.uriRepresentation().absoluteString)
         } else {
             // Several chunks to upload
             let totalBytes = Int64(imageData.count) + (bytesToSend - Int64(chunkSize)) * Int64(chunks)
-            self.setTotalBytes(totalBytes, forCounterWithID: upload.localIdentifier)
+            self.setTotalBytes(totalBytes, forCounterWithID: upload.objectID.uriRepresentation().absoluteString)
         }
         
         // Resume task of first chunk
         task.resume()
-        UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | Task \(task.taskIdentifier) resumed (\(chunk+1)/\(chunks))")
+        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Task \(task.taskIdentifier) resumed (\(chunk+1)/\(chunks))")
         
         // Release memory
         imageData.removeAll()
@@ -799,18 +799,18 @@ extension UploadManager {
                 // Adds bytes expected to be sent to counter
                 if UploadVars.shared.isExecutingBGUploadTask {
                     countOfBytesToUpload += httpBody.count
-                    UploadManager.logger.notice("sendInBackground() | countOfBytesToUpload: \(self.countOfBytesToUpload)")
+                    UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Added \(self.countOfBytesToUpload) bytes to countOfBytesToUpload")
                 }
                 
                 // Remember the total number of bytes to upload
                 if chunk+1 < chunks {
                     let totalBytes = Int64(imageData.count) + (bytesToSend - Int64(chunkSize)) * Int64(chunks)
-                    self.setTotalBytes(totalBytes, forCounterWithID: upload.localIdentifier)
+                    self.setTotalBytes(totalBytes, forCounterWithID: upload.objectID.uriRepresentation().absoluteString)
                 }
                 
                 // Resume task
                 task.resume()
-                UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | Task \(task.taskIdentifier) resumed (\(chunk+1)/\(chunks))")
+                UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Task \(task.taskIdentifier) resumed (\(chunk+1)/\(chunks))")
             }
         }
 
@@ -886,7 +886,6 @@ extension UploadManager {
         // Retrieve task parameters
         guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
               let identifier = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPimageID),
-              let md5sum = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPmd5sum),
               let chunkStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk),
               let chunk = Int(chunkStr)
         else { preconditionFailure("••> Could not extract HTTP header fields !!!!!!") }
@@ -894,7 +893,7 @@ extension UploadManager {
         // Do not report the error if the task was cancelled by the app
         if (task.taskDescription ?? "").contains(pwgHTTPCancelled) {
             // Delete chunk file from Piwigo/Uploads directory
-            UploadManager.logger.notice("\(md5sum, privacy: .public) | Cancelled background upload task \(task.taskIdentifier, privacy: .public), chunk \(chunk+1)")
+            UploadManager.logger.notice("\(objectURIstr) • Cancelled background upload task \(task.taskIdentifier, privacy: .public), chunk \(chunk+1)")
             deleteChunk(chunk, ofImageWith: identifier)
             return
         }
@@ -908,7 +907,7 @@ extension UploadManager {
                   let uploadID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI),
                   let upload = (uploads.fetchedObjects ?? []).first(where: {$0.objectID == uploadID})
             else {
-                UploadManager.logger.notice("Failed to retrieve Core Data object from task \(task.taskIdentifier, privacy: .public)")
+                UploadManager.logger.notice("\(objectURIstr) • Failed to retrieve Core Data object from task \(task.taskIdentifier, privacy: .public)")
                 // Investigate next upload request?
                 if UploadVars.shared.isExecutingBGUploadTask /* ||
                     UploadVars.shared.isExecutingBGContinuedUploadTask */ {
@@ -947,7 +946,7 @@ extension UploadManager {
         }
 
         // Delete chunk file uploaded successfully from Piwigo/Uploads directory
-        UploadManager.logger.notice("\(md5sum, privacy: .public) | Delete chunk \(chunk+1)")
+        UploadManager.logger.notice("\(objectURIstr) • Delete chunk \(chunk+1)")
         deleteChunk(chunk, ofImageWith: identifier)
     }
     
@@ -972,20 +971,19 @@ extension UploadManager {
     func didCompleteBckgUploadTask(_ task: URLSessionTask, withData data: Data) {
         // Retrieve task parameters
         guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
-              let identifier = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPimageID),
-              let md5sum = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPmd5sum)
+              let identifier = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPimageID)
         else { preconditionFailure("••> Could not extract HTTP header fields !!!!!!") }
 
         // Retrieve upload request properties
         guard let objectURI = URL(string: objectURIstr),
               let uploadID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI)
         else {
-            UploadManager.logger.notice("Task \(task.taskIdentifier, privacy: .public) not associated to an upload!")
+            UploadManager.logger.notice("\(objectURIstr) • Task \(task.taskIdentifier, privacy: .public) not associated to an upload!")
             return
         }
 
         guard let upload = (uploads.fetchedObjects ?? []).first(where: {$0.objectID == uploadID}) else {
-            UploadManager.logger.notice("Failed to retrieve Core Data object from task \(task.taskIdentifier, privacy: .public)")
+            UploadManager.logger.notice("\(objectURIstr) • Failed to retrieve Core Data object from task \(task.taskIdentifier, privacy: .public)")
             // Investigate next upload request?
             if UploadVars.shared.isExecutingBGUploadTask /* ||
                 UploadVars.shared.isExecutingBGContinuedUploadTask */ {
@@ -1009,7 +1007,7 @@ extension UploadManager {
         // Check returned data
         if data.isEmpty {
             // Update upload request status
-            UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | Task \(task.taskIdentifier, privacy: .public) returned an Empty JSON object")
+            UploadManager.logger.notice("\(objectURIstr) • Task \(task.taskIdentifier, privacy: .public) returned an Empty JSON object")
             upload.setState(.uploadingError, error: .emptyJSONobject, save: false)
             Task { @UploadManagerActor in
                 self.uploadBckgContext.saveIfNeeded()
@@ -1021,7 +1019,7 @@ extension UploadManager {
         guard jsonData.extractingBalancedBraces() else {
             // Update upload request status
             let dataStr = String(decoding: data, as: UTF8.self)
-            UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | Task \(task.taskIdentifier, privacy: .public) returned the invalid JSON object: \(dataStr, privacy: .public)")
+            UploadManager.logger.notice("\(objectURIstr) • Task \(task.taskIdentifier, privacy: .public) returned the invalid JSON object: \(dataStr, privacy: .public)")
             upload.setState(.uploadingError, error: .invalidJSONobject, save: false)
             Task { @UploadManagerActor in
                 self.uploadBckgContext.saveIfNeeded()
@@ -1040,14 +1038,14 @@ extension UploadManager {
                 // Upload not completed ► Get list of uploaded chunks
                 let uploadedChunks = Set(message.dropFirst(18).components(separatedBy: ",")
                     .compactMap({Int($0)})).map({$0 - 1})
-                UploadManager.logger.notice("\(md5sum, privacy: .public) | \(uploadedChunks) i.e. \(uploadedChunks.count) chunk(s) uploaded")
+                UploadManager.logger.notice("\(objectURIstr) • \(uploadedChunks) i.e. \(uploadedChunks.count) chunk(s) uploaded")
                 
                 // Determine list of remaining chunks to upload from server viewpoint
                 guard let chunksStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks),
                       let chunks = Int(chunksStr)
                 else { preconditionFailure("••> Could not extract HTTP header fields !!!!!!") }
                 let chunksToUploadForServer = Set(0..<chunks).subtracting(uploadedChunks)
-                UploadManager.logger.notice("\(md5sum, privacy: .public) | \(chunksToUploadForServer) i.e. \(chunksToUploadForServer.count) chunk(s) to upload")
+                UploadManager.logger.notice("\(objectURIstr) • \(chunksToUploadForServer) i.e. \(chunksToUploadForServer.count) chunk(s) to upload")
                 
                 // Remove chunks being uploaded
                 var nberActiveTasks = 0
@@ -1057,14 +1055,14 @@ extension UploadManager {
                         .filter({ $0.value(forHTTPHeaderField: pwgHTTPuploadID) == objectURIstr })
                     let uploadingChunks = Set(uploadingTasks.compactMap({ $0.value(forHTTPHeaderField: pwgHTTPchunk )}).compactMap({ Int($0) }))
                     nberActiveTasks = uploadingChunks.count
-                    UploadManager.logger.debug("\(md5sum, privacy: .public) | \(uploadingChunks) i.e. \(nberActiveTasks) chunk(s) currently being uploaded")
+                    UploadManager.logger.debug("\(objectURIstr) • \(uploadingChunks) i.e. \(nberActiveTasks) chunk(s) currently being uploaded")
                     chunksToUploadForClient = Array(chunksToUploadForServer.subtracting(uploadingChunks)).sorted()
-                    UploadManager.logger.notice("\(md5sum, privacy: .public) | \(chunksToUploadForClient) i.e. \(chunksToUploadForClient.count) chunk(s) to resume")
+                    UploadManager.logger.notice("\(objectURIstr) • \(chunksToUploadForClient) i.e. \(chunksToUploadForClient.count) chunk(s) to resume")
                     
                     // Still some chunks to submit?
                     if chunksToUploadForClient.isEmpty == false {
                         let chunksToResume = Set(chunksToUploadForClient[0..<min(chunksToUploadForClient.count, max(0, 4 - nberActiveTasks))])
-                        UploadManager.logger.notice("\(md5sum, privacy: .public) | \(chunksToResume) i.e. \(chunksToResume.count) chunk(s) resuming")
+                        UploadManager.logger.notice("\(objectURIstr) • \(chunksToResume) i.e. \(chunksToResume.count) chunk(s) resuming")
                         if chunksToResume.isEmpty == false {
                             self.sendInBackground(chunkSet: chunksToResume, of: chunks, for: upload)
                         }
@@ -1136,12 +1134,12 @@ extension UploadManager {
             deleteFilesInUploadsDirectory(withPrefix: imageFile)
 
             // Clear bytes and chunk counter
-            removeCounter(withID: upload.localIdentifier)
+            removeCounter(withID: upload.md5Sum)
         }
         catch {
             // Error type?
             if let error = error as? PwgKitError {
-                UploadManager.logger.notice("\(md5sum, privacy: .public) | Task \(task.taskIdentifier, privacy: .public) returned the Piwigo error \(error.localizedDescription)")
+                UploadManager.logger.notice("\(objectURIstr) • Task \(task.taskIdentifier, privacy: .public) returned the Piwigo error \(error.localizedDescription)")
                 if error.failedAuthentication {
                     upload.setState(.uploadingFail, error: error, save: false)
                 } else {
@@ -1149,7 +1147,7 @@ extension UploadManager {
                 }
             } else {
                 // JSON object cannot be digested, image still ready for upload
-                UploadManager.logger.notice("\(md5sum, privacy: .public) | Wrong JSON object!")
+                UploadManager.logger.notice("\(objectURIstr) • Wrong JSON object!")
                 upload.setState(.uploadingError, error: .wrongJSONobject, save: false)
             }
             Task { @UploadManagerActor in
@@ -1162,11 +1160,11 @@ extension UploadManager {
     
     // MARK: - Transfer Failed/Completed
     private func didEndTransfer(for upload: Upload, taskID: Int = Int.max) {
-        UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | Did end transfer in \(queueName(), privacy: .public)")
+        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Did end transfer in \(queueName(), privacy: .public)")
         
         // Error?
         if upload.requestError.isEmpty == false {
-            UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | Task \(taskID) returned \(upload.requestError)")
+            UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Task \(taskID) returned \(upload.requestError)")
             // Cancel related tasks
             if taskID != Int.max {
                 let objectURIstr = upload.objectID.uriRepresentation().absoluteString
@@ -1179,9 +1177,6 @@ extension UploadManager {
             self.didEndTransfer(for: upload)
             return
         }
-
-        // Update state of upload request
-        UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | \(upload.objectID.uriRepresentation()) transferred")
 
         // Consider next image?
         self.didEndTransfer(for: upload)

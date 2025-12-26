@@ -14,8 +14,9 @@ extension UploadSessionsDelegate: URLSessionDataDelegate {
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data)
     {
         // Get upload info from the task
-        guard let chunk = Int((dataTask.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk))!),
-              let chunks = Int((dataTask.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks))!),
+        guard let objectURIstr = dataTask.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
+              let chunkStr = dataTask.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk), let chunk = Int(chunkStr),
+              let chunksStr = dataTask.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks), let chunks = Int(chunksStr),
               let taskDescription = dataTask.taskDescription
         else {
             UploadSessionsDelegate.logger.notice("Could not extract HTTP header fields.")
@@ -25,10 +26,10 @@ extension UploadSessionsDelegate: URLSessionDataDelegate {
         // Log data task
 #if DEBUG
         let dataStr = String(decoding: data, as: UTF8.self)
-        UploadSessionsDelegate.logger.notice("Task \(dataTask.taskIdentifier, privacy: .public) of chunk \(chunk+1, privacy: .public)/\(chunks, privacy: .public) did receive: \(dataStr, privacy: .public).")
+        UploadSessionsDelegate.logger.notice("\(objectURIstr) • Task \(dataTask.taskIdentifier, privacy: .public) of chunk \(chunk+1, privacy: .public)/\(chunks, privacy: .public) did receive: \(dataStr, privacy: .public).")
 #else
         let countsOfBytes = data.count * MemoryLayout<Data>.stride
-        UploadSessions.logger.notice("Task \(dataTask.taskIdentifier, privacy: .public) of chunk \(chunk+1, privacy: .public)/\(chunks, privacy: .public) did receive \(countsOfBytes, privacy: .public) bytes.")
+        UploadSessions.logger.notice("\(objectURIstr) • Task \(dataTask.taskIdentifier, privacy: .public) of chunk \(chunk+1, privacy: .public)/\(chunks, privacy: .public) did receive \(countsOfBytes, privacy: .public) bytes.")
 #endif
 
         let sessionIdentifier = taskDescription.components(separatedBy: " ").first

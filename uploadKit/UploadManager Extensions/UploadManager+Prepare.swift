@@ -14,7 +14,7 @@ extension UploadManager
 {
     // MARK: - Prepare Image/Video
     func prepare(_ upload: Upload) async -> Void {
-        UploadManager.logger.notice("Prepare image/video for upload \(upload.objectID.uriRepresentation())")
+        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Prepare image/video for upload")
         
         // Update upload status
         isPreparing = true
@@ -165,7 +165,7 @@ extension UploadManager
             // Chek that the image format is accepted by the Piwigo server
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
-                UploadManager.logger.notice("Prepare image \(upload.fileName)")
+                UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Prepare image \(upload.fileName)")
                 prepareImage(atURL: fileURL, for: upload)
                 return
             }
@@ -174,7 +174,7 @@ extension UploadManager
             if NetworkVars.shared.serverFileTypes.contains("jpg"),
                acceptedImageExtensions.contains(fileExt) {
                 // Try conversion to JPEG
-                UploadManager.logger.notice("Convert image \(upload.fileName) to JPEG format")
+                UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Convert image \(upload.fileName) to JPEG format")
                 convertImage(atURL: fileURL, for: upload)
                 return
             }
@@ -203,7 +203,7 @@ extension UploadManager
             // Chek that the video format is accepted by the Piwigo server
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
-                UploadManager.logger.notice("Prepare video \(upload.fileName)")
+                UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Prepare video \(upload.fileName)")
                 prepareVideo(atURL: fileURL, for: upload)
                 return
             }
@@ -212,7 +212,7 @@ extension UploadManager
             if NetworkVars.shared.serverFileTypes.contains("mp4"),
                acceptedMovieExtensions.contains(fileExt) {
                 // Try conversion to MP4
-                UploadManager.logger.notice("Convert video \(upload.fileName) to MP4 format")
+                UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Convert video \(upload.fileName) to MP4 format")
                 convertVideo(atURL: fileURL, for: upload)
                 return
             }
@@ -334,7 +334,7 @@ extension UploadManager
             // Chek that the image format is accepted by the Piwigo server
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
-                UploadManager.logger.notice("Prepare image \(upload.fileName)")
+                UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Prepare image \(upload.fileName)")
                 self.prepareImage(atURL: uploadFileURL, for: upload)
                 return
             }
@@ -342,7 +342,7 @@ extension UploadManager
             if NetworkVars.shared.serverFileTypes.contains("jpg"),
                acceptedImageExtensions.contains(fileExt) {
                 // Try conversion to JPEG
-                UploadManager.logger.notice("Convert image \(upload.fileName) to JPEG format")
+                UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Convert image \(upload.fileName) to JPEG format")
                 self.convertImage(atURL: uploadFileURL, for: upload)
                 return
             }
@@ -358,7 +358,7 @@ extension UploadManager
             // Chek that the video format is accepted by the Piwigo server
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
-                UploadManager.logger.notice("Prepare video \(upload.fileName)")
+                UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Prepare video \(upload.fileName)")
                 self.prepareVideo(ofAsset: originalAsset, for: upload)
                 return
             }
@@ -366,7 +366,7 @@ extension UploadManager
             if NetworkVars.shared.serverFileTypes.contains("mp4"),
                acceptedMovieExtensions.contains(fileExt) {
                 // Try conversion to MP4
-                UploadManager.logger.notice("Convert video \(upload.fileName) to MP4 format")
+                UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Convert video \(upload.fileName) to MP4 format")
                 self.convertVideo(ofAsset: originalAsset, for: upload)
                 return
             }

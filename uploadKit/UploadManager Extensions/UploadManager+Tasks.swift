@@ -312,7 +312,7 @@ extension UploadManager
         if failedUploads.count > 0 {
             // Will relaunch transfers with one which failed
             uploadRequestsToTransfer = Set(failedUploads.map({$0.objectID}))
-            UploadManager.logger.notice("initialiseBckgTask() collected \(self.uploadRequestsToTransfer.count, privacy: .public) failed uploads")
+            UploadManager.logger.notice("initialiseBckgTask() retrieved \(self.uploadRequestsToTransfer.count, privacy: .public) failed uploads")
         }
         
         // Second, find upload requests ready for transfer
@@ -323,7 +323,7 @@ extension UploadManager
             let prepared = preparedUploads.map({$0.objectID})
             uploadRequestsToTransfer = uploadRequestsToTransfer
                 .union(Set(prepared[..<min(UploadVars.shared.maxNberOfUploadsPerBckgTask,prepared.count)]))
-            UploadManager.logger.notice("initialiseBckgTask() collected \(min(UploadVars.shared.maxNberOfUploadsPerBckgTask, prepared.count), privacy: .public) prepared uploads")
+            UploadManager.logger.notice("initialiseBckgTask() retrieved \(prepared.count, privacy: .public) prepared uploads (limit of \(UploadVars.shared.maxNberOfUploadsPerBckgTask))")
         }
         
         // Finally, get list of upload requests to prepare
@@ -331,7 +331,7 @@ extension UploadManager
         if diff <= 0 { return }
         let requestsToPrepare = (uploads.fetchedObjects ?? [])
             .filter({$0.state == .waiting && $0.markedForAutoUpload == autoUploadOnly})
-        UploadManager.logger.notice("initialiseBckgTask() collected \(min(diff, requestsToPrepare.count), privacy: .public) uploads to prepare")
+        UploadManager.logger.notice("initialiseBckgTask() retrieved \(requestsToPrepare.count, privacy: .public) uploads to prepare (limit of \(maxNberPreparedUploads))")
         let toPrepare = requestsToPrepare.map({$0.objectID})
         uploadRequestsToPrepare = Set(toPrepare[..<min(diff, toPrepare.count)])
     }
@@ -354,7 +354,7 @@ extension UploadManager
                         }
                         
                         // Remembers that this upload request is being dealt with
-                        UploadManager.logger.notice("resumeTransfers(): Foreground task \(task.taskIdentifier, privacy: .public) is uploading: \(uploadID)")
+                        UploadManager.logger.notice("\(objectURIstr) • Foreground task \(task.taskIdentifier, privacy: .public) is uploading")
                         UploadManager.shared.isUploading.insert(uploadID)
                         
                         // Avoids duplicates
@@ -384,7 +384,7 @@ extension UploadManager
                             }
                             
                             // Remembers that this upload request is being dealt with
-                            UploadManager.logger.notice("resumeTransfers(): Background task \(task.taskIdentifier, privacy: .public) is uploading: \(uploadID)")
+                            UploadManager.logger.notice("\(objectURIstr) • Background task \(task.taskIdentifier, privacy: .public) is uploading")
                             self.isUploading.insert(uploadID)
                             
                             // Avoids duplicates

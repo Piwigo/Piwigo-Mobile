@@ -14,7 +14,7 @@ extension UploadManager {
     
     // MARK: - Tasks Executed after Uploading
     func finishTransfer(of upload: Upload) {
-        UploadManager.logger.notice("Finish transfers of \(upload.objectID.uriRepresentation())")
+        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Finish transfer…")
 
         // Update upload status
         isFinishing = true
@@ -79,7 +79,7 @@ extension UploadManager {
     /// — Called after having uploaded with pwg.images.upload
     /// — pwg.images.upload does not allow to set the image title
     func setImageParameters(for upload: Upload) {
-        UploadManager.logger.notice("setImageParameters() in \(queueName(), privacy: .public)")
+        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • setImageParameters() in \(queueName(), privacy: .public)")
         
         // Prepare creation date
         let creationDate = DateUtilities.string(from: upload.creationDate)
@@ -121,7 +121,7 @@ extension UploadManager {
      If not, they will be visible after some delay (12 minutes).
      */
     func emptyLounge(for upload: Upload) {
-        UploadManager.logger.notice("emptyLounge() in \(queueName(), privacy: .public)")
+        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Empty lounge in \(queueName(), privacy: .public)")
         // Empty lounge without reporting potential error
         guard let user = upload.user else {
             // Should never happen

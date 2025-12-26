@@ -220,7 +220,7 @@ extension UploadManager {
     
     private func retrieveVideo(from imageAsset: PHAsset, with options: PHVideoRequestOptions,
                                completionHandler: @escaping (AVAsset?, PHVideoRequestOptions, PwgKitError?) -> Void) {
-        UploadManager.logger.notice("retrieveVideoFrom() in \(queueName(), privacy: .public)")
+        UploadManager.logger.notice("retrieveVideo() in \(queueName(), privacy: .public)")
 
         // The block Photos calls periodically while downloading the video.
         options.progressHandler = { progress, error, stop, dict in

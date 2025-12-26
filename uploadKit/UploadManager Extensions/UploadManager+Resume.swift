@@ -14,7 +14,7 @@ import Photos
 extension UploadManager
 {
     // MARK: - Resume Uploads
-    public func resumeAll() -> Void {
+    public func resumeAll() {
         // Wait until fix completed
         guard NetworkVars.shared.fixUserIsAPIKeyV412 == false
         else { return }
@@ -57,12 +57,12 @@ extension UploadManager
                               let uploadID = self.uploadBckgContext.persistentStoreCoordinator?
                                 .managedObjectID(forURIRepresentation: objectURI)
                         else {
-                            UploadManager.logger.notice("Task \(task.taskIdentifier, privacy: .public) not associated to an upload!")
+                            UploadManager.logger.notice("resumeAll() found task \(task.taskIdentifier, privacy: .public) not associated to an upload!")
                             continue
                         }
                         
                         // Task associated to an upload
-                        UploadManager.logger.notice("Task \(task.taskIdentifier, privacy: .public) is uploading \(uploadID)")
+                        UploadManager.logger.notice("\(objectURIstr) • Detected task \(task.taskIdentifier, privacy: .public) is uploading \(uploadID)")
                         self.isUploading.insert(uploadID)
                         
                     default:
@@ -73,7 +73,7 @@ extension UploadManager
                 // Logs
                 if let uploadObjects = self.uploads.fetchedObjects,
                    let completedObjects = self.completed.fetchedObjects {
-                    UploadManager.logger.notice("\(uploadObjects.count, privacy: .public) pending and \(completedObjects.count, privacy: .public) completed upload requests in cache.")
+                    UploadManager.logger.notice("resumeAll() found \(uploadObjects.count, privacy: .public) pending and \(completedObjects.count, privacy: .public) completed upload requests in cache.")
                 }
                 
                 // Resume operations

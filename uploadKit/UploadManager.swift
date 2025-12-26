@@ -91,7 +91,7 @@ public final class UploadManager: NSObject {
     
     
     // MARK: - Core Data Object Context
-    lazy var uploadBckgContext: NSManagedObjectContext = {
+    public lazy var uploadBckgContext: NSManagedObjectContext = {
         return DataController.shared.newTaskContext()
     }()
     

@@ -46,7 +46,7 @@ public final class UploadSessionsDelegate: NSObject, Sendable {
                 .filter({ $0.taskIdentifier != exceptedTaskID})
             // Cancel remaining tasks related with this completed upload request
             tasksToCancel.forEach { task in
-                UploadSessionsDelegate.logger.notice("Task \(task.taskIdentifier, privacy: .public) cancelled.")
+                UploadSessionsDelegate.logger.notice("\(uploadIDStr) • Task \(task.taskIdentifier, privacy: .public) cancelled")
                 // Remember that this task was cancelled
                 task.taskDescription = uploadBckgSessionIdentifier + " " + pwgHTTPCancelled
                 task.cancel()
