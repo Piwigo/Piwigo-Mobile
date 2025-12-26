@@ -20,24 +20,44 @@ public extension JSONManager {
                                                 countOfBytesClientExpectsToReceive: kReflectionGetMethodListBytes)
             
             // Check if the Community extension is installed and active (since Piwigo 2.9a)
-            NetworkVars.shared.usesCommunityPluginV29 = pwgData.data.contains(kCommunitySessionGetStatus)
-            JSONManager.logger.notice("\(kReflectionGetMethodList) ➜ Community plugin installed: \(NetworkVars.shared.usesCommunityPluginV29, privacy: .public)")
+            if pwgData.data.contains(kCommunitySessionGetStatus) {
+                NetworkVars.shared.usesCommunityPluginV29 = true
+                JSONManager.logger.notice("\(kReflectionGetMethodList) ➜ Community plugin installed")
+            } else {
+                NetworkVars.shared.usesCommunityPluginV29 = false
+            }
             
             // Check if the pwg.images.uploadAsync method is available (since Piwigo 11)
-            NetworkVars.shared.usesUploadAsync = pwgData.data.contains(pwgImagesUploadAsync)
-            JSONManager.logger.notice("\(kReflectionGetMethodList) ➜ uploadAsync method available: \(NetworkVars.shared.usesUploadAsync, privacy: .public)")
+            if pwgData.data.contains(pwgImagesUploadAsync) {
+                NetworkVars.shared.usesUploadAsync = true
+                JSONManager.logger.notice("\(kReflectionGetMethodList) ➜ uploadAsync method available")
+            } else {
+                NetworkVars.shared.usesUploadAsync = false
+            }
             
             // Check if the pwg.categories.calculateOrphans method is available (since Piwigo 12)
-            NetworkVars.shared.usesCalcOrphans = pwgData.data.contains(pwgCategoriesCalcOrphans)
-            JSONManager.logger.notice("\(kReflectionGetMethodList) ➜ calculateOrphans method available: \(NetworkVars.shared.usesCalcOrphans, privacy: .public)")
+            if pwgData.data.contains(pwgCategoriesCalcOrphans) {
+                NetworkVars.shared.usesCalcOrphans = true
+                JSONManager.logger.notice("\(kReflectionGetMethodList) ➜ calculateOrphans method available")
+            } else {
+                NetworkVars.shared.usesCalcOrphans = false
+            }
             
             // Check if the pwg.images.setCategory method is available (since Piwigo 14)
-            NetworkVars.shared.usesSetCategory = pwgData.data.contains(pwgImagesSetCategory)
-            JSONManager.logger.notice("\(kReflectionGetMethodList) ➜ setCategory method available: \(NetworkVars.shared.usesSetCategory, privacy: .public)")
+            if pwgData.data.contains(pwgImagesSetCategory) {
+                NetworkVars.shared.usesSetCategory = true
+                JSONManager.logger.notice("\(kReflectionGetMethodList) ➜ setCategory method available: \(NetworkVars.shared.usesSetCategory, privacy: .public)")
+            } else {
+                NetworkVars.shared.usesSetCategory = false
+            }
             
             // Check if the pwg.users.api_key.revoke method is available (since Piwigo 16.0)
-            NetworkVars.shared.usesAPIkeys = pwgData.data.contains("pwg.users.api_key.revoke")
-            JSONManager.logger.notice("\(kReflectionGetMethodList) ➜ API keys management available: \(NetworkVars.shared.usesAPIkeys, privacy: .public)")
+            if pwgData.data.contains("pwg.users.api_key.revoke") {
+                NetworkVars.shared.usesAPIkeys = true
+                JSONManager.logger.notice("\(kReflectionGetMethodList) ➜ API keys management available: \(NetworkVars.shared.usesAPIkeys, privacy: .public)")
+            } else {
+                NetworkVars.shared.usesAPIkeys = false
+            }
         }
         catch let error {
             throw error
