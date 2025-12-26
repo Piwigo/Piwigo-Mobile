@@ -278,7 +278,7 @@ extension UploadManager {
 
             Task { @UploadManagerActor in
                 // Set total number of bytes to upload
-                self.initCounter(withID: upload.localIdentifier, totalBytes: Int64(imageData.count))
+                self.setTotalBytes(Int64(imageData.count), forCounterWithID: upload.localIdentifier)
                 
                 // Start uploading
                 self.sendInForeground(chunk: 0, of: chunks, for: upload)
@@ -373,12 +373,12 @@ extension UploadManager {
         task.countOfBytesClientExpectsToSend = bytesToSend
         task.countOfBytesClientExpectsToReceive = 600
         
-        // Remember the total number of bytes to upload
+        // Update the total number of bytes to upload if needed
         if chunk+1 < chunks {
             let totalBytes = Int64(imageData.count) + (bytesToSend - Int64(chunkSize)) * Int64(chunks)
-            initCounter(withID: upload.localIdentifier, totalBytes: totalBytes)
+            self.setTotalBytes(totalBytes, forCounterWithID: upload.localIdentifier)
         }
-
+        
         // Resume task
         UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | Task \(task.taskIdentifier) resumed (\(chunk+1)/\(chunks))")
         task.resume()
@@ -691,16 +691,15 @@ extension UploadManager {
             UploadManager.logger.notice("transferInBackground() | countOfBytesToUpload: \(self.countOfBytesToUpload)")
         }
         
-        // Remember the total number of bytes to upload and that this chunk is treated
+        // Remember the total number of bytes to upload
         if chunks == 1 {
             // Only one chunk to upload
-            initCounter(withID: upload.localIdentifier, totalBytes: bytesToSend)
+            self.setTotalBytes(bytesToSend, forCounterWithID: upload.localIdentifier)
         } else {
             // Several chunks to upload
             let totalBytes = Int64(imageData.count) + (bytesToSend - Int64(chunkSize)) * Int64(chunks)
-            initCounter(withID: upload.localIdentifier, totalBytes: totalBytes)
+            self.setTotalBytes(totalBytes, forCounterWithID: upload.localIdentifier)
         }
-        addChunk(chunk, toCounterWithID: upload.localIdentifier)
         
         // Resume task of first chunk
         task.resume()
@@ -803,13 +802,12 @@ extension UploadManager {
                     UploadManager.logger.notice("sendInBackground() | countOfBytesToUpload: \(self.countOfBytesToUpload)")
                 }
                 
-                // Remember the total number of bytes to upload and that this chunk is treated
+                // Remember the total number of bytes to upload
                 if chunk+1 < chunks {
                     let totalBytes = Int64(imageData.count) + (bytesToSend - Int64(chunkSize)) * Int64(chunks)
-                    initCounter(withID: upload.localIdentifier, totalBytes: totalBytes)
+                    self.setTotalBytes(totalBytes, forCounterWithID: upload.localIdentifier)
                 }
-                addChunk(chunk, toCounterWithID: upload.localIdentifier)
-
+                
                 // Resume task
                 task.resume()
                 UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | Task \(task.taskIdentifier) resumed (\(chunk+1)/\(chunks))")
@@ -953,7 +951,7 @@ extension UploadManager {
         deleteChunk(chunk, ofImageWith: identifier)
     }
     
-    func deleteChunk(_ chunk: Int, ofImageWith identifier: String) {
+    private func deleteChunk(_ chunk: Int, ofImageWith identifier: String) {
         // For producing the chunk filename
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .none
@@ -1044,43 +1042,35 @@ extension UploadManager {
                     .compactMap({Int($0)})).map({$0 - 1})
                 UploadManager.logger.notice("\(md5sum, privacy: .public) | \(uploadedChunks) i.e. \(uploadedChunks.count) chunk(s) uploaded")
                 
-                // Determine list of remaining chunks to upload
+                // Determine list of remaining chunks to upload from server viewpoint
                 guard let chunksStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks),
                       let chunks = Int(chunksStr)
                 else { preconditionFailure("••> Could not extract HTTP header fields !!!!!!") }
-                let chunksToUpload = Set(0..<chunks).subtracting(uploadedChunks)
-                UploadManager.logger.notice("\(md5sum, privacy: .public) | \(chunksToUpload) i.e. \(chunksToUpload.count) chunk(s) to upload")
+                let chunksToUploadForServer = Set(0..<chunks).subtracting(uploadedChunks)
+                UploadManager.logger.notice("\(md5sum, privacy: .public) | \(chunksToUploadForServer) i.e. \(chunksToUploadForServer.count) chunk(s) to upload")
                 
-                // Still some work to do?
-                if chunksToUpload.isEmpty == false {
-                    // Determine how many tasks are running or scheduled
-                    let alreadyManagedChunks = getChunks(forCounterWithID: upload.localIdentifier)
-                    bckgSession.getTasksWithCompletionHandler { _, uploadTasks, _ in
-                        // Get list of active tasks
-                        let activeChunks = Set(uploadTasks.compactMap({ $0.originalRequest })
-                            .filter({ $0.value(forHTTPHeaderField: pwgHTTPuploadID) == objectURIstr })
-                            .compactMap({ $0.value(forHTTPHeaderField: pwgHTTPchunk )}).compactMap({ Int($0) }))
-                        
-                        // Get list of chunks being treated (might be only one or none when retrying)
-                        let treatedChunks = alreadyManagedChunks.subtracting(uploadedChunks)
-                        
-                        // Determine (roughly) how many tasks are running
-                        let nberActiveTasks = activeChunks.union(treatedChunks).count
-                        
-                        // Launch up to 4 tasks in parallel
-                        let chunksToTreat = chunksToUpload.subtracting(activeChunks).subtracting(treatedChunks).sorted()
-                        let chunksToResume = Set(chunksToTreat[0..<min(chunksToTreat.count, max(0, 4 - nberActiveTasks))])
-                        let uploadID = upload.objectID
-                        Task { @UploadManagerActor in
-                            UploadManager.logger.notice("\(md5sum, privacy: .public) | \(chunksToResume) i.e. \(chunksToResume.count) chunk(s) to resume")
-                            if chunksToResume.isEmpty == false,
-                               let uploadToPass = try? self.uploadBckgContext.existingObject(with: uploadID) as? Upload {
-                                self.sendInBackground(chunkSet: chunksToResume, of: chunks, for: uploadToPass)
-                            }
+                // Remove chunks being uploaded
+                var nberActiveTasks = 0
+                var chunksToUploadForClient = [Int]()
+                Task {
+                    let uploadingTasks = await bckgSession.allTasks.compactMap({ $0.originalRequest })
+                        .filter({ $0.value(forHTTPHeaderField: pwgHTTPuploadID) == objectURIstr })
+                    let uploadingChunks = Set(uploadingTasks.compactMap({ $0.value(forHTTPHeaderField: pwgHTTPchunk )}).compactMap({ Int($0) }))
+                    nberActiveTasks = uploadingChunks.count
+                    UploadManager.logger.debug("\(md5sum, privacy: .public) | \(uploadingChunks) i.e. \(nberActiveTasks) chunk(s) currently being uploaded")
+                    chunksToUploadForClient = Array(chunksToUploadForServer.subtracting(uploadingChunks)).sorted()
+                    UploadManager.logger.notice("\(md5sum, privacy: .public) | \(chunksToUploadForClient) i.e. \(chunksToUploadForClient.count) chunk(s) to resume")
+                    
+                    // Still some chunks to submit?
+                    if chunksToUploadForClient.isEmpty == false {
+                        let chunksToResume = Set(chunksToUploadForClient[0..<min(chunksToUploadForClient.count, max(0, 4 - nberActiveTasks))])
+                        UploadManager.logger.notice("\(md5sum, privacy: .public) | \(chunksToResume) i.e. \(chunksToResume.count) chunk(s) resuming")
+                        if chunksToResume.isEmpty == false {
+                            self.sendInBackground(chunkSet: chunksToResume, of: chunks, for: upload)
                         }
                     }
-                    return
                 }
+                return
             }
             
             // Upload completed

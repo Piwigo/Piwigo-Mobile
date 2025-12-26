@@ -13,22 +13,25 @@ extension UploadSessionsDelegate: URLSessionDataDelegate {
     
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data)
     {
-        // Get upload info from task
-        if let chunk = Int((dataTask.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk))!),
-           let chunks = Int((dataTask.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks))!) {
-            #if DEBUG
-            let dataStr = String(decoding: data, as: UTF8.self)
-            UploadSessionsDelegate.logger.notice("Task \(dataTask.taskIdentifier, privacy: .public) of chunk \(chunk+1, privacy: .public)/\(chunks, privacy: .public) did receive: \(dataStr, privacy: .public).")
-            #else
-            let countsOfBytes = data.count * MemoryLayout<Data>.stride
-            UploadSessions.logger.notice("Task \(dataTask.taskIdentifier, privacy: .public) of chunk \(chunk+1, privacy: .public)/\(chunks, privacy: .public) did receive \(countsOfBytes, privacy: .public) bytes.")
-            #endif
-        } else {
-            UploadSessionsDelegate.logger.fault("Could not extract HTTP header fields.")
+        // Get upload info from the task
+        guard let chunk = Int((dataTask.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk))!),
+              let chunks = Int((dataTask.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks))!),
+              let taskDescription = dataTask.taskDescription
+        else {
+            UploadSessionsDelegate.logger.notice("Could not extract HTTP header fields.")
             preconditionFailure("Could not extract HTTP header fields.")
         }
-        
-        let sessionIdentifier = (dataTask.taskDescription ?? "").components(separatedBy: " ").first
+
+        // Log data task
+#if DEBUG
+        let dataStr = String(decoding: data, as: UTF8.self)
+        UploadSessionsDelegate.logger.notice("Task \(dataTask.taskIdentifier, privacy: .public) of chunk \(chunk+1, privacy: .public)/\(chunks, privacy: .public) did receive: \(dataStr, privacy: .public).")
+#else
+        let countsOfBytes = data.count * MemoryLayout<Data>.stride
+        UploadSessions.logger.notice("Task \(dataTask.taskIdentifier, privacy: .public) of chunk \(chunk+1, privacy: .public)/\(chunks, privacy: .public) did receive \(countsOfBytes, privacy: .public) bytes.")
+#endif
+
+        let sessionIdentifier = taskDescription.components(separatedBy: " ").first
         switch sessionIdentifier {
         case uploadSessionIdentifier:
             Task { @UploadManagerActor in

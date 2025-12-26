@@ -19,6 +19,21 @@ public final class UploadSessionsDelegate: NSObject, Sendable {
     // Singleton
     public static let shared = UploadSessionsDelegate()
     
+    // For logs
+    static let bytesFormatter: NumberFormatter = {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = NumberFormatter.Style.none
+        numberFormatter.usesGroupingSeparator = true
+        return numberFormatter
+    }()
+    static let progressFormatter: NumberFormatter = {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = NumberFormatter.Style.decimal
+        numberFormatter.roundingMode = .ceiling
+        numberFormatter.roundingIncrement = NSNumber(value: 0.01)
+        return numberFormatter
+    }()
+    
     
     // MARK: - Cancel Tasks Related to a Specific Upload Request
     /// This method cancels the remaining tasks when the upload is completed.

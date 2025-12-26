@@ -39,18 +39,14 @@ extension UploadSessionsDelegate: URLSessionTaskDelegate {
     public func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
 
         // Get upload info from the task
-        guard let identifier = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPimageID),
-              let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk))!)
+        guard let identifier = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPimageID)
         else {
-            UploadSessionsDelegate.logger.notice("Could not extract HTTP header fields.")
-            preconditionFailure("Could not extract HTTP header fields.")
+            UploadSessionsDelegate.logger.notice("Could not extract HTTP header field.")
+            preconditionFailure("Could not extract HTTP header field.")
         }
-
+        
         // Update counter
         Task { @UploadManagerActor in
-            // Add chunk to counter if needed (e.g. situation where the app is relauched)
-            UploadManager.shared.addChunk(chunk, toCounterWithID: identifier)
-            
             // Update UploadQueue cell and button shown in root album (or default album)
             UploadManager.shared.addBytes(bytesSent, toCounterWithID: identifier)
             
@@ -62,14 +58,9 @@ extension UploadSessionsDelegate: URLSessionTaskDelegate {
                 NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
             }
             
-            let numberFormatter = NumberFormatter()
-            numberFormatter.numberStyle = NumberFormatter.Style.none
-            numberFormatter.usesGroupingSeparator = true
-            let bytes = numberFormatter.string(from: NSNumber(value: bytesSent)) ?? ""
-            numberFormatter.numberStyle = NumberFormatter.Style.decimal
-            numberFormatter.roundingMode = .ceiling
-            numberFormatter.roundingIncrement = NSNumber(value: 0.01)
-            let progressPercent = numberFormatter.string(from: NSNumber(value: progress * 100)) ?? ""
+            // Log upload
+            let bytes = UploadSessionsDelegate.bytesFormatter.string(from: NSNumber(value: bytesSent)) ?? ""
+            let progressPercent = UploadSessionsDelegate.bytesFormatter.string(from: NSNumber(value: progress * 100)) ?? ""
             UploadSessionsDelegate.logger.notice("Task \(task.taskIdentifier, privacy: .public) did send \(bytes, privacy: .public) bytes | counter: \(progressPercent, privacy: .public) %")
         }
     }
@@ -77,20 +68,14 @@ extension UploadSessionsDelegate: URLSessionTaskDelegate {
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: (any Error)?) {
         
         // Get upload info from the task
-        guard let identifier = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPimageID),
-              let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk))!),
+        guard let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk))!),
               let chunks = Int((task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks))!),
               let taskDescription = task.taskDescription
         else {
             UploadSessionsDelegate.logger.notice("Could not extract HTTP header fields.")
             preconditionFailure("Could not extract HTTP header fields.")
         }
-
-        // Add chunk to counter if needed (e.g. situation where the app is relauched)
-        Task { @UploadManagerActor in
-            UploadManager.shared.addChunk(chunk, toCounterWithID: identifier)
-        }
-
+        
         // The below code updates the stored cookie with the pwg_id returned by the server.
         // This allows to check that the upload session was well closed by the server.
         // For example by requesting image properties or an image deletion.
