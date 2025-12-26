@@ -398,7 +398,7 @@ extension LocalImagesViewController
             // Continue with this operation?
             if queue.operations.first!.isCancelled {
                 indexedUploadsInQueue = []
-                debugPrint("Stop second operation in iteration \(i) ;-)")
+                debugPrint("••> LocalImagesViewController: Stop second operation in iteration \(i) ;-)")
                 return
             }
             
@@ -416,7 +416,7 @@ extension LocalImagesViewController
             }
         }
         let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        debugPrint("   indexed \(fetchedImages.count) images by iterating fetched images in \(diff) ms")
+        debugPrint("••> LocalImagesViewController: Indexed \(fetchedImages.count) images by iterating fetched images in \(diff) ms")
     }
 
     private func cachingUploadIndicesIteratingUploadsInQueue() -> (Void) {
@@ -437,7 +437,7 @@ extension LocalImagesViewController
                 // Continue with this operation?
                 if queue.operations.first!.isCancelled {
                     indexedUploadsInQueue = []
-                    debugPrint("Stop second operation in iteration \(i) ;-)")
+                    debugPrint("••> LocalImagesViewController: Stop second operation in iteration \(i) ;-)")
                     return
                 }
 
@@ -463,7 +463,7 @@ extension LocalImagesViewController
             }
         }
         let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        debugPrint("   cached \(count) images by iterating uploads in queue in \(diff) ms")
+        debugPrint("••> LocalImagesViewController: Cached \(count) images by iterating uploads in queue in \(diff) ms")
     }
     
     func getUploadStateOfImage(at index: Int,
@@ -495,7 +495,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
 
         switch type {
         case .insert:
-            debugPrint("••> LocalImagesViewController: insert pending upload request…")
+//            debugPrint("••> LocalImagesViewController: insert pending upload request…")
             // Add upload request to cache and update cell
             guard let upload:Upload = anObject as? Upload else { return }
 
@@ -526,7 +526,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
             // Update corresponding cell
             updateCellAndSectionHeader(for: upload)
         case .delete:
-            debugPrint("••> LocalImagesViewController: delete pending upload request…")
+//            debugPrint("••> LocalImagesViewController: delete pending upload request…")
             // Delete upload request from cache and update cell
             guard let upload:Upload = anObject as? Upload else { return }
 
@@ -544,7 +544,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
         case .move:
             assertionFailure("••> LocalImagesViewController: Unexpected move!")
         case .update:
-            debugPrint("••> LocalImagesViewController controller:update...")
+//            debugPrint("••> LocalImagesViewController controller:update...")
             // Update upload request and cell
             guard let upload:Upload = anObject as? Upload else { return }
 
@@ -560,7 +560,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
     }
 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
-        debugPrint("••• LocalImagesViewController controller:didChangeContent...")
+//        debugPrint("••• LocalImagesViewController controller:didChangeContent...")
         // Update navigation bar
         updateActionButton()
         updateNavBar()
