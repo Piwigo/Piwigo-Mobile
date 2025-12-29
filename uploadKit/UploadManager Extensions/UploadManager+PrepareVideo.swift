@@ -335,10 +335,10 @@ extension UploadManager {
             
             // Check that the video can be exported
             guard originalVideo.isExportable else {
-                self.didPrepareVideo(for: upload, .cannotStripPrivateMetadata)
+                self.didPrepareVideo(for: upload, .unacceptedVideoFormat)
                 return
             }
-
+            
             // Export new video in MP4 format w/ or w/o private metadata
             self.export(videoAsset: originalVideo, outputURL: outputURL, for: upload)
         }
