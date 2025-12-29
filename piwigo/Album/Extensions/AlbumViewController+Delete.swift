@@ -52,7 +52,7 @@ extension AlbumViewController
         if totalNberToDelete > 1 {
             msg = String.localizedStringWithFormat(NSLocalizedString("deleteSeveralImages_message", comment: "Are you sure you want to delete the selected %@ photos/videos?"), NSNumber(value: totalNberToDelete))
         } else if let imageData = toDelete.first, imageData.isVideo {
-            msg = NSLocalizedString("deleteSingleVideo_title", comment: "Are you sure you want to delete this video?")
+            msg = NSLocalizedString("deleteSingleVideo_message", comment: "Are you sure you want to delete this video?")
         } else {
             msg = NSLocalizedString("deleteSingleImage_message", comment: "Are you sure you want to delete this photo?")
         }
