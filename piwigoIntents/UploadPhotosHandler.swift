@@ -65,14 +65,16 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
         var selectedImages = [UploadProperties]()      // Array of images to upload
         for idx in 0..<selectedFiles.count {
             // Determine MD5 checksum
-            let error: (any Error)?, md5Sum: String!
-            (md5Sum, error) = selectedFiles[idx].MD5checksum
-            if let error = error {
+            let md5Sum: String!
+            do {
+                md5Sum = try selectedFiles[idx].MD5checksum()
+            }
+            catch {
                 // Could not determine the MD5 checksum
                 completion(UploadPhotosIntentResponse.failure(error: error.localizedDescription))
                 return
             }
-
+            
             // Check if this file is already in the upload queue (might be slow)
             if let _ = uploadsInQueue.first(where: { $0 == md5Sum }) {
                 // This file is already in the upload queue -> next file
@@ -86,7 +88,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
                 .appendingPathComponent(identifier)
 
             // Delete file if it already exists (incomplete previous attempt?)
-            do { try FileManager.default.removeItem(at: fileUploadsUrl) } catch { }
+            try? FileManager.default.removeItem(at: fileUploadsUrl)
 
             // Copy file to Uploads directory
             do {
