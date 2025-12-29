@@ -401,6 +401,8 @@
 		AD7E065E2EFD66CB003F8A61 /* JSONManager+Categories.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E065C2EFD66CB003F8A61 /* JSONManager+Categories.swift */; };
 		AD7E06602EFD8E8E003F8A61 /* JSONManager+Tags.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E065F2EFD8E8E003F8A61 /* JSONManager+Tags.swift */; };
 		AD7E06612EFD8E8E003F8A61 /* JSONManager+Tags.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E065F2EFD8E8E003F8A61 /* JSONManager+Tags.swift */; };
+		AD7E06632F032DC6003F8A61 /* UploadManager+TransferForeground.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E06622F032DC6003F8A61 /* UploadManager+TransferForeground.swift */; };
+		AD7E06652F032DD1003F8A61 /* UploadManager+TransferBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E06642F032DD1003F8A61 /* UploadManager+TransferBackground.swift */; };
 		AD7E9AE72A6D7AEA0079BE8F /* PlayerViewControllerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E9AE62A6D7AEA0079BE8F /* PlayerViewControllerCoordinator.swift */; };
 		AD7E9AE92A6D7B330079BE8F /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E9AE82A6D7B330079BE8F /* Video.swift */; };
 		AD7E9AEB2A6D7BDC0079BE8F /* PlaybackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E9AEA2A6D7BDC0079BE8F /* PlaybackController.swift */; };
@@ -1161,6 +1163,8 @@
 		AD7E065A2EFD50C9003F8A61 /* JSONManager+Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSONManager+Image.swift"; sourceTree = "<group>"; };
 		AD7E065C2EFD66CB003F8A61 /* JSONManager+Categories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSONManager+Categories.swift"; sourceTree = "<group>"; };
 		AD7E065F2EFD8E8E003F8A61 /* JSONManager+Tags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSONManager+Tags.swift"; sourceTree = "<group>"; };
+		AD7E06622F032DC6003F8A61 /* UploadManager+TransferForeground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadManager+TransferForeground.swift"; sourceTree = "<group>"; };
+		AD7E06642F032DD1003F8A61 /* UploadManager+TransferBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadManager+TransferBackground.swift"; sourceTree = "<group>"; };
 		AD7E9AE62A6D7AEA0079BE8F /* PlayerViewControllerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewControllerCoordinator.swift; sourceTree = "<group>"; };
 		AD7E9AE82A6D7B330079BE8F /* Video.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		AD7E9AEA2A6D7BDC0079BE8F /* PlaybackController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackController.swift; sourceTree = "<group>"; };
@@ -2322,6 +2326,8 @@
 				AD0B6ACE268A219B007DEE70 /* UploadManager+PrepareImage.swift */,
 				AD0B6AD0268A21A4007DEE70 /* UploadManager+PrepareVideo.swift */,
 				AD0B6AD2268A21AD007DEE70 /* UploadManager+Transfer.swift */,
+				AD7E06622F032DC6003F8A61 /* UploadManager+TransferForeground.swift */,
+				AD7E06642F032DD1003F8A61 /* UploadManager+TransferBackground.swift */,
 				AD0B6AD4268A21B7007DEE70 /* UploadManager+Finisher.swift */,
 				AD0B6AD6268A21C0007DEE70 /* UploadManager+Auto.swift */,
 				AD6F39982EFAEBE400CE56F0 /* UploadManager+Counter.swift */,
@@ -3914,6 +3920,7 @@
 				AD2C624B2A4898A200671582 /* UploadManager+Auto.swift in Sources */,
 				AD2C62562A4898A200671582 /* UploadManager+Finisher.swift in Sources */,
 				AD2C62532A4898A200671582 /* UploadManager+PrepareImage.swift in Sources */,
+				AD7E06632F032DC6003F8A61 /* UploadManager+TransferForeground.swift in Sources */,
 				AD2C62552A4898A200671582 /* UploadManager+Prepare.swift in Sources */,
 				AD7E064F2EFBE1C5003F8A61 /* UploadSessionsDelegate+Task.swift in Sources */,
 				AD2C62512A4898A200671582 /* UploadManager+Resume.swift in Sources */,
@@ -3924,6 +3931,7 @@
 				AD2C624C2A4898A200671582 /* UploadSessions.swift in Sources */,
 				AD7E06512EFBE1FC003F8A61 /* UploadSessionsDelegate+Data.swift in Sources */,
 				AD6F39992EFAEBE400CE56F0 /* UploadManager+Counter.swift in Sources */,
+				AD7E06652F032DD1003F8A61 /* UploadManager+TransferBackground.swift in Sources */,
 				AD2C62542A4898A200671582 /* VideoMetadata.swift in Sources */,
 				ADC0A1462E55FD5D001E62F5 /* Constants.swift in Sources */,
 			);
