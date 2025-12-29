@@ -53,7 +53,7 @@ extension UploadManager
         
         // Check current queue
         let fetchedUploads = uploads.fetchedObjects ?? []
-        UploadManager.logger.notice("findNextImageToUpload() in \(queueName(), privacy: .public), \(fetchedUploads.count, privacy: .public) pending and \((self.completed.fetchedObjects ?? []).count, privacy: .public) completed upload requests, preparing:\(self.isPreparing ? "Yes" : "No", privacy: .public), uploading: \(self.isUploading.count, privacy: .public), finishing:\(self.isFinishing ? "Yes" : "No", privacy: .public)")
+        UploadManager.logger.notice("findNextImageToUpload(): \(fetchedUploads.count, privacy: .public) pending and \((self.completed.fetchedObjects ?? []).count, privacy: .public) completed upload requests, preparing:\(self.isPreparing ? "Yes" : "No", privacy: .public), uploading: \(self.isUploading.count, privacy: .public), finishing:\(self.isFinishing ? "Yes" : "No", privacy: .public)")
         
         // for debugging background tasks
 //        return

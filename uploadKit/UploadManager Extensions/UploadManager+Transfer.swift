@@ -1160,7 +1160,7 @@ extension UploadManager {
     
     // MARK: - Transfer Failed/Completed
     private func didEndTransfer(for upload: Upload, taskID: Int = Int.max) {
-        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Did end transfer in \(queueName(), privacy: .public)")
+        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Did end transfer")
         
         // Error?
         if upload.requestError.isEmpty == false {

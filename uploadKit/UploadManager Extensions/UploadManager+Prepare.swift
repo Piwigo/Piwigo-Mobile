@@ -14,7 +14,7 @@ extension UploadManager
 {
     // MARK: - Prepare Image/Video
     func prepare(_ upload: Upload) async -> Void {
-        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Prepare image/video for upload")
+        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Start preparing image/video")
         
         // Update upload status
         isPreparing = true
@@ -30,19 +30,57 @@ extension UploadManager
         //    where "typ" is "img" (photo) or "mov" (video).
         // => Intent: use identifier of type "Intent-yyyyMMdd-HHmmssSSSS-typ-#"
         //    where "typ" is "img" (photo) or "mov" (video).
-        if upload.localIdentifier.hasPrefix(kIntentPrefix) {
-            // Case of an image submitted by an intent
-            await prepareImageFromIntent(for: upload)
-        } else if upload.localIdentifier.hasPrefix(kClipboardPrefix) {
-            // Case of an image retrieved from the pasteboard
-            await prepareImageInPasteboard(for: upload)
-        } else {
-            // Case of an image from the local Photo Library
-            await prepareImageInPhotoLibrary(for: upload)
+        do {
+            if upload.localIdentifier.hasPrefix(kIntentPrefix) {
+                // Case of an image submitted by an intent
+                try await prepareImageFromIntent(for: upload)
+
+                // Preparation completed
+                upload.setState(.prepared, save: false)
+
+                // Investigate next upload request?
+                await didEndPreparation()
+            }
+            else if upload.localIdentifier.hasPrefix(kClipboardPrefix) {
+                // Case of an image retrieved from the pasteboard
+                try await prepareImageOrVideoInPasteboard(for: upload)
+                
+                // Preparation completed
+                upload.setState(.prepared, save: false)
+
+                // Investigate next upload request?
+                await didEndPreparation()
+            }
+            else {
+                // Case of an image from the local Photo Library
+                /// NB: Not possible to extract AVAsset with async/await methods as of iOS 26.2
+                if try await prepareAssetInPhotoLibrary(for: upload)
+                {
+                    // Preparation completed
+                    upload.setState(.prepared, save: false)
+
+                    // Investigate next upload request?
+                    await didEndPreparation()
+                }
+            }
+        }
+        catch let error {
+            switch error {
+            case .unacceptedImageFormat, .unacceptedVideoFormat, .unacceptedAudioFormat, .unacceptedDataFormat:
+                upload.setState(.formatError, error: error, save: true)
+            
+            case .cannotStripPrivateMetadata, .videoEncodingError:
+                upload.setState(.preparingError, error: error, save: false)
+                
+            case .missingAsset, .otherError:
+                fallthrough
+            default:
+                upload.setState(.preparingFail, error: error, save: true)
+            }
         }
     }
     
-    private func renamedFile(for upload: Upload) -> String {
+    fileprivate func renamedFile(for upload: Upload) -> String {
         // Anything to do?
         var fileName = upload.fileName
         if upload.fileNamePrefixEncodedActions.isEmpty,
@@ -84,89 +122,86 @@ extension UploadManager
                             counter: currentCounter)
                 
         // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
-        return fileName
+        return fileName.utf8mb3Encoded
     }
     
-    private func prepareImageFromIntent(for upload: Upload) async {
-        // Determine non-empty unique file name and extension from identifier
+    fileprivate func prepareImageFromIntent(for upload: Upload) async throws(PwgKitError) {
+        // Get files in the Uploads directory
         var files = [URL]()
         do {
-            // Get complete filename by searching in the Uploads directory
             files = try FileManager.default.contentsOfDirectory(at: DataDirectories.appUploadsDirectory,
-                        includingPropertiesForKeys: nil,
-                        options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+                                                                includingPropertiesForKeys: nil,
+                                                                options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+        } catch {
+            throw .missingAsset
         }
-        catch {
-            files = []
-        }
-        guard files.count > 0,
-              let fileURL = files.filter({$0.lastPathComponent.hasPrefix(upload.localIdentifier)}).first else {
+        
+        // Determine non-empty unique file name and extension from identifier
+        guard files.isEmpty == false,
+              let fileURL = files.filter({$0.lastPathComponent.hasPrefix(upload.localIdentifier)}).first
+        else {
             // File not available… deleted?
-            upload.setState(.preparingFail, error: .missingAsset, save: true)
-            
-            // Investigate next upload request?
-            await didEndPreparation()
-            return
+            throw .missingAsset
         }
         
         // Rename file if requested by user
         upload.fileName = renamedFile(for: upload)
 
         // Launch preparation job (limited to stripping metadata)
-        if fileURL.lastPathComponent.contains("img") {
-            upload.fileType = pwgImageFileType.image.rawValue
-
-            // Update state of upload and launch preparation job
-            prepareImage(atURL: fileURL, for: upload)
-            return
-        }
+        guard fileURL.lastPathComponent.contains("img")
+        else { throw .missingAsset }
+        
+        // Update upload request
+        upload.fileType = pwgImageFileType.image.rawValue
+        
+        // Update state of upload and launch preparation job
+        try await prepareImage(atURL: fileURL, for: upload)
     }
     
-    private func prepareImageInPasteboard(for upload: Upload) async {
-        // Determine non-empty unique file name and extension from identifier
+    private func prepareImageOrVideoInPasteboard(for upload: Upload) async throws(PwgKitError) {
+        // Get files in the Uploads directory
         var files = [URL]()
         do {
             // Get complete filename by searching in the Uploads directory
             files = try FileManager.default.contentsOfDirectory(at: DataDirectories.appUploadsDirectory,
-                        includingPropertiesForKeys: nil,
-                        options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+                                                                includingPropertiesForKeys: nil,
+                                                                options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
         }
         catch {
-            files = []
+            throw .missingAsset
         }
-        guard files.count > 0,
+        
+        // Determine non-empty unique file name and extension from identifier
+        guard files.isEmpty == false,
               let fileURL = files.filter({$0.absoluteString.contains(upload.localIdentifier)}).first else {
             // File not available… deleted?
-            upload.setState(.preparingFail, error: .missingAsset, save: true)
-            
-            // Investigate next upload request?
-            await didEndPreparation()
-            return
+            throw .missingAsset
         }
-        let fileName = fileURL.lastPathComponent
-
+        
         // Launch preparation job if file format accepted by Piwigo server
         let fileExt = fileURL.pathExtension.lowercased()
-        if fileName.contains("img") {
+        let fileName = fileURL.lastPathComponent
+        if fileName.contains(kImageSuffix) {
+            // Set file type
             upload.fileType = pwgImageFileType.image.rawValue
 
             // Set filename by
             /// - removing the "Clipboard-" prefix i.e. kClipboardPrefix
             /// - removing the "SSSS-img-#" suffix i.e. "SSSS%@-#" where %@ is kImageSuffix
             /// - adding the file extension
-            if let prefixRange = fileName.range(of: kClipboardPrefix),
-               let suffixRange = fileName.range(of: kImageSuffix) {
-                upload.fileName = String(fileName[prefixRange.upperBound..<suffixRange.lowerBound].dropLast(4)) + ".\(fileExt)"
-            }
-
+            guard let prefixRange = fileName.range(of: kClipboardPrefix),
+               let suffixRange = fileName.range(of: kImageSuffix)
+            else { throw .missingAsset }
+            upload.fileName = String(fileName[prefixRange.upperBound..<suffixRange.lowerBound].dropLast(4)) + ".\(fileExt)"
+            
             // Rename file if requested by user
             upload.fileName = renamedFile(for: upload)
-
+            
             // Chek that the image format is accepted by the Piwigo server
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
                 UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Prepare image \(upload.fileName)")
-                prepareImage(atURL: fileURL, for: upload)
+                try await prepareImage(atURL: fileURL, for: upload)
                 return
             }
             
@@ -175,27 +210,25 @@ extension UploadManager
                acceptedImageExtensions.contains(fileExt) {
                 // Try conversion to JPEG
                 UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Convert image \(upload.fileName) to JPEG format")
-                convertImage(atURL: fileURL, for: upload)
+                try await convertImage(atURL: fileURL, for: upload)
                 return
             }
             
             // Image file format cannot be accepted by the Piwigo server
-            upload.setState(.formatError, error: .unacceptedImageFormat, save: true)
-            
-            // Update upload request
-            await didEndPreparation()
+            throw .unacceptedImageFormat
         }
-        else if fileName.contains("mov") {
+        else if fileName.contains(kMovieSuffix) {
+            // Set file type
             upload.fileType = pwgImageFileType.video.rawValue
 
             // Set filename by
             /// - removing the "Clipboard-" prefix i.e. kClipboardPrefix
             /// - removing the "SSSS-mov-#" suffix i.e. "SSSS%@-#" where %@ is kMovieSuffix
             /// - adding the file extension
-            if let prefixRange = fileName.range(of: kClipboardPrefix),
-               let suffixRange = fileName.range(of: kMovieSuffix) {
-                upload.fileName = String(fileName[prefixRange.upperBound..<suffixRange.lowerBound].dropLast(4)) + ".\(fileExt)"
-            }
+            guard let prefixRange = fileName.range(of: kClipboardPrefix),
+                  let suffixRange = fileName.range(of: kMovieSuffix)
+            else { throw .missingAsset }
+            upload.fileName = String(fileName[prefixRange.upperBound..<suffixRange.lowerBound].dropLast(4)) + ".\(fileExt)"
 
             // Rename file if requested by user
             upload.fileName = renamedFile(for: upload)
@@ -204,7 +237,7 @@ extension UploadManager
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
                 UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Prepare video \(upload.fileName)")
-                prepareVideo(atURL: fileURL, for: upload)
+                try await prepareVideo(atURL: fileURL, for: upload)
                 return
             }
             
@@ -213,36 +246,25 @@ extension UploadManager
                acceptedMovieExtensions.contains(fileExt) {
                 // Try conversion to MP4
                 UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Convert video \(upload.fileName) to MP4 format")
-                convertVideo(atURL: fileURL, for: upload)
+                try await convertVideo(atURL: fileURL, for: upload)
                 return
             }
             
             // Video file format cannot be accepted by the Piwigo server
-            upload.setState(.formatError, error: .unacceptedVideoFormat, save: true)
-            
-            // Investigate next upload request?
-            await didEndPreparation()
+            throw .unacceptedVideoFormat
         }
         else {
             // Unknown type
-            upload.setState(.formatError, error: .unacceptedDataFormat, save: true)
-            
-            // Investigate next upload request?
-            await didEndPreparation()
+            throw .unacceptedDataFormat
         }
     }
     
-    private func prepareImageInPhotoLibrary(for upload: Upload) async {
+    private func prepareAssetInPhotoLibrary(for upload: Upload) async throws(PwgKitError) -> Bool {
         // Retrieve image asset
         let assets = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil)
-        guard assets.count > 0, let originalAsset = assets.firstObject else {
-            // Asset not available… deleted?
-            upload.setState(.preparingFail, error: .missingAsset, save: true)
-            
-            await didEndPreparation()
-            return
-        }
-
+        guard assets.count > 0, let originalAsset = assets.firstObject
+        else { throw .missingAsset }
+        
         // Retrieve creation date from PHAsset (local time, or UTC time if time zone provided)
         if let creationDate = originalAsset.creationDate {
             upload.creationDate = creationDate.timeIntervalSinceReferenceDate
@@ -253,148 +275,94 @@ extension UploadManager
         // Get URL of image file to be stored into Piwigo/Uploads directory
         // and deletes temporary image file if exists (incomplete previous attempt?)
         let fileURL = getUploadFileURL(from: upload, withSuffix: kOriginalSuffix, deleted: true)
-
-        // Retrieve asset resources
-        var resources = PHAssetResource.assetResources(for: originalAsset)
-        let options = PHAssetResourceRequestOptions()
-        options.isNetworkAccessAllowed = true
-        let edited = resources.first(where: { $0.type == .fullSizePhoto || $0.type == .fullSizeVideo })
-        let original = resources.first(where: { $0.type == .photo || $0.type == .video || $0.type == .audio })
-        let resource = edited ?? original ?? resources.first(where: { $0.type == .alternatePhoto})
-        let originalFilename = original?.originalFilename ?? ""
-
-        // Priority to original media data
-        if let res = resource {
-            // Store original data in file
-            PHAssetResourceManager.default().writeData(for: res, toFile: fileURL,
-                                                       options: options) { error in
-                // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
-                var utf8mb3Filename = originalFilename.utf8mb3Encoded
-                
-                // Snapchat creates filenames containning ":" characters,
-                // which prevents the app from storing the converted file
-                if #available(iOS 16.0, *) {
-                    utf8mb3Filename = utf8mb3Filename.replacing(":", with: "")
-                } else {
-                    // Fallback on earlier versions
-                    utf8mb3Filename = utf8mb3Filename.replacingOccurrences(of: ":", with: "")
-                }
-                
-                // If encodedFileName is empty, build one from the current date
-                if utf8mb3Filename.count == 0 {
-                    // No filename => Build filename from creation date
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "yyyyMMdd-HHmmssSSSS"
-                    if let creation = originalAsset.creationDate {
-                        utf8mb3Filename = dateFormatter.string(from: creation)
-                    } else {
-                        utf8mb3Filename = dateFormatter.string(from: Date())
-                    }
-
-                    // Filename extension required by Piwigo so that it knows how to deal with it
-                    if originalAsset.mediaType == .image {
-                        // Adopt JPEG photo format by default, will be rechecked
-                        utf8mb3Filename = URL(fileURLWithPath: utf8mb3Filename).appendingPathExtension("jpg").lastPathComponent
-                    } else if originalAsset.mediaType == .video {
-                        // Videos are exported in MP4 format
-                        utf8mb3Filename = URL(fileURLWithPath: utf8mb3Filename).appendingPathExtension("mp4").lastPathComponent
-                    } else if originalAsset.mediaType == .audio {
-                        // Arbitrary extension, not managed yet
-                        utf8mb3Filename = URL(fileURLWithPath: utf8mb3Filename).appendingPathExtension("m4a").lastPathComponent
-                    }
-                }
-                
-                Task { @UploadManagerActor in
-                    upload.fileName = utf8mb3Filename
-                    await self.dispatchAsset(originalAsset, atURL:fileURL, for: upload)
-                }
-            }
-        }
-        else {
-            // Asset not available… deleted?
-            upload.setState(.preparingFail, error: .missingAsset, save: true)
-            
-            // Investigate next upload request?
-            await didEndPreparation()
-        }
         
-        // Release memory
-        resources.removeAll(keepingCapacity: false)
-    }
-    
-    private func dispatchAsset(_ originalAsset:PHAsset, atURL uploadFileURL:URL, for upload: Upload) async {
-        // Rename file if requested by user
-        upload.fileName = renamedFile(for: upload)
-
-        // Launch preparation job if file format accepted by Piwigo server
-        let fileExt = (URL(fileURLWithPath: upload.fileName).pathExtension).lowercased()
+        // Preparation method depends on media type
         switch originalAsset.mediaType {
         case .image:
+            // Set filetype
             upload.fileType = pwgImageFileType.image.rawValue
+            
+            // Get file from asset
+            try await writePhotoAsset(originalAsset, toFile: fileURL, for: upload)
+            
+            // Rename file if requested by user
+            upload.fileName = renamedFile(for: upload)
+
+            // Launch preparation job according to file format
+            let fileExt = (URL(fileURLWithPath: upload.fileName).pathExtension).lowercased()
+            
             // Chek that the image format is accepted by the Piwigo server
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
                 UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Prepare image \(upload.fileName)")
-                self.prepareImage(atURL: uploadFileURL, for: upload)
-                return
+                try await prepareImage(atURL: fileURL, for: upload)
+                return true
             }
+            
             // Convert image if JPEG format is accepted by Piwigo server
             if NetworkVars.shared.serverFileTypes.contains("jpg"),
                acceptedImageExtensions.contains(fileExt) {
                 // Try conversion to JPEG
                 UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Convert image \(upload.fileName) to JPEG format")
-                self.convertImage(atURL: uploadFileURL, for: upload)
-                return
+                try await convertImage(atURL: fileURL, for: upload)
+                return true
             }
-
-            // Image file format cannot be accepted by the Piwigo server
-            upload.setState(.formatError, error: .unacceptedImageFormat, save: true)
             
-            // Investigate next upload request?
-            await didEndPreparation()
+            // Image file format cannot be accepted by the Piwigo server
+            throw PwgKitError.unacceptedImageFormat
 
         case .video:
+            // Get filename from asset
+            getVideoFileName(from: originalAsset, for: upload)
+            
+            // Rename file if requested by user
+            upload.fileName = renamedFile(for: upload)
+
+            // Set filetype
             upload.fileType = pwgImageFileType.video.rawValue
+            
+            // Launch preparation job according to file format
+            let fileExt = (URL(fileURLWithPath: upload.fileName).pathExtension).lowercased()
+
+            // File name of final video data to be stored into Piwigo/Uploads directory
+            let outputURL = getUploadFileURL(from: upload, deleted: false)
+
             // Chek that the video format is accepted by the Piwigo server
+            /// NB: Not possible to extract AVAsset with async/await methods as of iOS 26.2
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
-                UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Prepare video \(upload.fileName)")
-                self.prepareVideo(ofAsset: originalAsset, for: upload)
-                return
+                UploadManager.logger.notice("Prepare video \(upload.fileName)")
+                Task {
+                    self.prepareVideo(ofAsset: originalAsset, atURL: outputURL, for: upload)
+                }
+                return false
             }
+            
             // Convert video if MP4 format is accepted by Piwigo server
             if NetworkVars.shared.serverFileTypes.contains("mp4"),
                acceptedMovieExtensions.contains(fileExt) {
                 // Try conversion to MP4
-                UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Convert video \(upload.fileName) to MP4 format")
-                self.convertVideo(ofAsset: originalAsset, for: upload)
-                return
+                UploadManager.logger.notice("Convert video \(upload.fileName) to MP4 format")
+                Task {
+                    self.convertVideo(ofAsset: originalAsset, atURL: outputURL, for: upload)
+                }
+                return false
             }
             
             // Video file format cannot be accepted by the Piwigo server
-            upload.setState(.formatError, error: .unacceptedVideoFormat, save: true)
-            
-            // Investigate next upload request?
-            await didEndPreparation()
+            throw PwgKitError.unacceptedVideoFormat
 
         case .audio:
             // Update state of upload: Not managed by Piwigo iOS yet…
-            upload.setState(.formatError, error: .unacceptedAudioFormat, save: true)
+            throw .unacceptedAudioFormat
             
-            // Investigate next upload request?
-            await didEndPreparation()
-
         case .unknown:
             fallthrough
         default:
-            // Update state of upload request: Unknown format
-            upload.setState(.formatError, error: .unacceptedDataFormat, save: true)
-            
-            // Investigate next upload request?
-            await didEndPreparation()
+            throw .unacceptedDataFormat
         }
     }
-
+    
     
     // MARK: - End of Preparation
     func didEndPreparation() async {

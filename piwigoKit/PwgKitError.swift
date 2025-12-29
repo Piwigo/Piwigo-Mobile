@@ -15,10 +15,12 @@ public let reason = "Piwigo server error"
 public enum PwgKitError: Error {
     // Error types
     case fileOperationFailed(innerError: CocoaError)
-    case photosError(innerError: PHPhotosError)
     case invalidStatusCode(statusCode: Int)
     case requestFailed(innerError: URLError)
     case decodingFailed(innerError: DecodingError)
+    case photoError(innerError: PHPhotosError)
+    case photoResourceError(innerError: NSError)
+    case videoEncodingError(innerError: AVError)
     case otherError(innerError: any Error)
     
     // Piwigo errors
@@ -163,10 +165,6 @@ extension PwgKitError: LocalizedError {
         case .fileOperationFailed(innerError: let error):
             return error.localizedDescription
         
-        // Photo Library errors
-        case .photosError(innerError: let error):
-            return error.localizedDescription
-        
         // HTTP errors
         case .invalidStatusCode(statusCode: let code):
             return "HTTP error \(code): " + HTTPURLResponse.localizedString(forStatusCode: code)
@@ -177,6 +175,18 @@ extension PwgKitError: LocalizedError {
         
         // Decoding failed errors
         case .decodingFailed(innerError: let error):
+            return error.localizedDescription
+        
+        // Photo Library errors
+        case .photoError(innerError: let error):
+            return error.localizedDescription
+        
+        // Photo Resource errors
+        case .photoResourceError(innerError: let error):
+            return error.localizedDescription
+            
+        // Video encoding errors
+        case .videoEncodingError(innerError: let error):
             return error.localizedDescription
         
         // Other errors
