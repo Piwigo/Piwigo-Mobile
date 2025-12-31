@@ -77,8 +77,8 @@ extension UploadSessionsDelegate: URLSessionTaskDelegate {
         
         // Get upload info from the task
         guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
-              let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk))!),
-              let chunks = Int((task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks))!),
+              let chunkStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk), let chunk = Int(chunkStr),
+              let chunksStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks), let chunks = Int(chunksStr),
               let taskDescription = task.taskDescription
         else {
             UploadSessionsDelegate.logger.notice("Could not extract HTTP header fields.")
