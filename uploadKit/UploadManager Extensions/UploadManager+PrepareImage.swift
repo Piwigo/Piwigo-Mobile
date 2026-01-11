@@ -12,32 +12,50 @@ import Photos
 import UIKit
 import piwigoKit
 
+@UploadManagerActor
 extension UploadManager {
     // See https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/ImageIOGuide/imageio_intro/ikpg_intro.html#//apple_ref/doc/uid/TP40005462-CH201-TPXREF101
     // See https://developer.apple.com/documentation/uniformtypeidentifiers
     
-    // MARK: - Image preparation
-    func writePhotoAsset(_ originalAsset: PHAsset, toFile fileURL: URL, for upload: Upload) async throws(PwgKitError) {
+    // MARK: - Image in Pasteboard
+    func getFilenameForImageInPasteboard(withName fileName: String, extension fileExt: String) throws(PwgKitError) -> String {
+        // Set filename by
+        /// - removing the "Clipboard-" prefix i.e. kClipboardPrefix
+        /// - removing the "SSSS-img-#" suffix i.e. "SSSS%@-#" where %@ is kImageSuffix
+        /// - adding the file extension
+        guard let prefixRange = fileName.range(of: kClipboardPrefix),
+              let suffixRange = fileName.range(of: kImageSuffix)
+        else { throw .missingAsset }
+
+        let filename = String(fileName[prefixRange.upperBound..<suffixRange.lowerBound].dropLast(4)) + ".\(fileExt)"
+        return filename
+    }
+    
+    
+    // MARK: - Image in Photo Library
+    func writePhotoFromAsset(_ originalAsset: PHAsset, toFile fileURL: URL, for upload: Upload) async throws(PwgKitError) -> String {
         // Retrieve asset resources
         var resources = PHAssetResource.assetResources(for: originalAsset)
         let options = PHAssetResourceRequestOptions()
         options.isNetworkAccessAllowed = true
         let edited = resources.first(where: { $0.type == .fullSizePhoto || $0.type == .fullSizeVideo })
         let original = resources.first(where: { $0.type == .photo || $0.type == .video || $0.type == .audio })
-        let resource = edited ?? original ?? resources.first(where: { $0.type == .alternatePhoto})
-        let originalFilename = original?.originalFilename ?? ""
-        upload.fileName = getFilename(fromName: originalFilename, ofAsset: originalAsset)
-        
-        // Priority to original media data
-        guard let res = resource
+
+        // Priority to edited fullsize media, then original version
+        guard let resource = edited ?? original ?? resources.first(where: { $0.type == .alternatePhoto})
         else { throw .missingAsset }
         
         do {
             // Store original data in file
-            try await PHAssetResourceManager.default().writeData(for: res, toFile: fileURL, options: options)
+            try await PHAssetResourceManager.default().writeData(for: resource, toFile: fileURL, options: options)
             
             // Release memory
             resources.removeAll(keepingCapacity: false)
+            
+            // Return filename based on asset or a date
+            let originalFilename = original?.originalFilename ?? ""
+            let fileName = getFilename(fromName: originalFilename, ofAsset: originalAsset)
+            return fileName
         }
         catch let error as NSError where error.domain == PHPhotosErrorDomain {
             // Release memory
@@ -56,6 +74,8 @@ extension UploadManager {
         }
     }
     
+    
+    // MARK: - Image File Preparation
     /// Case of an image format accepted by the server
     func prepareImage(atURL originalFileURL: URL, for upload: Upload) async throws(PwgKitError) {
 
@@ -64,10 +84,12 @@ extension UploadManager {
            !upload.compressImageOnUpload, !upload.stripGPSdataOnUpload
         {
             // Get creation date from metadata if possible
-            upload.creationDate = getCreationDateOfImage(atURL: originalFileURL)
+            let creationDate = self.getCreationDateOfImage(atURL: originalFileURL)
+            upload.creationDate = creationDate
+            upload.managedObjectContext?.saveIfNeeded()
             
             // Get MD5 checksum and MIME type, update counter
-            try self.finalizeImageFile(atURL: originalFileURL, with: upload)
+            try setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: originalFileURL)
             
             // Job done
             return
@@ -79,10 +101,10 @@ extension UploadManager {
            !upload.compressImageOnUpload
         {
             // Strip private metadata
-            let fileURL = try await stripMetadataOfImage(atURL: originalFileURL, with: upload)
+            let fileURL = try stripMetadataOfImage(atURL: originalFileURL, with: upload)
             
             // Get MD5 checksum and MIME type, update counter
-            try self.finalizeImageFile(atURL: fileURL, with: upload)
+            try setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: fileURL)
             
             // Job done
             return
@@ -90,10 +112,10 @@ extension UploadManager {
         
         // The user requested a resize and/or compression
         /// - extracts the creation date from the source
-        let fileURL = try await modifyImage(atURL: originalFileURL, with: upload)
+        let fileURL = try modifyImage(atURL: originalFileURL, with: upload)
         
         // Get MD5 checksum and MIME type, update counter
-        try self.finalizeImageFile(atURL: fileURL, with: upload)
+        try setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: fileURL)
     }
     
     /// Case of an image format not accepted by the server
@@ -101,16 +123,15 @@ extension UploadManager {
 
         // Convert image to JPEG format
         /// - extracts the creation date from the source
-        let fileURL = try await convertImage(atURL: originalFileURL, with: upload)
+        let fileURL = try convertImage(atURL: originalFileURL, with: upload)
         
         // Get MD5 checksum and MIME type, update counter
-        try self.finalizeImageFile(atURL: fileURL, with: upload)
+        try setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: fileURL)
     }
     
     
     // MARK: - Utilities
-    // Extract creation date from metadata
-    /// -> update upload.creationDate
+    // Returns creation date from metadata
     fileprivate func getCreationDateOfImage(atURL originalFileURL: URL) -> TimeInterval {
         autoreleasepool {
             // Initialise date with file creation date
@@ -152,9 +173,8 @@ extension UploadManager {
         }
     }
     
-    // Strip private metadata w/o recompression
-    /// -> Return file URL w/ or w/o error
-    private func stripMetadataOfImage(atURL originalFileURL:URL, with upload: Upload) async throws(PwgKitError) -> URL {
+    // Strip private metadata w/o recompression and return file URL
+    fileprivate func stripMetadataOfImage(atURL originalFileURL: URL, with upload: Upload) throws(PwgKitError) -> URL {
         try autoreleasepool { () throws(PwgKitError) -> URL in
             // Create image source
             let options = [kCGImageSourceShouldCache      : false,
@@ -174,7 +194,7 @@ extension UploadManager {
             }
             
             // Get URL of final image data file to be stored into Piwigo/Uploads directory
-            let fileURL = getUploadFileURL(from: upload, deleted: true)
+            let fileURL = getUploadFileURL(from: upload.localIdentifier, creationDate: upload.creationDate, deleted: true)
             
             // Prepare destination file of same type with same number of images
             guard let UTI = CGImageSourceGetType(sourceRef),
@@ -205,7 +225,7 @@ extension UploadManager {
     /// - Compress images if demanded in properties
     /// - Strip private metadata if demanded in properties
     /// -> Return file URL w/ or w/o error
-    private func modifyImage(atURL originalFileURL:URL, with upload: Upload) async throws(PwgKitError) -> URL {
+    fileprivate func modifyImage(atURL originalFileURL:URL, with upload: Upload) throws(PwgKitError) -> URL {
         try autoreleasepool { () throws(PwgKitError) -> URL in
             // Create image source
             let options = [kCGImageSourceShouldCacheImmediately : false,
@@ -225,7 +245,7 @@ extension UploadManager {
             }
             
             // Get URL of final image data file to be stored into Piwigo/Uploads directory
-            let fileURL = getUploadFileURL(from: upload, deleted: true)
+            let fileURL = getUploadFileURL(from: upload.localIdentifier, creationDate: upload.creationDate, deleted: true)
             
             // Prepare destination file of same type with same number of images
             guard let UTI = CGImageSourceGetType(sourceRef),
@@ -397,13 +417,13 @@ extension UploadManager {
             return fileURL
         }
     }
-        
-    /// - Convert image at URL using ImageIO
+    
+    // Convert image at URL using ImageIO
     /// - Resize images if demanded in properties
     /// - Compress images if demanded in properties
     /// - Strip private metadata if demanded in properties
     /// -> Return file URL w/ or w/o error
-    private func convertImage(atURL originalFileURL:URL, with upload: Upload) async throws(PwgKitError) -> URL {
+    fileprivate func convertImage(atURL originalFileURL:URL, with upload: Upload) throws(PwgKitError) -> URL {
         try autoreleasepool { () throws(PwgKitError) -> URL in
             // Create image source
             let options = [kCGImageSourceShouldCacheImmediately : false,
@@ -430,7 +450,7 @@ extension UploadManager {
                 .deletingPathExtension().appendingPathExtension(fileExt).lastPathComponent
             
             // Get URL of final image data file to be stored into Piwigo/Uploads directory
-            let fileURL = getUploadFileURL(from: upload, deleted: true)
+            let fileURL = getUploadFileURL(from: upload.localIdentifier, creationDate: upload.creationDate, deleted: true)
             
             // Prepare destination file of JPEG type containing a single image
             guard let destinationRef = CGImageDestinationCreateWithURL(fileURL as CFURL, UTI, 1, nil)
