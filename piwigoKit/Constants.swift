@@ -13,10 +13,10 @@ import Photos
 public let piwigoKit = Bundle.allFrameworks.first(where: { ($0.bundleIdentifier ?? "").contains("piwigoKit")})
 
 // Disconnects and asks to update the Piwigo server if version is lower than:
-public let pwgMinVersion = "2.10.0"
+public let pwgMinVersion = "12.0.0"
 
 // At login, invites to update the Piwigo server if version is lower than:
-public let pwgRecentVersion = "14.0.0"
+public let pwgRecentVersion = "15.0.0"
 
 // Custom HTTP headers
 public let HTTPCatID = "X-PWG-categoryID"       // Header for cancelling tasks related with a specific album
