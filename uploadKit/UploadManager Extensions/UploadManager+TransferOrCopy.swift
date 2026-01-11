@@ -149,16 +149,7 @@ extension UploadManager {
         upload.imageId = imageID
         upload.setState(.moderated)
     }
-        
     
-    // MARK: - Transfer Failed/Completed
-    // Cancel tasks related with an upload request
-    func cancelTasksOtherThanTask(withID taskID: Int, for uploadID: NSManagedObjectID) {
-        UploadManagerActor.logger.notice("\(uploadID.uriRepresentation().absoluteString) • Task \(taskID)")
-        let objectURIstr = uploadID.uriRepresentation().absoluteString
-        UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: taskID)
-    }
-        
     
     // MARK: - Utilities
     nonisolated func createBoundary(from identifier: String) -> String {

@@ -159,7 +159,7 @@ extension UploadManager {
         if let error {
             upload.setState(.uploadingError, error: error)
             upload.managedObjectContext?.saveIfNeeded()
-            cancelTasksOtherThanTask(withID: task.taskIdentifier, for: uploadID)
+            await UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: task.taskIdentifier)
             return
         }
         
@@ -168,7 +168,7 @@ extension UploadManager {
         else {
             upload.setState(.uploadingError, error: PwgKitError.invalidResponse)
             upload.managedObjectContext?.saveIfNeeded()
-            cancelTasksOtherThanTask(withID: task.taskIdentifier, for: uploadID)
+            await UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: task.taskIdentifier)
             return
         }
         
@@ -177,7 +177,7 @@ extension UploadManager {
         else {
             upload.setState(.uploadingError, error: PwgKitError.invalidStatusCode(statusCode: response.statusCode))
             upload.managedObjectContext?.saveIfNeeded()
-            cancelTasksOtherThanTask(withID: task.taskIdentifier, for: uploadID)
+            await UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: task.taskIdentifier)
             return
         }
 
@@ -212,7 +212,7 @@ extension UploadManager {
             UploadManagerActor.logger.notice("\(objectURIstr) • Task \(task.taskIdentifier) returned an Empty JSON object")
             upload.setState(.uploadingError, error: .emptyJSONobject)
             upload.managedObjectContext?.saveIfNeeded()
-            cancelTasksOtherThanTask(withID: task.taskIdentifier, for: uploadID)
+            await UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: task.taskIdentifier)
             return
         }
         var jsonData = data
@@ -222,7 +222,7 @@ extension UploadManager {
             UploadManagerActor.logger.notice("\(objectURIstr) • Task \(task.taskIdentifier) returned the invalid JSON object: \(dataStr)")
             upload.setState(.uploadingError, error: .invalidJSONobject)
             upload.managedObjectContext?.saveIfNeeded()
-            cancelTasksOtherThanTask(withID: task.taskIdentifier, for: uploadID)
+            await UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: task.taskIdentifier)
             return
         }
         
@@ -243,7 +243,7 @@ extension UploadManager {
             
             // Upload completed
             // Cancel other tasks related to this request if any
-            UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: task.taskIdentifier)
+            await UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: task.taskIdentifier)
             
             // Collect image data
             guard var getInfos = uploadJSON.data, let imageId = getInfos.id,
