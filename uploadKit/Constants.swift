@@ -18,7 +18,7 @@ public let uploadKit = Bundle.allFrameworks.first(where: { ($0.bundleIdentifier 
 //let maxNberOfFailedUploads = 5              // Stop transfers after 5 failures
 
 // Constants used to manage background tasks
-let maxCountOfBytesToUpload = 100 * 1024 * 1024  // Up to 100 MB transferred in a series
+//let maxCountOfBytesToUpload = 100 * 1024 * 1024  // Up to 100 MB transferred in a series
 public let maxNberOfUploadsPerSeries = 500       // i.e. do not add more than 500 requests at a time
 
 // Constants used to name and identify media
