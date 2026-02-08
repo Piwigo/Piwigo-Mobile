@@ -115,7 +115,7 @@ extension UploadManager {
         /// - extracts the creation date from the source
         let fileURL = try modifyImage(atURL: originalFileURL, with: upload)
         
-        // Get MD5 checksum and MIME type, update counter
+        // Get MD5 checksum and MIME type
         try setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: fileURL)
     }
     
@@ -127,7 +127,7 @@ extension UploadManager {
         /// - extracts the creation date from the source
         let fileURL = try convertImage(atURL: originalFileURL, with: upload)
         
-        // Get MD5 checksum and MIME type, update counter
+        // Get MD5 checksum and MIME type
         try setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: fileURL)
     }
     
