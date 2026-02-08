@@ -23,7 +23,7 @@ public let pwgHTTPimageID   = "X-PWG-localIdentifier"       // Added to HTTP hea
 public let pwgHTTPchunk     = "X-PWG-chunk"                 // Added to HTTP header
 public let pwgHTTPchunks    = "X-PWG-chunks"                // Added to HTTP header
 public let pwgHTTPmd5sum    = "X-PWG-md5sum"                // Added to HTTP header
-public let pwgHTTPCancelled = "PWG Task Cancelled"          // Appended to task description
+public let pwgHTTPCancelled = "X-PWG-Cancelled"             // Appended to task description
 
 // URLSession delegate
 public let pwgUploadDelegate = UploadSessionsDelegate.shared.self
