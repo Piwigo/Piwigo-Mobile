@@ -40,6 +40,14 @@ extension UploadManager
         let userInfo = ["categoryId": upload.category]
         NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
         
+        // Update progress bar
+        let localIdentifier = upload.localIdentifier
+        DispatchQueue.main.async {
+            let uploadInfo: [String : Any] = ["localIdentifier" : localIdentifier,
+                                              "progressFraction" : 0.0]
+            NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
+        }
+        
         // Determine from where the file comes from:
         // => Photo Library: use PHAsset local identifier
         // => UIPasteborad: use identifier of type "Clipboard-yyyyMMdd-HHmmssSSSS-typ-#"
