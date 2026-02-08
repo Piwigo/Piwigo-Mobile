@@ -5110,7 +5110,7 @@
 				INFOPLIST_FILE = piwigo/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Piwigo;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Piwigo.org. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Piwigo.org. All rights reserved.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5161,7 +5161,7 @@
 				INFOPLIST_FILE = piwigo/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Piwigo;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Piwigo.org. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Piwigo.org. All rights reserved.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
