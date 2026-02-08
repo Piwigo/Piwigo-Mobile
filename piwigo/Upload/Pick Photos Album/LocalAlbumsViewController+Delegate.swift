@@ -17,7 +17,7 @@ extension LocalAlbumsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         // Get title of section
         let albumType = albumTypeFor(section: section)
-        let title = LocalAlbumsProvider.shared.titleForFooterInSectionOf(albumType: albumType)
+        let title = self.localAlbumsProvider.titleForFooterInSectionOf(albumType: albumType)
         return TableViewUtilities.heightOfHeader(withTitle: title,
                                                         width: tableView.frame.size.width)
     }
@@ -25,7 +25,7 @@ extension LocalAlbumsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         // Get title of section
         let albumType = albumTypeFor(section: section)
-        let title = LocalAlbumsProvider.shared.titleForHeaderInSectionOf(albumType: albumType)
+        let title = self.localAlbumsProvider.titleForHeaderInSectionOf(albumType: albumType)
         return TableViewUtilities.viewOfHeader(withTitle: title)
     }
     
@@ -54,19 +54,19 @@ extension LocalAlbumsViewController: UITableViewDelegate {
             navigationController?.pushViewController(pasteboardImagesVC, animated: true)
             return
         case .localAlbums:
-            assetCollections = LocalAlbumsProvider.shared.localAlbums
+            assetCollections = self.localAlbumsProvider.localAlbums
         case .eventsAlbums:
-            assetCollections = LocalAlbumsProvider.shared.eventsAlbums
+            assetCollections = self.localAlbumsProvider.eventsAlbums
         case .syncedAlbums:
-            assetCollections = LocalAlbumsProvider.shared.syncedAlbums
+            assetCollections = self.localAlbumsProvider.syncedAlbums
         case .facesAlbums:
-            assetCollections = LocalAlbumsProvider.shared.facesAlbums
+            assetCollections = self.localAlbumsProvider.facesAlbums
         case .sharedAlbums:
-            assetCollections = LocalAlbumsProvider.shared.sharedAlbums
+            assetCollections = self.localAlbumsProvider.sharedAlbums
         case .mediaTypes:
-            assetCollections = LocalAlbumsProvider.shared.mediaTypes
+            assetCollections = self.localAlbumsProvider.mediaTypes
         case .otherAlbums:
-            assetCollections = LocalAlbumsProvider.shared.otherAlbums
+            assetCollections = self.localAlbumsProvider.otherAlbums
         }
         
         // Did tap "expand" button at the bottom of section —> release remaining albums
@@ -109,7 +109,7 @@ extension LocalAlbumsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         // Get footer of section
         let albumType = albumTypeFor(section: section)
-        let footer = LocalAlbumsProvider.shared.titleForFooterInSectionOf(albumType: albumType)
+        let footer = self.localAlbumsProvider.titleForFooterInSectionOf(albumType: albumType)
         return TableViewUtilities.heightOfFooter(withText: footer,
                                                         width: tableView.frame.width)
     }
@@ -117,7 +117,7 @@ extension LocalAlbumsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         // Get footer of section
         let albumType = albumTypeFor(section: section)
-        let footer = LocalAlbumsProvider.shared.titleForFooterInSectionOf(albumType: albumType)
+        let footer = self.localAlbumsProvider.titleForFooterInSectionOf(albumType: albumType)
         return TableViewUtilities.viewOfFooter(withText: footer, alignment: .center)
     }
 }

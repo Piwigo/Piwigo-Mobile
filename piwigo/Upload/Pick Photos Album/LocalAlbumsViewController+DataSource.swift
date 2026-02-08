@@ -18,13 +18,13 @@ extension LocalAlbumsViewController: UITableViewDataSource {
         var count = Int.zero
 
         // Consider non-empty collections
-        count += LocalAlbumsProvider.shared.localAlbums.isEmpty ? 0 : 1
-        count += LocalAlbumsProvider.shared.eventsAlbums.isEmpty ? 0 : 1
-        count += LocalAlbumsProvider.shared.syncedAlbums.isEmpty ? 0 : 1
-        count += LocalAlbumsProvider.shared.facesAlbums.isEmpty ? 0 : 1
-        count += LocalAlbumsProvider.shared.sharedAlbums.isEmpty ? 0 : 1
-        count += LocalAlbumsProvider.shared.mediaTypes.isEmpty ? 0 : 1
-        count += LocalAlbumsProvider.shared.otherAlbums.isEmpty ? 0 : 1
+        count += self.localAlbumsProvider.localAlbums.isEmpty ? 0 : 1
+        count += self.localAlbumsProvider.eventsAlbums.isEmpty ? 0 : 1
+        count += self.localAlbumsProvider.syncedAlbums.isEmpty ? 0 : 1
+        count += self.localAlbumsProvider.facesAlbums.isEmpty ? 0 : 1
+        count += self.localAlbumsProvider.sharedAlbums.isEmpty ? 0 : 1
+        count += self.localAlbumsProvider.mediaTypes.isEmpty ? 0 : 1
+        count += self.localAlbumsProvider.otherAlbums.isEmpty ? 0 : 1
         
         // First section added for pasteboard if necessary
         return count + (hasImagesInPasteboard ? 1 : 0)
@@ -45,19 +45,19 @@ extension LocalAlbumsViewController: UITableViewDataSource {
         }
 
         var counter: Int = -1
-        counter += LocalAlbumsProvider.shared.localAlbums.isEmpty ? 0 : 1
+        counter += self.localAlbumsProvider.localAlbums.isEmpty ? 0 : 1
         if activeSection == counter { return .localAlbums }
-        counter += LocalAlbumsProvider.shared.eventsAlbums.isEmpty ? 0 : 1
+        counter += self.localAlbumsProvider.eventsAlbums.isEmpty ? 0 : 1
         if activeSection == counter { return .eventsAlbums }
-        counter += LocalAlbumsProvider.shared.syncedAlbums.isEmpty ? 0 : 1
+        counter += self.localAlbumsProvider.syncedAlbums.isEmpty ? 0 : 1
         if activeSection == counter { return .syncedAlbums }
-        counter += LocalAlbumsProvider.shared.facesAlbums.isEmpty ? 0 : 1
+        counter += self.localAlbumsProvider.facesAlbums.isEmpty ? 0 : 1
         if activeSection == counter { return .facesAlbums }
-        counter += LocalAlbumsProvider.shared.sharedAlbums.isEmpty ? 0 : 1
+        counter += self.localAlbumsProvider.sharedAlbums.isEmpty ? 0 : 1
         if activeSection == counter { return .sharedAlbums }
-        counter += LocalAlbumsProvider.shared.mediaTypes.isEmpty ? 0 : 1
+        counter += self.localAlbumsProvider.mediaTypes.isEmpty ? 0 : 1
         if activeSection == counter { return .mediaTypes }
-        counter += LocalAlbumsProvider.shared.otherAlbums.isEmpty ? 0 : 1
+        counter += self.localAlbumsProvider.otherAlbums.isEmpty ? 0 : 1
         return .otherAlbums
     }
 
@@ -68,19 +68,19 @@ extension LocalAlbumsViewController: UITableViewDataSource {
         case .pasteboard:
             return 1
         case .localAlbums:
-            nberOfAlbums = LocalAlbumsProvider.shared.localAlbums.count
+            nberOfAlbums = self.localAlbumsProvider.localAlbums.count
         case .eventsAlbums:
-            nberOfAlbums = LocalAlbumsProvider.shared.eventsAlbums.count
+            nberOfAlbums = self.localAlbumsProvider.eventsAlbums.count
         case .syncedAlbums:
-            nberOfAlbums = LocalAlbumsProvider.shared.syncedAlbums.count
+            nberOfAlbums = self.localAlbumsProvider.syncedAlbums.count
         case .facesAlbums:
-            nberOfAlbums = LocalAlbumsProvider.shared.facesAlbums.count
+            nberOfAlbums = self.localAlbumsProvider.facesAlbums.count
         case .sharedAlbums:
-            nberOfAlbums = LocalAlbumsProvider.shared.sharedAlbums.count
+            nberOfAlbums = self.localAlbumsProvider.sharedAlbums.count
         case .mediaTypes:
-            nberOfAlbums = LocalAlbumsProvider.shared.mediaTypes.count
+            nberOfAlbums = self.localAlbumsProvider.mediaTypes.count
         case .otherAlbums:
-            nberOfAlbums = LocalAlbumsProvider.shared.otherAlbums.count
+            nberOfAlbums = self.localAlbumsProvider.otherAlbums.count
         }
         return hasLimitedNberOfAlbums[albumType]! ? min(maxNberOfAlbumsInSection, nberOfAlbums) + 1 : nberOfAlbums
     }
@@ -100,31 +100,31 @@ extension LocalAlbumsViewController: UITableViewDataSource {
             return cell
         case .localAlbums:
             if !(isLimited && indexPath.row == maxNberOfAlbumsInSection) {
-                assetCollection = LocalAlbumsProvider.shared.localAlbums[indexPath.row]
+                assetCollection = self.localAlbumsProvider.localAlbums[indexPath.row]
             }
         case .eventsAlbums:
             if !(isLimited && indexPath.row == maxNberOfAlbumsInSection) {
-                assetCollection = LocalAlbumsProvider.shared.eventsAlbums[indexPath.row]
+                assetCollection = self.localAlbumsProvider.eventsAlbums[indexPath.row]
             }
         case .syncedAlbums:
             if !(isLimited && indexPath.row == maxNberOfAlbumsInSection) {
-                assetCollection = LocalAlbumsProvider.shared.syncedAlbums[indexPath.row]
+                assetCollection = self.localAlbumsProvider.syncedAlbums[indexPath.row]
             }
         case .facesAlbums:
             if !(isLimited && indexPath.row == maxNberOfAlbumsInSection) {
-                assetCollection = LocalAlbumsProvider.shared.facesAlbums[indexPath.row]
+                assetCollection = self.localAlbumsProvider.facesAlbums[indexPath.row]
             }
         case .sharedAlbums:
             if !(isLimited && indexPath.row == maxNberOfAlbumsInSection) {
-                assetCollection = LocalAlbumsProvider.shared.sharedAlbums[indexPath.row]
+                assetCollection = self.localAlbumsProvider.sharedAlbums[indexPath.row]
             }
         case .mediaTypes:
             if !(isLimited && indexPath.row == maxNberOfAlbumsInSection) {
-                assetCollection = LocalAlbumsProvider.shared.mediaTypes[indexPath.row]
+                assetCollection = self.localAlbumsProvider.mediaTypes[indexPath.row]
             }
         case .otherAlbums:
             if !(isLimited && indexPath.row == maxNberOfAlbumsInSection) {
-                assetCollection = LocalAlbumsProvider.shared.otherAlbums[indexPath.row]
+                assetCollection = self.localAlbumsProvider.otherAlbums[indexPath.row]
             }
         }
 
