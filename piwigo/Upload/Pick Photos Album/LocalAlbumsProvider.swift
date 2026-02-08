@@ -27,6 +27,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
     static let shared = LocalAlbumsProvider()
     
     // MARK: Properties
+    var didFetchAssetCollections: Bool = false
     var includingEmptyAlbums = false
     var localAlbums  = [PHAssetCollection]()
     var eventsAlbums = [PHAssetCollection]()
@@ -154,6 +155,9 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         // iCloud Shared Photo Stream albums.
         CloudShared = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .albumCloudShared, options: fetchOptions)
 
+        // Remember that asset collections were fetched
+        didFetchAssetCollections = true
+        
         // Register Photo Library changes
         PHPhotoLibrary.shared().register(self)
     }
@@ -165,10 +169,10 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
 
     // MARK: - Fetch Local Albums
     /**
-     Fetches the local albums from the Photo Library
+     Filters the local albums from the Photo Library
      Empty albums are not presented, left albums are sorted by localized title
     */
-    func fetchLocalAlbums(completion: @escaping () -> Void) {
+    func filterLocalAlbums() {
         // Local albums
         // Library, photo stream and favorites at the top
 //        var localAlbums = filter(fetchedAssetCollections: [userLibraryAlbum, CloudMyPhotoStream, favoritesAlbum].compactMap { $0 })
@@ -199,13 +203,11 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
 
         // Other albums
         otherAlbums = filter(fetchedAssetCollections: [allHiddenAlbum, importedAlbums].compactMap { $0 })
-
-        completion()
     }
     
     private func filter(fetchedAssetCollections: [PHFetchResult<PHAssetCollection>]) -> [PHAssetCollection] {
         // Fetch assets to determine non-empty collections
-//        let start = CFAbsoluteTimeGetCurrent()
+        let start = CFAbsoluteTimeGetCurrent()
         var collections = [PHAssetCollection]()
 
         // Fetch first image in each collection to reject empty collections
@@ -222,8 +224,8 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
             }
         }
         
-//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-//        debugPrint("••> Took \(diff) ms to filter albums")
+        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+        debugPrint("••> Took \(diff) ms to filter albums")
         return collections
     }
 
@@ -325,7 +327,6 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
             importedAlbums = changeDetails.fetchResultAfterChanges
         }
         
-
 //        if let changeDetails = changeInstance.changeDetails(for: CloudMyPhotoStream) {
 //            CloudMyPhotoStream = changeDetails.fetchResultAfterChanges
 //        }
@@ -335,12 +336,11 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         }
 
         // Update data and reload LocalAlbumsTableView
-        fetchLocalAlbums {
-            self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary()
-        }
+        filterLocalAlbums()
+        fetchedLocalAlbumsDelegate?.didChangePhotoLibrary()
     }
-
-
+    
+    
     // MARK: - Data Source Utilities
     func titleForHeaderInSectionOf(albumType: LocalAlbumType) -> String {
         var title: String

@@ -189,38 +189,41 @@ class LocalAlbumsViewController: UIViewController {
         view.window?.windowScene?.title = NSLocalizedString("tabBar_upload", comment: "Upload")
         
         // Show HUD while fetching local albums
-        self.navigationController?.showHUD(
-            withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-            detail: String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums"), minWidth: 200)
+        if self.localAlbumsProvider.didFetchAssetCollections == false {
+            self.navigationController?.showHUD(
+                withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+                detail: String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums"), minWidth: 200)
+        }
         
         // Fetch local albums in background thread
         DispatchQueue.global(qos: .background).async { [weak self] in
             guard let self else { return }
             
+            // Fetch and filter asset collections
             self.localAlbumsProvider.fetchAssetCollections()
-            self.localAlbumsProvider.fetchLocalAlbums {
-                // Set limiters
-                if self.localAlbumsProvider.localAlbums.count > self.maxNberOfAlbumsInSection {
-                    self.hasLimitedNberOfAlbums[.localAlbums] = true
-                }
-                if self.localAlbumsProvider.eventsAlbums.count > self.maxNberOfAlbumsInSection {
-                    self.hasLimitedNberOfAlbums[.eventsAlbums] = true
-                }
-                if self.localAlbumsProvider.syncedAlbums.count > self.maxNberOfAlbumsInSection {
-                    self.hasLimitedNberOfAlbums[.syncedAlbums] = true
-                }
-                if self.localAlbumsProvider.facesAlbums.count > self.maxNberOfAlbumsInSection {
-                    self.hasLimitedNberOfAlbums[.facesAlbums] = true
-                }
-                if self.localAlbumsProvider.sharedAlbums.count > self.maxNberOfAlbumsInSection {
-                    self.hasLimitedNberOfAlbums[.sharedAlbums] = true
-                }
-                if self.localAlbumsProvider.mediaTypes.count > self.maxNberOfAlbumsInSection {
-                    self.hasLimitedNberOfAlbums[.mediaTypes] = true
-                }
-                if self.localAlbumsProvider.otherAlbums.count > self.maxNberOfAlbumsInSection {
-                    self.hasLimitedNberOfAlbums[.otherAlbums] = true
-                }
+            self.localAlbumsProvider.filterLocalAlbums()
+            
+            // Set limiters
+            if self.localAlbumsProvider.localAlbums.count > self.maxNberOfAlbumsInSection {
+                self.hasLimitedNberOfAlbums[.localAlbums] = true
+            }
+            if self.localAlbumsProvider.eventsAlbums.count > self.maxNberOfAlbumsInSection {
+                self.hasLimitedNberOfAlbums[.eventsAlbums] = true
+            }
+            if self.localAlbumsProvider.syncedAlbums.count > self.maxNberOfAlbumsInSection {
+                self.hasLimitedNberOfAlbums[.syncedAlbums] = true
+            }
+            if self.localAlbumsProvider.facesAlbums.count > self.maxNberOfAlbumsInSection {
+                self.hasLimitedNberOfAlbums[.facesAlbums] = true
+            }
+            if self.localAlbumsProvider.sharedAlbums.count > self.maxNberOfAlbumsInSection {
+                self.hasLimitedNberOfAlbums[.sharedAlbums] = true
+            }
+            if self.localAlbumsProvider.mediaTypes.count > self.maxNberOfAlbumsInSection {
+                self.hasLimitedNberOfAlbums[.mediaTypes] = true
+            }
+            if self.localAlbumsProvider.otherAlbums.count > self.maxNberOfAlbumsInSection {
+                self.hasLimitedNberOfAlbums[.otherAlbums] = true
             }
             
             // Reload data
