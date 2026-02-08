@@ -21,6 +21,7 @@ public enum PwgKitError: Error {
     case photoError(innerError: PHPhotosError)
     case photoResourceError(innerError: NSError)
     case videoEncodingError(innerError: AVError)
+    case CoreDataError(innerError: NSError)
     case otherError(innerError: any Error)
     
     // Piwigo errors
@@ -163,7 +164,7 @@ extension PwgKitError: LocalizedError {
         switch self {
         // File management errors
         case .fileOperationFailed(innerError: let error):
-            return error.localizedDescription
+            return error.localizedDescriptionWithoutUploadDirPath
         
         // HTTP errors
         case .invalidStatusCode(statusCode: let code):
@@ -189,9 +190,13 @@ extension PwgKitError: LocalizedError {
         case .videoEncodingError(innerError: let error):
             return error.localizedDescription
         
+        // Video encoding errors
+        case .CoreDataError(innerError: let error):
+            return error.localizedDescription
+        
         // Other errors
         case .otherError(innerError: let error):
-            return error.localizedDescription
+            return error.localizedDescriptionWithoutUploadDirPath
         
         // Piwigo errors
         case .pwgError(code: let code, msg: let msg):
@@ -528,6 +533,20 @@ extension PwgKitError: LocalizedError {
         default:
             return String(localized: "serverUnknownError_message", bundle: piwigoKit,
                           comment: "Unexpected error encountered while calling server method with provided parameters.")
+        }
+    }
+}
+
+
+// MARK:
+private extension Error {
+    var localizedDescriptionWithoutUploadDirPath: String {
+        let filePath = DataDirectories.appUploadsDirectory.absoluteString
+        if #available(iOS 16.0, *) {
+            return self.localizedDescription.replacing(filePath, with: "")
+        } else {
+            // Fallback on earlier versions
+            return self.localizedDescription.replacingOccurrences(of: filePath, with: "")
         }
     }
 }
