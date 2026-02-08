@@ -101,37 +101,6 @@ class LocalAlbumsViewController: UIViewController {
         // Register app becoming active for updating the pasteboard
         NotificationCenter.default.addObserver(self, selector: #selector(checkPasteboard),
                                                name: UIApplication.didBecomeActiveNotification, object: nil)
-        
-        // Use the LocalAlbumsProvider to fetch albums data.
-        LocalAlbumsProvider.shared.fetchedLocalAlbumsDelegate = self
-        LocalAlbumsProvider.shared.includingEmptyAlbums = (categoryId == Int32.min)
-        LocalAlbumsProvider.shared.fetchLocalAlbums {
-            // Set limiters
-            if LocalAlbumsProvider.shared.localAlbums.count > self.maxNberOfAlbumsInSection {
-                self.hasLimitedNberOfAlbums[.localAlbums] = true
-            }
-            if LocalAlbumsProvider.shared.eventsAlbums.count > self.maxNberOfAlbumsInSection {
-                self.hasLimitedNberOfAlbums[.eventsAlbums] = true
-            }
-            if LocalAlbumsProvider.shared.syncedAlbums.count > self.maxNberOfAlbumsInSection {
-                self.hasLimitedNberOfAlbums[.syncedAlbums] = true
-            }
-            if LocalAlbumsProvider.shared.facesAlbums.count > self.maxNberOfAlbumsInSection {
-                self.hasLimitedNberOfAlbums[.facesAlbums] = true
-            }
-            if LocalAlbumsProvider.shared.sharedAlbums.count > self.maxNberOfAlbumsInSection {
-                self.hasLimitedNberOfAlbums[.sharedAlbums] = true
-            }
-            if LocalAlbumsProvider.shared.mediaTypes.count > self.maxNberOfAlbumsInSection {
-                self.hasLimitedNberOfAlbums[.mediaTypes] = true
-            }
-            if LocalAlbumsProvider.shared.otherAlbums.count > self.maxNberOfAlbumsInSection {
-                self.hasLimitedNberOfAlbums[.otherAlbums] = true
-            }
-            
-            // Reload albums
-            self.localAlbumsTableView.reloadData()
-        }
     }
     
     @objc func selectPhotoLibraryItems() {
@@ -299,13 +268,13 @@ class LocalAlbumsViewController: UIViewController {
         // If user disallowed access to Photos, there is no album left for selection.
         // So in this case, we return an empty collection name as source for auto-uploading.
         if wantedAction == .setAutoUploadAlbum,
-           LocalAlbumsProvider.shared.localAlbums.isEmpty,
-           LocalAlbumsProvider.shared.eventsAlbums.isEmpty,
-           LocalAlbumsProvider.shared.syncedAlbums.isEmpty,
-           LocalAlbumsProvider.shared.facesAlbums.isEmpty,
-           LocalAlbumsProvider.shared.sharedAlbums.isEmpty,
-           LocalAlbumsProvider.shared.mediaTypes.isEmpty,
-           LocalAlbumsProvider.shared.otherAlbums.isEmpty  {
+           self.localAlbumsProvider.localAlbums.isEmpty,
+           self.localAlbumsProvider.eventsAlbums.isEmpty,
+           self.localAlbumsProvider.syncedAlbums.isEmpty,
+           self.localAlbumsProvider.facesAlbums.isEmpty,
+           self.localAlbumsProvider.sharedAlbums.isEmpty,
+           self.localAlbumsProvider.mediaTypes.isEmpty,
+           self.localAlbumsProvider.otherAlbums.isEmpty  {
             delegate?.didSelectPhotoAlbum(withId: "")
         }
     }
