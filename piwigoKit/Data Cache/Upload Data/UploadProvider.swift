@@ -13,175 +13,10 @@ public class UploadProvider {
     
     public init() {}    // To make this class public
     
-    // MARK: - Add/Update Upload Requests
-    /**
-     Adds or updates a batch of upload requests into the Core Data store on a private queue,
-     processing the record in batches to avoid a high memory footprint.
-     */
-    public func importUploads(from uploadRequest: [UploadProperties],
-                              completionHandler: @escaping (PwgKitError?) -> Void) {
-        
-        guard uploadRequest.isEmpty == false else {
-            completionHandler(nil)
-            return
-        }
-        
-        // Process records in batches to avoid a high memory footprint.
-        let batchSize = 256
-        let count = uploadRequest.count
-        
-        // Determine the total number of batches.
-        var numBatches = count / batchSize
-        numBatches += count % batchSize > 0 ? 1 : 0
-        
-        for batchNumber in 0 ..< numBatches {
-            
-            // Determine the range for this batch.
-            let batchStart = batchNumber * batchSize
-            let batchEnd = batchStart + min(batchSize, count - batchNumber * batchSize)
-            let range = batchStart..<batchEnd
-            
-            // Create a batch for this range from the decoded JSON.
-            let uploadsBatch = Array(uploadRequest[range])
-            
-            // Stop the entire import if any batch is unsuccessful.
-            do {
-                try importOneBatch(uploadsBatch)
-            }
-            catch let error as PwgKitError {
-                completionHandler(error)
-                return
-            }
-            catch {
-                completionHandler(PwgKitError.otherError(innerError: error))
-                return
-            }
-        }
-        completionHandler(nil)
-    }
-    
-    public func importUploads(from uploadRequest: [UploadProperties]) async throws -> Int {
-        
-        guard uploadRequest.isEmpty == false
-        else { return 0 }
-        
-        // Process records in batches to avoid a high memory footprint.
-        let batchSize = 256
-        let count = uploadRequest.count
-        
-        // Determine the total number of batches.
-        var numBatches = count / batchSize
-        numBatches += count % batchSize > 0 ? 1 : 0
-        
-        for batchNumber in 0 ..< numBatches {
-            
-            // Determine the range for this batch.
-            let batchStart = batchNumber * batchSize
-            let batchEnd = batchStart + min(batchSize, count - batchNumber * batchSize)
-            let range = batchStart..<batchEnd
-            
-            // Create a batch for this range from the decoded JSON.
-            let uploadsBatch = Array(uploadRequest[range])
-            
-            // Stop the import if this batch is unsuccessful.
-            try importOneBatch(uploadsBatch)
-        }
-        return count
-    }
-    
-    /**
-     Adds or updates one batch of upload requests, creating managed objects from the new data,
-     and saving them to the persistent store, on a private queue. After saving,
-     resets the context to clean up the cache and lower the memory footprint.
-     
-     NSManagedObjectContext.performAndWait doesn't rethrow so this function
-     catches throws within the closure and uses a return value to indicate
-     whether the import is successful.
-     */
-    private func importOneBatch(_ uploadsBatch: [UploadProperties]) throws -> Void {
-        
-        // taskContext.performAndWait runs on the URLSession's delegate queue
-        // so it won’t block the main thread.
-        let bckgContext = DataController.shared.newTaskContext()
-        try bckgContext.performAndWait {
-            
-            // Get current user account
-            guard let user = try UserProvider().getUserAccount(inContext: bckgContext)
-            else { throw PwgKitError.userCreationError }
-            if user.isFault {
-                // user is not fired yet.
-                user.willAccessValue(forKey: nil)
-                user.didAccessValue(forKey: nil)
-            }
-
-            // Retrieve existing uploads
-            // Create a fetch request for the Upload entity sorted by localIdentifier
-            let fetchRequest = Upload.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.localIdentifier), ascending: true)]
-            
-            // Select upload requests:
-            /// — for the current server and user only
-            var andPredicates = [NSPredicate]()
-            andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
-            andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
-            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-            
-            // Loop over new uploads
-            let cachedUploads = try bckgContext.fetch(fetchRequest)
-            for uploadData in uploadsBatch {
-                // Index of this new upload in cache
-                if let index = cachedUploads.firstIndex( where: { $0.localIdentifier == uploadData.localIdentifier }) {
-                    // Update the update's properties using the raw data
-                    do {
-                        // Get tag instances
-                        let tags = try TagProvider().getTags(withIDs: uploadData.tagIds, taskContext: bckgContext)
-                        try cachedUploads[index].update(with: uploadData, tags: tags, forUser: user)
-                    }
-                    catch PwgKitError.missingUploadData {
-                        // Could not perform the update
-                        debugPrint(PwgKitError.missingUploadData.localizedDescription)
-                    }
-                    catch {
-                        debugPrint(error.localizedDescription)
-                    }
-                } else {
-                    // Create an Upload managed object on the private queue context.
-                    guard let upload = NSEntityDescription.insertNewObject(forEntityName: "Upload", into: bckgContext) as? Upload else {
-                        debugPrint(PwgKitError.uploadCreationError.localizedDescription)
-                        return
-                    }
-                    
-                    // Populate the Upload's properties using the data.
-                    do {
-                        let tags = try TagProvider().getTags(withIDs: uploadData.tagIds, taskContext: bckgContext)
-                        try upload.update(with: uploadData, tags: tags, forUser: user)
-                    }
-                    catch PwgKitError.missingUploadData {
-                        // Delete invalid Upload from the private queue context.
-                        debugPrint(PwgKitError.missingUploadData.localizedDescription)
-                        bckgContext.delete(upload)
-                    }
-                    catch {
-                        debugPrint(error.localizedDescription)
-                    }
-                }
-            }
-            
-            // Save all insertions and deletions from the context to the store.
-            bckgContext.saveIfNeeded()
-
-            // Save cached data in the main thread
-            Task { @MainActor in
-                DataController.shared.mainContext.saveIfNeeded()
-            }
-        }
-    }
-    
-    
     // MARK: - Get md5sum of Upload Requests
     /**
      Called by UploadPhotosHandler
-     Return the md5sum of the upload requests in cache in the main thread
+     Return the md5sum of the upload requests in cache in the background
      */
     public func getAllMd5sum() -> [String] {
         // Retrieve all existing uploads
@@ -267,28 +102,18 @@ public class UploadProvider {
     /**
      Delete a batch of upload requests from the Core Data store on a background queue.
      */
-    public func delete(uploadsWithID: [NSManagedObjectID],
-                       completion: @escaping (PwgKitError?) -> Void) {
+    public func deleteUploads(withID uploadIDs: [NSManagedObjectID]) throws(PwgKitError) {
         // Any upload request to delete?
-        guard uploadsWithID.isEmpty == false else {
-            completion(nil)
-            return
-        }
+        guard uploadIDs.isEmpty == false
+        else { return }
         
-        // Delete all upload requests in a batch
+        // Create batch delete request
+        let batchDeleteRequest = NSBatchDeleteRequest(objectIDs: uploadIDs)
+        
+        // Execute batch delete request
+        // Associated files will be deleted
         let bckgContext = DataController.shared.newTaskContext()
-        do {
-            // Create batch delete request
-            let batchDeleteRequest = NSBatchDeleteRequest(objectIDs: uploadsWithID)
-            
-            // Execute batch delete request
-            // Associated files will be deleted
-            try bckgContext.executeAndMergeChanges(using: batchDeleteRequest)
-            completion(nil)
-        }
-        catch let error {
-            completion(PwgKitError.otherError(innerError: error))
-        }
+        try bckgContext.executeAndMergeChanges(using: batchDeleteRequest)
     }
     
     /**

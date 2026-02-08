@@ -21,7 +21,7 @@ public class Upload: NSManagedObject {
     /**
      Updates an Upload instance with the values from a UploadProperties.
      */
-    func update(with uploadProperties: UploadProperties, tags: Set<Tag>, forUser user: User? = nil) throws {
+    public func update(with uploadProperties: UploadProperties, tags: Set<Tag>, forUser user: User? = nil) throws {
         
         // Update the upload request only if the Id and category properties have values.
         guard uploadProperties.localIdentifier.count > 0,
@@ -160,7 +160,7 @@ public class Upload: NSManagedObject {
     /**
      Updates the state of an Upload instance.
      */
-    public func setState(_ state: pwgUploadState, error: PwgKitError? = nil, save: Bool) {
+    public func setState(_ state: pwgUploadState, error: PwgKitError? = nil) {
         // State of upload request
         requestState = state.rawValue
         
@@ -169,11 +169,6 @@ public class Upload: NSManagedObject {
         
         // Error message description
         requestError = error?.localizedDescription ?? ""
-        
-        // Should we save changes now?
-        if save {
-            self.managedObjectContext?.saveIfNeeded()
-        }
     }
     
     /**
