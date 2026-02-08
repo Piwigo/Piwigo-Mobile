@@ -65,7 +65,9 @@ extension UploadManager
             }
             else {
                 // Case of an image from the local Photo Library
-                try await prepareAssetInPhotoLibrary(for: upload)
+                if try await prepareAssetInPhotoLibrary(for: upload) == false {
+                    return
+                }
             }
             
             // Preparation completed
@@ -203,7 +205,9 @@ extension UploadManager
         }
     }
     
-    fileprivate func prepareAssetInPhotoLibrary(for upload: Upload) async throws(PwgKitError) {
+    /// NB: Not possible to extract AVAsset with async/await methods as of iOS 26.2
+    /// so we use old method with completion handler and return false in that case.
+    fileprivate func prepareAssetInPhotoLibrary(for upload: Upload) async throws(PwgKitError) -> Bool {
         // Retrieve image asset
         let assets = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil)
         guard assets.count > 0, let originalAsset = assets.firstObject
@@ -240,7 +244,7 @@ extension UploadManager
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
                 try await prepareImage(atURL: fileURL, for: upload)
-                return
+                return true
             }
             
             // Convert image if JPEG format is accepted by Piwigo server
@@ -248,7 +252,7 @@ extension UploadManager
                acceptedImageExtensions.contains(fileExt) {
                 // Try conversion to JPEG
                 try await convertImage(atURL: fileURL, for: upload)
-                return
+                return true
             }
             
             // Image file format cannot be accepted by the Piwigo server
@@ -282,18 +286,16 @@ extension UploadManager
             /// NB: Not possible to extract AVAsset with async/await methods as of iOS 26.2
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
-                UploadManagerActor.logger.notice("Prepare video \(upload.fileName)")
-                try await prepareVideo(ofAsset: originalAsset, atURL: outputURL, for: upload)
-                return
+                prepareVideo(ofAsset: originalAsset, atURL: outputURL, for: upload)
+                return false
             }
             
             // Convert video if MP4 format is accepted by Piwigo server
             if NetworkVars.shared.serverFileTypes.contains("mp4"),
                acceptedMovieExtensions.contains(fileExt) {
                 // Try conversion to MP4
-                UploadManagerActor.logger.notice("Convert video \(upload.fileName) to MP4 format")
-                try await convertVideo(ofAsset: originalAsset, atURL: outputURL, for: upload)
-                return
+                convertVideo(ofAsset: originalAsset, atURL: outputURL, for: upload)
+                return false
             }
             
             // Video file format cannot be accepted by the Piwigo server

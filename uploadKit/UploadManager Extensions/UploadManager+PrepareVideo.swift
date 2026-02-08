@@ -60,11 +60,11 @@ extension UploadManager {
             // Export new video in MP4 format w/ or w/o private metadata
             try await export(videoAsset: originalVideo, to: outputURL, for: upload)
             
-            // Get MD5 checksum and MIME type, update counter
+            // Get MD5 checksum and MIME type
             try setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: outputURL)
         }
         else {
-            // Get MD5 checksum and MIME type, update counter
+            // Get MD5 checksum and MIME type, change URL
             try setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: originalFileURL)
         }
     }
@@ -116,92 +116,17 @@ extension UploadManager {
     // MARK: - Prepare Video From Photo Library Asset
     // Case of a video from the Photo Library which is in a format accepted by the Piwigo server
     /// NB: Not possible to extract AVAsset with async/await methods as of iOS 26.2
-    func prepareVideo(ofAsset imageAsset: PHAsset, atURL outputURL: URL, for upload: Upload) async throws(PwgKitError) {
-        do {
-            // Retrieve video data
-            let options = getVideoRequestOptions()
-            guard let originalVideo = try await retrieveVideo(from: imageAsset, with: options)
-            else { throw PwgKitError.missingAsset }
-            
-            // Get original fileURL
-            guard let originalFileURL = (originalVideo as? AVURLAsset)?.url
-            else { throw PwgKitError.missingAsset }
-
-            // Get creation date from metadata if possible
-            let metadata = originalVideo.metadata
-            if let dateFromMetadata = metadata.creationDate() {
-                upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
-            } else {
-                upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
-            }
-            
-            // Check if the user wants to:
-            /// - reduce the frame size
-            /// - remove the private metadata
-            if (upload.resizeImageOnUpload && upload.videoMaxSize != 0) ||
-                (upload.stripGPSdataOnUpload && originalVideo.metadata.containsPrivateMetadata()) {
-                // Check that the video can be exported
-                try await checkVideoExportability(of: originalVideo)
-
-                // Export new video in MP4 format w/ or w/o private metadata
-                try await export(videoAsset: originalVideo, to: outputURL, for: upload)
-                
-                // Get MD5 checksum and MIME type, update counter
-                try setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: outputURL)
-                return
-            }
-            
-            // Get MIME type
-            let fileExt = originalFileURL.pathExtension.lowercased()
-            guard let uti = UTType(filenameExtension: fileExt),
-                  let mimeType = uti.preferredMIMEType
-            else { throw PwgKitError.missingAsset }
-            upload.mimeType = mimeType
-            
-            // Determine MD5 checksum
-            try upload.md5Sum = originalFileURL.MD5checksum()
-            
-            // Prepare URL of temporary file
-            let fileURL = self.getUploadFileURL(from: upload.localIdentifier, creationDate: upload.creationDate, deleted: true)
-            try FileManager.default.copyItem(at: originalFileURL, to: fileURL)
-        }
-        catch let error as PwgKitError {
-            throw error
-        }
-        catch {
-            throw PwgKitError.otherError(innerError: error)
-        }
-    }
-    
-//    nonisolated func prepareVideo(ofAsset imageAsset: PHAsset, atURL outputURL: URL, for upload: Upload) -> Void {
-//        
-//        // Retrieve video data
-//        let options = getVideoRequestOptions()
-//        retrieveVideo(from: imageAsset, with: options) { (avasset, error) in
-//            // Error?
-//            if let error = error {
-//                Task { @UploadManagerActor in
-//                    self.didPrepareVideo(for: upload, error)
-//                }
-//                return
-//            }
-//            
-//            // Valid AVAsset?
-//            guard let originalVideo = avasset else {
-//                Task { @UploadManagerActor in
-//                    self.didPrepareVideo(for: upload, .missingAsset)
-//                }
-//                return
-//            }
+//    func prepareVideo(ofAsset imageAsset: PHAsset, atURL outputURL: URL, for upload: Upload) async throws(PwgKitError) {
+//        do {
+//            // Retrieve video data
+//            let options = getVideoRequestOptions()
+//            guard let originalVideo = try await retrieveVideo(from: imageAsset, with: options)
+//            else { throw PwgKitError.missingAsset }
 //            
 //            // Get original fileURL
-//            guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
-//                Task { @UploadManagerActor in
-//                    self.didPrepareVideo(for: upload, .missingAsset)
-//                }
-//                return
-//            }
-//            
+//            guard let originalFileURL = (originalVideo as? AVURLAsset)?.url
+//            else { throw PwgKitError.missingAsset }
+//
 //            // Get creation date from metadata if possible
 //            let metadata = originalVideo.metadata
 //            if let dateFromMetadata = metadata.creationDate() {
@@ -216,121 +141,151 @@ extension UploadManager {
 //            if (upload.resizeImageOnUpload && upload.videoMaxSize != 0) ||
 //                (upload.stripGPSdataOnUpload && originalVideo.metadata.containsPrivateMetadata()) {
 //                // Check that the video can be exported
-//                guard originalVideo.isExportable else {
-//                    Task { @UploadManagerActor in
-//                        self.didPrepareVideo(for: upload, .cannotStripPrivateMetadata)
-//                    }
-//                    return
-//                }
+//                try await checkVideoExportability(of: originalVideo)
 //
 //                // Export new video in MP4 format w/ or w/o private metadata
-//                self.export(videoAsset: originalVideo, outputURL: outputURL, for: upload)
-//                return
-//            }
-//            
-//            // Get MIME type
-//            let fileExt = originalFileURL.pathExtension.lowercased()
-//            guard let uti = UTType(filenameExtension: fileExt),
-//                  let mimeType = uti.preferredMIMEType
-//            else {
-//                Task { @UploadManagerActor in
-//                    self.didPrepareVideo(for: upload, .missingAsset)
-//                }
-//                return
-//            }
-//            upload.mimeType = mimeType
-//            
-//            // Copy video file into Piwigo/Uploads directory
-//            do {
-//                // Determine MD5 checksum
-//                try upload.md5Sum = originalFileURL.MD5checksum()
+//                try await export(videoAsset: originalVideo, to: outputURL, for: upload)
 //                
-//                Task { @UploadManagerActor in
-//                    // Prepare URL of temporary file
-//                    let fileURL = self.getUploadFileURL(from: upload.localIdentifier, creationDate: upload.creationDate, deleted: true)
-//                    try FileManager.default.copyItem(at: originalFileURL, to: fileURL)
-//                    
-//                    // Upload video with tags and properties
-//                    self.countOfBytesPrepared += fileURL.fileSize
-//                    self.didPrepareVideo(for: upload, nil)
-//                }
+//                // Get MD5 checksum and MIME type
+//                try setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: outputURL)
 //                return
 //            }
-//            catch let error as CocoaError {
-//                Task { @UploadManagerActor in
-//                    self.didPrepareVideo(for: upload, .fileOperationFailed(innerError: error))
-//                }
-//            }
-//            catch {
-//                // Could not copy the video file
-//                Task { @UploadManagerActor in
-//                    self.didPrepareVideo(for: upload, .otherError(innerError: error))
-//                }
-//            }
+//            
+//            // Get MD5 checksum and MIME type, change URL
+//            try setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: originalFileURL)
+//        }
+//        catch let error as PwgKitError {
+//            throw error
+//        }
+//        catch {
+//            throw PwgKitError.otherError(innerError: error)
 //        }
 //    }
     
-    // Case of a video from the Photo Library which is in a format not accepted by the Piwigo server
-    /// NB: Not possible to extract AVAsset with async/await methods as of iOS 26.2
-    func convertVideo(ofAsset imageAsset: PHAsset, atURL outputURL: URL, for upload: Upload) async throws(PwgKitError) {
-        do {
-            // Retrieve video data
-            let options = getVideoRequestOptions()
-            guard let originalVideo = try await retrieveVideo(from: imageAsset, with: options)
-            else { throw PwgKitError.missingAsset }
+    func prepareVideo(ofAsset imageAsset: PHAsset, atURL outputURL: URL, for upload: Upload) -> Void {
+        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Prepare video \(upload.fileName) from Asset")
+
+        // Retrieve video data
+        let uploadID = upload.objectID
+        let options = getVideoRequestOptions()
+        retrieveVideo(from: imageAsset, with: options) { (avasset, error) in
+            UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Return AVAsset")
+            // Error?
+            if let error = error {
+                Task { @UploadManagerActor in
+                    await self.didPrepareVideoForUpload(withID: uploadID, error)
+                }
+                return
+            }
+            
+            // Valid AVAsset?
+            guard let originalVideo = avasset else {
+                Task { @UploadManagerActor in
+                    await self.didPrepareVideoForUpload(withID: uploadID, .missingAsset)
+                }
+                return
+            }
             
             // Get original fileURL
-            guard let originalFileURL = (originalVideo as? AVURLAsset)?.url
-            else { throw PwgKitError.missingAsset }
-
-            // Get creation date from metadata if possible
-            let metadata = originalVideo.metadata
-            if let dateFromMetadata = metadata.creationDate() {
-                upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
-            } else {
-                upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+            guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
+                Task { @UploadManagerActor in
+                    await self.didPrepareVideoForUpload(withID: uploadID, .missingAsset)
+                }
+                return
             }
-
-            // Check that the video can be exported
-            try await checkVideoExportability(of: originalVideo)
-
-            // Export new video in MP4 format w/ or w/o private metadata
-            try await export(videoAsset: originalVideo, to: outputURL, for: upload)
             
-            // Get MD5 checksum and MIME type, update counter
-            try setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: outputURL)
-        }
-        catch let error as PwgKitError {
-            throw error
-        }
-        catch {
-            throw PwgKitError.otherError(innerError: error)
+            // Check if the user wants to:
+            /// - reduce the frame size
+            /// - remove the private metadata
+            if (upload.resizeImageOnUpload && upload.videoMaxSize != 0) ||
+                (upload.stripGPSdataOnUpload && originalVideo.metadata.containsPrivateMetadata()) {
+                Task { @UploadManagerActor in
+                    do {
+                        // Retrieve upload request in context of actor
+                        guard let upload = try? self.uploadBckgContext.existingObject(with: uploadID) as? Upload
+                        else { throw PwgKitError.missingUploadParameter }
+                        
+                        // Get creation date from metadata if possible
+                        let metadata = originalVideo.metadata
+                        if let dateFromMetadata = metadata.creationDate() {
+                            upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
+                        } else {
+                            upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+                        }
+                        
+                        // Check that the video can be exported
+                        try await self.checkVideoExportability(of: originalVideo)
+                        
+                        // Export new video in MP4 format w/ or w/o private metadata
+                        try await self.export(videoAsset: originalVideo, to: outputURL, for: upload)
+                        
+                        // Get MD5 checksum and MIME type
+                        try self.setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: outputURL)
+                        
+                        // Job done
+                        await self.didPrepareVideoForUpload(withID: uploadID, nil)
+                        return
+                    }
+                    catch let error as PwgKitError {
+                        Task { @UploadManagerActor in
+                            await self.didPrepareVideoForUpload(withID: uploadID, error)
+                        }
+                        return
+                    }
+                    catch {
+                        Task { @UploadManagerActor in
+                            await self.didPrepareVideoForUpload(withID: uploadID, PwgKitError.otherError(innerError: error))
+                        }
+                        return
+                    }
+                }
+            }
+            
+            // Copy video file into Piwigo/Uploads directory
+            Task { @UploadManagerActor in
+                do {
+                    // Retrieve upload request in context of actor
+                    guard let upload = try? self.uploadBckgContext.existingObject(with: uploadID) as? Upload
+                    else { throw PwgKitError.missingUploadParameter }
+                    
+                    // Get creation date from metadata if possible
+                    let metadata = originalVideo.metadata
+                    if let dateFromMetadata = metadata.creationDate() {
+                        upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
+                    } else {
+                        upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+                    }
+                    
+                    // Get MD5 checksum and MIME type, change URL
+                    try self.setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: originalFileURL)
+                    
+                    // Upload video with tags and properties
+                    await self.didPrepareVideoForUpload(withID: uploadID, nil)
+                }
+                catch let error as PwgKitError {
+                    await self.didPrepareVideoForUpload(withID: uploadID, error)
+                }
+                catch {
+                    // Could not copy the video file
+                    await self.didPrepareVideoForUpload(withID: uploadID, .otherError(innerError: error))
+                }
+            }
         }
     }
-
-//    func convertVideo(ofAsset imageAsset: PHAsset, atURL outputURL: URL, for upload: Upload) -> Void {
-//        
-//        // Retrieve video data
-//        let options = getVideoRequestOptions()
-//        retrieveVideo(from: imageAsset, with: options) { [self] (avasset, error) in
-//            // Error?
-//            if let error = error {
-//                self.didPrepareVideo(for: upload, error)
-//                return
-//            }
-//            
-//            // Valid AVAsset?
-//            guard let originalVideo = avasset else {
-//                self.didPrepareVideo(for: upload, .missingAsset)
-//                return
-//            }
+    
+    // Case of a video from the Photo Library which is in a format not accepted by the Piwigo server
+    /// NB: Not possible to extract AVAsset with async/await methods as of iOS 26.2
+//    func convertVideo(ofAsset imageAsset: PHAsset, atURL outputURL: URL, for upload: Upload) async throws(PwgKitError) {
+//        do {
+//            // Retrieve video data
+//            let options = getVideoRequestOptions()
+//            guard let originalVideo = try await retrieveVideo(from: imageAsset, with: options)
+//            else { throw PwgKitError.missingAsset }
 //            
 //            // Get original fileURL
-//            guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
-//                self.didPrepareVideo(for: upload, .missingAsset)
-//                return
-//            }
-//            
+//            guard let originalFileURL = (originalVideo as? AVURLAsset)?.url
+//            else { throw PwgKitError.missingAsset }
+//
 //            // Get creation date from metadata if possible
 //            let metadata = originalVideo.metadata
 //            if let dateFromMetadata = metadata.creationDate() {
@@ -338,32 +293,119 @@ extension UploadManager {
 //            } else {
 //                upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
 //            }
-//            
+//
 //            // Check that the video can be exported
-//            guard originalVideo.isExportable else {
-//                self.didPrepareVideo(for: upload, .unacceptedVideoFormat)
-//                return
-//            }
-//            
+//            try await checkVideoExportability(of: originalVideo)
+//
 //            // Export new video in MP4 format w/ or w/o private metadata
-//            self.export(videoAsset: originalVideo, outputURL: outputURL, for: upload)
-//        }
-//    }
-    
-//    private func didPrepareVideo(for upload: Upload, _ error: PwgKitError?) {
-//        Task { @UploadManagerActor in
-//            // Upload ready for transfer
-//            // Error?
-//            if let error = error {
-//                upload.setState(.preparingError, error: error)
-//            } else {
-//                upload.setState(.prepared)
-//            }
+//            try await export(videoAsset: originalVideo, to: outputURL, for: upload)
 //            
-//            self.uploadBckgContext.saveIfNeeded()
-//            await self.didEndPreparation(of: upload)
+//            // Get MD5 checksum and MIME type, update counter
+//            try setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: outputURL)
+//        }
+//        catch let error as PwgKitError {
+//            throw error
+//        }
+//        catch {
+//            throw PwgKitError.otherError(innerError: error)
 //        }
 //    }
+
+    func convertVideo(ofAsset imageAsset: PHAsset, atURL outputURL: URL, for upload: Upload) -> Void {
+        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Convert video \(upload.fileName) from Asset")
+
+        // Retrieve video data
+        let uploadID = upload.objectID
+        let options = getVideoRequestOptions()
+        retrieveVideo(from: imageAsset, with: options) { [self] (avasset, error) in
+            UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Return AVAsset")
+            // Error?
+            if let error = error {
+                Task { @UploadManagerActor in
+                    await self.didPrepareVideoForUpload(withID: uploadID, error)
+                }
+                return
+            }
+            
+            // Valid AVAsset?
+            guard let originalVideo = avasset else {
+                Task { @UploadManagerActor in
+                    await self.didPrepareVideoForUpload(withID: uploadID, .missingAsset)
+                }
+                return
+            }
+            
+            // Get original fileURL
+            guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
+                Task { @UploadManagerActor in
+                    await self.didPrepareVideoForUpload(withID: uploadID, .missingAsset)
+                }
+                return
+            }
+            
+            Task { @UploadManagerActor in
+                do {
+                    // Retrieve upload request in context of actor
+                    guard let upload = try? self.uploadBckgContext.existingObject(with: uploadID) as? Upload
+                    else { throw PwgKitError.missingUploadParameter }
+                    
+                    // Get creation date from metadata if possible
+                    let metadata = originalVideo.metadata
+                    if let dateFromMetadata = metadata.creationDate() {
+                        upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
+                    } else {
+                        upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+                    }
+                    
+                    // Check that the video can be exported
+                    try await self.checkVideoExportability(of: originalVideo)
+                    
+                    // Export new video in MP4 format w/ or w/o private metadata
+                    try await self.export(videoAsset: originalVideo, to: outputURL, for: upload)
+                    
+                    // Get MD5 checksum and MIME type, update counter
+                    try self.setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: outputURL)
+                    
+                    // Job done
+                    await self.didPrepareVideoForUpload(withID: uploadID, nil)
+                    return
+                }
+                catch let error as PwgKitError {
+                    Task { @UploadManagerActor in
+                        await self.didPrepareVideoForUpload(withID: uploadID, error)
+                    }
+                    return
+                }
+                catch {
+                    Task { @UploadManagerActor in
+                        await self.didPrepareVideoForUpload(withID: uploadID, PwgKitError.otherError(innerError: error))
+                    }
+                    return
+                }
+            }
+        }
+    }
+        
+    private func didPrepareVideoForUpload(withID uploadID: NSManagedObjectID, _ error: PwgKitError?) async {
+        // Retrieve upload request in context of actor
+        guard let upload = try? self.uploadBckgContext.existingObject(with: uploadID) as? Upload
+        else {
+            debugPrint("!!!! Could not retrieve upload for ID: \(uploadID.uriRepresentation().lastPathComponent) !!!!")
+            return
+        }
+        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Did prepare video from Asset")
+
+        // Upload ready for transfer?
+        if let error = error {
+            upload.setState(.preparingError, error: error)
+        } else {
+            upload.setState(.prepared)
+        }
+        upload.managedObjectContext?.saveIfNeeded()
+        
+        // Transfer video now (patch)
+        await UploadManagerActor.shared.processVideo(ofUploadWithID: upload.objectID)
+    }
     
     
     // MARK: - Retrieve Video Asset
@@ -377,7 +419,7 @@ extension UploadManager {
         return filename
     }
     
-    private func getVideoRequestOptions() -> PHVideoRequestOptions {
+    private nonisolated func getVideoRequestOptions() -> PHVideoRequestOptions {
         // Case of a video…
         let options = PHVideoRequestOptions()
         // Requests the most recent version of the image asset
@@ -392,43 +434,43 @@ extension UploadManager {
     
     // Extract the AVAsset from the PHAsset
     // NB: Not possible to extract the AVAsset with async/await method as of iOS 26.2
-//    nonisolated func retrieveVideo(from imageAsset: PHAsset, with options: PHVideoRequestOptions,
-//                                   completion: @escaping (AVAsset?, PwgKitError?) -> Void) {
-//        
-//        // The block Photos calls periodically while downloading the video.
-//        unsafe options.progressHandler = { progress, error, stop, dict in
-//            debugPrint(String(format: "downloading Video — progress %lf", progress))
-//            // The handler needs to update the user interface => Dispatch to main thread
-//            //            DispatchQueue.main.async(execute: {
-//            //                self.iCloudProgress = progress
-//            //                let imageBeingUploaded = self.imageUploadQueue.first as? ImageUpload
-//            //                if error != nil {
-//            //                    // Inform user and propose to cancel or continue
-//            //                    self.showError(withTitle: "Video Upload Error",
-//            //                                   andMessage: error?.localizedDescription, forRetrying: true, withImage: image)
-//            //                    return
-//            //                } else if imageBeingUploaded?.stopUpload != nil {
-//            //                    // User wants to cancel the download
-//            //                    stop = UnsafeMutablePointer<ObjCBool>(mutating: &true)
-//            //
-//            //                    // Remove image from queue and upload next one
-//            //                    self.maximumImagesForBatch -= 1
-//            //                    self.uploadNextImageAndRemoveImage(fromQueue: image, withResponse: nil)
-//            //                } else {
-//            //                    // Updates progress bar(s)
-//            //                    if self.delegate.responds(to: #selector(imageProgress(_:onCurrent:forTotal:onChunk:forChunks:iCloudProgress:))) {
-//            //                        debugPrint(String(format: "retrieveFullSizeAssetDataFromVideo: %.2f", progress))
-//            //                        self.delegate.imageProgress(image, onCurrent: self.current, forTotal: self.total, onChunk: self.currentChunk, forChunks: self.totalChunks, iCloudProgress: progress)
-//            //                    }
-//            //                }
-//            //            })
-//        }
-//        
-//        // Request AVAsset
-//        PHImageManager.default().requestAVAsset(forVideo: imageAsset,
-//                                                options: options,
-//                                                resultHandler: { avasset, _, info in
-//// ====>> For debugging…
+    nonisolated func retrieveVideo(from imageAsset: PHAsset, with options: PHVideoRequestOptions,
+                                   completion: @escaping (AVAsset?, PwgKitError?) -> Void) {
+        
+        // The block Photos calls periodically while downloading the video.
+        options.progressHandler = { progress, error, stop, dict in
+            debugPrint(String(format: "downloading Video — progress %lf", progress))
+//         The handler needs to update the user interface => Dispatch to main thread
+//            DispatchQueue.main.async(execute: {
+//                self.iCloudProgress = progress
+//                let imageBeingUploaded = self.imageUploadQueue.first as? ImageUpload
+//                if error != nil {
+//                    // Inform user and propose to cancel or continue
+//                    self.showError(withTitle: "Video Upload Error",
+//                                   andMessage: error?.localizedDescription, forRetrying: true, withImage: image)
+//                    return
+//                } else if imageBeingUploaded?.stopUpload != nil {
+//                    // User wants to cancel the download
+//                    stop = UnsafeMutablePointer<ObjCBool>(mutating: &true)
+//
+//                    // Remove image from queue and upload next one
+//                    self.maximumImagesForBatch -= 1
+//                    self.uploadNextImageAndRemoveImage(fromQueue: image, withResponse: nil)
+//                } else {
+//                    // Updates progress bar(s)
+//                    if self.delegate.responds(to: #selector(imageProgress(_:onCurrent:forTotal:onChunk:forChunks:iCloudProgress:))) {
+//                        debugPrint(String(format: "retrieveFullSizeAssetDataFromVideo: %.2f", progress))
+//                        self.delegate.imageProgress(image, onCurrent: self.current, forTotal: self.total, onChunk: self.currentChunk, forChunks: self.totalChunks, iCloudProgress: progress)
+//                    }
+//                }
+//            })
+        }
+        
+        // Request AVAsset
+        PHImageManager.default().requestAVAsset(forVideo: imageAsset,
+                                                options: options,
+                                                resultHandler: { avasset, _, info in
+// ====>> For debugging…
 //            if let metadata = avasset?.metadata {
 //                debugPrint("=> Metadata: \(metadata)\r=> Creation date: \(metadata.creationDate() ?? DateUtilities.unknownDate)")
 //            }
@@ -464,112 +506,22 @@ extension UploadManager {
 //                }
 //                debugPrint("=>       : \(format)")
 //            }
-//// <<==== End of code for debugging
-//            
-//            // resultHandler performed on another thread!
-//            // Any error?
-//            if let error = info?[PHImageErrorKey] as? (any Error) {
-//                if let photosError = error as? PHPhotosError {
-//                    completion(nil, PwgKitError.photoError(innerError: photosError))
-//                } else {
-//                    completion(nil, PwgKitError.otherError(innerError: error))
-//                }
-//            } else {
-//                completion(avasset, nil)
-//            }
-//        })
-//    }
-    
-    func retrieveVideo(from imageAsset: PHAsset, with options: PHVideoRequestOptions) async throws -> AVAsset? {
-        try await withCheckedThrowingContinuation { continuation in
-            // The block Photos calls periodically while downloading the video.
-            options.progressHandler = { progress, error, stop, dict in
-                debugPrint(String(format: "downloading Video — progress %lf", progress))
-                // The handler needs to update the user interface => Dispatch to main thread
-                //            DispatchQueue.main.async(execute: {
-                //                self.iCloudProgress = progress
-                //                let imageBeingUploaded = self.imageUploadQueue.first as? ImageUpload
-                //                if error != nil {
-                //                    // Inform user and propose to cancel or continue
-                //                    self.showError(withTitle: "Video Upload Error",
-                //                                   andMessage: error?.localizedDescription, forRetrying: true, withImage: image)
-                //                    return
-                //                } else if imageBeingUploaded?.stopUpload != nil {
-                //                    // User wants to cancel the download
-                //                    stop = UnsafeMutablePointer<ObjCBool>(mutating: &true)
-                //
-                //                    // Remove image from queue and upload next one
-                //                    self.maximumImagesForBatch -= 1
-                //                    self.uploadNextImageAndRemoveImage(fromQueue: image, withResponse: nil)
-                //                } else {
-                //                    // Updates progress bar(s)
-                //                    if self.delegate.responds(to: #selector(imageProgress(_:onCurrent:forTotal:onChunk:forChunks:iCloudProgress:))) {
-                //                        debugPrint(String(format: "retrieveFullSizeAssetDataFromVideo: %.2f", progress))
-                //                        self.delegate.imageProgress(image, onCurrent: self.current, forTotal: self.total, onChunk: self.currentChunk, forChunks: self.totalChunks, iCloudProgress: progress)
-                //                    }
-                //                }
-                //            })
-            }
+// <<==== End of code for debugging
             
-            // Request AVAsset
-            PHImageManager.default().requestAVAsset(forVideo: imageAsset,
-                                                    options: options,
-                                                    resultHandler: { avasset, _, info in
-                Task { @UploadManagerActor in
-                    // ====>> For debugging…
-                    //                if let metadata = avasset?.metadata {
-                    //                    debugPrint("=> Metadata: \(metadata)\r=> Creation date: \(metadata.creationDate() ?? DateUtilities.unknownDate)")
-                    //                }
-                    //                if let creationDate = avasset?.creationDate {
-                    //                    debugPrint("=> Creation date: \(creationDate)")
-                    //                }
-                    //                debugPrint("=> Exportable: \(avasset?.isExportable ?? false ? "Yes" : "No")")
-                    //                if let avasset = avasset {
-                    //                    debugPrint("=> Compatibility: \(AVAssetExportSession.exportPresets(compatibleWith: avasset))")
-                    //                }
-                    //                if let tracks = avasset?.tracks {
-                    //                    debugPrint("=> Tracks: \(tracks)")
-                    //                }
-                    //                for track in avasset?.tracks ?? [] {
-                    //                    if track.mediaType == .video {
-                    //                        debugPrint(String(format: "=>       : %.f x %.f", track.naturalSize.width, track.naturalSize.height))
-                    //                    }
-                    //                    var format = ""
-                    //                    for i in 0..<track.formatDescriptions.count {
-                    //                        let desc = (track.formatDescriptions[i]) as! CMFormatDescription
-                    //                        // Get String representation of media type (vide, soun, sbtl, etc.)
-                    //                        var type: String? = nil
-                    //                        type = CMFormatDescriptionGetMediaType(desc).toString()
-                    //                        // Get String representation media subtype (avc1, aac, tx3g, etc.)
-                    //                        var subType: String? = nil
-                    //                        subType = CMFormatDescriptionGetMediaSubType(desc).toString()
-                    //                        // Format string as type/subType
-                    //                        format.append(contentsOf: "\(type ?? "")/\(subType ?? "")")
-                    //                        // Comma separate if more than one format description
-                    //                        if i < track.formatDescriptions.count - 1 {
-                    //                            format.append(contentsOf: ",")
-                    //                        }
-                    //                    }
-                    //                    debugPrint("=>       : \(format)")
-                    //                }
-                    // <<==== End of code for debugging
-                    
-                    // resultHandler performed on another thread!
-                    // Any error?
-                    if let error = info?[PHImageErrorKey] as? (any Error) {
-                        if let photosError = error as? PHPhotosError {
-                            continuation.resume(throwing: PwgKitError.photoError(innerError: photosError))
-                        } else {
-                            continuation.resume(throwing: PwgKitError.otherError(innerError: error))
-                        }
-                    } else {
-                        nonisolated(unsafe) let asset = avasset
-                        continuation.resume(returning: asset)
-                    }
+            // resultHandler performed on another thread!
+            // Any error?
+            if let error = info?[PHImageErrorKey] as? (any Error) {
+                if let photosError = error as? PHPhotosError {
+                    completion(nil, PwgKitError.photoError(innerError: photosError))
+                } else {
+                    completion(nil, PwgKitError.otherError(innerError: error))
                 }
-            })
-        }
+            } else {
+                completion(avasset, nil)
+            }
+        })
     }
+    
     
     // MARK: - Export Video
     // Determine video size and reduce it if requested
@@ -631,6 +583,7 @@ extension UploadManager {
             exportSession.metadata = videoAsset.metadata
         }
         
+        // ====>> For debugging…
 //        let commonMetadata = videoAsset.commonMetadata
 //        debugPrint("===>> Common Metadata: \(commonMetadata)")
 //
@@ -654,7 +607,8 @@ extension UploadManager {
 //        newMetadata.append(anotherItem)
 //        debugPrint("===>> new Metadata: \(newMetadata)")
 //        exportSession.metadata = newMetadata
-        
+        // <<==== End of code for debugging
+
         // Prepare MIME type, file
         upload.mimeType = "video/mp4"
         upload.fileName = URL(fileURLWithPath: upload.fileName)
@@ -677,7 +631,7 @@ extension UploadManager {
             throw .otherError(innerError: error)
         }
     }
-
+    
     /// NB: Not possible to extract AVAsset with async/await methods as of iOS 26.2
 //    private nonisolated func export(videoAsset: AVAsset, outputURL: URL, for upload: Upload) {
 //        autoreleasepool {
@@ -787,8 +741,8 @@ extension UploadManager {
 //                Task { @UploadManagerActor in
 //                    do {
 //                        // Get MD5 checksum and MIME type, update counter
-//                        try self.finalizeImageFile(atURL: outputURL, with: upload)
-//                        
+//                        try setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: outputURL)
+//
 //                        // Update upload request
 //                        self.didPrepareVideo(for: upload, nil)
 //                    }
