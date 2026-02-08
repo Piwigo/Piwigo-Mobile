@@ -124,6 +124,7 @@ extension UploadManager {
             // Job done
             upload.imageId = imageID
             upload.setState(.moderated)
+            upload.managedObjectContext?.saveIfNeeded()
             return
         }
         
@@ -158,6 +159,7 @@ extension UploadManager {
         // Copy complete
         upload.imageId = imageID
         upload.setState(.moderated)
+        upload.managedObjectContext?.saveIfNeeded()
     }
     
     
