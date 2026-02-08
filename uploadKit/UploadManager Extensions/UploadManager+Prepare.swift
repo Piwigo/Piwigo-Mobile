@@ -16,16 +16,23 @@ extension UploadManager
 {
     // MARK: - Prepare Image/Video
     func prepareUpload(withID uploadID: NSManagedObjectID) async -> Void {
-        UploadManagerActor.logger.notice("\(uploadID.uriRepresentation().absoluteString) • Start preparing image/video")
         
         // Retrieve upload request in context of actor
         guard let upload = try? self.uploadBckgContext.existingObject(with: uploadID) as? Upload
         else {
-            debugPrint("!!!! Could not retrieve upload for ID: \(uploadID.uriRepresentation().absoluteString) !!!!")
+            debugPrint("!!!! Could not retrieve upload for ID: \(uploadID.uriRepresentation().lastPathComponent) !!!!")
+            return
+        }
+        
+        // Check upload status
+        guard upload.state == .waiting
+        else {
+            UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Upload in wrong state '\(upload.stateLabel)' before preparation")
             return
         }
         
         // Update upload status
+        UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Start preparing upload")
         upload.setState(.preparing)
         upload.managedObjectContext?.saveIfNeeded()
         
@@ -139,7 +146,6 @@ extension UploadManager
             // Chek that the image format is accepted by the Piwigo server
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
-                UploadManagerActor.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Prepare image \(upload.fileName)")
                 try await prepareImage(atURL: fileURL, for: upload)
                 return
             }
@@ -148,7 +154,6 @@ extension UploadManager
             if NetworkVars.shared.serverFileTypes.contains("jpg"),
                acceptedImageExtensions.contains(fileExt) {
                 // Try conversion to JPEG
-                UploadManagerActor.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Convert image \(upload.fileName) to JPEG format")
                 try await convertImage(atURL: fileURL, for: upload)
                 return
             }
@@ -169,7 +174,6 @@ extension UploadManager
             // Chek that the video format is accepted by the Piwigo server
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
-                UploadManagerActor.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Prepare video \(upload.fileName)")
                 try await prepareVideo(atURL: fileURL, for: upload)
                 return
             }
@@ -178,7 +182,6 @@ extension UploadManager
             if NetworkVars.shared.serverFileTypes.contains("mp4"),
                acceptedMovieExtensions.contains(fileExt) {
                 // Try conversion to MP4
-                UploadManagerActor.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Convert video \(upload.fileName) to MP4 format")
                 try await convertVideo(atURL: fileURL, for: upload)
                 return
             }
@@ -228,7 +231,6 @@ extension UploadManager
             // Chek that the image format is accepted by the Piwigo server
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
-                UploadManagerActor.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Prepare image \(upload.fileName)")
                 try await prepareImage(atURL: fileURL, for: upload)
                 return
             }
@@ -237,7 +239,6 @@ extension UploadManager
             if NetworkVars.shared.serverFileTypes.contains("jpg"),
                acceptedImageExtensions.contains(fileExt) {
                 // Try conversion to JPEG
-                UploadManagerActor.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Convert image \(upload.fileName) to JPEG format")
                 try await convertImage(atURL: fileURL, for: upload)
                 return
             }
@@ -394,7 +395,8 @@ extension UploadManager
     /// - Get MD5 checksum and MIME type
     /// -> return updated upload properties w/ or w/o error
     func setMD5sumAndMIMEtype(ofUpload upload: Upload, forFileAtURL originalFileURL: URL) throws(PwgKitError) {
-
+        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Set MD5 checskum and MIME type")
+        
         // File name of image data to be stored into Piwigo/Uploads directory
         let fileURL = getUploadFileURL(from: upload.localIdentifier, creationDate: upload.creationDate)
         

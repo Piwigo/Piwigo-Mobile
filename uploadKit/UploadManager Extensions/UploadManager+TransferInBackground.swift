@@ -105,7 +105,7 @@ extension UploadManager {
                 // Adds bytes expected to be sent to counter
 //                if UploadVars.shared.isExecutingBGUploadTask {
 //                    countOfBytesToUpload += httpBody.count
-//                    UploadManager.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Added \(self.countOfBytesToUpload) bytes to countOfBytesToUpload")
+//                    UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Added \(self.countOfBytesToUpload) bytes to countOfBytesToUpload")
 //                }
                 
                 // Remember the total number of bytes to upload
@@ -136,11 +136,12 @@ extension UploadManager {
               let chunkStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk),
               let chunk = Int(chunkStr)
         else { preconditionFailure("••> Could not extract HTTP header fields !!!!!!") }
-        
+        let objectIDstr = URL(string: objectURIstr)?.lastPathComponent ?? objectURIstr
+
         // Do not report the error if the task was cancelled by the app
         if (task.taskDescription ?? "").contains(pwgHTTPCancelled) {
             // Delete chunk file from Piwigo/Uploads directory
-            UploadManagerActor.logger.notice("\(objectURIstr) • Cancelled background upload task \(task.taskIdentifier), chunk \(chunk)")
+            UploadManager.logger.notice("\(objectIDstr, privacy: .private(mask: .hash)) • Cancelled background upload task \(task.taskIdentifier, privacy: .public), chunk \(chunk, privacy: .public)")
             deleteChunk(chunk, ofImageWith: identifier)
             return
         }
@@ -150,7 +151,7 @@ extension UploadManager {
               let uploadID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI),
               let upload = try? uploadBckgContext.existingObject(with: uploadID) as? Upload
         else {
-            UploadManagerActor.logger.notice("\(objectURIstr) • Failed to retrieve Core Data object from task \(task.taskIdentifier)")
+            UploadManager.logger.notice("\(objectIDstr, privacy: .private(mask: .hash)) • Failed to retrieve Core Data object from task \(task.taskIdentifier, privacy: .public)")
             deleteChunk(chunk, ofImageWith: identifier)
             return
         }
@@ -182,7 +183,7 @@ extension UploadManager {
         }
 
         // Delete chunk file uploaded successfully from Piwigo/Uploads directory
-        UploadManagerActor.logger.notice("\(objectURIstr) • Delete chunk \(chunk)")
+        UploadManager.logger.notice("\(objectIDstr, privacy: .private(mask: .hash)) • Delete chunk \(chunk, privacy: .public)")
         deleteChunk(chunk, ofImageWith: identifier)
     }
     
@@ -191,13 +192,14 @@ extension UploadManager {
         guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
               let identifier = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPimageID)
         else { preconditionFailure("••> Could not extract HTTP header fields !!!!!!") }
+        let objectIDstr = URL(string: objectURIstr)?.lastPathComponent ?? objectURIstr
         
         // Retrieve upload request properties
         guard let objectURI = URL(string: objectURIstr),
               let uploadID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI),
               let upload = try? uploadBckgContext.existingObject(with: uploadID) as? Upload
         else {
-            UploadManagerActor.logger.notice("\(objectURIstr) • Failed to retrieve Core Data object from task \(task.taskIdentifier)")
+            UploadManager.logger.notice("\(objectIDstr, privacy: .private(mask: .hash)) • Failed to retrieve Core Data object from task \(task.taskIdentifier, privacy: .public)")
             return
         }
         
@@ -209,7 +211,7 @@ extension UploadManager {
         // Check returned data
         if data.isEmpty {
             // Update upload request status
-            UploadManagerActor.logger.notice("\(objectURIstr) • Task \(task.taskIdentifier) returned an Empty JSON object")
+            UploadManager.logger.notice("\(objectIDstr, privacy: .private(mask: .hash)) • Task \(task.taskIdentifier, privacy: .public) returned an Empty JSON object")
             upload.setState(.uploadingError, error: .emptyJSONobject)
             upload.managedObjectContext?.saveIfNeeded()
             await UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: task.taskIdentifier)
@@ -218,8 +220,7 @@ extension UploadManager {
         var jsonData = data
         guard jsonData.extractingBalancedBraces() else {
             // Update upload request status
-            let dataStr = String(decoding: data, as: UTF8.self)
-            UploadManagerActor.logger.notice("\(objectURIstr) • Task \(task.taskIdentifier) returned the invalid JSON object: \(dataStr)")
+            UploadManager.logger.notice("\(objectIDstr, privacy: .private(mask: .hash)) • Task \(task.taskIdentifier, privacy: .public) returned the invalid JSON object")
             upload.setState(.uploadingError, error: .invalidJSONobject)
             upload.managedObjectContext?.saveIfNeeded()
             await UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: task.taskIdentifier)
@@ -299,7 +300,7 @@ extension UploadManager {
         catch {
             // Error type?
             if let error = error as? PwgKitError {
-                UploadManagerActor.logger.notice("\(objectURIstr) • Task \(task.taskIdentifier) returned the Piwigo error \(error.localizedDescription)")
+                UploadManager.logger.notice("\(objectIDstr, privacy: .private(mask: .hash)) • Task \(task.taskIdentifier, privacy: .public) returned the error \(error.localizedDescription, privacy: .public)")
                 if error.failedAuthentication {
                     upload.setState(.uploadingFail, error: error)
                 } else {
@@ -307,7 +308,7 @@ extension UploadManager {
                 }
             } else {
                 // JSON object cannot be digested, image still ready for upload
-                UploadManagerActor.logger.notice("\(objectURIstr) • Wrong JSON object!")
+                UploadManager.logger.notice("\(objectIDstr, privacy: .private(mask: .hash)) • Task \(task.taskIdentifier, privacy: .public) returned a wrong JSON object!")
                 upload.setState(.uploadingError, error: .wrongJSONobject)
             }
             upload.managedObjectContext?.saveIfNeeded()

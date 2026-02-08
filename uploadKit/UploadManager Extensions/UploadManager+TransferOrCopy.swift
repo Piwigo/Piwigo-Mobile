@@ -15,12 +15,21 @@ extension UploadManager {
     
     // MARK: - Transfer or Copy Image/Video
     public func transferOrCopyFileOfUpload(withID uploadID: NSManagedObjectID) async {
-        UploadManagerActor.logger.notice("\(uploadID.uriRepresentation().absoluteString) • Transfer or copy file?")
         
         // Retrieve upload request in context of actor
         guard let upload = try? self.uploadBckgContext.existingObject(with: uploadID) as? Upload
-        else { return }
-
+        else {
+            debugPrint("!!!! Could not retrieve upload for ID: \(uploadID.uriRepresentation().lastPathComponent) !!!!")
+            return
+        }
+        
+        // Check upload status
+        guard upload.state == .prepared
+        else {
+            UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Upload in wrong state '\(upload.stateLabel)' before transfer/copy")
+            return
+        }
+        
         // Is this image already stored on the Piwigo server?
         do {
             // Check user entity
@@ -37,6 +46,7 @@ extension UploadManager {
             }
             
             // Update state of upload request
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Transfer or copy file?")
             upload.setState(.uploading)
             upload.managedObjectContext?.saveIfNeeded()
             

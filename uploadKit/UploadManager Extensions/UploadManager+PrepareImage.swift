@@ -78,6 +78,7 @@ extension UploadManager {
     // MARK: - Image File Preparation
     /// Case of an image format accepted by the server
     func prepareImage(atURL originalFileURL: URL, for upload: Upload) async throws(PwgKitError) {
+        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Prepare image \(upload.fileName)")
 
         // Upload the file as is if the user did not request any modification
         if (!upload.resizeImageOnUpload || upload.photoMaxSize == 0),
@@ -120,6 +121,7 @@ extension UploadManager {
     
     /// Case of an image format not accepted by the server
     func convertImage(atURL originalFileURL: URL, for upload: Upload) async throws(PwgKitError) {
+        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Convert image \(upload.fileName) to JPEG format")
 
         // Convert image to JPEG format
         /// - extracts the creation date from the source

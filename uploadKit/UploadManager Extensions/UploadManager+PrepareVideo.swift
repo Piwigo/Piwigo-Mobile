@@ -33,6 +33,8 @@ extension UploadManager {
     // MARK: - Prepare Video From File
     // Case of a video which is in a format accepted by the Piwigo server
     func prepareVideo(atURL originalFileURL: URL, for upload: Upload) async throws(PwgKitError) {
+        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Prepare video \(upload.fileName) at URL")
+
         // Retrieve video data
         let originalVideo = AVAsset(url: originalFileURL)
         
@@ -69,7 +71,8 @@ extension UploadManager {
     
     // Case of a video which is in a format not accepted by the Piwigo server
     func convertVideo(atURL originalFileURL: URL, for upload: Upload) async throws(PwgKitError) {
-        
+        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Convert video \(upload.fileName) at URL")
+
         // Retrieve video data
         let originalVideo = AVAsset(url: originalFileURL)
         
@@ -572,7 +575,8 @@ extension UploadManager {
     // Determine video size and reduce it if requested
     // Export the video in MP4 format w/ or w/o private metadata
     private func export(videoAsset: AVAsset, to outputURL: URL, for upload: Upload) async throws(PwgKitError) {
-
+        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Export video")
+        
         // Determine available export options (highest quality for device by default)
         let presets = AVAssetExportSession.exportPresets(compatibleWith: videoAsset)
         

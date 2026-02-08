@@ -15,11 +15,14 @@ extension UploadManager {
     
     // MARK: - Tasks Executed after Uploading
     func finishTransferOfUpload(withID uploadID: NSManagedObjectID) async {
-        UploadManagerActor.logger.notice("\(uploadID.uriRepresentation().absoluteString) • Finish transfer…")
+        UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Finish transfer…")
         
         // Retrieve upload request in context of actor
         guard let upload = try? self.uploadBckgContext.existingObject(with: uploadID) as? Upload
-        else { return }
+        else {
+            debugPrint("!!!! Could not retrieve upload for ID: \(uploadID.uriRepresentation().lastPathComponent) !!!!")
+            return
+        }
         
         // Update state of upload resquest and finish upload
         upload.setState(.finishing)
@@ -44,7 +47,7 @@ extension UploadManager {
      If not, they will be visible after some delay (12 minutes).
      */
     fileprivate func emptyLounge(for upload: Upload) async throws(PwgKitError) {
-        UploadManagerActor.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Empty lounge")
+        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Empty lounge")
         // Empty lounge without reporting potential error
         guard let user = upload.user else {
             // Should never happen
