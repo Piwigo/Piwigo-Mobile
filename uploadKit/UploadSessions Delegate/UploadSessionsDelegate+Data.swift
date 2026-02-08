@@ -24,26 +24,22 @@ extension UploadSessionsDelegate: URLSessionDataDelegate {
         }
 
         // Log data task
+        let objectIDstr = URL(string: objectURIstr)?.lastPathComponent ?? objectURIstr
 #if DEBUG
         let dataStr = String(decoding: data, as: UTF8.self)
-        UploadSessionsDelegate.logger.notice("\(objectURIstr) • Task \(dataTask.taskIdentifier, privacy: .public) of chunk \(chunk+1, privacy: .public)/\(chunks, privacy: .public) did receive: \(dataStr, privacy: .public).")
+        UploadSessionsDelegate.logger.notice("\(objectIDstr, privacy: .public) • Task \(dataTask.taskIdentifier, privacy: .public) of chunk \(chunk, privacy: .public)/\(chunks, privacy: .public) did receive: \(dataStr, privacy: .public).")
 #else
         let countsOfBytes = data.count * MemoryLayout<Data>.stride
-        UploadSessions.logger.notice("\(objectURIstr) • Task \(dataTask.taskIdentifier, privacy: .public) of chunk \(chunk+1, privacy: .public)/\(chunks, privacy: .public) did receive \(countsOfBytes, privacy: .public) bytes.")
+        UploadSessions.logger.notice("\(objectIDstr, privacy: .public) • Task \(dataTask.taskIdentifier, privacy: .public) of chunk \(chunk, privacy: .public)/\(chunks, privacy: .public) did receive \(countsOfBytes, privacy: .public) bytes.")
 #endif
 
         let sessionIdentifier = taskDescription.components(separatedBy: " ").first
         switch sessionIdentifier {
-        case uploadSessionIdentifier:
-            Task { @UploadManagerActor in
-                UploadManager.shared.didCompleteUploadTask(dataTask, withData: data)
-            }
         case uploadBckgSessionIdentifier:
             Task { @UploadManagerActor in
-                UploadManager.shared.didCompleteBckgUploadTask(dataTask, withData: data)
+                await UploadManager.shared.didCompleteBckgUploadTask(dataTask, withData: data)
             }
         default:
-            UploadSessionsDelegate.logger.fault("Unexpected session identifier.")
             preconditionFailure("Unexpected session identifier.")
         }
     }

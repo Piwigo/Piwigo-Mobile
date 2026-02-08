@@ -16,12 +16,9 @@ extension UploadSessionsDelegate: URLSessionTaskDelegate {
         
         // Get upload info from the task
         guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID)
-        else {
-            UploadSessionsDelegate.logger.notice("Could not extract HTTP header field.")
-            preconditionFailure("Could not extract HTTP header field.")
-        }
+        else { preconditionFailure("Could not extract HTTP header field.") }
         UploadSessionsDelegate.logger.notice("\(objectURIstr) • Task-level authentication requested by server.")
-
+        
         // Check authentication method
         let authMethod = challenge.protectionSpace.authenticationMethod
         guard authMethod == NSURLAuthenticationMethodHTTPBasic,
@@ -48,18 +45,14 @@ extension UploadSessionsDelegate: URLSessionTaskDelegate {
         // Get upload info from the task
         guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
               let identifier = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPimageID)
-        else {
-            UploadSessionsDelegate.logger.notice("Could not extract HTTP header field.")
-            preconditionFailure("Could not extract HTTP header field.")
-        }
+        else { preconditionFailure("Could not extract HTTP header field.") }
         
         // Update counter
         Task { @UploadManagerActor in
             // Update UploadQueue cell and button shown in root album (or default album)
-            UploadManager.shared.addBytes(bytesSent, toCounterWithID: objectURIstr)
+            let progress = UploadManager.shared.addBytes(bytesSent, toCounterWithID: objectURIstr)
             
             // Update progress bar
-            let progress = UploadManager.shared.getProgress(forCounterWithID: objectURIstr)
             DispatchQueue.main.async {
                 let uploadInfo: [String : Any] = ["localIdentifier" : identifier,
                                                   "progressFraction" : progress]
@@ -69,7 +62,7 @@ extension UploadSessionsDelegate: URLSessionTaskDelegate {
             // Log upload
             let bytes = UploadSessionsDelegate.bytesFormatter.string(from: NSNumber(value: bytesSent)) ?? ""
             let progressPercent = UploadSessionsDelegate.bytesFormatter.string(from: NSNumber(value: progress * 100)) ?? ""
-            UploadSessionsDelegate.logger.notice("\(objectURIstr) • Task \(task.taskIdentifier, privacy: .public) did send \(bytes, privacy: .public) bytes | counter: \(progressPercent, privacy: .public) %")
+            UploadSessionsDelegate.logger.notice("\(objectURIstr, privacy: .public) • Task \(task.taskIdentifier) did send \(bytes, privacy: .public) bytes | counter: \(progressPercent, privacy: .public) %")
         }
     }
     
@@ -80,10 +73,7 @@ extension UploadSessionsDelegate: URLSessionTaskDelegate {
               let chunkStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk), let chunk = Int(chunkStr),
               let chunksStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks), let chunks = Int(chunksStr),
               let taskDescription = task.taskDescription
-        else {
-            UploadSessionsDelegate.logger.notice("Could not extract HTTP header fields.")
-            preconditionFailure("Could not extract HTTP header fields.")
-        }
+        else { preconditionFailure("Could not extract HTTP header fields.") }
         
         // The below code updates the stored cookie with the pwg_id returned by the server.
         // This allows to check that the upload session was well closed by the server.
@@ -126,25 +116,21 @@ extension UploadSessionsDelegate: URLSessionTaskDelegate {
         }
         
         // Log task completion
+        let objectIDstr = URL(string: objectURIstr)?.lastPathComponent ?? objectURIstr
         if let pwgError, taskDescription.contains(pwgHTTPCancelled) == false {
-            UploadSessionsDelegate.logger.notice("\(objectURIstr) • Task \(task.taskIdentifier, privacy: .public) of chunk \(chunk+1, privacy: .public)/\(chunks, privacy: .public) failed with error \(String(describing: pwgError.localizedDescription), privacy: .public).")
+            UploadSessionsDelegate.logger.notice("\(objectIDstr, privacy: .public) • Task \(task.taskIdentifier, privacy: .public) of chunk \(chunk, privacy: .public)/\(chunks, privacy: .public) failed with error \(String(describing: pwgError.localizedDescription), privacy: .public).")
         } else {
-            UploadSessionsDelegate.logger.notice("\(objectURIstr) • Task \(task.taskIdentifier, privacy: .public) of chunk \(chunk+1, privacy: .public)/\(chunks, privacy: .public) completed.")
+            UploadSessionsDelegate.logger.notice("\(objectIDstr, privacy: .public) • Task \(task.taskIdentifier, privacy: .public) of chunk \(chunk, privacy: .public)/\(chunks, privacy: .public) completed.")
         }
         
         // Handle the response with the Upload Manager
         let sessionIdentifier = (task.taskDescription ?? "").components(separatedBy: " ").first
         switch sessionIdentifier {
-        case uploadSessionIdentifier:
-            Task { @UploadManagerActor in
-                UploadManager.shared.didCompleteUploadTask(task, withError: pwgError)
-            }
         case uploadBckgSessionIdentifier:
             Task { @UploadManagerActor in
-                UploadManager.shared.didCompleteBckgUploadTask(task, withError: pwgError)
+                await UploadManager.shared.didCompleteBckgUploadTask(task, withError: pwgError)
             }
         default:
-            UploadSessionsDelegate.logger.notice("\(objectURIstr) • Unexpected session identifier.")
             preconditionFailure("Unexpected session identifier.")
         }
     }
