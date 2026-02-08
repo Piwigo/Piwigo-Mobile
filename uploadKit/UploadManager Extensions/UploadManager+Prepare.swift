@@ -405,9 +405,13 @@ extension UploadManager
             // Deletes temporary Upload file if it exists (incomplete previous attempt?)
             try? FileManager.default.removeItem(at: fileURL)
 
-            // Adopts Upload filename convention (e.g. removes the "-original" suffix)
+            // Adopts Upload filename convention (e.g. removes "-original" suffix or copies original file)
             do {
-                try FileManager.default.moveItem(at: originalFileURL, to: fileURL)
+                if originalFileURL.deletingLastPathComponent() == DataDirectories.appUploadsDirectory {
+                    try FileManager.default.moveItem(at: originalFileURL, to: fileURL)
+                } else {
+                    try FileManager.default.copyItem(at: originalFileURL, to: fileURL)
+                }
             }
             catch let error as CocoaError {
                 // Update upload request state
