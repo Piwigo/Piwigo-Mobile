@@ -138,7 +138,7 @@ extension LocalAlbumsViewController: UITableViewDataSource {
         }
         
         // Case of an album
-        let title = aCollection.localizedTitle ?? "—> ? <——"
+        let title = aCollection.localizedTitle ?? "— ? —"
         let nberPhotos = Int64(aCollection.estimatedAssetCount)
 
         if let startDate = aCollection.startDate, let endDate = aCollection.endDate {
