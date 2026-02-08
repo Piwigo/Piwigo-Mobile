@@ -476,7 +476,7 @@ extension PwgKitError: LocalizedError {
                           comment: "File format not supported.")
         case .missingUploadParameter:
             return String(localized: "uploadParameterMissing_message", bundle: piwigoKit,
-                          comment: "Missing upload paremeter")
+                          comment: "Missing upload parameter")
         case .cannotStripPrivateMetadata:
             return String(localized: "shareMetadataError_message", bundle: piwigoKit,
                           comment: "Cannot strip private metadata")
