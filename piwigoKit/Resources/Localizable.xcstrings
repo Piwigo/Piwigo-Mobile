@@ -3931,7 +3931,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to create a new Server object."
+            "value" : "创建新服务器对象失败。"
           }
         },
         "zh-Hant" : {
@@ -11111,7 +11111,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 个用户"
+            "value" : "%@ 位用户"
           }
         },
         "zh-Hant" : {
@@ -12364,7 +12364,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Extra enorme"
+            "value" : "Extra Grande"
           }
         },
         "fr" : {
@@ -12406,7 +12406,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ekstra ogromna"
+            "value" : "Przeogromny"
           }
         },
         "ru" : {
@@ -12537,7 +12537,7 @@
       }
     },
     "uploadParameterMissing_message" : {
-      "comment" : "Missing upload paremeter",
+      "comment" : "Missing upload parameter",
       "localizations" : {
         "ar" : {
           "stringUnit" : {

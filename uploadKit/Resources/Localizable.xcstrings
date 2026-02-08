@@ -192,7 +192,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "请选择相册或子相册，其中的照片和视频会被自动上传"
+            "value" : "请选择相册或子相册，其中的照片和视频会被自动上传。"
           }
         },
         "zh-Hant" : {
