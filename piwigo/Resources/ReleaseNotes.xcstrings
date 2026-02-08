@@ -9930,7 +9930,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versión 4.1.3\n\n• Compatibilidad con Piwigo 16.\n• Corrige errores y mejora la interfaz"
+            "value" : "Versión 4.1.3\n\n• Compatibilidad con Piwigo 16\n• Corrige errores y mejora la interfaz"
           }
         },
         "fr" : {
