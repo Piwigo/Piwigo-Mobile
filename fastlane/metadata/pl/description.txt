@@ -1,4 +1,4 @@
-Piwigo dla urządzeń iPhone/iPad/iPod obsługuje oprogramowanie galerii zdjęć w chmurze Piwigo (w wersji 2.10 lub wyższej). Aplikacja pozwala na:
+Piwigo dla urządzeń iPhone/iPad/iPod obsługuje oprogramowanie galerii zdjęć w chmurze Piwigo (w wersji 12.0 lub wyższej). Aplikacja pozwala na:
 
 • Przeglądanie albumów.
 • Tworzenie, usuwanie, przenoszenie i zmianę nazw albumów.

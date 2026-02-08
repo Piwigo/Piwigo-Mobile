@@ -1,4 +1,4 @@
-A Piwigo for iPhone/iPad/iPod a Piwigo (v2.10 vagy újabb) cloud fotógaléria-szoftver kiegészítője.
+A Piwigo for iPhone/iPad/iPod a Piwigo (v12.0 vagy újabb) cloud fotógaléria-szoftver kiegészítője.
 
 • Böngészhetsz az albumjaidban,
 • Létrehozhatsz, törölhetsz, mozgathatsz és átnevezhetsz albumokat,

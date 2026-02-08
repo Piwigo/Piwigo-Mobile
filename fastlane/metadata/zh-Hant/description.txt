@@ -1,4 +1,4 @@
-供iPhone/iPad/iPod使用的Piwigo雲端相簿軟體，支援Piwigo雲端主機(v2.10以上) 並提供下列功能:
+供iPhone/iPad/iPod使用的Piwigo雲端相簿軟體，支援Piwigo雲端主機(v12.0以上) 並提供下列功能:
 
 • 檢視您的相簿，
 • 建立，刪除，移動以及重新命名相簿，

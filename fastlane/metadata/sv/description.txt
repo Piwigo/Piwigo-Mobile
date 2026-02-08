@@ -1,4 +1,4 @@
-Piwigo för iPhone/iPad/iPod kompletterar fotogalleri-programmet i molnet Piwigo (v2.10 eller högre):
+Piwigo för iPhone/iPad/iPod kompletterar fotogalleri-programmet i molnet Piwigo (v12.0 eller högre):
 
 • Bläddra bland dina album,
 • Skapa, radera, flytta och byt namn på album,

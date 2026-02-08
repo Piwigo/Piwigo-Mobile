@@ -1,4 +1,4 @@
-Piwigo für iPhone/iPad/iPod ergänzt die Fotogalerie-Software in der Cloud Piwigo (v2.10 oder höher):
+Piwigo für iPhone/iPad/iPod ergänzt die Fotogalerie-Software in der Cloud Piwigo (v12.0 oder höher):
 
 • Durchsuchen Sie Ihre Alben,
 • Alben erstellen, löschen, verschieben und umbenennen,
