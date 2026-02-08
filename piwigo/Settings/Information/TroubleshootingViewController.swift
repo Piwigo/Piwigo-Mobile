@@ -160,7 +160,12 @@ class TroubleshootingViewController: UIViewController {
                 // uploadKit — UploadManager
                 someLogs = entries.filter({$0.category == String(describing: UploadManager.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-            } catch {
+
+                // uploadKit — UploadManagerActor
+                someLogs = entries.filter({$0.category == String(describing: UploadManagerActor.self)})
+                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
+            }
+            catch {
                 debugPrint("••> Could not retrieve logs.")
                 self.pwgLogs = []
             }

@@ -826,7 +826,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     @objc func checkSessionWhenLeavingLowPowerMode() {
         if !ProcessInfo.processInfo.isLowPowerModeEnabled {
             Task { @UploadManagerActor in
-                UploadManager.shared.resumeAll()
+                await UploadManager.shared.resumeAll()
             }
         }
     }
@@ -853,7 +853,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Resume upload operations in background queue
         // and update badge, upload button of album navigator
         Task { @UploadManagerActor in
-            UploadManager.shared.resumeAll()
+            await UploadManager.shared.resumeAll()
         }
         
         // Observe the PiwigoAddRecentAlbumNotification

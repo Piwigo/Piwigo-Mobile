@@ -48,7 +48,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
             
             // Delete remaining upload requests
             Task { @UploadManagerActor in
-                UploadManager.shared.disableAutoUpload()
+                await UploadManager.shared.disableAutoUpload()
             }
             
             // Inform user
@@ -64,7 +64,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
 
             // Delete remaining upload requests
             Task { @UploadManagerActor in
-                UploadManager.shared.disableAutoUpload()
+                await UploadManager.shared.disableAutoUpload()
             }
 
             // Inform user
@@ -80,33 +80,30 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                 .compactMap{ $0 }
             
             // Append auto-upload requests to database
-            UploadProvider().importUploads(from: uploadRequestsToAppend) { error in
-                // Show an alert if there was an error.
-                guard let error = error else {
-                    // Initialise upload operations
-                    let uploadOperations = self.getUploadOperations()
+            do {
+                let uploadIDs = try await UploadProvider().importUploads(from: uploadRequestsToAppend)
 
-                    // Launch upload operations
-                    // The badge will be updated during execution.
-                    let uploadQueue = OperationQueue()
-                    uploadQueue.maxConcurrentOperationCount = 1
-                    uploadQueue.addOperations(uploadOperations, waitUntilFinished: true)
+                // Initialise upload operations
+                let uploadOperations = self.getUploadOperations()
 
-                    // Inform user that the shortcut was executed with success
-                    completion(AutoUploadIntentResponse.success(photos: NSNumber(value: uploadRequestsToAppend.count)))
-                    return
-                }
-                
+                // Launch upload operations
+                // The badge will be updated during execution.
+                let uploadQueue = OperationQueue()
+                uploadQueue.maxConcurrentOperationCount = 1
+                uploadQueue.addOperations(uploadOperations, waitUntilFinished: true)
+
+                // Inform user that the shortcut was executed with success
+                completion(AutoUploadIntentResponse.success(photos: NSNumber(value: uploadIDs.count)))
+            }
+            catch {
                 // Error encountered…
-                DispatchQueue.main.async {
-                    let msg = PwgKitError.uploadCreationError.localizedDescription
-                    let errorMsg = String(format: "%@: %@", msg, error.localizedDescription)
-                    completion(AutoUploadIntentResponse.failure(error: errorMsg))
-                }
+                let msg = PwgKitError.uploadCreationError.localizedDescription
+                let errorMsg = String(format: "%@: %@", msg, error.localizedDescription)
+                completion(AutoUploadIntentResponse.failure(error: errorMsg))
             }
         }
     }
-
+    
     private func getUploadOperations() -> [BlockOperation] {
         // Create list of operations
         var uploadOperations = [BlockOperation]()

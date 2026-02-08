@@ -12,15 +12,8 @@ import Foundation
 import CoreData
 import piwigoKit
 
-@globalActor
-public actor UploadManagerActor {
-    public static let shared = UploadManagerActor()
-    
-    private init() { }  // Prevents duplicate instances
-}
-
 @UploadManagerActor
-public final class UploadManager: NSObject {
+public final class UploadManager: Sendable {
     
     // Logs networking activities
     /// sudo log collect --device --start '2025-01-11 15:00:00' --output piwigo.logarchive
@@ -28,14 +21,16 @@ public final class UploadManager: NSObject {
     
     // Singleton
     public static let shared = UploadManager()
-    
-    // Upload counters kept in memory during upload
-    // for updating progress bars and managing tasks
-    var uploadCounters = [UploadCounter]()
-    
+        
     // JSON decoder
     let decoder = JSONDecoder()
+
+    // Upload counters kept in memory during upload
+    // for updating progress bars and managing tasks
+    var transferCounters = [TransferCounter]()
     
+    var isDeleting = Set<NSManagedObjectID>()               // IDs of uploads to be deleted
+
 
     // MARK: - Upload Request States
     /** The manager prepares an image for upload and then launches the transfer.
@@ -45,40 +40,18 @@ public final class UploadManager: NSObject {
     - isFinishing is set to true when the photo/video parameters are going to be set,
       and false when this job has completed or failed.
     */
-    var isPreparing = false                                 // Prepare one image at once
-    var isUploading = Set<NSManagedObjectID>()              // IDs of queued transfers
-    var isFinishing = false                                 // Finish transfer one image at once
-    var isDeleting = Set<NSManagedObjectID>()               // IDs of uploads to be deleted
+//    var isPreparing = false                                 // Prepare one image at once
+//    var isUploading = Set<NSManagedObjectID>()              // IDs of queued transfers
+//    var isFinishing = false                                 // Finish transfer one image at once
+//    var isDeleting = Set<NSManagedObjectID>()               // IDs of uploads to be deleted
     
     public var countOfBytesPrepared = UInt64(0)             // Total amount of bytes of prepared files
     public var countOfBytesToUpload = 0                     // Total amount of bytes to be sent
     public var uploadRequestsToPrepare = Set<NSManagedObjectID>()
     public var uploadRequestsToTransfer = Set<NSManagedObjectID>()
         
-    /// Number of pending upload requests
-    public func updateNberOfUploadsToComplete() {
-        // Get number of uploads to complete
-        let nberOfUploadsToComplete = (uploads.fetchedObjects ?? []).count
-        // Store number, update badge and default album view button
-        DispatchQueue.main.async {
-            // Update app badge and button of root album (or default album)
-            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : nberOfUploadsToComplete]
-            NotificationCenter.default.post(name: .pwgLeftUploads, object: nil, userInfo: uploadInfo)
-        }
-    }
     
-    public override init() {
-        super.init()
-        
-        // Perform fetches
-        do {
-            try uploads.performFetch()
-            try completed.performFetch()
-        }
-        catch {
-            debugPrint("••> Could not fetch pending uploads: \(error.localizedDescription)")
-        }
-        
+    public init() {
         // Register auto-upload disabler
         NotificationCenter.default.addObserver(self, selector: #selector(stopAutoUploader(_:)),
                                                name: Notification.Name.pwgDisableAutoUpload, object: nil)
@@ -90,13 +63,13 @@ public final class UploadManager: NSObject {
     }
     
     
-    // MARK: - Core Data Object Context
+    // MARK: - CoreData Object Context
     public lazy var uploadBckgContext: NSManagedObjectContext = {
         return DataController.shared.newTaskContext()
     }()
     
     
-    // MARK: - Core Data Source
+    // MARK: - CoreData Source
     private lazy var sortDescriptors: [NSSortDescriptor] = {
         // Priority to uploads requested manually, oldest ones first
         var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
@@ -119,7 +92,7 @@ public final class UploadManager: NSObject {
         return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
     }()
     
-    private lazy var fetchPendingRequest: NSFetchRequest = {
+    lazy var fetchPendingRequest: NSFetchRequest = {
         let fetchRequest = Upload.fetchRequest()
         fetchRequest.sortDescriptors = sortDescriptors
         
@@ -127,18 +100,11 @@ public final class UploadManager: NSObject {
         let variables = ["serverPath" : NetworkVars.shared.serverPath,
                          "userName"   : NetworkVars.shared.user]
         fetchRequest.predicate = pendingPredicate.withSubstitutionVariables(variables)
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.shouldRefreshRefetchedObjects = true
         return fetchRequest
     }()
-    
-    public lazy var uploads: NSFetchedResultsController<Upload> = {
-        let uploads = NSFetchedResultsController(fetchRequest: fetchPendingRequest,
-                                                 managedObjectContext: self.uploadBckgContext,
-                                                 sectionNameKeyPath: nil,
-                                                 cacheName: nil)
-        uploads.delegate = self
-        return uploads
-    }()
-    
+        
     lazy var completedPredicate: NSPredicate = {
         var andPredicates = accountPredicates
         let states: [pwgUploadState] = [.finished, .moderated]
@@ -146,7 +112,7 @@ public final class UploadManager: NSObject {
         return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
     }()
     
-    private lazy var fetchCompletedRequest: NSFetchRequest = {
+    lazy var fetchCompletedRequest: NSFetchRequest = {
         let fetchRequest = Upload.fetchRequest()
         fetchRequest.sortDescriptors = sortDescriptors
         
@@ -154,44 +120,22 @@ public final class UploadManager: NSObject {
         let variables = ["serverPath" : NetworkVars.shared.serverPath,
                          "userName"   : NetworkVars.shared.user]
         fetchRequest.predicate = completedPredicate.withSubstitutionVariables(variables)
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.shouldRefreshRefetchedObjects = true
         return fetchRequest
     }()
     
-    public lazy var completed: NSFetchedResultsController<Upload> = {
-        let uploads = NSFetchedResultsController(fetchRequest: fetchCompletedRequest,
-                                                 managedObjectContext: self.uploadBckgContext,
-                                                 sectionNameKeyPath: nil,
-                                                 cacheName: nil)
-        return uploads
-    }()
-}
-
-
-// MARK: - NSFetchedResultsControllerDelegate
-extension UploadManager: @UploadManagerActor NSFetchedResultsControllerDelegate {
-    
-    public func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+    /// Number of pending upload requests
+    public func updateNberOfUploadsToComplete() {
+        // Get number of uploads to complete
+        let pending = (try? uploadBckgContext.fetch(fetchPendingRequest)) ?? []
+        let nberOfUploadsToComplete = pending.count
         
-        switch type {
-        case .insert:
-            // Check whether this upload request can be launched in the foreground
-//            if #unavailable(iOS 26.0) {
-                if UploadVars.shared.isExecutingBGUploadTask == false {
-                    findNextImageToUpload()
-                }
-//            }
-            // Update number of uploads to complete
-            updateNberOfUploadsToComplete()
-
-        case .delete:
-            // Update number of uploads to complete
-            updateNberOfUploadsToComplete()
-
-        case .move, .update:
-            break
-
-        @unknown default:
-            fatalError("UploadManager: unknown NSFetchedResultsChangeType")
+        // Store number, update badge and default album view button
+        DispatchQueue.main.async {
+            // Update app badge and button of root album (or default album)
+            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : nberOfUploadsToComplete]
+            NotificationCenter.default.post(name: .pwgLeftUploads, object: nil, userInfo: uploadInfo)
         }
     }
 }

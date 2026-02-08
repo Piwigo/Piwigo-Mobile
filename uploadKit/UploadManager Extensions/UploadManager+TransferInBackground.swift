@@ -111,17 +111,17 @@ extension UploadManager {
                 // Remember the total number of bytes to upload
                 if chunks == 1 {
                     // Only one chunk to upload
-                    self.setCounter(withID: upload.objectID.uriRepresentation().absoluteString, chunks: chunks, totalBytes: bytesToSend)
+                    self.setCounter(withID: upload.objectID.uriRepresentation().lastPathComponent, chunks: chunks, totalBytes: bytesToSend)
                 } else if chunk == 1 {
                     // Several chunks to upload
                     let totalBytes = Int64(imageData.count) + (bytesToSend - Int64(chunkSize)) * Int64(chunks)
-                    self.setCounter(withID: upload.objectID.uriRepresentation().absoluteString, chunks: chunks, totalBytes: totalBytes)
+                    self.setCounter(withID: upload.objectID.uriRepresentation().lastPathComponent, chunks: chunks, totalBytes: totalBytes)
                 }
                 
                 // Resume task
                 task.resume()
-                self.removeChunk(chunk, fromCounterWithID: upload.objectID.uriRepresentation().absoluteString)
-                UploadManagerActor.logger.notice("\(upload.objectID.uriRepresentation().absoluteString) • Task \(task.taskIdentifier) resumed (\(chunk)/\(chunks))")
+                self.removeChunk(chunk, fromCounterWithID: upload.objectID.uriRepresentation().lastPathComponent)
+                UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent, privacy: .private(mask: .hash)) • Task \(task.taskIdentifier, privacy: .public) resumed (\(chunk, privacy: .public)/\(chunks, privacy: .public))")
             }
         }
         
@@ -238,7 +238,25 @@ extension UploadManager {
                 // ► Get list of uploaded chunks
                 let uploadedChunks = Set(message.dropFirst(18).components(separatedBy: ",")
                     .compactMap({Int($0)}))
-                UploadManagerActor.logger.notice("\(objectURIstr) • \(uploadedChunks) i.e. \(uploadedChunks.count) chunk(s) uploaded")
+                UploadManager.logger.notice("\(objectIDstr, privacy: .private(mask: .hash)) • \(uploadedChunks, privacy: .public) i.e. \(uploadedChunks.count, privacy: .public) chunk(s) uploaded")
+                
+                // Select running tasks of chunks already uploaded, if any
+                let uploadTasks: [URLSessionTask] = await bckgSession.allTasks
+                var tasksToCancel = uploadTasks.filter({ $0.taskIdentifier != task.taskIdentifier})
+                    .filter({ $0.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID) == objectURIstr })
+                    .filter({ uploadedChunks.contains( Int($0.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk) ?? "") ?? -1) })
+                    .filter({ $0.state == .running })
+                
+                // Cancel tasks of chunks already uploaded, except one so that the upload can be completed normally
+                if tasksToCancel.count > 1 {
+                    tasksToCancel.removeLast()
+                    tasksToCancel.forEach { task in
+                        UploadSessionsDelegate.logger.notice("\(objectIDstr) • Task \(task.taskIdentifier) cancelled")
+                        // Remember that this task was cancelled
+                        task.taskDescription = uploadBckgSessionIdentifier + " " + pwgHTTPCancelled
+                        task.cancel()
+                    }
+                }
                 return
             }
             
@@ -295,7 +313,7 @@ extension UploadManager {
             deleteFilesInUploadsDirectory(withPrefix: imageFile)
             
             // Clear bytes and chunk counter
-            removeCounter(withID: objectURIstr)
+            removeCounter(withID: objectIDstr)
         }
         catch {
             // Error type?

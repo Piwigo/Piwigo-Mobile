@@ -13,9 +13,9 @@ import Photos
 public let uploadKit = Bundle.allFrameworks.first(where: { ($0.bundleIdentifier ?? "").contains("uploadKit")})
 
 // Constants used to manage foreground tasks
-let maxNberPreparedUploads = 10             // Maximum number of images prepared in advance
-let maxNberOfTransfers = 1                  // Maximum number of transfers executed in parallel
-let maxNberOfFailedUploads = 5              // Stop transfers after 5 failures
+//let maxNberOfPreparedUploads = 10           // Maximum number of images prepared in advance
+//let maxNberOfTransfers = 4                  // Maximum number of transfers executed in parallel
+//let maxNberOfFailedUploads = 5              // Stop transfers after 5 failures
 
 // Constants used to manage background tasks
 let maxCountOfBytesToUpload = 100 * 1024 * 1024  // Up to 100 MB transferred in a series

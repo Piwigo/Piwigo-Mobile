@@ -11,23 +11,28 @@ import MobileCoreServices
 import Photos
 import piwigoKit
 
+@UploadManagerActor
 extension UploadManager {
     
     // MARK: - Upload File Utilities
     // Returns the URL of final upload file to be stored into Piwigo/Uploads directory
     // and delete existing file if demanded (case of a failed previous attempt)
-    public func getUploadFileURL(from upload: Upload, withSuffix suffix: String = "",
-                                  deleted deleteIt: Bool = false) -> URL {
+    // ******************************************************************************************************
+    // * declared "nonisolated" because the compiler returns:
+    // * Pattern that the region based isolation checker does not understand how to check. Please file a bug
+    // ******************************************************************************************************
+    nonisolated func getUploadFileURL(from localIdentifier: String, withSuffix suffix: String = "",
+                                      creationDate: TimeInterval, deleted deleteIt: Bool = false) -> URL {
         // File name of image data to be stored into Piwigo/Uploads directory
         var fileName = ""
         if #available(iOS 16.0, *) {
-            fileName = upload.localIdentifier.replacing("/", with: "-")
+            fileName = localIdentifier.replacing("/", with: "-")
         } else {
             // Fallback on earlier versions
-            fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
+            fileName = localIdentifier.replacingOccurrences(of: "/", with: "-")
         }
         if fileName.isEmpty {
-            fileName = "file-".appending(String(Int64(upload.creationDate)))
+            fileName = "file-".appending(String(Int64(creationDate)))
         }
         fileName.append(suffix)
         let fileURL = DataDirectories.appUploadsDirectory.appendingPathComponent(fileName)

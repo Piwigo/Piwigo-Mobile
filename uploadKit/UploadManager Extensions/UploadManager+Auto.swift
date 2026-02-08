@@ -9,10 +9,11 @@
 import Photos
 import piwigoKit
 
+@UploadManagerActor
 extension UploadManager {
     
     // MARK: - Add Auto-Upload Requests
-    public func appendAutoUploadRequests() {
+    public func appendAutoUploadRequests() async {
         // Check access to Photo Library album
         let collectionID = UploadVars.shared.autoUploadAlbumId
         guard collectionID.isEmpty == false,
@@ -21,12 +22,12 @@ extension UploadManager {
             UploadVars.shared.autoUploadAlbumId = ""               // Unknown source Photos album
 
             // Delete remaining upload requests and inform user
-            disableAutoUpload(withTitle: PwgKitError.autoUploadSourceInvalid.localizedDescription,
-                              message: String(localized: "settings_autoUploadSourceInfo", bundle: uploadKit,
-                                              comment: "Please select the album…"))
+            await disableAutoUpload(withTitle: PwgKitError.autoUploadSourceInvalid.localizedDescription,
+                                    message: String(localized: "settings_autoUploadSourceInfo", bundle: uploadKit,
+                                                    comment: "Please select the album…"))
             return
         }
-
+        
         // Check existence of Piwigo album
         let categoryId = UploadVars.shared.autoUploadCategoryId
         guard categoryId != Int32.min else {
@@ -34,9 +35,9 @@ extension UploadManager {
             UploadVars.shared.autoUploadCategoryId = Int32.min    // Unknown destination Piwigo album
 
             // Delete remaining upload requests and inform user
-            disableAutoUpload(withTitle: PwgKitError.autoUploadDestinationInvalid.localizedDescription,
-                              message: String(localized: "settings_autoUploadDestinationInfo", bundle: uploadKit,
-                                              comment: "Please select the album…"))
+            await disableAutoUpload(withTitle: PwgKitError.autoUploadDestinationInvalid.localizedDescription,
+                                    message: String(localized: "settings_autoUploadDestinationInfo", bundle: uploadKit,
+                                                    comment: "Please select the album…"))
             return
         }
         
@@ -44,29 +45,24 @@ extension UploadManager {
         let uploadRequestsToAppend = getNewRequests(inCollection: collection, toBeUploadedIn: categoryId)
             .compactMap{ $0 }
         
-        // Record upload requests in database
-        UploadProvider().importUploads(from: uploadRequestsToAppend) { error in
-            // Job done in background task
-            if UploadVars.shared.isExecutingBGUploadTask { return }
-
-            // Restart upload manager if no error
-            guard let error = error else {
-                // Restart UploadManager activities
-                Task { @UploadManagerActor in
-                    UploadVars.shared.isPaused = false
-//                    if #unavailable(iOS 26.0) {
-                        UploadManager.shared.findNextImageToUpload()
-//                    }
-                }
-                return
+        // Add selected images to upload queue
+        Task { @UploadManagerActor in
+            do {
+                // Create upload requests
+                let uploadIDs = try await UploadProvider().importUploads(from: uploadRequestsToAppend)
+                
+                // Add upload requests to queue
+                UploadVars.shared.isPaused = false
+                await UploadManagerActor.shared.addUploads(withIDs: uploadIDs)
             }
-
-            // Error encountered, inform user
-            DispatchQueue.main.async {
-                let userInfo: [String : Any] = ["message" : PwgKitError.uploadCreationError.localizedDescription,
-                                                "errorMsg" : error.localizedDescription];
-                NotificationCenter.default.post(name: .pwgAppendAutoUploadRequestsFailed,
-                                                object: nil, userInfo: userInfo)
+            catch {
+                // Error encountered, inform user
+                await MainActor.run {
+                    let userInfo: [String : Any] = ["message" : PwgKitError.uploadCreationError.localizedDescription,
+                                                    "errorMsg" : error.localizedDescription];
+                    NotificationCenter.default.post(name: .pwgAppendAutoUploadRequestsFailed,
+                                                    object: nil, userInfo: userInfo)
+                }
             }
         }
     }
@@ -89,8 +85,10 @@ extension UploadManager {
         }
 
         // Collect localIdentifiers of uploaded and not yet uploaded images in the Upload cache
-        var imageIDs = (uploads.fetchedObjects ?? []).map({$0.localIdentifier})
-        imageIDs.append(contentsOf: (completed.fetchedObjects ?? []).map({$0.localIdentifier}))
+        let pending = (try? uploadBckgContext.fetch(fetchPendingRequest)) ?? []
+        let completed = (try? uploadBckgContext.fetch(fetchCompletedRequest)) ?? []
+        var imageIDs = pending.map({$0.localIdentifier})
+        imageIDs.append(contentsOf: completed.map({$0.localIdentifier}))
 
         // Determine which local images are still not considered for upload
         var uploadRequestsToAppend = [UploadProperties]()
@@ -118,11 +116,11 @@ extension UploadManager {
     
     
     // MARK: - Delete Auto-Upload Requests
-    @objc func stopAutoUploader(_ notification: Notification?) {
-        disableAutoUpload()
+    @objc nonisolated func stopAutoUploader(_ notification: Notification?) async {
+        await disableAutoUpload()
     }
     
-    public func disableAutoUpload(withTitle title:String = "", message:String = "") {
+    public func disableAutoUpload(withTitle title:String = "", message:String = "") async {
         // Something to do?
         if !UploadVars.shared.isAutoUploadActive { return }
         // Disable auto-uploading
@@ -141,25 +139,13 @@ extension UploadManager {
         }
 
         // Remove non-completed upload requests marked for auto-upload from the upload queue
-        let uploadsToDelete = (uploads.fetchedObjects ?? []).filter({$0.markedForAutoUpload == true}).map(\.objectID)
-        UploadProvider().delete(uploadsWithID: uploadsToDelete) { error in
-            // Job done in background task
-            if UploadVars.shared.isExecutingBGUploadTask { return }
-
-            // Error encountered?
-            guard let error = error else {
-                // Restart UploadManager activities
-                Task { @UploadManagerActor in
-                    UploadVars.shared.isPaused = false
-//                    if #unavailable(iOS 26.0) {
-                        UploadManager.shared.findNextImageToUpload()
-//                    }
-                }
-                return
-            }
-            
-            // Error encountered, inform user
-            DispatchQueue.main.async {
+        do {
+            let pending = try uploadBckgContext.fetch(fetchPendingRequest)
+            let uploadsToDelete = pending.filter({$0.markedForAutoUpload == true}).map(\.objectID)
+            try UploadProvider().deleteUploads(withID: uploadsToDelete)
+        }
+        catch {
+            await MainActor.run {
                 let userInfo: [String : Any] = ["message" : error.localizedDescription];
                 NotificationCenter.default.post(name: .pwgAppendAutoUploadRequestsFailed,
                                                 object: nil, userInfo: userInfo)

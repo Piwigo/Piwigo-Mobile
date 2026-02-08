@@ -35,7 +35,7 @@ extension UploadManager {
         upload.setState(.finished)
         upload.managedObjectContext?.saveIfNeeded()
 
-        // Update badge, upload queue button, etc.
+        // Update counter and app badge
         updateNberOfUploadsToComplete()
     }
     

@@ -48,14 +48,15 @@ extension AutoUploadViewController: UITableViewDataSource
                     if switchState {
                         // Enable auto-uploading
                         UploadVars.shared.isAutoUploadActive = true
-                        UploadManager.shared.appendAutoUploadRequests()
+                        await UploadManager.shared.appendAutoUploadRequests()
+                        
                         // Update Settings tableview
                         DispatchQueue.main.async {
                             NotificationCenter.default.post(name: .pwgAutoUploadChanged, object: nil, userInfo: nil)
                         }
                     } else {
                         // Disable auto-uploading
-                        UploadManager.shared.disableAutoUpload()
+                        await UploadManager.shared.disableAutoUpload()
                     }
                 }
             }
