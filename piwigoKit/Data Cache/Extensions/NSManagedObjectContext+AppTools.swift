@@ -12,7 +12,7 @@ import CoreData
 // MARK: - Core Data Batch Deletion
 extension NSManagedObjectContext {
     /// Executes the given `NSBatchDeleteRequest` and directly merges the changes to bring the given managed object context up to date.
-    public func executeAndMergeChanges(using batchDeleteRequest: NSBatchDeleteRequest) throws {
+    public func executeAndMergeChanges(using batchDeleteRequest: NSBatchDeleteRequest) throws(PwgKitError) {
         batchDeleteRequest.resultType = .resultTypeObjectIDs
         do {
             // Execute the request.
@@ -26,14 +26,16 @@ extension NSManagedObjectContext {
                     into: [self]
                 )
             }
-        } catch let error {
-            // Handle any thrown errors.
-            fatalError("Unresolved error \(error.localizedDescription)")
+        } catch let error as NSError {
+            throw PwgKitError.CoreDataError(innerError: error)
+        }
+        catch {
+            throw PwgKitError.otherError(innerError: error)
         }
     }
     
     /// Executes the given `NSBatchUpdateRequest` and directly merges the changes to bring the given managed object context up to date.
-    public func executeAndMergeChanges(using batchUpdateRequest: NSBatchUpdateRequest) throws {
+    public func executeAndMergeChanges(using batchUpdateRequest: NSBatchUpdateRequest) throws(PwgKitError) {
         batchUpdateRequest.resultType = .updatedObjectIDsResultType
         do {
             // Execute the request.
@@ -47,9 +49,11 @@ extension NSManagedObjectContext {
                     into: [self]
                 )
             }
-        } catch let error {
-            // Handle any thrown errors.
-            fatalError("Unresolved error \(error.localizedDescription)")
+        } catch let error as NSError {
+            throw PwgKitError.CoreDataError(innerError: error)
+        }
+        catch {
+            throw PwgKitError.otherError(innerError: error)
         }
     }
 }
