@@ -9,7 +9,7 @@
 import CoreData
 import Photos
 
-public final class UploadProvider {
+public class UploadProvider {
     
     public init() {}    // To make this class public
     
