@@ -50,8 +50,8 @@ public let frgdSession: URLSession = {
     /// How long an upload task should be allowed to be retried or transferred (5 minutes).
     config.timeoutIntervalForResource = 300
     
-    /// Determines the maximum number of simultaneous connections made to the host by tasks (4 by default)
-    config.httpMaximumConnectionsPerHost = 4
+    /// Determines the maximum number of simultaneous connections made to the host by tasks (1 by default)
+    config.httpMaximumConnectionsPerHost = 1
     
     /// Do not return a response from the cache
     config.urlCache = nil
