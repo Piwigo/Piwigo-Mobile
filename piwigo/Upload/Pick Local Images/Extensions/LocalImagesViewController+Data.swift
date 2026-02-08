@@ -495,7 +495,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
 
         switch type {
         case .insert:
-//            debugPrint("••> LocalImagesViewController: insert pending upload request…")
+            debugPrint("••> LocalImagesViewController: insert pending upload request…")
             // Add upload request to cache and update cell
             guard let upload:Upload = anObject as? Upload else { return }
 
@@ -526,7 +526,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
             // Update corresponding cell
             updateCellAndSectionHeader(for: upload)
         case .delete:
-//            debugPrint("••> LocalImagesViewController: delete pending upload request…")
+            debugPrint("••> LocalImagesViewController: delete pending upload request…")
             // Delete upload request from cache and update cell
             guard let upload:Upload = anObject as? Upload else { return }
 
@@ -544,7 +544,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
         case .move:
             assertionFailure("••> LocalImagesViewController: Unexpected move!")
         case .update:
-//            debugPrint("••> LocalImagesViewController controller:update...")
+            debugPrint("••> LocalImagesViewController: update upload request...")
             // Update upload request and cell
             guard let upload:Upload = anObject as? Upload else { return }
 
@@ -571,6 +571,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
             if let visibleCells = self.localImagesCollection.visibleCells as? [LocalImageCollectionViewCell],
                let cell = visibleCells.first(where: {$0.localIdentifier == upload.localIdentifier}) {
                 // Update cell
+                debugPrint("••> LocalImagesViewController updating cell in state '\(upload.state)'")
                 cell.update(selected: false, state: upload.state)
                 cell.reloadInputViews()
 
