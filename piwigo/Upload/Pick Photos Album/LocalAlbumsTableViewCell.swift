@@ -33,7 +33,7 @@ class LocalAlbumsTableViewCell: UITableViewCell {
         numberLabel.textColor = PwgColor.rightLabel
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
-        if nberPhotos != Int64.min {
+        if nberPhotos != Int64.min && nberPhotos != Int64.max {
             numberLabel.text = numberFormatter.string(from: NSNumber(value: nberPhotos))
         } else {
             numberLabel.text = ""
