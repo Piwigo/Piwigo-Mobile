@@ -47,7 +47,7 @@ extension UploadManager {
     }
     
     /// - Delete Upload files w/ or w/o prefix
-    public func deleteFilesInUploadsDirectory(withPrefix prefix: String = "", completion: (() -> Void)? = nil) {
+    public func deleteFilesInUploadsDirectory(withPrefix prefix: String = "") {
         let fileManager = FileManager.default
         do {
             // Get list of files
@@ -71,11 +71,6 @@ extension UploadManager {
 //            debugPrint("\(dbg()) Remaining files in cache: \(leftFiles)")
         } catch {
             UploadManager.logger.notice("Could not clear the Uploads folder: \(error)")
-        }
-
-        // Job done
-        if let completion = completion {
-            completion()
         }
     }
 }
