@@ -203,7 +203,7 @@ extension AlbumViewController
         
         // Number of images in section
         var nberOfImagesInSection = Int.zero
-        let snapshot = diffableDataSource.snapshot() as Snaphot
+        let snapshot = diffableDataSource.snapshot() as Snapshot
         let sectionID = snapshot.sectionIdentifiers[section]
         nberOfImagesInSection = snapshot.numberOfItems(inSection: sectionID)
         if nberOfImagesInSection == 0 {

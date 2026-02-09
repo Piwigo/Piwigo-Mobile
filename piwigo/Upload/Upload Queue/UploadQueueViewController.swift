@@ -22,7 +22,7 @@ class UploadQueueViewController: UIViewController {
     
     // MARK: - Core Data Source
     typealias DataSource = UITableViewDiffableDataSource<String, NSManagedObjectID>
-    typealias Snaphot = NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
+    typealias Snapshot = NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
     /// Stored properties cannot be marked potentially unavailable with '@available'.
     // "private var diffableDataSource: DataSource!" replaced by below lines
     private var _diffableDataSource: NSObject? = nil

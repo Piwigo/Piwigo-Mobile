@@ -25,8 +25,8 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate
         else { preconditionFailure("The data source has not implemented snapshot support while it should") }
         
         // Loop over all items
-        var snapshot = snapshot as Snaphot
-        let currentSnapshot = dataSource.snapshot() as Snaphot
+        var snapshot = snapshot as Snapshot
+        let currentSnapshot = dataSource.snapshot() as Snapshot
         var reloadIdentifiers: [NSManagedObjectID] = snapshot.itemIdentifiers
         snapshot.itemIdentifiers.forEach({ itemIdentifier in
             // Will this item keep the same indexPath?
@@ -54,7 +54,7 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate
             // Animate only a non-empty UI
             let shouldAnimate = queueTableView.numberOfSections != 0
             snapshot.reconfigureItems(Array(reloadIdentifiers))
-            dataSource.apply(snapshot as Snaphot, animatingDifferences: shouldAnimate)
+            dataSource.apply(snapshot as Snapshot, animatingDifferences: shouldAnimate)
         }
         
         // Update the navigation bar

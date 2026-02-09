@@ -20,7 +20,7 @@ extension AlbumViewController
         /// - takes 662 ms for 2500 photos on iPhone 14 Pro with derivatives inside Image instances
         /// - takes 51 ms for 2584 photos on iPhone 14 Pro with derivatives in Sizes instances
 //        var oldImageIDs = Set<Int64>()
-//            let snapshot = self.diffableDataSource.snapshot() as Snaphot
+//            let snapshot = self.diffableDataSource.snapshot() as Snapshot
 //            oldImageIDs = Set(snapshot.itemIdentifiers
 //                .compactMap({ try? self.mainContext.existingObject(with: $0) as? Image})
 //                .compactMap({ $0.pwgID }) )

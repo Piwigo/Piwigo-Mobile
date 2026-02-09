@@ -234,7 +234,7 @@ extension AlbumViewController
         var totalCount = Int64.zero
         if albumData.pwgID == 0 {
             // Root Album only contains albums  => calculate total number of images
-            let snapshot = diffableDataSource.snapshot() as Snaphot
+            let snapshot = diffableDataSource.snapshot() as Snapshot
             if let albumSection = snapshot.sectionIdentifiers.first {
                 snapshot.itemIdentifiers(inSection: albumSection).forEach { objectID in
                     guard let album = try? self.mainContext.existingObject(with: objectID) as? Album

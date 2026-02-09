@@ -183,7 +183,7 @@ class AlbumViewController: UIViewController
     
     // MARK: - Core Data Source
     typealias DataSource = UICollectionViewDiffableDataSource<String, NSManagedObjectID>
-    typealias Snaphot = NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
+    typealias Snapshot = NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
     /// Stored properties cannot be marked potentially unavailable with '@available'.
     // "var diffableDataSource: DataSource!" replaced by below lines
     var _diffableDataSource: NSObject? = nil
@@ -1032,7 +1032,7 @@ class AlbumViewController: UIViewController
     // MARK: - Utilities
     func nberOfAlbums() -> Int {
         var nberOfAlbums = Int.zero
-        let snapshot = diffableDataSource.snapshot() as Snaphot
+        let snapshot = diffableDataSource.snapshot() as Snapshot
         if let _ = snapshot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
             nberOfAlbums = snapshot.numberOfItems(inSection: pwgAlbumGroup.none.sectionKey)
         }
@@ -1040,7 +1040,7 @@ class AlbumViewController: UIViewController
     }
     
     func nberOfImages() -> Int {
-        let snapshot = diffableDataSource.snapshot() as Snaphot
+        let snapshot = diffableDataSource.snapshot() as Snapshot
         var nberOfImages = diffableDataSource.snapshot().numberOfItems
         if let _ = snapshot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
             nberOfImages -= snapshot.numberOfItems(inSection: pwgAlbumGroup.none.sectionKey)

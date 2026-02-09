@@ -24,8 +24,8 @@ extension AlbumViewController: @MainActor NSFetchedResultsControllerDelegate
         }
         
         // Album or Image controller?
-        let snapshot = snapshot as Snaphot
-        var currentSnapshot = dataSource.snapshot() as Snaphot
+        let snapshot = snapshot as Snapshot
+        var currentSnapshot = dataSource.snapshot() as Snapshot
         var updatedItems = Set<NSManagedObjectID>()
         if controller == albums {
             // Remove existing album section if any
@@ -91,7 +91,7 @@ extension AlbumViewController: @MainActor NSFetchedResultsControllerDelegate
         
         // Animate only a non-empty UI
         let shouldAnimate = (collectionView?.numberOfSections ?? 0) != 0
-        dataSource.apply(currentSnapshot as Snaphot, animatingDifferences: shouldAnimate)
+        dataSource.apply(currentSnapshot as Snapshot, animatingDifferences: shouldAnimate)
         
         // Update headers if needed
         self.updateHeaders()
