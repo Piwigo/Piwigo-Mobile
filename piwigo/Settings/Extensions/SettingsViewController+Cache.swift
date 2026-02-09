@@ -39,7 +39,7 @@ extension SettingsViewController
             cell.detailLabel.text = self.dataCacheSize
         }
     }
-
+    
     func updateThumbCacheCell() {
         let section = SettingsSection.cache.rawValue - (hasUploadRights() ? 0 : 1)
         let indexPath = IndexPath(row: 1, section: section)
@@ -47,7 +47,7 @@ extension SettingsViewController
             cell.detailLabel.text = self.thumbCacheSize
         }
     }
-
+    
     func updatePhotoCacheCell() {
         let section = SettingsSection.cache.rawValue - (hasUploadRights() ? 0 : 1)
         let indexPath = IndexPath(row: 2, section: section)
@@ -71,19 +71,19 @@ extension SettingsViewController
             cell.detailLabel.text = self.uploadCacheSize
         }
     }
-
-
+    
+    
     // MARK: - Return Clear Cache Alert
     @MainActor
     func getClearCacheAlert() -> UIAlertController {
         let alert = UIAlertController(title: "", message: NSLocalizedString("settings_cacheClearMsg", comment: "Are you sure you want to clear the cache? This will make albums and images take a while to load again."), preferredStyle: .actionSheet)
         let hudTitle = NSLocalizedString("settings_cacheClearing", comment: "Clearing Cache")
-
+        
         var title = String(format: "%@ (%@)", NSLocalizedString("settings_database", comment: "Data"), dataCacheSize)
         let clearDataAction = UIAlertAction(title: title, style: .default, handler: { action in
             // Display HUD during deletion
             self.navigationController?.showHUD(withTitle: hudTitle)
-
+            
             // Delete all data and directories in foreground queue
             ClearCache.clearData() { [self] in
                 DispatchQueue.main.async {
@@ -93,22 +93,24 @@ extension SettingsViewController
                         return
                     }
                     self.mainContext.saveIfNeeded()
-
+                    
                     // Refresh Settings cell related with data
                     self.dataCacheSize = server.getAlbumImageCount(inContext: self.mainContext)
-
+                    
                     // Hide HUD on completion
-                    self.navigationController?.hideHUD { }
+                    self.navigationController?.hideHUD { [self] in
+                        self.removeExtraScenesAndReloadRootAlbum()
+                    }
                 }
             }
         })
         alert.addAction(clearDataAction)
-
+        
         title = String(format: "%@ (%@)", NSLocalizedString("settingsHeader_thumbnails", comment: "Thumbnails"), thumbCacheSize)
         let clearThumbCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
             // Display HUD during deletion
             self.navigationController?.showHUD(withTitle: hudTitle)
-
+            
             // Delete album and photo thumbnails in foreground queue
             guard let server = self.user?.server else {
                 assert(self.user?.server != nil, "••> User not provided!")
@@ -116,10 +118,10 @@ extension SettingsViewController
             }
             let sizes = self.getThumbnailSizes()
             server.clearCachedImages(ofSizes: sizes, exceptVideos: true)
-
+            
             // Refresh Settings cell
             self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
-
+            
             // Hide HUD on completion
             self.navigationController?.hideHUD { }
         })
@@ -129,7 +131,7 @@ extension SettingsViewController
         let clearPhotoCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
             // Display HUD during deletion
             self.navigationController?.showHUD(withTitle: hudTitle)
-
+            
             // Delete high-resolution images in foreground queue
             guard let server = self.user.server else {
                 assert(self.user?.server != nil, "••> User not provided!")
@@ -137,10 +139,10 @@ extension SettingsViewController
             }
             let sizes = self.getPhotoSizes()
             server.clearCachedImages(ofSizes: sizes, exceptVideos: true)
-
+            
             // Refresh photo cache cell
             self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
-
+            
             // Hide HUD on completion
             self.navigationController?.hideHUD { }
         })
@@ -150,17 +152,17 @@ extension SettingsViewController
         let clearVideoCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
             // Display HUD during deletion
             self.navigationController?.showHUD(withTitle: hudTitle)
-
+            
             // Delete high-resolution images in foreground queue
             guard let server = self.user.server else {
                 assert(self.user?.server != nil, "••> User not provided!")
                 return
             }
             server.clearCachedVideos()
-
+            
             // Refresh video cache cell
             self.videoCacheSize = server.getCacheSizeOfVideos()
-
+            
             // Hide HUD on completion
             self.navigationController?.hideHUD { }
         })
@@ -171,7 +173,7 @@ extension SettingsViewController
             let clearUploadCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
                 // Display HUD during deletion
                 self.navigationController?.showHUD(withTitle: hudTitle)
-
+                
                 // Delete upload data and Uploads/tempporary folders in foreground queue
                 ClearCache.clearUploads() {
                     DispatchQueue.main.async {
@@ -199,7 +201,7 @@ extension SettingsViewController
         let clearAction = UIAlertAction(title: NSLocalizedString("settings_cacheClearAll", comment: "Clear All"), style: .destructive, handler: { action in
             // Display HUD during deletion
             self.navigationController?.showHUD(withTitle: hudTitle)
-
+            
             // Delete whole cache and folders in foreground queue
             ClearCache.clearData() {
                 DispatchQueue.main.async {
@@ -223,15 +225,81 @@ extension SettingsViewController
                     self.uploadCacheSize = server.getUploadCount(inContext: self.mainContext)
                     
                     // Hide HUD on completion
-                    self.navigationController?.hideHUD { }
+                    self.navigationController?.hideHUD { [self] in
+                        self.removeExtraScenesAndReloadRootAlbum()
+                    }
                 }
             }
         })
         alert.addAction(clearAction)
-
+        
         let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: nil)
         alert.addAction(dismissAction)
-
+        
         return alert
+    }
+    
+    @MainActor
+    private func removeExtraScenesAndReloadRootAlbum() {
+        // Get all scenes
+        var connectedScenes = UIApplication.shared.connectedScenes
+        
+        // Disconnect inactive scenes
+        let scenesInBackground = connectedScenes
+            .filter({[.background, .unattached, .foregroundInactive].contains($0.activationState)})
+        for scene in scenesInBackground {
+            UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil)
+            connectedScenes.remove(scene)
+        }
+        
+        // Clear external displays
+        var externalScenes = [UIScene]()
+        if #available(iOS 16.0, *) {
+            externalScenes = connectedScenes.filter({$0.session.role == .windowExternalDisplayNonInteractive})
+        } else {
+            // Fallback to previous versions
+            externalScenes = connectedScenes.filter({$0.session.role == .windowExternalDisplay})
+        }
+        externalScenes.forEach { scene in
+            if let scene = scene as? UIWindowScene,
+               let imageVC = scene.rootViewController() as? ExternalDisplayViewController {
+                imageVC.imageData = nil
+                imageVC.imageView.image = nil
+                imageVC.video = nil
+            }
+        }
+        
+        // Get scene displaying settings
+        let settingsScene = connectedScenes.first { scene in
+            if let window = (scene.delegate as? SceneDelegate)?.window,
+               let topMostVC = window.windowScene?.topMostViewController(),
+               topMostVC is SettingsViewController {
+                return true
+            }
+            return false
+        }
+        
+        // Remove scenes except the one presenting the settings
+        guard let settingsScene else { return }
+        connectedScenes.forEach { scene in
+            if scene !== settingsScene  {
+                UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil)
+                connectedScenes.remove(scene)
+            }
+        }
+        
+        // Refresh the root album
+        if let window = (connectedScenes.first?.delegate as? SceneDelegate)?.window,
+           let rootVC = window.windowScene?.rootViewController() {
+            for child in rootVC.children {
+                if let albumVC = child as? AlbumViewController {
+                    if albumVC.categoryId == Int32.zero {
+                        albumVC.resetPredicatesAndPerformFetch()
+                    } else {
+                        albumVC.dismiss(animated: false)
+                    }
+                }
+            }
+        }
     }
 }
