@@ -273,9 +273,7 @@ class UploadQueueViewController: UIViewController {
                         // Resume all failed uploads
                         UploadManager.shared.clearAllFailedUploads()
                         // Relaunch uploads
-//                        if #unavailable(iOS 26.0) {
-                            UploadManager.shared.findNextImageToUpload()
-//                        }
+                        await UploadManagerActor.shared.processNextUpload()
                     }
                 })
                 alert.addAction(resumeAction)
