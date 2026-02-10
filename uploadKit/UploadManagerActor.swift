@@ -29,7 +29,7 @@ public actor UploadManagerActor {
     
     public func addUploads(withIDs uploadIDs: [NSManagedObjectID]) async {
         // Remove duplicate if needed (should never happen)
-        let alreadyQueuedIDs = Set(uploadIDs).subtracting(Set(uploadQueue))
+        let alreadyQueuedIDs = Set(uploadIDs).intersection(Set(uploadQueue))
         var uploadIDsToQueue = uploadIDs
         uploadIDsToQueue.removeAll(where: { alreadyQueuedIDs.contains($0) })
         
