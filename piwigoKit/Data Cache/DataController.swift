@@ -49,6 +49,7 @@ public final class DataController {
     nonisolated public func newTaskContext() -> NSManagedObjectContext {
         let context = self.persistentContainer.newBackgroundContext()
         context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        context.automaticallyMergesChangesFromParent = true
         context.shouldDeleteInaccessibleFaults = true
         return context
     }
