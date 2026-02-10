@@ -24,38 +24,39 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate
         guard let dataSource = queueTableView.dataSource as? DataSource
         else { preconditionFailure("The data source has not implemented snapshot support while it should") }
         
-        // Loop over all items
-        var snapshot = snapshot as Snapshot
+        // Get old and new snapshots
+        var newSnapshot = snapshot as Snapshot
         let currentSnapshot = dataSource.snapshot() as Snapshot
-        var reloadIdentifiers: [NSManagedObjectID] = snapshot.itemIdentifiers
-        snapshot.itemIdentifiers.forEach({ itemIdentifier in
-            // Will this item keep the same indexPath?
+        
+        // Find items that exist in both snapshots and stayed in same position
+        var itemsToReconfigure: [NSManagedObjectID] = []
+        for itemIdentifier in newSnapshot.itemIdentifiers {
+            // Check if item exists in current snapshot at same position
             guard let currentRow = currentSnapshot.indexOfItem(itemIdentifier),
-                  let row = snapshot.indexOfItem(itemIdentifier),
+                  let row = newSnapshot.indexOfItem(itemIdentifier),
                   row == currentRow,
                   let currentSectionIdentifier = currentSnapshot.sectionIdentifier(containingItem: itemIdentifier),
                   let currentSection = currentSnapshot.indexOfSection(currentSectionIdentifier),
-                  let sectionIdentifier = snapshot.sectionIdentifier(containingItem: itemIdentifier),
-                  let section = snapshot.indexOfSection(sectionIdentifier),
+                  let sectionIdentifier = newSnapshot.sectionIdentifier(containingItem: itemIdentifier),
+                  let section = newSnapshot.indexOfSection(sectionIdentifier),
                   section == currentSection
-            else { return }
-            reloadIdentifiers.removeAll(where: {$0 == itemIdentifier})
-            // Update upload state
-            let indexPath = IndexPath(row: row, section: section)
-            if let upload = try? controller.managedObjectContext.existingObject(with: itemIdentifier) as? Upload,
-               let cell = queueTableView.cellForRow(at: indexPath) as? UploadImageTableViewCell {
-                // Only update label
-                cell.uploadInfoLabel.text = upload.stateLabel
+            else {
+                // Item moved or is new - let diffable data source handle it
+                continue
             }
-        })
-
-        // Any item to reload/reconfigure?
-        if reloadIdentifiers.isEmpty == false {
-            // Animate only a non-empty UI
-            let shouldAnimate = queueTableView.numberOfSections != 0
-            snapshot.reconfigureItems(Array(reloadIdentifiers))
-            dataSource.apply(snapshot as Snapshot, animatingDifferences: shouldAnimate)
+            
+            // Mark for reconfiguration
+            itemsToReconfigure.append(itemIdentifier)
         }
+
+        // Reconfigure items that stayed in place
+        if !itemsToReconfigure.isEmpty {
+            newSnapshot.reconfigureItems(itemsToReconfigure)
+        }
+
+        // Apply the new snapshot (this handles deletions, insertions, moves)
+        let shouldAnimate = queueTableView.numberOfSections != 0
+        dataSource.apply(newSnapshot, animatingDifferences: shouldAnimate)
         
         // Update the navigation bar
         self.updateNavBar()
