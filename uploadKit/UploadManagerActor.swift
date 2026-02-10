@@ -38,6 +38,14 @@ public actor UploadManagerActor {
         await processNextUpload()
     }
     
+    public func removeUploads(withIDs uploadIDs: [NSManagedObjectID]) async {
+        // Remove upload request from queue
+        uploadQueue.removeAll(where: { uploadIDs.contains($0) })
+        
+        // Update badge and default album view button
+        await UploadManager.shared.updateNberOfUploadsToComplete()
+    }
+    
     public func processNextUpload() async {
         // Should we postpone uploads?
         if UploadVars.shared.isPaused ||

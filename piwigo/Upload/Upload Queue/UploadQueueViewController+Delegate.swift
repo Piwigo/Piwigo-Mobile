@@ -66,12 +66,15 @@ extension UploadQueueViewController: UITableViewDelegate
         // Create trash/cancel upload action
         let cancel = UIContextualAction(style: .normal, title: nil,
                                         handler: { action, view, completionHandler in
+            // Remove upload request from database
             let savingContext = upload.managedObjectContext
             savingContext?.delete(upload)
             savingContext?.saveIfNeeded()
+            
+            // Remove upload request from queue
             Task { @UploadManagerActor in
+                await UploadManagerActor.shared.removeUploads(withIDs: [upload.objectID])
                 UploadManager.shared.clearFailedUpload(withID: upload.objectID)
-                await UploadManagerActor.shared.addUploads(withIDs: [upload.objectID])
             }
             completionHandler(true)
         })
