@@ -73,18 +73,20 @@ extension AlbumViewController: @MainActor NSFetchedResultsControllerDelegate
             currentSnapshot.deleteSections(sectionsToRemove)
             
             // Append new non-empty image sections
-            currentSnapshot.appendSections(snapshot.sectionIdentifiers)
-            for sectionID in snapshot.sectionIdentifiers {
-                currentSnapshot.appendItems(snapshot.itemIdentifiers(inSection: sectionID), toSection: sectionID)
-            }
-            
-            // Update non-inserted, moved or deleted visible cells
-            updatedItems.formIntersection(snapshot.itemIdentifiers)
-            collectionView.indexPathsForVisibleItems.forEach { indexPath in
-                if let objectID = diffableDataSource.itemIdentifier(for: indexPath), updatedItems.contains(objectID),
-                   let image = try? self.mainContext.existingObject(with: objectID) as? Image,
-                   let cell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell {
-                    cell.config(withImageData: image, size: self.imageSize, sortOption: self.sortOption)
+            if snapshot.numberOfItems != 0 {
+                currentSnapshot.appendSections(snapshot.sectionIdentifiers)
+                for sectionID in snapshot.sectionIdentifiers {
+                    currentSnapshot.appendItems(snapshot.itemIdentifiers(inSection: sectionID), toSection: sectionID)
+                }
+                
+                // Update non-inserted, moved or deleted visible cells
+                updatedItems.formIntersection(snapshot.itemIdentifiers)
+                collectionView.indexPathsForVisibleItems.forEach { indexPath in
+                    if let objectID = diffableDataSource.itemIdentifier(for: indexPath), updatedItems.contains(objectID),
+                       let image = try? self.mainContext.existingObject(with: objectID) as? Image,
+                       let cell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+                        cell.config(withImageData: image, size: self.imageSize, sortOption: self.sortOption)
+                    }
                 }
             }
         }
