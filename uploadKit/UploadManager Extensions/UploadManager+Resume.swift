@@ -47,6 +47,7 @@ extension UploadManager
         }
         
         // Get active upload tasks
+        var activeUploadIDs: Set<String> = []
         let allTasks = await bckgSession.allTasks
         allTasks.filter({ $0.state == .running }).forEach {task in
             // Retrieve upload request properties
@@ -59,6 +60,7 @@ extension UploadManager
             }
             
             // Task associated to an upload
+            activeUploadIDs.insert(objectURIstr)
             let objectIDstr = URL(string: objectURIstr)?.lastPathComponent ?? objectURIstr
             UploadManager.logger.notice("\(objectIDstr) • Detected task \(task.taskIdentifier) uploading chunk \(chunk)/\(chunks)")
             self.initIfNeededCounter(withID: objectIDstr, chunk: chunk, chunks: chunks)
@@ -68,7 +70,7 @@ extension UploadManager
         UploadManager.logger.notice("Found \(pending.count) pending and \(completed.count) completed upload requests in cache.")
         
         // Clear failed uploads which can be retried
-        self.clearAllFailedUploads()
+        self.clearAllFailedUploads(except: activeUploadIDs)
         
         // Propose to delete uploaded images of the photo Library once a day
         if Date().timeIntervalSinceReferenceDate > UploadVars.shared.dateOfLastPhotoLibraryDeletion + TimeInterval(86400) {
@@ -194,13 +196,14 @@ extension UploadManager
     
     
     // MARK: - Clear Failed Uploads
-    public func clearAllFailedUploads() {
+    public func clearAllFailedUploads(except activeUploadIDs: Set<String> = []) {
         // Perform fetches
         let pending = (try? self.uploadBckgContext.fetch(fetchPendingRequest)) ?? []
         
         // Considers all failed uploads to the server to which the user is logged in
-        let states: [pwgUploadState] = [.preparingError, .uploadingError, .finishingError]
-        let toResume = pending.filter({states.contains($0.state)})
+        let states: [pwgUploadState] = [.preparingError, .uploading, .uploadingError, .finishing, .finishingError]
+        let toResume = pending.filter({ states.contains($0.state) })
+                              .filter({ !activeUploadIDs.contains($0.objectID.uriRepresentation().absoluteString) })
         clearFailedUploads(toResume)
     }
     

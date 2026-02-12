@@ -24,6 +24,11 @@ extension UploadManager {
         }
         
         // Check upload status
+        if upload.state == .uploaded {
+            // Finish transfer
+            await finishTransferOfUpload(withID: uploadID)
+            return
+        }
         guard upload.state == .prepared
         else {
             UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Upload in wrong state '\(upload.stateLabel)' before transfer/copy")
