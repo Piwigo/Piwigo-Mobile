@@ -216,7 +216,6 @@ extension AlbumViewController
 // MARK: - AlbumViewControllerDelegate Methods
 extension AlbumViewController: @MainActor AlbumViewControllerDelegate {
     func didSelectCurrentCounter(value: Int64) {
-        albumData.currentCounter = value
-        mainContext.saveIfNeeded()
+        albumData.currentCounter = value    // Don't save this change also here to prevent a crash (conflict)
     }
 }
