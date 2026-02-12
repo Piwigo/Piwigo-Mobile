@@ -495,9 +495,9 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
 
         switch type {
         case .insert:
-            debugPrint("••> LocalImagesViewController: insert pending upload request…")
             // Add upload request to cache and update cell
             guard let upload:Upload = anObject as? Upload else { return }
+//            debugPrint("••> LocalImagesViewController: insert upload \(upload.localIdentifier) in state \(upload.stateLabel)")
 
             // Get index of selected image if any and deselect it
             if let index = selectedImages.firstIndex(where: {$0?.localIdentifier == upload.localIdentifier}) {
@@ -526,9 +526,9 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
             // Update corresponding cell
             updateCellAndSectionHeader(for: upload)
         case .delete:
-            debugPrint("••> LocalImagesViewController: delete pending upload request…")
             // Delete upload request from cache and update cell
             guard let upload:Upload = anObject as? Upload else { return }
+//            debugPrint("••> LocalImagesViewController: delete upload \(upload.localIdentifier) in state \(upload.stateLabel)")
 
             // Remove image from indexed upload queue
             if let index = indexedUploadsInQueue.firstIndex(where: {$0?.0 == upload.localIdentifier}) {
@@ -544,9 +544,9 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
         case .move:
             assertionFailure("••> LocalImagesViewController: Unexpected move!")
         case .update:
-            debugPrint("••> LocalImagesViewController: update upload request...")
             // Update upload request and cell
             guard let upload:Upload = anObject as? Upload else { return }
+//            debugPrint("••> LocalImagesViewController: update upload \(upload.localIdentifier) in state \(upload.stateLabel)")
 
             // Update upload in indexed upload queue
             if let indexOfUploadedImage = indexedUploadsInQueue.firstIndex(where: {$0?.0 == upload.localIdentifier}) {
@@ -571,7 +571,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
             if let visibleCells = self.localImagesCollection.visibleCells as? [LocalImageCollectionViewCell],
                let cell = visibleCells.first(where: {$0.localIdentifier == upload.localIdentifier}) {
                 // Update cell
-                debugPrint("••> LocalImagesViewController updating cell in state '\(upload.state)'")
+//                debugPrint("••> LocalImagesViewController updating cell \(upload.localIdentifier) in state '\(upload.state)'")
                 cell.update(selected: false, state: upload.state)
                 cell.reloadInputViews()
 
