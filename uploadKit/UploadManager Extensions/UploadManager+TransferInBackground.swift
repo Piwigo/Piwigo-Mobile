@@ -287,6 +287,8 @@ extension UploadManager {
                     }
                 })
                 upload.tags = newTags
+            } else {
+                upload.tags = Set<Tag>()
             }
             upload.setState(.uploaded)
             upload.managedObjectContext?.saveIfNeeded()
