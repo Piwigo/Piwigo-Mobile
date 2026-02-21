@@ -56,7 +56,9 @@ public actor UploadManagerActor {
             return
         }
         
-        guard !isUploading, let uploadID = uploadQueue.first
+        guard await UploadManager.shared.nberOfUploadsInPreparation() <= maxNberOfUploadsInPrepartion,
+              await UploadManager.shared.nberOfUploadsInTransferOrCopyQueue() <= maxNberOfUploadsInTransferOrCopyQueue,
+              !isUploading, let uploadID = uploadQueue.first
         else { return }
         
         isUploading = true

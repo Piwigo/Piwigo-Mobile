@@ -15,6 +15,11 @@ import piwigoKit
 extension UploadManager
 {
     // MARK: - Prepare Image/Video
+    func nberOfUploadsInPreparation() async -> Int {
+        let pending = (try? self.uploadBckgContext.fetch(fetchPendingRequest)) ?? []
+        return pending.filter({ [.prepared, .preparing].contains($0.state) }).count
+    }
+    
     func prepareUpload(withID uploadID: NSManagedObjectID) async -> Void {
         
         // Retrieve upload request in context of actor

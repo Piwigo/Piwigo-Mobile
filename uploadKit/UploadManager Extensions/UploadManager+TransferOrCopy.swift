@@ -14,6 +14,11 @@ import piwigoKit
 extension UploadManager {
     
     // MARK: - Transfer or Copy Image/Video
+    func nberOfUploadsInTransferOrCopyQueue() -> Int {
+        let pending = (try? self.uploadBckgContext.fetch(fetchPendingRequest)) ?? []
+        return pending.filter({ $0.state == .uploading }).count
+    }
+    
     public func transferOrCopyFileOfUpload(withID uploadID: NSManagedObjectID) async {
         
         // Retrieve upload request in context of actor
