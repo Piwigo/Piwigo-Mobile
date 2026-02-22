@@ -9,13 +9,14 @@
 import Foundation
 import piwigoKit
 
-class VideoVars: NSObject {
+// Mark VideoVars as Sendable since Apple documents UserDefaults as thread-safe
+final class VideoVars: @unchecked Sendable {
     
     // Singleton
     static let shared = VideoVars()
     
     // Remove deprecated stored objects if needed
-    override init() {
+    init() {
         // Deprecated data?
         if let _ = UserDefaults.standard.object(forKey: "defaultPlayerRate") {
             UserDefaults.standard.removeObject(forKey: "defaultPlayerRate")
