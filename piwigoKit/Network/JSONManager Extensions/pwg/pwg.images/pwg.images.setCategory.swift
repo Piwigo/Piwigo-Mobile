@@ -11,7 +11,7 @@ import Foundation
 public let pwgImagesSetCategory = "pwg.images.setCategory"
 public let pwgImagesSetCategoryBytes: Int64 = 610
 
-public enum pwgImagesSetCategoryAction: String {
+public enum pwgImagesSetCategoryAction: String, Sendable {
     case associate
     case dissociate
     case move

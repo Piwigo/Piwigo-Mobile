@@ -90,7 +90,7 @@ public struct UsersGetInfo: Decodable
     public let lastVisitStr: String?                // "26 March 2025"
     public let lastVisitSince: String?              // "1 minute ago"
 
-    public enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey, Sendable {
         case id = "id"
         case userName = "username"
         case email = "email"

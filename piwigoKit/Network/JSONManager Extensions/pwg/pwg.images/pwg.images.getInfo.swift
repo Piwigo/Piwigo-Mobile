@@ -86,7 +86,7 @@ public struct ImagesGetInfo: Decodable
     public var latitude: StringOrDouble?        // "0.000000"
     public var longitude: StringOrDouble?       // "0.000000"
 
-    public enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey, Sendable {
         case id = "id"
         case title = "name"
         case comment = "comment"
@@ -183,7 +183,7 @@ public struct Derivatives: Decodable {
     public var xxxLargeImage: Derivative?
     public var xxxxLargeImage: Derivative?
 
-    public enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey, Sendable {
         case squareImage = "square"
         case thumbImage = "thumb"
         case mediumImage = "medium"

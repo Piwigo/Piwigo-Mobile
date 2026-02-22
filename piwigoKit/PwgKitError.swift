@@ -12,7 +12,7 @@ import Photos
 // Constant used to return a PwgKitError
 public let reason = "Piwigo server error"
 
-public enum PwgKitError: Error {
+public enum PwgKitError: Error, Sendable {
     // Error types
     case fileOperationFailed(innerError: CocoaError)
     case invalidStatusCode(statusCode: Int)

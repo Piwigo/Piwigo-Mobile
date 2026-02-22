@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum StringOrBool: Codable {
+public enum StringOrBool: Codable, Sendable {
     case boolean(Bool)
     case string(String)
     
@@ -118,7 +118,7 @@ public enum StringOrInt: Codable {
     }
 }
 
-public enum StringOrDouble: Codable {
+public enum StringOrDouble: Codable, Sendable {
     case double(Double)
     case string(String)
 

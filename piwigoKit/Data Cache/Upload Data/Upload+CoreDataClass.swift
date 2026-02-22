@@ -338,7 +338,7 @@ extension SectionKeys {
 
 
 // MARK: - Upload States
-public enum pwgUploadState : Int16, CaseIterable {
+public enum pwgUploadState : Int16, CaseIterable, Sendable {
     case waiting        =  0 /* Waiting for preparation */
     
     case preparing      =  1 /* Preparinng image/video file */

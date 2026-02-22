@@ -113,7 +113,7 @@ public struct CategoryData: Decodable
     // Used to identify album with upload rights
     public var hasUploadRights = false
 
-    public enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey, Sendable {
         case id
         case name
         case comment

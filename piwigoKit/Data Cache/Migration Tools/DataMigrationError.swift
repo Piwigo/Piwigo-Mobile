@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum DataMigrationError: Error {
+public enum DataMigrationError: Error, Sendable {
     case timeout
 }
 

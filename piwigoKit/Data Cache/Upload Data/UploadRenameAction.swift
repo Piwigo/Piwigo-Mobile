@@ -49,7 +49,7 @@ public var isRenameFileAtiveByDefault: Bool {
  */
 public struct RenameAction: Hashable {
     // Enumeration of action types
-    public enum ActionType: Int, CaseIterable, Comparable {
+    public enum ActionType: Int, CaseIterable, Comparable, Sendable {
         case addText = 1    // A series of actions is enabled/disabled using row 0.
         case addAlbum
         case addDate

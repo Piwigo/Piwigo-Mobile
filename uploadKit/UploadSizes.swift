@@ -9,7 +9,7 @@
 import piwigoKit
 
 // MARK: - Max Photo Sizes
-public enum pwgPhotoMaxSizes: Int16, CaseIterable {
+public enum pwgPhotoMaxSizes: Int16, CaseIterable, Sendable {
     case fullResolution = 0, Retina5K, UHD4K, DCI2K, FullHD, HD, qHD, nHD
 }
 
@@ -29,7 +29,7 @@ extension pwgPhotoMaxSizes {
 }
 
 // MARK: - Max Video Sizes
-public enum pwgVideoMaxSizes: Int16, CaseIterable {
+public enum pwgVideoMaxSizes: Int16, CaseIterable, Sendable {
     case fullResolution = 0, UHD4K, FullHD, HD, qHD, nHD
 }
 

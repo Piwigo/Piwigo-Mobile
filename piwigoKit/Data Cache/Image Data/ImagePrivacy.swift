@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - Privacy Levels
-public enum pwgPrivacy : Int16, CaseIterable {
+public enum pwgPrivacy : Int16, CaseIterable, Sendable {
     case everybody = 0
     case adminsFamilyFriendsContacts = 1
     case adminsFamilyFriends = 2

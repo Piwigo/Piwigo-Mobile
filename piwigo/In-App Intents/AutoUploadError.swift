@@ -9,7 +9,7 @@
 import Foundation
 import piwigoKit
 
-public enum AutoUploadError: Error {
+public enum AutoUploadError: Error, Sendable {
     case migrationRequired
     case autoUploadDisabled
     case invalidSource

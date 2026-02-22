@@ -71,7 +71,7 @@ public struct ImagesUpload: Decodable
 //    public let catName: String?             // "Essai"
 //    public let nbPhotos: StringOrInt?       // 7 or "7"
 //
-//    public enum CodingKeys: String, CodingKey {
+//    public enum CodingKeys: String, CodingKey, Sendable {
 //        case catId = "id"
 //        case catName = "label"
 //        case nbPhotos = "nb_photos"

@@ -11,7 +11,7 @@ import Foundation
 import Photos
 import piwigoKit
 
-@UploadManagerActor
+//@UploadManagerActor
 extension UploadManager
 {
     // MARK: - Resume Uploads

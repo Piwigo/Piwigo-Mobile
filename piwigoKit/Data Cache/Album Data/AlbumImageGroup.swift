@@ -9,7 +9,7 @@
 import Foundation
 
 // Grouping options when sorting albums
-public enum pwgAlbumGroup: Int16, CaseIterable {
+public enum pwgAlbumGroup: Int16, CaseIterable, Sendable {
     case none = 0
 }
 

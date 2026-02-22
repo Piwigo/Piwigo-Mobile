@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - Album Sort Types
-public enum pwgSmartAlbum: Int32 {
+public enum pwgSmartAlbum: Int32, Sendable {
     case root      = 0          // Root album
     case search    = -1         // Search
     case visits    = -2         // Most visited

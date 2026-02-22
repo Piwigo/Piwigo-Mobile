@@ -11,7 +11,7 @@ import Foundation
 // MARK: - File Extension Case
 // The raw value is stored in the Core Data persistent store.
 // A zero value is adopted in the persistent store when the case should not be changed.
-public enum FileExtCase: Int16 {
+public enum FileExtCase: Int16, Sendable {
     case keep = -1
     case lowercase
     case uppercase

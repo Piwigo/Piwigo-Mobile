@@ -74,7 +74,7 @@ public struct GroupsGetInfo: Decodable
     public let lastModified: String?                // "2025-02-16 17:39:07"
     public let nbUsers: StringOrInt?                // "2"
 
-    public enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey, Sendable {
         case id = "id"
         case name = "name"
         case isDefault = "is_default"

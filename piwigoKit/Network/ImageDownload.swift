@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-public enum pwgImageType {
+public enum pwgImageType: Sendable {
     case album, image, help
 }
 

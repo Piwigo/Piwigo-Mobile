@@ -10,21 +10,22 @@ import Foundation
 
 // MARK: - Date Format
 // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
-public enum pwgDateFormat: Equatable, Hashable {
-    public enum Year: String, CaseIterable, Hashable {
+public enum pwgDateFormat: Equatable, Hashable, Sendable {
+    
+    public enum Year: String, CaseIterable, Hashable, Sendable {
         case none
         case yy
         case yyyy
     }
     
-    public enum Month: String, CaseIterable, Hashable {
+    public enum Month: String, CaseIterable, Hashable, Sendable {
         case none
         case MM
         case MMM
         case MMMM
     }
     
-    public enum Day: String, CaseIterable, Hashable {
+    public enum Day: String, CaseIterable, Hashable, Sendable {
         case none
         case dd
         case ddd

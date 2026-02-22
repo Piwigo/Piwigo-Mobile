@@ -79,7 +79,7 @@ public struct StatusInfo: Decodable
     public let uploadChunkSize: Int?        // 1024
     public let saveVisits: Bool?            // false
     
-    public enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey, Sendable {
         case version
         case charset
         case language

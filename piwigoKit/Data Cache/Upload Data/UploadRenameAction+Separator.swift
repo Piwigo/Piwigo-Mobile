@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - Separators
-public enum pwgSeparator: String, CaseIterable, Hashable {
+public enum pwgSeparator: String, CaseIterable, Hashable, Sendable {
     case none       = ""
     case dash       = "-"
     case underscore = "_"

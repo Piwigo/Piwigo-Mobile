@@ -73,7 +73,7 @@ public struct PageData: Decodable
     public let count: Int64                 // 232
     public let totalCount: StringOrInt?     // 443 or "443"
 
-    public enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey, Sendable {
         case page, perPage = "per_page"
         case count, totalCount = "total_count"
     }
