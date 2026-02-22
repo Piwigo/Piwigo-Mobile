@@ -12,21 +12,11 @@ import MobileCoreServices
 import piwigoKit
 import UIKit
 
-class ImageUtilities
-{    
+struct ImageUtilities
+{
     // MARK: - Image Downsampling
     // Downsampling large images for display at smaller size
     /// WWDC 2018 - Session 219 - Image and Graphics Best practices
-    
-    // Bug introduced on 6 September 2024 (commit 18e427379a8132575a72ef053fe7d26090e09525)
-    static let dateCommit18e4273 = ISO8601DateFormatter().date(from: "2024-09-06T00:00:00Z")!
-    static let dateOfFirstOptImageV323 = {
-        if AppVars.shared.dateOfFirstOptImageV323 == Date.distantFuture.timeIntervalSinceReferenceDate {
-            AppVars.shared.dateOfFirstOptImageV323 = Date().timeIntervalSinceReferenceDate
-        }
-        return Date(timeIntervalSinceReferenceDate: AppVars.shared.dateOfFirstOptImageV323)
-    }()
-    
     static func optimumSize(ofImage image: UIImage, forPointSize pointSize: CGSize) -> CGSize? {
         // Check sizes
         if image.size.width < 1 || image.size.height < 1 { return nil }
@@ -63,7 +53,7 @@ class ImageUtilities
                 fileURL = URL(fileURLWithPath: filePath)
             }
             if let fileCreationDate = fileURL?.creationDate,
-               (fileCreationDate < dateCommit18e4273 || fileCreationDate > dateOfFirstOptImageV323) {
+               (fileCreationDate < ImageVars.shared.dateCommit18e4273 || fileCreationDate > ImageVars.shared.dateOfFirstOptImageV323) {
                 return optImage
             }
         }

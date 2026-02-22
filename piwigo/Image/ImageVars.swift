@@ -117,7 +117,17 @@ final class ImageVars: @unchecked Sendable {
     /// - None
 
 
-    // MARK: - Vars in Memory
+    // MARK: - Constants and Vars in Memory
+    // Constants
+    // Bug introduced on 6 September 2024 (commit 18e427379a8132575a72ef053fe7d26090e09525)
+    let dateCommit18e4273 = ISO8601DateFormatter().date(from: "2024-09-06T00:00:00Z")!
+    let dateOfFirstOptImageV323 = {
+        if AppVars.shared.dateOfFirstOptImageV323 == Date.distantFuture.timeIntervalSinceReferenceDate {
+            AppVars.shared.dateOfFirstOptImageV323 = Date().timeIntervalSinceReferenceDate
+        }
+        return Date(timeIntervalSinceReferenceDate: AppVars.shared.dateOfFirstOptImageV323)
+    }()
+    
     // Image variables kept in memory
     /// - None
 }
