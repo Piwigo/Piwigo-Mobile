@@ -9,7 +9,7 @@
 import Foundation
 import piwigoKit
 
-class ExternalDisplayUtilities {
+struct ExternalDisplayUtilities {
     /** Returns:
      - the Piwigo  image size
      - the URL of the image file stored on the Piwigo server
