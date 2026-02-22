@@ -16,8 +16,8 @@ enum pwgLoginContext {
     case incorrectURL
 }
 
-class LoginUtilities {
-    
+struct LoginUtilities
+{    
     // MARK: - Login Business
     @MainActor
     static func checkAvailableSizes(forScale scale: CGFloat) {
