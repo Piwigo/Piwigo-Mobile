@@ -105,7 +105,7 @@ final class AlbumVars: @unchecked Sendable {
     /// - None
 
 
-    // MARK: - Vars in Memory
+    // MARK: - Constants and Vars in Memory
     // Album cell constants
     let kAlbumCellSpacing = CGFloat(8)               // Horizontal spacing between album cells
     let kAlbumCellVertSpacing = CGFloat(8)           // Vertical spacing between album cells
