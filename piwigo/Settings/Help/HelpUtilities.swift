@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import piwigoKit
 
-class HelpUtilities {
+struct HelpUtilities {
     // Return appropriate help view controller
     static func getHelpViewController(showingPagesWithIDs pageIDs: [UInt16]? = nil) -> HelpViewController {
         let helpSB = UIStoryboard(name: "HelpViewController", bundle: nil)
