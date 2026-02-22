@@ -30,7 +30,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
         let desc = attributedComment()
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
-        let maxWidth = collectionView.frame.width - 30.0 - 2 * AlbumUtilities.kAlbumMarginsSpacing
+        let maxWidth = collectionView.frame.width - 30.0 - 2 * AlbumVars.shared.kAlbumMarginsSpacing
         let headerRect = desc.boundingRect(with: CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude),
                                            options: .usesLineFragmentOrigin, context: context)
         return CGSize(width: maxWidth + 4.0, height: ceil(headerRect.size.height + 4.0))
@@ -147,7 +147,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
         let attributes = [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)]
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
-        let maxWidth = collectionView.frame.width - 30.0 - 2 * AlbumUtilities.kAlbumMarginsSpacing
+        let maxWidth = collectionView.frame.width - 30.0 - 2 * AlbumVars.shared.kAlbumMarginsSpacing
         let footerRect = footer.boundingRect(
             with: CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude),
             options: .usesLineFragmentOrigin,
@@ -163,7 +163,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
         if let index = diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey),
            index == section {
             // Album collection
-            let margin = AlbumUtilities.kAlbumMarginsSpacing
+            let margin = AlbumVars.shared.kAlbumMarginsSpacing
             return UIEdgeInsets(top: CGFloat.zero, left: margin,
                                 bottom: CGFloat.zero, right: margin)
         }
@@ -178,7 +178,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
         if let index = diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey),
            index == section {
             // Album collection
-            return AlbumUtilities.kAlbumCellVertSpacing
+            return AlbumVars.shared.kAlbumCellVertSpacing
         }
         else {
             // Image collection
@@ -191,7 +191,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
         if let index = diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey),
            index == section {
             // Album collection
-            return AlbumUtilities.kAlbumCellSpacing
+            return AlbumVars.shared.kAlbumCellSpacing
         }
         else {
             // Image collection

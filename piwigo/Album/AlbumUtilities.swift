@@ -20,25 +20,8 @@ enum pwgImageCollectionType {
     case popup, full
 }
 
-class AlbumUtilities {
-    
-    // MARK: - Constants
-    static let kAlbumCellSpacing = CGFloat(8)               // Horizontal spacing between album cells
-    static let kAlbumCellVertSpacing = CGFloat(8)           // Vertical spacing between album cells
-    static let kAlbumMarginsSpacing = CGFloat(4)            // Left and right margins for albums
-    
-    static let kImageCellSpacing4iPhone = CGFloat(1)        // Spacing between images (horizontally and vertically)
-    static let kImageCellHorSpacing4iPad = CGFloat(8)
-    static let kImageCellHorSpacing4iPadPopup = CGFloat(1)
-    static let kImageCellVertSpacing4iPad = CGFloat(8)
-    static let kImageCellVertSpacing4iPadPopup = CGFloat(1)
-    //    static let kImageMarginsSpacing = CGFloat(0)            // Left and right margins for images
-    static let kThumbnailFileSize = CGFloat(144)            // Default Piwigo thumbnail file size
-    
-    static let kImageDetailsCellSpacing = CGFloat(8)        // Spacing between image details cells
-    static let kImageDetailsMarginsSpacing = CGFloat(16)    // Left and right margins for image details cells
-    
-    
+struct AlbumUtilities
+{
     // MARK: - Album/Images Collections | Common Methods
     @MainActor
     static func getSafeAreaSize(ofNavigationViewController viewController: UIViewController?) -> CGSize {
@@ -87,8 +70,8 @@ class AlbumUtilities {
     static func albumWidth(forSafeAreaSize size: CGSize, maxCellWidth: CGFloat) -> CGFloat
     {
         // Collection view margins and spacings
-        let margins: CGFloat = 2 * kAlbumMarginsSpacing
-        let spacing: CGFloat = kAlbumCellSpacing
+        let margins: CGFloat = 2 * AlbumVars.shared.kAlbumMarginsSpacing
+        let spacing: CGFloat = AlbumVars.shared.kAlbumCellSpacing
         
         // Number of albums per row in portrait
         let widthInPortrait = min(size.width, size.height)
@@ -138,9 +121,13 @@ class AlbumUtilities {
         var horizontalSpacing = CGFloat.zero
         switch type {
         case .popup:
-            horizontalSpacing = UIDevice.current.userInterfaceIdiom == .phone ? kImageCellSpacing4iPhone : kImageCellHorSpacing4iPadPopup
+            horizontalSpacing = UIDevice.current.userInterfaceIdiom == .phone
+                ? AlbumVars.shared.kImageCellSpacing4iPhone
+                : AlbumVars.shared.kImageCellHorSpacing4iPadPopup
         case .full:
-            horizontalSpacing = UIDevice.current.userInterfaceIdiom == .phone ? kImageCellSpacing4iPhone : kImageCellHorSpacing4iPad
+            horizontalSpacing = UIDevice.current.userInterfaceIdiom == .phone
+                ? AlbumVars.shared.kImageCellSpacing4iPhone
+                : AlbumVars.shared.kImageCellHorSpacing4iPad
         }
         return horizontalSpacing
     }
@@ -150,9 +137,13 @@ class AlbumUtilities {
         var verticalSpacing = CGFloat.zero
         switch type {
         case .popup:
-            verticalSpacing = UIDevice.current.userInterfaceIdiom == .phone ? kImageCellSpacing4iPhone : kImageCellVertSpacing4iPadPopup
+            verticalSpacing = UIDevice.current.userInterfaceIdiom == .phone
+                ? AlbumVars.shared.kImageCellSpacing4iPhone
+                : AlbumVars.shared.kImageCellVertSpacing4iPadPopup
         case .full:
-            verticalSpacing = UIDevice.current.userInterfaceIdiom == .phone ? kImageCellSpacing4iPhone : kImageCellVertSpacing4iPad
+            verticalSpacing = UIDevice.current.userInterfaceIdiom == .phone
+                ? AlbumVars.shared.kImageCellSpacing4iPhone
+                : AlbumVars.shared.kImageCellVertSpacing4iPad
         }
         return verticalSpacing
     }
@@ -238,7 +229,7 @@ class AlbumUtilities {
     static func imageDetailsSize(forView view: UIView) -> CGFloat {
         // Size of view or screen
         let cellSize = sizeOfPage(forView:view)
-        return CGFloat(min(cellSize.width - 2.0 * kImageDetailsMarginsSpacing, 340.0))
+        return CGFloat(min(cellSize.width - 2.0 * AlbumVars.shared.kImageDetailsMarginsSpacing, 340.0))
     }
     
     // MARK: - Album/Images Collections | Image Section

@@ -106,6 +106,23 @@ final class AlbumVars: @unchecked Sendable {
 
 
     // MARK: - Vars in Memory
+    // Album cell constants
+    let kAlbumCellSpacing = CGFloat(8)               // Horizontal spacing between album cells
+    let kAlbumCellVertSpacing = CGFloat(8)           // Vertical spacing between album cells
+    let kAlbumMarginsSpacing = CGFloat(4)            // Left and right margins for albums
+    
+    // Image cell constants
+    let kImageCellSpacing4iPhone = CGFloat(1)        // Spacing between images (horizontally and vertically)
+    let kImageCellHorSpacing4iPad = CGFloat(8)
+    let kImageCellHorSpacing4iPadPopup = CGFloat(1)
+    let kImageCellVertSpacing4iPad = CGFloat(8)
+    let kImageCellVertSpacing4iPadPopup = CGFloat(1)
+    // let kImageMarginsSpacing = CGFloat(0)            // Left and right margins for images
+    let kThumbnailFileSize = CGFloat(144)            // Default Piwigo thumbnail file size
+    
+    let kImageDetailsCellSpacing = CGFloat(8)        // Spacing between image details cells
+    let kImageDetailsMarginsSpacing = CGFloat(16)    // Left and right margins for image details cells
+
     // Album variables kept in memory
     /// - To remember which album data is being fetched
     var isFetchingAlbumData = Set<Int32>()
