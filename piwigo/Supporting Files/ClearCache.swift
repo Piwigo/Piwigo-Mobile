@@ -11,8 +11,8 @@ import UIKit
 import piwigoKit
 import uploadKit
 
-final class ClearCache: NSObject {
-    
+final class ClearCache
+{    
     @MainActor
     static func closeSessionWithPwgError(from viewController: UIViewController, error: PwgKitError) {
         var title = "", message = ""

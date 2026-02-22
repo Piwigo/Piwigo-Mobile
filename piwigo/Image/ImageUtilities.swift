@@ -12,8 +12,8 @@ import MobileCoreServices
 import piwigoKit
 import UIKit
 
-class ImageUtilities: NSObject {
-    
+class ImageUtilities
+{    
     // MARK: - Image Downsampling
     // Downsampling large images for display at smaller size
     /// WWDC 2018 - Session 219 - Image and Graphics Best practices

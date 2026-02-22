@@ -13,7 +13,7 @@ import Photos
 import UIKit
 import piwigoKit
 
-class PhotosFetch: NSObject {
+class PhotosFetch {
     
     // Singleton
     static let shared = PhotosFetch()

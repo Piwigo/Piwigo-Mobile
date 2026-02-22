@@ -16,7 +16,7 @@ enum pwgLoginContext {
     case incorrectURL
 }
 
-class LoginUtilities: NSObject {
+class LoginUtilities {
     
     // MARK: - Login Business
     @MainActor

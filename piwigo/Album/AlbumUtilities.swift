@@ -20,7 +20,7 @@ enum pwgImageCollectionType {
     case popup, full
 }
 
-class AlbumUtilities: NSObject {
+class AlbumUtilities {
     
     // MARK: - Constants
     static let kAlbumCellSpacing = CGFloat(8)               // Horizontal spacing between album cells

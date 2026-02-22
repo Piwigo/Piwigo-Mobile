@@ -8,8 +8,8 @@
 
 import Foundation
 
-public class DateUtilities: NSObject {
-    
+public class DateUtilities
+{    
     // Unknown date is 00:00:00 UTC on 1 January 1900
     public static let unknownDate = ISO8601DateFormatter().date(from: "1900-01-01T00:00:00Z")!
     public static let unknownDateInterval = unknownDate.timeIntervalSinceReferenceDate

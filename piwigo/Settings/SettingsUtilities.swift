@@ -11,8 +11,8 @@ import MessageUI
 import UIKit
 import piwigoKit
 
-class SettingsUtilities: NSObject {
-    
+class SettingsUtilities
+{    
     // Return the author names for different devices and orientations
     static func getAuthors(forView view: UIView) -> String {
         // Piwigo authors
