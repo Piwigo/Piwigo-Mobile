@@ -8,8 +8,8 @@
 
 import Foundation
 
-public final class KeychainUtilities: NSObject {
-    
+public struct KeychainUtilities: Sendable
+{    
     // Access group
     private static
     func getAccessGroup() -> String {
