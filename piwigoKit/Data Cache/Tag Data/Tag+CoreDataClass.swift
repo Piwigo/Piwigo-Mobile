@@ -16,7 +16,7 @@ import CoreData
     - Instances are associated to Images and Upload requests.
  */
 @objc(Tag)
-public class Tag: NSManagedObject {
+public final nonisolated class Tag: NSManagedObject, Identifiable {
 
     /**
      Updates a Tag instance with the values from a TagProperties.

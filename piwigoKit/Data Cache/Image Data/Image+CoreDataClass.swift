@@ -19,7 +19,7 @@ import UniformTypeIdentifiers
     - Image files are automatically deleted from the cache when deleting an instance.
  */
 @objc(Image)
-public class Image: NSManagedObject {
+public final nonisolated class Image: NSManagedObject, Identifiable {
 
     // Logs Image updates
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive

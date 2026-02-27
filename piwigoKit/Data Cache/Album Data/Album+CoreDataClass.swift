@@ -17,7 +17,7 @@ import UIKit
     - Smart albums are defined with pwgSmartAlbum and have Piwigo IDs <= 0.
  */
 @objc(Album)
-public class Album: NSManagedObject {
+public final nonisolated class Album: NSManagedObject, Identifiable {
     /**
      Updates an Album instance with the values from a CategoryData struct.
      */

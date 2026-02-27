@@ -17,7 +17,7 @@ import CoreData
     - Each instance contains upload requests only belonging to it.
  */
 @objc(User)
-public class User: NSManagedObject {
+public final nonisolated class User: NSManagedObject, Identifiable {
     
     /**
      Updates the attributes of a User Account instance.

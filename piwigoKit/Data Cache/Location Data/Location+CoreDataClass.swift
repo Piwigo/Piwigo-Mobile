@@ -18,7 +18,7 @@ import CoreLocation
     - the server path e.g. "mywebsite.com/piwigo".
  */
 @objc(Location)
-public class Location: NSManagedObject {
+public final nonisolated class Location: NSManagedObject {
 
     /**
      Updates a Location instance with the values from a LocationProperties.

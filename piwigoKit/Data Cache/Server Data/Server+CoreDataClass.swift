@@ -17,7 +17,7 @@ import CoreData
     - the server path e.g. "mywebsite.com/piwigo".
  */
 @objc(Server)
-public class Server: NSManagedObject {
+public final nonisolated class Server: NSManagedObject, Identifiable {
 
     /**
      Updates the attributes of a Server instance.

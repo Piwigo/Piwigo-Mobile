@@ -11,6 +11,6 @@ import Foundation
 import CoreData
 
 @objc(UserGroup)
-public class UserGroup: NSManagedObject {
+public final nonisolated class UserGroup: NSManagedObject, Identifiable {
 
 }
