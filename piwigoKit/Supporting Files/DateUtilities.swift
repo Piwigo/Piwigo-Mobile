@@ -37,6 +37,22 @@ public struct DateUtilities: Sendable
         return formatter
     }()
     
+    // Return the date of the next day at 4 AM
+    public static func nextDayAt4AM(after timeInterval: TimeInterval) -> Date {
+        // Get the next day by adding 1 day
+        let calendar = Calendar.current
+        let date = Date(timeIntervalSinceReferenceDate: timeInterval)
+        let nextDay = calendar.date(byAdding: .day, value: 1, to: date)!
+        
+        // Set the time to 4:00 AM on that next day
+        var components = calendar.dateComponents([.year, .month, .day], from: nextDay)
+        components.hour = 4
+        components.minute = 0
+        components.second = 0
+        components.nanosecond = 0
+        
+        return calendar.date(from: components)!
+    }
     
     // Return corresponding time interval since 00:00:00 UTC on 1 January 2001
     // if the converted date is after 00:00:00 UTC on 8 January 1900
