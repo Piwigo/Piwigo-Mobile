@@ -86,7 +86,7 @@ extension PasteboardImagesViewController: UploadSwitchDelegate
         }
         
         // Add selected images to upload queue
-        Task { @UploadManagerActor in
+        Task(priority: .utility) { @UploadManagerActor in
             do {
                 // Create upload requests
                 let uploadIDs = try await UploadProvider().importUploads(from: self.uploadRequests)

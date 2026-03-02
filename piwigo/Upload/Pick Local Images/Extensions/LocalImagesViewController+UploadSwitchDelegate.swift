@@ -92,7 +92,7 @@ extension LocalImagesViewController: UploadSwitchDelegate
         UIApplication.shared.isIdleTimerDisabled = (uploadRequests.isEmpty == false)
         
         // Add selected images to upload queue
-        Task { @UploadManagerActor in
+        Task(priority: .utility) { @UploadManagerActor in
             do {
                 // Create upload requests in cache
                 /// Cells switch to the "waiting" upload state and are "automatically" deselected visually
