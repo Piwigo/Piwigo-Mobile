@@ -290,7 +290,9 @@ extension UploadManager {
             await finishTransferOfUpload(withID: uploadID)
             
             // Add uploaded image to cache and update UI if needed
-            if let user = try? UserProvider().getUserAccount(inContext: uploadBckgContext),
+            if let objectURI = URL(string: uploadData.userID),
+               let userID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI),
+               let user = try? uploadBckgContext.existingObject(with: userID) as? User,
                user.hasAdminRights {
                 getInfos.fixingUnknowns()
                 ImageProvider().didUploadImage(getInfos, inAlbumId: uploadData.category)

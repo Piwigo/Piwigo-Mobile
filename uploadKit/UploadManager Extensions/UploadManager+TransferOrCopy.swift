@@ -106,7 +106,10 @@ extension UploadManager {
 //        }
 //
 //        // Check user entity
-//        guard let user = try? UserProvider().getUserAccount(inContext: self.uploadBckgContext)
+        
+//        guard let objectURI = URL(string: uploadData.userID),
+//              let userID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI),
+//              let user = try? uploadBckgContext.existingObject(with: userID) as? User
 //        else {
 //            // Should never happen
 //            // ► The lounge will be emptied later by the server

@@ -54,7 +54,9 @@ extension UploadManager {
     fileprivate func emptyLounge(for uploadData: UploadProperties) async throws(PwgKitError)
     {
         // Empty lounge without reporting potential error
-        guard let user = try? UserProvider().getUserAccount(inContext: self.uploadBckgContext)
+        guard let objectURI = URL(string: uploadData.userID),
+              let userID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI),
+              let user = try? uploadBckgContext.existingObject(with: userID) as? User
         else {
             // Should never happen
             // ► The lounge will be emptied later by the server

@@ -249,7 +249,9 @@ public final class UploadProvider {
                              inContext taskContext: NSManagedObjectContext) throws -> Void {
         try taskContext.performAndWait {
             // Get current user account
-            guard let user = try UserProvider().getUserAccount(inContext: taskContext)
+            guard let objectURI = URL(string: uploadData.userID),
+                  let userID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI),
+                  let user = try taskContext.existingObject(with: userID) as? User
             else { throw PwgKitError.userCreationError }
             if user.isFault {
                 // user is not fired yet.
