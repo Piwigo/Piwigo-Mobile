@@ -203,60 +203,62 @@ extension UploadManager
 //        }
     }
     
-    func moderateCompletedUploads(_ uploads: [Upload]) async -> Void
-    {
-        // Get list of categories
-        let categories: Set<Int32> = Set(uploads.map({$0.category}))
-        if categories.isEmpty { return }
-
-        // Check user entity
-        guard let user = uploads.first?.user else {
-            // Should never happen
-            // ► The moderator will be informed later
-            return
-        }
-
-        // Moderate images by category
-        do {
-            // Check session
-            try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
-
-            // Loop over albums
-            for categoryId in categories {
-                // Set list of images to moderate in that category
-                let categoryImages = uploads.filter({$0.category == categoryId})
-                let imageIDs = String(categoryImages.map({ "\($0.imageId)," }).reduce("", +).dropLast())
-
-                // Moderate updated images
-                let validatedIDs = try await JSONManager.shared.moderateImages(withIds: imageIDs, inCategory: categoryId)
-
-                // Loop over moderated images
-                let validatedImages = categoryImages.filter({validatedIDs.contains($0.imageId)})
-                
-                // Update state of upload requests
-                validatedImages.forEach({$0.setState(.moderated)})
-
-                // Delete image in Photo Library if wanted
-                let uploadsToDelete = categoryImages.filter({$0.deleteImageAfterUpload == true})
-                    .filter({validatedIDs.contains($0.imageId)})
-                let objectURIs = uploadsToDelete.map({ $0.objectID.uriRepresentation().absoluteString + "," }).reduce("",+)
-                let localIDs = uploadsToDelete.map({ $0.localIdentifier + "," }).reduce ("",+)
-                let userInfo: [String : Any] = ["objectURIs" : objectURIs,
-                                                "localIDs" : localIDs];
-                NotificationCenter.default.post(name: .pwgDeleteUploadRequestsAndAssets,
-                                                object: nil, userInfo: userInfo)
-                // Code below crashes with Xcode 26.2 (17C52)
-        //        let uploadIDs = uploadsToDelete.map(\.objectID)
-        //        let uploadLocalIDs = uploadsToDelete.map(\.localIdentifier)
-        //        Task { @MainActor in
-        //            await self.deleteAssets(associatedToUploads: uploadIDs, uploadLocalIDs)
-        //        }
-            }
-        }
-        catch {
-            // No report — Will retry later
-        }
-    }
+//    func moderateCompletedUploads(_ uploads: [Upload]) async -> Void
+//    {
+//        // Get list of categories
+//        let categories: Set<Int32> = Set(uploads.map({$0.category}))
+//        if categories.isEmpty { return }
+//
+//        // Check user entity
+//        guard let user = uploads.first?.user else {
+//            // Should never happen
+//            // ► The moderator will be informed later
+//            return
+//        }
+//
+//        // Moderate images by category
+//        do {
+//            // Check session
+//            try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+//
+//            // Loop over albums
+//            for categoryId in categories {
+//                // Set list of images to moderate in that category
+//                let categoryImages = uploads.filter({$0.category == categoryId})
+//                let imageIDs = String(categoryImages.map({ "\($0.imageId)," }).reduce("", +).dropLast())
+//                
+//                // Moderate updated images
+//                let validatedIDs = try await JSONManager.shared.moderateImages(withIds: imageIDs, inCategory: categoryId)
+//                
+//                // Loop over moderated images
+//                let validatedImages = categoryImages.filter({validatedIDs.contains($0.imageId)})
+//                
+//                // Update state of upload requests
+//                validatedImages.forEach({
+//                    try? UploadProvider().setUpload(withID: $0.objectID, inContext: self.uploadBckgContext, state: .moderated)
+//                })
+//                
+//                // Delete image in Photo Library if wanted
+//                let uploadsToDelete = categoryImages.filter({$0.deleteImageAfterUpload == true})
+//                    .filter({validatedIDs.contains($0.imageId)})
+//                let objectURIs = uploadsToDelete.map({ $0.objectID.uriRepresentation().absoluteString + "," }).reduce("",+)
+//                let localIDs = uploadsToDelete.map({ $0.localIdentifier + "," }).reduce ("",+)
+//                let userInfo: [String : Any] = ["objectURIs" : objectURIs,
+//                                                "localIDs" : localIDs];
+//                NotificationCenter.default.post(name: .pwgDeleteUploadRequestsAndAssets,
+//                                                object: nil, userInfo: userInfo)
+//                // Code below crashes with Xcode 26.2 (17C52)
+//        //        let uploadIDs = uploadsToDelete.map(\.objectID)
+//        //        let uploadLocalIDs = uploadsToDelete.map(\.localIdentifier)
+//        //        Task { @MainActor in
+//        //            await self.deleteAssets(associatedToUploads: uploadIDs, uploadLocalIDs)
+//        //        }
+//            }
+//        }
+//        catch {
+//            // No report — Will retry later
+//        }
+//    }
     
     
     // MARK: - Background Upload Task Manager
@@ -264,7 +266,7 @@ extension UploadManager
      - getUploadRequests() returns a series of upload requests to deal with
      - photos and videos are prepared sequentially to reduce the memory needs
      - uploads are launched in the background with the method pwg.images.uploadAsync
-       and the BackgroundTasks farmework
+       and the BackgroundTasks framework
      - The number of bytes to be transferred is calculated and limited.
      - A delay is set between series of upload tasks to prevent server overloads
      - Failing tasks are automatically retried by iOS

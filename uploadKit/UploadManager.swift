@@ -13,7 +13,7 @@ import CoreData
 import piwigoKit
 
 @UploadManagerActor
-public final class UploadManager: Sendable {
+public final class UploadManager {
     
     // Logs networking activities
     /// sudo log collect --device --start '2025-01-11 15:00:00' --output piwigo.logarchive
@@ -22,36 +22,38 @@ public final class UploadManager: Sendable {
     // Singleton
     public static let shared = UploadManager()
         
-    // JSON decoder
-    let decoder = JSONDecoder()
-
     // Upload counters kept in memory during upload
     // for updating progress bars and managing tasks
     var transferCounters = [TransferCounter]()
     
+
+
+    
+    
+    
+
     var isDeleting = Set<NSManagedObjectID>()               // IDs of uploads to be deleted
-
-
+    
+    
     // MARK: - Upload Request States
     /** The manager prepares an image for upload and then launches the transfer.
-    - isPreparing is set to true when a photo/video is going to be prepared,
-      and false when the preparation has completed or failed.
-    - isUploading contains the localIdentifier of the photos/videos being transferred to the server,
-    - isFinishing is set to true when the photo/video parameters are going to be set,
-      and false when this job has completed or failed.
-    */
-//    var isPreparing = false                                 // Prepare one image at once
-//    var isUploading = Set<NSManagedObjectID>()              // IDs of queued transfers
-//    var isFinishing = false                                 // Finish transfer one image at once
-//    var isDeleting = Set<NSManagedObjectID>()               // IDs of uploads to be deleted
+     - isPreparing is set to true when a photo/video is going to be prepared,
+     and false when the preparation has completed or failed.
+     - isUploading contains the localIdentifier of the photos/videos being transferred to the server,
+     - isFinishing is set to true when the photo/video parameters are going to be set,
+     and false when this job has completed or failed.
+     */
+    //    var isPreparing = false                                 // Prepare one image at once
+    //    var isUploading = Set<NSManagedObjectID>()              // IDs of queued transfers
+    //    var isFinishing = false                                 // Finish transfer one image at once
+    //    var isDeleting = Set<NSManagedObjectID>()               // IDs of uploads to be deleted
     
-    public var countOfBytesPrepared = UInt64(0)             // Total amount of bytes of prepared files
-    public var countOfBytesToUpload = 0                     // Total amount of bytes to be sent
-    public var uploadRequestsToPrepare = Set<NSManagedObjectID>()
-    public var uploadRequestsToTransfer = Set<NSManagedObjectID>()
-        
+//    public var countOfBytesPrepared = UInt64(0)             // Total amount of bytes of prepared files
+//    public var countOfBytesToUpload = 0                     // Total amount of bytes to be sent
+//    public var uploadRequestsToPrepare = Set<NSManagedObjectID>()
+//    public var uploadRequestsToTransfer = Set<NSManagedObjectID>()
     
-    public init() {
+    private init() {
         // Register auto-upload disabler
         NotificationCenter.default.addObserver(self, selector: #selector(stopAutoUploader(_:)),
                                                name: Notification.Name.pwgDisableAutoUpload, object: nil)
@@ -65,6 +67,7 @@ public final class UploadManager: Sendable {
     
     // MARK: - CoreData Object Context
     public lazy var uploadBckgContext: NSManagedObjectContext = {
+        debugPrint("In uploadBckgContext ► Thread priority: \(Task.currentPriority)")
         return DataController.shared.newTaskContext()
     }()
     
@@ -104,7 +107,7 @@ public final class UploadManager: Sendable {
         fetchRequest.shouldRefreshRefetchedObjects = true
         return fetchRequest
     }()
-        
+    
     lazy var completedPredicate: NSPredicate = {
         var andPredicates = accountPredicates
         let states: [pwgUploadState] = [.finished, .moderated]
@@ -125,11 +128,29 @@ public final class UploadManager: Sendable {
         return fetchRequest
     }()
     
+
+    // MARK: - CoreData Utilities
+    public func importUploads(from uploadRequest: [UploadProperties]) async throws -> [NSManagedObjectID] {
+        return try await UploadProvider().importUploads(from: uploadRequest, inContext: uploadBckgContext)
+    }
+    
+    // Number of upload requests prepared to being prepared
+    var nberOfUploadsInPreparation: Int {
+        let states: [pwgUploadState] = [.prepared, .preparing]
+        let (inPreparation, _) = UploadProvider().getIDsOfPendingUploads(onlyInStates: states, inContext: self.uploadBckgContext)
+        return inPreparation.count
+    }
+    
+    // Number of uploads to transfer
+    var nberOfUploadsToTransfer: Int {
+        let (inTransfer, _) = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.uploading], inContext: self.uploadBckgContext)
+        return inTransfer.count
+    }
+    
     /// Number of pending upload requests
     public func updateNberOfUploadsToComplete() {
         // Get number of uploads to complete
-        let pending = (try? uploadBckgContext.fetch(fetchPendingRequest)) ?? []
-        let nberOfUploadsToComplete = pending.count
+        let nberOfUploadsToComplete = UploadProvider().getCountOfPendingUploads(inContext: self.uploadBckgContext)
         
         // Store number, update badge and default album view button
         DispatchQueue.main.async {

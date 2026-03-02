@@ -96,11 +96,11 @@ extension LocalImagesViewController: UploadSwitchDelegate
             do {
                 // Create upload requests in cache
                 /// Cells switch to the "waiting" upload state and are "automatically" deselected visually
-                let uploadIDs = try await UploadProvider().importUploads(from: self.uploadRequests)
+                let uploadIDs = try await UploadManager.shared.importUploads(from: self.uploadRequests)
                 
                 // Add upload requests to queue
                 UploadVars.shared.isPaused = false
-                await UploadManagerActor.shared.addUploads(withIDs: uploadIDs)
+                await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
                 
                 // Deselect cells in memory
                 await MainActor.run {

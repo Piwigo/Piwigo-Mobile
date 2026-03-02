@@ -23,7 +23,7 @@ public actor UploadManagerActor {
     // The serial executor drives all actor-isolated work on this queue
     private static let queue = DispatchQueue(
         label: "org.piwigo.uploadKit.queue",
-        qos: .userInteractive
+        qos: .utility
     )
     
     // Prevents duplicate instances
@@ -31,29 +31,62 @@ public actor UploadManagerActor {
     
     
     // MARK: - Serialised Upload Queue
-    private var isUploading = false
-    private var uploadQueue: [NSManagedObjectID] = []
+    private var uploadIDsToPrepare: [NSManagedObjectID] = []
+    private var uploadIDsToTransfer: [NSManagedObjectID] = []
     
-    public func addUploads(withIDs uploadIDs: [NSManagedObjectID]) async {
-        // Remove duplicate if needed (should never happen)
-        let alreadyQueuedIDs = Set(uploadIDs).intersection(Set(uploadQueue))
-        var uploadIDsToQueue = uploadIDs
-        uploadIDsToQueue.removeAll(where: { alreadyQueuedIDs.contains($0) })
+    public func addUploadsToPrepare(withIDs uploadIDs: [NSManagedObjectID], beforeOthers: Bool = false) async {
+        // Remove duplicates if needed (should never happen)
+        let alreadyQueuedIDs = Set(uploadIDs).intersection(Set(uploadIDsToPrepare))
+        var uploadIDsToAdd = uploadIDs
+        uploadIDsToAdd.removeAll(where: { alreadyQueuedIDs.contains($0) })
         
         // Append upload requests not already in queue
-        uploadQueue.append(contentsOf: uploadIDsToQueue)
+        if beforeOthers {
+            uploadIDsToPrepare.insert(contentsOf: uploadIDsToAdd, at: 0)
+        } else {
+            uploadIDsToPrepare.append(contentsOf: uploadIDsToAdd)
+        }
+        
+        // Process next uploads if possible
+        await processNextUpload()
+    }
+    
+    public func addUploadsToTransfer(withIDs uploadIDs: [NSManagedObjectID], beforeOthers: Bool = false) async {
+        // Remove duplicates if needed (should never happen)
+        let alreadyQueuedIDs = Set(uploadIDs).intersection(Set(uploadIDsToTransfer))
+        var uploadIDsToAdd = uploadIDs
+        uploadIDsToAdd.removeAll(where: { alreadyQueuedIDs.contains($0) })
+        
+        // Append upload requests not already in queue
+        if beforeOthers {
+            uploadIDsToTransfer.insert(contentsOf: uploadIDsToAdd, at: 0)
+        } else {
+            uploadIDsToTransfer.append(contentsOf: uploadIDsToAdd)
+        }
+        
+        // Process next uploads if possible
         await processNextUpload()
     }
     
     public func removeUploads(withIDs uploadIDs: [NSManagedObjectID]) async {
         // Remove upload request from queue
-        uploadQueue.removeAll(where: { uploadIDs.contains($0) })
+        uploadIDsToPrepare.removeAll(where: { uploadIDs.contains($0) })
+        uploadIDsToTransfer.removeAll(where: { uploadIDs.contains($0) })
         
         // Update badge and default album view button
         await UploadManager.shared.updateNberOfUploadsToComplete()
     }
     
+    public func removeAllUploads() async {
+        uploadIDsToPrepare.removeAll()
+        uploadIDsToTransfer.removeAll()
+        
+        // Update badge and default album view button
+        await UploadManager.shared.updateNberOfUploadsToComplete()
+    }
+
     public func processNextUpload() async {
+        debugPrint("In processNextUpload() ► Thread priority: \(Task.currentPriority)")
         // Should we postpone uploads?
         if UploadVars.shared.isPaused ||
 //            UploadVars.shared.isExecutingBGUploadTask ||
@@ -63,28 +96,18 @@ public actor UploadManagerActor {
             return
         }
         
-        guard await UploadManager.shared.nberOfUploadsInPreparation() <= maxNberOfUploadsInPrepartion,
-              await UploadManager.shared.nberOfUploadsInTransferOrCopyQueue() <= maxNberOfUploadsInTransferOrCopyQueue,
-              !isUploading, let uploadID = uploadQueue.first
-        else { return }
-        
-        isUploading = true
-        uploadQueue.removeFirst()
-        
-        // Prepare and transfer if upload request in apropriate state
-        await UploadManager.shared.prepareUpload(withID: uploadID)
-        await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID)
-        
-        isUploading = false
-        await processNextUpload() // Recursive call for next item
-    }
-    
-    // Patch because one cannot retrieve AVAsset with async function
-    public func processVideo(ofUploadWithID uploadID: NSManagedObjectID) async {
-        UploadManagerActor.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Process video")
-        await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID)
-        
-        isUploading = false
-        await processNextUpload() // Recursive call for next item
+        // First, transfer image if any and allowed
+        if await UploadManager.shared.nberOfUploadsToTransfer <= maxNberOfUploadsInTransferOrCopyQueue,
+           let uploadID = uploadIDsToTransfer.first {
+            uploadIDsToTransfer.removeFirst()
+            await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID)
+        }
+
+        // Second, prepare image if any and allowed
+        if await UploadManager.shared.nberOfUploadsInPreparation <= maxNberOfUploadsInPrepartion,
+           let uploadID = uploadIDsToPrepare.first {
+            uploadIDsToPrepare.removeFirst()
+            await UploadManager.shared.prepareUpload(withID: uploadID)
+        }
     }
 }

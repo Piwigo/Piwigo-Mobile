@@ -354,8 +354,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // Initialise variables and determine upload requests to prepare and transfer
             UploadVars.shared.isExecutingBGUploadTask = true
             Task { @UploadManagerActor in
-                UploadManager.shared.countOfBytesPrepared = 0
-                UploadManager.shared.countOfBytesToUpload = 0
+//                UploadManager.shared.countOfBytesPrepared = 0
+//                UploadManager.shared.countOfBytesToUpload = 0
                 await UploadManager.shared.initialiseBckgTask()
             }
         }

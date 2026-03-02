@@ -81,7 +81,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
             
             // Append auto-upload requests to database
             do {
-                let uploadIDs = try await UploadProvider().importUploads(from: uploadRequestsToAppend)
+                let uploadIDs = try await UploadManager.shared.importUploads(from: uploadRequestsToAppend)
 
                 // Initialise upload operations
                 let uploadOperations = self.getUploadOperations()

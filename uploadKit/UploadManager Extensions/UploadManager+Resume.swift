@@ -11,11 +11,12 @@ import Foundation
 import Photos
 import piwigoKit
 
-//@UploadManagerActor
+@UploadManagerActor
 extension UploadManager
 {
     // MARK: - Resume Uploads
     public func resumeAll() async {
+        debugPrint("In resumeAll() ► Thread priority: \(Task.currentPriority)")
         // Wait until fix completed
         guard NetworkVars.shared.fixUserIsAPIKeyV412 == false
         else { return }
@@ -28,104 +29,74 @@ extension UploadManager
         UploadVars.shared.isPaused = false
         UploadVars.shared.isExecutingBGUploadTask = false
         
-        // Reset predicates in case user switched to another Piwigo
-        let variables = ["serverPath" : NetworkVars.shared.serverPath,
-                         "userName"   : NetworkVars.shared.user]
-        fetchPendingRequest.predicate = pendingPredicate.withSubstitutionVariables(variables)
-        fetchCompletedRequest.predicate = completedPredicate.withSubstitutionVariables(variables)
-        
-        // Perform fetches
-        let pending = (try? self.uploadBckgContext.fetch(fetchPendingRequest)) ?? []
-        let completed = (try? self.uploadBckgContext.fetch(fetchCompletedRequest)) ?? []
-        
         // Store number, update badge and default album view button
-        let nberOfUploadsToComplete = pending.count
+        let nberOfPendingUploads = UploadProvider().getCountOfPendingUploads(inContext: self.uploadBckgContext)
         DispatchQueue.main.async {
             // Update app badge and button of root album (or default album)
-            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : nberOfUploadsToComplete]
+            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : nberOfPendingUploads]
             NotificationCenter.default.post(name: .pwgLeftUploads, object: nil, userInfo: uploadInfo)
-        }
-        
-        // Get active upload tasks
-        var activeUploadIDs: Set<String> = []
-        let allTasks = await bckgSession.allTasks
-        allTasks.filter({ $0.state == .running }).forEach {task in
-            // Retrieve upload request properties
-            guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
-                  let chunkStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk), let chunk = Int(chunkStr),
-                  let chunksStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks), let chunks = Int(chunksStr)
-            else {
-                UploadManager.logger.notice("Found task \(task.taskIdentifier) not associated to an upload!")
-                return
-            }
-            
-            // Task associated to an upload
-            activeUploadIDs.insert(objectURIstr)
-            let objectIDstr = URL(string: objectURIstr)?.lastPathComponent ?? objectURIstr
-            UploadManager.logger.notice("\(objectIDstr) • Detected task \(task.taskIdentifier) uploading chunk \(chunk)/\(chunks)")
-            self.initIfNeededCounter(withID: objectIDstr, chunk: chunk, chunks: chunks)
-        }
-        
-        // Logs
-        UploadManager.logger.notice("Found \(pending.count) pending and \(completed.count) completed upload requests in cache.")
-        
-        // Clear failed uploads which can be retried
-        self.clearAllFailedUploads(except: activeUploadIDs)
-        
-        // Propose to delete uploaded images of the photo Library once a day
-        if Date().timeIntervalSinceReferenceDate > UploadVars.shared.dateOfLastPhotoLibraryDeletion + TimeInterval(86400) {
-            // Are there images to delete from the Photo Library?
-            let uploadsToDelete = completed
-                .filter({$0.deleteImageAfterUpload == true})
-//                .filter({isDeleting.contains($0.objectID) == false})
-            if uploadsToDelete.count > 0 {
-                // Store date of deletion
-                UploadVars.shared.dateOfLastPhotoLibraryDeletion = Date().timeIntervalSinceReferenceDate
-                
-                // Suggest to delete assets from the Photo Library
-                UploadManager.logger.notice("Identified \(uploadsToDelete.count) assets for deletion from the Photo Library.")
-                let objectURIs = uploadsToDelete.map({ $0.objectID.uriRepresentation().absoluteString + "," }).reduce("",+)
-                let localIDs = uploadsToDelete.map({ $0.localIdentifier + "," }).reduce ("",+)
-                let userInfo: [String : Any] = ["objectURIs" : objectURIs,
-                                                "localIDs" : localIDs];
-                NotificationCenter.default.post(name: .pwgDeleteUploadRequestsAndAssets,
-                                                object: nil, userInfo: userInfo)
-                // Code below crashes with Xcode 26.2 (17C52)
-//                let uploadIDs = uploadsToDelete.map(\.objectID)
-//                let uploadLocalIDs = uploadsToDelete.map(\.localIdentifier)
-//                Task { @MainActor in
-//                    await self.deleteAssets(associatedToUploads: uploadIDs, uploadLocalIDs)
-//                }
-            }
         }
         
         // Delete upload requests of assets that have become unavailable,
         // except non-completed requests from intent and clipboard
-        var toDelete = pending
-            .filter({!$0.localIdentifier.hasPrefix(kIntentPrefix)})
-            .filter({!$0.localIdentifier.hasPrefix(kClipboardPrefix)})
-        toDelete.append(contentsOf: completed)
-        
-        // Fetch assets which are still available
-        let options = PHFetchOptions()
-        options.includeHiddenAssets = false
-        options.sortDescriptors = [NSSortDescriptor(key: #keyPath(PHAsset.creationDate), ascending: true)]
-        let assetIDsToDelete = toDelete.map({$0.localIdentifier})
-        let availableAssets = PHAsset.fetchAssets(withLocalIdentifiers: assetIDsToDelete, options: options)
-        
-        // Keep uploads only if assets are still available
-        availableAssets.enumerateObjects { asset, _, _ in
-            if let index = toDelete.firstIndex(where: {$0.localIdentifier == asset.localIdentifier}) {
-                toDelete.remove(at: index)
+        let states: [pwgUploadState] = [.waiting, .preparingError]
+        let (objectIDs, localIDs) = UploadProvider().getIDsOfPendingUploads(onlyInStates: states, inContext: self.uploadBckgContext)
+        var toDeleteIDs: [NSManagedObjectID] = objectIDs, assetIDsToDelete: [String] = localIDs
+        for (index, localID) in localIDs.enumerated() {
+            // Remove upload requests from intent and clipboard
+            if localID.hasPrefix(kIntentPrefix) || localID.hasPrefix(kClipboardPrefix) {
+                toDeleteIDs.remove(at: index)
+                assetIDsToDelete.remove(at: index)
             }
         }
+        let options = PHFetchOptions()  // Fetch assets which are still available
+        options.includeHiddenAssets = false
+        options.sortDescriptors = [NSSortDescriptor(key: #keyPath(PHAsset.creationDate), ascending: true)]
+        let availableAssets = PHAsset.fetchAssets(withLocalIdentifiers: assetIDsToDelete, options: options)
+        availableAssets.enumerateObjects { asset, _ , _ in
+            // Don't delete upload requests of available asset
+            if let index = assetIDsToDelete.firstIndex(where: {$0 == asset.localIdentifier}) {
+                toDeleteIDs.remove(at: index)
+                assetIDsToDelete.remove(at: index)
+            }
+        }
+        try? UploadProvider().deleteUploads(withID: toDeleteIDs)
         
-        // Delete upload requests of images deleted from the Piwigo server
-        toDelete.append(contentsOf: pending.filter({$0.requestState == 13}))
+        // Resume failed uploads
+        await clearAllFailedUploads()
         
-        // Delete upload requests
-        let uploadsToDate = Set(toDelete).map({$0.objectID})
-        try? UploadProvider().deleteUploads(withID: Array(uploadsToDate))
+        // Append transfers to complete
+        let (uploadedUploadIDs, _) = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.uploaded], inContext: self.uploadBckgContext)
+        await UploadManagerActor.shared.addUploadsToTransfer(withIDs: uploadedUploadIDs)
+        let (preparedUploadIDs, _) = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.prepared], inContext: self.uploadBckgContext)
+        await UploadManagerActor.shared.addUploadsToTransfer(withIDs: preparedUploadIDs)
+        
+        // Append uploads to prepare
+        let (waitingUploadIDs, _) = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.waiting], inContext: self.uploadBckgContext)
+        await UploadManagerActor.shared.addUploadsToPrepare(withIDs: waitingUploadIDs)
+        UploadManager.logger.notice("Resuming uploads: \(uploadedUploadIDs.count, privacy: .public) transfer(s) to finish, \(preparedUploadIDs.count, privacy: .public) file(s) to transfer, \(waitingUploadIDs.count, privacy: .public) uploads to prepare")
+        
+        // Propose to delete uploaded images of the photo Library once a day
+        // or immediately if there is no pending upload request, if any
+        let (uploadIDs, localIdentifiers) = UploadProvider().getIDsOfCompletedUploads(inContext: self.uploadBckgContext)
+        UploadManager.logger.notice("Resuming uploads: \(uploadIDs.count) assets for deletion in the Photo Library")
+        let deadline = DateUtilities.nextDayAt4AM(after: UploadVars.shared.dateOfLastPhotoLibraryDeletion)
+        if uploadIDs.isEmpty == false && (nberOfPendingUploads == 0 || Date.now > deadline) {
+            // Store date of proposed deletion
+            UploadVars.shared.dateOfLastPhotoLibraryDeletion = Date().timeIntervalSinceReferenceDate
+            
+            // Suggest to delete assets from the Photo Library
+            let objectURIs = uploadIDs.map({ $0.uriRepresentation().absoluteString + "," }).reduce("",+)
+            let localIDs = localIdentifiers.map({ $0 + "," }).reduce ("",+)
+            let userInfo: [String : Any] = ["objectURIs" : objectURIs,
+                                            "localIDs"   : localIDs];
+            NotificationCenter.default.post(name: .pwgDeleteUploadRequestsAndAssets,
+                                            object: nil, userInfo: userInfo)
+            // Code below crashes with Xcode 26.2 (17C52)
+//            Task { @MainActor in
+//                await self.deleteAssets(associatedToUploads: uploadIDs, localIdentifiers)
+//            }
+        }
         
         // Append auto-upload requests if requested and restart activities
         if UploadVars.shared.isAutoUploadActive {
@@ -135,8 +106,7 @@ extension UploadManager
         }
         
         // Launch upload activities if needed
-        let allPending = (try? self.uploadBckgContext.fetch(fetchPendingRequest)) ?? []
-        await UploadManagerActor.shared.addUploads(withIDs: allPending.map(\.objectID))
+        await UploadManagerActor.shared.processNextUpload()
     }
     
 //    public func launchUploadsIfNeeded() async {
@@ -196,43 +166,63 @@ extension UploadManager
     
     
     // MARK: - Clear Failed Uploads
-    public func clearAllFailedUploads(except activeUploadIDs: Set<String> = []) {
-        // Perform fetches
-        let pending = (try? self.uploadBckgContext.fetch(fetchPendingRequest)) ?? []
-        
-        // Considers all failed uploads to the server to which the user is logged in
-        let states: [pwgUploadState] = [.preparingError, .uploading, .uploadingError, .finishing, .finishingError]
-        let toResume = pending.filter({ states.contains($0.state) })
-                              .filter({ !activeUploadIDs.contains($0.objectID.uriRepresentation().absoluteString) })
-        clearFailedUploads(toResume)
-    }
-    
-    public func clearFailedUpload(withID uploadID: NSManagedObjectID) {
-        // Get upload request
-        if let upload = try? uploadBckgContext.existingObject(with: uploadID) as? Upload {
-            clearFailedUploads([upload])
-        }
-    }
-    
-    public func clearFailedUploads(_ toResume: [Upload]) {
-        // Loop over the failed uploads
-        for failedUpload in toResume {
-            switch failedUpload.state {
-            case .uploading, .uploadingError, .uploaded:
-                // -> Will retry to transfer the image
-                failedUpload.setState(.prepared)
-
-            case .finishing, .finishingError:
-                // -> Will retry to finish the upload
-                failedUpload.setState(.uploaded)
-                
-            default:
-                // —> Will retry from scratch
-                failedUpload.setState(.waiting)
+    public func clearAllFailedUploads() async {
+        // Get active upload tasks
+        var activeUploadIDs: Set<String> = []
+        let allTasks = await bckgSession.allTasks
+        allTasks.filter({ $0.state == .running }).forEach {task in
+            // Retrieve upload request properties
+            guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
+                  let chunkStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk), let chunk = Int(chunkStr),
+                  let chunksStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks), let chunks = Int(chunksStr)
+            else {
+                UploadManager.logger.notice("Found task \(task.taskIdentifier) not associated to an upload!")
+                return
             }
+            
+            // Task associated to an upload
+            activeUploadIDs.insert(objectURIstr)
+            let objectIDstr = URL(string: objectURIstr)?.lastPathComponent ?? objectURIstr
+            UploadManager.logger.notice("\(objectIDstr) • Detected task \(task.taskIdentifier) uploading chunk \(chunk)/\(chunks)")
+            self.initIfNeededCounter(withID: objectIDstr, chunk: chunk, chunks: chunks)
+        }
+        
+        // Will retry inactive uploads marked "uploading", and those which returned an error
+        let states: [pwgUploadState] = [.preparingError, .uploading, .uploadingError, .finishing, .finishingError]
+        let (uploadIDs, _) = UploadProvider().getIDsOfPendingUploads(onlyInStates: states, inContext: self.uploadBckgContext)
+        let toResumeUploadIDs = uploadIDs.filter({ !activeUploadIDs.contains($0.uriRepresentation().absoluteString) })
+        let (toPrepare, toTransfer) = UploadProvider().clearFailedUploads(toResumeUploadIDs, inContext: self.uploadBckgContext)
+        
+        // First retry transfers
+        if toTransfer.isEmpty == false {
+            await UploadManagerActor.shared.addUploadsToTransfer(withIDs: toTransfer)
+            UploadManager.logger.notice("Resuming uploads: \(toTransfer.count, privacy: .public) failed uploads to rety")
+        }
+
+        // Next retry preparations
+        if toPrepare.isEmpty == false {
+            await UploadManagerActor.shared.addUploadsToPrepare(withIDs: toPrepare)
+            UploadManager.logger.notice("Resuming uploads: \(toPrepare.count, privacy: .public) failed uploads to rety")
         }
     }
+    
+    public func clearFailedUpload(withID uploadID: NSManagedObjectID) async {
+        // Clear failed upload
+        let (toPrepare, toTransfer) = UploadProvider().clearFailedUploads([uploadID], inContext: self.uploadBckgContext)
 
+        // First retry transfers
+        if toTransfer.isEmpty == false {
+            await UploadManagerActor.shared.addUploadsToTransfer(withIDs: toTransfer, beforeOthers: true)
+            UploadManager.logger.notice("Resuming uploads: \(toTransfer.count, privacy: .public) failed uploads to rety")
+        }
+
+        // Next retry preparations
+        if toPrepare.isEmpty == false {
+            await UploadManagerActor.shared.addUploadsToPrepare(withIDs: toPrepare, beforeOthers: true)
+            UploadManager.logger.notice("Resuming uploads: \(toPrepare.count, privacy: .public) failed uploads to rety")
+        }
+    }
+    
     
     // MARK: - Delete Upload Requests
     public func deleteUploadsOfDeletedImages(withIDs imageIDs: [Int64]) {
@@ -263,8 +253,8 @@ extension UploadManager
         let toDelete = pending.filter({states.contains($0.state)})
         
         // Delete uploads
-        let uploadIDsToDelete = Set(toDelete.map(\.objectID))
-        try? UploadProvider().deleteUploads(withID: Array(uploadIDsToDelete))
+        let toDeleteUploadIDs = Set(toDelete.map(\.objectID))
+        try? UploadProvider().deleteUploads(withID: Array(toDeleteUploadIDs))
 
         // Update counter and app badge
         self.updateNberOfUploadsToComplete()
@@ -333,3 +323,4 @@ extension UploadManager
         isDeleting = Set()
     }
 }
+

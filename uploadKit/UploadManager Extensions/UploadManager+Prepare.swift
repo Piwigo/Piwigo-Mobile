@@ -14,40 +14,38 @@ import piwigoKit
 @UploadManagerActor
 extension UploadManager
 {
-    // MARK: - Prepare Image/Video
-    func nberOfUploadsInPreparation() async -> Int {
-        let pending = (try? self.uploadBckgContext.fetch(fetchPendingRequest)) ?? []
-        return pending.filter({ [.prepared, .preparing].contains($0.state) }).count
-    }
-    
+    // MARK: - Prepare Image/Video    
     func prepareUpload(withID uploadID: NSManagedObjectID) async -> Void {
         
-        // Retrieve upload request in context of actor
-        guard let upload = try? self.uploadBckgContext.existingObject(with: uploadID) as? Upload
+        // Retrieve upload request properties
+        guard var uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID, inContext: self.uploadBckgContext)
         else {
             // Process next upload if any
             UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Could not retrieve upload request for preparation!")
+            await UploadManagerActor.shared.processNextUpload()
             return
         }
         
-        // Check upload status
-        guard upload.state == .waiting
+        // Check upload status (should never happen)
+        guard uploadData.requestState == .waiting
         else {
-            UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Upload in wrong state '\(upload.stateLabel)' before preparation")
+            // Process next upload if any
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Upload in wrong state '\(uploadData.stateLabel)' before preparation")
+            await UploadManagerActor.shared.processNextUpload()
             return
         }
         
         // Update upload status
+        uploadData.requestState = .preparing
         UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Start preparing upload")
-        upload.setState(.preparing)
-        upload.managedObjectContext?.saveIfNeeded()
+        try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
         
         // Add category ID to list of recently used albums
-        let userInfo = ["categoryId": upload.category]
+        let userInfo = ["categoryId": uploadData.category]
         NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
         
         // Update progress bar
-        let localIdentifier = upload.localIdentifier
+        let localIdentifier = uploadData.localIdentifier
         DispatchQueue.main.async {
             let uploadInfo: [String : Any] = ["localIdentifier" : localIdentifier,
                                               "progressFraction" : 0.0]
@@ -61,43 +59,54 @@ extension UploadManager
         // => Intent: use identifier of type "Intent-yyyyMMdd-HHmmssSSSS-typ-#"
         //    where "typ" is "img" (photo) or "mov" (video).
         do {
-            if upload.localIdentifier.hasPrefix(kIntentPrefix) {
+            if uploadData.localIdentifier.hasPrefix(kIntentPrefix) {
                 // Case of an image submitted by an intent
-                try await prepareImageFromIntent(for: upload)
+                try await prepareImageFromIntent(for: &uploadData)
             }
-            else if upload.localIdentifier.hasPrefix(kClipboardPrefix) {
+            else if uploadData.localIdentifier.hasPrefix(kClipboardPrefix) {
                 // Case of an image retrieved from the pasteboard
-                try await prepareImageOrVideoInPasteboard(for: upload)
+                try await prepareImageOrVideoInPasteboard(for: &uploadData)
             }
             else {
                 // Case of an image from the local Photo Library
-                if try await prepareAssetInPhotoLibrary(for: upload) == false {
+                if try await prepareAssetInPhotoLibrary(for: &uploadData, withID: uploadID) == false {
+                    // Return false for videos
                     return
                 }
             }
             
             // Preparation completed
-            upload.setState(.prepared)
-            upload.managedObjectContext?.saveIfNeeded()
+            uploadData.requestState = .prepared
+            try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
+            
+            // Add photo/video to transfer queue
+            await UploadManagerActor.shared.addUploadsToTransfer(withIDs: [uploadID])
         }
         catch let error {
             switch error {
             case .unacceptedImageFormat, .unacceptedVideoFormat, .unacceptedAudioFormat, .unacceptedDataFormat:
-                upload.setState(.formatError, error: error)
-                upload.managedObjectContext?.saveIfNeeded()
+                uploadData.requestState = .formatError
+                uploadData.requestError = error.localizedDescription
+                try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             case .cannotStripPrivateMetadata, .videoEncodingError:
-                upload.setState(.preparingError, error: error)
-                upload.managedObjectContext?.saveIfNeeded()
+                uploadData.requestState = .preparingError
+                uploadData.requestError = error.localizedDescription
+                try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             case .missingAsset, .otherError:
                 fallthrough
             default:
-                upload.setState(.preparingFail, error: error)
-                upload.managedObjectContext?.saveIfNeeded()
+                uploadData.requestState = .preparingFail
+                uploadData.requestError = error.localizedDescription
+                try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             }
         }
+        
+        // Process next upload if any
+        await UploadManagerActor.shared.processNextUpload()
     }
     
-    fileprivate func prepareImageFromIntent(for upload: Upload) async throws(PwgKitError) {
+    fileprivate func prepareImageFromIntent(for uploadData: inout UploadProperties) async throws(PwgKitError)
+    {
         // Get files in the Uploads directory
         var files = [URL]()
         do {
@@ -110,7 +119,7 @@ extension UploadManager
         
         // Determine non-empty unique file name and extension from identifier
         guard files.isEmpty == false,
-              let fileURL = files.filter({$0.lastPathComponent.hasPrefix(upload.localIdentifier)}).first,
+              let fileURL = files.filter({$0.lastPathComponent.hasPrefix(uploadData.localIdentifier)}).first,
               fileURL.lastPathComponent.contains("img")
         else {
             // File not available… deleted?
@@ -118,15 +127,15 @@ extension UploadManager
         }
                 
         // Set file name and type
-        upload.fileType = pwgImageFileType.image.rawValue
-        upload.fileName = renamedFile(for: upload)         // Rename file if requested by user
-        upload.managedObjectContext?.saveIfNeeded()
+        uploadData.fileType = pwgImageFileType.image.rawValue
+        uploadData.fileName = renamedFile(for: uploadData)         // Rename file if requested by user
         
         // Launch preparation job (limited to stripping metadata)
-        try await prepareImage(atURL: fileURL, for: upload)
+        try await prepareImage(atURL: fileURL, for: &uploadData)
     }
     
-    fileprivate func prepareImageOrVideoInPasteboard(for upload: Upload) async throws(PwgKitError) {
+    fileprivate func prepareImageOrVideoInPasteboard(for uploadData: inout UploadProperties) async throws(PwgKitError)
+    {
         // Get files in the Uploads directory
         var files = [URL]()
         do {
@@ -141,7 +150,8 @@ extension UploadManager
         
         // Determine non-empty unique file name and extension from identifier
         guard files.isEmpty == false,
-              let fileURL = files.filter({$0.absoluteString.contains(upload.localIdentifier)}).first else {
+              let fileURL = files.filter({$0.absoluteString.contains(uploadData.localIdentifier)}).first
+        else {
             // File not available… deleted?
             throw .missingAsset
         }
@@ -154,24 +164,21 @@ extension UploadManager
             let filename = try getFilenameForImageInPasteboard(withName: fileName, extension: fileExt)
             
             // Set file name and type
-            upload.fileType = pwgImageFileType.image.rawValue
-            upload.fileName = filename
-            upload.fileName = renamedFile(for: upload)         // Rename file if requested by user
-            upload.managedObjectContext?.saveIfNeeded()
+            uploadData.fileType = pwgImageFileType.image.rawValue
+            uploadData.fileName = filename
+            uploadData.fileName = renamedFile(for: uploadData)         // Rename file if requested by user
             
             // Chek that the image format is accepted by the Piwigo server
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
-                try await prepareImage(atURL: fileURL, for: upload)
-                return
+                try await prepareImage(atURL: fileURL, for: &uploadData)
             }
             
             // Try to convert image if JPEG format is accepted by Piwigo server
             if NetworkVars.shared.serverFileTypes.contains("jpg"),
                acceptedImageExtensions.contains(fileExt) {
                 // Try conversion to JPEG
-                try await convertImage(atURL: fileURL, for: upload)
-                return
+                try await convertImage(atURL: fileURL, for: &uploadData)
             }
             
             // Image file format cannot be accepted by the Piwigo server
@@ -182,24 +189,21 @@ extension UploadManager
             let filename = try getFilenameForVideoInPasteboard(withName: fileName, extension: fileExt)
             
             // Set file name and type
-            upload.fileType = pwgImageFileType.video.rawValue
-            upload.fileName = filename
-            upload.fileName = renamedFile(for: upload)         // Rename file if requested by user
-            upload.managedObjectContext?.saveIfNeeded()
+            uploadData.fileType = pwgImageFileType.video.rawValue
+            uploadData.fileName = filename
+            uploadData.fileName = renamedFile(for: uploadData)         // Rename file if requested by user
             
             // Chek that the video format is accepted by the Piwigo server
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
-                try await prepareVideo(atURL: fileURL, for: upload)
-                return
+                try await prepareVideo(atURL: fileURL, for: &uploadData)
             }
             
             // Convert video if MP4 format is accepted by Piwigo server
             if NetworkVars.shared.serverFileTypes.contains("mp4"),
                acceptedMovieExtensions.contains(fileExt) {
                 // Try conversion to MP4
-                try await convertVideo(atURL: fileURL, for: upload)
-                return
+                try await convertVideo(atURL: fileURL, for: &uploadData)
             }
             
             // Video file format cannot be accepted by the Piwigo server
@@ -213,43 +217,44 @@ extension UploadManager
     
     /// NB: Not possible to extract AVAsset with async/await methods as of iOS 26.2
     /// so we use old method with completion handler and return false in that case.
-    fileprivate func prepareAssetInPhotoLibrary(for upload: Upload) async throws(PwgKitError) -> Bool {
+    fileprivate func prepareAssetInPhotoLibrary(for uploadData: inout UploadProperties,
+                                                withID uploadID: NSManagedObjectID) async throws(PwgKitError) -> Bool
+    {
         // Retrieve image asset
-        let assets = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil)
+        let assets = PHAsset.fetchAssets(withLocalIdentifiers: [uploadData.localIdentifier], options: nil)
         guard assets.count > 0, let originalAsset = assets.firstObject
         else { throw .missingAsset }
         
         // Get URL of image file to be stored into Piwigo/Uploads directory
         // and deletes temporary image file if exists (incomplete previous attempt?)
-        let fileURL = getUploadFileURL(from: upload.localIdentifier, withSuffix: kOriginalSuffix,
-                                       creationDate: upload.creationDate, deleted: true)
+        let fileURL = getUploadFileURL(from: uploadData.localIdentifier, withSuffix: kOriginalSuffix,
+                                       creationDate: uploadData.creationDate, deleted: true)
         
         // Preparation method depends on media type
         switch originalAsset.mediaType {
         case .image:
             // Create file from asset and get filename
-            let filename = try await writePhotoFromAsset(originalAsset, toFile: fileURL, for: upload)
+            let filename = try await writePhotoFromAsset(originalAsset, toFile: fileURL)
             
             // Update upload request
-            upload.fileType = pwgImageFileType.image.rawValue
-            upload.fileName = filename
-            upload.fileName = renamedFile(for: upload)         // Rename file if requested by user
+            uploadData.fileType = pwgImageFileType.image.rawValue
+            uploadData.fileName = filename
+            uploadData.fileName = renamedFile(for: uploadData)         // Rename file if requested by user
             
             // Retrieve creation date from PHAsset (local time, or UTC time if time zone provided)
             if let creationDate = originalAsset.creationDate {
-                upload.creationDate = creationDate.timeIntervalSinceReferenceDate
+                uploadData.creationDate = creationDate.timeIntervalSinceReferenceDate
             } else {
-                upload.creationDate = Date().timeIntervalSinceReferenceDate
+                uploadData.creationDate = Date().timeIntervalSinceReferenceDate
             }
-            upload.managedObjectContext?.saveIfNeeded()
             
             // Launch preparation job according to file format
-            let fileExt = (URL(fileURLWithPath: upload.fileName).pathExtension).lowercased()
+            let fileExt = (URL(fileURLWithPath: uploadData.fileName).pathExtension).lowercased()
             
             // Chek that the image format is accepted by the Piwigo server
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
-                try await prepareImage(atURL: fileURL, for: upload)
+                try await prepareImage(atURL: fileURL, for: &uploadData)
                 return true
             }
             
@@ -257,7 +262,7 @@ extension UploadManager
             if NetworkVars.shared.serverFileTypes.contains("jpg"),
                acceptedImageExtensions.contains(fileExt) {
                 // Try conversion to JPEG
-                try await convertImage(atURL: fileURL, for: upload)
+                try await convertImage(atURL: fileURL, for: &uploadData)
                 return true
             }
             
@@ -266,33 +271,32 @@ extension UploadManager
             
         case .video:
             // Get filename from asset
-            let filename = getVideoFileName(from: originalAsset, for: upload)
+            let filename = getVideoFileName(from: originalAsset)
             
             // Update upload request
-            upload.fileType = pwgImageFileType.image.rawValue
-            upload.fileName = filename
-            upload.fileName = renamedFile(for: upload)         // Rename file if requested by user
+            uploadData.fileType = pwgImageFileType.image.rawValue
+            uploadData.fileName = filename
+            uploadData.fileName = renamedFile(for: uploadData)         // Rename file if requested by user
             
             // Retrieve creation date from PHAsset (local time, or UTC time if time zone provided)
             if let creationDate = originalAsset.creationDate {
-                upload.creationDate = creationDate.timeIntervalSinceReferenceDate
+                uploadData.creationDate = creationDate.timeIntervalSinceReferenceDate
             } else {
-                upload.creationDate = Date().timeIntervalSinceReferenceDate
+                uploadData.creationDate = Date().timeIntervalSinceReferenceDate
             }
-            upload.managedObjectContext?.saveIfNeeded()
             
             // Launch preparation job according to file format
-            let fileExt = (URL(fileURLWithPath: upload.fileName).pathExtension).lowercased()
+            let fileExt = (URL(fileURLWithPath: uploadData.fileName).pathExtension).lowercased()
             
             // File name of final video data to be stored into Piwigo/Uploads directory
-            let outputURL = getUploadFileURL(from: upload.localIdentifier,
-                                             creationDate: upload.creationDate)
+            let outputURL = getUploadFileURL(from: uploadData.localIdentifier,
+                                             creationDate: uploadData.creationDate)
             
             // Chek that the video format is accepted by the Piwigo server
             /// NB: Not possible to extract AVAsset with async/await methods as of iOS 26.2
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
-                prepareVideo(ofAsset: originalAsset, atURL: outputURL, for: upload)
+                prepareVideo(ofAsset: originalAsset, atURL: outputURL, for: uploadData, withID: uploadID)
                 return false
             }
             
@@ -300,7 +304,7 @@ extension UploadManager
             if NetworkVars.shared.serverFileTypes.contains("mp4"),
                acceptedMovieExtensions.contains(fileExt) {
                 // Try conversion to MP4
-                convertVideo(ofAsset: originalAsset, atURL: outputURL, for: upload)
+                convertVideo(ofAsset: originalAsset, atURL: outputURL, for: uploadData, withID: uploadID)
                 return false
             }
             
@@ -362,21 +366,21 @@ extension UploadManager
     }
     
     // Rename file according to user's demand
-    fileprivate func renamedFile(for upload: Upload) -> String {
+    fileprivate func renamedFile(for uploadData: UploadProperties) -> String {
         // Anything to do?
-        var fileName = upload.fileName
-        if upload.fileNamePrefixEncodedActions.isEmpty,
-           upload.fileNameReplaceEncodedActions.isEmpty,
-           upload.fileNameSuffixEncodedActions.isEmpty,
-           FileExtCase(rawValue: upload.fileNameExtensionCase) == .keep {
+        var fileName = uploadData.fileName
+        if uploadData.fileNamePrefixEncodedActions.isEmpty,
+           uploadData.fileNameReplaceEncodedActions.isEmpty,
+           uploadData.fileNameSuffixEncodedActions.isEmpty,
+           FileExtCase(rawValue: uploadData.fileNameExtensionCase) == .keep {
             // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
             return fileName.utf8mb3Encoded
         }
         
         // Get album current counter value
         var currentCounter = UploadVars.shared.categoryCounterInit
-        if let user = upload.user,
-           let album = try? AlbumProvider().getAlbum(ofUser: user, withId: upload.category) {
+        if let user = try? UserProvider().getUserAccount(inContext: self.uploadBckgContext),
+           let album = try? AlbumProvider().getAlbum(ofUser: user, withId: uploadData.category) {
             // Album available ► Get current counter
             if album.isFault {
                 // The album is not fired yet.
@@ -390,16 +394,16 @@ extension UploadManager
         }
         
         // Rename the file
-        let prefixActions = upload.fileNamePrefixEncodedActions.actions
-        let replaceActions = upload.fileNameReplaceEncodedActions.actions
-        let suffixActions = upload.fileNameSuffixEncodedActions.actions
-        let caseOfExtension = FileExtCase(rawValue: upload.fileNameExtensionCase) ?? .keep
-        let creationDate = Date(timeIntervalSinceReferenceDate: upload.creationDate)
+        let prefixActions = uploadData.fileNamePrefixEncodedActions.actions
+        let replaceActions = uploadData.fileNameReplaceEncodedActions.actions
+        let suffixActions = uploadData.fileNameSuffixEncodedActions.actions
+        let caseOfExtension = FileExtCase(rawValue: uploadData.fileNameExtensionCase) ?? .keep
+        let creationDate = Date(timeIntervalSinceReferenceDate: uploadData.creationDate)
         fileName.renameFile(prefixActions: prefixActions,
                             replaceActions: replaceActions,
                             suffixActions: suffixActions,
                             caseOfExtension: caseOfExtension,
-                            albumID: upload.category,
+                            albumID: uploadData.category,
                             date: creationDate,
                             counter: currentCounter)
         
@@ -410,11 +414,11 @@ extension UploadManager
     /// - Rename Upload file if needed
     /// - Get MD5 checksum and MIME type
     /// -> return updated upload properties w/ or w/o error
-    func setMD5sumAndMIMEtype(ofUpload upload: Upload, forFileAtURL originalFileURL: URL) throws(PwgKitError) {
-        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Set MD5 checskum and MIME type")
-        
+    func setMD5sumAndMIMEtype(using uploadData: inout UploadProperties,
+                              forFileAtURL originalFileURL: URL) throws(PwgKitError)
+    {
         // File name of image data to be stored into Piwigo/Uploads directory
-        let fileURL = getUploadFileURL(from: upload.localIdentifier, creationDate: upload.creationDate)
+        let fileURL = getUploadFileURL(from: uploadData.localIdentifier, creationDate: uploadData.creationDate)
         
         // Should we rename the file to adopt the Upload Manager convention?
         if originalFileURL != fileURL {
@@ -439,25 +443,21 @@ extension UploadManager
         }
         
         // Set file creation date as the photo creation date
-        let creationDate = NSDate(timeIntervalSinceReferenceDate: upload.creationDate)
+        let creationDate = NSDate(timeIntervalSinceReferenceDate: uploadData.creationDate)
         let attrs = [FileAttributeKey.creationDate     : creationDate,
                      FileAttributeKey.modificationDate : creationDate]
         try? FileManager.default.setAttributes(attrs, ofItemAtPath: fileURL.path)
         
         // Determine MD5 checksum of image file to upload
-        let md5Sum = try fileURL.MD5checksum()
+        uploadData.md5Sum = try fileURL.MD5checksum()
         
         // Get MIME type from file extension
-        let fileExt = (URL(fileURLWithPath: upload.fileName).pathExtension).lowercased()
+        let fileExt = (URL(fileURLWithPath: uploadData.fileName).pathExtension).lowercased()
         guard let uti = UTType(filenameExtension: fileExt),
               let mimeType = uti.preferredMIMEType
         else {
             throw .missingAsset
         }
-
-        // Update Upload
-        upload.md5Sum = md5Sum
-        upload.mimeType = mimeType
-        upload.managedObjectContext?.saveIfNeeded()
+        uploadData.mimeType = mimeType
     }
 }

@@ -33,7 +33,7 @@ extension UploadManager {
     
     
     // MARK: - Image in Photo Library
-    func writePhotoFromAsset(_ originalAsset: PHAsset, toFile fileURL: URL, for upload: Upload) async throws(PwgKitError) -> String {
+    func writePhotoFromAsset(_ originalAsset: PHAsset, toFile fileURL: URL) async throws(PwgKitError) -> String {
         // Retrieve asset resources
         var resources = PHAssetResource.assetResources(for: originalAsset)
         let options = PHAssetResourceRequestOptions()
@@ -77,20 +77,17 @@ extension UploadManager {
     
     // MARK: - Image File Preparation
     /// Case of an image format accepted by the server
-    func prepareImage(atURL originalFileURL: URL, for upload: Upload) async throws(PwgKitError) {
-        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Prepare image \(upload.fileName)")
-
+    func prepareImage(atURL originalFileURL: URL, for uploadData: inout UploadProperties) async throws(PwgKitError)
+    {
         // Upload the file as is if the user did not request any modification
-        if (!upload.resizeImageOnUpload || upload.photoMaxSize == 0),
-           !upload.compressImageOnUpload, !upload.stripGPSdataOnUpload
+        if (!uploadData.resizeImageOnUpload || uploadData.photoMaxSize == 0),
+           !uploadData.compressImageOnUpload, !uploadData.stripGPSdataOnUpload
         {
             // Get creation date from metadata if possible
-            let creationDate = self.getCreationDateOfImage(atURL: originalFileURL)
-            upload.creationDate = creationDate
-            upload.managedObjectContext?.saveIfNeeded()
+            uploadData.creationDate = self.getCreationDateOfImage(atURL: originalFileURL)
             
             // Get MD5 checksum and MIME type, update counter
-            try setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: originalFileURL)
+            try setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: originalFileURL)
             
             // Job done
             return
@@ -98,14 +95,14 @@ extension UploadManager {
         
         // The user only requested a removal of private metadata
         // We do it w/o recompression of the image.
-        if (!upload.resizeImageOnUpload || upload.photoMaxSize == 0),
-           !upload.compressImageOnUpload
+        if (!uploadData.resizeImageOnUpload || uploadData.photoMaxSize == 0),
+           !uploadData.compressImageOnUpload
         {
             // Strip private metadata
-            let fileURL = try stripMetadataOfImage(atURL: originalFileURL, with: upload)
+            let fileURL = try stripMetadataOfImage(atURL: originalFileURL, with: &uploadData)
             
             // Get MD5 checksum and MIME type, update counter
-            try setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: fileURL)
+            try setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: fileURL)
             
             // Job done
             return
@@ -113,22 +110,21 @@ extension UploadManager {
         
         // The user requested a resize and/or compression
         /// - extracts the creation date from the source
-        let fileURL = try modifyImage(atURL: originalFileURL, with: upload)
+        let fileURL = try modifyImage(atURL: originalFileURL, with: &uploadData)
         
         // Get MD5 checksum and MIME type
-        try setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: fileURL)
+        try setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: fileURL)
     }
     
     /// Case of an image format not accepted by the server
-    func convertImage(atURL originalFileURL: URL, for upload: Upload) async throws(PwgKitError) {
-        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Convert image \(upload.fileName) to JPEG format")
-
+    func convertImage(atURL originalFileURL: URL, for uploadData: inout UploadProperties) async throws(PwgKitError)
+    {
         // Convert image to JPEG format
         /// - extracts the creation date from the source
-        let fileURL = try convertImage(atURL: originalFileURL, with: upload)
+        let fileURL = try convertImage(atURL: originalFileURL, with: &uploadData)
         
         // Get MD5 checksum and MIME type
-        try setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: fileURL)
+        try setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: fileURL)
     }
     
     
@@ -176,7 +172,9 @@ extension UploadManager {
     }
     
     // Strip private metadata w/o recompression and return file URL
-    fileprivate func stripMetadataOfImage(atURL originalFileURL: URL, with upload: Upload) throws(PwgKitError) -> URL {
+    fileprivate func stripMetadataOfImage(atURL originalFileURL: URL,
+                                          with uploadData: inout UploadProperties) throws(PwgKitError) -> URL
+    {
         try autoreleasepool { () throws(PwgKitError) -> URL in
             // Create image source
             let options = [kCGImageSourceShouldCache      : false,
@@ -190,13 +188,13 @@ extension UploadManager {
             
             // Get creation date from metadata if possible
             if let dateFromMetadata = getCreationDateOfImageSource(sourceRef, options: options, nberOfImages: nberOfImages) {
-                upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
+                uploadData.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
             } else {
-                upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+                uploadData.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
             }
             
             // Get URL of final image data file to be stored into Piwigo/Uploads directory
-            let fileURL = getUploadFileURL(from: upload.localIdentifier, creationDate: upload.creationDate, deleted: true)
+            let fileURL = getUploadFileURL(from: uploadData.localIdentifier, creationDate: uploadData.creationDate, deleted: true)
             
             // Prepare destination file of same type with same number of images
             guard let UTI = CGImageSourceGetType(sourceRef),
@@ -227,7 +225,8 @@ extension UploadManager {
     /// - Compress images if demanded in properties
     /// - Strip private metadata if demanded in properties
     /// -> Return file URL w/ or w/o error
-    fileprivate func modifyImage(atURL originalFileURL:URL, with upload: Upload) throws(PwgKitError) -> URL {
+    fileprivate func modifyImage(atURL originalFileURL:URL, with uploadData: inout UploadProperties) throws(PwgKitError) -> URL
+    {
         try autoreleasepool { () throws(PwgKitError) -> URL in
             // Create image source
             let options = [kCGImageSourceShouldCacheImmediately : false,
@@ -241,13 +240,13 @@ extension UploadManager {
             
             // Get creation date from metadata if possible
             if let dateFromMetadata = getCreationDateOfImageSource(sourceRef, options: options, nberOfImages: nberOfImages) {
-                upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
+                uploadData.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
             } else {
-                upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+                uploadData.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
             }
             
             // Get URL of final image data file to be stored into Piwigo/Uploads directory
-            let fileURL = getUploadFileURL(from: upload.localIdentifier, creationDate: upload.creationDate, deleted: true)
+            let fileURL = getUploadFileURL(from: uploadData.localIdentifier, creationDate: uploadData.creationDate, deleted: true)
             
             // Prepare destination file of same type with same number of images
             guard let UTI = CGImageSourceGetType(sourceRef),
@@ -265,7 +264,7 @@ extension UploadManager {
                 //}
 #endif
                 // Should we remove private metadata?
-                if upload.stripGPSdataOnUpload {
+                if uploadData.stripGPSdataOnUpload {
                     // Removes private metadata attributed to this image
                     properties = containerProperties.stripPrivateProperties()
                 } else {
@@ -279,10 +278,10 @@ extension UploadManager {
             
             // Should we resize the primary image?
             var image:CGImage
-            let resizeImage = upload.resizeImageOnUpload && (upload.photoMaxSize != 0)
+            let resizeImage = uploadData.resizeImageOnUpload && (uploadData.photoMaxSize != 0)
             if resizeImage {
                 // Set options for retrieving the primary image
-                let maxSize = pwgPhotoMaxSizes(rawValue: upload.photoMaxSize)?.pixels ?? Int.max
+                let maxSize = pwgPhotoMaxSizes(rawValue: uploadData.photoMaxSize)?.pixels ?? Int.max
                 let resizeOptions = [kCGImageSourceCreateThumbnailFromImageAlways : true,
                                      kCGImageSourceCreateThumbnailWithTransform   : true,
                                      kCGImageSourceThumbnailMaxPixelSize          : maxSize] as [CFString : Any]
@@ -321,7 +320,7 @@ extension UploadManager {
                 //}
 #endif
                 // Should we remove private metadata?
-                if upload.stripGPSdataOnUpload {
+                if uploadData.stripGPSdataOnUpload {
                     // Removes private metadata attributed to this image
                     imageOptions = imageProperties.stripPrivateProperties()
                 }
@@ -341,8 +340,8 @@ extension UploadManager {
             }
             
             // Should we compress the image?
-            if upload.compressImageOnUpload {
-                let quality = CGFloat(upload.photoQuality) / 100.0
+            if uploadData.compressImageOnUpload {
+                let quality = CGFloat(uploadData.photoQuality) / 100.0
                 imageOptions.updateValue(quality as CFNumber, forKey: kCGImageDestinationLossyCompressionQuality)
             }
             
@@ -357,7 +356,7 @@ extension UploadManager {
                 // Should we resize the images?
                 if resizeImage {
                     // Set options for retrieving the primary image
-                    let maxSize = pwgPhotoMaxSizes(rawValue: upload.photoMaxSize)?.pixels ?? Int.max
+                    let maxSize = pwgPhotoMaxSizes(rawValue: uploadData.photoMaxSize)?.pixels ?? Int.max
                     let resizeOptions = [kCGImageSourceCreateThumbnailFromImageAlways : true,
                                          kCGImageSourceCreateThumbnailWithTransform   : true,
                                          kCGImageSourceThumbnailMaxPixelSize          : maxSize] as [CFString : Any]
@@ -383,7 +382,7 @@ extension UploadManager {
                     //}
 #endif
                     // Should we remove private metadata?
-                    if upload.stripGPSdataOnUpload {
+                    if uploadData.stripGPSdataOnUpload {
                         // Removes private metadata attributed to this image
                         imageOptions = imageProperties.stripPrivateProperties()
                     }
@@ -403,8 +402,8 @@ extension UploadManager {
                 }
                 
                 // Should we compress the image?
-                if upload.compressImageOnUpload {
-                    let quality = CGFloat(upload.photoQuality) / 100.0
+                if uploadData.compressImageOnUpload {
+                    let quality = CGFloat(uploadData.photoQuality) / 100.0
                     imageOptions.updateValue(quality as CFNumber, forKey: kCGImageDestinationLossyCompressionQuality)
                 }
                 
@@ -425,7 +424,8 @@ extension UploadManager {
     /// - Compress images if demanded in properties
     /// - Strip private metadata if demanded in properties
     /// -> Return file URL w/ or w/o error
-    fileprivate func convertImage(atURL originalFileURL:URL, with upload: Upload) throws(PwgKitError) -> URL {
+    fileprivate func convertImage(atURL originalFileURL:URL, with uploadData: inout UploadProperties) throws(PwgKitError) -> URL
+    {
         try autoreleasepool { () throws(PwgKitError) -> URL in
             // Create image source
             let options = [kCGImageSourceShouldCacheImmediately : false,
@@ -439,20 +439,20 @@ extension UploadManager {
             
             // Get creation date from metadata if possible
             if let dateFromMetadata = getCreationDateOfImageSource(sourceRef, options: options, nberOfImages: nberOfImages) {
-                upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
+                uploadData.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
             } else {
-                upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+                uploadData.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
             }
             
             // Prepare conversion to JPEG format
             var UTI: CFString, fileExt: String
             UTI = UTType.jpeg.identifier as CFString
             fileExt = UTType.jpeg.preferredFilenameExtension!
-            upload.fileName = URL(fileURLWithPath: upload.fileName)
+            uploadData.fileName = URL(fileURLWithPath: uploadData.fileName)
                 .deletingPathExtension().appendingPathExtension(fileExt).lastPathComponent
             
             // Get URL of final image data file to be stored into Piwigo/Uploads directory
-            let fileURL = getUploadFileURL(from: upload.localIdentifier, creationDate: upload.creationDate, deleted: true)
+            let fileURL = getUploadFileURL(from: uploadData.localIdentifier, creationDate: uploadData.creationDate, deleted: true)
             
             // Prepare destination file of JPEG type containing a single image
             guard let destinationRef = CGImageDestinationCreateWithURL(fileURL as CFURL, UTI, 1, nil)
@@ -469,7 +469,7 @@ extension UploadManager {
                 //}
 #endif
                 // Should we remove private metadata?
-                if upload.stripGPSdataOnUpload {
+                if uploadData.stripGPSdataOnUpload {
                     // Removes private metadata attributed to this image
                     properties = containerProperties.stripPrivateProperties()
                 } else {
@@ -483,10 +483,10 @@ extension UploadManager {
             
             // Should we resize the image?
             var image:CGImage
-            let resizeImage = upload.resizeImageOnUpload && (upload.photoMaxSize != 0)
+            let resizeImage = uploadData.resizeImageOnUpload && (uploadData.photoMaxSize != 0)
             if resizeImage {
                 // Set options for retrieving the primary image
-                let maxSize = pwgPhotoMaxSizes(rawValue: upload.photoMaxSize)?.pixels ?? Int.max
+                let maxSize = pwgPhotoMaxSizes(rawValue: uploadData.photoMaxSize)?.pixels ?? Int.max
                 let resizeOptions = [kCGImageSourceCreateThumbnailFromImageAlways : true,
                                      kCGImageSourceCreateThumbnailWithTransform   : true,
                                      kCGImageSourceThumbnailMaxPixelSize          : maxSize] as [CFString : Any]
@@ -525,7 +525,7 @@ extension UploadManager {
                 //}
 #endif
                 // Should we remove private metadata?
-                if upload.stripGPSdataOnUpload {
+                if uploadData.stripGPSdataOnUpload {
                     // Removes private metadata attributed to this image
                     imageOptions = imageProperties.stripPrivateProperties()
                 }
@@ -545,8 +545,8 @@ extension UploadManager {
             }
             
             // Should we compress the image?
-            if upload.compressImageOnUpload {
-                let quality = CGFloat(upload.photoQuality) / 100.0
+            if uploadData.compressImageOnUpload {
+                let quality = CGFloat(uploadData.photoQuality) / 100.0
                 imageOptions.updateValue(quality as CFNumber, forKey: kCGImageDestinationLossyCompressionQuality)
             }
             

@@ -15,28 +15,33 @@ extension UploadManager {
     
     // MARK: - Tasks Executed after Uploading
     func finishTransferOfUpload(withID uploadID: NSManagedObjectID) async {
-        UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Finish transfer…")
         
-        // Retrieve upload request in context of actor
-        guard let upload = try? self.uploadBckgContext.existingObject(with: uploadID) as? Upload
+        // Retrieve upload request properties
+        guard var uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID, inContext: self.uploadBckgContext)
         else {
-            debugPrint("!!!! Could not retrieve upload for ID: \(uploadID.uriRepresentation().lastPathComponent) !!!!")
+            // Process next upload if any
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Could not retrieve upload request for finsihing!")
+            await UploadManagerActor.shared.processNextUpload()
             return
         }
         
-        // Update state of upload resquest and finish upload
-        upload.setState(.finishing)
-        upload.managedObjectContext?.saveIfNeeded()
+        // Update upload status
+        uploadData.requestState = .finishing
+        UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Finish transfer…")
+        try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
         
         // Uploaded with pwg.images.uploadAsync -> Empty the lounge
-        try? await emptyLounge(for: upload)
-
-        // Update upload request
-        upload.setState(.finished)
-        upload.managedObjectContext?.saveIfNeeded()
-
+        try? await emptyLounge(for: uploadData)
+        
+        // Update upload status
+        uploadData.requestState = .finished
+        try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
+        
         // Update counter and app badge
         updateNberOfUploadsToComplete()
+        
+        // Process next upload if any
+        await UploadManagerActor.shared.processNextUpload()
     }
     
 
@@ -46,10 +51,11 @@ extension UploadManager {
      and one must trigger manually their addition to the database.
      If not, they will be visible after some delay (12 minutes).
      */
-    fileprivate func emptyLounge(for upload: Upload) async throws(PwgKitError) {
-        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Empty lounge")
+    fileprivate func emptyLounge(for uploadData: UploadProperties) async throws(PwgKitError)
+    {
         // Empty lounge without reporting potential error
-        guard let user = upload.user else {
+        guard let user = try? UserProvider().getUserAccount(inContext: self.uploadBckgContext)
+        else {
             // Should never happen
             // ► The lounge will be emptied later by the server
             // ► Continue upload tasks without returning error
@@ -60,6 +66,6 @@ extension UploadManager {
         try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
         
         // Empty lounge
-        try await JSONManager.shared.processImages(withIds: upload.imageId, inCategory: upload.category)
+        try await JSONManager.shared.processImages(withIds: uploadData.imageId, inCategory: uploadData.category)
     }
 }

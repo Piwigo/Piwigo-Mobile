@@ -101,17 +101,16 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
         
         // Append auto-upload requests to database
         do {
-            let uploadIDs = try await UploadProvider().importUploads(from: uploadRequestsToAppend)
-
+            let uploadIDs = try await UploadManager.shared.importUploads(from: uploadRequestsToAppend)
+            
             // Launch upload operations in background thread
-            Task { @UploadManagerActor in
-                await UploadManagerActor.shared.addUploads(withIDs: uploadIDs)
-            }
+            await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
             
             // Inform user that the shortcut was executed with success
             return .result(dialog: .responseSuccess(photos: uploadIDs.count))
         }
         catch {
+            // Inform user that the shortcut was executed with error
             return .result(dialog: .responseFailure(error: .importFailed))
         }
     }
@@ -184,3 +183,4 @@ fileprivate extension IntentDialog
         "\(error.localizedDescription)"
     }
 }
+

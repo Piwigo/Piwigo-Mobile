@@ -32,69 +32,67 @@ extension UploadManager {
     
     // MARK: - Prepare Video From File
     // Case of a video which is in a format accepted by the Piwigo server
-    func prepareVideo(atURL originalFileURL: URL, for upload: Upload) async throws(PwgKitError) {
-        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Prepare video \(upload.fileName) at URL")
-
+    func prepareVideo(atURL originalFileURL: URL, for uploadData: inout UploadProperties) async throws(PwgKitError)
+    {
         // Retrieve video data
         let originalVideo = AVAsset(url: originalFileURL)
         
         // Get creation date from metadata if possible
         let metadata = originalVideo.metadata
         if let dateFromMetadata = metadata.creationDate() {
-            upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
+            uploadData.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
         } else {
-            upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+            uploadData.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
         }
         
         // Check if the user wants to:
         /// - reduce the frame size
         /// - remove the private metadata
-        if (upload.resizeImageOnUpload && upload.videoMaxSize != 0) ||
-            (upload.stripGPSdataOnUpload && originalVideo.metadata.containsPrivateMetadata()) {
+        if (uploadData.resizeImageOnUpload && uploadData.videoMaxSize != 0) ||
+            (uploadData.stripGPSdataOnUpload && originalVideo.metadata.containsPrivateMetadata()) {
             // Check that the video can be exported
             try await checkVideoExportability(of: originalVideo)
             
             // File name of final video data to be stored into Piwigo/Uploads directory
-            let outputURL = getUploadFileURL(from: upload.localIdentifier, creationDate: upload.creationDate)
+            let outputURL = getUploadFileURL(from: uploadData.localIdentifier, creationDate: uploadData.creationDate)
 
             // Export new video in MP4 format w/ or w/o private metadata
-            try await export(videoAsset: originalVideo, to: outputURL, for: upload)
+            try await export(videoAsset: originalVideo, to: outputURL, with: &uploadData)
             
             // Get MD5 checksum and MIME type
-            try setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: outputURL)
+            try setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: outputURL)
         }
         else {
             // Get MD5 checksum and MIME type, change URL
-            try setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: originalFileURL)
+            try setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: originalFileURL)
         }
     }
     
     // Case of a video which is in a format not accepted by the Piwigo server
-    func convertVideo(atURL originalFileURL: URL, for upload: Upload) async throws(PwgKitError) {
-        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Convert video \(upload.fileName) at URL")
-
+    func convertVideo(atURL originalFileURL: URL, for uploadData: inout UploadProperties) async throws(PwgKitError)
+    {
         // Retrieve video data
         let originalVideo = AVAsset(url: originalFileURL)
         
         // Get creation date from metadata if possible
         let metadata = originalVideo.metadata
         if let dateFromMetadata = metadata.creationDate() {
-            upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
+            uploadData.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
         } else {
-            upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+            uploadData.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
         }
         
         // Check that the video can be exported
         try await checkVideoExportability(of: originalVideo)
         
         // File name of final video data to be stored into Piwigo/Uploads directory
-        let outputURL = getUploadFileURL(from: upload.localIdentifier, creationDate: upload.creationDate)
+        let outputURL = getUploadFileURL(from: uploadData.localIdentifier, creationDate: uploadData.creationDate)
 
         // Export new video in MP4 format w/ or w/o private metadata
-        try await export(videoAsset: originalVideo, to: outputURL, for: upload)
+        try await export(videoAsset: originalVideo, to: outputURL, with: &uploadData)
         
         // Get MD5 checksum and MIME type, update counter
-        try setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: outputURL)
+        try setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: outputURL)
     }
     
     // Check the exportability of a video (modern version)
@@ -162,18 +160,22 @@ extension UploadManager {
 //        }
 //    }
     
-    func prepareVideo(ofAsset imageAsset: PHAsset, atURL outputURL: URL, for upload: Upload) -> Void {
-        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Prepare video \(upload.fileName) from Asset")
+    func prepareVideo(ofAsset imageAsset: PHAsset, atURL outputURL: URL,
+                      for uploadProperties: UploadProperties, withID uploadID: NSManagedObjectID)
+    {
+        UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Prepare video \(uploadProperties.fileName) from Asset")
 
         // Retrieve video data
-        let uploadID = upload.objectID
         let options = getVideoRequestOptions()
         retrieveVideo(from: imageAsset, with: options) { (avasset, error) in
-            UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Return AVAsset")
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Return AVAsset")
             // Error?
             if let error = error {
                 Task { @UploadManagerActor in
-                    await self.didPrepareVideoForUpload(withID: uploadID, error)
+                    var uploadData = uploadProperties
+                    uploadData.requestState = .preparingError
+                    uploadData.requestError = error.localizedDescription
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
                 }
                 return
             }
@@ -181,7 +183,10 @@ extension UploadManager {
             // Valid AVAsset?
             guard let originalVideo = avasset else {
                 Task { @UploadManagerActor in
-                    await self.didPrepareVideoForUpload(withID: uploadID, .missingAsset)
+                    var uploadData = uploadProperties
+                    uploadData.requestState = .preparingError
+                    uploadData.requestError = PwgKitError.missingAsset.localizedDescription
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
                 }
                 return
             }
@@ -189,7 +194,10 @@ extension UploadManager {
             // Get original fileURL
             guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
                 Task { @UploadManagerActor in
-                    await self.didPrepareVideoForUpload(withID: uploadID, .missingAsset)
+                    var uploadData = uploadProperties
+                    uploadData.requestState = .preparingError
+                    uploadData.requestError = PwgKitError.missingAsset.localizedDescription
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
                 }
                 return
             }
@@ -197,44 +205,48 @@ extension UploadManager {
             // Check if the user wants to:
             /// - reduce the frame size
             /// - remove the private metadata
-            if (upload.resizeImageOnUpload && upload.videoMaxSize != 0) ||
-                (upload.stripGPSdataOnUpload && originalVideo.metadata.containsPrivateMetadata()) {
+            if (uploadProperties.resizeImageOnUpload && uploadProperties.videoMaxSize != 0) ||
+                (uploadProperties.stripGPSdataOnUpload && originalVideo.metadata.containsPrivateMetadata()) {
                 Task { @UploadManagerActor in
                     do {
-                        // Retrieve upload request in context of actor
-                        guard let upload = try? self.uploadBckgContext.existingObject(with: uploadID) as? Upload
-                        else { throw PwgKitError.missingUploadParameter }
-                        
                         // Get creation date from metadata if possible
+                        var uploadData = uploadProperties
                         let metadata = originalVideo.metadata
                         if let dateFromMetadata = metadata.creationDate() {
-                            upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
+                            uploadData.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
                         } else {
-                            upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+                            uploadData.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
                         }
                         
                         // Check that the video can be exported
                         try await self.checkVideoExportability(of: originalVideo)
                         
                         // Export new video in MP4 format w/ or w/o private metadata
-                        try await self.export(videoAsset: originalVideo, to: outputURL, for: upload)
+                        try await self.export(videoAsset: originalVideo, to: outputURL, with: &uploadData)
                         
                         // Get MD5 checksum and MIME type
-                        try self.setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: outputURL)
+                        try self.setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: outputURL)
                         
                         // Job done
-                        await self.didPrepareVideoForUpload(withID: uploadID, nil)
+                        uploadData.requestState = .prepared
+                        await self.didPrepareVideo(using: uploadData, withID: uploadID)
                         return
                     }
                     catch let error as PwgKitError {
                         Task { @UploadManagerActor in
-                            await self.didPrepareVideoForUpload(withID: uploadID, error)
+                            var uploadData = uploadProperties
+                            uploadData.requestState = .preparingError
+                            uploadData.requestError = error.localizedDescription
+                            await self.didPrepareVideo(using: uploadData, withID: uploadID)
                         }
                         return
                     }
                     catch {
                         Task { @UploadManagerActor in
-                            await self.didPrepareVideoForUpload(withID: uploadID, PwgKitError.otherError(innerError: error))
+                            var uploadData = uploadProperties
+                            uploadData.requestState = .preparingError
+                            uploadData.requestError = PwgKitError.otherError(innerError: error).localizedDescription
+                            await self.didPrepareVideo(using: uploadData, withID: uploadID)
                         }
                         return
                     }
@@ -244,30 +256,34 @@ extension UploadManager {
             // Copy video file into Piwigo/Uploads directory
             Task { @UploadManagerActor in
                 do {
-                    // Retrieve upload request in context of actor
-                    guard let upload = try? self.uploadBckgContext.existingObject(with: uploadID) as? Upload
-                    else { throw PwgKitError.missingUploadParameter }
-                    
                     // Get creation date from metadata if possible
+                    var uploadData = uploadProperties
                     let metadata = originalVideo.metadata
                     if let dateFromMetadata = metadata.creationDate() {
-                        upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
+                        uploadData.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
                     } else {
-                        upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+                        uploadData.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
                     }
                     
                     // Get MD5 checksum and MIME type, change URL
-                    try self.setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: originalFileURL)
+                    try self.setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: originalFileURL)
                     
                     // Upload video with tags and properties
-                    await self.didPrepareVideoForUpload(withID: uploadID, nil)
+                    uploadData.requestState = .prepared
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
                 }
                 catch let error as PwgKitError {
-                    await self.didPrepareVideoForUpload(withID: uploadID, error)
+                    var uploadData = uploadProperties
+                    uploadData.requestState = .preparingError
+                    uploadData.requestError = error.localizedDescription
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
                 }
                 catch {
                     // Could not copy the video file
-                    await self.didPrepareVideoForUpload(withID: uploadID, .otherError(innerError: error))
+                    var uploadData = uploadProperties
+                    uploadData.requestState = .preparingError
+                    uploadData.requestError = PwgKitError.otherError(innerError: error).localizedDescription
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
                 }
             }
         }
@@ -311,18 +327,22 @@ extension UploadManager {
 //        }
 //    }
 
-    func convertVideo(ofAsset imageAsset: PHAsset, atURL outputURL: URL, for upload: Upload) -> Void {
-        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Convert video \(upload.fileName) from Asset")
+    func convertVideo(ofAsset imageAsset: PHAsset, atURL outputURL: URL,
+                      for uploadProperties: UploadProperties, withID uploadID: NSManagedObjectID) -> Void
+    {
+        UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Convert video \(uploadProperties.fileName) from Asset")
 
         // Retrieve video data
-        let uploadID = upload.objectID
         let options = getVideoRequestOptions()
         retrieveVideo(from: imageAsset, with: options) { [self] (avasset, error) in
-            UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Return AVAsset")
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Return AVAsset")
             // Error?
             if let error = error {
                 Task { @UploadManagerActor in
-                    await self.didPrepareVideoForUpload(withID: uploadID, error)
+                    var uploadData = uploadProperties
+                    uploadData.requestState = .preparingError
+                    uploadData.requestError = error.localizedDescription
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
                 }
                 return
             }
@@ -330,7 +350,10 @@ extension UploadManager {
             // Valid AVAsset?
             guard let originalVideo = avasset else {
                 Task { @UploadManagerActor in
-                    await self.didPrepareVideoForUpload(withID: uploadID, .missingAsset)
+                    var uploadData = uploadProperties
+                    uploadData.requestState = .preparingError
+                    uploadData.requestError = PwgKitError.missingAsset.localizedDescription
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
                 }
                 return
             }
@@ -338,47 +361,54 @@ extension UploadManager {
             // Get original fileURL
             guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
                 Task { @UploadManagerActor in
-                    await self.didPrepareVideoForUpload(withID: uploadID, .missingAsset)
+                    var uploadData = uploadProperties
+                    uploadData.requestState = .preparingError
+                    uploadData.requestError = PwgKitError.missingAsset.localizedDescription
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
                 }
                 return
             }
             
             Task { @UploadManagerActor in
                 do {
-                    // Retrieve upload request in context of actor
-                    guard let upload = try? self.uploadBckgContext.existingObject(with: uploadID) as? Upload
-                    else { throw PwgKitError.missingUploadParameter }
-                    
                     // Get creation date from metadata if possible
+                    var uploadData = uploadProperties
                     let metadata = originalVideo.metadata
                     if let dateFromMetadata = metadata.creationDate() {
-                        upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
+                        uploadData.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
                     } else {
-                        upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+                        uploadData.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
                     }
                     
                     // Check that the video can be exported
                     try await self.checkVideoExportability(of: originalVideo)
                     
                     // Export new video in MP4 format w/ or w/o private metadata
-                    try await self.export(videoAsset: originalVideo, to: outputURL, for: upload)
+                    try await self.export(videoAsset: originalVideo, to: outputURL, with: &uploadData)
                     
                     // Get MD5 checksum and MIME type, update counter
-                    try self.setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: outputURL)
+                    try self.setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: outputURL)
                     
                     // Job done
-                    await self.didPrepareVideoForUpload(withID: uploadID, nil)
+                    uploadData.requestState = .prepared
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
                     return
                 }
                 catch let error as PwgKitError {
                     Task { @UploadManagerActor in
-                        await self.didPrepareVideoForUpload(withID: uploadID, error)
+                        var uploadData = uploadProperties
+                        uploadData.requestState = .preparingError
+                        uploadData.requestError = error.localizedDescription
+                        await self.didPrepareVideo(using: uploadData, withID: uploadID)
                     }
                     return
                 }
                 catch {
                     Task { @UploadManagerActor in
-                        await self.didPrepareVideoForUpload(withID: uploadID, PwgKitError.otherError(innerError: error))
+                        var uploadData = uploadProperties
+                        uploadData.requestState = .preparingError
+                        uploadData.requestError = PwgKitError.otherError(innerError: error).localizedDescription
+                        await self.didPrepareVideo(using: uploadData, withID: uploadID)
                     }
                     return
                 }
@@ -386,31 +416,22 @@ extension UploadManager {
         }
     }
         
-    private func didPrepareVideoForUpload(withID uploadID: NSManagedObjectID, _ error: PwgKitError?) async {
-        // Retrieve upload request in context of actor
-        guard let upload = try? self.uploadBckgContext.existingObject(with: uploadID) as? Upload
-        else {
-            debugPrint("!!!! Could not retrieve upload for ID: \(uploadID.uriRepresentation().lastPathComponent) !!!!")
-            return
-        }
-        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Did prepare video from Asset")
+    private func didPrepareVideo(using uploadData: UploadProperties, withID uploadID: NSManagedObjectID) async
+    {
+        UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Did prepare video from Asset")
 
-        // Upload ready for transfer?
-        if let error = error {
-            upload.setState(.preparingError, error: error)
-        } else {
-            upload.setState(.prepared)
-        }
-        upload.managedObjectContext?.saveIfNeeded()
+        // Preparation completed
+        try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
         
-        // Transfer video now (patch)
-        await UploadManagerActor.shared.processVideo(ofUploadWithID: upload.objectID)
+        // Add video to transfer queue
+        await UploadManagerActor.shared.addUploadsToTransfer(withIDs: [uploadID])
+        await UploadManagerActor.shared.processNextUpload()
     }
     
     
     // MARK: - Retrieve Video Asset
     /// Used to retrieve video data from the PhotoLibrary
-    func getVideoFileName(from originalAsset: PHAsset, for upload: Upload) -> String {
+    func getVideoFileName(from originalAsset: PHAsset) -> String {
         // Retrieve original filename from asset resources
         let resources = PHAssetResource.assetResources(for: originalAsset)
         let original = resources.first(where: { $0.type == .photo || $0.type == .video || $0.type == .audio })
@@ -526,9 +547,8 @@ extension UploadManager {
     // MARK: - Export Video
     // Determine video size and reduce it if requested
     // Export the video in MP4 format w/ or w/o private metadata
-    private func export(videoAsset: AVAsset, to outputURL: URL, for upload: Upload) async throws(PwgKitError) {
-        UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Export video")
-        
+    private func export(videoAsset: AVAsset, to outputURL: URL, with uploadData: inout UploadProperties) async throws(PwgKitError)
+    {
         // Determine available export options (highest quality for device by default)
         let presets = AVAssetExportSession.exportPresets(compatibleWith: videoAsset)
         
@@ -542,8 +562,8 @@ extension UploadManager {
         var maxPixels = Int(max(videoSize.width, videoSize.height))
         
         // Resize frames
-        if upload.resizeImageOnUpload, upload.videoMaxSize != 0 {
-            maxPixels = pwgVideoMaxSizes(rawValue: upload.videoMaxSize)?.pixels ?? Int.max
+        if uploadData.resizeImageOnUpload, uploadData.videoMaxSize != 0 {
+            maxPixels = pwgVideoMaxSizes(rawValue: uploadData.videoMaxSize)?.pixels ?? Int.max
         }
         
         // The 'presets' array never contains AVAssetExportPresetPassthrough,
@@ -577,7 +597,7 @@ extension UploadManager {
 
         // Strips private metadata if user requested it in Settings
         // Apple documentation: 'metadataItemFilterForSharing' removes user-identifying metadata items, such as location information and leaves only metadata releated to commerce or playback itself. For example: playback, copyright, and commercial-related metadata, such as a purchaser’s ID as set by a vendor of digital media, along with metadata either derivable from the media itself or necessary for its proper behavior are all left intact.
-        if upload.stripGPSdataOnUpload {
+        if uploadData.stripGPSdataOnUpload {
             exportSession.metadataItemFilter = AVMetadataItemFilter.forSharing()
         } else {
             exportSession.metadata = videoAsset.metadata
@@ -610,8 +630,8 @@ extension UploadManager {
         // <<==== End of code for debugging
 
         // Prepare MIME type, file
-        upload.mimeType = "video/mp4"
-        upload.fileName = URL(fileURLWithPath: upload.fileName)
+        uploadData.mimeType = "video/mp4"
+        uploadData.fileName = URL(fileURLWithPath: uploadData.fileName)
             .deletingPathExtension().appendingPathExtension("MP4").lastPathComponent
         do {
             // Export temporary video for upload

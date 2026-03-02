@@ -89,12 +89,12 @@ extension PasteboardImagesViewController: UploadSwitchDelegate
         Task(priority: .utility) { @UploadManagerActor in
             do {
                 // Create upload requests
-                let uploadIDs = try await UploadProvider().importUploads(from: self.uploadRequests)
+                let uploadIDs = try await UploadManager.shared.importUploads(from: self.uploadRequests)
                 
                 // Add upload requests to queue
                 UploadVars.shared.isPaused = false
-                await UploadManagerActor.shared.addUploads(withIDs: uploadIDs)
-
+                await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
+                
                 // Deselect cells
                 await MainActor.run {
                     self.cancelSelect()

@@ -118,68 +118,69 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
         }
 
         // Add selected images to upload queue
-        UploadProvider().importUploads(from: selectedImages) { error in
-            // Show an alert if there was an error.
-            guard let error = error else {
-                // Create the operation queue
-                let uploadQueue = OperationQueue()
-                uploadQueue.maxConcurrentOperationCount = 1
-                
-                // Add operation setting flag and selecting upload requests
-                let initOperation = BlockOperation {
-                    // Initialse variables and determine upload requests to prepare and transfer
-                    Task { @UploadManagerActor in
-                        await UploadManager.shared.initialiseBckgTask(triggeredByExtension: true)
-                    }
-                }
-
-                // Initialise list of operations
-                var uploadOperations = [BlockOperation]()
-                uploadOperations.append(initOperation)
-
-                // Resume transfers
-                let resumeOperation = BlockOperation {
-                    // Transfer image
-                    Task { @UploadManagerActor in
-                        await UploadManager.shared.resumeTransfers()
-                    }
-                }
-                resumeOperation.addDependency(uploadOperations.last!)
-                uploadOperations.append(resumeOperation)
-
-                // Add image preparation which will be followed by transfer operations
-                for _ in 0..<UploadVars.shared.maxNberOfUploadsPerBckgTask {
-                    let uploadOperation = BlockOperation {
-                        // Transfer image
-                        Task { @UploadManagerActor in
-                            await UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
-                        }
-                    }
-                    uploadOperation.addDependency(uploadOperations.last!)
-                    uploadOperations.append(uploadOperation)
-                }
-                
-                // Inform the system that the background task is complete
-                // when the operation completes
-                let lastOperation = uploadOperations.last!
-                lastOperation.completionBlock = {
-                    debugPrint("••> Task completed with success.")
-                    // Save cached data in the main thread
-                    Task { @MainActor in
-                        DataController.shared.mainContext.saveIfNeeded()
-                    }
-                }
-
-                // Start the operations
-                debugPrint("••> Start upload operations in background task...");
-                uploadQueue.addOperations(uploadOperations, waitUntilFinished: false)
-
-                // Inform user that the shortcut was excuted with success
-                completion(UploadPhotosIntentResponse.success(nberPhotos: NSNumber(value: selectedImages.count)))
-                return
+        do {
+            Task { @UploadManagerActor in
+                let uploadIDs = try await UploadManager.shared.importUploads(from: selectedImages)
             }
             
-            // Error encountered…
+            // Create the operation queue
+            let uploadQueue = OperationQueue()
+            uploadQueue.maxConcurrentOperationCount = 1
+            
+            // Add operation setting flag and selecting upload requests
+            let initOperation = BlockOperation {
+                // Initialse variables and determine upload requests to prepare and transfer
+                Task { @UploadManagerActor in
+                    await UploadManager.shared.initialiseBckgTask(triggeredByExtension: true)
+                }
+            }
+            
+            // Initialise list of operations
+            var uploadOperations = [BlockOperation]()
+            uploadOperations.append(initOperation)
+            
+            // Resume transfers
+            let resumeOperation = BlockOperation {
+                // Transfer image
+                Task { @UploadManagerActor in
+                    await UploadManager.shared.resumeTransfers()
+                }
+            }
+            resumeOperation.addDependency(uploadOperations.last!)
+            uploadOperations.append(resumeOperation)
+            
+            // Add image preparation which will be followed by transfer operations
+            for _ in 0..<UploadVars.shared.maxNberOfUploadsPerBckgTask {
+                let uploadOperation = BlockOperation {
+                    // Transfer image
+                    Task { @UploadManagerActor in
+                        await UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
+                    }
+                }
+                uploadOperation.addDependency(uploadOperations.last!)
+                uploadOperations.append(uploadOperation)
+            }
+            
+            // Inform the system that the background task is complete
+            // when the operation completes
+            let lastOperation = uploadOperations.last!
+            lastOperation.completionBlock = {
+                debugPrint("••> Task completed with success.")
+                // Save cached data in the main thread
+                Task { @MainActor in
+                    DataController.shared.mainContext.saveIfNeeded()
+                }
+            }
+            
+            // Start the operations
+            debugPrint("••> Start upload operations in background task...");
+            uploadQueue.addOperations(uploadOperations, waitUntilFinished: false)
+            
+            // Inform user that the shortcut was excuted with success
+            completion(UploadPhotosIntentResponse.success(nberPhotos: NSNumber(value: selectedImages.count)))
+        }
+        catch {
+            // Show an alert if there was an error.
             let msg = PwgKitError.uploadCreationError.localizedDescription
             let errorMsg = String(format: "%@: %@", msg, error.localizedDescription)
             completion(UploadPhotosIntentResponse.failure(error: errorMsg))

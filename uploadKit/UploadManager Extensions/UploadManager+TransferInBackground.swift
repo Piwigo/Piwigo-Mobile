@@ -6,6 +6,7 @@
 //  Copyright © 2025 Piwigo.org. All rights reserved.
 //
 
+import CoreData
 import Foundation
 import piwigoKit
 
@@ -14,11 +15,11 @@ import piwigoKit
 @UploadManagerActor
 extension UploadManager {
     
-    func transferInBackground(for upload: Upload) async throws(PwgKitError) {
+    func transferInBackground(for properties: UploadProperties, withID uploadID: NSManagedObjectID) async throws(PwgKitError) {
         
         // Get URL of file to upload
         /// This file will be deleted once the transfer is completed successfully
-        let fileURL = getUploadFileURL(from: upload.localIdentifier, creationDate: upload.creationDate)
+        let fileURL = getUploadFileURL(from: properties.localIdentifier, creationDate: properties.creationDate)
         
         // Get content of file to upload
         /// https://developer.apple.com/forums/thread/115401
@@ -35,8 +36,8 @@ extension UploadManager {
         let chunksDiv: Float = Float(imageData.count) / Float(chunkSize)
         let chunks = Int(chunksDiv.rounded(.up))
         let chunksStr = String(format: "%ld", chunks)
-        if chunks == 0 || upload.fileName.isEmpty ||
-            upload.md5Sum.isEmpty || upload.category == 0 {
+        if chunks == 0 || properties.fileName.isEmpty ||
+            properties.md5Sum.isEmpty || properties.category == 0 {
             throw .missingUploadParameter
         }
         
@@ -46,23 +47,14 @@ extension UploadManager {
         
         // Get credentials
         let username = NetworkVars.shared.username
-        guard let serverPath = upload.user?.server?.path
-        else {
-            upload.setState(.preparingFail, error: .wrongServerURL)
-            upload.managedObjectContext?.saveIfNeeded()
-            return
-        }
+        let serverPath = NetworkVars.shared.serverPath
         let password = KeychainUtilities.password(forService: serverPath, account: username)
         guard password.isEmpty == false
-        else {
-            upload.setState(.preparingError, error: .emptyUsername)
-            upload.managedObjectContext?.saveIfNeeded()
-            return
-        }
+        else { throw .emptyUsername }
 
         // Prepare boundary, chunk size, creation date as Piwigo string
-        let boundary = createBoundary(from: upload.md5Sum)
-        let creationDate = DateUtilities.string(from: upload.creationDate)
+        let boundary = createBoundary(from: properties.md5Sum)
+        let creationDate = DateUtilities.string(from: properties.creationDate)
 
         // Loop over all chunks
         for chunk in 1...chunks {
@@ -70,13 +62,13 @@ extension UploadManager {
                 // Get HTTP request body
                 let httpBody = getHttpBodyForChunk(chunk, ofSize: chunkSize, chunks: chunksStr,
                                                    ofData: imageData, withDate: creationDate, boundary: boundary,
-                                                   for: username, password: password, upload: upload)
+                                                   for: username, password: password, uploadData: properties)
                 
                 // File name of chunk data stored into Piwigo/Uploads directory
                 // This file will be deleted after a successful upload of the chunk
                 let suffix = "." + chunkFormatter.string(from: NSNumber(value: chunk))!
-                let fileURL = getUploadFileURL(from: upload.localIdentifier, withSuffix: suffix,
-                                               creationDate: upload.creationDate, deleted: true)
+                let fileURL = getUploadFileURL(from: properties.localIdentifier, withSuffix: suffix,
+                                               creationDate: properties.creationDate, deleted: true)
                 
                 // Store chunk of image data into Piwigo/Uploads directory
                 do {
@@ -91,7 +83,7 @@ extension UploadManager {
                 // Prepare URL Request Object
                 let chunkStr = String(format: "%ld", chunk)
                 let request = getHttpRequestForChunk(chunkStr, ofChunks: chunksStr, with: boundary,
-                                                     for: uploadUrl, upload: upload)
+                                                     for: uploadUrl, uploadData: properties, withID: uploadID)
                 
                 // As soon as tasks are created, the timeout counter starts
                 let task = bckgSession.uploadTask(with: request, fromFile: fileURL)
@@ -111,22 +103,25 @@ extension UploadManager {
                 // Remember the total number of bytes to upload
                 if chunks == 1 {
                     // Only one chunk to upload
-                    self.setCounter(withID: upload.objectID.uriRepresentation().lastPathComponent, chunks: chunks, totalBytes: bytesToSend)
+                    self.setCounter(withID: uploadID.uriRepresentation().lastPathComponent, chunks: chunks, totalBytes: bytesToSend)
                 } else if chunk == 1 {
                     // Several chunks to upload
                     let totalBytes = Int64(imageData.count) + (bytesToSend - Int64(chunkSize)) * Int64(chunks)
-                    self.setCounter(withID: upload.objectID.uriRepresentation().lastPathComponent, chunks: chunks, totalBytes: totalBytes)
+                    self.setCounter(withID: uploadID.uriRepresentation().lastPathComponent, chunks: chunks, totalBytes: totalBytes)
                 }
                 
                 // Resume task
                 task.resume()
-                self.removeChunk(chunk, fromCounterWithID: upload.objectID.uriRepresentation().lastPathComponent)
-                UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent, privacy: .private(mask: .hash)) • Task \(task.taskIdentifier, privacy: .public) resumed (\(chunk, privacy: .public)/\(chunks, privacy: .public))")
+                self.removeChunk(chunk, fromCounterWithID: uploadID.uriRepresentation().lastPathComponent)
+                UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent, privacy: .private(mask: .hash)) • Task \(task.taskIdentifier, privacy: .public) resumed (\(chunk, privacy: .public)/\(chunks, privacy: .public))")
             }
         }
         
         // Release memory
         imageData.removeAll()
+        
+        // Process next upload if any
+        await UploadManagerActor.shared.processNextUpload()
     }
     
     func didCompleteBckgUploadTask(_ task: URLSessionTask, withError error: PwgKitError?) async {
@@ -149,7 +144,7 @@ extension UploadManager {
         // Retrieve upload request properties
         guard let objectURI = URL(string: objectURIstr),
               let uploadID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI),
-              let upload = try? uploadBckgContext.existingObject(with: uploadID) as? Upload
+              var uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID, inContext: self.uploadBckgContext)
         else {
             UploadManager.logger.notice("\(objectIDstr, privacy: .private(mask: .hash)) • Failed to retrieve Core Data object from task \(task.taskIdentifier, privacy: .public)")
             deleteChunk(chunk, ofImageWith: identifier)
@@ -158,8 +153,9 @@ extension UploadManager {
         
         // Communication error?
         if let error {
-            upload.setState(.uploadingError, error: error)
-            upload.managedObjectContext?.saveIfNeeded()
+            uploadData.requestState = .uploadingError
+            uploadData.requestError = error.localizedDescription
+            try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             await UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: task.taskIdentifier)
             return
         }
@@ -167,8 +163,9 @@ extension UploadManager {
         // Valid response?
         guard let response = task.response as? HTTPURLResponse
         else {
-            upload.setState(.uploadingError, error: PwgKitError.invalidResponse)
-            upload.managedObjectContext?.saveIfNeeded()
+            uploadData.requestState = .uploadingError
+            uploadData.requestError = PwgKitError.invalidResponse.localizedDescription
+            try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             await UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: task.taskIdentifier)
             return
         }
@@ -176,8 +173,9 @@ extension UploadManager {
         // Absence of HTTP error?
         guard (200...299).contains(response.statusCode)
         else {
-            upload.setState(.uploadingError, error: PwgKitError.invalidStatusCode(statusCode: response.statusCode))
-            upload.managedObjectContext?.saveIfNeeded()
+            uploadData.requestState = .uploadingError
+            uploadData.requestError = PwgKitError.invalidStatusCode(statusCode: response.statusCode).localizedDescription
+            try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             await UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: task.taskIdentifier)
             return
         }
@@ -197,14 +195,14 @@ extension UploadManager {
         // Retrieve upload request properties
         guard let objectURI = URL(string: objectURIstr),
               let uploadID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI),
-              let upload = try? uploadBckgContext.existingObject(with: uploadID) as? Upload
+              var uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID, inContext: self.uploadBckgContext)
         else {
             UploadManager.logger.notice("\(objectIDstr, privacy: .private(mask: .hash)) • Failed to retrieve Core Data object from task \(task.taskIdentifier, privacy: .public)")
             return
         }
         
         // Don't escaladate the issue…
-        if [.uploadingError, .uploadingFail].contains(upload.state) {
+        if [.uploadingError, .uploadingFail].contains(uploadData.requestState) {
             return
         }
         
@@ -212,8 +210,9 @@ extension UploadManager {
         if data.isEmpty {
             // Update upload request status
             UploadManager.logger.notice("\(objectIDstr, privacy: .private(mask: .hash)) • Task \(task.taskIdentifier, privacy: .public) returned an Empty JSON object")
-            upload.setState(.uploadingError, error: .emptyJSONobject)
-            upload.managedObjectContext?.saveIfNeeded()
+            uploadData.requestState = .uploadingError
+            uploadData.requestError = PwgKitError.emptyJSONobject.localizedDescription
+            try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             await UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: task.taskIdentifier)
             return
         }
@@ -221,8 +220,9 @@ extension UploadManager {
         guard jsonData.extractingBalancedBraces() else {
             // Update upload request status
             UploadManager.logger.notice("\(objectIDstr, privacy: .private(mask: .hash)) • Task \(task.taskIdentifier, privacy: .public) returned the invalid JSON object")
-            upload.setState(.uploadingError, error: .invalidJSONobject)
-            upload.managedObjectContext?.saveIfNeeded()
+            uploadData.requestState = .uploadingError
+            uploadData.requestError = PwgKitError.invalidJSONobject.localizedDescription
+            try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             await UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: task.taskIdentifier)
             return
         }
@@ -230,7 +230,7 @@ extension UploadManager {
         // Decode the JSON.
         do {
             // Decode the JSON into codable type ImagesUploadAsyncJSON.
-            let uploadJSON = try self.decoder.decode(ImagesUploadAsyncJSON.self, from: jsonData)
+            let uploadJSON = try JSONDecoder().decode(ImagesUploadAsyncJSON.self, from: jsonData)
             
             // Upload completed?
             if let chunkMsg = uploadJSON.chunks, let message = chunkMsg.message {
@@ -270,28 +270,21 @@ extension UploadManager {
             else { throw PwgKitError.unexpectedData }
             
             // Get data returned by the server
-            upload.imageId    = imageId
-            upload.imageName  = getInfos.title?.utf8mb4Encoded ?? ""
-            upload.author     = getInfos.author?.utf8mb4Encoded ?? ""
+            uploadData.imageId     = imageId
+            uploadData.imageTitle  = getInfos.title?.utf8mb4Encoded ?? ""
+            uploadData.author      = getInfos.author?.utf8mb4Encoded ?? ""
             if let privacyLevelStr = getInfos.privacyLevel {
-                upload.privacyLevel = Int16(privacyLevelStr) ?? pwgPrivacy.unknown.rawValue
+                uploadData.privacyLevel = pwgPrivacy(rawValue: Int16(privacyLevelStr) ?? pwgPrivacy.unknown.rawValue) ?? pwgPrivacy.unknown
             }
-            upload.comment    = getInfos.comment?.utf8mb4Encoded ?? ""
+            uploadData.comment     = getInfos.comment?.utf8mb4Encoded ?? ""
             if let tags = getInfos.tags {
-                let tagIDs = tags.compactMap({$0.id}).map({$0.stringValue + ","}).reduce("", +).dropLast()
-                let newTagIDs = (try? TagProvider().getTags(withIDs: String(tagIDs), taskContext: uploadBckgContext).map({$0.objectID})) ?? []
-                var newTags = Set<Tag>()
-                newTagIDs.forEach({
-                    if let copy = upload.managedObjectContext?.object(with: $0) as? Tag {
-                        newTags.insert(copy)
-                    }
-                })
-                upload.tags = newTags
+                let tagIDs: String = tags.compactMap({ $0.id }).map({ $0.stringValue + ","}).reduce("", +)
+                uploadData.tagIds  = String(tagIDs.dropLast(1))
             } else {
-                upload.tags = Set<Tag>()
+                uploadData.tagIds = ""
             }
-            upload.setState(.uploaded)
-            upload.managedObjectContext?.saveIfNeeded()
+            uploadData.requestState = .uploaded
+            try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             
             // Finish transfer
             await finishTransferOfUpload(withID: uploadID)
@@ -321,16 +314,19 @@ extension UploadManager {
             if let error = error as? PwgKitError {
                 UploadManager.logger.notice("\(objectIDstr, privacy: .private(mask: .hash)) • Task \(task.taskIdentifier, privacy: .public) returned the error \(error.localizedDescription, privacy: .public)")
                 if error.failedAuthentication {
-                    upload.setState(.uploadingFail, error: error)
+                    uploadData.requestState = .uploadingFail
+                    uploadData.requestError = error.localizedDescription
                 } else {
-                    upload.setState(.uploadingError, error: error)
+                    uploadData.requestState = .uploadingError
+                    uploadData.requestError = error.localizedDescription
                 }
             } else {
                 // JSON object cannot be digested, image still ready for upload
                 UploadManager.logger.notice("\(objectIDstr, privacy: .private(mask: .hash)) • Task \(task.taskIdentifier, privacy: .public) returned a wrong JSON object!")
-                upload.setState(.uploadingError, error: .wrongJSONobject)
+                uploadData.requestState = .uploadingError
+                uploadData.requestError = PwgKitError.wrongJSONobject.localizedDescription
             }
-            upload.managedObjectContext?.saveIfNeeded()
+            try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
         }
     }
     
@@ -338,7 +334,8 @@ extension UploadManager {
     // MARK: - Utilities
     fileprivate nonisolated func getHttpBodyForChunk(_ chunk: Int, ofSize chunkSize: Int, chunks chunksStr: String, ofData imageData: Data,
                                                      withDate creationDate: String, boundary: String,
-                                                     for username: String, password: String, upload: Upload) -> Data {
+                                                     for username: String, password: String,
+                                                     uploadData: UploadProperties) -> Data {
         // Current chunk
         let chunkStr = String(format: "%ld", chunk - 1)
         
@@ -355,24 +352,23 @@ extension UploadManager {
         // Append parameters requested by API method
         httpBody.append(convertFormField(named: "chunk", value: chunkStr, using: boundary).data(using: .utf8)!)
         httpBody.append(convertFormField(named: "chunks", value: chunksStr, using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "original_sum", value: upload.md5Sum, using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "category", value: "\(upload.category)", using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "filename", value: upload.fileName, using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "name", value: upload.imageName.utf8mb3Encoded, using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "author", value: upload.author.utf8mb3Encoded, using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "comment", value: upload.comment.utf8mb3Encoded, using: boundary).data(using: .utf8)!)
+        httpBody.append(convertFormField(named: "original_sum", value: uploadData.md5Sum, using: boundary).data(using: .utf8)!)
+        httpBody.append(convertFormField(named: "category", value: "\(uploadData.category)", using: boundary).data(using: .utf8)!)
+        httpBody.append(convertFormField(named: "filename", value: uploadData.fileName, using: boundary).data(using: .utf8)!)
+        httpBody.append(convertFormField(named: "name", value: uploadData.imageTitle.utf8mb3Encoded, using: boundary).data(using: .utf8)!)
+        httpBody.append(convertFormField(named: "author", value: uploadData.author.utf8mb3Encoded, using: boundary).data(using: .utf8)!)
+        httpBody.append(convertFormField(named: "comment", value: uploadData.comment.utf8mb3Encoded, using: boundary).data(using: .utf8)!)
         httpBody.append(convertFormField(named: "date_creation", value: creationDate, using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "level", value: "\(NSNumber(value: upload.privacyLevel))", using: boundary).data(using: .utf8)!)
-        let tagIDs = String((upload.tags ?? Set<Tag>()).map({"\($0.tagId),"}).reduce("", +).dropLast(1))
-        httpBody.append(convertFormField(named: "tag_ids", value: tagIDs, using: boundary).data(using: .utf8)!)
-
+        httpBody.append(convertFormField(named: "level", value: "\(NSNumber(value: uploadData.privacyLevel.rawValue))", using: boundary).data(using: .utf8)!)
+        httpBody.append(convertFormField(named: "tag_ids", value: uploadData.tagIds, using: boundary).data(using: .utf8)!)
+        
         // Chunk of data
         let chunkOfData = imageData.subdata(in: (chunk - 1)*chunkSize..<min(chunk*chunkSize, imageData.count))
         let md5Checksum = chunkOfData.MD5checksum
         httpBody.append(convertFormField(named: "chunk_sum", value: md5Checksum, using: boundary).data(using: .utf8)!)
         httpBody.append(self.convertFileData(fieldName: "file",
-                                             fileName: upload.fileName,
-                                             mimeType: upload.mimeType,
+                                             fileName: uploadData.fileName,
+                                             mimeType: uploadData.mimeType,
                                              fileData: chunkOfData,
                                              using: boundary))
 
@@ -380,19 +376,19 @@ extension UploadManager {
         
         return httpBody
     }
-
+    
     fileprivate func getHttpRequestForChunk(_ chunkStr: String, ofChunks chunksStr: String, with boundary: String,
-                                            for uploadUrl: URL, upload: Upload) -> URLRequest {
+                                            for uploadUrl: URL, uploadData: UploadProperties, withID uploadID: NSManagedObjectID) -> URLRequest {
         // Prepare URL Request Object
         var request = URLRequest(url: uploadUrl)
         request.httpMethod = "POST"
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-        request.setValue(upload.objectID.uriRepresentation().absoluteString, forHTTPHeaderField: pwgHTTPuploadID)
-        request.setValue(upload.fileName, forHTTPHeaderField: "filename")
-        request.setValue(upload.localIdentifier, forHTTPHeaderField: pwgHTTPimageID)
+        request.setValue(uploadID.uriRepresentation().absoluteString, forHTTPHeaderField: pwgHTTPuploadID)
+        request.setValue(uploadData.fileName, forHTTPHeaderField: "filename")
+        request.setValue(uploadData.localIdentifier, forHTTPHeaderField: pwgHTTPimageID)
         request.setValue(chunkStr, forHTTPHeaderField: pwgHTTPchunk)
         request.setValue(chunksStr, forHTTPHeaderField: pwgHTTPchunks)
-        request.setValue(upload.md5Sum, forHTTPHeaderField: pwgHTTPmd5sum)
+        request.setValue(uploadData.md5Sum, forHTTPHeaderField: pwgHTTPmd5sum)
         
         // Set HTTP header when API keys are used
         request.setAPIKeyHTTPHeader(for: pwgImagesUploadAsync)

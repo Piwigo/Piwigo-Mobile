@@ -72,7 +72,7 @@ public final nonisolated class Server: NSManagedObject, Identifiable {
 
     public func getUploadCount(inContext taskContext: NSManagedObjectContext) -> String {
         // Calculate number of objects in background thread
-        let uploadCount = UploadProvider().getObjectCount(inContext: taskContext)
+        let uploadCount = UploadProvider().getTotalCount(inContext: taskContext)
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         return formatter.string(from: uploadCount as NSNumber) ?? "NaN"

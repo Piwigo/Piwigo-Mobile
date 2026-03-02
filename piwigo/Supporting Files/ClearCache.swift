@@ -157,6 +157,9 @@ final class ClearCache
     static func cancelTasks(completion: @escaping () -> Void) {
         Task { @UploadManagerActor in
             // Stop upload manager
+            Task { @UploadManagerActor in
+                await UploadManagerActor.shared.removeAllUploads()
+            }
             UploadVars.shared.isPaused = true
             
             // Cancel upload tasks, then other tasks

@@ -86,17 +86,22 @@ public final class UserProvider {
                     inContext taskContext: NSManagedObjectContext) {
         // Do {} below is used to allow typed throws
         do {
-            guard let user = try taskContext.existingObject(with: objectID) as? User
-            else { return }
-            let dateOfLogin = Date.timeIntervalSinceReferenceDate
-            user.lastUsed = dateOfLogin
-            if status {
-                user.status = NetworkVars.shared.userStatus.rawValue
+            try taskContext.performAndWait {
+                // Retrieve User instrance
+                guard let user = try taskContext.existingObject(with: objectID) as? User
+                else { return }
+                
+                // Update date
+                let dateOfLogin = Date.timeIntervalSinceReferenceDate
+                user.lastUsed = dateOfLogin
+                if status {
+                    user.status = NetworkVars.shared.userStatus.rawValue
+                }
+                if let server = user.server {
+                    server.lastUsed = dateOfLogin
+                }
+                taskContext.saveIfNeeded()
             }
-            if let server = user.server {
-                server.lastUsed = dateOfLogin
-            }
-            taskContext.saveIfNeeded()
         }
         catch {
             print("Error updating User: \(error)")

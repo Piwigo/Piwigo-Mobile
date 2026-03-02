@@ -271,7 +271,7 @@ class UploadQueueViewController: UIViewController {
                 let resumeAction = UIAlertAction(title: titleResume, style: .default, handler: { action in
                     Task { @UploadManagerActor in
                         // Resume all failed uploads
-                        UploadManager.shared.clearAllFailedUploads()
+                        await UploadManager.shared.clearAllFailedUploads()
                         // Relaunch uploads
                         await UploadManagerActor.shared.processNextUpload()
                     }

@@ -49,11 +49,11 @@ extension UploadManager {
         Task { @UploadManagerActor in
             do {
                 // Create upload requests
-                let uploadIDs = try await UploadProvider().importUploads(from: uploadRequestsToAppend)
+                let uploadIDs = try await UploadManager.shared.importUploads(from: uploadRequestsToAppend)
                 
                 // Add upload requests to queue
                 UploadVars.shared.isPaused = false
-                await UploadManagerActor.shared.addUploads(withIDs: uploadIDs)
+                await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
             }
             catch {
                 // Error encountered, inform user

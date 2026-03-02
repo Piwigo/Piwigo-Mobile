@@ -55,8 +55,8 @@ extension UploadQueueViewController: UITableViewDelegate
         let retry = UIContextualAction(style: .normal, title: nil,
                                        handler: { action, view, completionHandler in
             Task { @UploadManagerActor in
-                UploadManager.shared.clearFailedUpload(withID: upload.objectID)
-                await UploadManagerActor.shared.addUploads(withIDs: [upload.objectID])
+                // Clear error and resume upload request
+                await UploadManager.shared.clearFailedUpload(withID: upload.objectID)
             }
             completionHandler(true)
         })
@@ -74,7 +74,7 @@ extension UploadQueueViewController: UITableViewDelegate
             // Remove upload request from queue
             Task { @UploadManagerActor in
                 await UploadManagerActor.shared.removeUploads(withIDs: [upload.objectID])
-                UploadManager.shared.clearFailedUpload(withID: upload.objectID)
+                await UploadManager.shared.clearFailedUpload(withID: upload.objectID)
             }
             completionHandler(true)
         })
