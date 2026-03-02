@@ -620,13 +620,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let myUploadIDs = uploadIDs
             Task { @UploadManagerActor in
                 if success {
-                    Task { @UploadManagerActor in
-                        UploadManager.shared.deleteUploads(myUploadIDs)
-                    }
+                    UploadManager.shared.deleteUploads(myUploadIDs)
                 } else {
-                    Task { @UploadManagerActor in
-                        UploadManager.shared.disableDeleteAfterUpload(myUploadIDs)
-                    }
+                    UploadManager.shared.disableDeleteAfterUpload(myUploadIDs)
                 }
             }
         }
