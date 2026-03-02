@@ -11,7 +11,7 @@ import Foundation
 /**
  A struct for managing upload requests
 */
-public struct UploadProperties
+public struct UploadProperties: Sendable
 {
     public let localIdentifier: String             // Unique PHAsset identifier
     public let category: Int32                     // 8
