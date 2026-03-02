@@ -300,8 +300,7 @@ extension UploadManager {
             if let user = try? UserProvider().getUserAccount(inContext: uploadBckgContext),
                user.hasAdminRights {
                 getInfos.fixingUnknowns()
-                ImageProvider().didUploadImage(getInfos, asVideo: upload.isVideo,
-                                               inAlbumId: upload.category)
+                ImageProvider().didUploadImage(getInfos, inAlbumId: uploadData.category)
             }
             
             // Delete remaining uploaded file

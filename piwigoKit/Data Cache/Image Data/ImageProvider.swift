@@ -133,7 +133,7 @@ public final class ImageProvider {
     /**
      Imports uploaded image data into Core Data.
      */
-    public func didUploadImage(_ imageData: ImagesGetInfo, asVideo: Bool, inAlbumId albumId: Int32) {
+    public func didUploadImage(_ imageData: ImagesGetInfo, inAlbumId albumId: Int32) {
         // Import the image data into Core Data.
         // The provided sort option will not change the rankManual/rankRandom values of Int64.min
         try? self.importImages([imageData], inAlbum: albumId, withAlbumUpdate: true, sort: .albumDefault)
