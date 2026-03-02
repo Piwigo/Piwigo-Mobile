@@ -108,6 +108,31 @@ public final class UserProvider {
         }
     }
     
+    public func getCredentialsOfUser(withID userID: String,
+                                     inContext taskContext: NSManagedObjectContext) throws -> (String, String) {
+        try taskContext.performAndWait { () throws -> (String, String) in
+            // Get username
+            guard let objectURI = URL(string: userID),
+                  let userID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI),
+                  let user = try? taskContext.existingObject(with: userID) as? User,
+                  user.username.isEmpty == false
+            else { throw PwgKitError.invalidCredentials }
+            let username = user.username
+            
+            // Get server path
+            guard let server = user.server,
+                  server.path.isEmpty == false
+            else { throw PwgKitError.invalidCredentials }
+            let serverPath = server.path
+            
+            // Get password
+            let password = KeychainUtilities.password(forService: serverPath, account: username)
+            guard password.isEmpty == false
+            else { throw PwgKitError.invalidCredentials }
+            return (username, password)
+        }
+    }
+    
     func deleteUser(withUsername username: String = NetworkVars.shared.user,
                     ofServerAtPath path: String = NetworkVars.shared.serverPath,
                     inContext taskContext: NSManagedObjectContext) {

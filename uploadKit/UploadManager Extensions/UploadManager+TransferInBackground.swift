@@ -15,11 +15,11 @@ import piwigoKit
 @UploadManagerActor
 extension UploadManager {
     
-    func transferInBackground(for properties: UploadProperties, withID uploadID: NSManagedObjectID) async throws(PwgKitError) {
+    func transferInBackground(for uploadData: UploadProperties, withID uploadID: NSManagedObjectID) async throws(PwgKitError) {
         
         // Get URL of file to upload
         /// This file will be deleted once the transfer is completed successfully
-        let fileURL = getUploadFileURL(from: properties.localIdentifier, creationDate: properties.creationDate)
+        let fileURL = getUploadFileURL(from: uploadData.localIdentifier, creationDate: uploadData.creationDate)
         
         // Get content of file to upload
         /// https://developer.apple.com/forums/thread/115401
@@ -36,25 +36,26 @@ extension UploadManager {
         let chunksDiv: Float = Float(imageData.count) / Float(chunkSize)
         let chunks = Int(chunksDiv.rounded(.up))
         let chunksStr = String(format: "%ld", chunks)
-        if chunks == 0 || properties.fileName.isEmpty ||
-            properties.md5Sum.isEmpty || properties.category == 0 {
+        if chunks == 0 || uploadData.fileName.isEmpty ||
+            uploadData.md5Sum.isEmpty || uploadData.category == 0 {
             throw .missingUploadParameter
         }
-        
+                
         // Prepare upload URL
         guard let uploadUrl = URL(string: NetworkVars.shared.service + "/ws.php?format=json&method=\(pwgImagesUploadAsync)")
         else { preconditionFailure("!!! Invalid uploadAsync URL") }
         
         // Get credentials
-        let username = NetworkVars.shared.username
-        let serverPath = NetworkVars.shared.serverPath
-        let password = KeychainUtilities.password(forService: serverPath, account: username)
-        guard password.isEmpty == false
-        else { throw .emptyUsername }
-
+        var username, password: String
+        do {
+            (username, password) = try UserProvider().getCredentialsOfUser(withID: uploadData.userID, inContext: uploadBckgContext)
+        }
+        catch let error as PwgKitError { throw error }
+        catch { throw .otherError(innerError: error) }
+        
         // Prepare boundary, chunk size, creation date as Piwigo string
-        let boundary = createBoundary(from: properties.md5Sum)
-        let creationDate = DateUtilities.string(from: properties.creationDate)
+        let boundary = createBoundary(from: uploadData.md5Sum)
+        let creationDate = DateUtilities.string(from: uploadData.creationDate)
 
         // Loop over all chunks
         for chunk in 1...chunks {
@@ -62,13 +63,13 @@ extension UploadManager {
                 // Get HTTP request body
                 let httpBody = getHttpBodyForChunk(chunk, ofSize: chunkSize, chunks: chunksStr,
                                                    ofData: imageData, withDate: creationDate, boundary: boundary,
-                                                   for: username, password: password, uploadData: properties)
+                                                   for: username, password: password, uploadData: uploadData)
                 
                 // File name of chunk data stored into Piwigo/Uploads directory
                 // This file will be deleted after a successful upload of the chunk
                 let suffix = "." + chunkFormatter.string(from: NSNumber(value: chunk))!
-                let fileURL = getUploadFileURL(from: properties.localIdentifier, withSuffix: suffix,
-                                               creationDate: properties.creationDate, deleted: true)
+                let fileURL = getUploadFileURL(from: uploadData.localIdentifier, withSuffix: suffix,
+                                               creationDate: uploadData.creationDate, deleted: true)
                 
                 // Store chunk of image data into Piwigo/Uploads directory
                 do {
@@ -83,7 +84,7 @@ extension UploadManager {
                 // Prepare URL Request Object
                 let chunkStr = String(format: "%ld", chunk)
                 let request = getHttpRequestForChunk(chunkStr, ofChunks: chunksStr, with: boundary,
-                                                     for: uploadUrl, uploadData: properties, withID: uploadID)
+                                                     for: uploadUrl, uploadData: uploadData, withID: uploadID)
                 
                 // As soon as tasks are created, the timeout counter starts
                 let task = bckgSession.uploadTask(with: request, fromFile: fileURL)
