@@ -156,21 +156,7 @@ public final nonisolated class Upload: NSManagedObject, Identifiable {
             self.user = user
         }
     }
-    
-    /**
-     Updates the state of an Upload instance.
-     */
-    public func setState(_ state: pwgUploadState, error: PwgKitError? = nil) {
-        // State of upload request
-        requestState = state.rawValue
         
-        // Section into which the upload request belongs to
-        requestSectionKey = state.sectionKey
-        
-        // Error message description
-        requestError = error?.localizedDescription ?? ""
-    }
-    
     /**
         Delete files before deleting object
      */

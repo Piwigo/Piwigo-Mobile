@@ -210,21 +210,27 @@ public final class UploadProvider {
                 switch failedUpload.state {
                 case .uploading, .uploadingError:
                     // -> Will retry to transfer the image
-                    failedUpload.setState(.prepared)
+                    failedUpload.requestState = pwgUploadState.prepared.rawValue
+                    failedUpload.requestSectionKey = pwgUploadState.prepared.sectionKey
+                    failedUpload.requestError = ""
                     toTransfer.append(uploadID)
 
                 case .finishing, .finishingError:
                     // -> Will retry to finish the upload
-                    failedUpload.setState(.uploaded)
+                    failedUpload.requestState = pwgUploadState.uploaded.rawValue
+                    failedUpload.requestSectionKey = pwgUploadState.uploaded.sectionKey
+                    failedUpload.requestError = ""
                     toTransfer.append(uploadID)
                     
                 default:
                     // —> Will retry from scratch
-                    failedUpload.setState(.waiting)
+                    failedUpload.requestState = pwgUploadState.waiting.rawValue
+                    failedUpload.requestSectionKey = pwgUploadState.waiting.sectionKey
+                    failedUpload.requestError = ""
                     toPrepare.append(uploadID)
                 }
             }
-
+            
             // Save modifications from the context to the store
             taskContext.saveIfNeeded()
             
