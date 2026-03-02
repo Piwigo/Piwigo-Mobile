@@ -244,46 +244,7 @@ extension Upload {
             deleteImageAfterUpload: self.deleteImageAfterUpload,
             markedForAutoUpload: self.markedForAutoUpload)
     }
-
-    public func getProperties(with state: pwgUploadState, error: String) -> UploadProperties {
-        let tags = self.tags?.compactMap({$0}) ?? []
-        let newTagIds = String(tags.map({"\($0.tagId),"}).reduce("", +).dropLast(1))
-        return UploadProperties(
-            localIdentifier: self.localIdentifier,
-            
-            // Category ID of the album to upload to
-            category: self.category,
-            
-            // Server parameters
-            serverPath: self.user?.server?.path ?? NetworkVars.shared.serverPath,
-            serverFileTypes: self.user?.server?.fileTypes ?? NetworkVars.shared.serverFileTypes,
-            
-            // Upload request date, state and error
-            requestDate: self.requestDate, requestState: state, requestError: error,
-            
-            // Photo creation date and filename
-            creationDate: self.creationDate,
-            fileName: self.fileName,
-            fileNameExtensionCase: self.fileNameExtensionCase,
-            fileNamePrefixEncodedActions: self.fileNamePrefixEncodedActions,
-            fileNameReplaceEncodedActions: self.fileNameReplaceEncodedActions,
-            fileNameSuffixEncodedActions: self.fileNameSuffixEncodedActions,
-            fileType: self.fileType, mimeType: self.mimeType, md5Sum: self.md5Sum,
-            
-            // Photo author name defaults to name entered in Settings
-            author: self.author, privacyLevel: self.privacy,
-            imageTitle: self.imageName, comment: self.comment,
-            tagIds: newTagIds, imageId: self.imageId,
-            
-            // Upload settings
-            stripGPSdataOnUpload: self.stripGPSdataOnUpload,
-            resizeImageOnUpload: self.resizeImageOnUpload,
-            photoMaxSize: self.photoMaxSize, videoMaxSize: self.videoMaxSize,
-            compressImageOnUpload: self.compressImageOnUpload, photoQuality: self.photoQuality,
-            deleteImageAfterUpload: self.deleteImageAfterUpload,
-            markedForAutoUpload: self.markedForAutoUpload)
-    }
-
+    
     @objc(addUploadsObject:)
     @NSManaged public func addToUploads(_ value: Upload)
 
