@@ -98,7 +98,7 @@ public final class TagProvider {
 
         var tagToDeleteIDs = Set<Int32>()
 
-        // taskContext.performAndWait runs on the URLSession's delegate queue
+        // Runs on the URLSession's delegate queue
         // so it won’t block the main thread.
         let bckgContext = DataController.shared.newTaskContext()
         try bckgContext.performAndWait {

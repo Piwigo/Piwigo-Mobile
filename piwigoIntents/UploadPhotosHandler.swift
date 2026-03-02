@@ -1,5 +1,5 @@
 //
-//  AutoUploadPhotosHandler.swift
+//  UploadPhotosHandler.swift
 //  piwigoIntents
 //
 //  Created by Eddy Lelièvre-Berna on 03/06/2021.

@@ -25,6 +25,7 @@ extension UploadManager
         // Retrieve upload request in context of actor
         guard let upload = try? self.uploadBckgContext.existingObject(with: uploadID) as? Upload
         else {
+            // Process next upload if any
             UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Could not retrieve upload request for preparation!")
             return
         }

@@ -84,7 +84,7 @@ public final class UserProvider {
     
     func updateUser(withID objectID: NSManagedObjectID, status: Bool,
                     inContext taskContext: NSManagedObjectContext) {
-        
+        // Do {} below is used to allow typed throws
         do {
             guard let user = try taskContext.existingObject(with: objectID) as? User
             else { return }
