@@ -356,6 +356,8 @@ public final class UploadProvider {
             // Fetch objects
             debugPrint("In getIDsOfPendingUploads > Task.currentPriority: \(Task.currentPriority)")
             let pendingUploads: [Upload] = (try? taskContext.fetch(fetchRequest) as [Upload]) ?? []
+
+            // Select only those in wanted states
             if let states {
                 let uploads = pendingUploads.filter({ states.contains($0.state) })
                 let localIdentifiers: [String] = uploads.map({ $0.localIdentifier })
@@ -371,7 +373,8 @@ public final class UploadProvider {
     /**
         Retrieve IDs of completed upload requests marked for deletion on the uploadKit private queue
      */
-    public func getIDsOfCompletedUploads(inContext taskContext: NSManagedObjectContext) -> ([NSManagedObjectID], [String])
+    public func getIDsOfCompletedUploads(onlyInStates states: [pwgUploadState]? = nil, deletable: Bool,
+                                         inContext taskContext: NSManagedObjectContext) -> ([NSManagedObjectID], [String])
     {
         taskContext.performAndWait { () -> ([NSManagedObjectID], [String]) in
             
@@ -388,13 +391,20 @@ public final class UploadProvider {
             
             // Fetch objects
             let completedUploads: [Upload] = (try? taskContext.fetch(fetchRequest) as [Upload]) ?? []
-            let deletableIDs: [Upload] = completedUploads.filter({ $0.deleteImageAfterUpload })
+
+            // Select those which are deletable or not
+            let filteredUploads = deletable ? completedUploads.filter({ $0.deleteImageAfterUpload }) : completedUploads
             
-            // Select those which should be deleted
-            let uploadIDs: [NSManagedObjectID] = deletableIDs.map({ $0.objectID })
-            let localIdentifiers: [String] = deletableIDs.map({ $0.localIdentifier })
-            
-            return (uploadIDs, localIdentifiers)
+            // Select only those in wanted states
+            if let states {
+                let uploads = filteredUploads.filter({ states.contains($0.state) })
+                let localIdentifiers: [String] = uploads.map({ $0.localIdentifier })
+                return (uploads.map(\.objectID), localIdentifiers)
+            } else {
+                let uploads = filteredUploads
+                let localIdentifiers: [String] = uploads.map({ $0.localIdentifier })
+                return (uploads.map(\.objectID), localIdentifiers)
+            }
         }
     }
     

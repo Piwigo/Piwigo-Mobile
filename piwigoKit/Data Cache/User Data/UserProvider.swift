@@ -39,6 +39,25 @@ public final class UserProvider {
         return fetchRequest
     }
     
+    public func getPropertiesOfUser(withID userURIstr: String,
+                                    inContext taskContext: NSManagedObjectContext) throws(PwgKitError) -> UserProperties {
+        do {
+            // Synchronous execution
+            return try taskContext.performAndWait { () -> UserProperties in
+                // Retrieve User instrance
+                guard let userURI = URL(string: userURIstr),
+                      let userID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: userURI),
+                      let user = try taskContext.existingObject(with: userID) as? User
+                else { throw PwgKitError.emptyUsername }
+
+                // Extract properties
+                return user.getProperties()
+            }
+        }
+        catch let error as PwgKitError { throw error }
+        catch { throw PwgKitError.otherError(innerError: error) }
+    }
+    
     public func getUserAccount(of username: String = NetworkVars.shared.user,
                                ofServerAtPath path: String = NetworkVars.shared.serverPath,
                                inContext taskContext: NSManagedObjectContext,
