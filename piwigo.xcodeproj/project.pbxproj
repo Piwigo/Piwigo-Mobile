@@ -146,6 +146,7 @@
 		AD27A16F24C44EEC000AD203 /* EditImageThumbTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD27A16E24C44EEC000AD203 /* EditImageThumbTableViewCell.xib */; };
 		AD27B85D25A22A2400528F5F /* ShareImageActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD27B85C25A22A2400528F5F /* ShareImageActivityItemProvider.swift */; };
 		AD27B87325A7A91800528F5F /* ShareUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD27B87225A7A91800528F5F /* ShareUtilities.swift */; };
+		AD282BA82F577D2900A3B4FD /* UserProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD282BA72F577D2900A3B4FD /* UserProperties.swift */; };
 		AD2913E926696A9500403026 /* NetworkVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD97CFB7265B0DBE00719ED5 /* NetworkVars.swift */; };
 		AD29BC972A4B73B400777390 /* pwg.tags.getAdminList2.json in Resources */ = {isa = PBXBuildFile; fileRef = AD29BC962A4B73B400777390 /* pwg.tags.getAdminList2.json */; };
 		AD2A21FE24310E65006B1A8A /* SelectPrivacyViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2A21FD24310E65006B1A8A /* SelectPrivacyViewController.storyboard */; };
@@ -915,6 +916,7 @@
 		AD27A16E24C44EEC000AD203 /* EditImageThumbTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditImageThumbTableViewCell.xib; sourceTree = "<group>"; };
 		AD27B85C25A22A2400528F5F /* ShareImageActivityItemProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareImageActivityItemProvider.swift; sourceTree = "<group>"; };
 		AD27B87225A7A91800528F5F /* ShareUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareUtilities.swift; sourceTree = "<group>"; };
+		AD282BA72F577D2900A3B4FD /* UserProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProperties.swift; sourceTree = "<group>"; };
 		AD2913B32669440000403026 /* Intents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
 		AD29BC962A4B73B400777390 /* pwg.tags.getAdminList2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.tags.getAdminList2.json; sourceTree = "<group>"; };
 		AD2A21FD24310E65006B1A8A /* SelectPrivacyViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SelectPrivacyViewController.storyboard; sourceTree = "<group>"; };
@@ -2429,6 +2431,7 @@
 			children = (
 				AD98E53028BB8C3A008C846A /* User+CoreDataClass.swift */,
 				AD98E53128BB8C3A008C846A /* User+CoreDataProperties.swift */,
+				AD282BA72F577D2900A3B4FD /* UserProperties.swift */,
 				AD98E53628BBC94E008C846A /* UserProvider.swift */,
 			);
 			path = "User Data";
@@ -3823,6 +3826,7 @@
 				AD0B62ED2DEAFA46001E9684 /* UploadRenameAction+Separator.swift in Sources */,
 				AD35C2112849CB8300FCBDD1 /* pwg.categories.add.swift in Sources */,
 				AD7A8FEE28494E1A00171592 /* pwg.categories.setInfo.swift in Sources */,
+				AD282BA82F577D2900A3B4FD /* UserProperties.swift in Sources */,
 				AD5A31672847F9BD00948FEE /* pwg.categories.move.swift in Sources */,
 				AD7A8FEB284944EA00171592 /* pwg.categories.delete.swift in Sources */,
 				ADB2C3D3291D9967009542FB /* pwg.categories.calculateOrphans.swift in Sources */,
