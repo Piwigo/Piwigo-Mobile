@@ -118,4 +118,13 @@ extension User {
         }
         return true
     }
+    
+    public func getProperties() -> UserProperties {
+        return UserProperties(
+            pwgID: self.id,
+            username: self.username, name: self.name, email: self.email, status: self.status,
+            recentPeriod: self.recentPeriod,
+            registrationDate: self.registrationDate, lastUsed: self.lastUsed,
+            uploadRights: self.uploadRights, downloadRights: self.downloadRights)
+    }
 }
