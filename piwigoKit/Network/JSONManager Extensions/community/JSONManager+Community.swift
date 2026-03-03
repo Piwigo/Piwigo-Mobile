@@ -48,7 +48,7 @@ public extension JSONManager {
         var validatedIDs = [Int64]()
         pwgData.data.forEach { (pendingData) in
             if let imageIDstr = pendingData.id, let imageID = Int64(imageIDstr),
-               let pendingState = pendingData.state, pendingState == "validated" {
+               let pendingState = pendingData.state, ["moderation_pending", "validated"].contains(pendingState) {
                 validatedIDs.append(imageID)
             }
         }
