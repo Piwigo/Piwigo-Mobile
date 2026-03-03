@@ -74,21 +74,17 @@ public final class UserProvider {
                 return newUser
             }
         }
-        catch let error as PwgKitError {
-            throw error
-        }
-        catch {
-            throw PwgKitError.otherError(innerError: error)
-        }
+        catch let error as PwgKitError { throw error }
+        catch { throw PwgKitError.otherError(innerError: error) }
     }
     
-    func updateUser(withID objectID: NSManagedObjectID, status: Bool,
+    func updateUser(withID userID: NSManagedObjectID, status: Bool,
                     inContext taskContext: NSManagedObjectContext) {
         // Do {} below is used to allow typed throws
         do {
             try taskContext.performAndWait {
                 // Retrieve User instrance
-                guard let user = try taskContext.existingObject(with: objectID) as? User
+                guard let user = try taskContext.existingObject(with: userID) as? User
                 else { return }
                 
                 // Update date
@@ -103,9 +99,7 @@ public final class UserProvider {
                 taskContext.saveIfNeeded()
             }
         }
-        catch {
-            print("Error updating User: \(error)")
-        }
+        catch { print("Error updating User: \(error)") }
     }
     
     public func getCredentialsOfUser(withID userID: String,

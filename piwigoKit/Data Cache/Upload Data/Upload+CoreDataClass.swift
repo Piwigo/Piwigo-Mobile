@@ -237,7 +237,7 @@ extension Upload {
             tagIds: newTagIds, imageId: self.imageId,
             
             // Upload settings
-            userID: user?.objectID.uriRepresentation().absoluteString ?? "",
+            userURIstr: user?.objectID.uriRepresentation().absoluteString ?? "",
             stripGPSdataOnUpload: self.stripGPSdataOnUpload,
             resizeImageOnUpload: self.resizeImageOnUpload,
             photoMaxSize: self.photoMaxSize, videoMaxSize:self.videoMaxSize,

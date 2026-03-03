@@ -48,7 +48,7 @@ extension UploadManager {
         // Get credentials
         var username, password: String
         do {
-            (username, password) = try UserProvider().getCredentialsOfUser(withID: uploadData.userID, inContext: uploadBckgContext)
+            (username, password) = try UserProvider().getCredentialsOfUser(withID: uploadData.userURIstr, inContext: uploadBckgContext)
         }
         catch let error as PwgKitError { throw error }
         catch { throw .otherError(innerError: error) }
@@ -291,8 +291,8 @@ extension UploadManager {
             await finishTransferOfUpload(withID: uploadID)
             
             // Add uploaded image to cache and update UI if needed
-            if let objectURI = URL(string: uploadData.userID),
-               let userID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI),
+            if let userURI = URL(string: uploadData.userURIstr),
+               let userID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: userURI),
                let user = try? uploadBckgContext.existingObject(with: userID) as? User,
                user.hasAdminRights {
                 getInfos.fixingUnknowns()

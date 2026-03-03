@@ -379,8 +379,8 @@ extension UploadManager
         
         // Get album current counter value
         var currentCounter = UploadVars.shared.categoryCounterInit
-        if let objectURI = URL(string: uploadData.userID),
-            let userID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI),
+        if let userURI = URL(string: uploadData.userURIstr),
+            let userID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: userURI),
             let user = try? uploadBckgContext.existingObject(with: userID) as? User,
             let album = try? AlbumProvider().getAlbum(ofUser: user, withId: uploadData.category) {
             // Album available ► Get current counter

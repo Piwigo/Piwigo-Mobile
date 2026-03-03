@@ -38,7 +38,7 @@ public struct UploadProperties: Sendable
     public var tagIds: String                       // List of tag IDs
     public var imageId: Int64                       // 1042
 
-    public var userID: String                       // User instance objectID
+    public var userURIstr: String                   // User instance URI string
     public var stripGPSdataOnUpload: Bool
     public var resizeImageOnUpload: Bool
     public var photoMaxSize: Int16
@@ -90,7 +90,7 @@ extension UploadProperties {
             imageTitle: "", comment: "", tagIds: "", imageId: Int64.min,
             
             // Upload settings
-            userID: "",
+            userURIstr: "",
             stripGPSdataOnUpload: UploadVars.shared.stripGPSdataOnUpload,
             resizeImageOnUpload: UploadVars.shared.resizeImageOnUpload,
             photoMaxSize: UploadVars.shared.photoMaxSize,
