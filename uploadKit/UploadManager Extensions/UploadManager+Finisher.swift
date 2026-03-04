@@ -97,7 +97,7 @@ extension UploadManager {
         
         // Are there uploaded images to moderate?
         // Considers only uploads to the server to which the user is logged in
-        let (finishedID, _) = UploadProvider().getIDsOfCompletedUploads(onlyInStates: [.finished], deletable: false, inContext: self.uploadBckgContext)
+        let (finishedID, _) = UploadProvider().getIDsOfCompletedUploads(onlyInStates: [.finished], inContext: self.uploadBckgContext)
         if finishedID.isEmpty { return }
         
         // Get user properties

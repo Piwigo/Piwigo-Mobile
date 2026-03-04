@@ -78,7 +78,7 @@ extension UploadManager
         
         // Propose to delete uploaded images of the photo Library once a day
         // or immediately if there is no pending upload request, if any
-        let (uploadIDs, localIdentifiers) = UploadProvider().getIDsOfCompletedUploads(deletable: true, inContext: self.uploadBckgContext)
+        let (uploadIDs, localIdentifiers) = UploadProvider().getIDsOfCompletedUploads(onlyDeletable: true, inContext: self.uploadBckgContext)
         UploadManager.logger.notice("Resuming uploads: \(uploadIDs.count) assets for deletion in the Photo Library")
         let deadline = DateUtilities.nextDayAt4AM(after: UploadVars.shared.dateOfLastPhotoLibraryDeletion)
         if uploadIDs.isEmpty == false && (nberOfPendingUploads == 0 || Date.now > deadline) {

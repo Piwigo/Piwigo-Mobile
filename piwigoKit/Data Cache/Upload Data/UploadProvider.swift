@@ -373,7 +373,7 @@ public final class UploadProvider {
     /**
         Retrieve IDs of completed upload requests marked for deletion on the uploadKit private queue
      */
-    public func getIDsOfCompletedUploads(onlyInStates states: [pwgUploadState]? = nil, deletable: Bool,
+    public func getIDsOfCompletedUploads(onlyInStates states: [pwgUploadState]? = nil, onlyDeletable: Bool = false,
                                          inContext taskContext: NSManagedObjectContext) -> ([NSManagedObjectID], [String])
     {
         taskContext.performAndWait { () -> ([NSManagedObjectID], [String]) in
@@ -393,7 +393,7 @@ public final class UploadProvider {
             let completedUploads: [Upload] = (try? taskContext.fetch(fetchRequest) as [Upload]) ?? []
 
             // Select those which are deletable or not
-            let filteredUploads = deletable ? completedUploads.filter({ $0.deleteImageAfterUpload }) : completedUploads
+            let filteredUploads = onlyDeletable ? completedUploads.filter({ $0.deleteImageAfterUpload }) : completedUploads
             
             // Select only those in wanted states
             if let states {
