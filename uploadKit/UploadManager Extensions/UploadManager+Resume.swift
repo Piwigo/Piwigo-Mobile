@@ -242,15 +242,13 @@ extension UploadManager
     
     public func deleteImpossibleUploads() {
         // Collect failed uploads
-        let pending = (try? self.uploadBckgContext.fetch(fetchPendingRequest)) ?? []
         let states: [pwgUploadState] = [.preparingFail, .formatError,
                                         .uploadingFail, .finishingFail]
-        let toDelete = pending.filter({states.contains($0.state)})
+        let toDeleteUploadIDs = UploadProvider().getIDsOfPendingUploads(onlyInStates: states, inContext: self.uploadBckgContext).0
         
         // Delete uploads
-        let toDeleteUploadIDs = Set(toDelete.map(\.objectID))
         try? UploadProvider().deleteUploads(withID: Array(toDeleteUploadIDs))
-
+        
         // Update counter and app badge
         self.updateNberOfUploadsToComplete()
     }
