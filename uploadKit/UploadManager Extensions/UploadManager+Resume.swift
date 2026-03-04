@@ -229,17 +229,12 @@ extension UploadManager
         if imageIDs.isEmpty { return }
         
         // Collect upload requests of deleted images
-        let pending = (try? self.uploadBckgContext.fetch(fetchPendingRequest)) ?? []
-        var toDelete = pending.filter({imageIDs.contains($0.imageId)})
-        let completed = (try? self.uploadBckgContext.fetch(fetchCompletedRequest)) ?? []
-        toDelete.append(contentsOf: completed.filter({imageIDs.contains($0.imageId)}))
-        
-        // Keep auto-upload requests so that they are not re-uploaded
-        toDelete.removeAll(where: {$0.markedForAutoUpload == true})
-        
+        // but keep auto-upload requests so that they are not re-uploaded
+        var toDeleteIDs: Set<NSManagedObjectID> = Set( UploadProvider().getIDsOfPendingUploads(onlyImages: imageIDs, inContext: self.uploadBckgContext).0 )
+        toDeleteIDs.formUnion(UploadProvider().getIDsOfCompletedUploads(onlyImages: imageIDs, onlyDeletable: true, inContext: self.uploadBckgContext).0)
+                
         // Delete uploads
-        let uploadIDsToDelete = Set(toDelete.map(\.objectID))
-        try? UploadProvider().deleteUploads(withID: Array(uploadIDsToDelete))
+        try? UploadProvider().deleteUploads(withID: Array(toDeleteIDs))
         
         // Update counter and app badge
         self.updateNberOfUploadsToComplete()
