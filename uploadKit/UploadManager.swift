@@ -108,27 +108,7 @@ public final class UploadManager {
         return fetchRequest
     }()
     
-    lazy var completedPredicate: NSPredicate = {
-        var andPredicates = accountPredicates
-        let states: [pwgUploadState] = [.finished, .moderated]
-        andPredicates.append(NSPredicate(format: "requestState IN %@", states.map({$0.rawValue})))
-        return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-    }()
     
-    lazy var fetchCompletedRequest: NSFetchRequest = {
-        let fetchRequest = Upload.fetchRequest()
-        fetchRequest.sortDescriptors = sortDescriptors
-        
-        // Retrieves only completed upload requests
-        let variables = ["serverPath" : NetworkVars.shared.serverPath,
-                         "userName"   : NetworkVars.shared.user]
-        fetchRequest.predicate = completedPredicate.withSubstitutionVariables(variables)
-        fetchRequest.returnsObjectsAsFaults = false
-        fetchRequest.shouldRefreshRefetchedObjects = true
-        return fetchRequest
-    }()
-    
-
     // MARK: - CoreData Utilities
     public func importUploads(from uploadRequest: [UploadProperties]) async throws -> [NSManagedObjectID] {
         return try await UploadProvider().importUploads(from: uploadRequest, inContext: uploadBckgContext)
