@@ -338,6 +338,7 @@ public final class UploadProvider {
         Retrieve IDs of upload pending requests in given states on the uploadKit private queue
      */
     public func getIDsOfPendingUploads(onlyInStates states: [pwgUploadState] = [], onlyImages: [Int64] = [],
+                                       onlyDeletable: Bool = false,
                                        inContext taskContext: NSManagedObjectContext) -> ([NSManagedObjectID], [String])
     {
         taskContext.performAndWait { () -> ([NSManagedObjectID], [String]) in
@@ -357,9 +358,12 @@ public final class UploadProvider {
             debugPrint("In getIDsOfPendingUploads > Task.currentPriority: \(Task.currentPriority)")
             let pendingUploads: [Upload] = (try? taskContext.fetch(fetchRequest) as [Upload]) ?? []
 
-            // Select upload requests in wanted states
-            let uploadsInStates = states.isEmpty ? pendingUploads : pendingUploads.filter({ states.contains($0.state) })
+            // Select those which are deletable or not
+            let deletableUploads = onlyDeletable ? pendingUploads.filter({ $0.deleteImageAfterUpload }) : pendingUploads
             
+            // Select only those in wanted states
+            let uploadsInStates = states.isEmpty ? deletableUploads : deletableUploads.filter({ states.contains($0.state) })
+
             // Select those related with given Piwigo images
             let uploads = onlyImages.isEmpty ? uploadsInStates : uploadsInStates.filter({ onlyImages.contains($0.imageId) })
             
