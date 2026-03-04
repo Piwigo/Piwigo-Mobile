@@ -85,11 +85,9 @@ extension UploadManager {
         }
 
         // Collect localIdentifiers of uploaded and not yet uploaded images in the Upload cache
-        let pending = (try? uploadBckgContext.fetch(fetchPendingRequest)) ?? []
-        let completed = (try? uploadBckgContext.fetch(fetchCompletedRequest)) ?? []
-        var imageIDs = pending.map({$0.localIdentifier})
-        imageIDs.append(contentsOf: completed.map({$0.localIdentifier}))
-
+        var imageIDs = Set( UploadProvider().getIDsOfPendingUploads(inContext: self.uploadBckgContext).1 )
+        imageIDs.formUnion(Set( UploadProvider().getIDsOfCompletedUploads(inContext: self.uploadBckgContext).1 ))
+        
         // Determine which local images are still not considered for upload
         var uploadRequestsToAppend = [UploadProperties]()
         fetchedImages.enumerateObjects { image, _, stop in
