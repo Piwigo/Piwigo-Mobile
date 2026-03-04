@@ -337,7 +337,7 @@ public final class UploadProvider {
     /**
         Retrieve IDs of upload pending requests in given states on the uploadKit private queue
      */
-    public func getIDsOfPendingUploads(onlyInStates states: [pwgUploadState]? = nil,
+    public func getIDsOfPendingUploads(onlyInStates states: [pwgUploadState] = [], onlyImages: [Int64] = [],
                                        inContext taskContext: NSManagedObjectContext) -> ([NSManagedObjectID], [String])
     {
         taskContext.performAndWait { () -> ([NSManagedObjectID], [String]) in
@@ -357,23 +357,22 @@ public final class UploadProvider {
             debugPrint("In getIDsOfPendingUploads > Task.currentPriority: \(Task.currentPriority)")
             let pendingUploads: [Upload] = (try? taskContext.fetch(fetchRequest) as [Upload]) ?? []
 
-            // Select only those in wanted states
-            if let states {
-                let uploads = pendingUploads.filter({ states.contains($0.state) })
-                let localIdentifiers: [String] = uploads.map({ $0.localIdentifier })
-                return (uploads.map(\.objectID), localIdentifiers)
-            } else {
-                let uploads = pendingUploads
-                let localIdentifiers: [String] = uploads.map({ $0.localIdentifier })
-                return (uploads.map(\.objectID), localIdentifiers)
-            }
+            // Select upload requests in wanted states
+            let uploadsInStates = states.isEmpty ? pendingUploads : pendingUploads.filter({ states.contains($0.state) })
+            
+            // Select those related with given Piwigo images
+            let uploads = onlyImages.isEmpty ? uploadsInStates : uploadsInStates.filter({ onlyImages.contains($0.imageId) })
+            
+            // Return objectIDs and localIdentifiers
+            return (uploads.map(\.objectID), uploads.map({ $0.localIdentifier }))
         }
     }
     
     /**
         Retrieve IDs of completed upload requests marked for deletion on the uploadKit private queue
      */
-    public func getIDsOfCompletedUploads(onlyInStates states: [pwgUploadState]? = nil, onlyDeletable: Bool = false,
+    public func getIDsOfCompletedUploads(onlyInStates states: [pwgUploadState] = [], onlyImages: [Int64] = [],
+                                         onlyDeletable: Bool = false,
                                          inContext taskContext: NSManagedObjectContext) -> ([NSManagedObjectID], [String])
     {
         taskContext.performAndWait { () -> ([NSManagedObjectID], [String]) in
@@ -390,21 +389,20 @@ public final class UploadProvider {
             fetchRequest.shouldRefreshRefetchedObjects = true
             
             // Fetch objects
+            debugPrint("In getIDsOfCompletedUploads > Task.currentPriority: \(Task.currentPriority)")
             let completedUploads: [Upload] = (try? taskContext.fetch(fetchRequest) as [Upload]) ?? []
-
+            
             // Select those which are deletable or not
-            let filteredUploads = onlyDeletable ? completedUploads.filter({ $0.deleteImageAfterUpload }) : completedUploads
+            let deletableUploads = onlyDeletable ? completedUploads.filter({ $0.deleteImageAfterUpload }) : completedUploads
             
             // Select only those in wanted states
-            if let states {
-                let uploads = filteredUploads.filter({ states.contains($0.state) })
-                let localIdentifiers: [String] = uploads.map({ $0.localIdentifier })
-                return (uploads.map(\.objectID), localIdentifiers)
-            } else {
-                let uploads = filteredUploads
-                let localIdentifiers: [String] = uploads.map({ $0.localIdentifier })
-                return (uploads.map(\.objectID), localIdentifiers)
-            }
+            let uploadsInStates = states.isEmpty ? deletableUploads : deletableUploads.filter({ states.contains($0.state) })
+            
+            // Select those related with given Piwigo images
+            let uploads = onlyImages.isEmpty ? uploadsInStates : uploadsInStates.filter({ onlyImages.contains($0.imageId) })
+            
+            // Return objectIDs and localIdentifiers
+            return (uploads.map(\.objectID), uploads.map({ $0.localIdentifier }))
         }
     }
     
