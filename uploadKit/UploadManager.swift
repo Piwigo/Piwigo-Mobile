@@ -65,47 +65,10 @@ public final class UploadManager {
     }
     
     
-    // MARK: - CoreData Object Context
+    // MARK: - CoreData Context
     public lazy var uploadBckgContext: NSManagedObjectContext = {
         debugPrint("In uploadBckgContext ► Thread priority: \(Task.currentPriority)")
         return DataController.shared.newTaskContext()
-    }()
-    
-    
-    // MARK: - CoreData Source
-    private lazy var sortDescriptors: [NSSortDescriptor] = {
-        // Priority to uploads requested manually, oldest ones first
-        var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
-        sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
-        return sortDescriptors
-    }()
-    
-    private lazy var accountPredicates: [NSPredicate] = {
-        var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == $serverPath"))
-        andPredicates.append(NSPredicate(format: "user.username == $userName"))
-        return andPredicates
-    }()
-    
-    lazy var pendingPredicate: NSPredicate = {
-        // Retrieves only non-completed upload requests
-        var andPredicates = accountPredicates
-        let unwantedStates: [pwgUploadState] = [.finished, .moderated]
-        andPredicates.append(NSPredicate(format: "NOT (requestState IN %@)", unwantedStates.map({$0.rawValue})))
-        return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-    }()
-    
-    lazy var fetchPendingRequest: NSFetchRequest = {
-        let fetchRequest = Upload.fetchRequest()
-        fetchRequest.sortDescriptors = sortDescriptors
-        
-        // Retrieves only non-completed upload requests
-        let variables = ["serverPath" : NetworkVars.shared.serverPath,
-                         "userName"   : NetworkVars.shared.user]
-        fetchRequest.predicate = pendingPredicate.withSubstitutionVariables(variables)
-        fetchRequest.returnsObjectsAsFaults = false
-        fetchRequest.shouldRefreshRefetchedObjects = true
-        return fetchRequest
     }()
     
     
