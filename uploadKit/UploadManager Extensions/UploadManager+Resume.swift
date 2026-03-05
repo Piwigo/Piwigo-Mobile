@@ -109,61 +109,6 @@ extension UploadManager
         await UploadManagerActor.shared.processNextUpload()
     }
     
-//    public func launchUploadsIfNeeded() async {
-//        // Perform a fetch
-//        let pending = (try? self.uploadBckgContext.fetch(fetchPendingRequest)) ?? []
-//        
-//        // Update counter and app badge
-//        self.updateNberOfUploadsToComplete()
-//
-//        // Should we postpone uploads?
-//        if UploadVars.shared.isPaused ||
-//            UploadVars.shared.isExecutingBGUploadTask ||
-////            UploadVars.shared.isExecutingBGContinuedUploadTask ||
-//            ProcessInfo.processInfo.isLowPowerModeEnabled ||
-//            (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
-//            return
-//        }
-//        
-//        // Check whether too many transfers failed
-//        var states: [pwgUploadState] = [.preparingFail, .formatError, .uploadingFail, .finishingFail]
-//        let failedUploads = pending.filter({ states.contains($0.state) })
-//        if failedUploads.count >= maxNberOfFailedUploads { return }
-//                
-//        // Relaunch transfers if necessary and possible
-//        let transfersToRetry = pending.filter({ $0.state == .prepared }).map(\.objectID)
-//        if transfersToRetry.isEmpty == false {
-//            for uploadID in transfersToRetry {
-//                await transferOrCopyFileOfUpload(withID: uploadID)
-//            }
-//        }
-//        
-//        // Determine how many images are prepared or being prepared
-//        states = [.preparing, .prepared]
-//        let nberOfPreparations = pending.filter({ states.contains($0.state) }).count
-//        
-//        // Launch image preparations if necessary and possible
-//        if nberOfPreparations < maxNberOfPreparedUploads {
-//            let waitingImages = pending.filter({ $0.state == .waiting }).map(\.objectID)
-//            if waitingImages.isEmpty == false {
-//                let maxToLaunch = min(waitingImages.count, maxNberOfPreparedUploads - nberOfPreparations)
-//                for uploadID in waitingImages[0..<maxToLaunch] {
-//                    await prepareUpload(withID: uploadID)
-//                }
-//            }
-//        }
-//        
-//        // Empty Lounge?
-//        
-//        // No more image to transfer
-//        // Moderate images uploaded by Community regular user
-//        // Considers only uploads to the server to which the user is logged in
-//
-//        // Suggest to delete images from the Photo Library if the user wanted it.
-//        // The deletion is suggested when there is no more upload to perform.
-//        // Note that some uploads may have failed and wait a user decision.
-//    }
-    
     
     // MARK: - Clear Failed Uploads
     public func clearAllFailedUploads() async {
