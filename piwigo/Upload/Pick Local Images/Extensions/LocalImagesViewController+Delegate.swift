@@ -301,11 +301,6 @@ extension LocalImagesViewController: UICollectionViewDelegate
             let index = self.getImageIndex(for: indexPath)
             let imageAsset = self.fetchedImages[index]
             let uploadID = (self.uploads.fetchedObjects ?? []).filter({$0.localIdentifier == cell.localIdentifier}).first?.objectID
-            if let uploadID {
-                Task { @UploadManagerActor in
-                    UploadManager.shared.willDeleteAsssets(associatedToUploads: [uploadID])
-                }
-            }
             Task { @MainActor in
                 do {
                     // Delete image from Photo Library
@@ -316,7 +311,8 @@ extension LocalImagesViewController: UICollectionViewDelegate
                     // Delete associated upload request if any
                     if let uploadID {
                         Task { @UploadManagerActor in
-                            UploadManager.shared.deleteUploads([uploadID])
+                            // Delete upload requests w/o reporting potential error
+                            try? UploadProvider().deleteUploads(withID: [uploadID], inContext: UploadManager.shared.uploadBckgContext)
                         }
                     }
                 }

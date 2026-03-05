@@ -60,7 +60,7 @@ extension UploadManager
                 assetIDsToDelete.remove(at: index)
             }
         }
-        try? UploadProvider().deleteUploads(withID: toDeleteIDs)
+        try? UploadProvider().deleteUploads(withID: toDeleteIDs, inContext: self.uploadBckgContext)
         
         // Resume failed uploads
         await clearAllFailedUploads()
@@ -179,7 +179,7 @@ extension UploadManager
         toDeleteIDs.formUnion(UploadProvider().getIDsOfCompletedUploads(onlyImages: imageIDs, onlyDeletable: true, inContext: self.uploadBckgContext).0)
                 
         // Delete uploads
-        try? UploadProvider().deleteUploads(withID: Array(toDeleteIDs))
+        try? UploadProvider().deleteUploads(withID: Array(toDeleteIDs), inContext: self.uploadBckgContext)
         
         // Update counter and app badge
         self.updateNberOfUploadsToComplete()
@@ -192,7 +192,7 @@ extension UploadManager
         let toDeleteUploadIDs = UploadProvider().getIDsOfPendingUploads(onlyInStates: states, inContext: self.uploadBckgContext).0
         
         // Delete uploads
-        try? UploadProvider().deleteUploads(withID: Array(toDeleteUploadIDs))
+        try? UploadProvider().deleteUploads(withID: Array(toDeleteUploadIDs), inContext: self.uploadBckgContext)
         
         // Update counter and app badge
         self.updateNberOfUploadsToComplete()
@@ -227,38 +227,22 @@ extension UploadManager
 //        }
 //    }
     
-    public func willDeleteAsssets(associatedToUploads uploadIDs: [NSManagedObjectID]) {
-        // Remember which uploads are concerned to avoid duplicate deletions
-        isDeleting = Set(uploadIDs)
-    }
-    
-    public func deleteUploads(_ uploadIDs: [NSManagedObjectID]) {
-        // Empty array?
-        if uploadIDs.isEmpty {
-            self.isDeleting = Set()
-            return
-        }
-        
-        // Delete upload requests w/o reporting potential error
-        try? UploadProvider().deleteUploads(withID: uploadIDs)
-        self.isDeleting = Set()
-    }
-    
     public func disableDeleteAfterUpload(_ uploadIDs: [NSManagedObjectID]) {
         // Empty array?
         if uploadIDs.isEmpty {
-            self.isDeleting = Set()
             return
         }
         
         // Update upload requests
-        uploadIDs.forEach { id in
-            if let upload = try? self.uploadBckgContext.existingObject(with: id) as? Upload {
-                upload.deleteImageAfterUpload = false
+        var uploadDataToUpdate: [(NSManagedObjectID,UploadProperties)] = []
+        uploadIDs.forEach { uploadID in
+            if var uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID, inContext: self.uploadBckgContext) {
+                uploadData.deleteImageAfterUpload = false
+                uploadDataToUpdate.append((uploadID, uploadData))
             }
         }
-        uploadBckgContext.saveIfNeeded()
-        isDeleting = Set()
+        uploadDataToUpdate.forEach { (uploadID, uploadData) in
+            try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
+        }
     }
 }
-

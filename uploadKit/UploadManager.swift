@@ -26,14 +26,6 @@ public final class UploadManager {
     // for updating progress bars and managing tasks
     var transferCounters = [TransferCounter]()
     
-
-
-    
-    
-    
-
-    var isDeleting = Set<NSManagedObjectID>()               // IDs of uploads to be deleted
-    
     
     // MARK: - Upload Request States
     /** The manager prepares an image for upload and then launches the transfer.

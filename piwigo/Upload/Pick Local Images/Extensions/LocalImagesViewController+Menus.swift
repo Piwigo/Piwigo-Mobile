@@ -280,9 +280,6 @@ extension LocalImagesViewController {
             // Delete images and upload requests
             let uploadIDs = uploadsToDelete.map(\.objectID)
             let assetsToDelete = PHAsset.fetchAssets(withLocalIdentifiers: Array(assetIDsToDelete), options: nil)
-            Task { @UploadManagerActor in
-                UploadManager.shared.willDeleteAsssets(associatedToUploads: uploadIDs)
-            }
             Task { @MainActor in
                 do {
                     // Delete image from Photo Library
@@ -292,7 +289,8 @@ extension LocalImagesViewController {
                     
                     // Delete associated upload request if any
                     Task { @UploadManagerActor in
-                        UploadManager.shared.deleteUploads(uploadIDs)
+                        // Delete upload requests w/o reporting potential error
+                        try? UploadProvider().deleteUploads(withID: uploadIDs, inContext: UploadManager.shared.uploadBckgContext)
                     }
                 }
                 catch {

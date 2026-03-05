@@ -490,7 +490,7 @@ public final class UploadProvider {
      Delete a batch of upload requests from the Core Data store on a background queue.
      */
     public func deleteUploads(withID uploadIDs: [NSManagedObjectID],
-                              inContext taskContext: NSManagedObjectContext? = nil) throws(PwgKitError) {
+                              inContext taskContext: NSManagedObjectContext) throws(PwgKitError) {
         // Any upload request to delete?
         guard uploadIDs.isEmpty == false
         else { return }
@@ -500,12 +500,7 @@ public final class UploadProvider {
         
         // Execute batch delete request
         // Associated files will be deleted
-        if let taskContext {
-            try taskContext.executeAndMergeChanges(using: batchDeleteRequest)
-        } else {
-            let bckgContext = DataController.shared.newTaskContext()
-            try bckgContext.executeAndMergeChanges(using: batchDeleteRequest)
-        }
+        try taskContext.executeAndMergeChanges(using: batchDeleteRequest)
     }
     
     /**

@@ -606,7 +606,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     uploadIDs.append(uploadID)
                 }
             }
-            UploadManager.shared.willDeleteAsssets(associatedToUploads: uploadIDs)
         }
         
         // Retrieve assets
@@ -620,7 +619,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let myUploadIDs = uploadIDs
             Task { @UploadManagerActor in
                 if success {
-                    UploadManager.shared.deleteUploads(myUploadIDs)
+                    // Delete upload requests w/o reporting potential error
+                    try? UploadProvider().deleteUploads(withID: myUploadIDs, inContext: UploadManager.shared.uploadBckgContext)
                 } else {
                     UploadManager.shared.disableDeleteAfterUpload(myUploadIDs)
                 }
