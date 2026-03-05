@@ -229,9 +229,8 @@ extension UploadManager
     
     public func disableDeleteAfterUpload(_ uploadIDs: [NSManagedObjectID]) {
         // Empty array?
-        if uploadIDs.isEmpty {
-            return
-        }
+        guard uploadIDs.isEmpty == false
+        else { return }
         
         // Update upload requests
         var uploadDataToUpdate: [(NSManagedObjectID,UploadProperties)] = []
