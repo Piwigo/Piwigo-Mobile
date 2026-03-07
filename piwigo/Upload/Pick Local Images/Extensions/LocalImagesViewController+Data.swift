@@ -543,7 +543,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
             updateCellAndSectionHeader(for: upload)
         case .move:
             // User is trying re-uploading
-            guard let upload:Upload = anObject as? Upload, let indexPath, let newIndexPath else { return }
+            guard let upload:Upload = anObject as? Upload else { return }
 //            debugPrint("••> LocalImagesViewController: move upload \(upload.localIdentifier) in state \(upload.stateLabel) from \(indexPath) to \(newIndexPath)")
             
             // Get index of selected image if any and deselect it
