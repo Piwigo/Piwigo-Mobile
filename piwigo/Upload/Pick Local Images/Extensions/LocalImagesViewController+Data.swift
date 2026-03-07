@@ -504,7 +504,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
                 // Deselect image
                 selectedImages[index] = nil
             }
-
+            
             // Get index of image and update request in cache
             let fetchOptions = PHFetchOptions()
             fetchOptions.includeHiddenAssets = false
@@ -542,7 +542,22 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
             // Update corresponding cell
             updateCellAndSectionHeader(for: upload)
         case .move:
-            assertionFailure("••> LocalImagesViewController: Unexpected move!")
+            // User is trying re-uploading
+            guard let upload:Upload = anObject as? Upload, let indexPath, let newIndexPath else { return }
+//            debugPrint("••> LocalImagesViewController: move upload \(upload.localIdentifier) in state \(upload.stateLabel) from \(indexPath) to \(newIndexPath)")
+            
+            // Get index of selected image if any and deselect it
+            if let index = selectedImages.firstIndex(where: {$0?.localIdentifier == upload.localIdentifier}) {
+                // Deselect image
+                selectedImages[index] = nil
+            }
+
+            // Update upload in indexed upload queue
+            if let indexOfUploadedImage = indexedUploadsInQueue.firstIndex(where: {$0?.0 == upload.localIdentifier}) {
+                indexedUploadsInQueue[indexOfUploadedImage]?.1 = upload.state
+            }
+            // Update corresponding cell
+            updateCellAndSectionHeader(for: upload)
         case .update:
             // Update upload request and cell
             guard let upload:Upload = anObject as? Upload else { return }
