@@ -139,8 +139,8 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             failedUploadImage?.isHidden = true
         case .preparingFail, .preparingError, .formatError,
              .uploadingError, .uploadingFail, .finishingError, .finishingFail:
-            selectedIcon?.isHidden = true
-            darkenView?.isHidden = true
+            selectedIcon?.isHidden = !selected
+            darkenView?.isHidden = !selected
             uploadingProgress?.isHidden = true
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = false
