@@ -369,3 +369,15 @@ public final nonisolated class Image: NSManagedObject, Identifiable {
         }
     }
 }
+
+
+//extension Image
+//{
+//    func getProperties() -> ImageProperties
+//    {
+//        return ImageProperties(
+//            pwgID: self.pwgID,
+//            albumIDs: (self.albums ?? Set<Album>()).compactMap({ $0.pwgID })
+//        )
+//    }
+//}

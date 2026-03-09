@@ -50,6 +50,31 @@ public final class ImageProvider {
         return fetchRequest
     }
     
+//    public func getPropertiesOfImage(withID imageID: Int64,
+//                                     inContext taskContext: NSManagedObjectContext) throws(PwgKitError) -> ImageProperties?
+//    {
+//        var imageProperties: ImageProperties? = nil
+//        do {
+//            try taskContext.performAndWait { () throws -> Void in
+//                
+//                // Create a fetch request for the Album entity
+//                let fetchRequest = fetchRequestOfImage(inContext: taskContext, withIds: [imageID])
+//                
+//                // Return the Image entities if possible
+//                let images = try taskContext.fetch(fetchRequest)
+//                guard let image = images.first
+//                else { throw PwgKitError.imageNotFound }
+//                
+//                imageProperties = image.getProperties()
+//            }
+//        }
+//        catch let error as PwgKitError { throw error }
+//        catch let error as NSError { throw PwgKitError.CoreDataError(innerError: error)}
+//        catch let error { throw PwgKitError.otherError(innerError: error) }
+//        
+//        return imageProperties
+//    }
+    
     public func getImages(inContext taskContext: NSManagedObjectContext,
                           withIds imageIds: Set<Int64>) throws -> Set<Image> {
         
@@ -58,8 +83,8 @@ public final class ImageProvider {
             
             // Create a fetch request for the Album entity
             let fetchRequest = fetchRequestOfImage(inContext: taskContext, withIds: imageIds)
-
-            // Return the Album entity if possible
+            
+            // Return the Image entities if possible
             do {
                 let images = try taskContext.fetch(fetchRequest)
                 return Set(images)
