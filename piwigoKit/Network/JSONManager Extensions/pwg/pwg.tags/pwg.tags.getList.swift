@@ -66,7 +66,7 @@ public struct TagJSON: Decodable {
  A struct for decoding JSON returned by pwgTagsGetList or pwgTagsGetAdminList.
  All members are optional in case they are missing from the data.
 */
-public struct TagProperties: Decodable
+public struct TagProperties: Decodable, Sendable
 {
     public let id: StringOrInt?             // 2 or "2"
     public let name: String?                // "Birthday"

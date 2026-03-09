@@ -54,7 +54,7 @@ public enum StringOrBool: Codable, Sendable {
     }
 }
 
-public enum StringOrInt: Codable {
+public enum StringOrInt: Codable, Sendable {
     case integer(Int)
     case string(String)
 

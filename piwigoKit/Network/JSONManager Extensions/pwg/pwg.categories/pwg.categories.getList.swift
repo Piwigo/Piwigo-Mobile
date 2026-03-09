@@ -67,7 +67,7 @@ public struct CategoriesGetListJSON: Decodable {
     }
 }
 
-public struct CategoryData: Decodable
+public struct CategoryData: Decodable, Sendable
 {
     // The following data is returned by pwg.categories.getList
     public var id: Int32?                   // 32

@@ -57,7 +57,7 @@ public struct ImagesGetInfoJSON: Decodable {
     }
 }
 
-public struct ImagesGetInfo: Decodable
+public struct ImagesGetInfo: Decodable, Sendable
 {
     public let id: Int64?                       // 1042
     public var title: String?                   // "Title"
@@ -168,7 +168,7 @@ extension ImagesGetInfo {
     }
 }
 
-public struct Derivatives: Decodable {
+public struct Derivatives: Decodable, Sendable {
     public var squareImage: Derivative?
     public var thumbImage: Derivative?
     public var mediumImage: Derivative?
@@ -208,7 +208,7 @@ extension Derivatives {
     }
 }
 
-public struct Derivative: Decodable {
+public struct Derivative: Decodable, Sendable {
     public let url: String?
     public let width: StringOrInt?
     public let height: StringOrInt?
