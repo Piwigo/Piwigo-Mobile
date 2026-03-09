@@ -133,3 +133,15 @@ public final nonisolated class Album: NSManagedObject, Identifiable {
         }
     }
 }
+
+
+//extension Album
+//{
+//    public func getProperties() -> AlbumProperties {
+//        return AlbumProperties(
+//            pwgID: self.pwgID,
+//            
+//            images: (self.images ?? Set<Image>()).map { $0.pwgID }
+//        )
+//    }
+//}

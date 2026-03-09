@@ -31,6 +31,29 @@ public final class AlbumProvider {
         return fetchRequest
     }
     
+//    public func getPropertiesOfAlbum(withID pwgID: Int32, belogingToUser userURIstr: String,
+//                                     inContext taskContext: NSManagedObjectContext) throws(PwgKitError) -> AlbumProperties {
+//        do {
+//            // Synchronous execution
+//            return try taskContext.performAndWait { () -> AlbumProperties in
+//                // Retrieve User instrance
+//                guard let userURI = URL(string: userURIstr),
+//                      let userID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: userURI),
+//                      let user = try taskContext.existingObject(with: userID) as? User
+//                else { throw PwgKitError.emptyUsername }
+//
+//                // Retrieve album data
+//                guard let album = try getAlbum(ofUser: user, withId: pwgID)
+//                else { throw PwgKitError.albumNotFound }
+//                
+//                // Extract properties
+//                return album.getProperties()
+//            }
+//        }
+//        catch let error as PwgKitError { throw error }
+//        catch { throw PwgKitError.otherError(innerError: error) }
+//    }
+
     public func getAlbum(ofUser user: User, withId albumId: Int32, name: String = "") throws -> Album? {
         // Initialisation
         guard let taskContext = user.managedObjectContext
@@ -565,7 +588,7 @@ public final class AlbumProvider {
     // MARK: - Images Related Utilities
     /**
      Add/substract the number of moved images to
-     - the attibute 'nbImages' of the album.
+     - the attribute 'nbImages' of the album.
      - the attribute 'totalNbImages' of the album and its parent albums.
      N.B.: Parent albums are updated in the background.
      */
