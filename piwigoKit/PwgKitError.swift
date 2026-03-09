@@ -52,7 +52,8 @@ public enum PwgKitError: Error, Sendable {
     case fetchImageFailed
     case missingImageData
     case creationImageError
-    
+    case imageNotFound
+
     // Tag errors
     case fetchTagFailed
     case missingTagData
@@ -434,6 +435,9 @@ extension PwgKitError: LocalizedError {
         case .creationImageError:
             return String(localized: "CoreDataFetch_ImageCreateFailed", bundle: piwigoKit,
                           comment: "Failed to create a new Image object.")
+        case .imageNotFound:
+            return String(localized: "CoreData_ImageNotFound", bundle: piwigoKit,
+                          comment: "Image not in persistent cache.")
         
         // Tag errors
         case .fetchTagFailed:
