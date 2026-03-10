@@ -247,8 +247,10 @@ extension AlbumViewController
         }
         
         // Delete upload requests of images deleted from the Piwigo server
-        Task { @UploadManagerActor in
-            UploadManager.shared.deleteUploadsOfDeletedImages(withIDs: Array(imageIDs))
+        if imageIDs.isEmpty == false {
+            Task { @UploadManagerActor in
+                UploadManager.shared.deleteUploadsOfDeletedImages(withIDs: Array(imageIDs))
+            }
         }
     }
     
