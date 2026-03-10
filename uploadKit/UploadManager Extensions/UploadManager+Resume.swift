@@ -171,13 +171,11 @@ extension UploadManager
     
     // MARK: - Delete Upload Requests
     public func deleteUploadsOfDeletedImages(withIDs imageIDs: [Int64]) {
-        if imageIDs.isEmpty { return }
-        
         // Collect upload requests of deleted images
         // but keep auto-upload requests so that they are not re-uploaded
         var toDeleteIDs: Set<NSManagedObjectID> = Set( UploadProvider().getIDsOfPendingUploads(onlyImages: imageIDs, inContext: self.uploadBckgContext).0 )
-        toDeleteIDs.formUnion(UploadProvider().getIDsOfCompletedUploads(onlyImages: imageIDs, onlyDeletable: true, inContext: self.uploadBckgContext).0)
-                
+        toDeleteIDs.formUnion(UploadProvider().getIDsOfCompletedUploads(onlyImages: imageIDs, inContext: self.uploadBckgContext).0)
+        
         // Delete uploads
         try? UploadProvider().deleteUploads(withID: Array(toDeleteIDs), inContext: self.uploadBckgContext)
         
