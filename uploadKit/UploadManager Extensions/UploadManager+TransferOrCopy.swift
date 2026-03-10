@@ -54,7 +54,7 @@ extension UploadManager {
             // Check whether an image with that MD5 checksum exists on the server
             if let imageID = try await JSONManager.shared.getIDofImage(withMD5: uploadData.md5Sum) {
                 // Already stored on the Piwigo server ► Copy to Album
-                try await copyImageWithID(imageID, for: uploadData)
+                try await copyImageWithID(imageID, for: uploadData, withID: uploadID)
             }
             else {
                 // Upload new image to the Piwigo server
@@ -94,98 +94,78 @@ extension UploadManager {
         await UploadManagerActor.shared.processNextUpload()
     }
     
-    func copyImageWithID(_ imageID: Int64, for properties: UploadProperties) async throws(PwgKitError) {
-        // Get complete image data from server
-//        try await ImageProvider().getInfos(forID: imageID, inCategoryId: properties.category)
-//        
-//        // Update UploadQueue cell and button shown in root album (or default album)
-//        await MainActor.run {
-//            let uploadInfo: [String : Any] = ["localIdentifier" : properties.localIdentifier,
-//                                              "progressFraction" : 0.5]
-//            NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
-//        }
-//
-//        // Check user entity
+    func copyImageWithID(_ imageID: Int64, for properties: UploadProperties,
+                         withID uploadID: NSManagedObjectID) async throws(PwgKitError)
+    {
+        // Check user entity
+        guard let userURI = URL(string: properties.userURIstr),
+              let userID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: userURI)
+        else {
+            // Should never happen
+            // ► Image data will be downloaded later
+            return
+        }
         
-//        guard let objectURI = URL(string: uploadData.userID),
-//              let userID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI),
-//              let user = try? uploadBckgContext.existingObject(with: userID) as? User
-//        else {
-//            // Should never happen
-//            // ► The lounge will be emptied later by the server
-//            // ► Stop upload task and return an error
-//            throw PwgKitError.missingUploadParameter
-//        }
-//        
-//        // Open session before verifying if the image is already on the server
-//        try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+        // Check session
+        let userData = try UserProvider().getPropertiesOfUser(withID: properties.userURIstr, inContext: self.uploadBckgContext)
+        try await JSONManager.shared.checkSession(ofUserWithID: userID, lastConnected: userData.lastUsed)
         
-
-        // Get image and album objects in cache
-//        guard let imageSet = try? ImageProvider().getImages(inContext: self.uploadBckgContext, withIds: Set([imageID])),
-//              let imageData = imageSet.first, let albums = imageData.albums, let user = upload.user,
-//              let albumData = try? AlbumProvider().getAlbum(ofUser: user, withId: upload.category)
-//        else { throw PwgKitError.missingAsset }
-//
-//        // Append selected category ID to image category list
-//        var categoryIds = Set(albums.compactMap({$0.pwgID}))
-//        let categoryCount = categoryIds.count
-//        categoryIds.insert(upload.category)
-//        
-//        // Check if the category already contains that image
-//        if categoryIds.count == categoryCount {
-//            // Update UploadQueue cell and button shown in root album (or default album)
-//            await MainActor.run {
-//                let uploadInfo: [String : Any] = ["localIdentifier" : properties.localIdentifier,
-//                                                  "progressFraction" : 1.0]
-//                NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
-//            }
-//            
-//            // Job done
-//            do {
-//                try UploadProvider().setUpload(withID: upload.objectID, inContext: self.uploadBckgContext, imageID: imageID, state: .moderated)
-//            }
-//            catch {
-//                throw PwgKitError.CoreDataError(innerError: error as NSError)
-//            }
-//            return
-//        }
-//        
-//        // Prepare parameters for copying the image/video to the selected category
-//        let newImageCategories = categoryIds.compactMap({ String($0) }).joined(separator: ";")
-//        let paramsDict: [String : Any] = ["image_id"            : imageData.pwgID,
-//                                          "categories"          : newImageCategories,
-//                                          "multiple_value_mode" : "replace"]
-//        
-//        // Copy image
-//        try await JSONManager.shared.setInfos(with: paramsDict)
-//
-//        // Update cache and UI
-//        await MainActor.run {
-//            // Update UploadQueue cell and button shown in root album (or default album)
-//            let uploadInfo: [String : Any] = ["localIdentifier" : localIdentifier,
-//                                              "progressFraction" : 1.0]
-//            NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
-//        }
-//        
-//        // Update cache
-//        if let album = try? uploadBckgContext.existingObject(with: albumData.objectID) as? Album,
-//           let image = try? uploadBckgContext.existingObject(with: imageData.objectID) as? Image {
-//
-//            // Add image to album
-//            album.addToImages(image)
-//
-//            // Update albums
-//            try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: album)
-//        }
-//        
-//        // Copy complete
-//        do {
-//            try UploadProvider().setUpload(withID: upload.objectID, inContext: self.uploadBckgContext, imageID: imageID, state: .moderated)
-//        }
-//        catch {
-//            throw PwgKitError.CoreDataError(innerError: error as NSError)
-//        }
+        // Update UploadQueue cell and button shown in root album (or default album)
+        await MainActor.run {
+            let uploadInfo: [String : Any] = ["localIdentifier" : properties.localIdentifier,
+                                              "progressFraction" : 0.33]
+            NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
+        }
+        
+        // Retrieve complete image data from server
+        let imageData = try await JSONManager.shared.getInfos(forID: imageID)
+        
+        // Should we associate the image to the album?
+        var categoryIds = Set( (imageData.categories ?? []).compactMap({ $0.id }) )
+        let (inserted, _) = categoryIds.insert(properties.category)
+        
+        // Update UploadQueue cell and button shown in root album (or default album)
+        await MainActor.run {
+            let uploadInfo: [String : Any] = ["localIdentifier" : properties.localIdentifier,
+                                              "progressFraction" : 0.67]
+            NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
+        }
+        
+        // Associate the image to the album if needed
+        if inserted {
+            // Append selected category ID to image category list
+            if NetworkVars.shared.usesSetCategory {
+                // Associate images (since Piwigo 14)
+                try await JSONManager.shared.setCategory(properties.category, forImageIDs: [imageID], withAction: .associate)
+            }
+            else {
+                // Associate image "manually" (before Piwigo 14)
+                // Prepare parameters for copying the image/video to the selected category
+                let newImageCategories = categoryIds.compactMap({ String($0) }).joined(separator: ";")
+                let paramsDict: [String : Any] = ["image_id"            : imageID,
+                                                  "categories"          : newImageCategories,
+                                                  "multiple_value_mode" : "replace"]
+                
+                // Copy image
+                try await JSONManager.shared.setInfos(with: paramsDict)
+            }
+            
+            // Retrieve updated image data from server
+            try await ImageProvider().getInfos(forID: imageID, inCategoryId: properties.category)
+        }
+        
+        // Update UploadQueue cell and button shown in root album (or default album)
+        await MainActor.run {
+            let uploadInfo: [String : Any] = ["localIdentifier" : properties.localIdentifier,
+                                              "progressFraction" : 1.0]
+            NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
+        }
+        
+        // Copy complete
+        var uploadData = properties
+        uploadData.requestState = .moderated
+        uploadData.requestError = ""
+        try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
     }
     
     
