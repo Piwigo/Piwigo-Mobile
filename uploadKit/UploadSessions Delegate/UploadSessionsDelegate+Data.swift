@@ -30,7 +30,7 @@ extension UploadSessionsDelegate: URLSessionDataDelegate {
         UploadSessionsDelegate.logger.notice("\(objectIDstr, privacy: .public) • Task \(dataTask.taskIdentifier, privacy: .public) of chunk \(chunk, privacy: .public)/\(chunks, privacy: .public) did receive: \(dataStr, privacy: .public).")
 #else
         let countsOfBytes = data.count * MemoryLayout<Data>.stride
-        UploadSessions.logger.notice("\(objectIDstr, privacy: .public) • Task \(dataTask.taskIdentifier, privacy: .public) of chunk \(chunk, privacy: .public)/\(chunks, privacy: .public) did receive \(countsOfBytes, privacy: .public) bytes.")
+        UploadSessionsDelegate.logger.notice("\(objectIDstr, privacy: .public) • Task \(dataTask.taskIdentifier, privacy: .public) of chunk \(chunk, privacy: .public)/\(chunks, privacy: .public) did receive \(countsOfBytes, privacy: .public) bytes.")
 #endif
 
         let sessionIdentifier = taskDescription.components(separatedBy: " ").first

@@ -36,7 +36,7 @@ extension JSONManager {
 #if DEBUG
         JSONManager.logger.notice("Session: \"\(NetworkVars.shared.user, privacy: .public)\" vs \"\(pwgUser, privacy: .public)\", \"\(oldToken, privacy: .public)\" vs \"\(NetworkVars.shared.pwgToken, privacy: .public)\"")
 #else
-        JSONManager.shared.logger.notice("Session: \"\(NetworkVars.shared.user, privacy: .private(mask: .hash))\" vs \"\(pwgUser, privacy: .private(mask: .hash))\", \"\(oldToken, privacy: .private(mask: .hash))\" vs \"\(NetworkVars.shared.pwgToken, privacy: .private(mask: .hash))\"")
+        JSONManager.logger.notice("Session: \"\(NetworkVars.shared.user, privacy: .private(mask: .hash))\" vs \"\(pwgUser, privacy: .private(mask: .hash))\", \"\(oldToken, privacy: .private(mask: .hash))\" vs \"\(NetworkVars.shared.pwgToken, privacy: .private(mask: .hash))\"")
 #endif
         if pwgUser != NetworkVars.shared.user || oldToken.isEmpty || NetworkVars.shared.pwgToken != oldToken {
             // Collect list of methods supplied by Piwigo server
