@@ -3770,7 +3770,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Foto/vídeo no en la caché persistente."
+            "value" : "La foto o el vídeo no está en la caché persistente."
           }
         },
         "fr" : {
