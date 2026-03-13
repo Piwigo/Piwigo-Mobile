@@ -31,7 +31,7 @@ public final class AlbumProvider {
         return fetchRequest
     }
     
-//    public func getPropertiesOfAlbum(withID pwgID: Int32, belogingToUser userURIstr: String,
+//    public func getPropertiesOfAlbum(withID pwgID: Int32, belongingToUser userURIstr: String,
 //                                     inContext taskContext: NSManagedObjectContext) throws(PwgKitError) -> AlbumProperties {
 //        do {
 //            // Synchronous execution

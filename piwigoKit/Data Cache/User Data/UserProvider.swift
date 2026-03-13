@@ -39,7 +39,7 @@ public final class UserProvider {
         return fetchRequest
     }
     
-    public func getPropertiesOfUser(withID userURIstr: String,
+    public func getPropertiesOfUser(withURIstr userURIstr: String,
                                     inContext taskContext: NSManagedObjectContext) throws(PwgKitError) -> UserProperties {
         do {
             // Synchronous execution

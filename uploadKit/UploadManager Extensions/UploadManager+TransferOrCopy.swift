@@ -107,7 +107,7 @@ extension UploadManager {
         }
         
         // Check session
-        let userData = try UserProvider().getPropertiesOfUser(withID: properties.userURIstr, inContext: self.uploadBckgContext)
+        let userData = try UserProvider().getPropertiesOfUser(withURIstr: properties.userURIstr, inContext: self.uploadBckgContext)
         try await JSONManager.shared.checkSession(ofUserWithID: userID, lastConnected: userData.lastUsed)
         
         // Update UploadQueue cell and button shown in root album (or default album)

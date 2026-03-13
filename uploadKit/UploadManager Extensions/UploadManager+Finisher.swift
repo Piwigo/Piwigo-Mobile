@@ -78,7 +78,7 @@ extension UploadManager {
         }
         
         // Check session
-        let userData = try UserProvider().getPropertiesOfUser(withID: uploadData.userURIstr, inContext: self.uploadBckgContext)
+        let userData = try UserProvider().getPropertiesOfUser(withURIstr: uploadData.userURIstr, inContext: self.uploadBckgContext)
         try await JSONManager.shared.checkSession(ofUserWithID: userID, lastConnected: userData.lastUsed)
         
         // Empty lounge
@@ -112,7 +112,7 @@ extension UploadManager {
         }
         
         // Check session
-        let userData = try UserProvider().getPropertiesOfUser(withID: firstUploadData.userURIstr, inContext: self.uploadBckgContext)
+        let userData = try UserProvider().getPropertiesOfUser(withURIstr: firstUploadData.userURIstr, inContext: self.uploadBckgContext)
         try await JSONManager.shared.checkSession(ofUserWithID: userID, lastConnected: userData.lastUsed)
 
         // Get properties of upload requests

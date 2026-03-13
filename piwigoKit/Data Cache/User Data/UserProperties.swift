@@ -26,3 +26,15 @@ public struct UserProperties: Sendable
     public var uploadRights: String                 // Allowed to upload
     public var downloadRights: Bool                 // Allowed to download
 }
+
+
+extension UserProperties
+{
+    public var role: pwgUserStatus {
+        return pwgUserStatus(rawValue: self.status) ?? .guest
+    }
+    
+    public var hasAdminRights: Bool {
+        return [.webmaster, .admin].contains(self.role)
+    }
+}
