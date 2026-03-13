@@ -593,7 +593,32 @@ public final class AlbumProvider {
      - the attribute 'totalNbImages' of the album and its parent albums.
      N.B.: Parent albums are updated in the background.
      */
-    public func updateAlbums(addingImages nbImages: Int64, toAlbum album: Album) throws {
+    public func updateAlbums(addingImages nbImages: Int64, toAlbumWithID pwgID: Int32,
+                             belongingToUser userURIstr: String,
+                             inContext taskContext: NSManagedObjectContext) throws(PwgKitError) {
+        do {
+            // Synchronous execution
+            try taskContext.performAndWait { () -> Void in
+                // Retrieve User instance
+                guard let userURI = URL(string: userURIstr),
+                      let userID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: userURI),
+                      let user = try taskContext.existingObject(with: userID) as? User
+                else { throw PwgKitError.emptyUsername }
+                
+                // Retrieve album instance
+                guard let album = try getAlbum(ofUser: user, withId: pwgID)
+                else { throw PwgKitError.albumNotFound }
+                
+                // Update album instance
+                try self.updateAlbums(addingImages: nbImages, toAlbum: album, inContext: taskContext)
+            }
+        }
+        catch let error as PwgKitError { throw error }
+        catch { throw PwgKitError.otherError(innerError: error) }
+    }
+    
+    public func updateAlbums(addingImages nbImages: Int64, toAlbum album: Album,
+                             inContext taskContext: NSManagedObjectContext) throws {
         // Add images from album
         album.nbImages += nbImages
         if album.totalNbImages < (Int64.max - nbImages) {   // Avoids possible crash with e.g. smart albums
@@ -604,10 +629,11 @@ public final class AlbumProvider {
         album.dateLast = max(Date().timeIntervalSinceReferenceDate, album.dateLast)
         
         // Update parent albums in the background
-        try self.updateParents(ofAlbum: album, nbImages: +(nbImages))
+        try self.updateParents(ofAlbum: album, nbImages: +(nbImages), inContext: taskContext)
     }
     
-    public func updateAlbums(removingImages nbImages: Int64, fromAlbum album: Album) throws {
+    public func updateAlbums(removingImages nbImages: Int64, fromAlbum album: Album,
+                             inContext taskContext: NSManagedObjectContext) throws {
         // Removes image from album
         album.nbImages -= nbImages
         if album.totalNbImages > (Int64.min + nbImages) {   // Avoids possible crash with e.g. smart albums
@@ -630,11 +656,11 @@ public final class AlbumProvider {
         }
         
         // Update parent albums in the background
-        try self.updateParents(ofAlbum: album, nbImages: -(nbImages))
+        try self.updateParents(ofAlbum: album, nbImages: -(nbImages), inContext: taskContext)
     }
     
-    // N.B.: Task exectued in the background.
-    private func updateParents(ofAlbum album: Album, nbImages: Int64) throws {
+    private func updateParents(ofAlbum album: Album, nbImages: Int64,
+                               inContext taskContext: NSManagedObjectContext) throws {
         // Retrieve parent albums
         let fetchRequest = Album.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true,
@@ -652,18 +678,11 @@ public final class AlbumProvider {
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         
         // Update parent albums
-        let bckgContext = DataController.shared.newTaskContext()
-        let parentAlbums = try bckgContext.fetch(fetchRequest)
+        let parentAlbums = try taskContext.fetch(fetchRequest)
         parentAlbums.forEach { parentAlbum in
             // Update number of images
             parentAlbum.totalNbImages += nbImages
         }
-        
-        // Save modifications
-        bckgContext.saveIfNeeded()
-        
-        // Reset the taskContext to free the cache and lower the memory footprint.
-        bckgContext.reset()
     }
     
     

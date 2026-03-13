@@ -341,7 +341,8 @@ public final class ImageProvider {
                         if withAlbumUpdate {
                             // Add image to cached albums
                             try albums.forEach { album in
-                                try AlbumProvider().updateAlbums(addingImages: 1, toAlbum: album)
+                                try AlbumProvider().updateAlbums(addingImages: 1, toAlbum: album,
+                                                                 inContext: bckgContext)
                             }
                         }
                     }

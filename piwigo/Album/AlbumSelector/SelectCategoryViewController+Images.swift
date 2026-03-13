@@ -59,7 +59,7 @@ extension SelectCategoryViewController
                 albumData.addToImages(imageData)
 
                 // Update albums
-                try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: albumData)
+                try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: albumData, inContext: self.mainContext)
 
                 // Set album thumbnail with first copied image if necessary
                 if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
@@ -91,7 +91,7 @@ extension SelectCategoryViewController
 
                     // Update albums
                     let nberOfImages = Int64(self.inputImages.count)
-                    try? AlbumProvider().updateAlbums(addingImages: nberOfImages, toAlbum: albumData)
+                    try? AlbumProvider().updateAlbums(addingImages: nberOfImages, toAlbum: albumData, inContext: self.mainContext)
 
                     // Set album thumbnail with first copied image if necessary
                     if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil,
@@ -200,7 +200,7 @@ extension SelectCategoryViewController
                 albumData.addToImages(imageData)
 
                 // Update target albums
-                try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: albumData)
+                try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: albumData, inContext: self.mainContext)
 
                 // Set album thumbnail with first copied image if necessary
                 if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
@@ -213,7 +213,7 @@ extension SelectCategoryViewController
                 imageData.removeFromAlbums(self.inputAlbum)
 
                 // Update albums
-                try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: self.inputAlbum)
+                try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: self.inputAlbum, inContext: self.mainContext)
             }
         }
     }
@@ -239,7 +239,7 @@ extension SelectCategoryViewController
 
                     // Update albums
                     let nberOfImages = Int64(self.inputImages.count)
-                    try? AlbumProvider().updateAlbums(removingImages: nberOfImages, fromAlbum: albumData)
+                    try? AlbumProvider().updateAlbums(removingImages: nberOfImages, fromAlbum: albumData, inContext: self.mainContext)
 
                     // Close HUD, save modified data
                     self.didMoveImagesWithSuccess()

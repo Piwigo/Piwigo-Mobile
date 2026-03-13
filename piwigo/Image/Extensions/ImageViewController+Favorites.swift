@@ -52,7 +52,7 @@ extension ImageViewController
                         // Add image to favorites album
                         favAlbum.addToImages(imageData)
                         // Update favorites album data
-                        try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: favAlbum)
+                        try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: favAlbum, inContext: self.mainContext)
                         // Save changes
                         self.mainContext.saveIfNeeded()
                         // Set button
@@ -116,7 +116,7 @@ extension ImageViewController
                         // Remove image from favorites album
                         favAlbum.removeFromImages(imageData)
                         // Update favorites album data
-                        try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: favAlbum)
+                        try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: favAlbum, inContext: self.mainContext)
                         // Save changes
                         self.mainContext.saveIfNeeded()
                         // Back to favorites album or set favorite button?

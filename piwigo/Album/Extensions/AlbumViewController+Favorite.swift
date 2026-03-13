@@ -87,7 +87,7 @@ extension AlbumViewController
                         // Remove image from favorites album
                         favAlbum.addToImages(imageData)
                         // Update favorites album data
-                        try? self.albumProvider.updateAlbums(addingImages: 1, toAlbum: favAlbum)
+                        try? self.albumProvider.updateAlbums(addingImages: 1, toAlbum: favAlbum, inContext: self.mainContext)
                     }
 
                     // pwg.users.favorites… methods available from Piwigo version 2.10
@@ -196,7 +196,7 @@ extension AlbumViewController
                         // Remove image from favorites album
                         favAlbum.removeFromImages(imageData)
                         // Update favorites album data
-                        try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: favAlbum)
+                        try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: favAlbum, inContext: self.mainContext)
                     }
 
                     // pwg.users.favorites… methods available from Piwigo version 2.10

@@ -467,7 +467,7 @@ class EditImageParamsViewController: UIViewController
                             imageData.removeFromAlbums(albumData)
 
                             // Update albums
-                            try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: albumData)
+                            try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: albumData, inContext: self.mainContext)
                         }
                     }
                     // Loop over the added tags
@@ -483,7 +483,7 @@ class EditImageParamsViewController: UIViewController
                             imageData.addToAlbums(albumData)
 
                             // Update albums
-                            try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: albumData)
+                            try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: albumData, inContext: self.mainContext)
                         }
                     }
                 }
