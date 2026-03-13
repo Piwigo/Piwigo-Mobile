@@ -40,7 +40,7 @@ extension AlbumViewController
             await self.fetchImages(withInitialImageIds: oldImageIDs, query: query,
                              fromPage: 0, toPage: 0)
         } else {
-            await self.fetchAlbums(forUserWithAdminRights: hasAdminRights,
+            await self.fetchAlbums(forUserWithAdminRights: user.hasAdminRights,
                                    withInitialImageIds: oldImageIDs, query: query)
         }
     }
