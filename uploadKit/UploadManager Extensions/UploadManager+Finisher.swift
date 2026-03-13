@@ -42,9 +42,11 @@ extension UploadManager {
         
         // No more image to transfer?
         if nberOfUploadsToComplete == 0 {
-            Task(priority: .background) {
-                try? await moderateUploadedImagesIfNeeded()
-            }
+            // Moderate uploaded images if needed
+            try? await moderateUploadedImagesIfNeeded()
+            
+            // Suggest to delete uploaded images if needed
+            suggestToDeleteUploadedImages(withPendingUploads: 0)
         }
         
         // Store number, update badge and default album view button
