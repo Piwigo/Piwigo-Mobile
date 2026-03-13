@@ -65,6 +65,14 @@ extension UploadManager
         // Resume failed uploads
         await clearAllFailedUploads()
         
+        // Store number, update badge and default album view button
+        let nberOfPendingUploads = UploadProvider().getCountOfPendingUploads(inContext: self.uploadBckgContext)
+        DispatchQueue.main.async {
+            // Update app badge and button of root album (or default album)
+            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : nberOfPendingUploads]
+            NotificationCenter.default.post(name: .pwgLeftUploads, object: nil, userInfo: uploadInfo)
+        }
+        
         // Append transfers to complete
         let (uploadedUploadIDs, _) = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.uploaded], inContext: self.uploadBckgContext)
         await UploadManagerActor.shared.addUploadsToTransfer(withIDs: uploadedUploadIDs)
