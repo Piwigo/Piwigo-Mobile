@@ -182,6 +182,7 @@ class AlbumDeletion: NSObject
     private func deleteAlbum(withDeletionMode deletionMode: pwgAlbumDeletionMode,
                              completion: @escaping (Bool) -> Void) {
         // Prepare set of parent IDs before deleting album (including root album)
+        let hasAdminRights = user.hasAdminRights
         let parentIDs = Set(albumData.upperIds.components(separatedBy: ",")
             .compactMap({Int32($0)})).filter({$0 != albumData.pwgID}).union(Set([pwgSmartAlbum.root.rawValue]))
         
@@ -201,7 +202,7 @@ class AlbumDeletion: NSObject
                 }
 
                 // Update parent albums data
-                await fetchAlbumData(ofParentsWithIDs: parentIDs)
+                await fetchAlbumData(ofParentsWithIDs: parentIDs, forUserWithAdminRights: hasAdminRights)
 
                 // Update cache and UI
                 await MainActor.run { [self] in
@@ -224,7 +225,8 @@ class AlbumDeletion: NSObject
     }
     
     @concurrent
-    private func fetchAlbumData(ofParentsWithIDs parentIDs: Set<Int32>) async {
+    private func fetchAlbumData(ofParentsWithIDs parentIDs: Set<Int32>,
+                                forUserWithAdminRights hasAdminRights: Bool) async {
         // Fetch data of parent albums
         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
         Task {
