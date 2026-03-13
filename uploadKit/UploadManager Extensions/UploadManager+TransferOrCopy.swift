@@ -62,26 +62,23 @@ extension UploadManager {
             }
         }
         catch let error as PwgKitError {
-            if error.failedAuthentication {
+            switch error {
+            case .emptyUsername:
+                uploadData.requestState = .uploadingError
+                uploadData.requestError = error.localizedDescription
+                try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
+                
+            case .authenticationFailed, .invalidCredentials,
+                 .invalidStatusCode(statusCode: 401),
+                 .invalidStatusCode(statusCode: 403):
+                fallthrough
+            case .missingAsset, .missingUploadData, .fileOperationFailed,
+                 .missingUploadParameter, .wrongServerURL:
+                fallthrough
+            default:
                 uploadData.requestState = .uploadingFail
                 uploadData.requestError = error.localizedDescription
                 try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
-            }
-            else {
-                switch error {
-                case .emptyUsername:
-                    uploadData.requestState = .uploadingError
-                    uploadData.requestError = error.localizedDescription
-                    try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
-                    
-                case .missingAsset, .missingUploadData, .fileOperationFailed,
-                     .missingUploadParameter, .wrongServerURL:
-                    fallthrough
-                default:
-                    uploadData.requestState = .uploadingFail
-                    uploadData.requestError = error.localizedDescription
-                    try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
-                }
             }
         }
         catch {
