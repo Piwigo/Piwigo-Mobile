@@ -370,8 +370,8 @@ class SelectCategoryViewController: UIViewController {
                                                           lastConnected: self.user.lastUsed)
                 
                 // Fetch albums recursively
-                try await AlbumProvider().fetchAlbums(forUser: self.user, inParentWithId: 0, recursively: true,
-                                                      thumbnailSize: thumnailSize)
+                try await AlbumProvider().fetchAlbums(forUserWithAdminRights: self.user.hasAdminRights, inParentWithId: 0,
+                                                      recursively: true, thumbnailSize: thumnailSize)
                 
                 await MainActor.run { [self] in
                     self.navigationController?.hideHUD { }

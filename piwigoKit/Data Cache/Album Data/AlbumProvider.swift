@@ -89,7 +89,8 @@ public final class AlbumProvider {
      Fetches the album feed from the remote Piwigo server, and imports it into Core Data.
      */
     @concurrent
-    public func fetchAlbums(forUser user: User, inParentWithId parentId: Int32, recursively: Bool = false,
+    public func fetchAlbums(forUserWithAdminRights hasAdminRights: Bool,
+                            inParentWithId parentId: Int32, recursively: Bool = false,
                             thumbnailSize: pwgImageSize) async throws(PwgKitError) {
         // Smart album requested?
         if parentId < 0 { fatalError("••> Cannot fetch data of smart album!") }
@@ -102,7 +103,7 @@ public final class AlbumProvider {
         // Import album data into Core Data.
         do {
             // Update albums if Community installed (not needed for admins)
-            if user.hasAdminRights == false,
+            if hasAdminRights == false,
                NetworkVars.shared.usesCommunityPluginV29 {
                 // Non-admin user and Community installed —> collect Community albums
                 try await self.fetchCommunityAlbums(inParentWithId: parentId, recursively: recursively,

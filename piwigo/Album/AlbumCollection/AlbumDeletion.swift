@@ -234,7 +234,8 @@ class AlbumDeletion: NSObject
                     AlbumVars.shared.isFetchingAlbumData.insert(parentID)
 
                     // Fetch parent album data
-                    try await AlbumProvider().fetchAlbums(forUser: user, inParentWithId: parentID,
+                    try await AlbumProvider().fetchAlbums(forUserWithAdminRights: hasAdminRights,
+                                                          inParentWithId: parentID,
                                                           thumbnailSize: thumnailSize)
                     
                     // Remove album from list of albums being fetched

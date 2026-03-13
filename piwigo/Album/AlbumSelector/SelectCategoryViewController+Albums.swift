@@ -36,7 +36,8 @@ extension SelectCategoryViewController
 
                 // Fetch album data recursively
                 let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                try await AlbumProvider().fetchAlbums(forUser: user, inParentWithId: 0, recursively: true,
+                try await AlbumProvider().fetchAlbums(forUserWithAdminRights: user.hasAdminRights,
+                                                      inParentWithId: 0, recursively: true,
                                                       thumbnailSize: thumnailSize)
                 
                 // Remove current album from list of album being fetched

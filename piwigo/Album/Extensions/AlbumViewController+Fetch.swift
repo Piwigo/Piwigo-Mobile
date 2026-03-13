@@ -40,19 +40,22 @@ extension AlbumViewController
             await self.fetchImages(withInitialImageIds: oldImageIDs, query: query,
                              fromPage: 0, toPage: 0)
         } else {
-            await self.fetchAlbums(withInitialImageIds: oldImageIDs, query: query)
+            await self.fetchAlbums(forUserWithAdminRights: hasAdminRights,
+                                   withInitialImageIds: oldImageIDs, query: query)
         }
     }
     
     @concurrent
-    private func fetchAlbums(withInitialImageIds oldImageIDs: Set<Int64>, query: String) async {
+    private func fetchAlbums(forUserWithAdminRights hasAdminRights: Bool,
+                             withInitialImageIds oldImageIDs: Set<Int64>, query: String) async {
         // Use the AlbumProvider to fetch album data. On completion,
         // handle general UI updates and error alerts on the main queue.
         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
         Task {
             do {
                 // Fetch albums
-                try await albumProvider.fetchAlbums(forUser: user, inParentWithId: categoryId,
+                try await albumProvider.fetchAlbums(forUserWithAdminRights: hasAdminRights,
+                                                    inParentWithId: categoryId,
                                                     thumbnailSize: thumnailSize)
                 // Fetch image data?
                 await MainActor.run { [self] in
