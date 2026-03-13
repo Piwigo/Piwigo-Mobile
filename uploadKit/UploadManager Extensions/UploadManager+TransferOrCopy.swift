@@ -150,8 +150,13 @@ extension UploadManager {
                 try await JSONManager.shared.setInfos(with: paramsDict)
             }
             
-            // Retrieve updated image data from server
+            // Retrieve image data from server and update cache
             try await ImageProvider().getInfos(forID: imageID, inCategoryId: properties.category)
+
+            // Update displayed albums which are concerned
+            try? AlbumProvider().updateAlbums(addingImages: 1, toAlbumWithID: properties.category,
+                                             belongingToUser: properties.userURIstr,
+                                             inContext: self.uploadBckgContext)
         }
         
         // Update UploadQueue cell and button shown in root album (or default album)
