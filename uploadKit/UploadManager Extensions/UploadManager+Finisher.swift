@@ -46,7 +46,9 @@ extension UploadManager {
             try? await moderateUploadedImagesIfNeeded()
             
             // Suggest to delete uploaded images if needed
-            suggestToDeleteUploadedImages(withPendingUploads: 0)
+            if UploadVars.shared.isExecutingBGUploadTask == false {
+                suggestToDeleteUploadedImages(withPendingUploads: 0)
+            }
         }
         
         // Store number, update badge and default album view button
