@@ -30,28 +30,7 @@ extension UploadManager
         
         // Delete upload requests of assets that have become unavailable,
         // except non-completed requests from intent and clipboard
-        let states: [pwgUploadState] = [.waiting, .preparingError]
-        let (objectIDs, localIDs) = UploadProvider().getIDsOfPendingUploads(onlyInStates: states, inContext: self.uploadBckgContext)
-        var toDeleteIDs: [NSManagedObjectID] = objectIDs, assetIDsToDelete: [String] = localIDs
-        for (index, localID) in localIDs.enumerated() {
-            // Remove upload requests from intent and clipboard
-            if localID.hasPrefix(kIntentPrefix) || localID.hasPrefix(kClipboardPrefix) {
-                toDeleteIDs.remove(at: index)
-                assetIDsToDelete.remove(at: index)
-            }
-        }
-        let options = PHFetchOptions()  // Fetch assets which are still available
-        options.includeHiddenAssets = false
-        options.sortDescriptors = [NSSortDescriptor(key: #keyPath(PHAsset.creationDate), ascending: true)]
-        let availableAssets = PHAsset.fetchAssets(withLocalIdentifiers: assetIDsToDelete, options: options)
-        availableAssets.enumerateObjects { asset, _ , _ in
-            // Don't delete upload requests of available asset
-            if let index = assetIDsToDelete.firstIndex(where: {$0 == asset.localIdentifier}) {
-                toDeleteIDs.remove(at: index)
-                assetIDsToDelete.remove(at: index)
-            }
-        }
-        try? UploadProvider().deleteUploads(withID: toDeleteIDs, inContext: self.uploadBckgContext)
+        deleteUploadsOfAssetsThatAreNoLongerAvailable()
         
         // Resume failed uploads
         await clearAllFailedUploads()
@@ -173,6 +152,31 @@ extension UploadManager
     
     
     // MARK: - Delete Upload Requests
+    private func deleteUploadsOfAssetsThatAreNoLongerAvailable() {
+        let states: [pwgUploadState] = [.waiting, .preparingError]
+        let (objectIDs, localIDs) = UploadProvider().getIDsOfPendingUploads(onlyInStates: states, inContext: self.uploadBckgContext)
+        var toDeleteIDs: [NSManagedObjectID] = objectIDs, assetIDsToDelete: [String] = localIDs
+        for (index, localID) in localIDs.enumerated() {
+            // Remove upload requests from intent and clipboard
+            if localID.hasPrefix(kIntentPrefix) || localID.hasPrefix(kClipboardPrefix) {
+                toDeleteIDs.remove(at: index)
+                assetIDsToDelete.remove(at: index)
+            }
+        }
+        let options = PHFetchOptions()  // Fetch assets which are still available
+        options.includeHiddenAssets = false
+        options.sortDescriptors = [NSSortDescriptor(key: #keyPath(PHAsset.creationDate), ascending: true)]
+        let availableAssets = PHAsset.fetchAssets(withLocalIdentifiers: assetIDsToDelete, options: options)
+        availableAssets.enumerateObjects { asset, _ , _ in
+            // Don't delete upload requests of available asset
+            if let index = assetIDsToDelete.firstIndex(where: {$0 == asset.localIdentifier}) {
+                toDeleteIDs.remove(at: index)
+                assetIDsToDelete.remove(at: index)
+            }
+        }
+        try? UploadProvider().deleteUploads(withID: toDeleteIDs, inContext: self.uploadBckgContext)
+    }
+    
     public func deleteUploadsOfDeletedImages(withIDs imageIDs: [Int64]) {
         // Collect upload requests of deleted images
         // but keep auto-upload requests so that they are not re-uploaded
