@@ -27,15 +27,6 @@ extension UploadManager
         
         // Reset flags
         UploadVars.shared.isPaused = false
-        UploadVars.shared.isExecutingBGUploadTask = false
-        
-        // Store number, update badge and default album view button
-        let nberOfPendingUploads = UploadProvider().getCountOfPendingUploads(inContext: self.uploadBckgContext)
-        DispatchQueue.main.async {
-            // Update app badge and button of root album (or default album)
-            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : nberOfPendingUploads]
-            NotificationCenter.default.post(name: .pwgLeftUploads, object: nil, userInfo: uploadInfo)
-        }
         
         // Delete upload requests of assets that have become unavailable,
         // except non-completed requests from intent and clipboard
@@ -86,6 +77,22 @@ extension UploadManager
         
         // Propose to delete uploaded images of the photo Library once a day
         // or immediately if there is no pending upload request, if any
+        suggestToDeleteUploadedImages(withPendingUploads: nberOfPendingUploads)
+        
+        // Append auto-upload requests if requested and restart activities
+        if UploadVars.shared.isAutoUploadActive {
+            await self.appendAutoUploadRequests()
+        } else {
+            await self.disableAutoUpload()
+        }
+        
+        // Launch upload activities if needed
+        await UploadManagerActor.shared.processNextUpload()
+    }
+    
+    
+    // MARK: - Clear Failed Uploads
+    func suggestToDeleteUploadedImages(withPendingUploads nberOfPendingUploads: Int) {
         let (uploadIDs, localIdentifiers) = UploadProvider().getIDsOfCompletedUploads(onlyDeletable: true, inContext: self.uploadBckgContext)
         UploadManager.logger.notice("Resuming uploads: \(uploadIDs.count) assets for deletion in the Photo Library")
         let deadline = DateUtilities.nextDayAt4AM(after: UploadVars.shared.dateOfLastPhotoLibraryDeletion)
@@ -105,20 +112,8 @@ extension UploadManager
 //                await self.deleteAssets(associatedToUploads: uploadIDs, localIdentifiers)
 //            }
         }
-        
-        // Append auto-upload requests if requested and restart activities
-        if UploadVars.shared.isAutoUploadActive {
-            await self.appendAutoUploadRequests()
-        } else {
-            await self.disableAutoUpload()
-        }
-        
-        // Launch upload activities if needed
-        await UploadManagerActor.shared.processNextUpload()
     }
     
-    
-    // MARK: - Clear Failed Uploads
     public func clearAllFailedUploads() async {
         // Get active upload tasks
         var activeUploadIDs: Set<String> = []

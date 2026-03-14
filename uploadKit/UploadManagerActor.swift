@@ -87,10 +87,9 @@ public actor UploadManagerActor {
 
     public func processNextUpload() async {
         debugPrint("In processNextUpload() ► Thread priority: \(Task.currentPriority)")
+        
         // Should we postpone uploads?
         if UploadVars.shared.isPaused ||
-//            UploadVars.shared.isExecutingBGUploadTask ||
-//            UploadVars.shared.isExecutingBGContinuedUploadTask ||
             ProcessInfo.processInfo.isLowPowerModeEnabled ||
             (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
             return
