@@ -218,9 +218,12 @@ final class AlbumDeletion: NSObject
             }
             catch let error as PwgKitError {
                 await MainActor.run { [self] in
-                    let title = NSLocalizedString("deleteCategoryError_title", comment: "Delete Fail")
-                    let message = NSLocalizedString("deleteCategoryError_message", comment: "Failed to delete your album")
-                    self.deleteAlbumError(error, title: title, message: message)
+                    self.topViewController.hideHUD { [self] in
+                        // Display error alert after fetching album data
+                        let title = NSLocalizedString("deleteCategoryError_title", comment: "Delete Fail")
+                        let message = NSLocalizedString("deleteCategoryError_message", comment: "Failed to delete your album")
+                        self.deleteAlbumError(error, title: title, message: message)
+                    }
                 }
             }
         }
