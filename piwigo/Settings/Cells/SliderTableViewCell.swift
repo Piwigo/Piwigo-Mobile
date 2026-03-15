@@ -25,6 +25,7 @@ class SliderTableViewCell: UITableViewCell {
     private var valueSuffix: String?
     private var incrementSliderBy:Float = 0.0
     private var oldNberOfDays:Float = 0.0
+    private var valueStyle: ByteCountFormatStyle?
 
     var cellSliderBlock: CellSliderBlock?
 
@@ -33,7 +34,8 @@ class SliderTableViewCell: UITableViewCell {
     }
 
     func configure(with title:String, value:Float, increment:Float,
-                   minValue:Float, maxValue:Float, prefix:String, suffix:String) {
+                   minValue:Float, maxValue:Float, prefix:String, suffix:String,
+                   style: ByteCountFormatStyle? = nil) {
 
         // Background color and aspect
         backgroundColor = PwgColor.cellBackground
@@ -56,6 +58,7 @@ class SliderTableViewCell: UITableViewCell {
         sliderValue.textColor = PwgColor.rightLabel
         valuePrefix = prefix
         valueSuffix = suffix
+        valueStyle = style
         updateDisplayedValue(value)
     }
 
@@ -79,7 +82,11 @@ class SliderTableViewCell: UITableViewCell {
             let remainder = value.truncatingRemainder(dividingBy: incrementSliderBy)
             let normalisedReminder = (remainder / incrementSliderBy).rounded(.toNearestOrAwayFromZero)
             slider.value = quotient + normalisedReminder * incrementSliderBy
-            sliderValue.text = "\(valuePrefix ?? "")\(NSNumber(value: slider.value))\(valueSuffix ?? "")"
+            if let style = self.valueStyle {
+                sliderValue.text = Int64(slider.value).formatted(style)
+            } else {
+                sliderValue.text = "\(valuePrefix ?? "")\(NSNumber(value: slider.value))\(valueSuffix ?? "")"
+            }
         }
     }
 
@@ -88,5 +95,6 @@ class SliderTableViewCell: UITableViewCell {
         sliderName.text = ""
         valuePrefix = ""
         valueSuffix = ""
+        valueStyle = nil
     }
 }
