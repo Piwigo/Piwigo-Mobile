@@ -315,6 +315,8 @@
 		AD6759B528D77DD7009C69EC /* pwg.categories.setRepresentative.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7A8FE62849256800171592 /* pwg.categories.setRepresentative.swift */; };
 		AD6759B628D77DDB009C69EC /* pwg.categories.getImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6759AB28D77033009C69EC /* pwg.categories.getImages.swift */; };
 		AD6759B728D77DE5009C69EC /* pwg.images.uploadCompleted.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFA2BD127411E8200CC60BF /* pwg.images.uploadCompleted.swift */; };
+		AD68317B2F66CCCD00518E87 /* AdvancedOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD68317A2F66CCCD00518E87 /* AdvancedOptionsViewController.swift */; };
+		AD68317D2F66CCFF00518E87 /* AdvancedOptionsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD68317C2F66CCFF00518E87 /* AdvancedOptionsViewController.storyboard */; };
 		AD69739B271885D10015303E /* UIBarButtonItem+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD69739A271885D10015303E /* UIBarButtonItem+AppTools.swift */; };
 		AD6A0E782C445C750089A25E /* AlbumCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6A0E772C445C750089A25E /* AlbumCollectionViewCell.swift */; };
 		AD6A0E7A2C445C860089A25E /* AlbumCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD6A0E792C445C860089A25E /* AlbumCollectionViewCell.xib */; };
@@ -1078,6 +1080,8 @@
 		AD673C1F2A4B83750080BC0B /* JSONManager+Community.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSONManager+Community.swift"; sourceTree = "<group>"; };
 		AD6759AB28D77033009C69EC /* pwg.categories.getImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.categories.getImages.swift; sourceTree = "<group>"; };
 		AD6759AD28D770BB009C69EC /* pwg.categories.getImages.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.categories.getImages.json; sourceTree = "<group>"; };
+		AD68317A2F66CCCD00518E87 /* AdvancedOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedOptionsViewController.swift; sourceTree = "<group>"; };
+		AD68317C2F66CCFF00518E87 /* AdvancedOptionsViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AdvancedOptionsViewController.storyboard; sourceTree = "<group>"; };
 		AD69739A271885D10015303E /* UIBarButtonItem+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIBarButtonItem+AppTools.swift"; sourceTree = "<group>"; };
 		AD6A0E772C445C750089A25E /* AlbumCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumCollectionViewCell.swift; sourceTree = "<group>"; };
 		AD6A0E792C445C860089A25E /* AlbumCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AlbumCollectionViewCell.xib; sourceTree = "<group>"; };
@@ -2708,6 +2712,8 @@
 				ADD741F72699976100B47056 /* UploadPhotoSizeViewController.storyboard */,
 				ADD063B826A04C12002558D2 /* UploadVideoSizeViewController.swift */,
 				ADD063B626A04BFE002558D2 /* UploadVideoSizeViewController.storyboard */,
+				AD68317A2F66CCCD00518E87 /* AdvancedOptionsViewController.swift */,
+				AD68317C2F66CCFF00518E87 /* AdvancedOptionsViewController.storyboard */,
 				ADCD44722D98114100111138 /* Rename File */,
 				AD7D41562B4434EF0095A070 /* Auto-Upload */,
 			);
@@ -3593,6 +3599,7 @@
 				AD4AAFB725A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard in Resources */,
 				ADD77EF52A1D0D9400F8C779 /* ExternalDisplayViewController.storyboard in Resources */,
 				AD2D959A27D7F14900AC1FD8 /* AppLockViewController.storyboard in Resources */,
+				AD68317D2F66CCFF00518E87 /* AdvancedOptionsViewController.storyboard in Resources */,
 				AD9697D62BDE4B8D00520614 /* PiwigoHUD.xib in Resources */,
 				AD3DB4112773957A00017542 /* ImageViewController.storyboard in Resources */,
 				AD31E73C2EB106C100584ECB /* help02-top-iOS18.png in Resources */,
@@ -4130,6 +4137,7 @@
 				AD089CFE2BC2A51600CE4A3E /* ImageCollectionViewCell.swift in Sources */,
 				AD31F5F9242FB76900BD65FC /* ReleaseNotesViewController.swift in Sources */,
 				AD7E9AEB2A6D7BDC0079BE8F /* PlaybackController.swift in Sources */,
+				AD68317B2F66CCCD00518E87 /* AdvancedOptionsViewController.swift in Sources */,
 				AD6BA0FC2BA5D01800755257 /* PasteboardImagesViewController+UploadSwitchDelegate.swift in Sources */,
 				ADC709C525115943009CA711 /* SceneDelegate.swift in Sources */,
 				AD82C04C2433DB0E00F774BA /* SelectPrivacyViewController.swift in Sources */,

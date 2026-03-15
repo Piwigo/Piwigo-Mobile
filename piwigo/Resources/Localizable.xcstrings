@@ -37607,6 +37607,138 @@
         }
       }
     },
+    "settings_advancedChunkSize" : {
+      "comment" : "Size",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Size"
+          }
+        }
+      }
+    },
+    "settings_advancedChunkSizeDesc" : {
+      "comment" : "A value of %@ is generally a good starting point. Fast connections will have better performances with high values, such as %@.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A value of %@ is generally a good starting point. Fast connections will have better performances with high values, such as %@."
+          }
+        }
+      }
+    },
+    "settings_advancedChunksText" : {
+      "comment" : "Please select the size of the chunks that files are split into during upload.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please select the size of the chunks that files are split into during upload."
+          }
+        }
+      }
+    },
+    "settings_advancedChunksTitle" : {
+      "comment" : "Chunk Size",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chunk Size"
+          }
+        }
+      }
+    },
+    "settings_advancedLimit" : {
+      "comment" : "Limit",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limit"
+          }
+        }
+      }
+    },
+    "settings_advancedOptions" : {
+      "comment" : "Advanced Options",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Advanced Options"
+          }
+        }
+      }
+    },
+    "settings_advancedPreparedDesc" : {
+      "comment" : "A suitable value is one slightly above the maximum number of photos or videos you can upload at a time. Note that a higher limit will result in greater disk space usage.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A suitable value is one slightly above the maximum number of photos or videos you can upload at a time. Note that a higher limit will result in greater disk space usage."
+          }
+        }
+      }
+    },
+    "settings_advancedPreparedText" : {
+      "comment" : "Please select the maximum number of uploads to prepare in advance.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please select the maximum number of uploads to prepare in advance."
+          }
+        }
+      }
+    },
+    "settings_advancedPreparedTitle" : {
+      "comment" : "Upload Preparation",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upload Preparation"
+          }
+        }
+      }
+    },
+    "settings_advancedTransfersDesc" : {
+      "comment" : "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeout or 503 errors, try reducing this number.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeout or 503 errors, try reducing this number."
+          }
+        }
+      }
+    },
+    "settings_advancedTransfersText" : {
+      "comment" : "Please select the maximum number of files to transfer simultaneously.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please select the maximum number of files to transfer simultaneously."
+          }
+        }
+      }
+    },
+    "settings_advancedTransfersTitle" : {
+      "comment" : "File Transfers",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "File Transfers"
+          }
+        }
+      }
+    },
     "settings_appLock" : {
       "comment" : "App Lock",
       "localizations" : {

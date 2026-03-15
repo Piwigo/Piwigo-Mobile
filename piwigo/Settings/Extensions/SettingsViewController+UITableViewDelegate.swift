@@ -111,7 +111,7 @@ extension SettingsViewController: UITableViewDelegate
                 result = false
             }
             
-        // MARK: Upload Settings
+        // MARK: Uploads
         case .uploads /* Default Upload Settings */:
             var row = indexPath.row
             row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
@@ -120,10 +120,11 @@ extension SettingsViewController: UITableViewDelegate
             row += (!UIDevice.current.hasCellular && (row > 8)) ? 1 : 0
             switch row {
             case 1  /* Privacy Level */,
-                4  /* Upload Photo Size */,
-                5  /* Upload Video Size */,
-                8  /* Rename Filename Before Upload */,
-                10 /* Auto upload */:
+                 4  /* Upload Photo Size */,
+                 5  /* Upload Video Size */,
+                 8  /* Rename Filename Before Upload */,
+                 10 /* Auto upload */,
+                 12 /* Advanced Settings */:
                 result = true
             default:
                 result = false
@@ -278,7 +279,7 @@ extension SettingsViewController: UITableViewDelegate
                 break
             }
         
-        // MARK: Upload Settings
+        // MARK: Uploads
         case .uploads /* Default upload Settings */:
             var row = indexPath.row
             row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
@@ -293,6 +294,7 @@ extension SettingsViewController: UITableViewDelegate
                 privacyVC.delegate = self
                 privacyVC.privacy = pwgPrivacy(rawValue: UploadVars.shared.defaultPrivacyLevel) ?? .everybody
                 navigationController?.pushViewController(privacyVC, animated: true)
+
             case 4 /* Upload Photo Size */:
                 let uploadPhotoSizeSB = UIStoryboard(name: "UploadPhotoSizeViewController", bundle: nil)
                 guard let uploadPhotoSizeVC = uploadPhotoSizeSB.instantiateViewController(withIdentifier: "UploadPhotoSizeViewController") as? UploadPhotoSizeViewController
@@ -300,6 +302,7 @@ extension SettingsViewController: UITableViewDelegate
                 uploadPhotoSizeVC.delegate = self
                 uploadPhotoSizeVC.photoMaxSize = UploadVars.shared.photoMaxSize
                 navigationController?.pushViewController(uploadPhotoSizeVC, animated: true)
+
             case 5 /* Upload Video Size */:
                 let uploadVideoSizeSB = UIStoryboard(name: "UploadVideoSizeViewController", bundle: nil)
                 guard let uploadVideoSizeVC = uploadVideoSizeSB.instantiateViewController(withIdentifier: "UploadVideoSizeViewController") as? UploadVideoSizeViewController
@@ -307,6 +310,7 @@ extension SettingsViewController: UITableViewDelegate
                 uploadVideoSizeVC.delegate = self
                 uploadVideoSizeVC.videoMaxSize = UploadVars.shared.videoMaxSize
                 navigationController?.pushViewController(uploadVideoSizeVC, animated: true)
+
             case 8 /* Rename Filename Before Upload */:
                 let filenameSB = UIStoryboard(name: "RenameFileViewController", bundle: nil)
                 guard let filenameVC = filenameSB.instantiateViewController(withIdentifier: "RenameFileViewController") as? RenameFileViewController
@@ -322,12 +326,20 @@ extension SettingsViewController: UITableViewDelegate
                 filenameVC.changeCaseBeforeUpload = UploadVars.shared.changeCaseOfFileExtension
                 filenameVC.caseOfFileExtension = FileExtCase(rawValue: UploadVars.shared.caseOfFileExtension) ?? .keep
                 navigationController?.pushViewController(filenameVC, animated: true)
+
             case 10 /* Auto Upload */:
                 let autoUploadSB = UIStoryboard(name: "AutoUploadViewController", bundle: nil)
                 guard let autoUploadVC = autoUploadSB.instantiateViewController(withIdentifier: "AutoUploadViewController") as? AutoUploadViewController
                 else { preconditionFailure("Could not load AutoUploadViewController") }
                 autoUploadVC.user = user
                 navigationController?.pushViewController(autoUploadVC, animated: true)
+
+            case 12 /* Advanced Options */:
+                let advancedOptionsSB = UIStoryboard(name: "AdvancedOptionsViewController", bundle: nil)
+                guard let advancedOptionsVC = advancedOptionsSB.instantiateViewController(withIdentifier: "AdvancedOptionsViewController") as? AdvancedOptionsViewController
+                else { preconditionFailure("Could not load AdvancedOptionsViewController") }
+                navigationController?.pushViewController(advancedOptionsVC, animated: true)
+            
             default:
                 break
             }

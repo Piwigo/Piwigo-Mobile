@@ -39,7 +39,7 @@ extension SettingsViewController: UITableViewDataSource
         nberSections -= (hasUploadRights() ? 0 : 1)
         return nberSections
     }
-        
+    
     
     // MARK: - Rows
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -57,7 +57,7 @@ extension SettingsViewController: UITableViewDataSource
         case .videos:
             nberOfRows = 2
         case .uploads:
-            nberOfRows = 7 + (user.hasAdminRights ? 1 : 0)
+            nberOfRows = 8 + (user.hasAdminRights ? 1 : 0)
             nberOfRows += (UploadVars.shared.resizeImageOnUpload ? 2 : 0)
             nberOfRows += (UploadVars.shared.compressImageOnUpload ? 1 : 0)
             nberOfRows += UIDevice.current.hasCellular ? 1 : 0
@@ -315,7 +315,7 @@ extension SettingsViewController: UITableViewDataSource
                 break
             }
 
-        // MARK: Upload Settings
+        // MARK: Uploads
         case .uploads /* Default Upload Settings */:
             var row = indexPath.row
             row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
@@ -559,6 +559,18 @@ extension SettingsViewController: UITableViewDataSource
                     UploadVars.shared.deleteImageAfterUpload = switchState
                 }
                 cell.accessibilityIdentifier = "deleteAfterUpload"
+                tableViewCell = cell
+                
+            case 12 /* Advanced Options */:
+                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                    ? "LabelTableViewCell"
+                    : "LabelTableViewCell3"
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
+                // See https://iosref.com/res
+                cell.configure(with: NSLocalizedString("settings_advancedOptions", comment: "Advanced Options"), detail: "")
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "advancedOptions"
                 tableViewCell = cell
                 
             default:
