@@ -241,9 +241,9 @@ extension SettingsViewController: UITableViewDataSource
                 // Min/max number of thumbnails per row depends on selected file
                 let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
                 let scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))
-                let defaultWidth = thumbnailSize.minPoints(forScale: scale)
-                let minNberOfImages = Float(AlbumUtilities.imagesPerRowInPortrait(forMaxWidth: defaultWidth))
-
+                let maxWidth = thumbnailSize.minPoints(forScale: scale) * scale // i.e. 1 screen point = 1 image pixel
+                let minNberOfImages = Float(AlbumUtilities.imagesPerRowInPortrait(forMaxWidth: maxWidth))
+                
                 // Slider value, chek that default number fits inside selected range
                 if Float(AlbumVars.shared.thumbnailsPerRowInPortrait) > (2 * minNberOfImages) {
                     AlbumVars.shared.thumbnailsPerRowInPortrait = Int(2 * minNberOfImages)
@@ -252,7 +252,7 @@ extension SettingsViewController: UITableViewDataSource
                     AlbumVars.shared.thumbnailsPerRowInPortrait = Int(minNberOfImages)
                 }
                 let value = Float(AlbumVars.shared.thumbnailsPerRowInPortrait)
-
+                
                 // Slider configuration
                 // See https://iosref.com/res
                 let title = NSLocalizedString("defaultNberOfThumbnails>320px", comment: "Number/Row")

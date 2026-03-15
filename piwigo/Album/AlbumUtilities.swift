@@ -154,7 +154,7 @@ struct AlbumUtilities
         let pageSize = sizeOfPage(forView: nil)
         let viewWidth = min(pageSize.width, pageSize.height)
         let horSpacing = imageCellHorizontalSpacing(forCollectionType: .full)
-        let numerator = viewWidth + horSpacing
+        let numerator = viewWidth - horSpacing
         let denominator = horSpacing + maxWidth
         let nberOfImagePerRow = Int(round(numerator / denominator))
         return max(minNberOfImagesPerRow, nberOfImagePerRow)

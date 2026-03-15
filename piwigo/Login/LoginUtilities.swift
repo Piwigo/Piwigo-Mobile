@@ -317,9 +317,9 @@ struct LoginUtilities
 
         // Calculate number of thumbnails per row for that selection
         let albumThumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-        let albumThmbnailWidth = albumThumbnailSize.minPoints(forScale: scale)
-        let minNberOfImages: Int = AlbumUtilities.imagesPerRowInPortrait(forMaxWidth: albumThmbnailWidth)
-
+        let albumThumbnailMaxWidth = albumThumbnailSize.minPoints(forScale: scale) * scale  // i.e. 1 screen point = 1 image pixel
+        let minNberOfImages: Int = AlbumUtilities.imagesPerRowInPortrait(forMaxWidth: albumThumbnailMaxWidth)
+        
         // Make sure that default number fits inside selected range
         AlbumVars.shared.thumbnailsPerRowInPortrait = max(AlbumVars.shared.thumbnailsPerRowInPortrait, minNberOfImages);
         AlbumVars.shared.thumbnailsPerRowInPortrait = min(AlbumVars.shared.thumbnailsPerRowInPortrait, 2*minNberOfImages);
