@@ -469,7 +469,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //
 //        // Task progress initialisation
 //        let title = "Piwigo"
-//        let nberOfUploadsToComplete = min(maxNberOfUploadsPerSeries,
+//        let nberOfUploadsToComplete = min(maxNberOfQueuedAutoUploads,
 //                                          UploadVars.shared.nberOfUploadsToComplete)
 //        task.progress.totalUnitCount = Int64(nberOfUploadsToComplete)
 //        task.progress.completedUnitCount = 0

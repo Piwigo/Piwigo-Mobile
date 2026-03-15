@@ -102,7 +102,7 @@ extension UploadManager {
                 uploadRequestsToAppend.append(uploadRequest)
 
                 // Check if we have reached the max number of requests to append
-                if uploadRequestsToAppend.count >= maxNberOfUploadsPerSeries {
+                if uploadRequestsToAppend.count >= maxNberOfQueuedAutoUploads {
                     stop.pointee = true
                 }
             }
