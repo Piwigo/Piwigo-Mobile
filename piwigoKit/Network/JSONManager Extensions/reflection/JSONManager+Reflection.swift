@@ -27,14 +27,6 @@ public extension JSONManager {
                 NetworkVars.shared.usesCommunityPluginV29 = false
             }
             
-            // Check if the pwg.images.uploadAsync method is available (since Piwigo 11)
-            if pwgData.data.contains(pwgImagesUploadAsync) {
-                NetworkVars.shared.usesUploadAsync = true
-                JSONManager.logger.notice("\(kReflectionGetMethodList) ➜ uploadAsync method available")
-            } else {
-                NetworkVars.shared.usesUploadAsync = false
-            }
-            
             // Check if the pwg.categories.calculateOrphans method is available (since Piwigo 12)
             if pwgData.data.contains(pwgCategoriesCalcOrphans) {
                 NetworkVars.shared.usesCalcOrphans = true

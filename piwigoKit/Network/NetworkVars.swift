@@ -23,15 +23,15 @@ public class NetworkVars: @unchecked Sendable {
     }
         
     // Remove deprecated stored objects if needed
-    //    override init() {
-    //        // Deprecated data?
-    //        if let _ = UserDefaults.standard.object(forKey: "test") {
-    //            UserDefaults.standard.removeObject(forKey: "test")
-    //        }
-    //        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
-    //            UserDefaults.dataSuite.removeObject(forKey: "test")
-    //        }
-    //    }
+    init() {
+        // Deprecated data?
+//        if let _ = UserDefaults.standard.object(forKey: "test") {
+//            UserDefaults.standard.removeObject(forKey: "test")
+//        }
+        if let _ = UserDefaults.dataSuite.object(forKey: "usesUploadAsync") {
+            UserDefaults.dataSuite.removeObject(forKey: "usesUploadAsync")
+        }
+    }
     
     // MARK: - Vars in UserDefaults / Standard
     // Network variables stored in UserDefaults / Standard
@@ -126,10 +126,6 @@ public class NetworkVars: @unchecked Sendable {
     /// - Community methods available, false by default (available since version 2.9 of the plugin)
     @UserDefault("usesCommunityPluginV29", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var usesCommunityPluginV29:Bool
-    
-    /// - pwg.images.uploadAsync method available, false by default (avaiable since Piwigo 11)
-    @UserDefault("usesUploadAsync", defaultValue: false, userDefaults: UserDefaults.dataSuite)
-    public var usesUploadAsync: Bool
     
     /// - pwg.categories.calculateOrphans method available, false by default (available since Piwigo 12)
     @UserDefault("usesCalcOrphans", defaultValue: false, userDefaults: UserDefaults.dataSuite)

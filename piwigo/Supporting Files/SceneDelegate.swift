@@ -368,10 +368,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // Schedule background tasks after cancelling pending onces
         BGTaskScheduler.shared.cancelAllTaskRequests()
-//        if NetworkVars.shared.usesUploadAsync {
-//            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-//            appDelegate?.scheduleNextUpload()
-//        }
+//        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+//        appDelegate?.scheduleNextUpload()
         
         // Clean up /tmp directory
         let appDelegate = UIApplication.shared.delegate as? AppDelegate

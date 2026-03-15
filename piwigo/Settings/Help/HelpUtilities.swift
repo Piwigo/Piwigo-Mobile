@@ -22,11 +22,7 @@ struct HelpUtilities {
             helpVC.displayHelpPagesWithID = pageIDs
         }
         else {
-            if NetworkVars.shared.usesUploadAsync {
-                helpVC.displayHelpPagesWithID = [8,1,5,6,2,4,7,3,9]
-            } else {
-                helpVC.displayHelpPagesWithID = [8,1,5,6,4,3,9]
-            }
+            helpVC.displayHelpPagesWithID = [8,1,5,6,2,4,7,3,9]
         }
         return helpVC
     }

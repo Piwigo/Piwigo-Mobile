@@ -57,11 +57,10 @@ extension SettingsViewController: UITableViewDataSource
         case .videos:
             nberOfRows = 2
         case .uploads:
-            nberOfRows = 6 + (user.hasAdminRights ? 1 : 0)
+            nberOfRows = 7 + (user.hasAdminRights ? 1 : 0)
             nberOfRows += (UploadVars.shared.resizeImageOnUpload ? 2 : 0)
             nberOfRows += (UploadVars.shared.compressImageOnUpload ? 1 : 0)
             nberOfRows += UIDevice.current.hasCellular ? 1 : 0
-            nberOfRows += (NetworkVars.shared.usesUploadAsync ? 1 : 0)
         case .privacy:
             nberOfRows = 3
         case .appearance:
@@ -323,7 +322,6 @@ extension SettingsViewController: UITableViewDataSource
             row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
             row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
             row += (!UIDevice.current.hasCellular && (row > 8)) ? 1 : 0
-            row += (!NetworkVars.shared.usesUploadAsync && (row > 9)) ? 1 : 0
             switch row {
             case 0 /* Author Name? */:
                 let cellIdentifier: String = contentSizeCategory < .accessibilityMedium

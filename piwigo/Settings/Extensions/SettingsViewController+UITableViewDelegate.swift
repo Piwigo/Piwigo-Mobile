@@ -118,7 +118,6 @@ extension SettingsViewController: UITableViewDelegate
             row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
             row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
             row += (!UIDevice.current.hasCellular && (row > 8)) ? 1 : 0
-            row += (!NetworkVars.shared.usesUploadAsync && (row > 9)) ? 1 : 0
             switch row {
             case 1  /* Privacy Level */,
                 4  /* Upload Photo Size */,
@@ -286,7 +285,6 @@ extension SettingsViewController: UITableViewDelegate
             row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
             row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
             row += (!UIDevice.current.hasCellular && (row > 8)) ? 1 : 0
-            row += (!NetworkVars.shared.usesUploadAsync && (row > 9)) ? 1 : 0
             switch row {
             case 1 /* Default privacy selection */:
                 let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)

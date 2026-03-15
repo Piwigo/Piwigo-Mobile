@@ -29,50 +29,6 @@ public let pwgHTTPCancelled = "X-PWG-Cancelled"             // Appended to task 
 public let pwgUploadDelegate = UploadSessionsDelegate.shared.self
 
 
-// MARK: - Foreground Upload Session
-//public let uploadSessionIdentifier:String! = "org.piwigo.uploadSession"
-//public let frgdSession: URLSession = {
-//    let config = URLSessionConfiguration.default
-//    
-//    /// The foreground session should wait for connectivity to become available (can be retried)
-//    /// only when the app uses the pwg.images.uploadAsync method.
-////        config.waitsForConnectivity = NetworkVars.shared.usesUploadAsync
-//    
-//    /// Connections should not use the network when the user has specified Low Data Mode
-////        config.allowsConstrainedNetworkAccess = false
-//
-//    /// Indicates whether the request is allowed to use the built-in cellular radios to satisfy the request.
-//    config.allowsCellularAccess = !(UploadVars.shared.wifiOnlyUploading)
-//    
-//    /// How long a task should wait for additional data to arrive before giving up (1 minute)
-//    config.timeoutIntervalForRequest = 60
-//    
-//    /// How long an upload task should be allowed to be retried or transferred (5 minutes).
-//    config.timeoutIntervalForResource = 300
-//    
-//    /// Determines the maximum number of simultaneous connections made to the host by tasks (1 by default)
-//    config.httpMaximumConnectionsPerHost = 1
-//    
-//    /// Do not return a response from the cache
-//    config.urlCache = nil
-//    config.requestCachePolicy = .reloadIgnoringLocalCacheData
-//    
-//    /// Do not send upload requests with cookie so that each upload session remains ephemeral.
-//    /// The user session, if it exists, remains untouched and kept alive until it expires.
-//    config.httpShouldSetCookies = true
-//    config.httpCookieAcceptPolicy = .onlyFromMainDocumentDomain
-//    
-//    /// Allows a seamless handover from Wi-Fi to cellular
-//    config.multipathServiceType = .handover
-//    
-//    /// Create the background session and set its description
-//    let session = URLSession(configuration: config, delegate: pwgUploadDelegate, delegateQueue: nil)
-//    session.sessionDescription = "Upload Session (frgd)"
-//    
-//    return session
-//}()
-
-
 // MARK: - Background Upload Session
 public let uploadBckgSessionIdentifier:String! = "org.piwigo.uploadBckgSession"
 public let bckgSession: URLSession = {

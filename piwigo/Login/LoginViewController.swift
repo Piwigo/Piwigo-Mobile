@@ -215,7 +215,6 @@ class LoginViewController: UIViewController {
         isAlreadyTryingToLogin = true
         NetworkVars.shared.userStatus = pwgUserStatus.guest
         NetworkVars.shared.usesCommunityPluginV29 = false
-        NetworkVars.shared.usesUploadAsync = false
         NetworkVars.shared.usesCalcOrphans = false
         NetworkVars.shared.usesSetCategory = false
         NetworkVars.shared.usesAPIkeys = false

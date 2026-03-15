@@ -62,14 +62,6 @@ public extension JSONManager {
         }
         NetworkVars.shared.pwgVersion = versionStr
 
-        // Community users cannot upload with uploadAsync with Piwigo 11.x
-        if NetworkVars.shared.usesCommunityPluginV29,
-           NetworkVars.shared.userStatus == pwgUserStatus.normal,
-           "11.0.0".compare(versionStr, options: .numeric) != .orderedDescending,
-           "12.0.0".compare(versionStr, options: .numeric) != .orderedAscending {
-            NetworkVars.shared.usesUploadAsync = false
-        }
-
         // API Keys conflict with HTTP Basic authentication in Piwigo 16.0
         if "16.0.0".compare(versionStr, options: .numeric) == .orderedSame {
             NetworkVars.shared.usesAPIkeys = false
