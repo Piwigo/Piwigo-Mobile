@@ -96,14 +96,14 @@ public actor UploadManagerActor {
         }
         
         // First, transfer image if any and allowed
-        if await UploadManager.shared.nberOfUploadsToTransfer <= maxNberOfUploadTransfers,
+        if await UploadManager.shared.nberOfUploadsToTransfer <= UploadVars.shared.maxNberOfUploadTransfers,
            let uploadID = uploadIDsToTransfer.first {
             uploadIDsToTransfer.removeFirst()
             await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID)
         }
 
         // Second, prepare image if any and allowed
-        if await UploadManager.shared.nberOfUploadsInPreparation <= maxNberOfPreparedUploads,
+        if await UploadManager.shared.nberOfUploadsInPreparation <= UploadVars.shared.maxNberOfPreparedUploads,
            let uploadID = uploadIDsToPrepare.first {
             uploadIDsToPrepare.removeFirst()
             await UploadManager.shared.prepareUpload(withID: uploadID)
