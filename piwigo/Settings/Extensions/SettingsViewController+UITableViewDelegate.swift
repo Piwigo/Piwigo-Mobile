@@ -35,7 +35,7 @@ extension SettingsViewController: UITableViewDelegate
             title = NSLocalizedString("severalImages", comment: "Images")
         case .videos:
             title = NSLocalizedString("severalVideos", comment: "Videos")
-        case .imageUpload:
+        case .uploads:
             title = NSLocalizedString("settingsHeader_upload", comment: "Default Upload Settings")
         case .appearance:
             title = NSLocalizedString("settingsHeader_appearance", comment: "Appearance")
@@ -112,7 +112,7 @@ extension SettingsViewController: UITableViewDelegate
             }
             
         // MARK: Upload Settings
-        case .imageUpload /* Default Upload Settings */:
+        case .uploads /* Default Upload Settings */:
             var row = indexPath.row
             row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
@@ -280,7 +280,7 @@ extension SettingsViewController: UITableViewDelegate
             }
         
         // MARK: Upload Settings
-        case .imageUpload /* Default upload Settings */:
+        case .uploads /* Default upload Settings */:
             var row = indexPath.row
             row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0

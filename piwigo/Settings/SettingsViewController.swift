@@ -21,7 +21,7 @@ enum SettingsSection: Int {
     case albums
     case images
     case videos
-    case imageUpload
+    case uploads
     case privacy
     case appearance
     case cache
@@ -345,7 +345,7 @@ class SettingsViewController: UIViewController {
         // Reload section instead of row because user's rights may have changed after logout/login
         children.forEach {
             if $0 is SettingsViewController {
-                settingsTableView?.reloadSections(IndexSet(integer: SettingsSection.imageUpload.rawValue), with: .automatic)
+                settingsTableView?.reloadSections(IndexSet(integer: SettingsSection.uploads.rawValue), with: .automatic)
             }
         }
         

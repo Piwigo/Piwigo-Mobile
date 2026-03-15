@@ -56,7 +56,7 @@ extension SettingsViewController: UITableViewDataSource
             nberOfRows = 3 + (defaultSortUnknown ? 1 : 0)
         case .videos:
             nberOfRows = 2
-        case .imageUpload:
+        case .uploads:
             nberOfRows = 6 + (user.hasAdminRights ? 1 : 0)
             nberOfRows += (UploadVars.shared.resizeImageOnUpload ? 2 : 0)
             nberOfRows += (UploadVars.shared.compressImageOnUpload ? 1 : 0)
@@ -317,7 +317,7 @@ extension SettingsViewController: UITableViewDataSource
             }
 
         // MARK: Upload Settings
-        case .imageUpload /* Default Upload Settings */:
+        case .uploads /* Default Upload Settings */:
             var row = indexPath.row
             row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
@@ -393,9 +393,9 @@ extension SettingsViewController: UITableViewDataSource
                     UploadVars.shared.resizeImageOnUpload = switchState
                     // Position of the row that should be added/removed
                     let photoAtIndexPath = IndexPath(row: 3 + (self.user.hasAdminRights ? 1 : 0),
-                                                   section: SettingsSection.imageUpload.rawValue)
+                                                   section: SettingsSection.uploads.rawValue)
                     let videoAtIndexPath = IndexPath(row: 4 + (self.user.hasAdminRights ? 1 : 0),
-                                                   section: SettingsSection.imageUpload.rawValue)
+                                                   section: SettingsSection.uploads.rawValue)
                     if switchState {
                         // Insert row in existing table
                         self.settingsTableView?.insertRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
@@ -447,7 +447,7 @@ extension SettingsViewController: UITableViewDataSource
                     // Position of the row that should be added/removed
                     let rowAtIndexPath = IndexPath(row: 4 + (self.user.hasAdminRights ? 1 : 0)
                                                           + (UploadVars.shared.resizeImageOnUpload ? 2 : 0),
-                                                   section: SettingsSection.imageUpload.rawValue)
+                                                   section: SettingsSection.uploads.rawValue)
                     if switchState {
                         // Insert row in existing table
                         self.settingsTableView?.insertRows(at: [rowAtIndexPath], with: .automatic)
