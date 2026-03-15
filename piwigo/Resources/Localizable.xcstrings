@@ -37707,12 +37707,12 @@
       }
     },
     "settings_advancedTransfersDesc" : {
-      "comment" : "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeout or 503 errors, try reducing this number.",
+      "comment" : "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeouts or 503 errors, try reducing this number.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeout or 503 errors, try reducing this number."
+            "value" : "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeouts or 503 errors, try reducing this number."
           }
         }
       }

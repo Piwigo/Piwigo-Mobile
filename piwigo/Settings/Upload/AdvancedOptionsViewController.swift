@@ -187,7 +187,7 @@ extension AdvancedOptionsViewController: UITableViewDelegate
         case .maxPrepared:
             text = NSLocalizedString("settings_advancedPreparedDesc", comment: "A suitable value is one slightly above the maximum number of photos or videos you can upload at a time. Note that a higher limit will result in greater disk space usage.")
         case .maxTransfers:
-            text = NSLocalizedString("settings_advancedTransfersDesc", comment: "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeout or 503 errors, try reducing this number.")
+            text = NSLocalizedString("settings_advancedTransfersDesc", comment: "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeouts or 503 errors, try reducing this number.")
         case .chunkSize:
             let advice = (1000 * 1000).formatted(sizeStyle)
             let max = (5000 * 1000).formatted(sizeStyle)
