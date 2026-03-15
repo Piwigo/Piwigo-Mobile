@@ -238,6 +238,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
 
     // MARK: - Background Task | Uploads
+    /* For testing the background task:
+    - Build and run the app, then background it to schedule the task.
+    - Bring the app to the foreground again. Then in Xcode, hit the pause button in the debugger and type one of the commands
+    - e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"org.piwigo.uploadManager"]
+      e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"net.lelievre-berna.piwigo.uploadManager"]
+    - e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateExpirationForTaskWithIdentifier:@"org.piwigo.uploadManager"]
+      e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateExpirationForTaskWithIdentifier:@"net.lelievre-berna.piwigo.uploadManager"]
+     */
     func application(_ application: UIApplication, handleEventsForBackgroundURLSession
                         identifier: String, completionHandler: @escaping () -> Void) {
         debugPrint("    > Handle events for background session with ID: \(identifier)");
@@ -272,9 +280,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func registerBgTasks() {
         // Register background upload task
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: pwgBackgroundUploadTask, using: nil) { task in
-             self.handleNextUpload(task: task as! BGProcessingTask)
-        }
+//        BGTaskScheduler.shared.register(forTaskWithIdentifier: pwgBackgroundUploadTask, using: nil) { task in
+//             self.handleNextUpload(task: task as! BGProcessingTask)
+//        }
 
         // Register continued background upload task
 //        if #available(iOS 26.0, *) {
@@ -323,10 +331,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func handleNextUpload(task: BGProcessingTask) {
         // Schedule the next uploads if needed
         if UploadVars.shared.nberOfUploadsToComplete > 0 {
-            debugPrint("    > Schedule next uploads.")
+            debugPrint("••> Schedule next uploads.")
             scheduleNextUpload()
         }
-
+        
         // Don't upload images now if a migration is planned
         if AppVars.shared.isMigrationRunning {
             debugPrint("••> Background upload task rescheduled because a migration is ongoing.")
@@ -335,12 +343,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         // iOS may launch the task when the app is active (since iOS 18)
-        if AppVars.shared.applicationIsActive {
-            debugPrint("••> Background upload task halted because the app is active.")
-            task.setTaskCompleted(success: true)
-            return
-        }
-
+        /// Comment below lines to debug
+//        if AppVars.shared.applicationIsActive {
+//            debugPrint("••> Background upload task halted because the app is active.")
+//            task.setTaskCompleted(success: true)
+//            return
+//        }
+        
         // Create the operation queue
         let uploadQueue = OperationQueue()
         uploadQueue.maxConcurrentOperationCount = 1
@@ -418,7 +427,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         debugPrint("••> Start upload operations in background task...");
         uploadQueue.addOperations(uploadOperations, waitUntilFinished: false)
     }
-
+    
 //    @available(iOS 26.0, *)
 //    func handleContinuedUpload(task: BGContinuedProcessingTask) {
 //        // Don't launch new series of uploads if task already running
