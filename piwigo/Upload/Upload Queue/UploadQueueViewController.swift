@@ -270,10 +270,10 @@ class UploadQueueViewController: UIViewController {
                 let titleResume = failedUploads > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber(value: failedUploads), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
                 let resumeAction = UIAlertAction(title: titleResume, style: .default, handler: { action in
                     Task { @UploadManagerActor in
-                        // Resume all failed uploads
-                        await UploadManager.shared.clearAllFailedUploads()
-                        // Relaunch uploads
-                        await UploadManagerActor.shared.processNextUpload()
+                        // Get Upload URI strings of active transfers
+                        let activeUploadsURIstr = await UploadManager.shared.getUploadURIsOfTransfers()
+                        // Resume upload requests which encountered an error
+                        await UploadManager.shared.resumePendingUploads(except: activeUploadsURIstr)
                     }
                 })
                 alert.addAction(resumeAction)

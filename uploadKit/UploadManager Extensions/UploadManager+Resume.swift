@@ -32,8 +32,11 @@ extension UploadManager
         // except non-completed requests from intent and clipboard
         deleteUploadsOfAssetsThatAreNoLongerAvailable()
         
-        // Resume failed uploads
-        await clearAllFailedUploads()
+        // Get Upload URI strings of active transfers
+        let activeUploadsURIstr = await getUploadURIsOfTransfers()
+        
+        // Resume upload requests which encountered an error
+        await resumePendingUploads(except: activeUploadsURIstr)
         
         // Store number, update badge and default album view button
         let nberOfPendingUploads = UploadProvider().getCountOfPendingUploads(inContext: self.uploadBckgContext)
@@ -69,6 +72,29 @@ extension UploadManager
         await UploadManagerActor.shared.processNextUpload()
     }
     
+    public func getUploadURIsOfTransfers() async -> Set<String> {
+        // Get active upload tasks
+        var activeUploadsURIstr: Set<String> = []
+        let allTasks = await bckgSession.allTasks
+        allTasks.filter({ $0.state == .running }).forEach {task in
+            // Retrieve upload request properties
+            guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
+                  let chunkStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk), let chunk = Int(chunkStr),
+                  let chunksStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks), let chunks = Int(chunksStr)
+            else {
+                UploadManager.logger.notice("Found task \(task.taskIdentifier) not associated to an upload!")
+                return
+            }
+            
+            // Task associated to an upload
+            activeUploadsURIstr.insert(objectURIstr)
+            let objectIDstr = URL(string: objectURIstr)?.lastPathComponent ?? objectURIstr
+            UploadManager.logger.notice("\(objectIDstr) • Detected task \(task.taskIdentifier) uploading chunk \(chunk)/\(chunks)")
+            self.initIfNeededCounter(withID: objectIDstr, chunk: chunk, chunks: chunks)
+        }
+        return activeUploadsURIstr
+    }
+    
     
     // MARK: - Clear Failed Uploads
     func suggestToDeleteUploadedImages(withPendingUploads nberOfPendingUploads: Int) {
@@ -92,32 +118,12 @@ extension UploadManager
 //            }
         }
     }
-    
-    public func clearAllFailedUploads() async {
-        // Get active upload tasks
-        var activeUploadIDs: Set<String> = []
-        let allTasks = await bckgSession.allTasks
-        allTasks.filter({ $0.state == .running }).forEach {task in
-            // Retrieve upload request properties
-            guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
-                  let chunkStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk), let chunk = Int(chunkStr),
-                  let chunksStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks), let chunks = Int(chunksStr)
-            else {
-                UploadManager.logger.notice("Found task \(task.taskIdentifier) not associated to an upload!")
-                return
-            }
-            
-            // Task associated to an upload
-            activeUploadIDs.insert(objectURIstr)
-            let objectIDstr = URL(string: objectURIstr)?.lastPathComponent ?? objectURIstr
-            UploadManager.logger.notice("\(objectIDstr) • Detected task \(task.taskIdentifier) uploading chunk \(chunk)/\(chunks)")
-            self.initIfNeededCounter(withID: objectIDstr, chunk: chunk, chunks: chunks)
-        }
         
+    public func resumePendingUploads(except activeUploadsURIstr: Set<String>) async {
         // Will retry inactive uploads marked "uploading", and those which returned an error
         let states: [pwgUploadState] = [.preparingError, .uploading, .uploadingError, .finishing, .finishingError]
         let (uploadIDs, _) = UploadProvider().getIDsOfPendingUploads(onlyInStates: states, inContext: self.uploadBckgContext)
-        let toResumeUploadIDs = uploadIDs.filter({ !activeUploadIDs.contains($0.uriRepresentation().absoluteString) })
+        let toResumeUploadIDs = uploadIDs.filter({ !activeUploadsURIstr.contains($0.uriRepresentation().absoluteString) })
         let (toPrepare, toTransfer) = UploadProvider().clearFailedUploads(toResumeUploadIDs, inContext: self.uploadBckgContext)
         
         // First retry transfers
@@ -125,7 +131,7 @@ extension UploadManager
             await UploadManagerActor.shared.addUploadsToTransfer(withIDs: toTransfer)
             UploadManager.logger.notice("Resuming uploads: \(toTransfer.count, privacy: .public) failed uploads to rety")
         }
-
+        
         // Next retry preparations
         if toPrepare.isEmpty == false {
             await UploadManagerActor.shared.addUploadsToPrepare(withIDs: toPrepare)
