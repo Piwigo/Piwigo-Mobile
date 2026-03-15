@@ -116,7 +116,12 @@ public extension JSONManager {
         } else {
             UploadVars.shared.uploadChunkSize = 500    // i.e. 500 ko
         }
-
+        
+        // Initialise customUploadChunkSize if needed
+        if UploadVars.shared.customUploadChunkSize == 0 {
+            UploadVars.shared.customUploadChunkSize = UploadVars.shared.uploadChunkSize
+        }
+        
         // Images and videos can be uploaded if their file types are found.
         // The iPhone creates mov files that will be uploaded in mp4 format.
         NetworkVars.shared.serverFileTypes = data.uploadFileTypes ?? "jpg,jpeg,png,gif"
