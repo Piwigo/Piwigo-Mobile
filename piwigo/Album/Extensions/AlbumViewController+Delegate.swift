@@ -239,9 +239,14 @@ extension AlbumViewController: UICollectionViewDelegate
                   let albumData = try? self.mainContext.existingObject(with: objectID) as? Album,
                   let topViewController = self.navigationController
             else { return }
-            let delete = AlbumDeletion(albumData: albumData, user: self.user,
-                                       topViewController: topViewController)
-            delete.displayAlert { _ in }
+            Task { [self] in
+                let nbOrphans = (try? await JSONManager.shared.calcOrphans(albumData.pwgID)) ?? 0
+                await MainActor.run {
+                    let delete = AlbumDeletion(albumData: albumData, user: self.user, nbOrphans: nbOrphans,
+                                               topViewController: topViewController)
+                    delete.displayAlert { _ in }
+                }
+            }
         }
     }
     

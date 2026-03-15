@@ -11,12 +11,13 @@ import Foundation
 import UIKit
 import piwigoKit
 
-class AlbumDeletion: NSObject
+final class AlbumDeletion: NSObject
 {
     // Initialisation
-    init(albumData: Album, user: User, topViewController: UIViewController) {
+    init(albumData: Album, user: User, nbOrphans: Int64, topViewController: UIViewController) {
         self.albumData = albumData
         self.user = user
+        self.nbOrphans = nbOrphans
         self.topViewController = topViewController
     }
     
@@ -58,9 +59,9 @@ class AlbumDeletion: NSObject
         } else {
             // Album containing images
             let keepImagesAction = UIAlertAction(
-                title: NSLocalizedString("deleteCategory_noImages", comment: "Keep Photos"),
+                title: NSLocalizedString("deleteCategory_noImages", comment: "Keep Photos/Videos"),
                 style: .default, handler: { [self] action in
-                    if NetworkVars.shared.usesCalcOrphans, nbOrphans == Int64.zero {
+                    if nbOrphans == Int64.zero {
                         // There will be no more orphans after the album deletion
                         deleteAlbum(withDeletionMode: .none, completion: completion)
                     } else {
@@ -71,8 +72,7 @@ class AlbumDeletion: NSObject
                 })
             alert.addAction(keepImagesAction)
             
-            if NetworkVars.shared.usesCalcOrphans == false ||
-                (NetworkVars.shared.usesCalcOrphans && nbOrphans == Int64.min) {
+            if nbOrphans == Int64.min {
                 let orphanImagesAction = UIAlertAction(
                     title: NSLocalizedString("deleteCategory_orphanedImages", comment: "Delete Orphans"),
                     style: .destructive,
@@ -93,15 +93,17 @@ class AlbumDeletion: NSObject
                 alert.addAction(orphanImagesAction)
             }
             
-            let allImagesAction = UIAlertAction(
-                title: String.localizedStringWithFormat(NSLocalizedString("deleteSeveralImages_title", comment: "Delete %@ Photos/Videos"), NSNumber(value: albumData.totalNbImages)),
-                style: .destructive,
-                handler: { [self] action in
-                    confirmAlbumDeletion(withNumberOfImages: albumData.totalNbImages,
-                                         deletionMode: .all, completion: completion)
-                })
-            allImagesAction.accessibilityIdentifier = "DeleteAll"
-            alert.addAction(allImagesAction)
+            if nbOrphans != albumData.totalNbImages {
+                let allImagesAction = UIAlertAction(
+                    title: String.localizedStringWithFormat(NSLocalizedString("deleteSeveralImages_title", comment: "Delete %@ Photos/Videos"), NSNumber(value: albumData.totalNbImages)),
+                    style: .destructive,
+                    handler: { [self] action in
+                        confirmAlbumDeletion(withNumberOfImages: albumData.totalNbImages,
+                                             deletionMode: .all, completion: completion)
+                    })
+                allImagesAction.accessibilityIdentifier = "DeleteAll"
+                alert.addAction(allImagesAction)
+            }
         }
         
         // Present list of actions

@@ -13046,102 +13046,102 @@
       }
     },
     "deleteCategory_noImages" : {
-      "comment" : "Keep Photos",
+      "comment" : "Keep Photos/Videos",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الاحتفاظ بالصور"
+            "value" : "الاحتفاظ بالصور/الفيديوهات"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Behold billeder"
+            "value" : "Behold Billeder/Videoer"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Behalte Fotos"
+            "value" : "Fotos/Videos speichern"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Keep Photos"
+            "value" : "Keep Photos/Videos"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mantener las fotos"
+            "value" : "Conservar fotos/vídeos"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Conserver les photos"
+            "value" : "Garder les photos/vidéos"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fotók megtartása"
+            "value" : "Fotók/videók megőrzése"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Menyimpan gambar"
+            "value" : "Simpan Foto/Video"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tenere immagini"
+            "value" : "Conserva foto/video"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "写真を保存します"
+            "value" : "写真・動画を保存する"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Foto's houden"
+            "value" : "Foto's behouden/video's"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zachowaj zdjęcia"
+            "value" : "Zachowaj zdjęcia/filmy"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Оставить фотографии"
+            "value" : "Сохранить фото/видео"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Behåll bilderna"
+            "value" : "Spara bilder/videor"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "保留图像"
+            "value" : "保留照片/视频"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "保留照片"
+            "value" : "保留照片/影片"
           }
         }
       }

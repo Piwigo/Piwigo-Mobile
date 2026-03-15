@@ -27,14 +27,6 @@ public extension JSONManager {
                 NetworkVars.shared.usesCommunityPluginV29 = false
             }
             
-            // Check if the pwg.categories.calculateOrphans method is available (since Piwigo 12)
-            if pwgData.data.contains(pwgCategoriesCalcOrphans) {
-                NetworkVars.shared.usesCalcOrphans = true
-                JSONManager.logger.notice("\(kReflectionGetMethodList) ➜ calculateOrphans method available")
-            } else {
-                NetworkVars.shared.usesCalcOrphans = false
-            }
-            
             // Check if the pwg.images.setCategory method is available (since Piwigo 14)
             if pwgData.data.contains(pwgImagesSetCategory) {
                 NetworkVars.shared.usesSetCategory = true

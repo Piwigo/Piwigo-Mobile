@@ -151,7 +151,7 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
         // Album deletion
         let trash = UIContextualAction(style: .normal, title: nil,
                                        handler: { _, _, completionHandler in
-            let delete = AlbumDeletion(albumData: albumData, user: user,
+            let delete = AlbumDeletion(albumData: albumData, user: user, nbOrphans: self.nbOrphans,
                                        topViewController: topViewController)
             delete.displayAlert(completion: completionHandler)
         })

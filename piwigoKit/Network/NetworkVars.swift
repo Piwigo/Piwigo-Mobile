@@ -31,6 +31,9 @@ public class NetworkVars: @unchecked Sendable {
         if let _ = UserDefaults.dataSuite.object(forKey: "usesUploadAsync") {
             UserDefaults.dataSuite.removeObject(forKey: "usesUploadAsync")
         }
+        if let _ = UserDefaults.dataSuite.object(forKey: "usesCalcOrphans") {
+            UserDefaults.dataSuite.removeObject(forKey: "usesCalcOrphans")
+        }
     }
     
     // MARK: - Vars in UserDefaults / Standard
@@ -127,10 +130,6 @@ public class NetworkVars: @unchecked Sendable {
     @UserDefault("usesCommunityPluginV29", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var usesCommunityPluginV29:Bool
     
-    /// - pwg.categories.calculateOrphans method available, false by default (available since Piwigo 12)
-    @UserDefault("usesCalcOrphans", defaultValue: false, userDefaults: UserDefaults.dataSuite)
-    public var usesCalcOrphans: Bool
-
     /// - pwg.images.setCategory method available, false by default (available since Piwigo 14)
     @UserDefault("usesSetCategory", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var usesSetCategory: Bool

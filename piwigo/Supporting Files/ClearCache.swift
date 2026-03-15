@@ -38,7 +38,6 @@ final class ClearCache
             
             // Back to default server properties
             NetworkVars.shared.usesCommunityPluginV29 = false
-            NetworkVars.shared.usesCalcOrphans = false
             NetworkVars.shared.usesSetCategory = false
             NetworkVars.shared.usesAPIkeys = false
             
