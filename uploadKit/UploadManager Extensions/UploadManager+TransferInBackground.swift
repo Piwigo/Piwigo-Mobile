@@ -32,7 +32,7 @@ extension UploadManager {
         catch { throw .otherError(innerError: error) }
         
         // Calculate number of chunks
-        let chunkSize = UploadVars.shared.uploadChunkSize * 1024
+        let chunkSize = UploadVars.shared.customUploadChunkSize * 1000
         let chunksDiv: Float = Float(imageData.count) / Float(chunkSize)
         let chunks = Int(chunksDiv.rounded(.up))
         let chunksStr = String(format: "%ld", chunks)
@@ -40,7 +40,7 @@ extension UploadManager {
             uploadData.md5Sum.isEmpty || uploadData.category == 0 {
             throw .missingUploadParameter
         }
-                
+        
         // Prepare upload URL
         guard let uploadUrl = URL(string: NetworkVars.shared.service + "/ws.php?format=json&method=\(pwgImagesUploadAsync)")
         else { preconditionFailure("!!! Invalid uploadAsync URL") }

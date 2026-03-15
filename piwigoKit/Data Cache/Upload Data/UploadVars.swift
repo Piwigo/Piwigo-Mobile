@@ -25,22 +25,22 @@ public class UploadVars: NSObject, @unchecked Sendable {
     public static let shared = UploadVars()
     
     // Constants
-//    public var isExecutingBGContinuedUploadTask = false     // True when the task is running (since iOS 26)
+    //    public var isExecutingBGContinuedUploadTask = false     // True when the task is running (since iOS 26)
     public var isExecutingBGUploadTask = false              // True if called by the background task (before iOS 26)
     public let maxNberOfUploadsPerBckgTask = 100            // i.e. up to 100 requests per bckg task
     public var isPaused = false                             // Flag used to pause uploads when
-                                                            // - sorting local device images
-                                                            // - adding upload requests
-                                                            // - modifying auto-upload settings
-                                                            // - cancelling upload tasks
-                                                            // - the app is about to become inactive
-
+    // - sorting local device images
+    // - adding upload requests
+    // - modifying auto-upload settings
+    // - cancelling upload tasks
+    // - the app is about to become inactive
+    
     // Remove deprecated stored objects if needed
     override init() {
         // Deprecated data?
-//        if let _ = UserDefaults.standard.object(forKey: "test") {
-//            UserDefaults.standard.removeObject(forKey: "test")
-//        }
+        //        if let _ = UserDefaults.standard.object(forKey: "test") {
+        //            UserDefaults.standard.removeObject(forKey: "test")
+        //        }
         if let _ = UserDefaults.dataSuite.object(forKey: "photoResize") {
             UserDefaults.dataSuite.removeObject(forKey: "photoResize")
         }
@@ -59,12 +59,12 @@ public class UploadVars: NSObject, @unchecked Sendable {
             }
         }
     }
-
+    
     // MARK: - Vars in UserDefaults / Standard
     // Upload variables stored in UserDefaults / Standard
     @UserDefault("nberOfPendingUploadRequests", defaultValue: 0)
     public var nberOfUploadsToComplete: Int
-
+    
     
     // MARK: - Vars in UserDefaults / App Group
     // Upload variables stored in UserDefaults / App Group
@@ -79,7 +79,7 @@ public class UploadVars: NSObject, @unchecked Sendable {
             }
         }
     }
-
+    
     /// - Default author name
     @UserDefault("defaultAuthor", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public var defaultAuthor: String
@@ -109,11 +109,11 @@ public class UploadVars: NSObject, @unchecked Sendable {
     /// - Compress photo before uploading
     @UserDefault("compressImageOnUpload", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var compressImageOnUpload: Bool
-
+    
     /// - Quality factor to adopt when compressing
     @UserDefault("photoQuality", defaultValue: 98, userDefaults: UserDefaults.dataSuite)
     public var photoQuality: Int16
-
+    
     /// - Delete photo after upload
     @UserDefault("deleteImageAfterUpload", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var deleteImageAfterUpload: Bool
@@ -121,31 +121,31 @@ public class UploadVars: NSObject, @unchecked Sendable {
     /// - Latest year format chosen by the user
     @UserDefault("defaultYearFormat", defaultValue: pwgDateFormat.year(format: .yyyy).asString, userDefaults: UserDefaults.dataSuite)
     public var defaultYearFormat: String
-
+    
     /// - Latest month format chosen by the user
     @UserDefault("defaultMonthFormat", defaultValue: pwgDateFormat.month(format: .MM).asString, userDefaults: UserDefaults.dataSuite)
     public var defaultMonthFormat: String
-
+    
     /// - Latest day format chosen by the user
     @UserDefault("defaultDayFormat", defaultValue: pwgDateFormat.day(format: .dd).asString, userDefaults: UserDefaults.dataSuite)
     public var defaultDayFormat: String
-
+    
     /// - Latest hour format chosen by the user
     @UserDefault("defaultHourFormat", defaultValue: pwgTimeFormat.hour(format: .HH).asString, userDefaults: UserDefaults.dataSuite)
     public var defaultHourFormat: String
-
+    
     /// - Latest minute format chosen by the user
     @UserDefault("defaultMinuteFormat", defaultValue: pwgTimeFormat.minute(format: .mm).asString, userDefaults: UserDefaults.dataSuite)
     public var defaultMinuteFormat: String
-
+    
     /// - Latest second format chosen by the user
     @UserDefault("defaultSecondFormat", defaultValue: pwgTimeFormat.second(format: .ss).asString, userDefaults: UserDefaults.dataSuite)
     public var defaultSecondFormat: String
-
+    
     /// - First counter value used by each album to name uploaded files
     @UserDefault("categoryCounterInit", defaultValue: Int64(1), userDefaults: UserDefaults.dataSuite)
     public var categoryCounterInit: Int64
-
+    
     /// - Prefix file name before upload
     @UserDefault("prefixFileNameBeforeUpload", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var prefixFileNameBeforeUpload: Bool
@@ -153,7 +153,7 @@ public class UploadVars: NSObject, @unchecked Sendable {
     /// - Prefix action list in user's selected order
     @UserDefault("prefixFileNameActionList", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public var prefixFileNameActionList: String
-
+    
     /// - Replace file name before upload
     @UserDefault("replaceFileNameBeforeUpload", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var replaceFileNameBeforeUpload: Bool
@@ -165,7 +165,7 @@ public class UploadVars: NSObject, @unchecked Sendable {
     /// - Suffix file name before upload
     @UserDefault("suffixFileNameBeforeUpload", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var suffixFileNameBeforeUpload: Bool
-
+    
     /// - Suffix action list in user's selected order
     @UserDefault("suffixFileNameActionList", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public var suffixFileNameActionList: String
@@ -177,31 +177,31 @@ public class UploadVars: NSObject, @unchecked Sendable {
     /// - Case of the file extension
     @UserDefault("caseOfFileExtension", defaultValue: FileExtCase.keep.rawValue, userDefaults: UserDefaults.dataSuite)
     public var caseOfFileExtension: Int16
-
-    /// - Chunk size wanted by the Piwigo server (500 KB by default)
+    
+    /// - Chunk size suggested by the Piwigo server (500 KB by default)
     @UserDefault("uploadChunkSize", defaultValue: 500, userDefaults: UserDefaults.dataSuite)
     public var uploadChunkSize: Int
-
+    
     /// - Only upload photos when a Wi-Fi network is available
     @UserDefault("wifiOnlyUploading", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var wifiOnlyUploading: Bool
-
+    
     /// - Is auto-upload mode active?
     @UserDefault("isAutoUploadActive", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var isAutoUploadActive: Bool
-
+    
     /// - Local identifier of the Photo Library album containing photos to upload (i.e. source album)
     @UserDefault("autoUploadAlbumId", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public var autoUploadAlbumId: String
-
+    
     /// - Category ID of the Piwigo album to upload photos into (i.e. destination album)
     @UserDefault("autoUploadCategoryId", defaultValue: Int32.min, userDefaults: UserDefaults.dataSuite)
     public var autoUploadCategoryId: Int32
-
+    
     /// - IDs of the tags applied to the photos to auto-upload
     @UserDefault("autoUploadTagIds", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public var autoUploadTagIds: String
-
+    
     /// - Comments to add to the photos to auto-upload
     @UserDefault("autoUploadComments", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public var autoUploadComments: String
@@ -209,4 +209,16 @@ public class UploadVars: NSObject, @unchecked Sendable {
     /// - When the latest deletion of Photo Library images was accomplished
     @UserDefault("dateOfLastPhotoLibraryDeletion", defaultValue: Date.distantPast.timeIntervalSinceReferenceDate, userDefaults: UserDefaults.dataSuite)
     public var dateOfLastPhotoLibraryDeletion: TimeInterval
+    
+    /// - Maximum number of uploads that can be prepared
+    @UserDefault("maxNberOfPreparedUploads", defaultValue: 5, userDefaults: UserDefaults.dataSuite)
+    public var maxNberOfPreparedUploads: Int16
+    
+    /// - Maximum number of simultneous upload transfers
+    @UserDefault("maxNberOfUploadTransfers", defaultValue: 4, userDefaults: UserDefaults.dataSuite)
+    public var maxNberOfUploadTransfers: Int16
+    
+    /// - Chunk size set by the user (uploadChunkSize by default - see above)
+    @UserDefault("customUploadChunkSize", defaultValue: 0, userDefaults: UserDefaults.dataSuite)
+    public var customUploadChunkSize: Int
 }
