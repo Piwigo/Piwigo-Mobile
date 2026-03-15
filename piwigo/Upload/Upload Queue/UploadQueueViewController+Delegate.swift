@@ -54,7 +54,7 @@ extension UploadQueueViewController: UITableViewDelegate
         // Create retry upload action
         let retry = UIContextualAction(style: .normal, title: nil,
                                        handler: { action, view, completionHandler in
-            Task { @UploadManagerActor in
+            Task(priority: .utility) { @UploadManagerActor in
                 // Clear error and resume upload request
                 await UploadManager.shared.clearFailedUpload(withID: upload.objectID)
             }
