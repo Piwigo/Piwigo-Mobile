@@ -13081,7 +13081,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Garder les photos/vidéos"
+            "value" : "Conserver les photos/vidéos"
           }
         },
         "hu" : {
@@ -37624,8 +37624,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Size"
+            "state" : "translated",
+            "value" : "Größe"
           }
         },
         "en" : {
@@ -37725,8 +37725,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of %@ is generally a good starting point. Fast connections will have better performances with high values, such as %@."
+            "state" : "translated",
+            "value" : "Ein Wert von %@ ist in der Regel ein guter Ausgangspunkt. Bei schnellen Verbindungen lässt sich mit höheren Werten, wie beispielsweise %@, eine bessere Leistung erzielen."
           }
         },
         "en" : {
@@ -37826,8 +37826,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the size of the chunks that files are split into during upload."
+            "state" : "translated",
+            "value" : "Bitte wählen Sie die Größe der Blöcke aus, in die die Dateien beim Hochladen aufgeteilt werden."
           }
         },
         "en" : {
@@ -37927,8 +37927,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Chunk Size"
+            "state" : "translated",
+            "value" : "Blockgröße"
           }
         },
         "en" : {
@@ -38028,8 +38028,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Limit"
+            "state" : "translated",
+            "value" : "Grenze"
           }
         },
         "en" : {
@@ -38129,8 +38129,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Advanced Options"
+            "state" : "translated",
+            "value" : "Erweiterte Einstellungen"
           }
         },
         "en" : {
@@ -38230,8 +38230,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A suitable value is one slightly above the maximum number of photos or videos you can upload at a time. Note that a higher limit will result in greater disk space usage."
+            "state" : "translated",
+            "value" : "Ein geeigneter Wert liegt etwas über der maximalen Anzahl an Fotos oder Videos, die Sie auf einmal hochladen können. Beachten Sie, dass ein höheres Limit zu einem höheren Speicherplatzbedarf führt."
           }
         },
         "en" : {
@@ -38331,8 +38331,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of uploads to prepare in advance."
+            "state" : "translated",
+            "value" : "Bitte wählen Sie die maximale Anzahl der Uploads aus, die im Voraus vorbereitet werden sollen."
           }
         },
         "en" : {
@@ -38432,8 +38432,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Upload Preparation"
+            "state" : "translated",
+            "value" : "Upload-Vorbereitung"
           }
         },
         "en" : {
@@ -38533,8 +38533,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeouts or 503 errors, try reducing this number."
+            "state" : "translated",
+            "value" : "Der Wert 4 ist in der Regel ein guter Ausgangspunkt. Es empfiehlt sich, diesen Wert niedrig zu halten oder sich bei Ihrem Hosting-Anbieter oder Netzwerkadministrator zu erkundigen. Sollten Zeitüberschreitungen oder 503-Fehler auftreten, versuchen Sie, diesen Wert zu verringern."
           }
         },
         "en" : {
@@ -38634,8 +38634,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of files to transfer simultaneously."
+            "state" : "translated",
+            "value" : "Bitte wählen Sie die maximale Anzahl an Dateien aus, die gleichzeitig übertragen werden sollen."
           }
         },
         "en" : {
@@ -38735,8 +38735,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File Transfers"
+            "state" : "translated",
+            "value" : "Dateiübertragungen"
           }
         },
         "en" : {
