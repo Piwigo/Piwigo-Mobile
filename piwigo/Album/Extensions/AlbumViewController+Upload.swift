@@ -74,7 +74,8 @@ extension AlbumViewController
                 uploadQueueBarButton = getUploadQueueBarButton(withTitle: "⚠️")!
                 setNavBarWithUploadQueueButton()
             } else {
-                uploadQueueBarButton?.title = "⚠️"
+                let config = UIImage.SymbolConfiguration(pointSize: 17)
+                uploadQueueBarButton?.image = UIImage(systemName: "photo.badge.exclamationmark", withConfiguration: config)
             }
         } else {
             // Set number of uploads
@@ -89,6 +90,7 @@ extension AlbumViewController
                 // Nothing changed ► NOP
                 return
             } else {
+                uploadQueueBarButton?.image = nil
                 uploadQueueBarButton?.title = nber
             }
         }
