@@ -365,6 +365,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // Should we save changes in cache and schedule background tasks?
         if AppVars.shared.isMigrationRunning == false {
+            // Pause upload activities
+            UploadVars.shared.isPaused = true
             // Save changes in the app's managed object context
             mainContext.saveIfNeeded()
         }
