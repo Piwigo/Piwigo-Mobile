@@ -831,6 +831,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     @objc func checkSessionWhenLeavingLowPowerMode() {
         if !ProcessInfo.processInfo.isLowPowerModeEnabled {
             Task(priority: .utility) { @UploadManagerActor in
+                UploadVars.shared.didResumeAll = false
                 await UploadManager.shared.resumeAll()
             }
         }

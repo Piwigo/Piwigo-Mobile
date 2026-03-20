@@ -18,7 +18,8 @@ extension UploadManager
     public func resumeAll() async {
         debugPrint("In resumeAll() ► Thread priority: \(Task.currentPriority)")
         // Wait until fix completed
-        guard NetworkVars.shared.fixUserIsAPIKeyV412 == false
+        guard NetworkVars.shared.fixUserIsAPIKeyV412 == false,
+              UploadVars.shared.didResumeAll == false
         else { return }
         
         // Wait until continued background task finishes
@@ -27,6 +28,7 @@ extension UploadManager
         
         // Reset flags
         UploadVars.shared.isPaused = false
+        UploadVars.shared.didResumeAll = true
         
         // Delete upload requests of assets that have become unavailable,
         // except non-completed requests from intent and clipboard

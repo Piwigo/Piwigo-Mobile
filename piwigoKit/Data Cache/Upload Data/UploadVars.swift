@@ -221,4 +221,10 @@ public class UploadVars: NSObject, @unchecked Sendable {
     /// - Chunk size set by the user (uploadChunkSize by default - see above)
     @UserDefault("customUploadChunkSize", defaultValue: 0, userDefaults: UserDefaults.dataSuite)
     public var customUploadChunkSize: Int
+    
+    
+    // MARK: - Vars in Memory
+    // Variables kept in memory
+    /// Remembers that upload activities were resumed at launch
+    public var didResumeAll = false
 }

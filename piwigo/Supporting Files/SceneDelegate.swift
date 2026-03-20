@@ -360,6 +360,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Remember to ask for passcode or not
         AppVars.shared.isAppUnlocked = !AppVars.shared.isAppLockActive
         
+        // Remember to resume all upload activities at restart
+        UploadVars.shared.didResumeAll = false
+        
         // Should we save changes in cache and schedule background tasks?
         if AppVars.shared.isMigrationRunning == false {
             // Save changes in the app's managed object context
