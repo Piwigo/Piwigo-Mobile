@@ -51,6 +51,12 @@ class LocalAlbumsViewController: UIViewController {
                                                            .sharedAlbums : false,
                                                            .mediaTypes   : false,
                                                            .otherAlbums  : false]
+    lazy var localAlbumsProvider: LocalAlbumsProvider = {
+        let provider = LocalAlbumsProvider.shared
+        provider.fetchedLocalAlbumsDelegate = self
+        provider.includingEmptyAlbums = (wantedAction == .setAutoUploadAlbum)
+        return provider
+    }()
     lazy var pasteboardTypes : [String] = {
         return [UTType.image.identifier, UTType.movie.identifier]
     }()
