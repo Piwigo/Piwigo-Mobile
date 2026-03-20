@@ -156,6 +156,9 @@ extension UploadManager
             await UploadManagerActor.shared.addUploadsToPrepare(withIDs: toPrepare, beforeOthers: true)
             UploadManager.logger.notice("Resuming uploads: \(toPrepare.count, privacy: .public) failed uploads to rety")
         }
+
+        // Process next uploads if possible
+        await UploadManagerActor.shared.processNextUpload()
     }
     
     

@@ -95,6 +95,9 @@ extension PasteboardImagesViewController: UploadSwitchDelegate
                 UploadVars.shared.isPaused = false
                 await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
                 
+                // Process next uploads if possible
+                await UploadManagerActor.shared.processNextUpload()
+
                 // Deselect cells
                 await MainActor.run {
                     self.cancelSelect()

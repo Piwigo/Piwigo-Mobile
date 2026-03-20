@@ -425,6 +425,8 @@ extension UploadManager {
         
         // Add video to transfer queue
         await UploadManagerActor.shared.addUploadsToTransfer(withIDs: [uploadID])
+
+        // Process next uploads if possible
         await UploadManagerActor.shared.processNextUpload()
     }
     

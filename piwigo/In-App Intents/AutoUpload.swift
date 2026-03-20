@@ -106,6 +106,9 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
             // Launch upload operations in background thread
             await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
             
+            // Process next uploads if possible
+            await UploadManagerActor.shared.processNextUpload()
+
             // Inform user that the shortcut was executed with success
             return .result(dialog: .responseSuccess(photos: uploadIDs.count))
         }

@@ -46,9 +46,6 @@ public actor UploadManagerActor {
         } else {
             uploadIDsToPrepare.append(contentsOf: uploadIDsToAdd)
         }
-        
-        // Process next uploads if possible
-        await processNextUpload()
     }
     
     public func addUploadsToTransfer(withIDs uploadIDs: [NSManagedObjectID], beforeOthers: Bool = false) async {
@@ -63,9 +60,6 @@ public actor UploadManagerActor {
         } else {
             uploadIDsToTransfer.append(contentsOf: uploadIDsToAdd)
         }
-        
-        // Process next uploads if possible
-        await processNextUpload()
     }
     
     public func removeUploads(withIDs uploadIDs: [NSManagedObjectID]) async {

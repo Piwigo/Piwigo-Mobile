@@ -102,6 +102,9 @@ extension LocalImagesViewController: UploadSwitchDelegate
                 UploadVars.shared.isPaused = false
                 await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
                 
+                // Process next uploads if possible
+                await UploadManagerActor.shared.processNextUpload()
+
                 // Deselect cells in memory
                 await MainActor.run {
                     self.uploadRequests = []
