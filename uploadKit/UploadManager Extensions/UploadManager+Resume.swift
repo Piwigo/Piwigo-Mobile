@@ -37,8 +37,8 @@ extension UploadManager
         // Get Upload URI strings of active transfers
         let activeUploadsURIstr = await getUploadURIsOfTransfers()
         
-        // Resume upload requests which encountered an error
-        await resumePendingUploads(except: activeUploadsURIstr)
+        // Clear upload requests which encountered an error
+        let (_,_) = await clearFailedUploads(except: activeUploadsURIstr)
         
         // Store number, update badge and default album view button
         let nberOfPendingUploads = UploadProvider().getCountOfPendingUploads(inContext: self.uploadBckgContext)
@@ -121,30 +121,20 @@ extension UploadManager
         }
     }
         
-    public func resumePendingUploads(except activeUploadsURIstr: Set<String>) async {
+    public func clearFailedUploads(except activeUploadsURIstr: Set<String>) async -> ([NSManagedObjectID], [NSManagedObjectID]) {
         // Will retry inactive uploads marked "uploading", and those which returned an error
         let states: [pwgUploadState] = [.preparingError, .uploading, .uploadingError, .finishing, .finishingError]
         let (uploadIDs, _) = UploadProvider().getIDsOfPendingUploads(onlyInStates: states, inContext: self.uploadBckgContext)
         let toResumeUploadIDs = uploadIDs.filter({ !activeUploadsURIstr.contains($0.uriRepresentation().absoluteString) })
-        let (toPrepare, toTransfer) = UploadProvider().clearFailedUploads(toResumeUploadIDs, inContext: self.uploadBckgContext)
-        
-        // First retry transfers
-        if toTransfer.isEmpty == false {
-            await UploadManagerActor.shared.addUploadsToTransfer(withIDs: toTransfer)
-            UploadManager.logger.notice("Resuming uploads: \(toTransfer.count, privacy: .public) failed uploads to rety")
-        }
-        
-        // Next retry preparations
-        if toPrepare.isEmpty == false {
-            await UploadManagerActor.shared.addUploadsToPrepare(withIDs: toPrepare)
-            UploadManager.logger.notice("Resuming uploads: \(toPrepare.count, privacy: .public) failed uploads to rety")
-        }
+        return UploadProvider().clearFailedUploads(toResumeUploadIDs, inContext: self.uploadBckgContext)
     }
     
-    public func clearFailedUpload(withID uploadID: NSManagedObjectID) async {
-        // Clear failed upload
-        let (toPrepare, toTransfer) = UploadProvider().clearFailedUploads([uploadID], inContext: self.uploadBckgContext)
-
+    public func clearFailedUpload(withID uploadID: NSManagedObjectID) async -> ([NSManagedObjectID], [NSManagedObjectID]) {
+        // Clear upload request error
+        return UploadProvider().clearFailedUploads([uploadID], inContext: self.uploadBckgContext)
+    }
+    
+    public func resumeUploads(toTransfer: [NSManagedObjectID], andToPrepare toPrepare: [NSManagedObjectID]) async {
         // First retry transfers
         if toTransfer.isEmpty == false {
             await UploadManagerActor.shared.addUploadsToTransfer(withIDs: toTransfer, beforeOthers: true)
