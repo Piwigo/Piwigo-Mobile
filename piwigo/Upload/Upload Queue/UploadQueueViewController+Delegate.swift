@@ -71,8 +71,8 @@ extension UploadQueueViewController: UITableViewDelegate
             savingContext?.delete(upload)
             savingContext?.saveIfNeeded()
             
-            // Remove upload request from queue
-            Task { @UploadManagerActor in
+            Task(priority: .utility) { @UploadManagerActor in
+                // Remove upload request from queue
                 await UploadManagerActor.shared.removeUploads(withIDs: [upload.objectID])
                 await UploadManager.shared.clearFailedUpload(withID: upload.objectID)
             }
