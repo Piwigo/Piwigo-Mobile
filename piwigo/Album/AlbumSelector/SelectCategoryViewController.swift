@@ -154,20 +154,34 @@ class SelectCategoryViewController: UIViewController {
     var inputImages = Set<Image>()
     var commonCatIDs = Set<Int32>()
     var nberOfImages = Int64.zero
-
+    
     func setInput(parameter:Any?, for action:pwgCategorySelectAction) -> Bool {
         wantedAction = action
         switch action {
-        case .setDefaultAlbum, .setAutoUploadAlbum:
+        case .setDefaultAlbum:
+            guard let albumId = parameter as? Int32, albumId >= Int32.zero else {
+                debugPrint("Input parameter expected to be a positive album ID.")
+                return false
+            }
+            // Actual default album to be replaced by the selected one
+            guard let album = try?  AlbumProvider().getAlbum(ofUser: user, withId: albumId)
+            else { return false }
+            if album.isFault {
+                // The album is not fired yet.
+                album.willAccessValue(forKey: nil)
+                album.didAccessValue(forKey: nil)
+            }
+            inputAlbum = album
+            
+        case .setAutoUploadAlbum:
             guard let albumId = parameter as? Int32 else {
                 debugPrint("Input parameter expected to be an Int32.")
                 return false
             }
-            // Actual default album or actual album in which photos are auto-uploaded
+            // Actual album in which photos are auto-uploaded
             // to be replaced by the selected one
-            guard let album = try?  AlbumProvider().getAlbum(ofUser: user, withId: albumId) else {
-                return false
-            }
+            guard let album = try?  AlbumProvider().getAlbum(ofUser: user, withId: albumId)
+            else { return false }
             if album.isFault {
                 // The album is not fired yet.
                 album.willAccessValue(forKey: nil)
