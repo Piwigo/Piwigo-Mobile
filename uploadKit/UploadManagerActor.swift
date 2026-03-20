@@ -80,8 +80,6 @@ public actor UploadManagerActor {
     }
 
     public func processNextUpload() async {
-        debugPrint("In processNextUpload() ► Thread priority: \(Task.currentPriority)")
-        
         // Should we postpone uploads?
         if UploadVars.shared.isPaused ||
             ProcessInfo.processInfo.isLowPowerModeEnabled ||

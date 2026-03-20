@@ -355,7 +355,6 @@ public final class UploadProvider {
             fetchRequest.shouldRefreshRefetchedObjects = true
             
             // Fetch objects
-            debugPrint("In getIDsOfPendingUploads > Task.currentPriority: \(Task.currentPriority)")
             let pendingUploads: [Upload] = (try? taskContext.fetch(fetchRequest) as [Upload]) ?? []
 
             // Select those which are deletable or not
@@ -393,7 +392,6 @@ public final class UploadProvider {
             fetchRequest.shouldRefreshRefetchedObjects = true
             
             // Fetch objects
-            debugPrint("In getIDsOfCompletedUploads > Task.currentPriority: \(Task.currentPriority)")
             let completedUploads: [Upload] = (try? taskContext.fetch(fetchRequest) as [Upload]) ?? []
             
             // Select those which are deletable or not
