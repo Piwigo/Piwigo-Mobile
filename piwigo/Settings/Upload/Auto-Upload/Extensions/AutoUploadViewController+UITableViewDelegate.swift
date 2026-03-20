@@ -113,10 +113,10 @@ extension AutoUploadViewController: UITableViewDelegate
             case 1 /* Select Piwigo album*/ :
                 let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
+                categoryVC.user = user
                 if categoryVC.setInput(parameter: UploadVars.shared.autoUploadCategoryId,
                                        for: .setAutoUploadAlbum) {
                     categoryVC.delegate = self
-                    categoryVC.user = user
                     navigationController?.pushViewController(categoryVC, animated: true)
                 }
                 
