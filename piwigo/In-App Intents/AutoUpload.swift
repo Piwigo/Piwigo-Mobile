@@ -72,7 +72,7 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
             UploadVars.shared.autoUploadAlbumId = ""               // Unknown source Photos album
             
             // Delete remaining upload requests
-            Task { @UploadManagerActor in
+            Task(priority: .utility) { @UploadManagerActor in
                 await UploadManager.shared.disableAutoUpload()
             }
             
@@ -87,7 +87,7 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
             UploadVars.shared.autoUploadCategoryId = Int32.min    // Unknown destination Piwigo album
             
             // Delete remaining upload requests
-            Task { @UploadManagerActor in
+            Task(priority: .utility) { @UploadManagerActor in
                 await UploadManager.shared.disableAutoUpload()
             }
             
@@ -104,11 +104,14 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
             let uploadIDs = try await UploadManager.shared.importUploads(from: uploadRequestsToAppend)
             
             // Launch upload operations in background thread
-            await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
+            Task(priority: .utility) { @UploadManagerActor in
+                // Add upload requests to the queue
+                await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
+                
+                // Process next uploads if possible
+                await UploadManagerActor.shared.processNextUpload()
+            }
             
-            // Process next uploads if possible
-            await UploadManagerActor.shared.processNextUpload()
-
             // Inform user that the shortcut was executed with success
             return .result(dialog: .responseSuccess(photos: uploadIDs.count))
         }
