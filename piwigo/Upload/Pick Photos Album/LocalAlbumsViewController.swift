@@ -54,7 +54,7 @@ class LocalAlbumsViewController: UIViewController {
     lazy var localAlbumsProvider: LocalAlbumsProvider = {
         let provider = LocalAlbumsProvider.shared
         provider.fetchedLocalAlbumsDelegate = self
-        provider.includingEmptyAlbums = (categoryId == Int32.min)
+        provider.includingEmptyAlbums = (wantedAction == .setAutoUploadAlbum)
         return provider
     }()
     lazy var pasteboardTypes : [String] = {

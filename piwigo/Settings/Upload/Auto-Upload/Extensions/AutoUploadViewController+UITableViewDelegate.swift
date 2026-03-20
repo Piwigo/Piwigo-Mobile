@@ -103,6 +103,7 @@ extension AutoUploadViewController: UITableViewDelegate
                     let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
                     guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else { return }
                     localAlbumsVC.categoryId = Int32.min
+                    localAlbumsVC.wantedAction = .setAutoUploadAlbum
                     localAlbumsVC.user = self.user
                     localAlbumsVC.delegate = self
                     self.navigationController?.pushViewController(localAlbumsVC, animated: true)
