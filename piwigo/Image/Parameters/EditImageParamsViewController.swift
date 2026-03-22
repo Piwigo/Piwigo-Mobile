@@ -328,15 +328,14 @@ class EditImageParamsViewController: UIViewController
 
         // Update image info on server
         /// The cache will be updated by the parent view controller.
-        let paramsDict = getParameters(forImage: images[index])
-        
         Task {
             do {
                 // Set image properties
+                let paramsDict = getParameters(forImage: images[index])
                 try await JSONManager.shared.setInfos(with: paramsDict)
 
-                // Update cache and update
                 await MainActor.run {
+                    // Update cache
                     self.updateProperties(ofImage: images[index], withParameters: paramsDict)
                     
                     // Next image?
