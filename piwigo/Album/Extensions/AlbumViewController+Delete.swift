@@ -183,7 +183,7 @@ extension AlbumViewController
                 try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Set image properties
-                _ = try await JSONManager.shared.setInfos(with: paramsDict)
+                try await JSONManager.shared.setInfos(with: paramsDict)
                 
                 // Update cache
                 await MainActor.run { [self] in

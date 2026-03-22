@@ -52,7 +52,7 @@ extension SelectCategoryViewController
                                               "multiple_value_mode" : "replace"]
             
             // Set image properties
-            _ = try await JSONManager.shared.setInfos(with: paramsDict)
+            try await JSONManager.shared.setInfos(with: paramsDict)
             
             await MainActor.run {
                 // Add image to album
@@ -193,7 +193,7 @@ extension SelectCategoryViewController
                                               "multiple_value_mode" : "replace"]
             
             // Set image properties
-            _ = try await JSONManager.shared.setInfos(with: paramsDict)
+            try await JSONManager.shared.setInfos(with: paramsDict)
             
             await MainActor.run {
                 // Add image to target album
