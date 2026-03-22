@@ -279,7 +279,7 @@ class EditImageParamsViewController: UIViewController
     }
 
     @MainActor
-    @objc func doneEdit() async {
+    @objc func doneEdit() {
         // Display HUD during the update
         if images.count > 1 {
             showHUD(withTitle: NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"),
