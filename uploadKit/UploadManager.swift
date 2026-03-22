@@ -42,8 +42,8 @@ public final class UploadManager {
     
 //    public var countOfBytesPrepared = UInt64(0)             // Total amount of bytes of prepared files
 //    public var countOfBytesToUpload = 0                     // Total amount of bytes to be sent
-//    public var uploadRequestsToPrepare = Set<NSManagedObjectID>()
-//    public var uploadRequestsToTransfer = Set<NSManagedObjectID>()
+    public var uploadRequestsToPrepare = [NSManagedObjectID]()
+    public var uploadRequestsToTransfer = [NSManagedObjectID]()
     
     private init() {
         // Register auto-upload disabler

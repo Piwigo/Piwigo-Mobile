@@ -113,8 +113,8 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         /// - called by an extension (don't try to append auto-upload requests again)
         let initOperation = BlockOperation {
             Task { @UploadManagerActor in
-                await UploadManager.shared.initialiseBckgTask(autoUploadOnly: true,
-                                                              triggeredByExtension: true)
+//                await UploadManager.shared.initialiseBckgTask(autoUploadOnly: true,
+//                                                              triggeredByExtension: true)
             }
         }
         uploadOperations.append(initOperation)
@@ -123,7 +123,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         let resumeOperation = BlockOperation {
             // Transfer image
             Task { @UploadManagerActor in
-                await UploadManager.shared.resumeTransfers()
+//                await UploadManager.shared.resumeTransfers()
             }
         }
         resumeOperation.addDependency(uploadOperations.last!)
@@ -133,7 +133,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         let uploadOperation = BlockOperation {
             // Prepare image
             Task { @UploadManagerActor in
-                await UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
+//                await UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
             }
         }
         uploadOperation.addDependency(uploadOperations.last!)

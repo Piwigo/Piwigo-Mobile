@@ -221,8 +221,8 @@ extension UploadManager
      - e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"org.piwigo.uploadManager"]
      - e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateExpirationForTaskWithIdentifier:@"org.piwigo.uploadManager"]
      */
-    public func initialiseBckgTask(autoUploadOnly: Bool = false,
-                                   triggeredByExtension: Bool = false) async -> Void {
+//    public func initialiseBckgTask(autoUploadOnly: Bool = false,
+//                                   triggeredByExtension: Bool = false) async -> Void {
 //        // Perform fetch
 //        do {
 //            try uploads.performFetch()
@@ -279,10 +279,10 @@ extension UploadManager
 //        UploadManager.logger.notice("initialiseBckgTask() retrieved \(requestsToPrepare.count, privacy: .public) uploads to prepare (limit of \(maxNberPreparedUploads))")
 //        let toPrepare = requestsToPrepare.map({$0.objectID})
 //        uploadRequestsToPrepare = Set(toPrepare[..<min(diff, toPrepare.count)])
-    }
+//    }
     
-    public func resumeTransfers() async -> Void {
-        // Get active upload tasks and initialise isUploading
+//    public func resumeTransfers() async -> Void {
+//        // Get active upload tasks and initialise isUploading
 //        frgdSession.getAllTasks { [unowned self] uploadTasks in
 //            // Loop over the tasks launched in the foreground
 //            Task { @UploadManagerActor in
@@ -351,10 +351,10 @@ extension UploadManager
 //                }
 //            }
 //        }
-    }
-    
-    public func appendUploadRequestsToPrepareToBckgTask() async -> Void {
-        // Add image preparation followed by transfer operations
+//    }
+//    
+//    public func appendUploadRequestsToPrepareToBckgTask() async -> Void {
+//        // Add image preparation followed by transfer operations
 //        if UploadVars.shared.isExecutingBGUploadTask {
 //            // Fallback on previous version
 //            if countOfBytesPrepared < UInt64(maxCountOfBytesToUpload),
@@ -374,5 +374,5 @@ extension UploadManager
 //            // Remove objectID
 //            uploadRequestsToPrepare.removeFirst()
 //        }
-    }
+//    }
 }

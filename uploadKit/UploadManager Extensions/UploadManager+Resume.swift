@@ -98,6 +98,59 @@ extension UploadManager
     }
     
     
+    // MARK: - Resume Uploads in Background Task
+    public func initialiseBckgTask() async {
+        // Wait until fix completed
+        guard NetworkVars.shared.fixUserIsAPIKeyV412 == false,
+              UploadVars.shared.didResumeAll == false
+        else { return }
+        
+        // Wait until continued background task finishes
+//        guard UploadVars.shared.isExecutingBGContinuedUploadTask == false
+//        else { return }
+        
+        // Reset flags
+        UploadVars.shared.isPaused = false
+        UploadVars.shared.didResumeAll = true
+        
+        // Get Upload URI strings of active transfers
+        let activeUploadsURIstr = await getUploadURIsOfTransfers()
+        
+        // Clear upload requests which encountered an error
+        let (_,_) = await clearFailedUploads(except: activeUploadsURIstr)
+        
+        // Store number, update badge and default album view button
+        let nberOfPendingUploads = UploadProvider().getCountOfPendingUploads(inContext: self.uploadBckgContext)
+        DispatchQueue.main.async {
+            // Update app badge and button of root album (or default album)
+            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : nberOfPendingUploads]
+            NotificationCenter.default.post(name: .pwgLeftUploads, object: nil, userInfo: uploadInfo)
+        }
+        
+        // Get uploaded tasks to complete
+        var toTransfer = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.uploaded], inContext: self.uploadBckgContext).0
+        
+        // Append prepared uploads to transfer
+        var preparedUploadIDs = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.prepared], inContext: self.uploadBckgContext).0
+        let alreadyQueuedIDs = Set(preparedUploadIDs).intersection(Set(toTransfer))
+        preparedUploadIDs.removeAll(where: { alreadyQueuedIDs.contains($0) })
+        toTransfer.append(contentsOf: preparedUploadIDs)
+        
+        // Append auto-upload requests if requested
+        if UploadVars.shared.isAutoUploadActive {
+            await self.appendAutoUploadRequests()
+        } else {
+            await self.disableAutoUpload()
+        }
+        
+        // Append uploads to prepare
+        uploadRequestsToPrepare = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.waiting], inContext: self.uploadBckgContext).0
+        
+        // Logs stats
+        UploadManager.logger.notice("Resuming uploads: \(self.uploadRequestsToTransfer.count, privacy: .public) file(s) to transfer, \(self.uploadRequestsToPrepare.count, privacy: .public) uploads to prepare")
+    }
+    
+    
     // MARK: - Clear Failed Uploads
     func suggestToDeleteUploadedImages(withPendingUploads nberOfPendingUploads: Int) {
         let (uploadIDs, localIdentifiers) = UploadProvider().getIDsOfCompletedUploads(onlyDeletable: true, inContext: self.uploadBckgContext)

@@ -352,32 +352,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Create the operation queue
         let uploadQueue = OperationQueue()
+        uploadQueue.qualityOfService = .utility
         uploadQueue.maxConcurrentOperationCount = 1
+        var uploadOperations = [BlockOperation]()
         
         // Add operation setting flag and selecting upload requests
-        let initOperation = BlockOperation {
+        let initNetworkMonitor = BlockOperation {
             // Start network monitoring
             Task { @NetworkMonitoring in
                 await self.networkMonitor?.startMonitoring()
             }
             // Initialise variables and determine upload requests to prepare and transfer
             UploadVars.shared.isExecutingBGUploadTask = true
-            Task { @UploadManagerActor in
-//                UploadManager.shared.countOfBytesPrepared = 0
-//                UploadManager.shared.countOfBytesToUpload = 0
+            Task(priority: .utility) { @UploadManagerActor in
                 await UploadManager.shared.initialiseBckgTask()
             }
         }
+        uploadOperations.append(initNetworkMonitor)
 
-        // Initialise list of operations
-        var uploadOperations = [BlockOperation]()
-        uploadOperations.append(initOperation)
-
+        // Initialise variables and determine upload requests to prepare and transfer
+        let initUploadManager = BlockOperation {
+            Task { @UploadManagerActor in
+                await UploadManager.shared.initialiseBckgTask()
+            }
+        }
+        initUploadManager.addDependency(uploadOperations.last!)
+        uploadOperations.append(initUploadManager)
+        
         // Resume transfers
         let resumeOperation = BlockOperation {
             // Transfer image
             Task { @UploadManagerActor in
-                await UploadManager.shared.resumeTransfers()
+//                await UploadManager.shared.resumeTransfers()
             }
         }
         resumeOperation.addDependency(uploadOperations.last!)
@@ -388,13 +394,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let uploadOperation = BlockOperation {
                 // Prepare then transfer image
                 Task { @UploadManagerActor in
-                    await UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
+//                    await UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
                 }
             }
             uploadOperation.addDependency(uploadOperations.last!)
             uploadOperations.append(uploadOperation)
         }
-
+        
         // Provide an expiration handler for the background task
         // that cancels the operation
         task.expirationHandler = {
