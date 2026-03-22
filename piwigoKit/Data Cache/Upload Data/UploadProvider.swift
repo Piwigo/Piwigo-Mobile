@@ -338,7 +338,7 @@ public final class UploadProvider {
         Retrieve IDs of upload pending requests in given states on the uploadKit private queue
      */
     public func getIDsOfPendingUploads(onlyInStates states: [pwgUploadState] = [], onlyImages: [Int64] = [],
-                                       onlyDeletable: Bool = false, notAutoUploaded: Bool = false,
+                                       onlyDeletable: Bool = false, markedForAutoUpload: Bool = false,
                                        inContext taskContext: NSManagedObjectContext) -> ([NSManagedObjectID], [String])
     {
         taskContext.performAndWait { () -> ([NSManagedObjectID], [String]) in
@@ -357,14 +357,14 @@ public final class UploadProvider {
             // Fetch objects
             let pendingUploads: [Upload] = (try? taskContext.fetch(fetchRequest) as [Upload]) ?? []
 
-            // Select those which are deletable or not
+            // Select only those which are deletable or not
             let deletableUploads = onlyDeletable ? pendingUploads.filter({ $0.deleteImageAfterUpload }) : pendingUploads
             
-            // Select those which were not already auto-uploaded
-            let notAutoUploaded = notAutoUploaded ? deletableUploads.filter({ $0.markedForAutoUpload == false }) : deletableUploads
+            // Select those requested by the auto-upload option or not
+            let autoUploads = deletableUploads.filter({ $0.markedForAutoUpload == markedForAutoUpload})
             
             // Select only those in wanted states
-            let uploadsInStates = states.isEmpty ? notAutoUploaded : notAutoUploaded.filter({ states.contains($0.state) })
+            let uploadsInStates = states.isEmpty ? autoUploads : autoUploads.filter({ states.contains($0.state) })
 
             // Select those related with given Piwigo images
             let uploads = onlyImages.isEmpty ? uploadsInStates : uploadsInStates.filter({ onlyImages.contains($0.imageId) })
@@ -400,7 +400,7 @@ public final class UploadProvider {
             // Select those which are deletable or not
             let deletableUploads = onlyDeletable ? completedUploads.filter({ $0.deleteImageAfterUpload }) : completedUploads
             
-            // Select those which were not already auto-uploaded
+            // Select those which were not auto-uploaded
             let notAutoUploaded = notAutoUploaded ? deletableUploads.filter({ $0.markedForAutoUpload == false }) : deletableUploads
             
             // Select only those in wanted states
