@@ -184,7 +184,7 @@ extension SelectCategoryViewController: UITableViewDelegate
             } else {
                 message = String(format: NSLocalizedString("setDefaultCategory_message", comment: "Are you sure you want to set the album %@ as default album?"), albumData.name)
             }
-            Task {
+            Task { @MainActor in
                 let confirmed = await requestConfirmation(withTitle: title, message: message,
                                                           forCategory: albumData, at: indexPath)
                 if confirmed {
@@ -215,7 +215,7 @@ extension SelectCategoryViewController: UITableViewDelegate
             // Ask user to confirm
             let title = NSLocalizedString("moveCategory", comment: "Move Album")
             let message = String(format: NSLocalizedString("moveCategory_message", comment: "Are you sure you want to move \"%@\" into the album \"%@\"?"), inputAlbum.name, albumData.name)
-            Task {
+            Task { @MainActor in
                 let confirmed = await requestConfirmation(withTitle: title, message: message,
                                                           forCategory: albumData, at: indexPath)
                 if confirmed {
@@ -228,7 +228,7 @@ extension SelectCategoryViewController: UITableViewDelegate
             // Ask user to confirm
             let title = NSLocalizedString("categoryImageSet_title", comment:"Album Thumbnail")
             let message = String(format: NSLocalizedString("categoryImageSet_message", comment:"Are you sure you want to set this image for the album \"%@\"?"), albumData.name)
-            Task {
+            Task { @MainActor in
                 let confirmed = await requestConfirmation(withTitle: title, message: message,
                                                           forCategory: albumData, at: indexPath)
                 if confirmed {
@@ -255,7 +255,7 @@ extension SelectCategoryViewController: UITableViewDelegate
             let title = NSLocalizedString("copyImage_title", comment:"Copy to Album")
             let imageTitle = inputImages.first?.titleStr ?? inputImages.first?.fileName ?? ""
             let message = String(format: NSLocalizedString("copySingleImage_message", comment:"Are you sure you want to copy the photo \"%@\" to the album \"%@\"?"), imageTitle.isEmpty ? inputImages.first?.fileName ?? "-?-" : imageTitle, albumData.name)
-            Task {
+            Task { @MainActor in
                 let confirmed = await requestConfirmation(withTitle: title, message: message,
                                                           forCategory: albumData, at: indexPath)
                 if confirmed {
@@ -266,7 +266,7 @@ extension SelectCategoryViewController: UITableViewDelegate
                     if NetworkVars.shared.usesSetCategory {
                         self.associateImages(toAlbum: albumData)
                     } else {
-                        await self.copyImages(toAlbum: albumData)
+                        self.copyImages(toAlbum: albumData)
                     }
                 }
             }
@@ -281,7 +281,7 @@ extension SelectCategoryViewController: UITableViewDelegate
             let title = NSLocalizedString("moveImage_title", comment:"Move to Album")
             let imageTitle = inputImages.first?.titleStr ?? inputImages.first?.fileName ?? ""
             let message = String(format: NSLocalizedString("moveSingleImage_message", comment:"Are you sure you want to move the photo \"%@\" to the album \"%@\"?"), imageTitle.isEmpty ? inputImages.first?.fileName ?? "-?-" : imageTitle, albumData.name)
-            Task {
+            Task { @MainActor in
                 let confirmed = await requestConfirmation(withTitle: title, message: message,
                                                           forCategory: albumData, at: indexPath)
                 if confirmed {
@@ -292,7 +292,7 @@ extension SelectCategoryViewController: UITableViewDelegate
                     if NetworkVars.shared.usesSetCategory {
                         self.associateImages(toAlbum: albumData, andDissociateFromPreviousAlbum: true)
                     } else {
-                        await self.moveImages(toAlbum: albumData)
+                        self.moveImages(toAlbum: albumData)
                     }
                 }
             }
@@ -306,7 +306,7 @@ extension SelectCategoryViewController: UITableViewDelegate
             // Ask user to confirm
             let title = NSLocalizedString("copyImage_title", comment:"Copy to Album")
             let message = String(format: NSLocalizedString("copySeveralImages_message", comment:"Are you sure you want to copy the photos to the album \"%@\"?"), albumData.name)
-            Task {
+            Task { @MainActor in
                 let confirmed = await requestConfirmation(withTitle: title, message: message,
                                                           forCategory: albumData, at: indexPath)
                 if confirmed {
@@ -318,7 +318,7 @@ extension SelectCategoryViewController: UITableViewDelegate
                     if NetworkVars.shared.usesSetCategory {
                         self.associateImages(toAlbum: albumData)
                     } else {
-                        await self.copyImages(toAlbum: albumData)
+                        self.copyImages(toAlbum: albumData)
                     }
                 }
             }
@@ -332,7 +332,7 @@ extension SelectCategoryViewController: UITableViewDelegate
             // Ask user to confirm
             let title = NSLocalizedString("moveImage_title", comment:"Move to Album")
             let message = String(format: NSLocalizedString("moveSeveralImages_message", comment:"Are you sure you want to move the photos to the album \"%@\"?"), albumData.name)
-            Task {
+            Task { @MainActor in
                 let confirmed = await requestConfirmation(withTitle: title, message: message,
                                                           forCategory: albumData, at: indexPath)
                 if confirmed {
@@ -344,7 +344,7 @@ extension SelectCategoryViewController: UITableViewDelegate
                     if NetworkVars.shared.usesSetCategory {
                         self.associateImages(toAlbum: albumData, andDissociateFromPreviousAlbum: true)
                     } else {
-                        await self.moveImages(toAlbum: albumData)
+                        self.moveImages(toAlbum: albumData)
                     }
                 }
             }
