@@ -1236,7 +1236,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Autocargar fotos"
+            "value" : "Subida automática de fotos"
           }
         },
         "fr" : {
@@ -37636,8 +37636,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Size"
+            "state" : "translated",
+            "value" : "Tamaño"
           }
         },
         "fr" : {
@@ -37737,8 +37737,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of %@ is generally a good starting point. Fast connections will have better performances with high values, such as %@."
+            "state" : "translated",
+            "value" : "Un valor de %@ suele ser un buen punto de partida. Las conexiones rápidas tendrán mejor rendimiento con valores altos, como %@."
           }
         },
         "fr" : {
@@ -37838,8 +37838,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the size of the chunks that files are split into during upload."
+            "state" : "translated",
+            "value" : "Por favor, seleccione el tamaño de los fragmentos en que se dividirán los archivos durante la subida."
           }
         },
         "fr" : {
@@ -37939,8 +37939,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Chunk Size"
+            "state" : "translated",
+            "value" : "Tamaño de fragmento"
           }
         },
         "fr" : {
@@ -38040,8 +38040,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Limit"
+            "state" : "translated",
+            "value" : "Límite"
           }
         },
         "fr" : {
@@ -38141,8 +38141,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Advanced Options"
+            "state" : "translated",
+            "value" : "Opciones Avanzadas"
           }
         },
         "fr" : {
@@ -38242,8 +38242,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A suitable value is one slightly above the maximum number of photos or videos you can upload at a time. Note that a higher limit will result in greater disk space usage."
+            "state" : "translated",
+            "value" : "Un valor adecuado es uno ligeramente superior al número máximo de fotos o vídeos que se pueden cargar a la vez. Tenga en cuenta que un límite más alto resultará en un mayor uso de espacio en disco."
           }
         },
         "fr" : {
@@ -38343,8 +38343,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of uploads to prepare in advance."
+            "state" : "translated",
+            "value" : "Por favor, seleccione el número máximo de subidas que preparar de antemano."
           }
         },
         "fr" : {
@@ -38444,8 +38444,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Upload Preparation"
+            "state" : "translated",
+            "value" : "Preparación de subida"
           }
         },
         "fr" : {
@@ -38545,8 +38545,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeouts or 503 errors, try reducing this number."
+            "state" : "translated",
+            "value" : "Un valor de 4 suele ser un buen punto de partida. Es recomendable mantener este número bajo, o consultar con su proveedor de alojamiento o administrador de red. Si se encuentra con tiempos de espera excedidos o errores 503, intente reducir este número."
           }
         },
         "fr" : {
@@ -38646,8 +38646,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of files to transfer simultaneously."
+            "state" : "translated",
+            "value" : "Por favor, seleccione el número máximo de archivos que transferir simultáneamente."
           }
         },
         "fr" : {
@@ -38747,8 +38747,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File Transfers"
+            "state" : "translated",
+            "value" : "Transferencias de archivos"
           }
         },
         "fr" : {
