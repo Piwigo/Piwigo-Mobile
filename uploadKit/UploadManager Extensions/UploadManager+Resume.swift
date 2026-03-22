@@ -14,7 +14,7 @@ import piwigoKit
 @UploadManagerActor
 extension UploadManager
 {
-    // MARK: - Resume Uploads
+    // MARK: - Resume Uploads in the Foreground
     public func resumeAll() async {
         debugPrint("In resumeAll() ► Thread priority: \(Task.currentPriority)")
         // Wait until fix completed
@@ -54,6 +54,13 @@ extension UploadManager
         let (preparedUploadIDs, _) = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.prepared], inContext: self.uploadBckgContext)
         await UploadManagerActor.shared.addUploadsToTransfer(withIDs: preparedUploadIDs)
         
+        // Append auto-upload requests if requested
+        if UploadVars.shared.isAutoUploadActive {
+            await self.appendAutoUploadRequests()
+        } else {
+            await self.disableAutoUpload()
+        }
+        
         // Append uploads to prepare
         let (waitingUploadIDs, _) = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.waiting], inContext: self.uploadBckgContext)
         await UploadManagerActor.shared.addUploadsToPrepare(withIDs: waitingUploadIDs)
@@ -62,13 +69,6 @@ extension UploadManager
         // Propose to delete uploaded images of the photo Library once a day
         // or immediately if there is no pending upload request, if any
         suggestToDeleteUploadedImages(withPendingUploads: nberOfPendingUploads)
-        
-        // Append auto-upload requests if requested and restart activities
-        if UploadVars.shared.isAutoUploadActive {
-            await self.appendAutoUploadRequests()
-        } else {
-            await self.disableAutoUpload()
-        }
         
         // Launch upload activities if needed
         await UploadManagerActor.shared.processNextUpload()
