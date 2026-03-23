@@ -1059,6 +1059,8 @@ extension UploadManager {
                         }
                     })
                     upload.tags = newTags
+                } else {
+                    upload.tags = Set<Tag>()
                 }
                 
                 // Add uploaded image to cache and update UI if needed
