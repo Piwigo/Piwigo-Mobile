@@ -39,15 +39,16 @@ extension EditImageParamsViewController
         else { return }
         
         // If necessary, scroll the table so that the cell remains visible
-        if view.traitCollection.userInterfaceIdiom == .phone,
-           let cell = editImageParamsTableView.cellForRow(at: editedRow) {
-            let toCoordinateSpace: any UICoordinateSpace = view
-            let convertedCellFrame = cell.convert(cell.bounds, to: toCoordinateSpace)
-            let barHeight = convertedCellFrame.origin.y - cell.frame.origin.y   // status & navigation bars
-            let availableHeight = editImageParamsTableView.bounds.height - barHeight - kbInfo.height
-            let frameOfInterest = CGRect(origin: convertedCellFrame.origin,
-                                         size: CGSize(width: convertedCellFrame.width, height: availableHeight))
-            editImageParamsTableView.scrollRectToVisible(frameOfInterest, animated: true)
+        if view.traitCollection.userInterfaceIdiom == .phone {
+            if let cell = editImageParamsTableView.cellForRow(at: editedRow) {
+                let toCoordinateSpace: any UICoordinateSpace = view
+                let convertedCellFrame = cell.convert(cell.bounds, to: toCoordinateSpace)
+                let barHeight = convertedCellFrame.origin.y - cell.frame.origin.y   // status & navigation bars
+                let availableHeight = editImageParamsTableView.bounds.height - barHeight - kbInfo.height
+                let frameOfInterest = CGRect(origin: convertedCellFrame.origin,
+                                             size: CGSize(width: convertedCellFrame.width, height: availableHeight))
+                editImageParamsTableView.scrollRectToVisible(frameOfInterest, animated: true)
+            }
         } else {
             editImageParamsTableView.scrollToRow(at: editedRow, at: .top, animated: true)
         }
