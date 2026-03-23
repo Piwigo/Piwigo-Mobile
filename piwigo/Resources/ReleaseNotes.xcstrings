@@ -205,7 +205,6 @@
     },
     "v2.0.1_text" : {
       "extractionState" : "manual",
-      "generatesSymbol" : false,
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -9906,97 +9905,198 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الإصدار 4.1.3\n\n• التوافق مع Piwigo 16\n• إصلاح الأخطاء وتحسين الواجهة"
+            "value" : "الإصدار 4.1.3\n20 ديسمبر 2025\n\n• التوافق مع Piwigo 16\n• إصلاح الأخطاء وتحسين الواجهة"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.1.3\n\n• Kompatibilitet med Piwigo 16\n• Rette fejl og forbedre grænsefladen"
+            "value" : "Version 4.1.3\n20 december 2025\n\n• Kompatibilitet med Piwigo 16\n• Rette fejl og forbedre grænsefladen"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.1.3\n\n• Piwigo 16 Kompatibilität\n• Fehlerbehebungen und Verbesserungen der Benutzeroberfläche"
+            "value" : "Version 4.1.3\n20. Dezember 2025\n\n• Piwigo 16 Kompatibilität\n• Fehlerbehebungen und Verbesserungen der Benutzeroberfläche"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.1.3\n\n• Piwigo 16 compatibility\n• Fixes bugs and improves the interface"
+            "value" : "Version 4.1.3\nDecember 20, 2025 \n\n• Piwigo 16 compatibility\n• Fixes bugs and improves the interface"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versión 4.1.3\n\n• Compatibilidad con Piwigo 16\n• Corrige errores y mejora la interfaz"
+            "value" : "Versión 4.1.3\n20 de diciembre 2025\n\n• Compatibilidad con Piwigo 16\n• Corrige errores y mejora la interfaz"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.1.3\n\n• Compatibilité Piwigo 16\n• Corrige des bugs et améliore l'interface"
+            "value" : "Version 4.1.3\n20 décembre 2025\n\n• Compatibilité Piwigo 16\n• Corrige des bugs et améliore l'interface"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4.1.3 verzió\n\n• Piwigo 16 kompatibilitás\n• Hibajavítások és a kezelőfelület javítása"
+            "value" : "4.1.3 verzió\n2025 December 20\n\n• Piwigo 16 kompatibilitás\n• Hibajavítások és a kezelőfelület javítása"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 4.1.3\n\n• Kompatibilitas dengan Piwigo 16\n• Perbaikan bug dan peningkatan antarmuka"
+            "value" : "Versi 4.1.3\n20 Desember 2025\n\n• Kompatibilitas dengan Piwigo 16\n• Perbaikan bug dan peningkatan antarmuka"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versione 4.1.3\n\n• Compatibilità con Piwigo 16\n• Correzione di bug e miglioramento dell'interfaccia"
+            "value" : "Versione 4.1.3\n20 dicembre 2025\n\n• Compatibilità con Piwigo 16\n• Correzione di bug e miglioramento dell'interfaccia"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "バージョン 4.1.3\n\n• Piwigo 16 との互換性\n• バグの修正とインターフェイスの改善"
+            "value" : "バージョン 4.1.3\n2025年12月20日\n\n• Piwigo 16 との互換性\n• バグの修正とインターフェイスの改善"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 4.1.3\n\n• Compatibiliteit met Piwigo 16\n• Bugfixes en verbeteringen aan de interface"
+            "value" : "Versie 4.1.3\n20 December 2025\n\n• Compatibiliteit met Piwigo 16\n• Bugfixes en verbeteringen aan de interface"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wersja 4.1.3\n\n• Kompatybilność z Piwigo 16\n• Poprawki błędów i usprawnienia interfejsu"
+            "value" : "Wersja 4.1.3\n20 grudnia 2025\n\n• Kompatybilność z Piwigo 16\n• Poprawki błędów i usprawnienia interfejsu"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Версия 4.1.3\n\n• Совместимость с Piwigo 16.\n• Исправлены ошибки и улучшен интерфейс"
+            "value" : "Версия 4.1.3\n20 декабря 2025\n\n• Совместимость с Piwigo 16.\n• Исправлены ошибки и улучшен интерфейс"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.1.3\n\n• Kompatibilitet med Piwigo 16\n• Fixar buggar och förbättrar gränssnittet"
+            "value" : "Version 4.1.3\n20 december 2025\n\n• Kompatibilitet med Piwigo 16\n• Fixar buggar och förbättrar gränssnittet"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "版本 4.1.3\n\n• 兼容 Piwigo 16\n• 修复了错误并改进了界面"
+            "value" : "版本 4.1.3\n2025年12月20日\n\n• 兼容 Piwigo 16\n• 修复了错误并改进了界面"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "版本 4.1.3\n\n• 支援 Piwigo 16 版本\n• 修復錯誤並優化介面"
+            "value" : "版本 4.1.3\n2025年12月20日\n\n• 支援 Piwigo 16 版本\n• 修復錯誤並優化介面"
+          }
+        }
+      }
+    },
+    "v4.1.4_text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإصدار 4.1.4\n\n• اصلاحات الشوائب"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.1.4\n\n• Fejlrettelser"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.1.4\n\n• Fehlerbehebungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.1.4\n\n• Bug fixes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión 4.1.4\n\n• Corrección de errores"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.1.4\n\n• Correction de bugs"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4.1.4 verzió\n\n• Hibajavítások"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versi 4.1.4\n\n• Perbaikan bug"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versione 4.1.4\n\n• Correzioni di bug"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バージョン 4.1.4\n\n• バグの修正"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versie 4.1.4\n\n• Foutjes verbeterd"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wersja 4.1.4\n\n• Poprawki błędów"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версия 4.1.4\n\n• Исправления ошибок"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.1.4\n\n• Buggfixar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 4.1.4\n\n• 错误修复"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 4.1.4\n\n• 錯誤修正"
           }
         }
       }
