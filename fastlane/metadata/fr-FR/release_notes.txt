@@ -1,2 +1,1 @@
-• Compatibilité Piwigo 16
-• Corrige des bugs et améliore l'interface
+• Correction de bugs

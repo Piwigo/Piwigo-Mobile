@@ -1,2 +1,1 @@
-• Piwigo 16 Kompatibilität
-• Fehlerbehebungen und Verbesserungen der Benutzeroberfläche
+• Fehlerbehebungen

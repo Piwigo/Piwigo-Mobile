@@ -1,2 +1,1 @@
-• Kompatibilitet med Piwigo 16
-• Fixar buggar och förbättrar gränssnittet
+• Buggfixar

@@ -1,2 +1,1 @@
-• Kompatybilność z Piwigo 16
-• Poprawki błędów i usprawnienia interfejsu
+• Poprawki błędów

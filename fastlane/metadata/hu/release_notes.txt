@@ -1,2 +1,1 @@
-• Piwigo 16 kompatibilitás
-• Hibajavítások és a kezelőfelület javítása
+• Hibajavítások
