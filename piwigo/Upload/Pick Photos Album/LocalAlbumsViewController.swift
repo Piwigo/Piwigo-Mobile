@@ -196,7 +196,7 @@ class LocalAlbumsViewController: UIViewController {
         }
         
         // Fetch local albums in background thread
-        DispatchQueue.global(qos: .background).async { [weak self] in
+        DispatchQueue.global(qos: .userInteractive).async { [weak self] in
             guard let self else { return }
             
             // Fetch and filter asset collections
