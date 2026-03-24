@@ -27,6 +27,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
     static let shared = LocalAlbumsProvider()
     
     // MARK: Properties
+    var didFetchAssetCollections: Bool = false
     var includingEmptyAlbums = false
     var localAlbums  = [PHAssetCollection]()
     var eventsAlbums = [PHAssetCollection]()
@@ -38,38 +39,38 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
     
     // Smart albums
 //    var genericAlbum: PHFetchResult<PHAssetCollection>!
-    private var panoramasAlbum: PHFetchResult<PHAssetCollection>!
-    private var videosAlbum: PHFetchResult<PHAssetCollection>!
-    private var favoritesAlbum: PHFetchResult<PHAssetCollection>!
-    private var timeLapsesAlbum: PHFetchResult<PHAssetCollection>!
-    private var allHiddenAlbum: PHFetchResult<PHAssetCollection>!
-//    private var recentlyAddedAlbum: PHFetchResult<PHAssetCollection>!
-    private var burstsAlbum: PHFetchResult<PHAssetCollection>!
-    private var slowmoAlbum: PHFetchResult<PHAssetCollection>!
-    private var userLibraryAlbum: PHFetchResult<PHAssetCollection>!
-    private var selfPortraitsAlbum: PHFetchResult<PHAssetCollection>!
-    private var screenshotsAlbum: PHFetchResult<PHAssetCollection>!
-    private var depthEffectAlbum: PHFetchResult<PHAssetCollection>!
-    private var livePhotosAlbum: PHFetchResult<PHAssetCollection>!
-    private var animatedAlbum: PHFetchResult<PHAssetCollection>!
-    private var longExposuresAlbum:PHFetchResult<PHAssetCollection>!
+    private var panoramasAlbum: PHFetchResult<PHAssetCollection> = .init()
+    private var videosAlbum: PHFetchResult<PHAssetCollection> = .init()
+    private var favoritesAlbum: PHFetchResult<PHAssetCollection> = .init()
+    private var timeLapsesAlbum: PHFetchResult<PHAssetCollection> = .init()
+    private var allHiddenAlbum: PHFetchResult<PHAssetCollection> = .init()
+//    private var recentlyAddedAlbum: PHFetchResult<PHAssetCollection> = .init()
+    private var burstsAlbum: PHFetchResult<PHAssetCollection> = .init()
+    private var slowmoAlbum: PHFetchResult<PHAssetCollection> = .init()
+    private var userLibraryAlbum: PHFetchResult<PHAssetCollection> = .init()
+    private var selfPortraitsAlbum: PHFetchResult<PHAssetCollection> = .init()
+    private var screenshotsAlbum: PHFetchResult<PHAssetCollection> = .init()
+    private var depthEffectAlbum: PHFetchResult<PHAssetCollection> = .init()
+    private var livePhotosAlbum: PHFetchResult<PHAssetCollection> = .init()
+    private var animatedAlbum: PHFetchResult<PHAssetCollection> = .init()
+    private var longExposuresAlbum:PHFetchResult<PHAssetCollection> = .init()
+    private var cinematicAlbum:PHFetchResult<PHAssetCollection> = .init()
     
     // Local albums
-    private var regularAlbums: PHFetchResult<PHAssetCollection>!
-    private var syncedEvent: PHFetchResult<PHAssetCollection>!
-    private var syncedFaces: PHFetchResult<PHAssetCollection>!
-    private var syncedAlbum: PHFetchResult<PHAssetCollection>!
-    private var importedAlbums: PHFetchResult<PHAssetCollection>!
+    private var regularAlbums: PHFetchResult<PHAssetCollection> = .init()
+    private var syncedEvent: PHFetchResult<PHAssetCollection> = .init()
+    private var syncedFaces: PHFetchResult<PHAssetCollection> = .init()
+    private var syncedAlbum: PHFetchResult<PHAssetCollection> = .init()
+    private var importedAlbums: PHFetchResult<PHAssetCollection> = .init()
     
     // Cloud alums
-//    private var CloudMyPhotoStream: PHFetchResult<PHAssetCollection>!
-    private var CloudShared: PHFetchResult<PHAssetCollection>!
+//    private var CloudMyPhotoStream: PHFetchResult<PHAssetCollection> = .init()
+    private var CloudShared: PHFetchResult<PHAssetCollection> = .init()
     
-
+    
     // Initialisation
-    override init() {
-        super.init()
-        
+    /// Fetches Photo Library albums on background thread
+    func fetchAssetCollections() {
         /**
          Smart Album Types
         */
@@ -121,6 +122,9 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         // Smart album that groups all Live Photo assets where the Long Exposure variation is enabled
         longExposuresAlbum = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumLongExposures, options: nil)
         
+        // A Smart Album that groups all cinematic photo assets
+        cinematicAlbum = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumCinematic, options: nil)
+        
         /**
          User Album Types
         */
@@ -151,10 +155,13 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         // iCloud Shared Photo Stream albums.
         CloudShared = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .albumCloudShared, options: fetchOptions)
 
+        // Remember that asset collections were fetched
+        didFetchAssetCollections = true
+        
         // Register Photo Library changes
         PHPhotoLibrary.shared().register(self)
     }
-
+    
     deinit {
         // Unregister Photo Library changes
         PHPhotoLibrary.shared().unregisterChangeObserver(self)
@@ -162,10 +169,10 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
 
     // MARK: - Fetch Local Albums
     /**
-     Fetches the local albums from the Photo Library
+     Filters the local albums from the Photo Library
      Empty albums are not presented, left albums are sorted by localized title
     */
-    func fetchLocalAlbums(completion: @escaping () -> Void) {
+    func filterLocalAlbums() {
         // Local albums
         // Library, photo stream and favorites at the top
 //        var localAlbums = filter(fetchedAssetCollections: [userLibraryAlbum, CloudMyPhotoStream, favoritesAlbum].compactMap { $0 })
@@ -190,19 +197,17 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         mediaTypes = filter(fetchedAssetCollections: [videosAlbum, selfPortraitsAlbum,
                                                       livePhotosAlbum, depthEffectAlbum,
                                                       panoramasAlbum, timeLapsesAlbum,
-                                                      slowmoAlbum, burstsAlbum,
+                                                      slowmoAlbum, burstsAlbum, cinematicAlbum,
                                                       longExposuresAlbum, screenshotsAlbum,
                                                       animatedAlbum].compactMap { $0 })
 
         // Other albums
         otherAlbums = filter(fetchedAssetCollections: [allHiddenAlbum, importedAlbums].compactMap { $0 })
-
-        completion()
     }
     
     private func filter(fetchedAssetCollections: [PHFetchResult<PHAssetCollection>]) -> [PHAssetCollection] {
         // Fetch assets to determine non-empty collections
-//        let start = CFAbsoluteTimeGetCurrent()
+        let start = CFAbsoluteTimeGetCurrent()
         var collections = [PHAssetCollection]()
 
         // Fetch first image in each collection to reject empty collections
@@ -219,8 +224,8 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
             }
         }
         
-//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-//        debugPrint("••> Took \(diff) ms to filter albums")
+        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+        debugPrint("••> Took \(diff) ms to filter albums")
         return collections
     }
 
@@ -314,10 +319,14 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
             syncedAlbum = changeDetails.fetchResultAfterChanges
         }
 
+        if let changeDetails = changeInstance.changeDetails(for: cinematicAlbum) {
+            cinematicAlbum = changeDetails.fetchResultAfterChanges
+        }
+
         if let changeDetails = changeInstance.changeDetails(for: importedAlbums) {
             importedAlbums = changeDetails.fetchResultAfterChanges
         }
-
+        
 //        if let changeDetails = changeInstance.changeDetails(for: CloudMyPhotoStream) {
 //            CloudMyPhotoStream = changeDetails.fetchResultAfterChanges
 //        }
@@ -327,12 +336,11 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         }
 
         // Update data and reload LocalAlbumsTableView
-        fetchLocalAlbums {
-            self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary()
-        }
+        filterLocalAlbums()
+        fetchedLocalAlbumsDelegate?.didChangePhotoLibrary()
     }
-
-
+    
+    
     // MARK: - Data Source Utilities
     func titleForHeaderInSectionOf(albumType: LocalAlbumType) -> String {
         var title: String
@@ -389,3 +397,4 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         return footer
     }
 }
+

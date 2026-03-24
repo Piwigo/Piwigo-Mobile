@@ -16,7 +16,9 @@ extension EditImageParamsViewController: UITextViewDelegate
         removePickersIfNeeded()
 
         // Will tell onKeyboardDidShow() which cell is being edited
-        let rowIndex = EditImageParamsOrder.desc.rawValue - (hasDatePicker ? 0 : 1) - (hasTimePicker ? 0 : 1)
+        let rowIndex = EditImageParamsOrder.desc.rawValue - (hasDatePicker ? 0 : 1)
+                                                          - (hasTimePicker ? 0 : 1)
+                                                          - (user.hasAdminRights ? 0 : 1)
         editedRow = IndexPath(row: rowIndex, section: 0)
         return true
     }
