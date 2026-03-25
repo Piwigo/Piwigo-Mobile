@@ -145,7 +145,7 @@ class SettingsViewController: UIViewController {
 
         // Retrieve data from server
         if user.hasAdminRights {
-            Task.detached { [self] in
+            Task.detached(priority: .userInitiated) { [self] in
                 do {
                     // Check session
                     try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID, lastConnected: self.user.lastUsed)
