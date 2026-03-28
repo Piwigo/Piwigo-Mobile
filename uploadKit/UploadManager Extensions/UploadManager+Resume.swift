@@ -22,9 +22,8 @@ extension UploadManager
               UploadVars.shared.didResumeAll == false
         else { return }
         
-        // Wait until continued background task finishes
-//        guard UploadVars.shared.isExecutingBGContinuedUploadTask == false
-//        else { return }
+        // Active below lone for debugging background task:
+        return
         
         // Reset flags
         UploadVars.shared.isPaused = false
@@ -99,19 +98,13 @@ extension UploadManager
     
     
     // MARK: - Resume Uploads in Background Task
-    public func initialiseBckgTask() async {
+    public func initialiseBckgTask() async -> ([NSManagedObjectID], [NSManagedObjectID]) {
         // Wait until fix completed
-        guard NetworkVars.shared.fixUserIsAPIKeyV412 == false,
-              UploadVars.shared.didResumeAll == false
-        else { return }
-        
-        // Wait until continued background task finishes
-//        guard UploadVars.shared.isExecutingBGContinuedUploadTask == false
-//        else { return }
-        
+        guard NetworkVars.shared.fixUserIsAPIKeyV412 == false
+        else { return ([],[]) }
+                
         // Reset flags
         UploadVars.shared.isPaused = false
-        UploadVars.shared.didResumeAll = true
         
         // Get Upload URI strings of active transfers
         let activeUploadsURIstr = await getUploadURIsOfTransfers()
@@ -144,10 +137,19 @@ extension UploadManager
         }
         
         // Append uploads to prepare
-        uploadRequestsToPrepare = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.waiting], inContext: self.uploadBckgContext).0
+        var toPrepare = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.waiting], inContext: self.uploadBckgContext).0
+        
+        // Limit number of uploads to prepare
+        let maxNberToPrepare = max(0, 100 - toTransfer.count)
+        if toPrepare.count > maxNberToPrepare {
+            toPrepare.removeLast(toPrepare.count - maxNberToPrepare)
+        }
         
         // Logs stats
-        UploadManager.logger.notice("Resuming uploads: \(self.uploadRequestsToTransfer.count, privacy: .public) file(s) to transfer, \(self.uploadRequestsToPrepare.count, privacy: .public) uploads to prepare")
+        UploadManager.logger.notice("Resuming uploads: \(toTransfer.count, privacy: .public) file(s) to transfer, \(toPrepare.count, privacy: .public) uploads to prepare")
+        
+        // Returns object IDs of upload requests to transfer and prepare
+        return (toTransfer, toPrepare)
     }
     
     

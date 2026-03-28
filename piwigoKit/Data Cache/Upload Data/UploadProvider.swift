@@ -355,22 +355,30 @@ public final class UploadProvider {
             fetchRequest.shouldRefreshRefetchedObjects = true
             
             // Fetch objects
-            let pendingUploads: [Upload] = (try? taskContext.fetch(fetchRequest) as [Upload]) ?? []
+            var pendingUploads: [Upload] = (try? taskContext.fetch(fetchRequest) as [Upload]) ?? []
 
             // Select only those which are deletable or not
-            let deletableUploads = onlyDeletable ? pendingUploads.filter({ $0.deleteImageAfterUpload }) : pendingUploads
+            if onlyDeletable {
+                pendingUploads.removeAll(where: { $0.deleteImageAfterUpload == false })
+            }
             
-            // Select those requested by the auto-upload option or not
-            let autoUploads = deletableUploads.filter({ $0.markedForAutoUpload == markedForAutoUpload})
+            // Select only those marked for auto-upload
+            if markedForAutoUpload {
+                pendingUploads.removeAll(where: { $0.markedForAutoUpload == false })
+            }
             
             // Select only those in wanted states
-            let uploadsInStates = states.isEmpty ? autoUploads : autoUploads.filter({ states.contains($0.state) })
-
+            if states.isEmpty == false {
+                pendingUploads.removeAll(where: { !states.contains($0.state) })
+            }
+            
             // Select those related with given Piwigo images
-            let uploads = onlyImages.isEmpty ? uploadsInStates : uploadsInStates.filter({ onlyImages.contains($0.imageId) })
+            if onlyImages.isEmpty == false {
+                pendingUploads.removeAll(where: { !onlyImages.contains($0.imageId) })
+            }
             
             // Return objectIDs and localIdentifiers
-            return (uploads.map(\.objectID), uploads.map({ $0.localIdentifier }))
+            return (pendingUploads.map(\.objectID), pendingUploads.map({ $0.localIdentifier }))
         }
     }
     
@@ -395,22 +403,30 @@ public final class UploadProvider {
             fetchRequest.shouldRefreshRefetchedObjects = true
             
             // Fetch objects
-            let completedUploads: [Upload] = (try? taskContext.fetch(fetchRequest) as [Upload]) ?? []
+            var completedUploads: [Upload] = (try? taskContext.fetch(fetchRequest) as [Upload]) ?? []
             
-            // Select those which are deletable or not
-            let deletableUploads = onlyDeletable ? completedUploads.filter({ $0.deleteImageAfterUpload }) : completedUploads
+            // Select only those which are deletable or not
+            if onlyDeletable {
+                completedUploads.removeAll(where: { $0.deleteImageAfterUpload == false })
+            }
             
-            // Select those which were not auto-uploaded
-            let notAutoUploaded = notAutoUploaded ? deletableUploads.filter({ $0.markedForAutoUpload == false }) : deletableUploads
+            // Select only those which were not auto-uploaded
+            if notAutoUploaded {
+                completedUploads.removeAll(where: { $0.markedForAutoUpload == true })
+            }
             
             // Select only those in wanted states
-            let uploadsInStates = states.isEmpty ? notAutoUploaded : notAutoUploaded.filter({ states.contains($0.state) })
+            if states.isEmpty == false {
+                completedUploads.removeAll(where: { !states.contains($0.state) })
+            }
             
             // Select those related with given Piwigo images
-            let uploads = onlyImages.isEmpty ? uploadsInStates : uploadsInStates.filter({ onlyImages.contains($0.imageId) })
+            if onlyImages.isEmpty == false {
+                completedUploads.removeAll(where: { !onlyImages.contains($0.imageId) })
+            }
             
             // Return objectIDs and localIdentifiers
-            return (uploads.map(\.objectID), uploads.map({ $0.localIdentifier }))
+            return (completedUploads.map(\.objectID), completedUploads.map({ $0.localIdentifier }))
         }
     }
     

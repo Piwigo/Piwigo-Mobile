@@ -6,6 +6,7 @@
 //  Copyright © 2025 Piwigo.org. All rights reserved.
 //
 
+import BackgroundTasks
 import CoreData
 import Foundation
 import piwigoKit
@@ -15,7 +16,8 @@ import piwigoKit
 @UploadManagerActor
 extension UploadManager {
     
-    func transferInBackground(for uploadData: UploadProperties, withID uploadID: NSManagedObjectID) async throws(PwgKitError) {
+    func transferInBackground(for uploadData: UploadProperties, withID uploadID: NSManagedObjectID,
+                              forTask task: BGTask? = nil) async throws(PwgKitError) {
         
         // Get URL of file to upload
         /// This file will be deleted once the transfer is completed successfully
@@ -120,6 +122,9 @@ extension UploadManager {
         
         // Release memory
         imageData.removeAll()
+        
+        // Job done if called by background task
+        if task is BGProcessingTask { return }
         
         // Process next upload if any
         await UploadManagerActor.shared.processNextUpload()

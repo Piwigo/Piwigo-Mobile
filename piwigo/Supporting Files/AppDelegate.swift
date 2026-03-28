@@ -240,11 +240,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - Background Task | Uploads
     /* For testing the background task:
     - Build and run the app, then background it to schedule the task.
-    - Bring the app to the foreground again. Then in Xcode, hit the pause button in the debugger and type one of the commands
-    - e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"org.piwigo.uploadManager"]
+    - Bring the app to the foreground again. Then in Xcode, hit the pause button in the debugger, type one of the commands:
+      e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"org.piwigo.uploadManager"]
       e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"net.lelievre-berna.piwigo.uploadManager"]
-    - e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateExpirationForTaskWithIdentifier:@"org.piwigo.uploadManager"]
+      e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateExpirationForTaskWithIdentifier:@"org.piwigo.uploadManager"]
       e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateExpirationForTaskWithIdentifier:@"net.lelievre-berna.piwigo.uploadManager"]
+     - and continue the execution.
      */
     func application(_ application: UIApplication, handleEventsForBackgroundURLSession
                         identifier: String, completionHandler: @escaping () -> Void) {
@@ -280,9 +281,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func registerBgTasks() {
         // Register background upload task
-//        BGTaskScheduler.shared.register(forTaskWithIdentifier: pwgBackgroundUploadTask, using: nil) { task in
-//             self.handleNextUpload(task: task as! BGProcessingTask)
-//        }
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: pwgBackgroundUploadTask, using: nil) { task in
+             self.handleNextUpload(task: task as! BGProcessingTask)
+        }
 
         // Register continued background upload task
 //        if #available(iOS 26.0, *) {
@@ -350,88 +351,62 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //            return
 //        }
         
-        // Create the operation queue
-        let uploadQueue = OperationQueue()
-        uploadQueue.qualityOfService = .utility
-        uploadQueue.maxConcurrentOperationCount = 1
-        var uploadOperations = [BlockOperation]()
-        
-        // Add operation setting flag and selecting upload requests
-        let initNetworkMonitor = BlockOperation {
-            // Start network monitoring
-            Task { @NetworkMonitoring in
-                await self.networkMonitor?.startMonitoring()
-            }
-            // Initialise variables and determine upload requests to prepare and transfer
-            UploadVars.shared.isExecutingBGUploadTask = true
-            Task(priority: .utility) { @UploadManagerActor in
-                await UploadManager.shared.initialiseBckgTask()
-            }
-        }
-        uploadOperations.append(initNetworkMonitor)
-
-        // Initialise variables and determine upload requests to prepare and transfer
-        let initUploadManager = BlockOperation {
-            Task { @UploadManagerActor in
-                await UploadManager.shared.initialiseBckgTask()
-            }
-        }
-        initUploadManager.addDependency(uploadOperations.last!)
-        uploadOperations.append(initUploadManager)
-        
-        // Resume transfers
-        let resumeOperation = BlockOperation {
-            // Transfer image
-            Task { @UploadManagerActor in
-//                await UploadManager.shared.resumeTransfers()
-            }
-        }
-        resumeOperation.addDependency(uploadOperations.last!)
-        uploadOperations.append(resumeOperation)
-
-        // Add image preparation which will be followed by transfer operations
-        for _ in 0..<UploadVars.shared.maxNberOfUploadsPerBckgTask {
-            let uploadOperation = BlockOperation {
-                // Prepare then transfer image
-                Task { @UploadManagerActor in
-//                    await UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
-                }
-            }
-            uploadOperation.addDependency(uploadOperations.last!)
-            uploadOperations.append(uploadOperation)
-        }
-        
-        // Provide an expiration handler for the background task
-        // that cancels the operation
+        // Task management
+        var isTaskCanceled = false
         task.expirationHandler = {
-            debugPrint("••> Task expired: Upload operation cancelled.")
-            // Cancel operations
-            uploadQueue.cancelAllOperations()
-            // Stop network monitoring
-            Task { @UploadManagerActor in
-                await self.networkMonitor?.stopMonitoring()
-            }
+            isTaskCanceled = true
+            debugPrint("••> Background upload task expired or canceled by iOS.")
         }
         
-        // Inform the system that the background task is complete
-        // when the operation completes
-        let lastOperation = uploadOperations.last!
-        lastOperation.completionBlock = {
-            debugPrint("••> Task completed with success.")
-            task.setTaskCompleted(success: true)
+        // Start network monitoring
+        Task { @NetworkMonitoring in
+            await self.networkMonitor?.startMonitoring()
+            debugPrint("••> Background upload task started network monitoring.")
+        }
+        
+        Task(priority: .utility) { @UploadManagerActor in
+            // Get object IDs of upload requests (limited to 100 upload requests)
+            let (toTransfer, toPrepare) = await UploadManager.shared.initialiseBckgTask()
+            
+            // Launch transfers
+            for uploadID in toTransfer {
+                // Check if the task was canceled
+                if isTaskCanceled {
+                    // Stop network monitoring
+                    Task { @NetworkMonitoring in
+                        await self.networkMonitor?.stopMonitoring()
+                        debugPrint("••> Background upload task stopped network monitoring.")
+                    }
+                    task.setTaskCompleted(success: false)
+                    return
+                }
+                // Launch transfer
+                await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID, forTask: task)
+            }
+            
+            // Prepare uploads
+            for uploadID in toPrepare {
+                // Check if the task was canceled
+                if isTaskCanceled {
+                    // Stop network monitoring
+                    Task { @NetworkMonitoring in
+                        await self.networkMonitor?.stopMonitoring()
+                        debugPrint("••> Background upload task stopped network monitoring.")
+                    }
+                    task.setTaskCompleted(success: false)
+                    return
+                }
+                // Prepare upload
+                await UploadManager.shared.prepareUpload(withID: uploadID, forTask: task)
+            }
+            
             // Stop network monitoring
             Task { @NetworkMonitoring in
                 await self.networkMonitor?.stopMonitoring()
+                debugPrint("••> Background upload task stopped network monitoring.")
             }
-            // Save cached data in the main thread
-            DispatchQueue.main.async {
-                self.mainContext.saveIfNeeded()
-            }
+            task.setTaskCompleted(success: true)
         }
-
-        // Start the operation
-        debugPrint("••> Start upload operations in background task...");
-        uploadQueue.addOperations(uploadOperations, waitUntilFinished: false)
     }
     
 //    @available(iOS 26.0, *)

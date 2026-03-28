@@ -6,6 +6,7 @@
 //  Copyright © 2023 Piwigo.org. All rights reserved.
 //
 
+import BackgroundTasks
 import CoreData
 import Foundation
 import Photos
@@ -15,13 +16,16 @@ import piwigoKit
 extension UploadManager
 {
     // MARK: - Prepare Image/Video    
-    func prepareUpload(withID uploadID: NSManagedObjectID) async -> Void {
+    public func prepareUpload(withID uploadID: NSManagedObjectID,
+                              forTask task: BGTask? = nil) async -> Void {
         
         // Retrieve upload request properties
         guard var uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID, inContext: self.uploadBckgContext)
         else {
-            // Process next upload if any
             UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Could not retrieve upload request for preparation!")
+            // Job done if called by background task
+            if task is BGProcessingTask { return }
+            // Process next upload if any
             await UploadManagerActor.shared.processNextUpload()
             return
         }
@@ -29,8 +33,10 @@ extension UploadManager
         // Check upload status (should never happen)
         guard uploadData.requestState == .waiting
         else {
-            // Process next upload if any
             UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Upload in wrong state '\(uploadData.stateLabel)' before preparation")
+            // Job done if called by background task
+            if task is BGProcessingTask { return }
+            // Process next upload if any
             await UploadManagerActor.shared.processNextUpload()
             return
         }
@@ -69,7 +75,7 @@ extension UploadManager
             }
             else {
                 // Case of an image from the local Photo Library
-                if try await prepareAssetInPhotoLibrary(for: &uploadData, withID: uploadID) == false {
+                if try await prepareAssetInPhotoLibrary(for: &uploadData, withID: uploadID, forTask: task) == false {
                     // Return false for videos
                     return
                 }
@@ -78,6 +84,12 @@ extension UploadManager
             // Preparation completed
             uploadData.requestState = .prepared
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
+            
+            // Launch transfer if called by background task
+            if task is BGProcessingTask {
+                await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID, forTask: task)
+                return
+            }
             
             // Add photo/video to transfer queue
             await UploadManagerActor.shared.addUploadsToTransfer(withIDs: [uploadID])
@@ -101,6 +113,9 @@ extension UploadManager
             }
         }
         
+        // Job done if called by background task
+        if task is BGProcessingTask { return }
+
         // Process next upload if any
         await UploadManagerActor.shared.processNextUpload()
     }
@@ -218,7 +233,8 @@ extension UploadManager
     /// NB: Not possible to extract AVAsset with async/await methods as of iOS 26.2
     /// so we use old method with completion handler and return false in that case.
     fileprivate func prepareAssetInPhotoLibrary(for uploadData: inout UploadProperties,
-                                                withID uploadID: NSManagedObjectID) async throws(PwgKitError) -> Bool
+                                                withID uploadID: NSManagedObjectID,
+                                                forTask task:BGTask? = nil) async throws(PwgKitError) -> Bool
     {
         // Retrieve image asset
         let assets = PHAsset.fetchAssets(withLocalIdentifiers: [uploadData.localIdentifier], options: nil)
@@ -296,7 +312,7 @@ extension UploadManager
             /// NB: Not possible to extract AVAsset with async/await methods as of iOS 26.2
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
-                prepareVideo(ofAsset: originalAsset, atURL: outputURL, for: uploadData, withID: uploadID)
+                prepareVideo(ofAsset: originalAsset, atURL: outputURL, for: uploadData, withID: uploadID, forTask: task)
                 return false
             }
             
@@ -304,7 +320,7 @@ extension UploadManager
             if NetworkVars.shared.serverFileTypes.contains("mp4"),
                acceptedMovieExtensions.contains(fileExt) {
                 // Try conversion to MP4
-                convertVideo(ofAsset: originalAsset, atURL: outputURL, for: uploadData, withID: uploadID)
+                convertVideo(ofAsset: originalAsset, atURL: outputURL, for: uploadData, withID: uploadID, forTask: task)
                 return false
             }
             

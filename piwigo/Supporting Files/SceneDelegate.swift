@@ -373,11 +373,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // Schedule background tasks after cancelling pending onces
         BGTaskScheduler.shared.cancelAllTaskRequests()
-//        let appDelegate = UIApplication.shared.delegate as? AppDelegate
-//        appDelegate?.scheduleNextUpload()
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        appDelegate?.scheduleNextUpload()
         
         // Clean up /tmp directory
-        let appDelegate = UIApplication.shared.delegate as? AppDelegate
         appDelegate?.cleanUpTemporaryDirectory(immediately: false)
         
         // Flag used to prevent background tasks from running when the app is active

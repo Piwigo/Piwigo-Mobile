@@ -14,13 +14,16 @@ import piwigoKit
 extension UploadManager {
     
     // MARK: - Transfer or Copy Image/Video
-    public func transferOrCopyFileOfUpload(withID uploadID: NSManagedObjectID) async {
+    public func transferOrCopyFileOfUpload(withID uploadID: NSManagedObjectID,
+                                           forTask task: BGTask? = nil) async {
         
         // Retrieve upload request properties
         guard var uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID, inContext: self.uploadBckgContext)
         else {
-            // Process next upload if any
             UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Could not retrieve upload request for transfer/copy!")
+            // Job done if called by background task
+            if task is BGProcessingTask { return }
+            // Process next upload if any
             await UploadManagerActor.shared.processNextUpload()
             return
         }
@@ -33,8 +36,10 @@ extension UploadManager {
         }
         guard uploadData.requestState == .prepared
         else {
-            // Process next upload if any
             UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Upload in wrong state '\(uploadData.stateLabel)' before transfer/copy")
+            // Job done if called by background task
+            if task is BGProcessingTask { return }
+            // Process next upload if any
             await UploadManagerActor.shared.processNextUpload()
             return
         }
@@ -86,6 +91,9 @@ extension UploadManager {
             uploadData.requestError = PwgKitError.otherError(innerError: error).localizedDescription
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
         }
+
+        // Job done if called by background task
+        if task is BGProcessingTask { return }
 
         // Process next upload if any
         await UploadManagerActor.shared.processNextUpload()
@@ -149,7 +157,7 @@ extension UploadManager {
             
             // Retrieve image data from server and update cache
             try await ImageProvider().getInfos(forID: imageID, inCategoryId: properties.category)
-
+            
             // Update displayed albums which are concerned
             try? AlbumProvider().updateAlbums(addingImages: 1, toAlbumWithID: properties.category,
                                              belongingToUser: properties.userURIstr,
