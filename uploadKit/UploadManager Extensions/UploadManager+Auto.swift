@@ -13,7 +13,7 @@ import piwigoKit
 extension UploadManager {
     
     // MARK: - Add Auto-Upload Requests
-    public func appendAutoUploadRequests() async {
+    public func appendAutoUploadRequests(inBckgTask: Bool) async {
         // Check access to Photo Library album
         let collectionID = UploadVars.shared.autoUploadAlbumId
         guard collectionID.isEmpty == false,
@@ -24,7 +24,7 @@ extension UploadManager {
             // Delete remaining upload requests and inform user
             await disableAutoUpload(withTitle: PwgKitError.autoUploadSourceInvalid.localizedDescription,
                                     message: String(localized: "settings_autoUploadSourceInfo", bundle: uploadKit,
-                                                    comment: "Please select the album…"))
+                                                    comment: "Please select the album…"), inBckgTask: inBckgTask)
             return
         }
         
@@ -37,7 +37,7 @@ extension UploadManager {
             // Delete remaining upload requests and inform user
             await disableAutoUpload(withTitle: PwgKitError.autoUploadDestinationInvalid.localizedDescription,
                                     message: String(localized: "settings_autoUploadDestinationInfo", bundle: uploadKit,
-                                                    comment: "Please select the album…"))
+                                                    comment: "Please select the album…"), inBckgTask: inBckgTask)
             return
         }
         
@@ -51,12 +51,11 @@ extension UploadManager {
                 // Create upload requests
                 let uploadIDs = try await UploadManager.shared.importUploads(from: uploadRequestsToAppend)
                 
-                // Add upload requests to queue
-                UploadVars.shared.isPaused = false
-                await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
+                // Job done if called by background task
+                if inBckgTask { return }
 
-                // Process next uploads if possible
-                await UploadManagerActor.shared.processNextUpload()
+                // Add upload requests to queue
+                await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
             }
             catch {
                 // Error encountered, inform user
@@ -118,10 +117,11 @@ extension UploadManager {
     
     // MARK: - Delete Auto-Upload Requests
     @objc nonisolated func stopAutoUploader(_ notification: Notification?) async {
-        await disableAutoUpload()
+        await disableAutoUpload(inBckgTask: false)
     }
     
-    public func disableAutoUpload(withTitle title:String = "", message:String = "") async {
+    public func disableAutoUpload(withTitle title:String = "", message:String = "",
+                                  inBckgTask: Bool) async {
         // Something to do?
         if !UploadVars.shared.isAutoUploadActive { return }
         // Disable auto-uploading
@@ -130,7 +130,7 @@ extension UploadManager {
         // If the Settings or Settings/AutoUpload view is displayed:
         /// - switch off Auto-Upload control
         /// - inform user in case of error
-        if !UploadVars.shared.isExecutingBGUploadTask {
+        if inBckgTask == false {
             DispatchQueue.main.async {
                 let userInfo: [String : Any] = ["title"   : title,
                                                 "message" : message];
@@ -138,7 +138,7 @@ extension UploadManager {
                                                 object: nil, userInfo: userInfo)
             }
         }
-
+        
         // Remove non-completed upload requests marked for auto-upload from the upload queue
         do {
             let uploadIDsToDelete = UploadProvider().getIDsOfPendingUploads(onlyDeletable: true, markedForAutoUpload: true, inContext: self.uploadBckgContext).0

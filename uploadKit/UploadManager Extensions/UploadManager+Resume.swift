@@ -55,9 +55,9 @@ extension UploadManager
         
         // Append auto-upload requests if requested
         if UploadVars.shared.isAutoUploadActive {
-            await self.appendAutoUploadRequests()
+            await self.appendAutoUploadRequests(inBckgTask: false)
         } else {
-            await self.disableAutoUpload()
+            await self.disableAutoUpload(inBckgTask: false)
         }
         
         // Append uploads to prepare
@@ -131,9 +131,9 @@ extension UploadManager
         
         // Append auto-upload requests if requested
         if UploadVars.shared.isAutoUploadActive {
-            await self.appendAutoUploadRequests()
+            await self.appendAutoUploadRequests(inBckgTask: true)
         } else {
-            await self.disableAutoUpload()
+            await self.disableAutoUpload(inBckgTask: true)
         }
         
         // Append uploads to prepare
