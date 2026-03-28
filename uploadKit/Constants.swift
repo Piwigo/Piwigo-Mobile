@@ -13,7 +13,6 @@ import Photos
 public let uploadKit = Bundle.allFrameworks.first(where: { ($0.bundleIdentifier ?? "").contains("uploadKit")})
 
 // Constants used to manage background tasks
-//let maxCountOfBytesToUpload = 100 * 1024 * 1024  // Up to 100 MB transferred in a series
 public let maxNberOfQueuedAutoUploads = 500       // i.e. do not queue more than 500 requests at a time
 
 // Constants used to name and identify media

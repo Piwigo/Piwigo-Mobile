@@ -26,25 +26,6 @@ public final class UploadManager {
     // for updating progress bars and managing tasks
     var transferCounters = [TransferCounter]()
     
-    
-    // MARK: - Upload Request States
-    /** The manager prepares an image for upload and then launches the transfer.
-     - isPreparing is set to true when a photo/video is going to be prepared,
-     and false when the preparation has completed or failed.
-     - isUploading contains the localIdentifier of the photos/videos being transferred to the server,
-     - isFinishing is set to true when the photo/video parameters are going to be set,
-     and false when this job has completed or failed.
-     */
-    //    var isPreparing = false                                 // Prepare one image at once
-    //    var isUploading = Set<NSManagedObjectID>()              // IDs of queued transfers
-    //    var isFinishing = false                                 // Finish transfer one image at once
-    //    var isDeleting = Set<NSManagedObjectID>()               // IDs of uploads to be deleted
-    
-//    public var countOfBytesPrepared = UInt64(0)             // Total amount of bytes of prepared files
-//    public var countOfBytesToUpload = 0                     // Total amount of bytes to be sent
-//    public var uploadRequestsToPrepare = [NSManagedObjectID]()
-//    public var uploadRequestsToTransfer = [NSManagedObjectID]()
-    
     private init() {
         // Register auto-upload disabler
         NotificationCenter.default.addObserver(self, selector: #selector(stopAutoUploader(_:)),
