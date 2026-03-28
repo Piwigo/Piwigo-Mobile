@@ -18722,6 +18722,7 @@
     },
     "goToPage_title" : {
       "comment" : "Go to page…",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -19328,6 +19329,7 @@
     },
     "help02_text3" : {
       "comment" : "(requires the uploadAsync extension or Piwigo 11)",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
