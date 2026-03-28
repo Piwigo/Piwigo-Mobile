@@ -48,7 +48,7 @@ extension AutoUploadViewController: UITableViewDataSource
                     if switchState {
                         // Enable auto-uploading
                         UploadVars.shared.isAutoUploadActive = true
-                        await UploadManager.shared.appendAutoUploadRequests()
+                        await UploadManager.shared.appendAutoUploadRequests(inBckgTask: false)
                         
                         // Update Settings tableview
                         DispatchQueue.main.async {
@@ -56,7 +56,7 @@ extension AutoUploadViewController: UITableViewDataSource
                         }
                     } else {
                         // Disable auto-uploading
-                        await UploadManager.shared.disableAutoUpload()
+                        await UploadManager.shared.disableAutoUpload(inBckgTask: false)
                     }
                 }
             }
