@@ -140,7 +140,7 @@ extension UploadManager
         var toPrepare = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.waiting], inContext: self.uploadBckgContext).0
         
         // Limit number of uploads to prepare
-        let maxNberToPrepare = max(0, 100 - toTransfer.count)
+        let maxNberToPrepare = max(0, maxNberOfUploadsPerBckgTask - toTransfer.count)
         if toPrepare.count > maxNberToPrepare {
             toPrepare.removeLast(toPrepare.count - maxNberToPrepare)
         }
