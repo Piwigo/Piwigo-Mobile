@@ -22,8 +22,8 @@ extension UploadManager
               UploadVars.shared.didResumeAll == false
         else { return }
         
-        // Active below lone for debugging background task:
-        return
+        // Uncomment below line to debug background task:
+//        return
         
         // Reset flags
         UploadVars.shared.isPaused = false
