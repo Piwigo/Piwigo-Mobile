@@ -352,9 +352,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        }
         
         // Task management
-        var isTaskCanceled = false
+        var isTaskCancelled = false
         task.expirationHandler = {
-            isTaskCanceled = true
+            isTaskCancelled = true
             debugPrint("••> Background upload task expired or canceled by iOS.")
         }
         
@@ -371,7 +371,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // Launch transfers
             for uploadID in toTransfer {
                 // Check if the task was canceled
-                if isTaskCanceled {
+                if isTaskCancelled {
                     // Stop network monitoring
                     Task { @NetworkMonitoring in
                         await self.networkMonitor?.stopMonitoring()
@@ -387,7 +387,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // Prepare uploads
             for uploadID in toPrepare {
                 // Check if the task was canceled
-                if isTaskCanceled {
+                if isTaskCancelled {
                     // Stop network monitoring
                     Task { @NetworkMonitoring in
                         await self.networkMonitor?.stopMonitoring()
