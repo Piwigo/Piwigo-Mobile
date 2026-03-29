@@ -50,7 +50,7 @@ extension UploadManager {
             try? await moderateUploadedImagesIfNeeded()
             
             // Suggest to delete uploaded images if needed
-            if UploadVars.shared.isExecutingBGUploadTask == false {
+            if task == nil {
                 suggestToDeleteUploadedImages(withPendingUploads: 0)
             }
         }
