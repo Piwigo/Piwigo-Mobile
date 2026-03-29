@@ -288,7 +288,7 @@ class UploadQueueViewController: UIViewController {
             if impossibleUploads > 0 {
                 let titleClear = impossibleUploads > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber(value: impossibleUploads), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
                 let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { action in
-                    Task { @UploadManagerActor in
+                    Task(priority: .utility) { @UploadManagerActor in
                         // Delete all impossible upload requests
                         UploadManager.shared.deleteImpossibleUploads()
                     }
