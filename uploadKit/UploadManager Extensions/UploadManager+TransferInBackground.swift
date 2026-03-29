@@ -97,17 +97,12 @@ extension UploadManager {
                 task.countOfBytesClientExpectsToSend = bytesToSend
                 task.countOfBytesClientExpectsToReceive = 600
                 
-                // Adds bytes expected to be sent to counter
-//                if UploadVars.shared.isExecutingBGUploadTask {
-//                    countOfBytesToUpload += httpBody.count
-//                    UploadManager.logger.notice("\(upload.objectID.uriRepresentation().lastPathComponent) • Added \(self.countOfBytesToUpload) bytes to countOfBytesToUpload")
-//                }
-                
                 // Remember the total number of bytes to upload
                 if chunks == 1 {
                     // Only one chunk to upload
                     self.setCounter(withID: uploadID.uriRepresentation().lastPathComponent, chunks: chunks, totalBytes: bytesToSend)
-                } else if chunk == 1 {
+                }
+                else if chunk == 1 {
                     // Several chunks to upload
                     let totalBytes = Int64(imageData.count) + (bytesToSend - Int64(chunkSize)) * Int64(chunks)
                     self.setCounter(withID: uploadID.uriRepresentation().lastPathComponent, chunks: chunks, totalBytes: totalBytes)
