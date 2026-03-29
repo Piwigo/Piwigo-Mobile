@@ -40,7 +40,6 @@ public final class UploadManager {
     
     // MARK: - CoreData Context
     public lazy var uploadBckgContext: NSManagedObjectContext = {
-        debugPrint("In uploadBckgContext ► Thread priority: \(Task.currentPriority)")
         return DataController.shared.newTaskContext()
     }()
     
