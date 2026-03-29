@@ -173,7 +173,7 @@ extension UploadManager {
             UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Return AVAsset")
             // Error?
             if let error = error {
-                Task { @UploadManagerActor in
+                Task(priority: .utility) { @UploadManagerActor in
                     var uploadData = uploadProperties
                     uploadData.requestState = .preparingError
                     uploadData.requestError = error.localizedDescription
@@ -184,7 +184,7 @@ extension UploadManager {
             
             // Valid AVAsset?
             guard let originalVideo = avasset else {
-                Task { @UploadManagerActor in
+                Task(priority: .utility) { @UploadManagerActor in
                     var uploadData = uploadProperties
                     uploadData.requestState = .preparingError
                     uploadData.requestError = PwgKitError.missingAsset.localizedDescription
@@ -195,7 +195,7 @@ extension UploadManager {
             
             // Get original fileURL
             guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
-                Task { @UploadManagerActor in
+                Task(priority: .utility) { @UploadManagerActor in
                     var uploadData = uploadProperties
                     uploadData.requestState = .preparingError
                     uploadData.requestError = PwgKitError.missingAsset.localizedDescription
@@ -209,7 +209,7 @@ extension UploadManager {
             /// - remove the private metadata
             if (uploadProperties.resizeImageOnUpload && uploadProperties.videoMaxSize != 0) ||
                 (uploadProperties.stripGPSdataOnUpload && originalVideo.metadata.containsPrivateMetadata()) {
-                Task { @UploadManagerActor in
+                Task(priority: .utility) { @UploadManagerActor in
                     do {
                         // Get creation date from metadata if possible
                         var uploadData = uploadProperties
@@ -235,7 +235,7 @@ extension UploadManager {
                         return
                     }
                     catch let error as PwgKitError {
-                        Task { @UploadManagerActor in
+                        Task(priority: .utility) { @UploadManagerActor in
                             var uploadData = uploadProperties
                             uploadData.requestState = .preparingError
                             uploadData.requestError = error.localizedDescription
@@ -244,7 +244,7 @@ extension UploadManager {
                         return
                     }
                     catch {
-                        Task { @UploadManagerActor in
+                        Task(priority: .utility) { @UploadManagerActor in
                             var uploadData = uploadProperties
                             uploadData.requestState = .preparingError
                             uploadData.requestError = PwgKitError.otherError(innerError: error).localizedDescription
@@ -256,7 +256,7 @@ extension UploadManager {
             }
             
             // Copy video file into Piwigo/Uploads directory
-            Task { @UploadManagerActor in
+            Task(priority: .utility) { @UploadManagerActor in
                 do {
                     // Get creation date from metadata if possible
                     var uploadData = uploadProperties
@@ -341,7 +341,7 @@ extension UploadManager {
             UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Return AVAsset")
             // Error?
             if let error = error {
-                Task { @UploadManagerActor in
+                Task(priority: .utility) { @UploadManagerActor in
                     var uploadData = uploadProperties
                     uploadData.requestState = .preparingError
                     uploadData.requestError = error.localizedDescription
@@ -352,7 +352,7 @@ extension UploadManager {
             
             // Valid AVAsset?
             guard let originalVideo = avasset else {
-                Task { @UploadManagerActor in
+                Task(priority: .utility) { @UploadManagerActor in
                     var uploadData = uploadProperties
                     uploadData.requestState = .preparingError
                     uploadData.requestError = PwgKitError.missingAsset.localizedDescription
@@ -363,7 +363,7 @@ extension UploadManager {
             
             // Get original fileURL
             guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
-                Task { @UploadManagerActor in
+                Task(priority: .utility) { @UploadManagerActor in
                     var uploadData = uploadProperties
                     uploadData.requestState = .preparingError
                     uploadData.requestError = PwgKitError.missingAsset.localizedDescription
@@ -372,7 +372,7 @@ extension UploadManager {
                 return
             }
             
-            Task { @UploadManagerActor in
+            Task(priority: .utility) { @UploadManagerActor in
                 do {
                     // Get creation date from metadata if possible
                     var uploadData = uploadProperties
@@ -398,7 +398,7 @@ extension UploadManager {
                     return
                 }
                 catch let error as PwgKitError {
-                    Task { @UploadManagerActor in
+                    Task(priority: .utility) { @UploadManagerActor in
                         var uploadData = uploadProperties
                         uploadData.requestState = .preparingError
                         uploadData.requestError = error.localizedDescription
@@ -407,7 +407,7 @@ extension UploadManager {
                     return
                 }
                 catch {
-                    Task { @UploadManagerActor in
+                    Task(priority: .utility) { @UploadManagerActor in
                         var uploadData = uploadProperties
                         uploadData.requestState = .preparingError
                         uploadData.requestError = PwgKitError.otherError(innerError: error).localizedDescription
@@ -706,7 +706,7 @@ extension UploadManager {
 //            guard let exportSession = AVAssetExportSession(asset: videoAsset,
 //                                                           presetName: exportPreset)
 //            else {
-//                Task { @UploadManagerActor in
+//                Task(priority: .utility) { @UploadManagerActor in
 //                    didPrepareVideo(for: upload, .missingAsset)
 //                }
 //                return
@@ -764,13 +764,13 @@ extension UploadManager {
 //                    try? FileManager.default.removeItem(at: exportSession.outputURL!)
 //
 //                    // Report error
-//                    Task { @UploadManagerActor in
+//                    Task(priority: .utility) { @UploadManagerActor in
 //                        self.didPrepareVideo(for: upload, .missingAsset)
 //                    }
 //                    return
 //                }
 //
-//                Task { @UploadManagerActor in
+//                Task(priority: .utility) { @UploadManagerActor in
 //                    do {
 //                        // Get MD5 checksum and MIME type, update counter
 //                        try setMD5sumAndMIMEtype(ofUpload: upload, forFileAtURL: outputURL)
