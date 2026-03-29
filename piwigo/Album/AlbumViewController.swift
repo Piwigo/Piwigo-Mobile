@@ -859,16 +859,6 @@ class AlbumViewController: UIViewController
             self.collectionView?.refreshControl?.endRefreshing()
         }
 
-        // Resume upload operations in background queue
-        // and update badge and upload button of album navigator
-        Task { @UploadManagerActor in
-            UploadVars.shared.isPaused = false
-            UploadVars.shared.isExecutingBGUploadTask = false
-//            if #unavailable(iOS 26.0) {
-                UploadManager.shared.findNextImageToUpload()
-//            }
-        }
-
         // Fetch favorites in the background if needed
         do {
             if hasFavorites, categoryId != pwgSmartAlbum.favorites.rawValue,

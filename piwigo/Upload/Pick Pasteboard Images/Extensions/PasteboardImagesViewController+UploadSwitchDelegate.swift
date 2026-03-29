@@ -113,6 +113,7 @@ extension PasteboardImagesViewController: UploadSwitchDelegate
                     // Inform user
                     let title = PwgKitError.uploadCreationError.localizedDescription
                     self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {
+                        // Resume upload operations in background queue
                         Task(priority: .utility) { @UploadManagerActor in
                             UploadVars.shared.isPaused = false
                             await UploadManagerActor.shared.processNextUpload()

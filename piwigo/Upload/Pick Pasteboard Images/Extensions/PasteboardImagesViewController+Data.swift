@@ -127,12 +127,10 @@ extension PasteboardImagesViewController {
                     }
                 }
                 
-                // Restart upload manager
-                Task { @UploadManagerActor in
+                // Resume upload operations in background queue
+                Task(priority: .utility) { @UploadManagerActor in
                     UploadVars.shared.isPaused = false
-//                    if #unavailable(iOS 26.0) {
-                        UploadManager.shared.findNextImageToUpload()
-//                    }
+                    await UploadManagerActor.shared.processNextUpload()
                 }
             }
         }

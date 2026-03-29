@@ -363,7 +363,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Remember to resume all upload activities at restart
         UploadVars.shared.didResumeAll = false
         
-        // Should we save changes in cache and schedule background tasks?
+        // Should we pause upload activities in the foreground?
         if AppVars.shared.isMigrationRunning == false {
             // Pause upload activities
             UploadVars.shared.isPaused = true

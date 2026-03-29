@@ -25,8 +25,6 @@ public class UploadVars: NSObject, @unchecked Sendable {
     public static let shared = UploadVars()
     
     // Constants
-//    public var isExecutingBGContinuedUploadTask = false   // True when the task is running (since iOS 26)
-    public var isExecutingBGUploadTask = false                  // True if called by the background task (before iOS 26)
     public let minChunkSize: Int = 500                          // i.e. 500 kB
     public let maxChunkSize: Int = 5000                         // i.e. 5_000 kB
     public let maxNberOfUploadsPerBckgTask = 100                // i.e. up to 100 requests per bckg task

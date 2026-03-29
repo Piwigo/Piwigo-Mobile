@@ -549,15 +549,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
            topViewController is UINavigationController,
            let visibleVC = (topViewController as! UINavigationController).visibleViewController {
             // Inform user
-            visibleVC.dismissPiwigoError(withTitle: title, message: message, errorMessage: errorMsg ?? "") {
-                // Restart UploadManager activities
-                Task { @UploadManagerActor in
-                    UploadVars.shared.isPaused = false
-//                    if #unavailable(iOS 26.0) {
-                        UploadManager.shared.findNextImageToUpload()
-//                    }
-                }
-            }
+            visibleVC.dismissPiwigoError(withTitle: title, message: message, errorMessage: errorMsg ?? "") { }
         }
     }
 

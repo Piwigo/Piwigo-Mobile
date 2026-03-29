@@ -241,13 +241,9 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
         UIApplication.shared.isIdleTimerDisabled = false
 
         // Resume upload operations in background queue
-        // and update badge and upload button of album navigator
-        Task { @UploadManagerActor in
+        Task(priority: .utility) { @UploadManagerActor in
             UploadVars.shared.isPaused = false
-            UploadVars.shared.isExecutingBGUploadTask = false
-//            if #unavailable(iOS 26.0) {
-                UploadManager.shared.findNextImageToUpload()
-//            }
+            await UploadManagerActor.shared.processNextUpload()
         }
     }
 

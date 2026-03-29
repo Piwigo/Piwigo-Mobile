@@ -113,13 +113,11 @@ class AutoUploadViewController: UIViewController {
         // Check if the user is going to select/deselect tags
         if let visibleVC = navigationController?.visibleViewController,
            visibleVC is TagsViewController { return }
-
-        // Restart UploadManager activities
-        Task { @UploadManagerActor in
+        
+        // Resume upload operations in background queue
+        Task(priority: .utility) { @UploadManagerActor in
             UploadVars.shared.isPaused = false
-//            if #unavailable(iOS 26.0) {
-                UploadManager.shared.findNextImageToUpload()
-//            }
+            await UploadManagerActor.shared.processNextUpload()
         }
     }
 

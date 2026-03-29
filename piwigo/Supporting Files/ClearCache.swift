@@ -156,9 +156,9 @@ final class ClearCache
         Task { @UploadManagerActor in
             // Stop upload manager
             Task { @UploadManagerActor in
+                UploadVars.shared.isPaused = true
                 await UploadManagerActor.shared.removeAllUploads()
             }
-            UploadVars.shared.isPaused = true
             
             // Cancel upload tasks, then other tasks
             let allUploadTasks = await bckgSession.allTasks

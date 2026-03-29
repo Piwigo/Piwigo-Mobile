@@ -510,12 +510,10 @@ extension SettingsViewController: UITableViewDataSource
                     UploadVars.shared.wifiOnlyUploading = switchState
                     // Relaunch uploads in background queue if disabled
                     if switchState == false {
-                        // Update upload tasks in background queue
-                        // May not restart the uploads
-                        Task { @UploadManagerActor in
-//                            if #unavailable(iOS 26.0) {
-                                UploadManager.shared.findNextImageToUpload()
-//                            }
+                        // Resume upload operations in background queue
+                        Task(priority: .utility) { @UploadManagerActor in
+                            UploadVars.shared.isPaused = false
+                            await UploadManagerActor.shared.processNextUpload()
                         }
                     }
                 }
