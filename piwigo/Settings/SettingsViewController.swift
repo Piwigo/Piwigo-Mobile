@@ -115,37 +115,28 @@ class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Launch operations in parallel in the background
-        var operations = [BlockOperation]()
-        operations.append(BlockOperation { [self] in
-            // Calculate cache sizes
-            guard let server = self.user.server,
-                  server.isFault == false
-            else {
-                debugPrint("!!! User not provided !!!!")
-                return
-            }
-            var sizes = self.getThumbnailSizes()
-            self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
-            sizes = self.getPhotoSizes()
-            self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
-            self.videoCacheSize = server.getCacheSizeOfVideos()
-            let bckgContext = DataController.shared.newTaskContext()
-            self.dataCacheSize = server.getAlbumImageCount(inContext: bckgContext)
-            if self.hasUploadRights() {
-                let uploadsDirectory = DataDirectories.appUploadsDirectory
-                let uploadsDirectorySize = ByteCountFormatter.string(fromByteCount: Int64(uploadsDirectory.folderSize), countStyle: .file)
-                self.uploadCacheSize = server.getUploadCount(inContext: bckgContext) + " | " + uploadsDirectorySize
-            }
-        })
-        let queue: OperationQueue = OperationQueue()
-        queue.maxConcurrentOperationCount = .max
-        queue.qualityOfService = .userInitiated
-        queue.addOperations(operations, waitUntilFinished: false)
-
-        // Retrieve data from server
+        // Calculate cache sizes
+        guard let server = self.user.server,
+              server.isFault == false
+        else {
+            debugPrint("!!! User not provided !!!!")
+            return
+        }
+        var sizes = self.getThumbnailSizes()
+        self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
+        sizes = self.getPhotoSizes()
+        self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
+        self.videoCacheSize = server.getCacheSizeOfVideos()
+        self.dataCacheSize = server.getAlbumImageCount(inContext: mainContext)
+        if self.hasUploadRights() {
+            let uploadsDirectory = DataDirectories.appUploadsDirectory
+            let uploadsDirectorySize = ByteCountFormatter.string(fromByteCount: Int64(uploadsDirectory.folderSize), countStyle: .file)
+            self.uploadCacheSize = server.getUploadCount(inContext: mainContext) + " | " + uploadsDirectorySize
+        }
+        
+        // Retrieve data from server in the background
         if user.hasAdminRights {
-            Task.detached(priority: .userInitiated) { [self] in
+            Task.detached(priority: .background) { [self] in
                 do {
                     // Check session
                     try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID, lastConnected: self.user.lastUsed)
