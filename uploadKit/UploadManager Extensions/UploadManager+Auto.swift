@@ -17,7 +17,8 @@ extension UploadManager {
         // Check access to Photo Library album
         let collectionID = UploadVars.shared.autoUploadAlbumId
         guard collectionID.isEmpty == false,
-           let collection = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [collectionID], options: nil).firstObject else {
+              let collection = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [collectionID], options: nil).firstObject
+        else {
             // Cannot access local album -> Reset album ID
             UploadVars.shared.autoUploadAlbumId = ""               // Unknown source Photos album
 
@@ -30,7 +31,8 @@ extension UploadManager {
         
         // Check existence of Piwigo album
         let categoryId = UploadVars.shared.autoUploadCategoryId
-        guard categoryId != Int32.min else {
+        guard categoryId != Int32.min
+        else {
             // Cannot access Piwigo album -> Reset album ID
             UploadVars.shared.autoUploadCategoryId = Int32.min    // Unknown destination Piwigo album
 
@@ -43,28 +45,32 @@ extension UploadManager {
         
         // Get new local images to be uploaded
         let uploadRequestsToAppend = getNewRequests(inCollection: collection, toBeUploadedIn: categoryId)
-            .compactMap{ $0 }
+        if uploadRequestsToAppend.isEmpty { return }
         
         // Add selected images to upload queue
-        Task(priority: .utility) { @UploadManagerActor in
-            do {
-                // Create upload requests
-                let uploadIDs = try await UploadManager.shared.importUploads(from: uploadRequestsToAppend)
-                
-                // Job done if called by background task
-                if inBckgTask { return }
+        do {
+            // Create upload requests
+            let uploadIDs = try await UploadManager.shared.importUploads(from: uploadRequestsToAppend)
+            
+            // Job done if called by background task
+            if inBckgTask { return }
 
-                // Add upload requests to queue
-                await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
-            }
-            catch {
-                // Error encountered, inform user
-                await MainActor.run {
-                    let userInfo: [String : Any] = ["message" : PwgKitError.uploadCreationError.localizedDescription,
-                                                    "errorMsg" : error.localizedDescription];
-                    NotificationCenter.default.post(name: .pwgAppendAutoUploadRequestsFailed,
-                                                    object: nil, userInfo: userInfo)
-                }
+            // Add upload requests to queue
+            await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
+            
+            // Process next uploads if possible
+            await UploadManagerActor.shared.processNextUpload()
+        }
+        catch {
+            // Job done if called by background task
+            if inBckgTask { return }
+
+            // Error encountered, inform user
+            await MainActor.run {
+                let userInfo: [String : Any] = ["message" : PwgKitError.uploadCreationError.localizedDescription,
+                                                "errorMsg" : error.localizedDescription];
+                NotificationCenter.default.post(name: .pwgAppendAutoUploadRequestsFailed,
+                                                object: nil, userInfo: userInfo)
             }
         }
     }
@@ -85,7 +91,7 @@ extension UploadManager {
             // No new photos - Job done
             return [UploadProperties]()
         }
-
+        
         // Collect localIdentifiers of uploaded and not yet uploaded images in the Upload cache
         var imageIDs = Set( UploadProvider().getIDsOfPendingUploads(inContext: self.uploadBckgContext).1 )
         imageIDs.formUnion(Set( UploadProvider().getIDsOfCompletedUploads(inContext: self.uploadBckgContext).1 ))
@@ -102,7 +108,7 @@ extension UploadManager {
                 uploadRequest.tagIds = UploadVars.shared.autoUploadTagIds
                 uploadRequest.comment = UploadVars.shared.autoUploadComments
                 uploadRequestsToAppend.append(uploadRequest)
-
+                
                 // Check if we have reached the max number of requests to append
                 if uploadRequestsToAppend.count >= maxNberOfQueuedAutoUploads {
                     stop.pointee = true
@@ -139,7 +145,7 @@ extension UploadManager {
             }
         }
         
-        // Remove non-completed upload requests marked for auto-upload from the upload queue
+        // Unqueues auto-upload requests
         do {
             // Remove non-completed upload requests marked for auto-upload from the upload queue
             let uploadIDs = UploadProvider().getIDsOfPendingUploads(onlyDeletable: true, markedForAutoUpload: true, inContext: self.uploadBckgContext).0
@@ -150,6 +156,10 @@ extension UploadManager {
             UploadManager.shared.updateNberOfUploadsToComplete()
         }
         catch {
+            // Job done if called by background task
+            if inBckgTask { return }
+
+            // Error encountered, inform user
             await MainActor.run {
                 let userInfo: [String : Any] = ["message" : error.localizedDescription];
                 NotificationCenter.default.post(name: .pwgAppendAutoUploadRequestsFailed,
