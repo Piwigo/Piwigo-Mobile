@@ -15,15 +15,23 @@ import piwigoKit
 extension UploadManager
 {
     // MARK: - Resume Uploads in the Foreground
-    public func resumeAll() async {
-        debugPrint("In resumeAll() ► Thread priority: \(Task.currentPriority)")
+    public func resumeAll() async
+    {
         // Wait until fix completed
         guard NetworkVars.shared.fixUserIsAPIKeyV412 == false,
               UploadVars.shared.didResumeAll == false
-        else { return }
+        else {
+            UploadManager.logger.notice("Will not resume uploads")
+            return
+        }
         
         // Uncomment below line to debug background task:
 //        return
+        
+        // Logs
+        if #available(iOS 17.0, *) {
+            UploadManager.logger.notice("Resuming uploads with thread priority: \(Task.currentPriority, privacy: .public)")
+        }
         
         // Reset flags
         UploadVars.shared.isPaused = false
