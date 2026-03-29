@@ -180,6 +180,12 @@ extension AdvancedOptionsViewController: UITableViewDelegate
     }
     
     
+    // MARK: - Rows
+    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        return false
+    }
+    
+    
     // MARK: - UITableView - Footer
     private func getContentOfFooter(inSection section: Int) -> String {
         var text = ""
