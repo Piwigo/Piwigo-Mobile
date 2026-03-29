@@ -46,10 +46,17 @@ extension UploadManager {
         
         // Is this image already stored on the Piwigo server?
         do {
-            // Check that the MD5 checksum is known
-            if uploadData.md5Sum.isEmpty {
+            // Check that the MD5 checksum and user are known
+            guard uploadData.md5Sum.isEmpty == false,
+                  let userURI = URL(string: uploadData.userURIstr),
+                  let userID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: userURI)
+            else {
                 throw PwgKitError.missingAsset
             }
+            
+            // Check session
+            let userData = try UserProvider().getPropertiesOfUser(withURIstr: uploadData.userURIstr, inContext: self.uploadBckgContext)
+            try await JSONManager.shared.checkSession(ofUserWithID: userID, lastConnected: userData.lastUsed)
             
             // Update state of upload request
             uploadData.requestState = .uploading
@@ -102,19 +109,6 @@ extension UploadManager {
     func copyImageWithID(_ imageID: Int64, for properties: UploadProperties,
                          withID uploadID: NSManagedObjectID) async throws(PwgKitError)
     {
-        // Check user entity
-        guard let userURI = URL(string: properties.userURIstr),
-              let userID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: userURI)
-        else {
-            // Should never happen
-            // ► Image data will be downloaded later
-            return
-        }
-        
-        // Check session
-        let userData = try UserProvider().getPropertiesOfUser(withURIstr: properties.userURIstr, inContext: self.uploadBckgContext)
-        try await JSONManager.shared.checkSession(ofUserWithID: userID, lastConnected: userData.lastUsed)
-        
         // Update UploadQueue cell and button shown in root album (or default album)
         await MainActor.run {
             let uploadInfo: [String : Any] = ["localIdentifier" : properties.localIdentifier,
