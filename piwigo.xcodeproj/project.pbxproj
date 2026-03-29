@@ -175,7 +175,6 @@
 		AD2C62542A4898A200671582 /* VideoMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2FEA5725AFA1470072596A /* VideoMetadata.swift */; };
 		AD2C62552A4898A200671582 /* UploadManager+Prepare.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD958B9429A7DC900022AE23 /* UploadManager+Prepare.swift */; };
 		AD2C62562A4898A200671582 /* UploadManager+Finisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6AD4268A21B7007DEE70 /* UploadManager+Finisher.swift */; };
-		AD2C62572A4898A200671582 /* UploadManager+Tasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD958B9629A7E2470022AE23 /* UploadManager+Tasks.swift */; };
 		AD2C62582A48993F00671582 /* uploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* uploadKit.framework */; };
 		AD2C625E2A48A02800671582 /* UploadSizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3335442666CA46000A1487 /* UploadSizes.swift */; };
 		AD2D959A27D7F14900AC1FD8 /* AppLockViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2D959927D7F14900AC1FD8 /* AppLockViewController.storyboard */; };
@@ -1228,7 +1227,6 @@
 		AD92AD922A63DBFE007A0001 /* ImageAnimatedTransitioning.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageAnimatedTransitioning.swift; sourceTree = "<group>"; };
 		AD94F63F266D63AD00EFC6A9 /* CacheVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheVars.swift; sourceTree = "<group>"; };
 		AD958B9429A7DC900022AE23 /* UploadManager+Prepare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadManager+Prepare.swift"; sourceTree = "<group>"; };
-		AD958B9629A7E2470022AE23 /* UploadManager+Tasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadManager+Tasks.swift"; sourceTree = "<group>"; };
 		AD9697D72BE0301000520614 /* RingProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingProgressView.swift; sourceTree = "<group>"; };
 		AD9697D92BE2536300520614 /* LocalImageCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LocalImageCollectionViewCell.xib; sourceTree = "<group>"; };
 		AD96981D2BE6408600520614 /* AlbumViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AlbumViewController.storyboard; sourceTree = "<group>"; };
@@ -2332,7 +2330,6 @@
 			isa = PBXGroup;
 			children = (
 				ADF351D229A422AC009B7CAA /* UploadManager+Resume.swift */,
-				AD958B9629A7E2470022AE23 /* UploadManager+Tasks.swift */,
 				AD958B9429A7DC900022AE23 /* UploadManager+Prepare.swift */,
 				AD0B6ACE268A219B007DEE70 /* UploadManager+PrepareImage.swift */,
 				AD0B6AD0268A21A4007DEE70 /* UploadManager+PrepareVideo.swift */,
@@ -3942,7 +3939,6 @@
 				AD2C62552A4898A200671582 /* UploadManager+Prepare.swift in Sources */,
 				AD7E064F2EFBE1C5003F8A61 /* UploadSessionsDelegate+Task.swift in Sources */,
 				AD2C62512A4898A200671582 /* UploadManager+Resume.swift in Sources */,
-				AD2C62572A4898A200671582 /* UploadManager+Tasks.swift in Sources */,
 				AD2C624F2A4898A200671582 /* UploadManager+TransferOrCopy.swift in Sources */,
 				AD2C62502A4898A200671582 /* UploadManager+Utilities.swift in Sources */,
 				AD2C62522A4898A200671582 /* UploadManager+PrepareVideo.swift in Sources */,
