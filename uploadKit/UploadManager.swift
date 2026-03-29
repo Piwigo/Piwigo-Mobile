@@ -68,9 +68,10 @@ public final class UploadManager {
         return inPreparation.count
     }
     
-    // Number of uploads to transfer
-    var nberOfUploadsToTransfer: Int {
-        let (inTransfer, _) = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.uploading], inContext: self.uploadBckgContext)
+    // Number of uploads in transfer
+    var nberOfUploadsInTransfer: Int {
+        let states: [pwgUploadState] = [.uploading, .uploaded]
+        let (inTransfer, _) = UploadProvider().getIDsOfPendingUploads(onlyInStates: states, inContext: self.uploadBckgContext)
         return inTransfer.count
     }
     
