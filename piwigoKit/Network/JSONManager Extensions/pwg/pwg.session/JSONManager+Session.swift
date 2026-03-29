@@ -111,13 +111,15 @@ public extension JSONManager {
         }
 
         // Upload chunk size is null if not provided by server
-        if let uploadChunkSize = data.uploadChunkSize, uploadChunkSize != 0 {
+        if var uploadChunkSize = data.uploadChunkSize, uploadChunkSize != 0 {
+            uploadChunkSize = max(UploadVars.shared.minChunkSize, uploadChunkSize)
+            uploadChunkSize = min(UploadVars.shared.maxChunkSize, uploadChunkSize)
             UploadVars.shared.uploadChunkSize = uploadChunkSize
         } else {
-            UploadVars.shared.uploadChunkSize = 500    // i.e. 500 ko
+            UploadVars.shared.uploadChunkSize = 500    // i.e. 500 kB
         }
         
-        // Initialise customUploadChunkSize if needed
+        // Initialise customUploadChunkSize if null
         if UploadVars.shared.customUploadChunkSize == 0 {
             UploadVars.shared.customUploadChunkSize = UploadVars.shared.uploadChunkSize
         }

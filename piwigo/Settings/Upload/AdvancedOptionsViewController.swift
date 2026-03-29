@@ -124,16 +124,18 @@ extension AdvancedOptionsViewController: UITableViewDataSource
             cell.accessibilityIdentifier = "maxUploadTransfers"
         
         case .chunkSize:
-            // Value
-            let value = Float(UploadVars.shared.customUploadChunkSize)
+            // Values in bytes
+            let minValue = Float(UploadVars.shared.minChunkSize * 1000)
+            let value = Float(UploadVars.shared.customUploadChunkSize * 1000)
+            let maxValue = Float(UploadVars.shared.maxChunkSize * 1000)
             
             // Slider configuration
             cell.configure(with: NSLocalizedString("settings_advancedChunkSize", comment: "Size"),
-                           value: value, increment: 250*1000, minValue: 500*1000, maxValue: 5000*1000,
+                           value: value, increment: 250*1000, minValue: minValue, maxValue: maxValue,
                            prefix: "", suffix: "", style: sizeStyle)
             cell.cellSliderBlock = { newValue in
                 // Update settings
-                UploadVars.shared.customUploadChunkSize = Int(newValue)
+                UploadVars.shared.customUploadChunkSize = Int(newValue / 1000)
             }
             cell.accessibilityIdentifier = "chunkSize"
         
