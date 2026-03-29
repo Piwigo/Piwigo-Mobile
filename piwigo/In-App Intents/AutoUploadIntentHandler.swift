@@ -74,7 +74,7 @@ final class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         }
         
         // Get new local images to be uploaded
-        Task { @UploadManagerActor in
+        Task(priority: .utility) { @UploadManagerActor in
             let uploadRequestsToAppend = UploadManager.shared.getNewRequests(inCollection: collection,
                                                                              toBeUploadedIn: categoryId)
             do {

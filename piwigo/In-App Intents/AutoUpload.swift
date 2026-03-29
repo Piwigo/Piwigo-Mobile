@@ -30,6 +30,9 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { // , PredictableIn
     /// Tell the system to not bring the app to the foreground when the intent runs.
     static let openAppWhenRun: Bool = false
     
+    /// Tell the system to apply a specific task priority
+//    static var priority: TaskPriority { .utility }
+    
     static var parameterSummary: some ParameterSummary {
         Summary("Auto-Upload Photos")
     }
@@ -49,6 +52,7 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { // , PredictableIn
      Intents run on an arbitrary queue. Intents that manipulate UI need to annotate `perform()` with `@MainActor`
      so that the UI operations run on the main actor.
      */
+    @UploadManagerActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
         debugPrint("••> !!!!!!!!!!!!!!!!!!!!!!!!!")
         debugPrint("••> Auto-upload in-app intent starting...")
@@ -95,19 +99,31 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { // , PredictableIn
             return .result(dialog: .responseFailure(error: .invalidDestination))
         }
         
-        // Get new local images to be uploaded
-        let uploadRequestsToAppend = await UploadManager.shared.getNewRequests(inCollection: collection,
-                                                                               toBeUploadedIn: categoryId)
-        do {
-            // Append auto-upload requests to database
-            let uploadIDs = try await UploadManager.shared.importUploads(from: uploadRequestsToAppend)
-            
-            // Inform user that the shortcut was executed with success
-            return .result(dialog: .responseSuccess(photos: uploadIDs.count))
-        }
-        catch {
+        // Add new images to upload queue
+        let nberOfRequests = await Task(priority: .utility) { @UploadManagerActor in
+            let uploadRequestsToAppend = UploadManager.shared.getNewRequests(inCollection: collection,
+                                                                         toBeUploadedIn: categoryId)
+            do {
+                // Append auto-upload requests to database
+                let uploadIDs = try await UploadManager.shared.importUploads(from: uploadRequestsToAppend)
+                
+                // Return number of upload requests added to queue
+                return uploadIDs.count
+            }
+            catch {
+                // Return unknown number of upload requests added to queue
+                return Int.min
+            }
+        }.value
+        
+        // Inform user
+        if nberOfRequests == Int.min {
             // Inform user that the shortcut was executed with error
             return .result(dialog: .responseFailure(error: .importFailed))
+        }
+        else {
+            // Inform user that the shortcut was executed with success
+            return .result(dialog: .responseSuccess(photos: nberOfRequests))
         }
     }
 }
