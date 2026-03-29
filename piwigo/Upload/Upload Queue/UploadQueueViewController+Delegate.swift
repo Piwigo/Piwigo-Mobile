@@ -76,6 +76,9 @@ extension UploadQueueViewController: UITableViewDelegate
             Task(priority: .utility) { @UploadManagerActor in
                 // Remove upload request from queue
                 await UploadManagerActor.shared.removeUploads(withIDs: [upload.objectID])
+                
+                // Update badge and default album view button
+                UploadManager.shared.updateNberOfUploadsToComplete()
             }
             completionHandler(true)
         })

@@ -66,9 +66,6 @@ public actor UploadManagerActor {
         // Remove upload request from queue
         uploadIDsToPrepare.removeAll(where: { uploadIDs.contains($0) })
         uploadIDsToTransfer.removeAll(where: { uploadIDs.contains($0) })
-        
-        // Update badge and default album view button
-        await UploadManager.shared.updateNberOfUploadsToComplete()
     }
     
     public func removeAllUploads() async {

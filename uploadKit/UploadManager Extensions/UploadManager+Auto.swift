@@ -141,8 +141,13 @@ extension UploadManager {
         
         // Remove non-completed upload requests marked for auto-upload from the upload queue
         do {
-            let uploadIDsToDelete = UploadProvider().getIDsOfPendingUploads(onlyDeletable: true, markedForAutoUpload: true, inContext: self.uploadBckgContext).0
-            try UploadProvider().deleteUploads(withID: uploadIDsToDelete, inContext: self.uploadBckgContext)
+            // Remove non-completed upload requests marked for auto-upload from the upload queue
+            let uploadIDs = UploadProvider().getIDsOfPendingUploads(onlyDeletable: true, markedForAutoUpload: true, inContext: self.uploadBckgContext).0
+            await UploadManagerActor.shared.removeUploads(withIDs: uploadIDs)
+            try UploadProvider().deleteUploads(withID: uploadIDs, inContext: self.uploadBckgContext)
+            
+            // Update badge and default album view button
+            UploadManager.shared.updateNberOfUploadsToComplete()
         }
         catch {
             await MainActor.run {
