@@ -13,8 +13,8 @@ import AppIntents
  An `AppShortcut` wraps an intent to make it automatically discoverable throughout the system. An `AppShortcutsProvider` manages the shortcuts the app
  makes available. The app can update the available shortcuts by calling `updateAppShortcutParameters()` as needed.
  */
-@available(iOS 16.0, *)
-final class AppShortcuts: AppShortcutsProvider {
+@available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
+struct AutoUploadShortcutsProvider: AppShortcutsProvider {
     
     /// The color the system uses to display the App Shortcuts in the Shortcuts app.
     static let shortcutTileColor = ShortcutTileColor.orange
@@ -29,15 +29,18 @@ final class AppShortcuts: AppShortcutsProvider {
      */
     static var appShortcuts: [AppShortcut]
     {
-        AppShortcut(intent: AutoUpload(), phrases: [
-            "Upload photos with \(.applicationName)",
-            "Upload my photos to \(.applicationName)",
-            "Upload my photos with \(.applicationName)",
-            "Upload my latest photos with \(.applicationName)",
-            "Auto-upload photos with \(.applicationName)",
-            "Auto-upload my photos with \(.applicationName)"
-        ],
-        shortTitle: LocalizedStringResource("Auto-Upload Photos", table: "In-AppIntents"),
-        systemImageName: "photo.stack")
+        AppShortcut(
+            intent: AutoUpload(),
+            phrases: [
+                "Upload photos with \(.applicationName)",
+                "Upload my photos to \(.applicationName)",
+                "Upload my photos with \(.applicationName)",
+                "Upload my latest photos with \(.applicationName)",
+                "Auto-upload photos with \(.applicationName)",
+                "Auto-upload my photos with \(.applicationName)"
+            ],
+            shortTitle: LocalizedStringResource("Auto-Upload Photos", table: "In-AppIntents"),
+            systemImageName: "photo.stack"
+        )
     }
 }
