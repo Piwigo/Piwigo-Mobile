@@ -48,7 +48,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
             
             // Delete remaining upload requests
             Task { @UploadManagerActor in
-                await UploadManager.shared.disableAutoUpload()
+                await UploadManager.shared.disableAutoUpload(inBckgTask: true)
             }
             
             // Inform user
@@ -64,7 +64,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
 
             // Delete remaining upload requests
             Task { @UploadManagerActor in
-                await UploadManager.shared.disableAutoUpload()
+                await UploadManager.shared.disableAutoUpload(inBckgTask: true)
             }
 
             // Inform user

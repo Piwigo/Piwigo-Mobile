@@ -73,7 +73,7 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
             
             // Delete remaining upload requests
             Task(priority: .utility) { @UploadManagerActor in
-                await UploadManager.shared.disableAutoUpload()
+                await UploadManager.shared.disableAutoUpload(inBckgTask: true)
             }
             
             // Inform user
@@ -88,7 +88,7 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
             
             // Delete remaining upload requests
             Task(priority: .utility) { @UploadManagerActor in
-                await UploadManager.shared.disableAutoUpload()
+                await UploadManager.shared.disableAutoUpload(inBckgTask: true)
             }
             
             // Inform user
