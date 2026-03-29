@@ -193,13 +193,13 @@ extension UploadManager
         // First retry transfers
         if toTransfer.isEmpty == false {
             await UploadManagerActor.shared.addUploadsToTransfer(withIDs: toTransfer, beforeOthers: true)
-            UploadManager.logger.notice("Resuming uploads: \(toTransfer.count, privacy: .public) failed uploads to rety")
+            UploadManager.logger.notice("Resuming uploads: \(toTransfer.count, privacy: .public) failed uploads to retry")
         }
 
         // Next retry preparations
         if toPrepare.isEmpty == false {
             await UploadManagerActor.shared.addUploadsToPrepare(withIDs: toPrepare, beforeOthers: true)
-            UploadManager.logger.notice("Resuming uploads: \(toPrepare.count, privacy: .public) failed uploads to rety")
+            UploadManager.logger.notice("Resuming uploads: \(toPrepare.count, privacy: .public) failed uploads to retry")
         }
 
         // Process next uploads if possible
