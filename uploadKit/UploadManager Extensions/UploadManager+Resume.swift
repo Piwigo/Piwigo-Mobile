@@ -253,19 +253,6 @@ extension UploadManager
         self.updateNberOfUploadsToComplete()
     }
     
-    public func deleteImpossibleUploads() {
-        // Collect failed uploads
-        let states: [pwgUploadState] = [.preparingFail, .formatError,
-                                        .uploadingFail, .finishingFail]
-        let toDeleteUploadIDs = UploadProvider().getIDsOfPendingUploads(onlyInStates: states, inContext: self.uploadBckgContext).0
-        
-        // Delete uploads
-        try? UploadProvider().deleteUploads(withID: Array(toDeleteUploadIDs), inContext: self.uploadBckgContext)
-        
-        // Update counter and app badge
-        self.updateNberOfUploadsToComplete()
-    }
-    
     
     // MARK: - Clean Photo Library
 //    @MainActor
