@@ -30,7 +30,7 @@ extension UploadManager
         
         // Logs
         if #available(iOS 17.0, *) {
-            UploadManager.logger.notice("Resuming uploads with thread priority: \(Task.currentPriority, privacy: .public)")
+            UploadManager.logger.notice("Resuming uploads: with priority \(Task.currentPriority, privacy: .public)")
         }
         
         // Reset flags
