@@ -37614,14 +37614,14 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Size"
+            "state" : "translated",
+            "value" : "‮الحجم"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Size"
+            "state" : "translated",
+            "value" : "Størrelse"
           }
         },
         "de" : {
@@ -37650,62 +37650,62 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Size"
+            "state" : "translated",
+            "value" : "Méret"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Size"
+            "state" : "translated",
+            "value" : "Ukuran"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Size"
+            "state" : "translated",
+            "value" : "Dimensione"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Size"
+            "state" : "translated",
+            "value" : "サイズ"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Size"
+            "state" : "translated",
+            "value" : "Grootte"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Size"
+            "state" : "translated",
+            "value" : "Rozmiar"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Size"
+            "state" : "translated",
+            "value" : "Размер"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Size"
+            "state" : "translated",
+            "value" : "Storlek"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Size"
+            "state" : "translated",
+            "value" : "大小"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Size"
+            "state" : "translated",
+            "value" : "尺寸"
           }
         }
       }
@@ -37715,14 +37715,14 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of %@ is generally a good starting point. Fast connections will have better performances with high values, such as %@."
+            "state" : "translated",
+            "value" : "قيمة %@ هي عموما نقطة بداية جيدة. الاتصالات السريعة سيكون لها أداء أفضل مع قيم عالية، مثل %@."
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of %@ is generally a good starting point. Fast connections will have better performances with high values, such as %@."
+            "state" : "translated",
+            "value" : "En værdi af %@ er generelt et godt udgangspunkt. Hurtige forbindelser vil have bedre præstationer med høje værdier, såsom %@."
           }
         },
         "de" : {
@@ -37751,62 +37751,62 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of %@ is generally a good starting point. Fast connections will have better performances with high values, such as %@."
+            "state" : "translated",
+            "value" : "A %@ érték általában jó kiindulási pont. A gyors kapcsolatoknál magasabb értékek, például %@, jobb teljesítményt eredményeznek."
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of %@ is generally a good starting point. Fast connections will have better performances with high values, such as %@."
+            "state" : "translated",
+            "value" : "Nilai %@ umumnya merupakan titik awal yang baik. Koneksi yang cepat akan memberikan kinerja yang lebih baik dengan nilai yang tinggi, seperti %@."
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of %@ is generally a good starting point. Fast connections will have better performances with high values, such as %@."
+            "state" : "translated",
+            "value" : "Un valore di %@ è generalmente un buon punto di partenza. Le connessioni veloci avranno prestazioni migliori con valori elevati, come %@."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of %@ is generally a good starting point. Fast connections will have better performances with high values, such as %@."
+            "state" : "translated",
+            "value" : "%@ の値は一般的に良い出発点です。高速接続は、 %@ のような高い値でパフォーマンスが向上します。"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of %@ is generally a good starting point. Fast connections will have better performances with high values, such as %@."
+            "state" : "translated",
+            "value" : "Een waarde van %@ is over het algemeen een goed startpunt. Snelle verbindingen hebben betere prestaties met hoge waarden, zoals %@."
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of %@ is generally a good starting point. Fast connections will have better performances with high values, such as %@."
+            "state" : "translated",
+            "value" : "Wartość %@ jest zazwyczaj dobrym punktem początkowym. Szybkie połączenia będą miały lepsze wyniki z wysokimi wartościami, takimi jak %@."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of %@ is generally a good starting point. Fast connections will have better performances with high values, such as %@."
+            "state" : "translated",
+            "value" : "Значение %@ обычно это хорошая начальная точка. Быстрые соединения будут иметь лучшую производительность с высокими значениями, например, %@."
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of %@ is generally a good starting point. Fast connections will have better performances with high values, such as %@."
+            "state" : "translated",
+            "value" : "Ett värde av %@ är i allmänhet en bra utgångspunkt. Snabba anslutningar kommer att ha bättre prestationer med höga värden, såsom %@."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of %@ is generally a good starting point. Fast connections will have better performances with high values, such as %@."
+            "state" : "translated",
+            "value" : "建议以 %@ 作为初始值。网络速度较快时，可使用更高数值（如 %@）以获得更好性能。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of %@ is generally a good starting point. Fast connections will have better performances with high values, such as %@."
+            "state" : "translated",
+            "value" : "%@ 通常是個不錯的起點。對於高速連線，採用較高的數值（例如 %@）將能獲得更好的效能。"
           }
         }
       }
@@ -37816,14 +37816,14 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the size of the chunks that files are split into during upload."
+            "state" : "translated",
+            "value" : "الرجاء تحديد حجم القطع التي يتم تقسيم الملفات إليها أثناء التحميل."
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the size of the chunks that files are split into during upload."
+            "state" : "translated",
+            "value" : "Vælg størrelsen af de bidder som filer er opdelt i under upload."
           }
         },
         "de" : {
@@ -37852,62 +37852,62 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the size of the chunks that files are split into during upload."
+            "state" : "translated",
+            "value" : "Kérjük, válassza ki, hogy a feltöltés során a fájlok milyen méretű részekre legyenek felosztva."
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the size of the chunks that files are split into during upload."
+            "state" : "translated",
+            "value" : "Silakan pilih ukuran potongan yang akan digunakan untuk membagi file saat proses unggah."
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the size of the chunks that files are split into during upload."
+            "state" : "translated",
+            "value" : "Si prega di selezionare la dimensione dei blocchi in cui i file sono suddivisi durante il caricamento."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the size of the chunks that files are split into during upload."
+            "state" : "translated",
+            "value" : "アップロード中にファイルを分割するチャンクのサイズを選択してください。"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the size of the chunks that files are split into during upload."
+            "state" : "translated",
+            "value" : "Selecteer de grootte van de segmenten waarin de bestanden zijn gesplitst tijdens het uploaden."
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the size of the chunks that files are split into during upload."
+            "state" : "translated",
+            "value" : "Proszę wybrać rozmiar fragmentów, na które pliki są podzielone podczas przesyłania."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the size of the chunks that files are split into during upload."
+            "state" : "translated",
+            "value" : "Пожалуйста, выберите размер чанков, которые будут разделены на файлы во время загрузки."
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the size of the chunks that files are split into during upload."
+            "state" : "translated",
+            "value" : "Välj storleken på de chunks som filerna delas upp i under uppladdningen."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the size of the chunks that files are split into during upload."
+            "state" : "translated",
+            "value" : "请选择上传时文件分块的大小。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the size of the chunks that files are split into during upload."
+            "state" : "translated",
+            "value" : "請選擇上傳時檔案被分割成的小塊大小。"
           }
         }
       }
@@ -37917,14 +37917,14 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Chunk Size"
+            "state" : "translated",
+            "value" : "حجم القطعة"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Chunk Size"
+            "state" : "translated",
+            "value" : "Chunk Størrelse"
           }
         },
         "de" : {
@@ -37953,62 +37953,62 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Chunk Size"
+            "state" : "translated",
+            "value" : "Darabolási méret"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Chunk Size"
+            "state" : "translated",
+            "value" : "Ukuran Blok"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Chunk Size"
+            "state" : "translated",
+            "value" : "Dimensione Chunk"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Chunk Size"
+            "state" : "translated",
+            "value" : "チャンクサイズ"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Chunk Size"
+            "state" : "translated",
+            "value" : "Chunk Grootte"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Chunk Size"
+            "state" : "translated",
+            "value" : "Rozmiar Fragmentu"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Chunk Size"
+            "state" : "translated",
+            "value" : "Размер чанка"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Chunk Size"
+            "state" : "translated",
+            "value" : "Bitstorleken"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Chunk Size"
+            "state" : "translated",
+            "value" : "分块大小"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Chunk Size"
+            "state" : "translated",
+            "value" : "區塊大小"
           }
         }
       }
@@ -38018,14 +38018,14 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Limit"
+            "state" : "translated",
+            "value" : "الحد"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Limit"
+            "state" : "translated",
+            "value" : "Grænse"
           }
         },
         "de" : {
@@ -38054,62 +38054,62 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Limit"
+            "state" : "translated",
+            "value" : "Határ"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Limit"
+            "state" : "translated",
+            "value" : "Batas"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Limit"
+            "state" : "translated",
+            "value" : "Limita"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Limit"
+            "state" : "translated",
+            "value" : "制限"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Limit"
+            "state" : "translated",
+            "value" : "Limiet"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Limit"
+            "state" : "translated",
+            "value" : "Granica"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Limit"
+            "state" : "translated",
+            "value" : "Лимит"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Limit"
+            "state" : "translated",
+            "value" : "Gräns"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Limit"
+            "state" : "translated",
+            "value" : "上限"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Limit"
+            "state" : "translated",
+            "value" : "上限"
           }
         }
       }
@@ -38119,14 +38119,14 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Advanced Options"
+            "state" : "translated",
+            "value" : "خيارات متقدمة"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Advanced Options"
+            "state" : "translated",
+            "value" : "Avancerede Indstillinger"
           }
         },
         "de" : {
@@ -38155,62 +38155,62 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Advanced Options"
+            "state" : "translated",
+            "value" : "Haladó Beállítások"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Advanced Options"
+            "state" : "translated",
+            "value" : "Pilihan Lanjutan"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Advanced Options"
+            "state" : "translated",
+            "value" : "Opzioni Avanzate"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Advanced Options"
+            "state" : "translated",
+            "value" : "詳細オプション"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Advanced Options"
+            "state" : "translated",
+            "value" : "Geavanceerde Opties"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Advanced Options"
+            "state" : "translated",
+            "value" : "Opcje Zaawansowane"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Advanced Options"
+            "state" : "translated",
+            "value" : "Дополнительные параметры"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Advanced Options"
+            "state" : "translated",
+            "value" : "Avancerade Alternativ"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Advanced Options"
+            "state" : "translated",
+            "value" : "高级选项"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Advanced Options"
+            "state" : "translated",
+            "value" : "進階選項"
           }
         }
       }
@@ -38220,14 +38220,14 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A suitable value is one slightly above the maximum number of photos or videos you can upload at a time. Note that a higher limit will result in greater disk space usage."
+            "state" : "translated",
+            "value" : "القيمة المناسبة هي واحدة أعلى قليلا من الحد الأقصى لعدد الصور أو مقاطع الفيديو التي يمكنك رفعها في كل مرة. لاحظ أن زيادة الحد الأقصى ستؤدي إلى زيادة استخدام مساحة القرص."
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A suitable value is one slightly above the maximum number of photos or videos you can upload at a time. Note that a higher limit will result in greater disk space usage."
+            "state" : "translated",
+            "value" : "En passende værdi er en lidt over det maksimale antal billeder eller videoer, du kan uploade ad gangen. Bemærk, at en højere grænse vil resultere i større diskplads forbrug."
           }
         },
         "de" : {
@@ -38256,62 +38256,62 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A suitable value is one slightly above the maximum number of photos or videos you can upload at a time. Note that a higher limit will result in greater disk space usage."
+            "state" : "translated",
+            "value" : "A megfelelő érték az, amely kissé meghaladja az egyszerre feltölthető fotók vagy videók maximális számát. Ne feledje, hogy a magasabb korlát nagyobb lemezterület-igényt jelent."
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A suitable value is one slightly above the maximum number of photos or videos you can upload at a time. Note that a higher limit will result in greater disk space usage."
+            "state" : "translated",
+            "value" : "Nilai yang tepat adalah nilai yang sedikit di atas jumlah maksimum foto atau video yang dapat Anda unggah sekaligus. Perlu diingat bahwa batas yang lebih tinggi akan mengakibatkan penggunaan ruang penyimpanan yang lebih besar."
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A suitable value is one slightly above the maximum number of photos or videos you can upload at a time. Note that a higher limit will result in greater disk space usage."
+            "state" : "translated",
+            "value" : "Un valore adatto è leggermente superiore al numero massimo di foto o video che puoi caricare alla volta. Si noti che un limite più alto comporterà un maggiore utilizzo dello spazio su disco."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A suitable value is one slightly above the maximum number of photos or videos you can upload at a time. Note that a higher limit will result in greater disk space usage."
+            "state" : "translated",
+            "value" : "適切な値は、一度にアップロードできる写真や動画の最大数を少し上回っています。 制限が高いほどディスク容量が大きくなりますのでご注意ください。"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A suitable value is one slightly above the maximum number of photos or videos you can upload at a time. Note that a higher limit will result in greater disk space usage."
+            "state" : "translated",
+            "value" : "Een geschikte waarde ligt een beetje boven het maximale aantal foto's of video's dat je kunt uploaden. Merk op dat een hogere limiet zal resulteren in een groter schijfgebruik van schijfruimte."
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A suitable value is one slightly above the maximum number of photos or videos you can upload at a time. Note that a higher limit will result in greater disk space usage."
+            "state" : "translated",
+            "value" : "Odpowiednia wartość jest nieco wyższa od maksymalnej liczby zdjęć lub filmów które możesz przesłać jednocześnie. Zauważ, że wyższy limit spowoduje większe użycie przestrzeni dyskowej."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A suitable value is one slightly above the maximum number of photos or videos you can upload at a time. Note that a higher limit will result in greater disk space usage."
+            "state" : "translated",
+            "value" : "Подходящее значение немного выше максимального количества фотографий или видео, которые вы можете загрузить одновременно. Заметьте, что более высокий лимит приведет к большему объему дискового пространства."
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A suitable value is one slightly above the maximum number of photos or videos you can upload at a time. Note that a higher limit will result in greater disk space usage."
+            "state" : "translated",
+            "value" : "Ett lämpligt värde ligger något över det maximala antalet foton eller videor som du kan ladda upp åt gången. Observera att en högre gräns kommer att resultera i större användning av diskutrymme."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A suitable value is one slightly above the maximum number of photos or videos you can upload at a time. Note that a higher limit will result in greater disk space usage."
+            "state" : "translated",
+            "value" : "建议设置为略高于单次可上传照片 / 视频的最大数量。注意：上限越高，占用磁盘空间越大。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A suitable value is one slightly above the maximum number of photos or videos you can upload at a time. Note that a higher limit will result in greater disk space usage."
+            "state" : "translated",
+            "value" : "合適的數值應略高於您一次可上傳的照片或影片的最大數量。請注意，設定較高的上限會導致佔用更多的磁碟空間。"
           }
         }
       }
@@ -38321,14 +38321,14 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of uploads to prepare in advance."
+            "state" : "translated",
+            "value" : "الرجاء تحديد الحد الأقصى لعدد التحميلات للتحضير مسبقاً."
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of uploads to prepare in advance."
+            "state" : "translated",
+            "value" : "Vælg det maksimale antal uploads der skal forberedes på forhånd."
           }
         },
         "de" : {
@@ -38357,62 +38357,62 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of uploads to prepare in advance."
+            "state" : "translated",
+            "value" : "Kérjük, válassza ki előre a feltöltendő fájlok maximális számát."
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of uploads to prepare in advance."
+            "state" : "translated",
+            "value" : "Silakan tentukan jumlah maksimum unggahan yang akan disiapkan terlebih dahulu."
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of uploads to prepare in advance."
+            "state" : "translated",
+            "value" : "Si prega di selezionare il numero massimo di caricamenti da preparare in anticipo."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of uploads to prepare in advance."
+            "state" : "translated",
+            "value" : "事前に準備するアップロードの最大数を選択してください。"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of uploads to prepare in advance."
+            "state" : "translated",
+            "value" : "Selecteer het maximale aantal uploads om voor te bereiden op voorhand."
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of uploads to prepare in advance."
+            "state" : "translated",
+            "value" : "Wybierz maksymalną liczbę przesyłanych plików do przygotowania z wyprzedzeniem."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of uploads to prepare in advance."
+            "state" : "translated",
+            "value" : "Пожалуйста, выберите максимальное количество загрузок, чтобы подготовиться заранее."
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of uploads to prepare in advance."
+            "state" : "translated",
+            "value" : "Välj det maximala antalet uppladdningar att förbereda i förväg."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of uploads to prepare in advance."
+            "state" : "translated",
+            "value" : "请选择要预先准备的上传的最大数量。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of uploads to prepare in advance."
+            "state" : "translated",
+            "value" : "請預先設定最多可上傳的檔案數量。"
           }
         }
       }
@@ -38422,14 +38422,14 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Upload Preparation"
+            "state" : "translated",
+            "value" : "تحميل الإعداد"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Upload Preparation"
+            "state" : "translated",
+            "value" : "Upload Forberedelse"
           }
         },
         "de" : {
@@ -38458,62 +38458,62 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Upload Preparation"
+            "state" : "translated",
+            "value" : "Feltöltés Előkészítése"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Upload Preparation"
+            "state" : "translated",
+            "value" : "Persiapan Pengunggahan"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Upload Preparation"
+            "state" : "translated",
+            "value" : "Carica Preparazione"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Upload Preparation"
+            "state" : "translated",
+            "value" : "アップロード準備"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Upload Preparation"
+            "state" : "translated",
+            "value" : "Voorbereiding uploaden"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Upload Preparation"
+            "state" : "translated",
+            "value" : "Przygotowanie Wgrywania"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Upload Preparation"
+            "state" : "translated",
+            "value" : "Подготовка к загрузке"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Upload Preparation"
+            "state" : "translated",
+            "value" : "Uppladdnings förberedelse"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Upload Preparation"
+            "state" : "translated",
+            "value" : "上传准备"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Upload Preparation"
+            "state" : "translated",
+            "value" : "上傳準備"
           }
         }
       }
@@ -38523,14 +38523,14 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeouts or 503 errors, try reducing this number."
+            "state" : "translated",
+            "value" : "وقيمة 4 هي عموما نقطة بداية جيدة. من المستصوب الحفاظ على هذا الرقم منخفض، أو التحقق مع مزود خدمة الاستضافة أو مدير الشبكة. إذا واجهت مهلة أو 503 أخطاء، حاول تقليل هذا العدد."
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeouts or 503 errors, try reducing this number."
+            "state" : "translated",
+            "value" : "En værdi på 4 er generelt et godt udgangspunkt. Det er tilrådeligt at holde dette nummer lavt, eller at tjekke med din hostingudbyder eller netværksadministrator. Hvis du støder på timeouts eller 503 fejl, så prøv at reducere dette antal."
           }
         },
         "de" : {
@@ -38559,62 +38559,62 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeouts or 503 errors, try reducing this number."
+            "state" : "translated",
+            "value" : "A 4-es érték általában jó kiindulási pont. Célszerű ezt az értéket alacsony szinten tartani, vagy egyeztetni a tárhelyszolgáltatóval vagy a hálózati rendszergazdával. Ha időtúllépés vagy 503-as hibaüzenet jelentkezik, próbálja meg csökkenteni ezt az értéket."
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeouts or 503 errors, try reducing this number."
+            "state" : "translated",
+            "value" : "Nilai 4 umumnya merupakan titik awal yang baik. Disarankan untuk menjaga angka ini tetap rendah, atau berkonsultasi dengan penyedia hosting atau administrator jaringan Anda. Jika Anda mengalami timeout atau kesalahan 503, cobalah kurangi angka ini."
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeouts or 503 errors, try reducing this number."
+            "state" : "translated",
+            "value" : "Un valore di 4 è generalmente un buon punto di partenza. Si consiglia di mantenere basso questo numero, o di controllare con il provider di hosting o l'amministratore di rete. Se riscontri timeout o errori 503, prova a ridurre questo numero."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeouts or 503 errors, try reducing this number."
+            "state" : "translated",
+            "value" : "4の値は一般的に良い出発点です。 この番号を低く保つか、ホスティングプロバイダまたはネットワーク管理者に確認することをお勧めします。 タイムアウトまたは503エラーが発生した場合は、この数を減らしてみてください。"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeouts or 503 errors, try reducing this number."
+            "state" : "translated",
+            "value" : "Een waarde van 4 is over het algemeen een goed uitgangspunt. Het is raadzaam om dit nummer laag te houden, of om te controleren met uw hosting provider of netwerkbeheerder. Als u time-outs of 503 fouten tegenkomt, probeer dan dit nummer te verminderen."
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeouts or 503 errors, try reducing this number."
+            "state" : "translated",
+            "value" : "Wartość 4 jest zasadniczo dobrym punktem wyjścia. Wskazane jest utrzymanie tego numeru na niskim poziomie lub sprawdzenie go u dostawcy usług hostingowych lub administratora sieci. Jeśli napotkasz opóźnienia lub 503 błędy, spróbuj zmniejszyć tę liczbę."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeouts or 503 errors, try reducing this number."
+            "state" : "translated",
+            "value" : "Ценность 4 обычно является хорошей отправной точкой. Рекомендуется держать этот номер низким или проверить с вашим хостинг-провайдером или администратором. Если вы встретите таймауты или 503 ошибки, попробуйте уменьшить это число."
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeouts or 503 errors, try reducing this number."
+            "state" : "translated",
+            "value" : "Ett värde av 4 är i allmänhet en bra utgångspunkt. Det är lämpligt att hålla detta nummer lågt, eller att kontrollera med din webbhotell leverantör eller nätverksadministratör. Om du stöter på timeouts eller 503 fel, försök att minska detta nummer."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeouts or 503 errors, try reducing this number."
+            "state" : "translated",
+            "value" : "建议初始值设为 4。该数值不宜过高，或可咨询服务器服务商 / 网络管理员。若出现超时或 503 错误，请尝试降低此数值。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeouts or 503 errors, try reducing this number."
+            "state" : "translated",
+            "value" : "通常將此數值設為 4 是個不錯的起點。建議將此數值設得較低，或向您的主機服務供應商或網路管理員確認。若遇到超時或 503 錯誤，請嘗試降低此數值。"
           }
         }
       }
@@ -38624,14 +38624,14 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of files to transfer simultaneously."
+            "state" : "translated",
+            "value" : "الرجاء تحديد الحد الأقصى لعدد الملفات التي سيتم نقلها في وقت واحد."
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of files to transfer simultaneously."
+            "state" : "translated",
+            "value" : "Vælg det maksimale antal filer, der skal overføres samtidigt."
           }
         },
         "de" : {
@@ -38660,62 +38660,62 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of files to transfer simultaneously."
+            "state" : "translated",
+            "value" : "Kérjük, válassza ki az egyszerre átvihető fájlok maximális számát."
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of files to transfer simultaneously."
+            "state" : "translated",
+            "value" : "Silakan pilih jumlah maksimum file yang akan ditransfer secara bersamaan."
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of files to transfer simultaneously."
+            "state" : "translated",
+            "value" : "Seleziona il numero massimo di file da trasferire contemporaneamente."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of files to transfer simultaneously."
+            "state" : "translated",
+            "value" : "同時に転送するファイルの最大数を選択してください。"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of files to transfer simultaneously."
+            "state" : "translated",
+            "value" : "Selecteer het maximum aantal bestanden om gelijktijdig over te dragen."
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of files to transfer simultaneously."
+            "state" : "translated",
+            "value" : "Wybierz maksymalną liczbę plików do równoczesnego przenoszenia."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of files to transfer simultaneously."
+            "state" : "translated",
+            "value" : "Пожалуйста, выберите максимальное количество файлов для одновременной передачи."
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of files to transfer simultaneously."
+            "state" : "translated",
+            "value" : "Välj det maximala antalet filer att överföra samtidigt."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of files to transfer simultaneously."
+            "state" : "translated",
+            "value" : "请选择要同时传输的最大文件数。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Please select the maximum number of files to transfer simultaneously."
+            "state" : "translated",
+            "value" : "請選擇最多可同時傳輸的檔案數量。"
           }
         }
       }
@@ -38725,14 +38725,14 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File Transfers"
+            "state" : "translated",
+            "value" : "نقل الملفات"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File Transfers"
+            "state" : "translated",
+            "value" : "Fil Overførsler"
           }
         },
         "de" : {
@@ -38761,62 +38761,62 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File Transfers"
+            "state" : "translated",
+            "value" : "Fájlátvitel"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File Transfers"
+            "state" : "translated",
+            "value" : "Transfer Berkas"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File Transfers"
+            "state" : "translated",
+            "value" : "Trasferimenti File"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File Transfers"
+            "state" : "translated",
+            "value" : "ファイルの転送"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File Transfers"
+            "state" : "translated",
+            "value" : "Bestand Overdrachten"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File Transfers"
+            "state" : "translated",
+            "value" : "Transfery Plików"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File Transfers"
+            "state" : "translated",
+            "value" : "Передача файлов"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File Transfers"
+            "state" : "translated",
+            "value" : "Fil överföringar"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File Transfers"
+            "state" : "translated",
+            "value" : "文件传输"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File Transfers"
+            "state" : "translated",
+            "value" : "檔案傳輸"
           }
         }
       }

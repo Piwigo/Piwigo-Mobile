@@ -1,6 +1,6 @@
 "0qYUsE" = "{error}$";
 
-"1yW2tL" = "${photos} photo(s) added to the upload queue.";
+"1yW2tL" = "تمت إضافة ${photos} صورة (صور) إلى قائمة الانتظار للتحميل.";
 
 "61lMsg" = "تحميل الصور تلقائياً";
 
@@ -16,6 +16,6 @@
 
 "Vz5KMD" = "إرفاق الصور الأخيرة إلى قائمة انتظار رفع الخلفية.";
 
-"YtBidq" = "${photos} photo(s) added to the upload queue.";
+"YtBidq" = "تمت إضافة ${photos} صورة (صور) إلى قائمة الانتظار للتحميل.";
 
 "pSuJbF" = "خطأ";
