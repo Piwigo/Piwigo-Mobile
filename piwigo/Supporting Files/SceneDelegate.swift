@@ -365,8 +365,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // Should we pause upload activities in the foreground?
         if AppVars.shared.isMigrationRunning == false {
-            // Pause upload activities
-            UploadVars.shared.isPaused = true
+            // Pause upload activities if no BGContinuedProcessingTask
+            if #unavailable(iOS 26.0) {
+                UploadVars.shared.isPaused = true
+            }
             // Save changes in the app's managed object context
             mainContext.saveIfNeeded()
         }
@@ -534,7 +536,12 @@ extension SceneDelegate: AppLockDelegate {
         // Resume upload operations in background queue
         // and update badge and upload button of album navigator
         Task(priority: .utility) { @UploadManagerActor in
-            await UploadManager.shared.resumeInForeground()
+            if #available(iOS 26.0, *) {
+                UploadManager.shared.runContinuedUploadTask()
+            }
+            else {
+                await UploadManager.shared.resumeInForeground()
+            }
         }
     }
 }

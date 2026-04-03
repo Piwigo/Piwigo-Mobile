@@ -627,8 +627,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     @objc func resumeUploadsWhenLeavingLowPowerMode() {
         if !ProcessInfo.processInfo.isLowPowerModeEnabled {
             Task(priority: .utility) { @UploadManagerActor in
-                UploadVars.shared.didResumeUploads = false
-                await UploadManager.shared.resumeInForeground()
+                if #available(iOS 26.0, *) {
+                    UploadManager.shared.runContinuedUploadTask()
+                }
+                else {
+                    UploadVars.shared.didResumeUploads = false
+                    await UploadManager.shared.resumeInForeground()
+                }
             }
         }
     }
@@ -655,7 +660,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Resume upload operations in background queue
         // and update badge, upload button of album navigator
         Task(priority: .utility) { @UploadManagerActor in
-            await UploadManager.shared.resumeInForeground()
+            if #available(iOS 26.0, *) {
+                UploadManager.shared.runContinuedUploadTask()
+            }
+            else {
+                await UploadManager.shared.resumeInForeground()
+            }
         }
         
         // Observe the PiwigoAddRecentAlbumNotification
