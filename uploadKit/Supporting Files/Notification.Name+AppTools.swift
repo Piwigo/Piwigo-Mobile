@@ -19,8 +19,8 @@ public extension Notification.Name {
     
     
     // MARK: - Uploads
-    /// - Update left number of upload requests
-    static let pwgLeftUploads = Notification.Name("pwgNotificationLeftUploads")
+    /// - Update number of upload requests to complete
+    static let pwgUpdateNberOfUploadsToComplete = Notification.Name("pwgNotificationLeftUploads")
     
     /// - Update progress bars of upload requests
     static let pwgUploadProgress = Notification.Name("pwgNotificationUploadProgress")

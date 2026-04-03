@@ -40,11 +40,11 @@ extension UploadManager {
         uploadData.requestState = .finished
         try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
         
-        // Get number of uploads to complete
-        let nberOfUploadsToComplete = UploadProvider().getCountOfPendingUploads(inContext: self.uploadBckgContext)
+        // Update number of uploads to complete, badge and default album view button
+        self.updateNberOfUploadsToComplete()
         
         // No more image to transfer?
-        if nberOfUploadsToComplete == 0 {
+        if UploadVars.shared.nberOfUploadsToComplete == 0 {
             // Moderate uploaded images if needed
             try? await moderateUploadedImagesIfNeeded()
             
@@ -53,14 +53,7 @@ extension UploadManager {
                 suggestToDeleteUploadedImages(withPendingUploads: 0)
             }
         }
-        
-        // Store number, update badge and default album view button
-        DispatchQueue.main.async {
-            // Update app badge and button of root album (or default album)
-            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : nberOfUploadsToComplete]
-            NotificationCenter.default.post(name: .pwgLeftUploads, object: nil, userInfo: uploadInfo)
-        }
-        
+                
         // Job done if called by background task
         if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive { return }
         

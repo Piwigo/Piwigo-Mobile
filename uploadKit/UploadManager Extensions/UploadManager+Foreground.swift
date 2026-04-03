@@ -50,12 +50,7 @@ extension UploadManager
         let (_,_) = await clearFailedUploads(except: activeUploadsURIstr)
         
         // Store number, update badge and default album view button
-        let nberOfPendingUploads = UploadProvider().getCountOfPendingUploads(inContext: self.uploadBckgContext)
-        DispatchQueue.main.async {
-            // Update app badge and button of root album (or default album)
-            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : nberOfPendingUploads]
-            NotificationCenter.default.post(name: .pwgLeftUploads, object: nil, userInfo: uploadInfo)
-        }
+        self.updateNberOfUploadsToComplete()
         
         // Append transfers to complete
         let (uploadedUploadIDs, _) = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.uploaded], inContext: self.uploadBckgContext)
@@ -77,7 +72,7 @@ extension UploadManager
         
         // Propose to delete uploaded images of the photo Library once a day
         // or immediately if there is no pending upload request, if any
-        suggestToDeleteUploadedImages(withPendingUploads: nberOfPendingUploads)
+        suggestToDeleteUploadedImages(withPendingUploads: UploadVars.shared.nberOfUploadsToComplete)
         
         // Launch upload activities if needed
         await UploadManagerActor.shared.processNextUpload()

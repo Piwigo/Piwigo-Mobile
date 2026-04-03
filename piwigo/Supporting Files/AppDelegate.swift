@@ -97,7 +97,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Register left upload requests notifications updating the badge
         NotificationCenter.default.addObserver(self, selector: #selector(updateBadge),
-                                               name: Notification.Name.pwgLeftUploads, object: nil)
+                                               name: Notification.Name.pwgUpdateNberOfUploadsToComplete, object: nil)
         
         // Register auto-upload appender failures
         NotificationCenter.default.addObserver(self, selector: #selector(displayAutoUploadErrorAndResume),

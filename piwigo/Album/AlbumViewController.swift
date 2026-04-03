@@ -479,7 +479,7 @@ class AlbumViewController: UIViewController
         
         // Register upload queue changes for reporting inability to upload and updating upload queue button
         NotificationCenter.default.addObserver(self, selector: #selector(updateNberOfUploads(_:)),
-                                               name: Notification.Name.pwgLeftUploads, object: nil)
+                                               name: Notification.Name.pwgUpdateNberOfUploadsToComplete, object: nil)
         
         // Register upload progress if displaying default album
         if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {

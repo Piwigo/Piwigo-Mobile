@@ -50,12 +50,7 @@ public final class UploadManager {
         let uploadIDs = try await UploadProvider().importUploads(from: uploadRequest, inContext: uploadBckgContext)
         
         // Store number, update badge and default album view button (even in Low Power mode)
-        let nberOfPendingUploads = UploadProvider().getCountOfPendingUploads(inContext: self.uploadBckgContext)
-        DispatchQueue.main.async {
-            // Update app badge and button of root album (or default album)
-            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : nberOfPendingUploads]
-            NotificationCenter.default.post(name: .pwgLeftUploads, object: nil, userInfo: uploadInfo)
-        }
+        self.updateNberOfUploadsToComplete()
         
         return uploadIDs
     }
@@ -83,7 +78,7 @@ public final class UploadManager {
         DispatchQueue.main.async {
             // Update app badge and button of root album (or default album)
             let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : nberOfUploadsToComplete]
-            NotificationCenter.default.post(name: .pwgLeftUploads, object: nil, userInfo: uploadInfo)
+            NotificationCenter.default.post(name: .pwgUpdateNberOfUploadsToComplete, object: nil, userInfo: uploadInfo)
         }
     }
 }

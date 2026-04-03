@@ -67,7 +67,7 @@ extension AlbumViewController
                     // Show UploadQueue button if needed
                     let nberOfUploads = UploadVars.shared.nberOfUploadsToComplete
                     let userInfo = ["nberOfUploadsToComplete": nberOfUploads]
-                    NotificationCenter.default.post(name: .pwgLeftUploads,
+                    NotificationCenter.default.post(name: .pwgUpdateNberOfUploadsToComplete,
                                                     object: nil, userInfo: userInfo)
                 }
             }
