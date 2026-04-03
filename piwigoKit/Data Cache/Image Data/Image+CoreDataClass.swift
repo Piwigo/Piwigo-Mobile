@@ -349,7 +349,7 @@ public final nonisolated class Image: NSManagedObject, Identifiable {
     public func deleteCachedFiles() {
         // Delete cached image files in background queue
         let ID = String(self.pwgID)
-        let IDopt = ID + CacheVars.shared.optImage
+        let IDopt = ID + optimisedImageNameExtension
         guard let serverUUID = self.server?.uuid else { return }
         let fm = FileManager.default
         let cacheUrl = DataDirectories.cacheDirectory

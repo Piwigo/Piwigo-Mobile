@@ -90,7 +90,7 @@ extension Image {
                 }
                 
                 // Rotate optimised image if any
-                let filePath = fileURL.path + CacheVars.shared.optImage
+                let filePath = fileURL.path + optimisedImageNameExtension
                 if let image = UIImage(contentsOfFile: filePath),
                    let rotatedImage = image.rotated(by: -angle) {
                     rotatedImage.saveInOptimumFormat(atPath: filePath)

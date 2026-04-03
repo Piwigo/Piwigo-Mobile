@@ -39,3 +39,6 @@ let acceptedTypes: String = {
     acceptedTypes += "text/plain, text/html"
     return acceptedTypes
 }()
+
+// Name extension of thumbnails optimised for the device
+public let optimisedImageNameExtension = "-opt"

@@ -42,7 +42,7 @@ struct ImageUtilities
     
     static func downsample(imageAt imageURL: URL, to pointSize: CGSize, for type: pwgImageType) -> UIImage {
         // Optimised image available?
-        let filePath = imageURL.path + CacheVars.shared.optImage
+        let filePath = imageURL.path + optimisedImageNameExtension
         if let optImage = UIImage(contentsOfFile: filePath) {
             // Images created since commit 18e4273 can be too small (v3.2.2) — fixed in v3.2.3.
             let fileURL: URL?
