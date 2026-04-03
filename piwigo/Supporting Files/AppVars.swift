@@ -108,9 +108,6 @@ final class AppVars: @unchecked Sendable {
     
     /// - Remember the latest recursive album data fetch
     var dateOfLatestRecursiveAlbumDataFetch = Date.distantPast
-        
-    /// - To prevent Core Data usage until the database migration is finished.
-    var isMigrationRunning: Bool = false
     
     /// - To remember the natural scale associated with the integrated screen for future initialisations
     var currentDeviceScale = CGFloat.zero

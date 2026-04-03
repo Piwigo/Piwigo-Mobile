@@ -55,6 +55,6 @@ public class CacheVars: @unchecked Sendable {
     
     // MARK: - Vars in Memory
     // Variables kept in memory
-    /// Name extension of thumbnails optimised for the device
-    public let optImage = "-opt"
+    /// To prevent Core Data usage until the database migration is finished.
+    public var isMigrationRunning: Bool = false
 }
