@@ -72,12 +72,12 @@ public final class UploadManager {
     /// Number of pending upload requests
     public func updateNberOfUploadsToComplete() {
         // Get number of uploads to complete
-        let nberOfUploadsToComplete = UploadProvider().getCountOfPendingUploads(inContext: self.uploadBckgContext)
+        UploadVars.shared.nberOfUploadsToComplete = UploadProvider().getCountOfPendingUploads(inContext: self.uploadBckgContext)
         
         // Store number, update badge and default album view button
         DispatchQueue.main.async {
             // Update app badge and button of root album (or default album)
-            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : nberOfUploadsToComplete]
+            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : UploadVars.shared.nberOfUploadsToComplete]
             NotificationCenter.default.post(name: .pwgUpdateNberOfUploadsToComplete, object: nil, userInfo: uploadInfo)
         }
     }

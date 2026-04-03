@@ -339,10 +339,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Verify user info
         guard let nberOfUploads = notification.userInfo?["nberOfUploadsToComplete"] as? Int
         else { preconditionFailure("!!! Expected an integer !!!") }
-        
-        // Store number of upload requests for next app launch
-        UploadVars.shared.nberOfUploadsToComplete = nberOfUploads
-        
+                
         // Update the badge of the app
         if #available(iOS 16, *) {
             UNUserNotificationCenter.current().setBadgeCount(nberOfUploads)
