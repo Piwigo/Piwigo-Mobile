@@ -181,7 +181,11 @@ extension UploadManager
         
         // Check that there are images to transfer
         guard UploadVars.shared.nberOfUploadsToComplete != 0
-        else { return }
+        else {
+            UploadVars.shared.isContinuedProcessingTaskActive = false
+            task.setTaskCompleted(success: false)
+            return
+        }
         
         // Task expiration management
         var wasExpired = false
