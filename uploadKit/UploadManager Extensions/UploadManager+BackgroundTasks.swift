@@ -200,8 +200,9 @@ extension UploadManager
             
             // Launch transfers
             for uploadID in toTransfer {
-                // Check if the task was cancelled
-                if wasExpired {
+                // Check if the task expired or should be stopped
+                if wasExpired || ProcessInfo.processInfo.isLowPowerModeEnabled ||
+                    (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
                     UploadVars.shared.isContinuedProcessingTaskActive = false
                     task.setTaskCompleted(success: false)
                     return
@@ -215,8 +216,9 @@ extension UploadManager
             
             // Prepare uploads
             for uploadID in toPrepare {
-                // Check if the task was canceled
-                if wasExpired {
+                // Check if the task expired or should be stopped
+                if wasExpired || ProcessInfo.processInfo.isLowPowerModeEnabled ||
+                    (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
                     UploadVars.shared.isContinuedProcessingTaskActive = false
                     task.setTaskCompleted(success: false)
                     return
