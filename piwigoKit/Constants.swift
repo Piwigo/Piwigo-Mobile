@@ -10,7 +10,9 @@ import Foundation
 import Photos
 
 // Bundle name
-public let piwigoKit = Bundle.allFrameworks.first(where: { ($0.bundleIdentifier ?? "").contains("piwigoKit")})
+public extension Bundle {
+    static let piwigoKit = Bundle.allFrameworks.first(where: { ($0.bundleIdentifier ?? "").contains("piwigoKit")})
+}
 
 // Disconnects and asks to update the Piwigo server if version is lower than:
 public let pwgMinVersion = "12.0.0"

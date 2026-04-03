@@ -256,8 +256,8 @@ extension TagSelectorViewController: UITableViewDelegate
         let nberOfTags = (tags.fetchedObjects ?? []).count
         let nberAsStr = numberFormatter.string(from: NSNumber(value: nberOfTags)) ?? "0"
         let footer = nberOfTags > 1 ?
-        String(format: String(localized: "severalTagsCount", bundle: piwigoKit, comment: "%@ tags"), nberAsStr) :
-        String(format: String(localized: "singleTagCount", bundle: piwigoKit, comment: "%@ tag"), nberAsStr)
+        String(format: String(localized: "severalTagsCount", bundle: .piwigoKit, comment: "%@ tags"), nberAsStr) :
+        String(format: String(localized: "singleTagCount", bundle: .piwigoKit, comment: "%@ tag"), nberAsStr)
         return footer
     }
     

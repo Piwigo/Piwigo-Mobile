@@ -30,7 +30,7 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController {
         super.viewDidLoad()
         
         // Title
-        title = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
+        title = String(localized: "tabBar_albums", bundle: .piwigoKit, comment: "Albums")
 
         // Table view
         tableView?.accessibilityIdentifier = "Album Thumbnail Size"

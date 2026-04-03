@@ -17,8 +17,8 @@ extension DataMigrationError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .timeout:
-            return String(localized: "CoreData_MigrationError_timeout", bundle: piwigoKit,
-                                     comment: "The app was suspended while migrating the store. Please restart the app and try again.")
+            return String(localized: "CoreData_MigrationError_timeout", bundle: .piwigoKit,
+                          comment: "The app was suspended while migrating the store. Please restart the app and try again.")
         }
     }
 }

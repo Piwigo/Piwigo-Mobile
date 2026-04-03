@@ -139,7 +139,7 @@ public struct CategoryData: Decodable, Sendable
     }
     
     public init(withId albumId: Int32,
-                albumName: String = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums"),
+                albumName: String = String(localized: "tabBar_albums", bundle: .piwigoKit, comment: "Albums"),
                 albumComment: String = "", albumRank: String = "",
                 parentId: String = "\(Int32.min)", parentIds: String = "",
                 nberImages: Int64 = Int64.zero, totalNberImages: Int64 = Int64.min) {

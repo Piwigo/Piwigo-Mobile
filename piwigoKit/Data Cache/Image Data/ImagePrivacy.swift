@@ -23,19 +23,19 @@ extension pwgPrivacy {
     public var name: String {
         switch self {
         case .everybody:
-            return String(localized: "privacyLevel_everybody", bundle: piwigoKit,
+            return String(localized: "privacyLevel_everybody", bundle: .piwigoKit,
                           comment: "Everybody")
         case .adminsFamilyFriendsContacts:
-            return String(localized: "privacyLevel_adminsFamilyFriendsContacts", bundle: piwigoKit,
+            return String(localized: "privacyLevel_adminsFamilyFriendsContacts", bundle: .piwigoKit,
                           comment: "Admins, Family, Friends, Contacts")
         case .adminsFamilyFriends:
-            return String(localized: "privacyLevel_adminsFamilyFriends", bundle: piwigoKit,
+            return String(localized: "privacyLevel_adminsFamilyFriends", bundle: .piwigoKit,
                           comment: "Admins, Family, Friends")
         case .adminsFamily:
-            return String(localized: "privacyLevel_adminFamily", bundle: piwigoKit,
+            return String(localized: "privacyLevel_adminFamily", bundle: .piwigoKit,
                           comment: "Admins, Family")
         case .admins:
-            return String(localized: "privacyLevel_admin", bundle: piwigoKit,
+            return String(localized: "privacyLevel_admin", bundle: .piwigoKit,
                           comment: "Admins")
         default:
             return ""

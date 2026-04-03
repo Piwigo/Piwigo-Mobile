@@ -270,13 +270,13 @@ extension SectionKeys {
     public var name: String {
         switch self {
         case .Section1:
-            return String(localized: "uploadSection_impossible", bundle: piwigoKit,
+            return String(localized: "uploadSection_impossible", bundle: .piwigoKit,
                           comment: "Impossible Uploads")
         case .Section2:
-            return String(localized: "uploadSection_resumable", bundle: piwigoKit,
+            return String(localized: "uploadSection_resumable", bundle: .piwigoKit,
                           comment: "Resumable Uploads")
         case .Section3:
-            return String(localized: "uploadSection_queue", bundle: piwigoKit,
+            return String(localized: "uploadSection_queue", bundle: .piwigoKit,
                           comment: "Upload Queue")
         case .Section4:
             return "—?—"
@@ -315,32 +315,32 @@ extension pwgUploadState {
     public var stateInfo: String {
         switch self {
         case .waiting:
-            return String(localized: "imageUploadTableCell_waiting", bundle: piwigoKit, comment: "Waiting...")
+            return String(localized: "imageUploadTableCell_waiting", bundle: .piwigoKit, comment: "Waiting...")
         case .preparing:
-            return String(localized: "imageUploadTableCell_preparing", bundle: piwigoKit, comment: "Preparing...")
+            return String(localized: "imageUploadTableCell_preparing", bundle: .piwigoKit, comment: "Preparing...")
         case .preparingError, .preparingFail:
-            return String(localized: "imageUploadTableCell_preparing", bundle: piwigoKit, comment: "Preparing...") + " " +
-                   String(localized: "errorHUD_label", bundle: piwigoKit, comment: "Error")
+            return String(localized: "imageUploadTableCell_preparing", bundle: .piwigoKit, comment: "Preparing...") + " " +
+            String(localized: "errorHUD_label", bundle: .piwigoKit, comment: "Error")
         case .prepared:
-            return String(localized: "imageUploadTableCell_prepared", bundle: piwigoKit, comment: "Ready for upload...")
+            return String(localized: "imageUploadTableCell_prepared", bundle: .piwigoKit, comment: "Ready for upload...")
         case .formatError:
-            return String(localized: "imageUploadError_format", bundle: piwigoKit, comment: "File format not accepted by Piwigo server.")
+            return String(localized: "imageUploadError_format", bundle: .piwigoKit, comment: "File format not accepted by Piwigo server.")
 
         case .uploading:
-            return String(localized: "imageUploadTableCell_uploading", bundle: piwigoKit, comment: "Uploading...")
+            return String(localized: "imageUploadTableCell_uploading", bundle: .piwigoKit, comment: "Uploading...")
         case .uploadingError, .uploadingFail:
-            return String(localized: "imageUploadTableCell_uploading", bundle: piwigoKit, comment: "Uploading...") + " " +
-                   String(localized: "errorHUD_label", bundle: piwigoKit, comment: "Error")
+            return String(localized: "imageUploadTableCell_uploading", bundle: .piwigoKit, comment: "Uploading...") + " " +
+            String(localized: "errorHUD_label", bundle: .piwigoKit, comment: "Error")
         case .uploaded:
-            return String(localized: "imageUploadTableCell_uploaded", bundle: piwigoKit, comment: "Uploaded")
+            return String(localized: "imageUploadTableCell_uploaded", bundle: .piwigoKit, comment: "Uploaded")
 
         case .finishing:
-            return String(localized: "imageUploadTableCell_finishing", bundle: piwigoKit, comment: "Finishing...")
+            return String(localized: "imageUploadTableCell_finishing", bundle: .piwigoKit, comment: "Finishing...")
         case .finishingError, .finishingFail:
-            return String(localized: "imageUploadTableCell_finishing", bundle: piwigoKit, comment: "Finishing...") + " " +
-                   String(localized: "errorHUD_label", bundle: piwigoKit, comment: "Error")
+            return String(localized: "imageUploadTableCell_finishing", bundle: .piwigoKit, comment: "Finishing...") + " " +
+            String(localized: "errorHUD_label", bundle: .piwigoKit, comment: "Error")
         case .finished, .moderated:
-            return String(localized: "imageUploadProgressBar_completed", bundle: piwigoKit, comment: "Completed")
+            return String(localized: "imageUploadProgressBar_completed", bundle: .piwigoKit, comment: "Completed")
         }
     }
     
