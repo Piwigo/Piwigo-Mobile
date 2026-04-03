@@ -192,7 +192,7 @@ class LocalAlbumsViewController: UIViewController {
         if self.localAlbumsProvider.didFetchAssetCollections == false {
             self.navigationController?.showHUD(
                 withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                detail: String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums"), minWidth: 200)
+                detail: String(localized: "tabBar_albums", bundle: .piwigoKit, comment: "Albums"), minWidth: 200)
         }
         
         // Fetch local albums in background thread
