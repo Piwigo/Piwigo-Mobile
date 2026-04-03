@@ -210,7 +210,7 @@ public class UploadVars: NSObject, @unchecked Sendable {
     @UserDefault("dateOfLastPhotoLibraryDeletion", defaultValue: Date.distantPast.timeIntervalSinceReferenceDate, userDefaults: UserDefaults.dataSuite)
     public var dateOfLastPhotoLibraryDeletion: TimeInterval
     
-    /// - Maximum number of uploads that can be prepared
+    /// - Maximum number of uploads that can be prepared in advanced
     @UserDefault("maxNberOfPreparedUploads", defaultValue: 5, userDefaults: UserDefaults.dataSuite)
     public var maxNberOfPreparedUploads: Int16
     
