@@ -123,9 +123,18 @@ extension PasteboardImagesViewController: UploadSwitchDelegate
                     let title = PwgKitError.uploadCreationError.localizedDescription
                     self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {
                         // Resume upload operations in background queue
+                        UploadVars.shared.isPaused = false
                         Task(priority: .utility) { @UploadManagerActor in
-                            UploadVars.shared.isPaused = false
-                            await UploadManagerActor.shared.processNextUpload()
+                            if #available(iOS 26.0, *) {
+                                // Launch new continued upload task if possible
+                                if UploadVars.shared.isContinuedProcessingTaskActive == false {
+                                    UploadManager.shared.runContinuedUploadTask()
+                                }
+                            }
+                            else {
+                                // Process next uploads if possible
+                                await UploadManagerActor.shared.processNextUpload()
+                            }
                         }
                     }
                 }

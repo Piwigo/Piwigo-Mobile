@@ -271,9 +271,20 @@ class LocalImagesViewController: UIViewController
         UIApplication.shared.isIdleTimerDisabled = false
         
         // Resume upload operations in background queue
-        Task(priority: .utility) { @UploadManagerActor in
+        if UploadVars.shared.isPaused {
             UploadVars.shared.isPaused = false
-            await UploadManagerActor.shared.processNextUpload()
+            Task(priority: .utility) { @UploadManagerActor in
+                if #available(iOS 26.0, *) {
+                    // Launch new continued upload task if possible
+                    if UploadVars.shared.isContinuedProcessingTaskActive == false {
+                        UploadManager.shared.runContinuedUploadTask()
+                    }
+                }
+                else {
+                    // Process next uploads if possible
+                    await UploadManagerActor.shared.processNextUpload()
+                }
+            }
         }
     }
     

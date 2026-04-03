@@ -239,12 +239,6 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
 
         // Allow device to sleep
         UIApplication.shared.isIdleTimerDisabled = false
-
-        // Resume upload operations in background queue
-        Task(priority: .utility) { @UploadManagerActor in
-            UploadVars.shared.isPaused = false
-            await UploadManagerActor.shared.processNextUpload()
-        }
     }
 
     deinit {

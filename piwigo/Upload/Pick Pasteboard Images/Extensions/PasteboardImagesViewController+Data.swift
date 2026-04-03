@@ -126,12 +126,6 @@ extension PasteboardImagesViewController {
                         header.selectButton.setTitle(forState: self.sectionState)
                     }
                 }
-                
-                // Resume upload operations in background queue
-                Task(priority: .utility) { @UploadManagerActor in
-                    UploadVars.shared.isPaused = false
-                    await UploadManagerActor.shared.processNextUpload()
-                }
             }
         }
         
