@@ -23,5 +23,7 @@ public extension Notification.Name {
     // MARK: - Uploads
     /// - Notifies that auto-uploading should be disabled
     static let pwgDisableAutoUpload = Notification.Name("pwgNotificationDisableAutoUpload")
+    
+    /// - Allows a backgoround task to stop the netwok monitoring
+    static let pwgStopNetworkMonitoring = Notification.Name("pwgStopNetworkMonitoring")
 }
-

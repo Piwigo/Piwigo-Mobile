@@ -12,7 +12,6 @@
 		AD02D2F42E9A446D0073335F /* EditImageTimePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD02D2F32E9A446D0073335F /* EditImageTimePickerTableViewCell.swift */; };
 		AD02D2F62E9A665A0073335F /* EditImageParamsViewController+TimePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD02D2F52E9A665A0073335F /* EditImageParamsViewController+TimePicker.swift */; };
 		AD02D2FB2E9AAB190073335F /* EditImageDatePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD07CABF26DBF13700BEAEFB /* EditImageDatePickerTableViewCell.swift */; };
-		AD05F3E02E4CD5B700217E75 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD05F3DF2E4CD5B700217E75 /* NetworkMonitor.swift */; };
 		AD06B6E12BEBBCFA00C5F078 /* AlbumViewController+Prefetching.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD06B6E02BEBBCFA00C5F078 /* AlbumViewController+Prefetching.swift */; };
 		AD06B6E32BEBD6CD00C5F078 /* PwgSessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD06B6E22BEBD6CD00C5F078 /* PwgSessionDelegate.swift */; };
 		AD06B6E52BEBD71600C5F078 /* PwgSessionDelegate+Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD06B6E42BEBD71600C5F078 /* PwgSessionDelegate+Data.swift */; };
@@ -169,7 +168,7 @@
 		AD2C624E2A4898A200671582 /* ImageMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD3DD5825A9D53C00FD377F /* ImageMetadata.swift */; };
 		AD2C624F2A4898A200671582 /* UploadManager+TransferOrCopy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6AD2268A21AD007DEE70 /* UploadManager+TransferOrCopy.swift */; };
 		AD2C62502A4898A200671582 /* UploadManager+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6AC8268A2166007DEE70 /* UploadManager+Utilities.swift */; };
-		AD2C62512A4898A200671582 /* UploadManager+Resume.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF351D229A422AC009B7CAA /* UploadManager+Resume.swift */; };
+		AD2C62512A4898A200671582 /* UploadManager+Foreground.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF351D229A422AC009B7CAA /* UploadManager+Foreground.swift */; };
 		AD2C62522A4898A200671582 /* UploadManager+PrepareVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6AD0268A21A4007DEE70 /* UploadManager+PrepareVideo.swift */; };
 		AD2C62532A4898A200671582 /* UploadManager+PrepareImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6ACE268A219B007DEE70 /* UploadManager+PrepareImage.swift */; };
 		AD2C62542A4898A200671582 /* VideoMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2FEA5725AFA1470072596A /* VideoMetadata.swift */; };
@@ -216,6 +215,8 @@
 		AD3369BF23F035F700F3FA80 /* TagSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3369BC23F035F700F3FA80 /* TagSelectorViewController.swift */; };
 		AD336BA32F523D290047424E /* UploadManagerActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B302C2F144CBA0083A5CC /* UploadManagerActor.swift */; };
 		AD33B51428EE182A00CC5A03 /* ImageSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD33B51328EE182A00CC5A03 /* ImageSize.swift */; };
+		AD341D732F7EC9AF00F96F56 /* UploadManager+BackgroundTasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD341D722F7EC9AF00F96F56 /* UploadManager+BackgroundTasks.swift */; };
+		AD341D752F7ED1DF00F96F56 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD05F3DF2E4CD5B700217E75 /* NetworkMonitor.swift */; };
 		AD35A16B2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD35A16A2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift */; };
 		AD35C2112849CB8300FCBDD1 /* pwg.categories.add.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD35C2102849CB8300FCBDD1 /* pwg.categories.add.swift */; };
 		AD35C2142849CD8700FCBDD1 /* pwg.categories.add.json in Resources */ = {isa = PBXBuildFile; fileRef = AD35C2122849CCA100FCBDD1 /* pwg.categories.add.json */; };
@@ -988,6 +989,7 @@
 		AD3369BC23F035F700F3FA80 /* TagSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagSelectorViewController.swift; sourceTree = "<group>"; };
 		AD3369BE23F035F700F3FA80 /* TagSelectorViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TagSelectorViewController.storyboard; sourceTree = "<group>"; };
 		AD33B51328EE182A00CC5A03 /* ImageSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSize.swift; sourceTree = "<group>"; };
+		AD341D722F7EC9AF00F96F56 /* UploadManager+BackgroundTasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadManager+BackgroundTasks.swift"; sourceTree = "<group>"; };
 		AD35A16A2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint+CommonConstraints.swift"; sourceTree = "<group>"; };
 		AD35C2102849CB8300FCBDD1 /* pwg.categories.add.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = pwg.categories.add.swift; path = "piwigoKit/Network/JSONManager Extensions/pwg/pwg.categories/pwg.categories.add.swift"; sourceTree = SOURCE_ROOT; };
 		AD35C2122849CCA100FCBDD1 /* pwg.categories.add.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = pwg.categories.add.json; path = "Supporting Targets/piwigoWebAPI/pwg/pwg.categories/pwg.categories.add.json"; sourceTree = SOURCE_ROOT; };
@@ -1473,7 +1475,7 @@
 		ADF29DAB2BC9B9950012FF66 /* AlbumViewController+Upload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumViewController+Upload.swift"; sourceTree = "<group>"; };
 		ADF29DBD2BCD848B0012FF66 /* AlbumViewController+TransitioningDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumViewController+TransitioningDelegate.swift"; sourceTree = "<group>"; };
 		ADF29DC42BCD96AC0012FF66 /* AlbumViewController+Fetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumViewController+Fetch.swift"; sourceTree = "<group>"; };
-		ADF351D229A422AC009B7CAA /* UploadManager+Resume.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadManager+Resume.swift"; sourceTree = "<group>"; };
+		ADF351D229A422AC009B7CAA /* UploadManager+Foreground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadManager+Foreground.swift"; sourceTree = "<group>"; };
 		ADF35E7428B2392B009F3ECE /* DataModel 0A (+Server).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 0A (+Server).xcdatamodel"; sourceTree = "<group>"; };
 		ADF35E7728B283A8009F3ECE /* Server+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Server+CoreDataClass.swift"; sourceTree = "<group>"; };
 		ADF35E7828B283A8009F3ECE /* Server+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Server+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -2329,7 +2331,8 @@
 		AD7F1C142B667BAF008E100E /* UploadManager Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				ADF351D229A422AC009B7CAA /* UploadManager+Resume.swift */,
+				ADF351D229A422AC009B7CAA /* UploadManager+Foreground.swift */,
+				AD341D722F7EC9AF00F96F56 /* UploadManager+BackgroundTasks.swift */,
 				AD958B9429A7DC900022AE23 /* UploadManager+Prepare.swift */,
 				AD0B6ACE268A219B007DEE70 /* UploadManager+PrepareImage.swift */,
 				AD0B6AD0268A21A4007DEE70 /* UploadManager+PrepareVideo.swift */,
@@ -3811,7 +3814,6 @@
 				ADC0B91D2D85C6D3002436FE /* DataMigrationError.swift in Sources */,
 				AD2913E926696A9500403026 /* NetworkVars.swift in Sources */,
 				AD7D13242DFDE51C00EEE90D /* MappingModel_0I_to_0J.xcmappingmodel in Sources */,
-				AD05F3E02E4CD5B700217E75 /* NetworkMonitor.swift in Sources */,
 				AD7D13082DFDB42E00EEE90D /* pwg.groups.getList.swift in Sources */,
 				AD5FB3852D94A82B00802895 /* JSONManager+Users.swift in Sources */,
 				AD5CB9172D84941F00A0D2B2 /* NSEntityMigrationPolicy+AppTools.swift in Sources */,
@@ -3825,6 +3827,7 @@
 				ADB274732676480D0002DD09 /* PwgKitError.swift in Sources */,
 				AD865772284CF67E00C06EF4 /* community.categories.getList.swift in Sources */,
 				ADF72E9A2670D7340027E2CC /* community.images.uploadCompleted.swift in Sources */,
+				AD341D752F7ED1DF00F96F56 /* NetworkMonitor.swift in Sources */,
 				AD211A9327C15827005D5E4F /* community.session.getStatus.swift in Sources */,
 				AD211A7F27BADEA5005D5E4F /* reflection.getMethodList.swift in Sources */,
 				ADB007EE2D7DF64E004A84A7 /* LocationToLocationMigrationPolicy_Copy.swift in Sources */,
@@ -3938,7 +3941,7 @@
 				AD2C62532A4898A200671582 /* UploadManager+PrepareImage.swift in Sources */,
 				AD2C62552A4898A200671582 /* UploadManager+Prepare.swift in Sources */,
 				AD7E064F2EFBE1C5003F8A61 /* UploadSessionsDelegate+Task.swift in Sources */,
-				AD2C62512A4898A200671582 /* UploadManager+Resume.swift in Sources */,
+				AD2C62512A4898A200671582 /* UploadManager+Foreground.swift in Sources */,
 				AD2C624F2A4898A200671582 /* UploadManager+TransferOrCopy.swift in Sources */,
 				AD2C62502A4898A200671582 /* UploadManager+Utilities.swift in Sources */,
 				AD2C62522A4898A200671582 /* UploadManager+PrepareVideo.swift in Sources */,
@@ -3948,6 +3951,7 @@
 				AD336BA32F523D290047424E /* UploadManagerActor.swift in Sources */,
 				AD7E06652F032DD1003F8A61 /* UploadManager+TransferInBackground.swift in Sources */,
 				AD2C62542A4898A200671582 /* VideoMetadata.swift in Sources */,
+				AD341D732F7EC9AF00F96F56 /* UploadManager+BackgroundTasks.swift in Sources */,
 				ADC0A1462E55FD5D001E62F5 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -14,15 +14,14 @@ import piwigoKit
 extension UploadManager {
     
     // MARK: - Transfer or Copy Image/Video
-    public func transferOrCopyFileOfUpload(withID uploadID: NSManagedObjectID,
-                                           forTask task: BGTask? = nil) async {
+    public func transferOrCopyFileOfUpload(withID uploadID: NSManagedObjectID) async {
         
         // Retrieve upload request properties
         guard var uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID, inContext: self.uploadBckgContext)
         else {
             UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Could not retrieve upload request for transfer/copy!")
             // Job done if called by background task
-            if task is BGProcessingTask { return }
+            if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive { return }
             // Process next upload if any
             await UploadManagerActor.shared.processNextUpload()
             return
@@ -38,7 +37,7 @@ extension UploadManager {
         else {
             UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Upload in wrong state '\(uploadData.stateLabel)' before transfer/copy")
             // Job done if called by background task
-            if task is BGProcessingTask { return }
+            if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive { return }
             // Process next upload if any
             await UploadManagerActor.shared.processNextUpload()
             return
@@ -100,7 +99,7 @@ extension UploadManager {
         }
 
         // Job done if called by background task
-        if task is BGProcessingTask { return }
+        if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive { return }
 
         // Process next upload if any
         await UploadManagerActor.shared.processNextUpload()

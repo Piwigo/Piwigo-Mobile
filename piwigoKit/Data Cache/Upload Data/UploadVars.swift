@@ -29,11 +29,11 @@ public class UploadVars: NSObject, @unchecked Sendable {
     public let maxChunkSize: Int = 5000                         // i.e. 5_000 kB
     public let maxNberOfUploadsPerBckgTask = 100                // i.e. up to 100 requests per bckg task
     public var isPaused = false                                 // Flag used to pause uploads when
-                                                                // - sorting local device images
-                                                                // - adding upload requests
-                                                                // - modifying auto-upload settings
-                                                                // - cancelling upload tasks
-                                                                // - the app is about to become inactive
+    // - sorting local device images
+    // - adding upload requests
+    // - modifying auto-upload settings
+    // - cancelling upload tasks
+    // - the app is about to become inactive
     
     // Remove deprecated stored objects if needed
     override init() {
@@ -226,5 +226,11 @@ public class UploadVars: NSObject, @unchecked Sendable {
     // MARK: - Vars in Memory
     // Variables kept in memory
     /// Remembers that upload activities were resumed at launch
-    public var didResumeAll = false
+    public var didResumeUploads = false
+    
+    /// Remembers that the upload processing task is active or not
+    public var isProcessingTaskActive = false
+    
+    /// Remembers that the upload continued processing task is active or not
+    public var isContinuedProcessingTaskActive = false
 }

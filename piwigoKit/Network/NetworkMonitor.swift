@@ -26,6 +26,14 @@ public final class NetworkMonitor {
         
     public init() {
         startMonitoring()
+
+        // Register network monitoring stopper
+        NotificationCenter.default.addObserver(forName: Notification.Name.pwgStopNetworkMonitoring, object: nil, queue: nil) { [weak self] _ in
+            Task { @NetworkMonitoring in
+                self?.stopMonitoring()
+                debugPrint("••> Network monitoring stopped.")
+            }
+        }
     }
     
     public func startMonitoring() {

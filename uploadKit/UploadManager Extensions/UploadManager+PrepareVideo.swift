@@ -162,8 +162,7 @@ extension UploadManager {
 //    }
     
     func prepareVideo(ofAsset imageAsset: PHAsset, atURL outputURL: URL,
-                      for uploadProperties: UploadProperties, withID uploadID: NSManagedObjectID,
-                      forTask task: BGTask? = nil)
+                      for uploadProperties: UploadProperties, withID uploadID: NSManagedObjectID)
     {
         UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Prepare video \(uploadProperties.fileName) from Asset")
 
@@ -177,7 +176,7 @@ extension UploadManager {
                     var uploadData = uploadProperties
                     uploadData.requestState = .preparingError
                     uploadData.requestError = error.localizedDescription
-                    await self.didPrepareVideo(using: uploadData, withID: uploadID, forTask: task)
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
                 }
                 return
             }
@@ -188,7 +187,7 @@ extension UploadManager {
                     var uploadData = uploadProperties
                     uploadData.requestState = .preparingError
                     uploadData.requestError = PwgKitError.missingAsset.localizedDescription
-                    await self.didPrepareVideo(using: uploadData, withID: uploadID, forTask: task)
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
                 }
                 return
             }
@@ -199,7 +198,7 @@ extension UploadManager {
                     var uploadData = uploadProperties
                     uploadData.requestState = .preparingError
                     uploadData.requestError = PwgKitError.missingAsset.localizedDescription
-                    await self.didPrepareVideo(using: uploadData, withID: uploadID, forTask: task)
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
                 }
                 return
             }
@@ -231,7 +230,7 @@ extension UploadManager {
                         
                         // Job done
                         uploadData.requestState = .prepared
-                        await self.didPrepareVideo(using: uploadData, withID: uploadID, forTask: task)
+                        await self.didPrepareVideo(using: uploadData, withID: uploadID)
                         return
                     }
                     catch let error as PwgKitError {
@@ -239,7 +238,7 @@ extension UploadManager {
                             var uploadData = uploadProperties
                             uploadData.requestState = .preparingError
                             uploadData.requestError = error.localizedDescription
-                            await self.didPrepareVideo(using: uploadData, withID: uploadID, forTask: task)
+                            await self.didPrepareVideo(using: uploadData, withID: uploadID)
                         }
                         return
                     }
@@ -248,7 +247,7 @@ extension UploadManager {
                             var uploadData = uploadProperties
                             uploadData.requestState = .preparingError
                             uploadData.requestError = PwgKitError.otherError(innerError: error).localizedDescription
-                            await self.didPrepareVideo(using: uploadData, withID: uploadID, forTask: task)
+                            await self.didPrepareVideo(using: uploadData, withID: uploadID)
                         }
                         return
                     }
@@ -330,8 +329,7 @@ extension UploadManager {
 //    }
 
     func convertVideo(ofAsset imageAsset: PHAsset, atURL outputURL: URL,
-                      for uploadProperties: UploadProperties, withID uploadID: NSManagedObjectID,
-                      forTask task: BGTask? = nil) -> Void
+                      for uploadProperties: UploadProperties, withID uploadID: NSManagedObjectID) -> Void
     {
         UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Convert video \(uploadProperties.fileName) from Asset")
 
@@ -345,7 +343,7 @@ extension UploadManager {
                     var uploadData = uploadProperties
                     uploadData.requestState = .preparingError
                     uploadData.requestError = error.localizedDescription
-                    await self.didPrepareVideo(using: uploadData, withID: uploadID, forTask: task)
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
                 }
                 return
             }
@@ -356,7 +354,7 @@ extension UploadManager {
                     var uploadData = uploadProperties
                     uploadData.requestState = .preparingError
                     uploadData.requestError = PwgKitError.missingAsset.localizedDescription
-                    await self.didPrepareVideo(using: uploadData, withID: uploadID, forTask: task)
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
                 }
                 return
             }
@@ -367,7 +365,7 @@ extension UploadManager {
                     var uploadData = uploadProperties
                     uploadData.requestState = .preparingError
                     uploadData.requestError = PwgKitError.missingAsset.localizedDescription
-                    await self.didPrepareVideo(using: uploadData, withID: uploadID, forTask: task)
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
                 }
                 return
             }
@@ -394,7 +392,7 @@ extension UploadManager {
                     
                     // Job done
                     uploadData.requestState = .prepared
-                    await self.didPrepareVideo(using: uploadData, withID: uploadID, forTask: task)
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
                     return
                 }
                 catch let error as PwgKitError {
@@ -402,7 +400,7 @@ extension UploadManager {
                         var uploadData = uploadProperties
                         uploadData.requestState = .preparingError
                         uploadData.requestError = error.localizedDescription
-                        await self.didPrepareVideo(using: uploadData, withID: uploadID, forTask: task)
+                        await self.didPrepareVideo(using: uploadData, withID: uploadID)
                     }
                     return
                 }
@@ -411,7 +409,7 @@ extension UploadManager {
                         var uploadData = uploadProperties
                         uploadData.requestState = .preparingError
                         uploadData.requestError = PwgKitError.otherError(innerError: error).localizedDescription
-                        await self.didPrepareVideo(using: uploadData, withID: uploadID, forTask: task)
+                        await self.didPrepareVideo(using: uploadData, withID: uploadID)
                     }
                     return
                 }
@@ -419,8 +417,7 @@ extension UploadManager {
         }
     }
         
-    private func didPrepareVideo(using uploadData: UploadProperties, withID uploadID: NSManagedObjectID,
-                                 forTask task: BGTask? = nil) async
+    private func didPrepareVideo(using uploadData: UploadProperties, withID uploadID: NSManagedObjectID) async
     {
         UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Did prepare video from Asset")
 
@@ -428,8 +425,8 @@ extension UploadManager {
         try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
         
         // Launch transfer if called by background task
-        if task is BGProcessingTask {
-            await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID, forTask: task)
+        if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive {
+            await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID)
             return
         }
         

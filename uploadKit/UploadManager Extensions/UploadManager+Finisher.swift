@@ -15,15 +15,14 @@ import piwigoKit
 extension UploadManager {
     
     // MARK: - Tasks Executed after Uploading
-    func finishTransferOfUpload(withID uploadID: NSManagedObjectID,
-                                forTask task: BGTask? = nil) async {
+    func finishTransferOfUpload(withID uploadID: NSManagedObjectID) async {
         
         // Retrieve upload request properties
         guard var uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID, inContext: self.uploadBckgContext)
         else {
             UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Could not retrieve upload request for finsihing!")
             // Job done if called by background task
-            if task is BGProcessingTask { return }
+            if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive { return }
             // Process next upload if any
             await UploadManagerActor.shared.processNextUpload()
             return
@@ -50,7 +49,7 @@ extension UploadManager {
             try? await moderateUploadedImagesIfNeeded()
             
             // Suggest to delete uploaded images if needed
-            if task == nil {
+            if UploadVars.shared.isProcessingTaskActive == false && UploadVars.shared.isProcessingTaskActive == false {
                 suggestToDeleteUploadedImages(withPendingUploads: 0)
             }
         }
@@ -63,8 +62,8 @@ extension UploadManager {
         }
         
         // Job done if called by background task
-        if task is BGProcessingTask { return }
-
+        if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive { return }
+        
         // Process next upload if any
         await UploadManagerActor.shared.processNextUpload()
     }

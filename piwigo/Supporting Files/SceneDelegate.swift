@@ -215,7 +215,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let appDelegate = UIApplication.shared.delegate as? AppDelegate
             await appDelegate?.networkMonitor?.startMonitoring()
         }
-
+        
         // Flag used to prevent background tasks from running when the app is active
         AppVars.shared.applicationIsActive = true
         
@@ -361,7 +361,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         AppVars.shared.isAppUnlocked = !AppVars.shared.isAppLockActive
         
         // Remember to resume all upload activities at restart
-        UploadVars.shared.didResumeAll = false
+        UploadVars.shared.didResumeUploads = false
         
         // Should we pause upload activities in the foreground?
         if AppVars.shared.isMigrationRunning == false {
@@ -373,10 +373,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // Schedule background tasks after cancelling pending onces
         BGTaskScheduler.shared.cancelAllTaskRequests()
-        let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        appDelegate?.scheduleNextUpload()
+        Task(priority: .utility) { @UploadManagerActor in
+            UploadManager.shared.scheduleNextUpload()
+        }
         
         // Clean up /tmp directory
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
         appDelegate?.cleanUpTemporaryDirectory(immediately: false)
         
         // Flag used to prevent background tasks from running when the app is active
@@ -385,7 +387,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Reset list of albums being fetched
         AlbumVars.shared.isFetchingAlbumData = Set<Int32>()
 
-        // Stop network monitoring
+        // Stop network monitoring if possible
+        if UploadVars.shared.isContinuedProcessingTaskActive { return }
         Task { @MainActor in
             let appDelegate = UIApplication.shared.delegate as? AppDelegate
             await appDelegate?.networkMonitor?.stopMonitoring()
@@ -531,7 +534,7 @@ extension SceneDelegate: AppLockDelegate {
         // Resume upload operations in background queue
         // and update badge and upload button of album navigator
         Task(priority: .utility) { @UploadManagerActor in
-            await UploadManager.shared.resumeAll()
+            await UploadManager.shared.resumeInForeground()
         }
     }
 }

@@ -93,11 +93,20 @@ extension PasteboardImagesViewController: UploadSwitchDelegate
                 
                 // Add upload requests to queue
                 UploadVars.shared.isPaused = false
-                await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
+                if #available(iOS 26.0, *) {
+                    // Launch new continued upload task if possible
+                    if UploadVars.shared.isContinuedProcessingTaskActive == false {
+                        UploadManager.shared.runContinuedUploadTask()
+                    }
+                }
+                else {
+                    // Queue uploads to prepare
+                    await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
+                    
+                    // Process next uploads if possible
+                    await UploadManagerActor.shared.processNextUpload()
+                }
                 
-                // Process next uploads if possible
-                await UploadManagerActor.shared.processNextUpload()
-
                 // Deselect cells
                 await MainActor.run {
                     self.cancelSelect()

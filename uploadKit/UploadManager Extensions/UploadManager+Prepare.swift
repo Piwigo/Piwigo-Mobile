@@ -16,15 +16,14 @@ import piwigoKit
 extension UploadManager
 {
     // MARK: - Prepare Image/Video    
-    public func prepareUpload(withID uploadID: NSManagedObjectID,
-                              forTask task: BGTask? = nil) async -> Void {
+    public func prepareUpload(withID uploadID: NSManagedObjectID) async -> Void {
         
         // Retrieve upload request properties
         guard var uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID, inContext: self.uploadBckgContext)
         else {
             UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Could not retrieve upload request for preparation!")
             // Job done if called by background task
-            if task is BGProcessingTask { return }
+            if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive { return }
             // Process next upload if any
             await UploadManagerActor.shared.processNextUpload()
             return
@@ -35,7 +34,7 @@ extension UploadManager
         else {
             UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Upload in wrong state '\(uploadData.stateLabel)' before preparation")
             // Job done if called by background task
-            if task is BGProcessingTask { return }
+            if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive { return }
             // Process next upload if any
             await UploadManagerActor.shared.processNextUpload()
             return
@@ -75,7 +74,7 @@ extension UploadManager
             }
             else {
                 // Case of an image from the local Photo Library
-                if try await prepareAssetInPhotoLibrary(for: &uploadData, withID: uploadID, forTask: task) == false {
+                if try await prepareAssetInPhotoLibrary(for: &uploadData, withID: uploadID) == false {
                     // Return false for videos
                     return
                 }
@@ -86,8 +85,8 @@ extension UploadManager
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             
             // Launch transfer if called by background task
-            if task is BGProcessingTask {
-                await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID, forTask: task)
+            if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive {
+                await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID)
                 return
             }
             
@@ -114,7 +113,7 @@ extension UploadManager
         }
         
         // Job done if called by background task
-        if task is BGProcessingTask { return }
+        if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive { return }
 
         // Process next upload if any
         await UploadManagerActor.shared.processNextUpload()
@@ -312,7 +311,7 @@ extension UploadManager
             /// NB: Not possible to extract AVAsset with async/await methods as of iOS 26.2
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
-                prepareVideo(ofAsset: originalAsset, atURL: outputURL, for: uploadData, withID: uploadID, forTask: task)
+                prepareVideo(ofAsset: originalAsset, atURL: outputURL, for: uploadData, withID: uploadID)
                 return false
             }
             
@@ -320,7 +319,7 @@ extension UploadManager
             if NetworkVars.shared.serverFileTypes.contains("mp4"),
                acceptedMovieExtensions.contains(fileExt) {
                 // Try conversion to MP4
-                convertVideo(ofAsset: originalAsset, atURL: outputURL, for: uploadData, withID: uploadID, forTask: task)
+                convertVideo(ofAsset: originalAsset, atURL: outputURL, for: uploadData, withID: uploadID)
                 return false
             }
             
