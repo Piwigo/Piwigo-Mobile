@@ -108,10 +108,7 @@ final class AppVars: @unchecked Sendable {
     
     /// - Remember the latest recursive album data fetch
     var dateOfLatestRecursiveAlbumDataFetch = Date.distantPast
-    
-    /// - To prevent background tasks from running when the app is active
-    var applicationIsActive: Bool = false
-    
+        
     /// - To prevent Core Data usage until the database migration is finished.
     var isMigrationRunning: Bool = false
     

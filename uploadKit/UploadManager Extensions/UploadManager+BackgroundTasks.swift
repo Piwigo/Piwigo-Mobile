@@ -174,14 +174,6 @@ extension UploadManager
         // Background task active
         UploadVars.shared.isContinuedProcessingTaskActive = true
         
-        // Check that there are images to transfer
-        guard UploadVars.shared.nberOfUploadsToComplete != 0
-        else {
-            UploadVars.shared.isContinuedProcessingTaskActive = false
-            task.setTaskCompleted(success: false)
-            return
-        }
-        
         // Task expiration management
         var wasExpired = false
         task.expirationHandler = {
@@ -190,44 +182,48 @@ extension UploadManager
         }
         
         Task(priority: .utility) { @UploadManagerActor in
-            // Get object IDs of upload requests (limited to 100 upload requests)
-            let (toTransfer, toPrepare) = await UploadManager.shared.initialiseBckgTask()
-            
-            // Task progress initialisation
-            let title = "Piwigo"
-            task.progress.totalUnitCount = Int64(toTransfer.count + toPrepare.count)
-            task.progress.completedUnitCount = 0
-            
-            // Launch transfers
-            for uploadID in toTransfer {
-                // Check if the task expired or should be stopped
-                if wasExpired || ProcessInfo.processInfo.isLowPowerModeEnabled ||
-                    (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
-                    UploadVars.shared.isContinuedProcessingTaskActive = false
-                    task.setTaskCompleted(success: false)
-                    return
+            // Loop over user's requests
+            while UploadVars.shared.applicationIsActive && UploadVars.shared.nberOfUploadsToComplete != 0
+            {
+                // Get object IDs of upload requests (limited to 100 upload requests)
+                let (toTransfer, toPrepare) = await UploadManager.shared.initialiseBckgTask()
+                
+                // Task progress initialisation
+                let title = "Piwigo"
+                task.progress.totalUnitCount = Int64(toTransfer.count + toPrepare.count)
+                task.progress.completedUnitCount = 0
+                
+                // Launch transfers
+                for uploadID in toTransfer {
+                    // Check if the task expired or should be stopped
+                    if wasExpired || ProcessInfo.processInfo.isLowPowerModeEnabled ||
+                        (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
+                        UploadVars.shared.isContinuedProcessingTaskActive = false
+                        task.setTaskCompleted(success: false)
+                        return
+                    }
+                    // Launch transfer
+                    await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID)
+                    task.progress.completedUnitCount += 1
+                    let percent = NumberFormatter.localizedString(from: NSNumber(value: task.progress.fractionCompleted), number: .percent)
+                    task.updateTitle(title, subtitle: "\(percent) complete")
                 }
-                // Launch transfer
-                await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID)
-                task.progress.completedUnitCount += 1
-                let percent = NumberFormatter.localizedString(from: NSNumber(value: task.progress.fractionCompleted), number: .percent)
-                task.updateTitle(title, subtitle: "\(percent) complete")
-            }
-            
-            // Prepare uploads
-            for uploadID in toPrepare {
-                // Check if the task expired or should be stopped
-                if wasExpired || ProcessInfo.processInfo.isLowPowerModeEnabled ||
-                    (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
-                    UploadVars.shared.isContinuedProcessingTaskActive = false
-                    task.setTaskCompleted(success: false)
-                    return
+                
+                // Prepare uploads
+                for uploadID in toPrepare {
+                    // Check if the task expired or should be stopped
+                    if wasExpired || ProcessInfo.processInfo.isLowPowerModeEnabled ||
+                        (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
+                        UploadVars.shared.isContinuedProcessingTaskActive = false
+                        task.setTaskCompleted(success: false)
+                        return
+                    }
+                    // Prepare upload
+                    await UploadManager.shared.prepareUpload(withID: uploadID)
+                    task.progress.completedUnitCount += 1
+                    let percent = NumberFormatter.localizedString(from: NSNumber(value: task.progress.fractionCompleted), number: .percent)
+                    task.updateTitle(title, subtitle: "\(percent) complete")
                 }
-                // Prepare upload
-                await UploadManager.shared.prepareUpload(withID: uploadID)
-                task.progress.completedUnitCount += 1
-                let percent = NumberFormatter.localizedString(from: NSNumber(value: task.progress.fractionCompleted), number: .percent)
-                task.updateTitle(title, subtitle: "\(percent) complete")
             }
             
             // Continued upload task completed

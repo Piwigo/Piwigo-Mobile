@@ -217,7 +217,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         // Flag used to prevent background tasks from running when the app is active
-        AppVars.shared.applicationIsActive = true
+        UploadVars.shared.applicationIsActive = true
         
         // Flag used to force relogin at start
         NetworkVars.shared.applicationShouldRelogin = true
@@ -384,7 +384,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         appDelegate?.cleanUpTemporaryDirectory(immediately: false)
         
         // Flag used to prevent background tasks from running when the app is active
-        AppVars.shared.applicationIsActive = false
+        UploadVars.shared.applicationIsActive = false
 
         // Reset list of albums being fetched
         AlbumVars.shared.isFetchingAlbumData = Set<Int32>()
