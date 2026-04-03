@@ -298,9 +298,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
             
             // Should we postpone uploads?
-            if ProcessInfo.processInfo.isLowPowerModeEnabled ||
+            if UploadVars.shared.isContinuedProcessingTaskActive,
+                ProcessInfo.processInfo.isLowPowerModeEnabled ||
                 (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
-                debugPrint("••> Background upload task halted because in Low-Power mode or Wi-Fi unavailable.")
+                debugPrint("••> Background upload task halted because in Low-Power mode, Wi-Fi unavailable or already uploading.")
                 task.setTaskCompleted(success: true)
                 return
             }
