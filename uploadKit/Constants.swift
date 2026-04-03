@@ -10,7 +10,9 @@ import Foundation
 import Photos
 
 // Bundle name
-public let uploadKit = Bundle.allFrameworks.first(where: { ($0.bundleIdentifier ?? "").contains("uploadKit")})
+public extension Bundle {
+    static let uploadKit = Bundle.allFrameworks.first(where: { ($0.bundleIdentifier ?? "").contains("uploadKit")})
+}
 
 // Constants used to manage background tasks
 public let maxNberOfUploadsPerBckgTask = 100
