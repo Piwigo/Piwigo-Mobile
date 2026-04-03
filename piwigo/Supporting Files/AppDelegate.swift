@@ -297,6 +297,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 return
             }
             
+            // Should we postpone uploads?
+            if ProcessInfo.processInfo.isLowPowerModeEnabled ||
+                (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
+                debugPrint("••> Background upload task halted because in Low-Power mode or Wi-Fi unavailable.")
+                task.setTaskCompleted(success: true)
+                return
+            }
+            
             // Start network monitoring
             Task { @NetworkMonitoring in
                 await self.networkMonitor?.startMonitoring()
