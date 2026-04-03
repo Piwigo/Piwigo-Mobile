@@ -88,7 +88,7 @@ class DataMigrationViewController: UIViewController {
                 self.endBackgroundTaskIfActive()
 
                 // Migration completed
-                AppVars.shared.isMigrationRunning = false
+                CacheVars.shared.isMigrationRunning = false
             }
             catch {
                 // Report error
@@ -194,7 +194,7 @@ class DataMigrationViewController: UIViewController {
         }
         
         // Remember that a migration is running
-        AppVars.shared.isMigrationRunning = true
+        CacheVars.shared.isMigrationRunning = true
 
         // Perform migration in background to prevent triggering watchdog after 10 s
         queue.name = "org.piwigo.dataMigrationQueue"

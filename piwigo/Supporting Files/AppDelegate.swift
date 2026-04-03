@@ -82,7 +82,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // - postpone background tasks
         // until the migration is done.
         let migrator = DataMigrator()
-        AppVars.shared.isMigrationRunning = migrator.requiresMigration()
+        CacheVars.shared.isMigrationRunning = migrator.requiresMigration()
         
         // Register launch handlers for tasks
         /// All launch handlers must be registered before application finishes launching.
@@ -215,7 +215,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Save data if appropriate. See also applicationDidEnterBackground:.
         
         // Should we save changes in cache?
-        if AppVars.shared.isMigrationRunning == false {
+        if CacheVars.shared.isMigrationRunning == false {
             // Save cached data in the main thread
             mainContext.saveIfNeeded()
         }
@@ -283,7 +283,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Register background upload task
         BGTaskScheduler.shared.register(forTaskWithIdentifier: pwgBackgroundUploadTask, using: nil) { task in
             // Don't upload images now if a migration is planned
-            if AppVars.shared.isMigrationRunning {
+            if CacheVars.shared.isMigrationRunning {
                 debugPrint("••> Background upload task rescheduled because a migration is ongoing.")
                 task.setTaskCompleted(success: true)
                 return
@@ -322,7 +322,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if #available(iOS 26.0, *) {
             BGTaskScheduler.shared.register(forTaskWithIdentifier: pwgBackgroundContinuedUploadTask, using: nil) { task in
                 // Don't upload images now if a migration is planned
-                if AppVars.shared.isMigrationRunning {
+                if CacheVars.shared.isMigrationRunning {
                     debugPrint("••> Background upload task rescheduled because a migration is ongoing.")
                     task.setTaskCompleted(success: true)
                     return

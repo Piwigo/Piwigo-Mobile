@@ -92,7 +92,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             } else {
                 // Create additional scene ► default album unless a migration is running
                 if otherScenes.filter({($0 as? UIWindowScene)?.topMostViewController() is DataMigrationViewController}).isEmpty,
-                   AppVars.shared.isMigrationRunning == false {
+                   CacheVars.shared.isMigrationRunning == false {
                     // Create additional scene ► default album
                     appDelegate.loadNavigation(in: window)
                     
@@ -134,7 +134,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         } else {
             // Restore additional scene ► default album / login view OR wait for migration?
             if otherScenes.filter({($0 as? UIWindowScene)?.topMostViewController() is DataMigrationViewController}).isEmpty,
-               AppVars.shared.isMigrationRunning == false {
+               CacheVars.shared.isMigrationRunning == false {
                 // Restore scene
                 if configure(window: window, session: session, with: userActivity) {
                     // Remember this activity for later when this app quits or suspends.
@@ -236,7 +236,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called during biometric authentication or data migration?
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         let isMigratingData = (scene as? UIWindowScene)?.topMostViewController() is DataMigrationViewController
-        if appDelegate.isAuthenticatingWithBiometrics || isMigratingData || AppVars.shared.isMigrationRunning { return }
+        if appDelegate.isAuthenticatingWithBiometrics || isMigratingData || CacheVars.shared.isMigrationRunning { return }
         
         // Request passcode if necessary
         if AppVars.shared.isAppUnlocked == false {
@@ -364,7 +364,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         UploadVars.shared.didResumeUploads = false
         
         // Should we pause upload activities in the foreground?
-        if AppVars.shared.isMigrationRunning == false {
+        if CacheVars.shared.isMigrationRunning == false {
             // Pause upload activities if no BGContinuedProcessingTask
             if #unavailable(iOS 26.0) {
                 UploadVars.shared.isPaused = true
