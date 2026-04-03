@@ -107,7 +107,7 @@ extension UploadManager
             
             // Launch transfers
             for uploadID in toTransfer {
-                // Check if the task was canceled
+                // Check if the task was cancelled
                 if wasExpired {
                     // Stop network monitoring
                     NotificationCenter.default.post(name: .pwgStopNetworkMonitoring, object: nil)
@@ -200,7 +200,7 @@ extension UploadManager
             
             // Launch transfers
             for uploadID in toTransfer {
-                // Check if the task was canceled
+                // Check if the task was cancelled
                 if wasExpired {
                     UploadVars.shared.isContinuedProcessingTaskActive = false
                     task.setTaskCompleted(success: false)
