@@ -281,7 +281,7 @@ class SettingsViewController: UIViewController {
         super.viewWillDisappear(animated)
         
         // Update upload counter in case user cleared the cache
-        Task { @UploadManagerActor in
+        Task(priority: .utility) { @UploadManagerActor in
             UploadManager.shared.updateNberOfUploadsToComplete()
         }
         // Did the user change the recent period?
