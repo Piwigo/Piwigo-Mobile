@@ -52,11 +52,13 @@ extension UploadManager
         // Store number, update badge and default album view button
         self.updateNberOfUploadsToComplete()
         
-        // Append transfers to complete
-        let (uploadedUploadIDs, _) = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.uploaded], inContext: self.uploadBckgContext)
-        await UploadManagerActor.shared.addUploadsToTransfer(withIDs: uploadedUploadIDs)
-        let (preparedUploadIDs, _) = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.prepared], inContext: self.uploadBckgContext)
-        await UploadManagerActor.shared.addUploadsToTransfer(withIDs: preparedUploadIDs)
+        // Get IDs of uploads to finish
+        let toFinish = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.uploaded], inContext: self.uploadBckgContext).0
+        await UploadManagerActor.shared.addUploadsToFinish(withIDs: toFinish)
+        
+        // Get IDs of uploads to transfer
+        let toTransfer = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.prepared], inContext: self.uploadBckgContext).0
+        await UploadManagerActor.shared.addUploadsToTransfer(withIDs: toTransfer)
         
         // Append auto-upload requests if requested
         if UploadVars.shared.isAutoUploadActive {
@@ -66,9 +68,9 @@ extension UploadManager
         }
         
         // Append uploads to prepare
-        let (waitingUploadIDs, _) = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.waiting], inContext: self.uploadBckgContext)
-        await UploadManagerActor.shared.addUploadsToPrepare(withIDs: waitingUploadIDs)
-        UploadManager.logger.notice("Resuming uploads: \(uploadedUploadIDs.count, privacy: .public) transfer(s) to finish, \(preparedUploadIDs.count, privacy: .public) file(s) to transfer, \(waitingUploadIDs.count, privacy: .public) uploads to prepare")
+        let toPrepare = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.waiting], inContext: self.uploadBckgContext).0
+        await UploadManagerActor.shared.addUploadsToPrepare(withIDs: toPrepare)
+        UploadManager.logger.notice("Resuming uploads: \(toFinish.count, privacy: .public) transfer(s) to finish, \(toTransfer.count, privacy: .public) file(s) to transfer, \(toPrepare.count, privacy: .public) uploads to prepare")
         
         // Propose to delete uploaded images of the photo Library once a day
         // or immediately if there is no pending upload request, if any
