@@ -9,6 +9,7 @@
 import Foundation
 import Photos
 import UIKit
+import piwigoKit
 
 // MARK: Navigation Bar & Buttons
 extension LocalImagesViewController {
@@ -225,7 +226,14 @@ extension LocalImagesViewController {
     // MARK: - Show Upload Options
     @objc func didTapUploadButton() {
         // Avoid potential crash (should never happen, but…)
-        uploadRequests = selectedImages.compactMap({ $0 })
+        switch UploadVars.shared.localImagesSort {
+        case .dateCreatedDescending:
+            uploadRequests = selectedImages.compactMap({ $0 })
+        case .dateCreatedAscending:
+            uploadRequests = selectedImages.compactMap({ $0 }).reversed()
+        default:
+            uploadRequests = selectedImages.compactMap({ $0 })
+        }
         if uploadRequests.isEmpty { return }
         
         // Disable buttons
