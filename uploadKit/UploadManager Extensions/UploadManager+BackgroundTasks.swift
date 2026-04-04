@@ -16,10 +16,10 @@ import piwigoKit
 extension UploadManager
 {
     // MARK: - Resume in Background Task
-    public func initialiseBckgTask() async -> ([NSManagedObjectID], [NSManagedObjectID]) {
+    public func initialiseBckgTask() async -> ([NSManagedObjectID], [NSManagedObjectID], [NSManagedObjectID]) {
         // Wait until fix completed
         guard NetworkVars.shared.fixUserIsAPIKeyV412 == false
-        else { return ([],[]) }
+        else { return ([],[],[]) }
         
         // Reset flags
         UploadVars.shared.isPaused = false
@@ -33,14 +33,11 @@ extension UploadManager
         // Update number of uploads to complete, badge and default album view button
         self.updateNberOfUploadsToComplete()
         
-        // Get uploaded tasks to complete
-        var toTransfer = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.uploaded], inContext: self.uploadBckgContext).0
+        // Get IDs of uploads to finish
+        let toFinish = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.uploaded], inContext: self.uploadBckgContext).0
         
-        // Append prepared uploads to transfer
-        var preparedUploadIDs = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.prepared], inContext: self.uploadBckgContext).0
-        let alreadyQueuedIDs = Set(preparedUploadIDs).intersection(Set(toTransfer))
-        preparedUploadIDs.removeAll(where: { alreadyQueuedIDs.contains($0) })
-        toTransfer.append(contentsOf: preparedUploadIDs)
+        // Get IDs of uploads to transfer
+        let toTransfer = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.prepared], inContext: self.uploadBckgContext).0
         
         // Append auto-upload requests if requested
         if UploadVars.shared.isAutoUploadActive {
@@ -49,7 +46,7 @@ extension UploadManager
             await self.disableAutoUpload(inBckgTask: true)
         }
         
-        // Append uploads to prepare
+        // Get IDs of uploads to prepare
         var toPrepare = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.waiting], inContext: self.uploadBckgContext).0
         
         // Limit number of uploads to prepare
@@ -62,7 +59,7 @@ extension UploadManager
         UploadManager.logger.notice("Resuming uploads: \(toTransfer.count, privacy: .public) file(s) to transfer, \(toPrepare.count, privacy: .public) uploads to prepare")
         
         // Returns object IDs of upload requests to transfer and prepare
-        return (toTransfer, toPrepare)
+        return (toFinish, toTransfer, toPrepare)
     }
     
     
@@ -102,12 +99,18 @@ extension UploadManager
         }
         
         Task(priority: .utility) { @UploadManagerActor in
-            // Get object IDs of upload requests (limited to 100 upload requests)
-            let (toTransfer, toPrepare) = await UploadManager.shared.initialiseBckgTask()
+            // Get IDs of upload requests (limited to 100 transfers, i.e. a few hundreds URLSessionTasks)
+            var (toFinish, toTransfer, toPrepare) = await UploadManager.shared.initialiseBckgTask()
+            
+            // Finish transfers
+            if !toFinish.isEmpty {
+                await UploadManager.shared.finishTransferOfUpload(withIDs: toFinish)
+                toFinish.removeAll()
+            }
             
             // Launch transfers
-            for uploadID in toTransfer {
-                // Check if the task was cancelled
+            while !toTransfer.isEmpty {
+                // Check if the task expired
                 if wasExpired {
                     // Stop network monitoring
                     NotificationCenter.default.post(name: .pwgStopNetworkMonitoring, object: nil)
@@ -116,11 +119,12 @@ extension UploadManager
                     return
                 }
                 // Launch transfer
+                let uploadID = toTransfer.removeFirst()
                 await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID)
             }
             
-            // Prepare uploads
-            for uploadID in toPrepare {
+            // Prepare upload and launch transfer
+            while !toPrepare.isEmpty {
                 // Check if the task was canceled
                 if wasExpired {
                     // Stop network monitoring
@@ -130,6 +134,7 @@ extension UploadManager
                     return
                 }
                 // Prepare upload
+                let uploadID = toPrepare.removeFirst()
                 await UploadManager.shared.prepareUpload(withID: uploadID)
             }
             
@@ -183,53 +188,97 @@ extension UploadManager
         }
         
         Task(priority: .utility) { @UploadManagerActor in
-            // Loop over user's requests
-            while UploadVars.shared.applicationIsActive && UploadVars.shared.nberOfUploadsToComplete != 0
-            {
-                // Get object IDs of upload requests (limited to 100 upload requests)
-                let (toTransfer, toPrepare) = await UploadManager.shared.initialiseBckgTask()
-                
-                // Task progress initialisation
-                let title = "Piwigo"
-                task.progress.totalUnitCount = Int64(toTransfer.count + toPrepare.count)
-                task.progress.completedUnitCount = 0
-                
-                // Launch transfers
-                for uploadID in toTransfer {
-                    // Check if the task expired or should be stopped
-                    if wasExpired || ProcessInfo.processInfo.isLowPowerModeEnabled ||
-                        (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
-                        UploadVars.shared.isContinuedProcessingTaskActive = false
-                        task.setTaskCompleted(success: false)
-                        return
-                    }
-                    // Launch transfer
-                    await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID)
-                    task.progress.completedUnitCount += 1
-                    let percent = NumberFormatter.localizedString(from: NSNumber(value: task.progress.fractionCompleted), number: .percent)
-                    task.updateTitle(title, subtitle: "\(percent) complete")
+            // Get IDs of upload requests (limited to 100 transfers, i.e. a few hundreds URLSessionTasks)
+            var (toFinish, toTransfer, toPrepare) = await UploadManager.shared.initialiseBckgTask()
+            
+            // Task progress initialisation
+            let title = "Piwigo"
+            task.progress.totalUnitCount = Int64(toTransfer.count + toPrepare.count)
+            task.progress.completedUnitCount = 0
+            
+            // Finish transfers
+            if !toFinish.isEmpty {
+                await UploadManager.shared.finishTransferOfUpload(withIDs: toFinish)
+                toFinish.removeAll()
+            }
+            
+            // Launch transfers
+            while !toTransfer.isEmpty {
+                // Check if the task expired or should be stopped
+                if shouldStopTask(task, expired: wasExpired) {
+                    UploadVars.shared.isContinuedProcessingTaskActive = false
+                    task.setTaskCompleted(success: false)
+                    return
                 }
                 
-                // Prepare uploads
-                for uploadID in toPrepare {
-                    // Check if the task expired or should be stopped
-                    if wasExpired || ProcessInfo.processInfo.isLowPowerModeEnabled ||
-                        (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
-                        UploadVars.shared.isContinuedProcessingTaskActive = false
-                        task.setTaskCompleted(success: false)
-                        return
-                    }
-                    // Prepare upload
-                    await UploadManager.shared.prepareUpload(withID: uploadID)
-                    task.progress.completedUnitCount += 1
-                    let percent = NumberFormatter.localizedString(from: NSNumber(value: task.progress.fractionCompleted), number: .percent)
-                    task.updateTitle(title, subtitle: "\(percent) complete")
+                // Launch transfer
+                let uploadID = toTransfer.removeFirst()
+                await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID)
+                task.progress.completedUnitCount += 1
+                let diff = task.progress.totalUnitCount - task.progress.completedUnitCount
+                let remaining = NumberFormatter.localizedString(from: NSNumber(value: diff), number: .decimal)
+                task.updateTitle(title, subtitle: "\(remaining) uploads remaining")
+                
+                // Wait before launching a new transfer?
+                while UploadManager.shared.nberOfUploadsInTransfer >= UploadVars.shared.maxNberOfUploadTransfers {
+                    debugPrint("••> Continued upload task paused for 1s")
+                    try? await Task.sleep(nanoseconds: 1_000_000_000)
                 }
+            }
+            
+            // Prepare uploads and launch transfers
+            while !toPrepare.isEmpty {
+                // Check if the task expired or should be stopped
+                if shouldStopTask(task, expired: wasExpired) {
+                    UploadVars.shared.isContinuedProcessingTaskActive = false
+                    task.setTaskCompleted(success: false)
+                    return
+                }
+                
+                // Prepare upload and launch transfer
+                let uploadID = toPrepare.removeFirst()
+                await UploadManager.shared.prepareUpload(withID: uploadID)
+                task.progress.completedUnitCount += 1
+                let diff = task.progress.totalUnitCount - task.progress.completedUnitCount
+                let remaining = NumberFormatter.localizedString(from: NSNumber(value: diff), number: .decimal)
+                task.updateTitle(title, subtitle: "\(remaining) uploads remaining")
+                
+                // Add upload requests recently added by the user
+                let uploadIDs = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.waiting], inContext: self.uploadBckgContext).0
+                let alreadyQueuedIDs = Set(uploadIDs).intersection(Set(toPrepare))
+                var uploadIDsToAdd = uploadIDs
+                uploadIDsToAdd.removeAll(where: { alreadyQueuedIDs.contains($0) })
+                toPrepare.append(contentsOf: uploadIDsToAdd)
+                task.progress.totalUnitCount += Int64(uploadIDsToAdd.count)
+                debugPrint("••> Added \(uploadIDsToAdd.count) upload requests to the continued upload task.")
             }
             
             // Continued upload task completed
             UploadVars.shared.isContinuedProcessingTaskActive = false
+            let subtitle = "\(task.progress.completedUnitCount) uploads completed."
+            task.updateTitle(task.title, subtitle: subtitle)
             task.setTaskCompleted(success: true)
         }
+    }
+    
+    @available(iOS 26.0, *)
+    private func shouldStopTask(_ task: BGContinuedProcessingTask, expired wasExpired: Bool) -> Bool
+    {
+        var subtitle = ""
+        if wasExpired {
+            subtitle = "Upload task expired. Please try again."
+        }
+        else if ProcessInfo.processInfo.isLowPowerModeEnabled {
+            subtitle = "Low power mode enabled. Please turn it off."
+        }
+        else if UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi {
+            subtitle = "WiFi only uploading. Please connect to WiFi."
+        }
+        else {
+            return false
+        }
+        
+        task.updateTitle(task.title, subtitle: subtitle)
+        return true
     }
 }

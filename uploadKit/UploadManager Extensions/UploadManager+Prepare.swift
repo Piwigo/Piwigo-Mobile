@@ -49,7 +49,7 @@ extension UploadManager
         // Update upload status
         uploadData.requestState = .preparing
         uploadData.requestError = ""
-        UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Start preparing upload")
+        UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Preparing the file…")
         try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
         
         // Add category ID to list of recently used albums

@@ -58,12 +58,12 @@ extension UploadManager {
             // Update state of upload request
             uploadData.requestState = .uploading
             uploadData.requestError = ""
-            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Transfer or copy file?")
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             
             // Check whether an image with that MD5 checksum exists on the server
             if let imageID = try await JSONManager.shared.getIDofImage(withMD5: uploadData.md5Sum) {
                 // Already stored on the Piwigo server ► Copy to Album
+                UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Start copying file…")
                 try await copyImageWithID(imageID, for: uploadData, withID: uploadID)
                 
                 // Copy completed
@@ -73,6 +73,7 @@ extension UploadManager {
             }
             else {
                 // Upload new image to the Piwigo server
+                UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • File transfer starting…")
                 try await transferInBackground(for: uploadData, withID: uploadID)
             }
         }

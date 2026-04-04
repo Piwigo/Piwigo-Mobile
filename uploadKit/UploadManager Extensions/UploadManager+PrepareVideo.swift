@@ -419,7 +419,7 @@ extension UploadManager {
         
     private func didPrepareVideo(using uploadData: UploadProperties, withID uploadID: NSManagedObjectID) async
     {
-        UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Did prepare video from Asset")
+        UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Did finish preparing video from PHAsset.")
 
         // Preparation completed
         try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)

@@ -40,7 +40,7 @@ extension UploadManager {
             guard var uploadData = uploadDataArray[uploadID] else { return }
             uploadData.requestState = .finishing
             uploadData.requestError = ""
-            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Finish transfer…")
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • The transfer is now being finalised…")
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
         }
         
