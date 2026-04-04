@@ -26,7 +26,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         case showRecentPhotosAction = "ShowRecentPhotosAction"
     }
     var savedShortCutItem: UIApplicationShortcutItem!
-
+//    var savedUrlContext: UIOpenURLContext?
     
     // MARK: - Core Data Object Contexts
     private lazy var mainContext: NSManagedObjectContext = {
@@ -52,6 +52,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // Save shortcut for later when app becomes active
             savedShortCutItem = shortcutItem
         }
+        
+        // App was launched cold via deep link?
+//        if let urlContext = connectionOptions.urlContexts.first {
+//            // Save URL context for later when app becomes active
+//            savedUrlContext = urlContext
+//        }
         
         debugPrint("••> \(session.persistentIdentifier): Scene will connect to session.")
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate,
@@ -227,11 +233,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         debugPrint("••> \(scene.session.persistentIdentifier): Scene did become active.")
         // Called when the scene has become active and is now responding to user events.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
-
-        // did the user open the app with a Home menu quick action?
-        if savedShortCutItem != nil {
-             _ = handleShortCutItem(shortcutItem: savedShortCutItem)
+        
+        // Did the user open the app with a Home menu quick action?
+        if let savedShortCutItem {
+            _ = handleShortCutItem(shortcutItem: savedShortCutItem)
         }
+        
+        // Did the user open the app with a deep link?
+//        if let savedUrlContext {
+//            handleUrlContext(savedUrlContext)
+//        }
         
         // Called during biometric authentication or data migration?
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
@@ -343,7 +354,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                                           localizedTitle: pwgSmartAlbum.recent.name,
                                           localizedSubtitle: nil,
                                           icon: UIApplicationShortcutIcon(systemImageName: "sparkles"))
-                ])
+            ])
         }
         UIApplication.shared.shortcutItems = quickActions
     }
@@ -365,7 +376,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // Should we pause upload activities in the foreground?
         if CacheVars.shared.isMigrationRunning == false {
-            // Pause upload activities if no BGContinuedProcessingTask
+            // Pause upload activities (no BGContinuedProcessingTask)
             if #unavailable(iOS 26.0) {
                 UploadVars.shared.isPaused = true
             }
@@ -385,10 +396,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // Flag used to prevent background tasks from running when the app is active
         UploadVars.shared.applicationIsActive = false
-
+        
         // Reset list of albums being fetched
         AlbumVars.shared.isFetchingAlbumData = Set<Int32>()
-
+        
         // Stop network monitoring if possible
         if UploadVars.shared.isContinuedProcessingTaskActive { return }
         Task { @MainActor in
@@ -431,7 +442,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         completionHandler(handled)
     }
     
-    func handleShortCutItem(shortcutItem: UIApplicationShortcutItem) -> Bool {
+    private func handleShortCutItem(shortcutItem: UIApplicationShortcutItem) -> Bool {
         // NOP in absence of user session
         if let topMostVC = window?.windowScene?.topMostViewController(),
            topMostVC is LoginViewController {
@@ -440,12 +451,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // Dismiss image or settings view controllers if needed
         dismissNonAlbumViewControllers()
-
+        
         // Load the requested view controller
         if let actionTypeValue = ActionType(rawValue: shortcutItem.type) {
             switch actionTypeValue {
             case .showFavoritesAction:
-
+                
                 // The root view controller should be the AlbumNavigationController
                 if let navController = window?.rootViewController as? AlbumNavigationController {
                     // Return to root view controller
@@ -486,6 +497,26 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 self.dismissNonAlbumViewControllers()
             }
         }
+    }
+    
+
+    // MARK: - Application Deep Link Support
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        // App was launched cold via deep link?
+        if let urlContext = URLContexts.first {
+            // Save URL context for later when app becomes active
+            handleUrlContext(urlContext)
+        }
+    }
+    
+    private func handleUrlContext(_ urlContext: UIOpenURLContext) {
+        // Submitted to the right app?
+        guard urlContext.url.scheme == "piwigo" else { return }
+        
+        // What should be done?
+        debugPrint("URL context: \(urlContext.debugDescription)")
+        // let components = URLComponents(url: urlContext.url, resolvingAgainstBaseURL: false)
+        
     }
 }
 
