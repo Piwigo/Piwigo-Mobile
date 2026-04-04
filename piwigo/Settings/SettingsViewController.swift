@@ -116,11 +116,12 @@ class SettingsViewController: UIViewController {
         super.viewDidLoad()
         
         // Calculate cache sizes
-        guard let server = self.user.server,
-              server.isFault == false
-        else {
-            debugPrint("!!! User not provided !!!!")
-            return
+        guard let server = self.user.server
+        else { preconditionFailure("!!! User not provided !!!!") }
+        if server.isFault {
+            // user is not fired yet.
+            server.willAccessValue(forKey: nil)
+            server.didAccessValue(forKey: nil)
         }
         var sizes = self.getThumbnailSizes()
         self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
