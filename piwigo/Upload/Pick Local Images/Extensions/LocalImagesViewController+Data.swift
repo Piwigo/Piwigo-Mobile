@@ -394,7 +394,7 @@ extension LocalImagesViewController
 
     private func cachingUploadIndicesIteratingFetchedImages() -> (Void) {
         // For debugging purposes
-        let start = CFAbsoluteTimeGetCurrent()
+//        let start = CFAbsoluteTimeGetCurrent()
         
         // Check if this operation was cancelled every 1000 iterations
         let step = 1_000
@@ -403,7 +403,7 @@ extension LocalImagesViewController
             // Continue with this operation?
             if queue.operations.first!.isCancelled {
                 indexedUploadsInQueue = []
-                debugPrint("••> LocalImagesViewController: Stop second operation in iteration \(i) ;-)")
+//                debugPrint("••> LocalImagesViewController: Stop second operation in iteration \(i) ;-)")
                 return
             }
             
@@ -420,13 +420,13 @@ extension LocalImagesViewController
                 }
             }
         }
-        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        debugPrint("••> LocalImagesViewController: Indexed \(fetchedImages.count) images by iterating fetched images in \(diff) ms")
+//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        debugPrint("••> LocalImagesViewController: Indexed \(fetchedImages.count) images by iterating fetched images in \(diff) ms")
     }
 
     private func cachingUploadIndicesIteratingUploadsInQueue() -> (Void) {
         // For debugging purposes
-        let start = CFAbsoluteTimeGetCurrent()
+//        let start = CFAbsoluteTimeGetCurrent()
         
         // Determine fetched images already in upload queue
         let fetchOptions = PHFetchOptions()
@@ -467,8 +467,8 @@ extension LocalImagesViewController
                 }
             }
         }
-        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        debugPrint("••> LocalImagesViewController: Cached \(count) images by iterating uploads in queue in \(diff) ms")
+//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        debugPrint("••> LocalImagesViewController: Cached \(count) images by iterating uploads in queue in \(diff) ms")
     }
     
     func getUploadStateOfImage(at index: Int,
