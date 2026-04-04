@@ -86,7 +86,7 @@ extension UploadManager
             
             // Launch transfer if called by background task
             if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive {
-                await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID)
+                await transferOrCopyFileOfUpload(withID: uploadID)
                 return
             }
             
