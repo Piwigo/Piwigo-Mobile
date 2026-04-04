@@ -90,16 +90,16 @@ class LocalImagesViewController: UIViewController
     var uploadBarButton: UIBarButtonItem?           // for uploading selected images
     var trashBarButton: UIBarButtonItem?            // For deleting uploaded images on iPad
     var actionBarButton: UIBarButtonItem?           // on iPhone:
-    //  - for reversing the sort order
-    //  - for grouping by day, week or month (or not)
-    //  - for deleting uploaded images
-    //  - for selecting images in the Photo Library
-    //  - for allowing to re-upload images
-    // on iPad:
-    //  - for reversing the sort order
-    //  - for grouping by day, week or month (or not)
-    //  - for selecting images in the Photo Library
-    //  - for allowing to re-upload images
+                                                    //  - for reversing the sort order
+                                                    //  - for grouping by day, week or month (or not)
+                                                    //  - for deleting uploaded images
+                                                    //  - for selecting images in the Photo Library
+                                                    //  - for allowing to re-upload images
+                                                    // on iPad:
+                                                    //  - for reversing the sort order
+                                                    //  - for grouping by day, week or month (or not)
+                                                    //  - for selecting images in the Photo Library
+                                                    //  - for allowing to re-upload images
     var reUploadAllowed = false
     
     
