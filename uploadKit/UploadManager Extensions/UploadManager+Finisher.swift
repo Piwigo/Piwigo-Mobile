@@ -15,12 +15,19 @@ import piwigoKit
 extension UploadManager {
     
     // MARK: - Tasks Executed after Uploading
-    func finishTransferOfUpload(withID uploadID: NSManagedObjectID) async {
+    func finishTransferOfUpload(withIDs uploadIDs: [NSManagedObjectID]) async {
         
         // Retrieve upload request properties
-        guard var uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID, inContext: self.uploadBckgContext)
-        else {
-            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Could not retrieve upload request for finsihing!")
+        var uploadDataArray: [NSManagedObjectID : UploadProperties] = [:]
+        for uploadID in uploadIDs {
+            guard let uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID, inContext: self.uploadBckgContext)
+            else {
+                UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Could not retrieve upload request for finsihing!")
+                continue
+            }
+            uploadDataArray[uploadID] = uploadData
+        }
+        if uploadDataArray.isEmpty {
             // Job done if called by background task
             if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive { return }
             // Process next upload if any
@@ -29,16 +36,24 @@ extension UploadManager {
         }
         
         // Update upload status
-        uploadData.requestState = .finishing
-        UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Finish transfer…")
-        try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
+        uploadDataArray.forEach { (uploadID,_) in
+            guard var uploadData = uploadDataArray[uploadID] else { return }
+            uploadData.requestState = .finishing
+            uploadData.requestError = ""
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Finish transfer…")
+            try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
+        }
         
-        // Uploaded with pwg.images.uploadAsync -> Empty the lounge
-        try? await emptyLounge(for: uploadData)
+        // Uploaded with pwg.images.uploadAsync -> Empty lounge
+        try? await emptyLounge(for: Array(uploadDataArray.values))
         
         // Update upload status
-        uploadData.requestState = .finished
-        try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
+        uploadDataArray.forEach { (uploadID,_) in
+            guard var uploadData = uploadDataArray[uploadID] else { return }
+            uploadData.requestState = .finished
+            uploadData.requestError = ""
+            try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
+        }
         
         // Update number of uploads to complete, badge and default album view button
         self.updateNberOfUploadsToComplete()
@@ -53,7 +68,7 @@ extension UploadManager {
                 suggestToDeleteUploadedImages(withPendingUploads: 0)
             }
         }
-                
+        
         // Job done if called by background task
         if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive { return }
         
@@ -68,24 +83,37 @@ extension UploadManager {
      and one must trigger manually their addition to the database.
      If not, they will be visible after some delay (12 minutes).
      */
-    fileprivate func emptyLounge(for uploadData: UploadProperties) async throws(PwgKitError)
+    fileprivate func emptyLounge(for uploadDataArray: [UploadProperties]) async throws(PwgKitError)
     {
-        // Get user properties
-        guard let userURI = URL(string: uploadData.userURIstr),
-              let userID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: userURI)
-        else {
-            // Should never happen
-            // ► The lounge will be emptied later by the server
-            // ► Continue upload tasks without returning error
-            return
+        // Check that at least one upload is provided
+        if uploadDataArray.isEmpty { return }
+        
+        // Loop over albums
+        let albumIds = Set(uploadDataArray.map({ $0.category }))
+        for albumId in albumIds {
+
+            // Get uploads concerning that album
+            let uploadDataArrayForAlbum = uploadDataArray.filter({ $0.category == albumId })
+            if uploadDataArrayForAlbum.isEmpty { continue }
+            
+            // Get user properties
+            guard let userURI = URL(string: uploadDataArrayForAlbum[0].userURIstr),
+                  let userID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: userURI)
+            else {
+                // Should never happen
+                // ► The lounge will be emptied later by the server
+                // ► Continue upload tasks without returning error
+                return
+            }
+            
+            // Check session
+            let userData = try UserProvider().getPropertiesOfUser(withURIstr: uploadDataArrayForAlbum[0].userURIstr, inContext: self.uploadBckgContext)
+            try await JSONManager.shared.checkSession(ofUserWithID: userID, lastConnected: userData.lastUsed)
+            
+            // Empty lounge
+            let imageIds = uploadDataArrayForAlbum.map({ $0.imageId })
+            try await JSONManager.shared.processImages(withIds: imageIds, inCategory: albumId)
         }
-        
-        // Check session
-        let userData = try UserProvider().getPropertiesOfUser(withURIstr: uploadData.userURIstr, inContext: self.uploadBckgContext)
-        try await JSONManager.shared.checkSession(ofUserWithID: userID, lastConnected: userData.lastUsed)
-        
-        // Empty lounge
-        try await JSONManager.shared.processImages(withIds: uploadData.imageId, inCategory: uploadData.category)
     }
     
     

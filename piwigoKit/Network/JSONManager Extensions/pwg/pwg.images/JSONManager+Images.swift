@@ -83,10 +83,12 @@ public extension JSONManager {
     }
     
     @concurrent
-    func processImages(withIds imageIds: Int64, inCategory categoryId: Int32) async throws(PwgKitError) {
+    func processImages(withIds imageIds: [Int64], inCategory categoryId: Int32) async throws(PwgKitError) {
         // Prepare parameters
-        let paramDict: [String : Any] = ["image_id": "\(NSNumber(value: imageIds))",
-                                         "pwg_token": NetworkVars.shared.pwgToken,
+        if imageIds.isEmpty { return }
+        let listOfImageIds = imageIds.compactMap({"\(NSNumber(value: $0)),"}).reduce("", +)
+        let paramDict: [String : Any] = ["image_id"   : String(listOfImageIds.dropLast(1)),
+                                         "pwg_token"  : NetworkVars.shared.pwgToken,
                                          "category_id": "\(NSNumber(value: categoryId))"]
         
         // Empty lounge

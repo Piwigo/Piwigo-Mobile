@@ -117,12 +117,6 @@ extension UploadManager {
         
         // Release memory
         imageData.removeAll()
-        
-        // Job done if called by background task
-        if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive { return }
-        
-        // Process next upload if any
-        await UploadManagerActor.shared.processNextUpload()
     }
     
     func didCompleteBckgUploadTask(_ task: URLSessionTask, withError error: PwgKitError?) async {
@@ -285,10 +279,18 @@ extension UploadManager {
                 uploadData.tagIds = ""
             }
             uploadData.requestState = .uploaded
+            uploadData.requestError = ""
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             
-            // Finish transfer
-            await finishTransferOfUpload(withID: uploadID)
+            // Finish transfer if called by background task
+            if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive {
+                await finishTransferOfUpload(withIDs: [uploadID])
+            }
+            else {
+                // Add photo/video to finish transfer queue
+                await UploadManagerActor.shared.addUploadsToFinish(withIDs: [uploadID])
+                await UploadManagerActor.shared.processNextUpload()
+            }
             
             // Add uploaded image to cache and update UI if needed
             if let userURI = URL(string: uploadData.userURIstr),

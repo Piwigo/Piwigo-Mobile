@@ -27,18 +27,16 @@ extension UploadManager {
             return
         }
         
-        // Check upload status
-        if uploadData.requestState == .uploaded {
-            // Finish transfer
-            await finishTransferOfUpload(withID: uploadID)
-            return
-        }
+        // Check upload status (should never happen)
         guard uploadData.requestState == .prepared
         else {
             UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Upload in wrong state '\(uploadData.stateLabel)' before transfer/copy")
             // Job done if called by background task
             if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive { return }
-            // Process next upload if any
+            // Add upload to finish transfer queue
+            if uploadData.requestState == .uploaded {
+                await UploadManagerActor.shared.addUploadsToFinish(withIDs: [uploadID])
+            }
             await UploadManagerActor.shared.processNextUpload()
             return
         }
@@ -59,6 +57,7 @@ extension UploadManager {
             
             // Update state of upload request
             uploadData.requestState = .uploading
+            uploadData.requestError = ""
             UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Transfer or copy file?")
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             
@@ -66,6 +65,11 @@ extension UploadManager {
             if let imageID = try await JSONManager.shared.getIDofImage(withMD5: uploadData.md5Sum) {
                 // Already stored on the Piwigo server ► Copy to Album
                 try await copyImageWithID(imageID, for: uploadData, withID: uploadID)
+                
+                // Copy completed
+                uploadData.requestState = .moderated
+                uploadData.requestError = ""
+                try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             }
             else {
                 // Upload new image to the Piwigo server
@@ -97,7 +101,7 @@ extension UploadManager {
             uploadData.requestError = PwgKitError.otherError(innerError: error).localizedDescription
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
         }
-
+        
         // Job done if called by background task
         if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive { return }
 
@@ -163,12 +167,6 @@ extension UploadManager {
                                               "progressFraction" : 1.0]
             NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
         }
-        
-        // Copy complete
-        var uploadData = properties
-        uploadData.requestState = .moderated
-        uploadData.requestError = ""
-        try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
     }
     
     

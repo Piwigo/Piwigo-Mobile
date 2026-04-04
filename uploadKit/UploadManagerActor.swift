@@ -33,6 +33,7 @@ public actor UploadManagerActor {
     // MARK: - Serialised Upload Queue
     private var uploadIDsToPrepare: [NSManagedObjectID] = []
     private var uploadIDsToTransfer: [NSManagedObjectID] = []
+    private var uploadIDsToFinish: [NSManagedObjectID] = []
     
     public func addUploadsToPrepare(withIDs uploadIDs: [NSManagedObjectID], beforeOthers: Bool = false) async {
         // Remove duplicates if needed (should never happen)
@@ -62,6 +63,16 @@ public actor UploadManagerActor {
         }
     }
     
+    public func addUploadsToFinish(withIDs uploadIDs: [NSManagedObjectID]) async {
+        // Remove duplicates if needed (should never happen)
+        let alreadyQueuedIDs = Set(uploadIDs).intersection(Set(uploadIDsToFinish))
+        var uploadIDsToAdd = uploadIDs
+        uploadIDsToAdd.removeAll(where: { alreadyQueuedIDs.contains($0) })
+        
+        // Append upload requests not already in queue
+        uploadIDsToFinish.append(contentsOf: uploadIDsToAdd)
+    }
+    
     public func removeUploads(withIDs uploadIDs: [NSManagedObjectID]) async {
         // Remove upload request from queue
         uploadIDsToPrepare.removeAll(where: { uploadIDs.contains($0) })
@@ -84,15 +95,22 @@ public actor UploadManagerActor {
             return
         }
         
-        // First, transfer image if any and allowed
-        if await UploadManager.shared.nberOfUploadsInTransfer <= UploadVars.shared.maxNberOfUploadTransfers,
+        // First, finish transfers of images if any
+        if uploadIDsToFinish.isEmpty == false {
+            let uploadIDs = uploadIDsToFinish
+            uploadIDsToFinish.removeAll()
+            await UploadManager.shared.finishTransferOfUpload(withIDs: uploadIDs)
+        }
+        
+        // Second, transfer image if any and allowed
+        if await UploadManager.shared.nberOfUploadsInTransfer < UploadVars.shared.maxNberOfUploadTransfers,
            let uploadID = uploadIDsToTransfer.first {
             uploadIDsToTransfer.removeFirst()
             await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID)
         }
-
-        // Second, prepare image if any and allowed
-        if await UploadManager.shared.nberOfUploadsInPreparation <= UploadVars.shared.maxNberOfPreparedUploads,
+        
+        // Third, prepare image if any and allowed
+        if await UploadManager.shared.nberOfUploadsInPreparation < UploadVars.shared.maxNberOfPreparedUploads,
            let uploadID = uploadIDsToPrepare.first {
             uploadIDsToPrepare.removeFirst()
             await UploadManager.shared.prepareUpload(withID: uploadID)

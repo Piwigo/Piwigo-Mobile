@@ -36,12 +36,19 @@ extension UploadManager
             // Job done if called by background task
             if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive { return }
             // Process next upload if any
+            if uploadData.requestState == .prepared {
+                await UploadManagerActor.shared.addUploadsToTransfer(withIDs: [uploadID])
+            }
+            else if uploadData.requestState == .uploaded {
+                await UploadManagerActor.shared.addUploadsToFinish(withIDs: [uploadID])
+            }
             await UploadManagerActor.shared.processNextUpload()
             return
         }
         
         // Update upload status
         uploadData.requestState = .preparing
+        uploadData.requestError = ""
         UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Start preparing upload")
         try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
         
@@ -75,13 +82,14 @@ extension UploadManager
             else {
                 // Case of an image from the local Photo Library
                 if try await prepareAssetInPhotoLibrary(for: &uploadData, withID: uploadID) == false {
-                    // Return false for videos
+                    // Stop job here for videos
                     return
                 }
             }
             
             // Preparation completed
             uploadData.requestState = .prepared
+            uploadData.requestError = ""
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             
             // Launch transfer if called by background task
