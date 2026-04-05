@@ -138,7 +138,17 @@ extension LogsViewController: UIActivityItemSource
     func activityViewController(_ activityViewController: UIActivityViewController, 
                                 itemForActivityType activityType: UIActivity.ActivityType?) -> Any? {
         switch activityType {
-        case .airDrop, .copyToPasteboard, .message:
+        case .airDrop:
+            let fileName = (category?.text ?? "logs") + " " + (dateTime?.text ?? Date().ISO8601Format())  + ".log"
+            let tempDir = FileManager.default.temporaryDirectory
+            let fileURL = tempDir.appendingPathComponent(fileName)
+            do {
+                try (messages?.text ?? "").write(to: fileURL, atomically: true, encoding: .utf8)
+                return fileURL
+            } catch {
+                return messages?.text ?? ""
+            }
+        case .copyToPasteboard, .message:
             return messages?.text ?? ""
         case .mail, .print:
             fallthrough
