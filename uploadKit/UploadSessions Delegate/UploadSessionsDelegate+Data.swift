@@ -26,7 +26,7 @@ extension UploadSessionsDelegate: URLSessionDataDelegate {
         // Log data task
         let objectIDstr = URL(string: objectURIstr)?.lastPathComponent ?? objectURIstr
 #if DEBUG
-        let dataStr = String(decoding: data, as: UTF8.self)
+        let dataStr = String(decoding: data.prefix(100), as: UTF8.self) + (data.count > 100 ? "…" : "")
         UploadSessionsDelegate.logger.notice("\(objectIDstr, privacy: .public) • Task \(dataTask.taskIdentifier, privacy: .public) of chunk \(chunk, privacy: .public)/\(chunks, privacy: .public) did receive: \(dataStr, privacy: .public).")
 #else
         let countsOfBytes = data.count * MemoryLayout<Data>.stride

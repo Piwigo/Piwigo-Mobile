@@ -18,7 +18,7 @@ extension UploadSessionsDelegate: URLSessionTaskDelegate {
         guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID)
         else { preconditionFailure("Could not extract HTTP header field.") }
         let objectIDstr = URL(string: objectURIstr)?.lastPathComponent ?? objectURIstr
-        UploadSessionsDelegate.logger.notice("\(objectIDstr) • Task-level authentication requested by server.")
+        UploadSessionsDelegate.logger.notice("\(objectIDstr, privacy: .public) • Task-level authentication requested by server.")
         
         // Check authentication method
         let authMethod = challenge.protectionSpace.authenticationMethod
