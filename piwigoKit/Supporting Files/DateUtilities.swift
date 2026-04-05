@@ -37,6 +37,15 @@ public struct DateUtilities: Sendable
         return formatter
     }()
     
+    // Logs times are provided with UTC time
+    public static let logsTimeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "HH:mm:ss.sss"
+        formatter.timeZone = TimeZone(abbreviation: "UTC")!
+        return formatter
+    }()
+    
     // Return the date of the next day at 4 AM
     public static func nextDayAt4AM(after timeInterval: TimeInterval) -> Date {
         // Get the next day by adding 1 day
