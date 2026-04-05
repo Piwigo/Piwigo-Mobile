@@ -222,7 +222,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             await appDelegate?.networkMonitor?.startMonitoring()
         }
         
-        // Flag used to prevent background tasks from running when the app is active
+        // Flag used to:
+        // - prevent the background processing upload task from running when the app is active,
+        // - stop the network monitoring when ending the background continued processing upload task,
+        // - resume upload activities after the completion iof a background task.
         UploadVars.shared.applicationIsActive = true
         
         // Flag used to force relogin at start
@@ -394,7 +397,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         appDelegate?.cleanUpTemporaryDirectory(immediately: false)
         
-        // Flag used to prevent background tasks from running when the app is active
+        // Flag used to:
+        // - prevent the background processing upload task from running when the app is active,
+        // - stop the network monitoring when ending the background continued processing upload task,
+        // - resume upload activities after the completion iof a background task.
         UploadVars.shared.applicationIsActive = false
         
         // Reset list of albums being fetched
