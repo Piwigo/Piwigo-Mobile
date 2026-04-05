@@ -31,7 +31,6 @@ public final class NetworkMonitor {
         NotificationCenter.default.addObserver(forName: Notification.Name.pwgStopNetworkMonitoring, object: nil, queue: nil) { [weak self] _ in
             Task { @NetworkMonitoring in
                 self?.stopMonitoring()
-                debugPrint("••> Network monitoring stopped.")
             }
         }
     }
