@@ -263,7 +263,6 @@ class VideoDetailViewController: UIViewController
     }
     
     func presentVideoContainer() {
-        debugPrint("presentVideoContainer !!!!!!!!!!!!!!!")
         // Show/hide video according to situation
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
