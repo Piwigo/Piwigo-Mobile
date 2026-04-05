@@ -278,6 +278,8 @@ extension UploadManager {
             } else {
                 uploadData.tagIds = ""
             }
+            
+            // Update upload request status
             uploadData.requestState = .uploaded
             uploadData.requestError = ""
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)

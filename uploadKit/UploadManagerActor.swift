@@ -42,6 +42,7 @@ public actor UploadManagerActor {
         uploadIDsToAdd.removeAll(where: { alreadyQueuedIDs.contains($0) })
         
         // Append upload requests not already in queue
+        /// Comment below lines to debug BGProcessingTask
         if beforeOthers {
             uploadIDsToPrepare.insert(contentsOf: uploadIDsToAdd, at: 0)
         } else {

@@ -17,7 +17,7 @@ extension UploadManager
     // MARK: - Resume in the Foreground
     public func resumeInForeground() async
     {
-        // Wait until fix completed
+        // Wait until fix and background tasks are completed
         guard NetworkVars.shared.fixUserIsAPIKeyV412 == false,
               UploadVars.shared.didResumeUploads == false,
               UploadVars.shared.isProcessingTaskActive == false,
@@ -27,7 +27,7 @@ extension UploadManager
             return
         }
         
-        // Uncomment below line to debug background task:
+        /// Uncomment below line to debug BGProcessingTask
 //        return
         
         // Reset flags

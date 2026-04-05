@@ -91,9 +91,10 @@ extension UploadManager
             scheduleNextUpload()
         }
         
-        // Task management
+        // Task expiration management
         var wasExpired = false
         task.expirationHandler = {
+            // Inform functions that the task expired.
             wasExpired = true
             debugPrint("••> Background upload task expired or cancelled by iOS.")
         }
@@ -177,12 +178,13 @@ extension UploadManager
     
     @available(iOS 26.0, *)
     public func handleContinuedUpload(task: BGContinuedProcessingTask) {
-        // Background task active
+        // Will tell that this background task is active
         UploadVars.shared.isContinuedProcessingTaskActive = true
         
         // Task expiration management
         var wasExpired = false
         task.expirationHandler = {
+            // Inform functions that the task expired.
             wasExpired = true
             debugPrint("••> Continued upload task expired or cancelled by iOS.")
         }
@@ -253,7 +255,7 @@ extension UploadManager
                 debugPrint("••> Added \(uploadIDsToAdd.count) upload requests to the continued upload task.")
             }
             
-            // Continued upload task completed
+            // Informs the background task scheduler that the task is complete.
             UploadVars.shared.isContinuedProcessingTaskActive = false
             let subtitle = "\(task.progress.completedUnitCount) uploads completed."
             task.updateTitle(task.title, subtitle: subtitle)
