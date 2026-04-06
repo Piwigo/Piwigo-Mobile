@@ -120,7 +120,7 @@ extension UploadManager {
         if let index = transferCounters.firstIndex(where: {$0.uid == objectIDstr}) {
             transferCounters.remove(at: index)
 #if DEBUG
-            UploadManager.logger.notice("\(objectIDstr) | Removed counter")
+            UploadManager.logger.notice("\(objectIDstr) • Removed counter")
 #endif
         }
     }

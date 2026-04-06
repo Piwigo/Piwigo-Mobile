@@ -259,10 +259,10 @@ public class UploadVars: NSObject, @unchecked Sendable {
     /// Remembers that upload activities were resumed at launch
     public var didResumeUploads = false
     
-    /// Remembers that the upload processing task is active or not
+    /// Tells if the upload processing task is active or not
     public var isProcessingTaskActive = false
     
-    /// Remembers that the upload continued processing task is active or not
+    /// Tells if the upload continued processing task is active or not
     public var isContinuedProcessingTaskActive = false
     
     /// To prevent the background processing upload task from running when the app is active,

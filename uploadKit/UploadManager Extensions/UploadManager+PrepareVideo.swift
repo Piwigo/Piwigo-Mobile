@@ -169,7 +169,7 @@ extension UploadManager {
         // Retrieve video data
         let options = getVideoRequestOptions()
         retrieveVideo(from: imageAsset, with: options) { (avasset, error) in
-            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Return AVAsset")
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Returned AVAsset")
             // Error?
             if let error = error {
                 Task(priority: .utility) { @UploadManagerActor in
@@ -336,7 +336,7 @@ extension UploadManager {
         // Retrieve video data
         let options = getVideoRequestOptions()
         retrieveVideo(from: imageAsset, with: options) { [self] (avasset, error) in
-            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Return AVAsset")
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Returned AVAsset")
             // Error?
             if let error = error {
                 Task(priority: .utility) { @UploadManagerActor in

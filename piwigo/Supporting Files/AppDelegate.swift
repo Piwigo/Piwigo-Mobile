@@ -312,7 +312,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // Start network monitoring
             Task { @NetworkMonitoring in
                 await self.networkMonitor?.startMonitoring()
-                debugPrint("••> Background upload task started network monitoring.")
             }
             
             // Handle next upload

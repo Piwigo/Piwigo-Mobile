@@ -75,19 +75,19 @@ extension UploadManager
         // Submit upload request
         do {
             try BGTaskScheduler.shared.submit(request)
-            debugPrint("••> Background upload task request with ID \(pwgBackgroundUploadTask) submitted with success.")
+            UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' submitted with success.")
         } catch {
-            debugPrint("••> Failed to submit background upload request with ID \(pwgBackgroundUploadTask): \(error.localizedDescription)")
+            UploadManager.logger.notice("Failed to submit background task '\(pwgBackgroundUploadTask)': \(error.localizedDescription)")
         }
     }
     
     public func handleNextUpload(task: BGProcessingTask) {
-        // Background task active
+        // Will tell that this background task is active
         UploadVars.shared.isProcessingTaskActive = true
         
         // Schedule the next uploads if needed
         if UploadVars.shared.nberOfUploadsToComplete != 0 {
-            debugPrint("••> Schedule next uploads.")
+            UploadManager.logger.notice("Schedule next background task '\(pwgBackgroundUploadTask)'.")
             scheduleNextUpload()
         }
         
@@ -170,9 +170,9 @@ extension UploadManager
         // Submit upload request
         do {
             try BGTaskScheduler.shared.submit(request)
-            debugPrint("••> Background upload task request with ID \(pwgBackgroundContinuedUploadTask) submitted with success.")
+            UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' submitted with success.")
         } catch {
-            debugPrint("••> Failed to submit background upload request with ID \(pwgBackgroundContinuedUploadTask): \(error.localizedDescription)")
+            UploadManager.logger.notice("Failed to submit background task '\(pwgBackgroundContinuedUploadTask)': \(error.localizedDescription)")
         }
     }
     
@@ -222,10 +222,10 @@ extension UploadManager
                 task.updateTitle(title, subtitle: "\(remaining) uploads remaining")
                 
                 // Wait before launching a new transfer?
-                while UploadManager.shared.nberOfUploadsInTransfer >= UploadVars.shared.maxNberOfUploadTransfers {
-                    debugPrint("••> Continued upload task paused for 1s")
-                    try? await Task.sleep(nanoseconds: 1_000_000_000)
-                }
+//                while UploadManager.shared.nberOfUploadsInTransfer >= UploadVars.shared.maxNberOfUploadTransfers {
+//                    debugPrint("••> Continued upload task paused for 1s")
+//                    try? await Task.sleep(nanoseconds: 1_000_000_000)
+//                }
             }
             
             // Prepare uploads and launch transfers
