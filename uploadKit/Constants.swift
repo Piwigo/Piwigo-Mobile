@@ -15,8 +15,8 @@ public extension Bundle {
 }
 
 // Constants used to manage background tasks
-public let maxNberOfUploadsPerBckgTask = 100
-public let maxNberOfQueuedAutoUploads = 500       // i.e. do not queue more than 500 requests at a time
+public let maxNberOfUploadsPerBckgTask = 25     // Queue upload requests to prepare and transfer in batches of 25
+public let maxNberOfQueuedAutoUploads = 500     // i.e. do not queue more than 500 requests at a time
 
 // Constants used to name and identify media
 let kOriginalSuffix = "-original"

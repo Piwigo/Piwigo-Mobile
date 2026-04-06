@@ -14,11 +14,6 @@ public extension Bundle {
     static let piwigoKit = Bundle.allFrameworks.first(where: { ($0.bundleIdentifier ?? "").contains("piwigoKit")})
 }
 
-// Localised string used by uploadKit (single source of truth)
-public extension String {
-    static let piwigoKitUploadingLabel = String(localized: "imageUploadTableCell_uploading", bundle: .piwigoKit, comment: "Uploading...")
-}
-
 // Disconnects and asks to update the Piwigo server if version is lower than:
 public let pwgMinVersion = "12.0.0"
 

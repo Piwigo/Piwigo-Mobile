@@ -49,7 +49,7 @@ extension UploadManager
         // Get IDs of uploads to prepare
         var toPrepare = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.waiting], inContext: self.uploadBckgContext).0
         
-        // Limit number of uploads to prepare
+        // Limit number of uploads to prepare to 100 transfers, i.e. a few hundreds URLSessionTasks
         let maxNberToPrepare = max(0, maxNberOfUploadsPerBckgTask - toTransfer.count)
         if toPrepare.count > maxNberToPrepare {
             toPrepare.removeLast(toPrepare.count - maxNberToPrepare)
@@ -105,7 +105,7 @@ extension UploadManager
             // Defer finishing code to managed unhandled error or crashes
             var success = false
             defer {
-                // Task completed w/o or w/o success
+                // Task completed w/ or w/o success
                 UploadVars.shared.isProcessingTaskActive = false
                 
                 // Perform last actions according to app state
@@ -115,7 +115,7 @@ extension UploadManager
                 task.setTaskCompleted(success: success)
             }
             
-            // Get IDs of upload requests (limited to 100 transfers, i.e. a few hundreds URLSessionTasks)
+            // Get IDs of a first batch of upload requests (limited to 25, i.e. a few hundreds URLSessionTasks)
             var (toFinish, toTransfer, toPrepare) = await UploadManager.shared.initialiseBckgTask()
             
             // Finish transfers
@@ -126,22 +126,62 @@ extension UploadManager
             
             // Launch transfers
             while !toTransfer.isEmpty {
-                // Low-Power mode activated? No required Wi-Fi?
+                // Low-Power mode activated? No required Wi-Fi? Task cancelled?
                 if shouldStopUploadTask() || Task.isCancelled { break }
                 
                 // Launch transfer
                 let uploadID = toTransfer.removeFirst()
                 await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID, inTaskType: .bckgProcessingTask)
+                
+                // Wait before launching a new transfer?
+                if UploadManager.shared.nberOfUploadsInTransfer >= UploadVars.shared.maxNberOfUploadTransfers {
+                    UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' is paused.")
+                    while UploadManager.shared.nberOfUploadsInTransfer >= UploadVars.shared.maxNberOfUploadTransfers {
+                        try? await Task.sleep(nanoseconds: 250_000_000)
+                        if Task.isCancelled { break }
+                    }
+                    UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' is resumed.")
+                }
             }
             
             // Prepare upload and launch transfer
             while !toPrepare.isEmpty {
-                // Low-Power mode activated? No required Wi-Fi?
+                // Low-Power mode activated? No required Wi-Fi? Task cancelled?
                 if shouldStopUploadTask() || Task.isCancelled { break }
                 
                 // Prepare upload and launch transfer
                 let uploadID = toPrepare.removeFirst()
                 await UploadManager.shared.prepareUpload(withID: uploadID, inTaskType: .bckgProcessingTask)
+                
+                // Wait before launching a new transfer?
+                if UploadManager.shared.nberOfUploadsInTransfer >= UploadVars.shared.maxNberOfUploadTransfers {
+                    UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' is paused.")
+                    while UploadManager.shared.nberOfUploadsInTransfer >= UploadVars.shared.maxNberOfUploadTransfers {
+                        try? await Task.sleep(nanoseconds: 250_000_000)
+                        if Task.isCancelled { break }
+                    }
+                    UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' is resumed.")
+                }
+                
+                // Get IDs of uploads waiting for preparation
+                let uploadIDs = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.waiting], inContext: self.uploadBckgContext).0
+                
+                // Remove IDs of uploads already in the queue
+                let alreadyQueuedIDs = Set(uploadIDs).intersection(Set(toPrepare))
+                var uploadIDsToAdd = uploadIDs
+                uploadIDsToAdd.removeAll(where: { alreadyQueuedIDs.contains($0) })
+                
+                // Limit the number of uploads to prepare to 25, i.e. a few hundreds URLSessionTasks
+                let maxNberToPrepare = max(0, maxNberOfUploadsPerBckgTask - toPrepare.count)
+                if uploadIDsToAdd.count > maxNberToPrepare {
+                    uploadIDsToAdd.removeLast(uploadIDsToAdd.count - maxNberToPrepare)
+                }
+                
+                // Add upload requests without queuing more than 25
+                if uploadIDsToAdd.isEmpty == false {
+                    toPrepare.append(contentsOf: uploadIDsToAdd)
+                    UploadManager.logger.notice("Added \(uploadIDsToAdd.count) upload requests to '\(pwgBackgroundContinuedUploadTask)'.")
+                }
             }
             
             // Task cancelled? Low-Power mode enabled? Wi-Fi required?
@@ -203,7 +243,7 @@ extension UploadManager
         // Schedule continued upload now
         // Continued uploading requires network connectivity but not external power
         let title = "Piwigo"
-        let subtitle = String.piwigoKitUploadingLabel   // To avoid a duplicate translation
+        let subtitle = String(localized: "backgroundTask_preparing", bundle: .uploadKit, comment: "Preparing uploads…")
         let request = BGContinuedProcessingTaskRequest(identifier: pwgBackgroundContinuedUploadTask,
                                                        title: title, subtitle: subtitle)
         request.strategy = .queue   // Queues the task to begin as soon as possible
@@ -236,7 +276,7 @@ extension UploadManager
             // Defer finishing code to managed unhandled error or crashes
             var success = false
             defer {
-                // Task completed w/o or w/o success
+                // Task completed w/ or w/o success
                 UploadVars.shared.isContinuedProcessingTaskActive = false
                 
                 // Perform last actions according to app state
@@ -246,7 +286,7 @@ extension UploadManager
                 task.setTaskCompleted(success: success)
             }
             
-            // Get IDs of upload requests (limited to 100 transfers, i.e. a few hundreds URLSessionTasks)
+            // Get IDs of a first batch of upload requests (limited to 25, i.e. a few hundreds URLSessionTasks)
             var (toFinish, toTransfer, toPrepare) = await UploadManager.shared.initialiseBckgTask()
             
             // Task progress initialisation
@@ -262,48 +302,90 @@ extension UploadManager
             
             // Launch transfers
             while !toTransfer.isEmpty {
-                // Low-Power mode activated? No required Wi-Fi?
+                // Low-Power mode activated? No required Wi-Fi? Task cancelled?
                 if shouldStopUploadTask() || Task.isCancelled { break }
                 
                 // Launch transfer
                 let uploadID = toTransfer.removeFirst()
                 await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID, inTaskType: .bckgContinuedProcessingTask)
+
+                // Update progress bar
                 task.progress.completedUnitCount += 1
                 let diff = task.progress.totalUnitCount - task.progress.completedUnitCount
-                let remaining = NumberFormatter.localizedString(from: NSNumber(value: diff), number: .decimal)
-                task.updateTitle(title, subtitle: "\(remaining) uploads remaining")
+                let subtitle = String(format: String(localized: "backgroundTask_remaining", bundle: .uploadKit, comment: "%lld uploads remaining"), diff)
+                task.updateTitle(title, subtitle: subtitle)
                 
                 // Wait before launching a new transfer?
-//                while UploadManager.shared.nberOfUploadsInTransfer >= UploadVars.shared.maxNberOfUploadTransfers {
-//                    debugPrint("••> Continued upload task paused for 1s")
-//                    try? await Task.sleep(nanoseconds: 1_000_000_000)
-//                }
+                if UploadManager.shared.nberOfUploadsInTransfer >= UploadVars.shared.maxNberOfUploadTransfers {
+                    UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' is paused.")
+                    while UploadManager.shared.nberOfUploadsInTransfer >= UploadVars.shared.maxNberOfUploadTransfers {
+                        try? await Task.sleep(nanoseconds: 250_000_000)
+                        if Task.isCancelled { break }
+                    }
+                    UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' is resumed.")
+                }
             }
             
             // Prepare uploads and launch transfers
+            var toPrepareCount = toPrepare.count
+            var preparedCount = 0
             while !toPrepare.isEmpty {
-                // Low-Power mode activated? No required Wi-Fi?
+                // Low-Power mode activated? No required Wi-Fi? Task cancelled?
                 if shouldStopUploadTask() || Task.isCancelled { break }
                 
                 // Prepare upload and launch transfer
                 let uploadID = toPrepare.removeFirst()
                 await UploadManager.shared.prepareUpload(withID: uploadID, inTaskType: .bckgContinuedProcessingTask)
+                
+                // Update progress bar
+                preparedCount += 1
                 task.progress.completedUnitCount += 1
                 let diff = task.progress.totalUnitCount - task.progress.completedUnitCount
-                let remaining = NumberFormatter.localizedString(from: NSNumber(value: diff), number: .decimal)
-                task.updateTitle(title, subtitle: "\(remaining) uploads remaining")
+                let subtitle = String(format: String(localized: "backgroundTask_remaining", bundle: .uploadKit, comment: "%lld uploads remaining"), diff)
+                task.updateTitle(title, subtitle: subtitle)
                 
-                // Low-Power mode activated? No required Wi-Fi?
+                // Low-Power mode activated? No required Wi-Fi? Task cancelled?
                 if shouldStopUploadTask() || Task.isCancelled { break }
                 
-                // Add upload requests recently added by the user
+                // Wait before launching a new transfer?
+                if UploadManager.shared.nberOfUploadsInTransfer >= UploadVars.shared.maxNberOfUploadTransfers {
+                    UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' is paused.")
+                    while UploadManager.shared.nberOfUploadsInTransfer >= UploadVars.shared.maxNberOfUploadTransfers {
+                        // Wait 250 ms
+                        try? await Task.sleep(nanoseconds: 250_000_000)
+                        
+                        // Low-Power mode activated? No required Wi-Fi? Task cancelled?
+                        if shouldStopUploadTask() || Task.isCancelled { break }
+                    }
+                    UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' is resumed.")
+                }
+                
+                // Get IDs of uploads waiting for preparation
                 let uploadIDs = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.waiting], inContext: self.uploadBckgContext).0
+                
+                // Did the user submit additional upload requests
+                let nberOfNewUploads = uploadIDs.count - (toPrepareCount - preparedCount)
+                if nberOfNewUploads > 0 {
+                    // User submitted additional upload requests ► Update total count
+                    toPrepareCount += nberOfNewUploads
+                    task.progress.totalUnitCount += Int64(nberOfNewUploads)
+                    UploadManager.logger.notice("User submitted \(nberOfNewUploads) additional upload requests to '\(pwgBackgroundContinuedUploadTask)'.")
+                }
+                
+                // Remove IDs of uploads already in the queue
                 let alreadyQueuedIDs = Set(uploadIDs).intersection(Set(toPrepare))
                 var uploadIDsToAdd = uploadIDs
                 uploadIDsToAdd.removeAll(where: { alreadyQueuedIDs.contains($0) })
-                toPrepare.append(contentsOf: uploadIDsToAdd)
-                task.progress.totalUnitCount += Int64(uploadIDsToAdd.count)
+                
+                // Limit the number of uploads to prepare to 25, i.e. a few hundreds URLSessionTasks
+                let maxNberToPrepare = max(0, maxNberOfUploadsPerBckgTask - toPrepare.count)
+                if uploadIDsToAdd.count > maxNberToPrepare {
+                    uploadIDsToAdd.removeLast(uploadIDsToAdd.count - maxNberToPrepare)
+                }
+                
+                // Add upload requests without queuing more than 25
                 if uploadIDsToAdd.isEmpty == false {
+                    toPrepare.append(contentsOf: uploadIDsToAdd)
                     UploadManager.logger.notice("Added \(uploadIDsToAdd.count) upload requests to '\(pwgBackgroundContinuedUploadTask)'.")
                 }
             }
@@ -312,26 +394,26 @@ extension UploadManager
             if Task.isCancelled {
                 // Inform that the task is stopped
                 UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' cancelled by iOS.")
-                let subtitle = "Please relaunch the app."
+                let subtitle = String(localized: "backgroundTask_cancelled", bundle: .uploadKit, comment: "Uploads interrupted. Please restart the app.")
                 task.updateTitle(task.title, subtitle: subtitle)
             }
             else if ProcessInfo.processInfo.isLowPowerModeEnabled {
                 // Inform that the task is stopped
                 UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' stopped: Low-Power mode is enabled.")
-                let subtitle = "Low power mode enabled. Please turn it off."
+                let subtitle = String(localized: "backgroundTask_lowPowerMode", bundle: .uploadKit, comment: "Low power mode enabled. Please turn it off.")
                 task.updateTitle(task.title, subtitle: subtitle)
             }
             else if UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi {
                 // Inform that the task is stopped
                 UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' stopped: Wi-Fi required, but not connected.")
-                let subtitle = "WiFi only uploading. Please connect to WiFi."
+                let subtitle = String(localized: "backgroundTask_noWifi", bundle: .uploadKit, comment: "Wi-Fi only uploading. Please connect to Wi-Fi.")
                 task.updateTitle(task.title, subtitle: subtitle)
             }
             else {
                 // Inform that the task is completed with success
                 success = true
                 UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' completed with success.")
-                let subtitle = "\(task.progress.completedUnitCount) uploads completed."
+                let subtitle = String(format: String(localized: "backgroundTask_completed", bundle: .uploadKit, comment: "%lld uploads completed"), task.progress.completedUnitCount)
                 task.updateTitle(task.title, subtitle: subtitle)
             }
         }

@@ -6875,7 +6875,6 @@
       }
     },
     "imageUploadTableCell_finishing" : {
-      "comment" : "Finishing...",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -6977,7 +6976,6 @@
       }
     },
     "imageUploadTableCell_prepared" : {
-      "comment" : "Ready for upload...",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -7079,7 +7077,6 @@
       }
     },
     "imageUploadTableCell_preparing" : {
-      "comment" : "Preparing...",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -7181,7 +7178,6 @@
       }
     },
     "imageUploadTableCell_uploaded" : {
-      "comment" : "Uploaded",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -7283,7 +7279,6 @@
       }
     },
     "imageUploadTableCell_uploading" : {
-      "comment" : "Uploading...",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -7385,7 +7380,6 @@
       }
     },
     "imageUploadTableCell_waiting" : {
-      "comment" : "Waiting...",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
