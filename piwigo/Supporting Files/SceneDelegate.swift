@@ -226,7 +226,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // - prevent the background processing upload task from running when the app is active,
         // - stop the network monitoring when ending the background continued processing upload task,
         // - resume upload activities after the completion iof a background task.
-        UploadVars.shared.applicationIsActive = true
+        UploadVars.shared.isApplicationActive = true
         
         // Flag used to force relogin at start
         NetworkVars.shared.applicationShouldRelogin = true
@@ -401,7 +401,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // - prevent the background processing upload task from running when the app is active,
         // - stop the network monitoring when ending the background continued processing upload task,
         // - resume upload activities after the completion iof a background task.
-        UploadVars.shared.applicationIsActive = false
+        UploadVars.shared.isApplicationActive = false
         
         // Reset list of albums being fetched
         AlbumVars.shared.isFetchingAlbumData = Set<Int32>()

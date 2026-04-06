@@ -265,7 +265,8 @@ public class UploadVars: NSObject, @unchecked Sendable {
     /// Remembers that the upload continued processing task is active or not
     public var isContinuedProcessingTaskActive = false
     
-    /// - To prevent processing task from running when the app is active
-    ///   and loop the continued processing task when the app is in the foreground
-    public var applicationIsActive: Bool = false
+    /// To prevent the background processing upload task from running when the app is active,
+    /// stop the network monitoring when ending the background continued processing upload task,
+    /// resume upload activities after the completion iof a background task.
+    public var isApplicationActive: Bool = false
 }

@@ -64,7 +64,7 @@ extension UploadManager {
             try? await moderateUploadedImagesIfNeeded()
             
             // Suggest to delete uploaded images if needed
-            if UploadVars.shared.isProcessingTaskActive == false && UploadVars.shared.isProcessingTaskActive == false {
+            if UploadVars.shared.isApplicationActive {
                 suggestToDeleteUploadedImages(withPendingUploads: 0)
             }
         }
