@@ -281,7 +281,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func registerBgTasks() {
         // Register background upload task
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: pwgBackgroundUploadTask, using: nil) { task in
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: pwgBackgroundUploadTask, using: nil) { bgTask in
+            // Check task creation
+            guard let task = bgTask as? BGProcessingTask else { return }
+                        
             // Don't upload images now if a migration is planned
             if CacheVars.shared.isMigrationRunning {
                 debugPrint("••> Background upload task rescheduled because a migration is ongoing.")
@@ -320,7 +323,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Register continued background upload task
         if #available(iOS 26.0, *) {
-            BGTaskScheduler.shared.register(forTaskWithIdentifier: pwgBackgroundContinuedUploadTask, using: nil) { task in
+            BGTaskScheduler.shared.register(forTaskWithIdentifier: pwgBackgroundContinuedUploadTask, using: nil) { bgTask in
+                // Check task creation
+                guard let task = bgTask as? BGContinuedProcessingTask else { return }
+                
                 // Don't upload images now if a migration is planned
                 if CacheVars.shared.isMigrationRunning {
                     debugPrint("••> Background upload task rescheduled because a migration is ongoing.")
