@@ -100,21 +100,21 @@ public actor UploadManagerActor {
         if uploadIDsToFinish.isEmpty == false {
             let uploadIDs = uploadIDsToFinish
             uploadIDsToFinish.removeAll()
-            await UploadManager.shared.finishTransferOfUpload(withIDs: uploadIDs)
+            await UploadManager.shared.finishTransferOfUpload(withIDs: uploadIDs, inTaskType: .foreground)
         }
         
         // Second, transfer image if any and allowed
         if await UploadManager.shared.nberOfUploadsInTransfer < UploadVars.shared.maxNberOfUploadTransfers,
            let uploadID = uploadIDsToTransfer.first {
             uploadIDsToTransfer.removeFirst()
-            await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID)
+            await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID, inTaskType: .foreground)
         }
         
         // Third, prepare image if any and allowed
         if await UploadManager.shared.nberOfUploadsInPreparation < UploadVars.shared.maxNberOfPreparedUploads,
            let uploadID = uploadIDsToPrepare.first {
             uploadIDsToPrepare.removeFirst()
-            await UploadManager.shared.prepareUpload(withID: uploadID)
+            await UploadManager.shared.prepareUpload(withID: uploadID, inTaskType: .foreground)
         }
     }
 }

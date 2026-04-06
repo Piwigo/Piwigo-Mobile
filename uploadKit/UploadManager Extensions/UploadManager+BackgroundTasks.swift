@@ -92,57 +92,98 @@ extension UploadManager
         }
         
         // Task expiration management
-        var wasExpired = false
+        var uploadTask: Task<Void, Never>?
         task.expirationHandler = {
-            // Inform functions that the task expired.
-            wasExpired = true
-            debugPrint("••> Background upload task expired or cancelled by iOS.")
+            // Flags the task as cancelled.
+            uploadTask?.cancel()
+            UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' expiration handler fired.")
         }
         
-        Task(priority: .utility) { @UploadManagerActor in
+        // Launch upload task
+        uploadTask = Task(priority: .utility) { @UploadManagerActor in
+            
+            // Defer finishing code to managed unhandled error or crashes
+            var success = false
+            defer {
+                // Task completed w/o or w/o success
+                UploadVars.shared.isProcessingTaskActive = false
+                
+                // Perform last actions according to app state
+                self.finishUploadTask()
+                
+                // Inform the background task scheduler that the task is complete.
+                task.setTaskCompleted(success: success)
+            }
+            
             // Get IDs of upload requests (limited to 100 transfers, i.e. a few hundreds URLSessionTasks)
             var (toFinish, toTransfer, toPrepare) = await UploadManager.shared.initialiseBckgTask()
             
             // Finish transfers
-            if !toFinish.isEmpty {
-                await UploadManager.shared.finishTransferOfUpload(withIDs: toFinish)
+            if !toFinish.isEmpty && !shouldStopUploadTask() && !Task.isCancelled {
+                await UploadManager.shared.finishTransferOfUpload(withIDs: toFinish, inTaskType: .bckgProcessingTask)
                 toFinish.removeAll()
             }
             
             // Launch transfers
             while !toTransfer.isEmpty {
-                // Check if the task expired
-                if wasExpired {
-                    // Stop network monitoring
-                    NotificationCenter.default.post(name: .pwgStopNetworkMonitoring, object: nil)
-                    UploadVars.shared.isProcessingTaskActive = false
-                    task.setTaskCompleted(success: false)
-                    return
-                }
+                // Low-Power mode activated? No required Wi-Fi?
+                if shouldStopUploadTask() || Task.isCancelled { break }
+                
                 // Launch transfer
                 let uploadID = toTransfer.removeFirst()
-                await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID)
+                await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID, inTaskType: .bckgProcessingTask)
             }
             
             // Prepare upload and launch transfer
             while !toPrepare.isEmpty {
-                // Check if the task was canceled
-                if wasExpired {
-                    // Stop network monitoring
-                    NotificationCenter.default.post(name: .pwgStopNetworkMonitoring, object: nil)
-                    UploadVars.shared.isProcessingTaskActive = false
-                    task.setTaskCompleted(success: false)
-                    return
-                }
-                // Prepare upload
+                // Low-Power mode activated? No required Wi-Fi?
+                if shouldStopUploadTask() || Task.isCancelled { break }
+                
+                // Prepare upload and launch transfer
                 let uploadID = toPrepare.removeFirst()
-                await UploadManager.shared.prepareUpload(withID: uploadID)
+                await UploadManager.shared.prepareUpload(withID: uploadID, inTaskType: .bckgProcessingTask)
             }
             
+            // Task cancelled? Low-Power mode enabled? Wi-Fi required?
+            if Task.isCancelled {
+                // Inform that the task is stopped
+                UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' cancelled by iOS.")
+            }
+            else if ProcessInfo.processInfo.isLowPowerModeEnabled {
+                // Inform that the task is stopped
+                UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' stopped: Low-Power mode is enabled.")
+            }
+            else if UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi {
+                // Inform that the task is stopped
+                UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' stopped: Wi-Fi required, but not connected.")
+            }
+            else {
+                // Inform that the task is completed with success
+                success = true
+                UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' completed with success.")
+             }
+        }
+    }
+    
+    private func shouldStopUploadTask() -> Bool {
+        // Low-Power mode enabled? Wi-Fi required?
+        return ProcessInfo.processInfo.isLowPowerModeEnabled ||
+                (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi)
+    }
+    
+    private func finishUploadTask() {
+        // Explicitly abort pending CoreData work
+        self.uploadBckgContext.rollback()
+        
+        // Is the app in the foreground?
+        if UploadVars.shared.isApplicationActive {
+            // Resume upload activities in the foreground
+            Task(priority: .utility) { @UploadManagerActor in
+                await UploadManager.shared.resumeInForeground()
+            }
+        } else {
             // Stop network monitoring
             NotificationCenter.default.post(name: .pwgStopNetworkMonitoring, object: nil)
-            UploadVars.shared.isProcessingTaskActive = false
-            task.setTaskCompleted(success: true)
         }
     }
     
@@ -182,14 +223,29 @@ extension UploadManager
         UploadVars.shared.isContinuedProcessingTaskActive = true
         
         // Task expiration management
-        var wasExpired = false
+        var uploadTask: Task<Void, Never>?
         task.expirationHandler = {
-            // Inform functions that the task expired.
-            wasExpired = true
-            debugPrint("••> Continued upload task expired or cancelled by iOS.")
+            // Flags the task as cancelled.
+            uploadTask?.cancel()
+            UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' expiration handler fired.")
         }
         
-        Task(priority: .utility) { @UploadManagerActor in
+        // Launch upload task
+        uploadTask = Task(priority: .utility) { @UploadManagerActor in
+            
+            // Defer finishing code to managed unhandled error or crashes
+            var success = false
+            defer {
+                // Task completed w/o or w/o success
+                UploadVars.shared.isContinuedProcessingTaskActive = false
+                
+                // Perform last actions according to app state
+                self.finishUploadTask()
+                
+                // Inform the background task scheduler that the task is complete.
+                task.setTaskCompleted(success: success)
+            }
+            
             // Get IDs of upload requests (limited to 100 transfers, i.e. a few hundreds URLSessionTasks)
             var (toFinish, toTransfer, toPrepare) = await UploadManager.shared.initialiseBckgTask()
             
@@ -199,23 +255,19 @@ extension UploadManager
             task.progress.completedUnitCount = 0
             
             // Finish transfers
-            if !toFinish.isEmpty {
-                await UploadManager.shared.finishTransferOfUpload(withIDs: toFinish)
+            if !toFinish.isEmpty && !shouldStopUploadTask() && !Task.isCancelled {
+                await UploadManager.shared.finishTransferOfUpload(withIDs: toFinish, inTaskType: .bckgContinuedProcessingTask)
                 toFinish.removeAll()
             }
             
             // Launch transfers
             while !toTransfer.isEmpty {
-                // Check if the task expired or should be stopped
-                if shouldStopTask(task, expired: wasExpired) {
-                    UploadVars.shared.isContinuedProcessingTaskActive = false
-                    task.setTaskCompleted(success: false)
-                    return
-                }
+                // Low-Power mode activated? No required Wi-Fi?
+                if shouldStopUploadTask() || Task.isCancelled { break }
                 
                 // Launch transfer
                 let uploadID = toTransfer.removeFirst()
-                await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID)
+                await UploadManager.shared.transferOrCopyFileOfUpload(withID: uploadID, inTaskType: .bckgContinuedProcessingTask)
                 task.progress.completedUnitCount += 1
                 let diff = task.progress.totalUnitCount - task.progress.completedUnitCount
                 let remaining = NumberFormatter.localizedString(from: NSNumber(value: diff), number: .decimal)
@@ -230,20 +282,19 @@ extension UploadManager
             
             // Prepare uploads and launch transfers
             while !toPrepare.isEmpty {
-                // Check if the task expired or should be stopped
-                if shouldStopTask(task, expired: wasExpired) {
-                    UploadVars.shared.isContinuedProcessingTaskActive = false
-                    task.setTaskCompleted(success: false)
-                    return
-                }
+                // Low-Power mode activated? No required Wi-Fi?
+                if shouldStopUploadTask() || Task.isCancelled { break }
                 
                 // Prepare upload and launch transfer
                 let uploadID = toPrepare.removeFirst()
-                await UploadManager.shared.prepareUpload(withID: uploadID)
+                await UploadManager.shared.prepareUpload(withID: uploadID, inTaskType: .bckgContinuedProcessingTask)
                 task.progress.completedUnitCount += 1
                 let diff = task.progress.totalUnitCount - task.progress.completedUnitCount
                 let remaining = NumberFormatter.localizedString(from: NSNumber(value: diff), number: .decimal)
                 task.updateTitle(title, subtitle: "\(remaining) uploads remaining")
+                
+                // Low-Power mode activated? No required Wi-Fi?
+                if shouldStopUploadTask() || Task.isCancelled { break }
                 
                 // Add upload requests recently added by the user
                 let uploadIDs = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.waiting], inContext: self.uploadBckgContext).0
@@ -252,35 +303,37 @@ extension UploadManager
                 uploadIDsToAdd.removeAll(where: { alreadyQueuedIDs.contains($0) })
                 toPrepare.append(contentsOf: uploadIDsToAdd)
                 task.progress.totalUnitCount += Int64(uploadIDsToAdd.count)
-                debugPrint("••> Added \(uploadIDsToAdd.count) upload requests to the continued upload task.")
+                if uploadIDsToAdd.isEmpty == false {
+                    UploadManager.logger.notice("Added \(uploadIDsToAdd.count) upload requests to '\(pwgBackgroundContinuedUploadTask)'.")
+                }
             }
             
-            // Informs the background task scheduler that the task is complete.
-            UploadVars.shared.isContinuedProcessingTaskActive = false
-            let subtitle = "\(task.progress.completedUnitCount) uploads completed."
-            task.updateTitle(task.title, subtitle: subtitle)
-            task.setTaskCompleted(success: true)
+            // Task cancelled? Low-Power mode enabled? Wi-Fi required?
+            if Task.isCancelled {
+                // Inform that the task is stopped
+                UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' cancelled by iOS.")
+                let subtitle = "Please relaunch the app."
+                task.updateTitle(task.title, subtitle: subtitle)
+            }
+            else if ProcessInfo.processInfo.isLowPowerModeEnabled {
+                // Inform that the task is stopped
+                UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' stopped: Low-Power mode is enabled.")
+                let subtitle = "Low power mode enabled. Please turn it off."
+                task.updateTitle(task.title, subtitle: subtitle)
+            }
+            else if UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi {
+                // Inform that the task is stopped
+                UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' stopped: Wi-Fi required, but not connected.")
+                let subtitle = "WiFi only uploading. Please connect to WiFi."
+                task.updateTitle(task.title, subtitle: subtitle)
+            }
+            else {
+                // Inform that the task is completed with success
+                success = true
+                UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' completed with success.")
+                let subtitle = "\(task.progress.completedUnitCount) uploads completed."
+                task.updateTitle(task.title, subtitle: subtitle)
+            }
         }
-    }
-    
-    @available(iOS 26.0, *)
-    private func shouldStopTask(_ task: BGContinuedProcessingTask, expired wasExpired: Bool) -> Bool
-    {
-        var subtitle = ""
-        if wasExpired {
-            subtitle = "Upload task expired. Please try again."
-        }
-        else if ProcessInfo.processInfo.isLowPowerModeEnabled {
-            subtitle = "Low power mode enabled. Please turn it off."
-        }
-        else if UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi {
-            subtitle = "WiFi only uploading. Please connect to WiFi."
-        }
-        else {
-            return false
-        }
-        
-        task.updateTitle(task.title, subtitle: subtitle)
-        return true
     }
 }

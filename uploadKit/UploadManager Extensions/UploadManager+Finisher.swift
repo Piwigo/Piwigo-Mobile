@@ -15,7 +15,7 @@ import piwigoKit
 extension UploadManager {
     
     // MARK: - Tasks Executed after Uploading
-    func finishTransferOfUpload(withIDs uploadIDs: [NSManagedObjectID]) async {
+    func finishTransferOfUpload(withIDs uploadIDs: [NSManagedObjectID], inTaskType taskType: UploadTaskType) async {
         
         // Retrieve upload request properties
         var uploadDataArray: [NSManagedObjectID : UploadProperties] = [:]
@@ -28,10 +28,10 @@ extension UploadManager {
             uploadDataArray[uploadID] = uploadData
         }
         if uploadDataArray.isEmpty {
-            // Job done if called by background task
-            if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive { return }
-            // Process next upload if any
-            await UploadManagerActor.shared.processNextUpload()
+            // Should we process a next upload?
+            if taskType.isForeground {
+                await UploadManagerActor.shared.processNextUpload()
+            }
             return
         }
         
@@ -69,11 +69,10 @@ extension UploadManager {
             }
         }
         
-        // Job done if called by background task
-        if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive { return }
-        
-        // Process next upload if any
-        await UploadManagerActor.shared.processNextUpload()
+        // In foreground, process next upload if any
+        if taskType.isForeground {
+            await UploadManagerActor.shared.processNextUpload()
+        }
     }
     
     

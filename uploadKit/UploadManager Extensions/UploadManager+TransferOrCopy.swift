@@ -14,16 +14,17 @@ import piwigoKit
 extension UploadManager {
     
     // MARK: - Transfer or Copy Image/Video
-    public func transferOrCopyFileOfUpload(withID uploadID: NSManagedObjectID) async {
+    public func transferOrCopyFileOfUpload(withID uploadID: NSManagedObjectID,
+                                           inTaskType taskType: UploadTaskType) async {
         
         // Retrieve upload request properties
         guard var uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID, inContext: self.uploadBckgContext)
         else {
             UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Could not retrieve upload request for transfer/copy!")
-            // Job done if called by background task
-            if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive { return }
-            // Process next upload if any
-            await UploadManagerActor.shared.processNextUpload()
+            // Should we process a next upload?
+            if taskType.isForeground {
+                await UploadManagerActor.shared.processNextUpload()
+            }
             return
         }
         
@@ -31,13 +32,13 @@ extension UploadManager {
         guard uploadData.requestState == .prepared
         else {
             UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Upload in wrong state '\(uploadData.stateLabel)' before transfer/copy")
-            // Job done if called by background task
-            if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive { return }
-            // Add upload to finish transfer queue
-            if uploadData.requestState == .uploaded {
-                await UploadManagerActor.shared.addUploadsToFinish(withIDs: [uploadID])
+            // In foreground, process next upload if any
+            if taskType.isForeground {
+                if uploadData.requestState == .uploaded {
+                    await UploadManagerActor.shared.addUploadsToFinish(withIDs: [uploadID])
+                }
+                await UploadManagerActor.shared.processNextUpload()
             }
-            await UploadManagerActor.shared.processNextUpload()
             return
         }
         
@@ -74,7 +75,7 @@ extension UploadManager {
             else {
                 // Upload new image to the Piwigo server
                 UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • File transfer starting…")
-                try await transferInBackground(for: uploadData, withID: uploadID)
+                try await transferInBackground(for: uploadData, withID: uploadID, inTaskType: taskType)
             }
         }
         catch let error as PwgKitError {
@@ -103,11 +104,10 @@ extension UploadManager {
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
         }
         
-        // Job done if called by background task
-        if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive { return }
-
-        // Process next upload if any
-        await UploadManagerActor.shared.processNextUpload()
+        // In foreground, process next upload if any
+        if taskType.isForeground {
+            await UploadManagerActor.shared.processNextUpload()
+        }
     }
     
     func copyImageWithID(_ imageID: Int64, for properties: UploadProperties,

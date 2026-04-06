@@ -288,7 +288,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // Don't upload images now if a migration is planned
             if CacheVars.shared.isMigrationRunning {
                 debugPrint("••> Background upload task rescheduled because a migration is ongoing.")
-                task.setTaskCompleted(success: true)
+                task.setTaskCompleted(success: false)
                 return
             }
             
@@ -296,16 +296,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             /// Comment below lines to debug BGProcessingTask
             if UploadVars.shared.isApplicationActive {
                 debugPrint("••> Background upload task halted because the app is active.")
-                task.setTaskCompleted(success: true)
+                task.setTaskCompleted(success: false)
                 return
             }
             
-            // Should we postpone uploads?
+            // Are conditions appropriate?
             if UploadVars.shared.isContinuedProcessingTaskActive,
                 ProcessInfo.processInfo.isLowPowerModeEnabled ||
                 (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
                 debugPrint("••> Background upload task halted because in Low-Power mode, Wi-Fi unavailable or already uploading.")
-                task.setTaskCompleted(success: true)
+                task.setTaskCompleted(success: false)
                 return
             }
             

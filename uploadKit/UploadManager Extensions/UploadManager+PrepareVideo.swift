@@ -162,7 +162,8 @@ extension UploadManager {
 //    }
     
     func prepareVideo(ofAsset imageAsset: PHAsset, atURL outputURL: URL,
-                      for uploadProperties: UploadProperties, withID uploadID: NSManagedObjectID)
+                      for uploadProperties: UploadProperties, withID uploadID: NSManagedObjectID,
+                      inTaskType taskType: UploadTaskType)
     {
         UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Prepare video \(uploadProperties.fileName) from Asset")
 
@@ -176,7 +177,7 @@ extension UploadManager {
                     var uploadData = uploadProperties
                     uploadData.requestState = .preparingError
                     uploadData.requestError = error.localizedDescription
-                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
                 }
                 return
             }
@@ -187,7 +188,7 @@ extension UploadManager {
                     var uploadData = uploadProperties
                     uploadData.requestState = .preparingError
                     uploadData.requestError = PwgKitError.missingAsset.localizedDescription
-                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
                 }
                 return
             }
@@ -198,10 +199,13 @@ extension UploadManager {
                     var uploadData = uploadProperties
                     uploadData.requestState = .preparingError
                     uploadData.requestError = PwgKitError.missingAsset.localizedDescription
-                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
                 }
                 return
             }
+            
+            // Stop preparing the video if called by a background task now expired
+            if taskType.isBackgroundAndInactive { return }
             
             // Check if the user wants to:
             /// - reduce the frame size
@@ -230,7 +234,7 @@ extension UploadManager {
                         
                         // Job done
                         uploadData.requestState = .prepared
-                        await self.didPrepareVideo(using: uploadData, withID: uploadID)
+                        await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
                         return
                     }
                     catch let error as PwgKitError {
@@ -238,7 +242,7 @@ extension UploadManager {
                             var uploadData = uploadProperties
                             uploadData.requestState = .preparingError
                             uploadData.requestError = error.localizedDescription
-                            await self.didPrepareVideo(using: uploadData, withID: uploadID)
+                            await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
                         }
                         return
                     }
@@ -247,7 +251,7 @@ extension UploadManager {
                             var uploadData = uploadProperties
                             uploadData.requestState = .preparingError
                             uploadData.requestError = PwgKitError.otherError(innerError: error).localizedDescription
-                            await self.didPrepareVideo(using: uploadData, withID: uploadID)
+                            await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
                         }
                         return
                     }
@@ -271,20 +275,20 @@ extension UploadManager {
                     
                     // Upload video with tags and properties
                     uploadData.requestState = .prepared
-                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
                 }
                 catch let error as PwgKitError {
                     var uploadData = uploadProperties
                     uploadData.requestState = .preparingError
                     uploadData.requestError = error.localizedDescription
-                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
                 }
                 catch {
                     // Could not copy the video file
                     var uploadData = uploadProperties
                     uploadData.requestState = .preparingError
                     uploadData.requestError = PwgKitError.otherError(innerError: error).localizedDescription
-                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
                 }
             }
         }
@@ -329,7 +333,8 @@ extension UploadManager {
 //    }
 
     func convertVideo(ofAsset imageAsset: PHAsset, atURL outputURL: URL,
-                      for uploadProperties: UploadProperties, withID uploadID: NSManagedObjectID) -> Void
+                      for uploadProperties: UploadProperties, withID uploadID: NSManagedObjectID,
+                      inTaskType taskType: UploadTaskType) -> Void
     {
         UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Convert video \(uploadProperties.fileName) from Asset")
 
@@ -343,7 +348,7 @@ extension UploadManager {
                     var uploadData = uploadProperties
                     uploadData.requestState = .preparingError
                     uploadData.requestError = error.localizedDescription
-                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
                 }
                 return
             }
@@ -354,7 +359,7 @@ extension UploadManager {
                     var uploadData = uploadProperties
                     uploadData.requestState = .preparingError
                     uploadData.requestError = PwgKitError.missingAsset.localizedDescription
-                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
                 }
                 return
             }
@@ -365,11 +370,15 @@ extension UploadManager {
                     var uploadData = uploadProperties
                     uploadData.requestState = .preparingError
                     uploadData.requestError = PwgKitError.missingAsset.localizedDescription
-                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
                 }
                 return
             }
             
+            // Stop converting the video if called by a background task now expired
+            if taskType.isBackgroundAndInactive { return }
+            
+            // Convert the AVAsset
             Task(priority: .utility) { @UploadManagerActor in
                 do {
                     // Get creation date from metadata if possible
@@ -392,7 +401,7 @@ extension UploadManager {
                     
                     // Job done
                     uploadData.requestState = .prepared
-                    await self.didPrepareVideo(using: uploadData, withID: uploadID)
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
                     return
                 }
                 catch let error as PwgKitError {
@@ -400,7 +409,7 @@ extension UploadManager {
                         var uploadData = uploadProperties
                         uploadData.requestState = .preparingError
                         uploadData.requestError = error.localizedDescription
-                        await self.didPrepareVideo(using: uploadData, withID: uploadID)
+                        await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
                     }
                     return
                 }
@@ -409,7 +418,7 @@ extension UploadManager {
                         var uploadData = uploadProperties
                         uploadData.requestState = .preparingError
                         uploadData.requestError = PwgKitError.otherError(innerError: error).localizedDescription
-                        await self.didPrepareVideo(using: uploadData, withID: uploadID)
+                        await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
                     }
                     return
                 }
@@ -417,24 +426,25 @@ extension UploadManager {
         }
     }
         
-    private func didPrepareVideo(using uploadData: UploadProperties, withID uploadID: NSManagedObjectID) async
+    private func didPrepareVideo(using uploadData: UploadProperties, withID uploadID: NSManagedObjectID,
+                                 inTaskType taskType: UploadTaskType) async
     {
         UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Did finish preparing video from PHAsset.")
 
         // Preparation completed
         try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
         
-        // Launch transfer if called by background task
-        if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive {
-            await transferOrCopyFileOfUpload(withID: uploadID)
-            return
+        // Launch transfer if called by active background task
+        if taskType.isBackgroundAndActive {
+            await transferOrCopyFileOfUpload(withID: uploadID, inTaskType: taskType)
         }
-        
-        // Add video to transfer queue
-        await UploadManagerActor.shared.addUploadsToTransfer(withIDs: [uploadID])
-
-        // Process next uploads if possible
-        await UploadManagerActor.shared.processNextUpload()
+        else {
+            // Add video to transfer queue
+            await UploadManagerActor.shared.addUploadsToTransfer(withIDs: [uploadID])
+            
+            // Process next uploads if possible
+            await UploadManagerActor.shared.processNextUpload()
+        }
     }
     
     

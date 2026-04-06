@@ -16,8 +16,8 @@ import piwigoKit
 @UploadManagerActor
 extension UploadManager {
     
-    func transferInBackground(for uploadData: UploadProperties,
-                              withID uploadID: NSManagedObjectID) async throws(PwgKitError) {
+    func transferInBackground(for uploadData: UploadProperties, withID uploadID: NSManagedObjectID,
+                              inTaskType taskType: UploadTaskType) async throws(PwgKitError) {
         
         // Get URL of file to upload
         /// This file will be deleted once the transfer is completed successfully
@@ -59,6 +59,9 @@ extension UploadManager {
         let boundary = createBoundary(from: uploadData.md5Sum)
         let creationDate = DateUtilities.string(from: uploadData.creationDate)
 
+        // Stop preparing the transfer if called by a background task now expired
+        if taskType.isBackgroundAndInactive { return }
+        
         // Loop over all chunks
         for chunk in 1...chunks {
             autoreleasepool {
@@ -113,6 +116,9 @@ extension UploadManager {
                 self.removeChunk(chunk, fromCounterWithID: uploadID.uriRepresentation().lastPathComponent)
                 UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent, privacy: .private(mask: .hash)) • Task \(task.taskIdentifier, privacy: .public) resumed (\(chunk, privacy: .public)/\(chunks, privacy: .public))")
             }
+            
+            // Stop preparing the transfer if called by a background task now expired
+            if taskType.isBackgroundAndInactive { break }
         }
         
         // Release memory
@@ -284,15 +290,8 @@ extension UploadManager {
             uploadData.requestError = ""
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             
-            // Finish transfer if called by background task
-            if UploadVars.shared.isProcessingTaskActive || UploadVars.shared.isContinuedProcessingTaskActive {
-                await finishTransferOfUpload(withIDs: [uploadID])
-            }
-            else {
-                // Add photo/video to finish transfer queue
-                await UploadManagerActor.shared.addUploadsToFinish(withIDs: [uploadID])
-                await UploadManagerActor.shared.processNextUpload()
-            }
+            // Finish the upload whichever task launched the transfer
+            await finishTransferOfUpload(withIDs: [uploadID], inTaskType: .unknown)
             
             // Add uploaded image to cache and update UI if needed
             if let userURI = URL(string: uploadData.userURIstr),
