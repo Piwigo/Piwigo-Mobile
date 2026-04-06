@@ -66,6 +66,12 @@ extension NSManagedObjectContext {
         
         // Save changes
         do {
+            // For debugging purpose:
+//            let stack = Thread.callStackSymbols
+//                    .dropFirst()        // skip logCallStack itself
+//                    .prefix(3)          // how many frames you want
+//                    .joined(separator: "\n")
+//                print("📍 Call stack:\n\(stack)")
             try save()
         }
         catch let error as NSError {
