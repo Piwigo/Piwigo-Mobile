@@ -317,7 +317,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             // Handle next upload
             Task(priority: .utility) { @UploadManagerActor in
-                UploadManager.shared.handleNextUpload(task: task as! BGProcessingTask)
+                UploadManager.shared.handleNextUpload(task: task)
             }
         }
         
@@ -336,7 +336,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 
                 // Handle next uploads
                 Task(priority: .utility) { @UploadManagerActor in
-                    UploadManager.shared.handleContinuedUpload(task: task as! BGContinuedProcessingTask)
+                    UploadManager.shared.handleContinuedUpload(task: task)
                 }
             }
         }
