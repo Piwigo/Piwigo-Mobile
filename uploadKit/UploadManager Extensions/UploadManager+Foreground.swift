@@ -23,7 +23,7 @@ extension UploadManager
               UploadVars.shared.isProcessingTaskActive == false,
               UploadVars.shared.isContinuedProcessingTaskActive == false
         else {
-            UploadManager.logger.notice("Will not resume uploads (\(UploadVars.shared.didResumeUploads), \(UploadVars.shared.isProcessingTaskActive), \(UploadVars.shared.isContinuedProcessingTaskActive)")
+            UploadManager.logger.notice("Will not resume uploads (\(UploadVars.shared.didResumeUploads), \(UploadVars.shared.isProcessingTaskActive), \(UploadVars.shared.isContinuedProcessingTaskActive))")
             return
         }
         

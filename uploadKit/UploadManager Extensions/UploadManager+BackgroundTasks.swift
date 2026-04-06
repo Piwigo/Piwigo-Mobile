@@ -219,6 +219,7 @@ extension UploadManager
         if UploadVars.shared.isApplicationActive {
             // Resume upload activities in the foreground
             Task(priority: .utility) { @UploadManagerActor in
+                UploadVars.shared.didResumeUploads = false
                 await UploadManager.shared.resumeInForeground()
             }
         } else {
