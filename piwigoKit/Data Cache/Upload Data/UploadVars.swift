@@ -17,6 +17,37 @@ public enum FileExtCase: Int16, Sendable {
     case uppercase
 }
 
+
+// MARK: - Upload Task Type
+public enum UploadTaskType: String, Sendable {      // Task launched by:
+    case foreground                                 // - processNextUpload()
+    case bckgProcessingTask                         // - the pwgBackgroundUploadTask
+    case bckgContinuedProcessingTask                // - the pwgBackgroundContinuedUploadTask
+    case unknown                                    // - an unknown task, or any of the above tasks
+}
+
+public extension UploadTaskType {
+    var isForeground: Bool {
+        self == .foreground
+    }
+    
+    var isBackground: Bool {
+        self == .bckgProcessingTask || self == .bckgContinuedProcessingTask
+    }
+    
+    var isBackgroundAndActive: Bool {
+        (self == .bckgProcessingTask && UploadVars.shared.isProcessingTaskActive) ||
+        (self == .bckgContinuedProcessingTask && UploadVars.shared.isContinuedProcessingTaskActive)
+    }
+    
+    var isBackgroundAndInactive: Bool {
+        (self == .bckgProcessingTask && !UploadVars.shared.isProcessingTaskActive) ||
+        (self == .bckgContinuedProcessingTask && !UploadVars.shared.isContinuedProcessingTaskActive)
+    }
+}
+
+
+// MARK: - Upload Related Variables
 // Mark UploadVars as Sendable since Apple documents UserDefaults as thread-safe
 // and pwgImageSort is Sendable
 public class UploadVars: NSObject, @unchecked Sendable {
