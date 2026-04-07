@@ -182,7 +182,8 @@ extension AlbumViewController: UISearchBarDelegate
         imageProvider.userDidCancelSearch = false
 
         // Get query string
-        guard let query = searchBar.text else { return }
+        guard let query = searchBar.text, query.isEmpty == false
+        else { return }
         
         // Did the query string change?
         if albumData.query == query {

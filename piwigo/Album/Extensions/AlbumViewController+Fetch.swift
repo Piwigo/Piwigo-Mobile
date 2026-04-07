@@ -38,7 +38,7 @@ extension AlbumViewController
             // Use the ImageProvider to fetch image data. On completion,
             // handle general UI updates and error alerts on the main queue.
             await self.fetchImages(withInitialImageIds: oldImageIDs, query: query,
-                             fromPage: 0, toPage: 0)
+                                   fromPage: 0, toPage: 0)
         } else {
             await self.fetchAlbums(forUserWithAdminRights: user.hasAdminRights,
                                    withInitialImageIds: oldImageIDs, query: query)
