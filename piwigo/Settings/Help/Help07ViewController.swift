@@ -25,7 +25,6 @@ class Help07ViewController: UIViewController {
         let hasLargeWidth = view.bounds.size.width > 320.0
         let titleFont: UIFont = hasLargeWidth ? .systemFont(ofSize: 17, weight: .bold) : .systemFont(ofSize: 13, weight: .bold)
         let textFont: UIFont = hasLargeWidth ? .systemFont(ofSize: 17) : .systemFont(ofSize: 13)
-//        let noteFont: UIFont = hasLargeWidth ? .systemFont(ofSize: 13) : .systemFont(ofSize: 10)
         let legendTopAttributedString = NSMutableAttributedString(string: "")
         let legendBotAttributedString = NSMutableAttributedString(string: "")
 
@@ -35,13 +34,6 @@ class Help07ViewController: UIViewController {
         let titleRange = NSRange(location: 0, length: titleString.count)
         titleAttributedString.addAttribute(.font, value: titleFont, range: titleRange)
         legendTopAttributedString.append(titleAttributedString)
-
-        // Comment below title
-//        let noteString = NSLocalizedString("help02_text3", comment: "(requires the uploadAsync extension or Piwigo 11)") + "\n"
-//        let noteAttributedString = NSMutableAttributedString(string: noteString)
-//        let noteRange = NSRange(location: 0, length: noteString.count)
-//        noteAttributedString.addAttribute(.font, value: noteFont, range: noteRange)
-//        legendTopAttributedString.append(noteAttributedString)
 
         // Text of legend above images
         let aboveString = NSLocalizedString("help07_text", comment: "Select albums in Piwigo and create automations in Shortcuts.")
