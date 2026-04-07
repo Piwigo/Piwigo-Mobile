@@ -6,20 +6,20 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Uploads interrupted. Please restart the app."
+            "state" : "translated",
+            "value" : "تمت مقاطعة عمليات التحميل. يرجى إعادة تشغيل التطبيق."
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Uploads interrupted. Please restart the app."
+            "state" : "translated",
+            "value" : "Uploads afbrudt. Genstart app'en."
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Uploads interrupted. Please restart the app."
+            "state" : "translated",
+            "value" : "Uploads unterbrochen. Bitte starten Sie die App neu."
           }
         },
         "en" : {
@@ -30,8 +30,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Uploads interrupted. Please restart the app."
+            "state" : "translated",
+            "value" : "Subidas interrumpidas. Por favor, reinicie la aplicación."
           }
         },
         "fr" : {
@@ -42,62 +42,62 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Uploads interrupted. Please restart the app."
+            "state" : "translated",
+            "value" : "A feltöltés megszakadt. Kérjük, indítsa újra az alkalmazást."
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Uploads interrupted. Please restart the app."
+            "state" : "translated",
+            "value" : "Pengunggahan terputus. Silakan jalankan ulang aplikasi."
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Uploads interrupted. Please restart the app."
+            "state" : "translated",
+            "value" : "Caricamenti interrotti. Riavvia l'app."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Uploads interrupted. Please restart the app."
+            "state" : "translated",
+            "value" : "アップロードが中断されました。アプリを再起動してください。"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Uploads interrupted. Please restart the app."
+            "state" : "translated",
+            "value" : "Uploads onderbroken. Herstart de app aub."
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Uploads interrupted. Please restart the app."
+            "state" : "translated",
+            "value" : "Przesyłanie zostało przerwane. Uruchom ponownie aplikację."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Uploads interrupted. Please restart the app."
+            "state" : "translated",
+            "value" : "Загрузка прервана. Перезапустите приложение."
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Uploads interrupted. Please restart the app."
+            "state" : "translated",
+            "value" : "Uppladdningen avbröts. Starta om appen."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Uploads interrupted. Please restart the app."
+            "state" : "translated",
+            "value" : "上传中断。请重新启动应用。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Uploads interrupted. Please restart the app."
+            "state" : "translated",
+            "value" : "上傳中斷。請重新啟動應用程式。"
           }
         }
       }
@@ -110,38 +110,38 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads completed"
+                  "state" : "translated",
+                  "value" : "اكتمل تحميل %lld"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads completed"
+                  "state" : "translated",
+                  "value" : "اكتمل تحميل %lld"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld upload completed"
+                  "state" : "translated",
+                  "value" : "اكتمل تحميل %lld"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads completed"
+                  "state" : "translated",
+                  "value" : "اكتمل تحميل %lld"
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads completed"
+                  "state" : "translated",
+                  "value" : "اكتمل تحميل %lld"
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads completed"
+                  "state" : "translated",
+                  "value" : "اكتمل تحميل %lld"
                 }
               }
             }
@@ -152,14 +152,14 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld upload completed"
+                  "state" : "translated",
+                  "value" : "%lld upload fuldført"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads completed"
+                  "state" : "translated",
+                  "value" : "%lld uploads fuldført"
                 }
               }
             }
@@ -170,14 +170,14 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld upload completed"
+                  "state" : "translated",
+                  "value" : "%lld Upload abgeschlossen"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads completed"
+                  "state" : "translated",
+                  "value" : "%lld Uploads abgeschlossen"
                 }
               }
             }
@@ -206,14 +206,14 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld upload completed"
+                  "state" : "translated",
+                  "value" : "%lld subida completada"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads completed"
+                  "state" : "translated",
+                  "value" : "%lld subidas completadas"
                 }
               }
             }
@@ -242,14 +242,14 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld upload completed"
+                  "state" : "translated",
+                  "value" : "%lld feltöltés befejeződött"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads completed"
+                  "state" : "translated",
+                  "value" : "%lld feltöltés befejeződött"
                 }
               }
             }
@@ -260,8 +260,8 @@
             "plural" : {
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads completed"
+                  "state" : "translated",
+                  "value" : "%lld pengunggahan telah selesai"
                 }
               }
             }
@@ -272,14 +272,14 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld upload completed"
+                  "state" : "translated",
+                  "value" : "%lld caricamento completato"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads completed"
+                  "state" : "translated",
+                  "value" : "%lld caricamenti completati"
                 }
               }
             }
@@ -290,8 +290,8 @@
             "plural" : {
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads completed"
+                  "state" : "translated",
+                  "value" : "%lld 件のアップロードが完了しました"
                 }
               }
             }
@@ -302,14 +302,14 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld upload completed"
+                  "state" : "translated",
+                  "value" : "%lld upload voltooid"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads completed"
+                  "state" : "translated",
+                  "value" : "%lld uploads voltooid"
                 }
               }
             }
@@ -320,26 +320,26 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads completed"
+                  "state" : "translated",
+                  "value" : "%lld przesłano"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads completed"
+                  "state" : "translated",
+                  "value" : "%lld przesłano"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld upload completed"
+                  "state" : "translated",
+                  "value" : "%lld przesłane"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads completed"
+                  "state" : "translated",
+                  "value" : "%lld przesłano"
                 }
               }
             }
@@ -350,26 +350,26 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads completed"
+                  "state" : "translated",
+                  "value" : "Загрузки %lld завершены"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads completed"
+                  "state" : "translated",
+                  "value" : "Загрузки %lld завершены"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld upload completed"
+                  "state" : "translated",
+                  "value" : "Загрузка %lld завершена"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads completed"
+                  "state" : "translated",
+                  "value" : "Загрузки %lld завершены"
                 }
               }
             }
@@ -380,14 +380,14 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld upload completed"
+                  "state" : "translated",
+                  "value" : "%lld uppladdning klar"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads completed"
+                  "state" : "translated",
+                  "value" : "%lld uppladdningar klara"
                 }
               }
             }
@@ -398,8 +398,8 @@
             "plural" : {
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads completed"
+                  "state" : "translated",
+                  "value" : "%lld 次上传已完成"
                 }
               }
             }
@@ -410,8 +410,8 @@
             "plural" : {
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads completed"
+                  "state" : "translated",
+                  "value" : "%lld 個檔案已上傳完成"
                 }
               }
             }
@@ -424,20 +424,20 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Low power mode enabled. Please turn it off."
+            "state" : "translated",
+            "value" : "تم تمكين وضع توفير الطاقة. يرجى إيقاف تشغيله."
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Low power mode enabled. Please turn it off."
+            "state" : "translated",
+            "value" : "Lavt strømforbrug aktiveret. Slå den venligst fra."
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Low power mode enabled. Please turn it off."
+            "state" : "translated",
+            "value" : "Energiesparmodus aktiviert. Bitte schalten Sie ihn aus."
           }
         },
         "en" : {
@@ -448,8 +448,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Low power mode enabled. Please turn it off."
+            "state" : "translated",
+            "value" : "Modo de bajo consumo activado. Por favor desactívelo."
           }
         },
         "fr" : {
@@ -460,62 +460,62 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Low power mode enabled. Please turn it off."
+            "state" : "translated",
+            "value" : "Energiatakarékos mód engedélyezve. Kérjük, kapcsolja ki."
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Low power mode enabled. Please turn it off."
+            "state" : "translated",
+            "value" : "Mode hemat daya diaktifkan. Silakan matikan."
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Low power mode enabled. Please turn it off."
+            "state" : "translated",
+            "value" : "Modalità risparmio energetico attivata. Disattivala."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Low power mode enabled. Please turn it off."
+            "state" : "translated",
+            "value" : "省電力モードが有効になっています。無効にしてください。"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Low power mode enabled. Please turn it off."
+            "state" : "translated",
+            "value" : "Lage energie modus ingeschakeld. Schakel deze uit."
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Low power mode enabled. Please turn it off."
+            "state" : "translated",
+            "value" : "Włączono tryb oszczędzania energii. Wyłącz go."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Low power mode enabled. Please turn it off."
+            "state" : "translated",
+            "value" : "Включен режим энергосбережения. Выключите его."
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Low power mode enabled. Please turn it off."
+            "state" : "translated",
+            "value" : "Energisparläge aktiverat. Stäng av det."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Low power mode enabled. Please turn it off."
+            "state" : "translated",
+            "value" : "已启用省电模式。请将其关闭。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Low power mode enabled. Please turn it off."
+            "state" : "translated",
+            "value" : "已啟用省電模式。請將其關閉。"
           }
         }
       }
@@ -525,20 +525,20 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Wi-Fi only uploading. Please connect to Wi-Fi."
+            "state" : "translated",
+            "value" : "التحميل عبر شبكة Wi-Fi فقط. يرجى الاتصال بشبكة Wi-Fi."
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Wi-Fi only uploading. Please connect to Wi-Fi."
+            "state" : "translated",
+            "value" : "Wi-Fi uploader blot. Opret venligst forbindelse til Wi-Fi."
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Wi-Fi only uploading. Please connect to Wi-Fi."
+            "state" : "translated",
+            "value" : "Nur bei WLAN hochladen aktiviert. Bitte mit WLAN verbinden."
           }
         },
         "en" : {
@@ -549,8 +549,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Wi-Fi only uploading. Please connect to Wi-Fi."
+            "state" : "translated",
+            "value" : "Subidas solo por wifi. Por favor, conéctese a una wifi."
           }
         },
         "fr" : {
@@ -561,62 +561,62 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Wi-Fi only uploading. Please connect to Wi-Fi."
+            "state" : "translated",
+            "value" : "Csak Wi-Fi-n keresztül lehet feltölteni. Kérjük, csatlakozzon Wi-Fi-hez."
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Wi-Fi only uploading. Please connect to Wi-Fi."
+            "state" : "translated",
+            "value" : "Pengunggahan hanya melalui Wi-Fi. Silakan sambungkan ke Wi-Fi."
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Wi-Fi only uploading. Please connect to Wi-Fi."
+            "state" : "translated",
+            "value" : "Caricamento solo tramite Wi-Fi. Connettiti al Wi-Fi."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Wi-Fi only uploading. Please connect to Wi-Fi."
+            "state" : "translated",
+            "value" : "Wi-Fi 接続時のみアップロード可能です。Wi-Fi に接続してください。"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Wi-Fi only uploading. Please connect to Wi-Fi."
+            "state" : "translated",
+            "value" : "Wi-Fi alleen uploaden. Maak verbinding met wifi."
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Wi-Fi only uploading. Please connect to Wi-Fi."
+            "state" : "translated",
+            "value" : "Przesyłanie odbywa się wyłącznie przez Wi-Fi. Połącz się z siecią Wi-Fi."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Wi-Fi only uploading. Please connect to Wi-Fi."
+            "state" : "translated",
+            "value" : "Загрузка возможна только через Wi-Fi. Подключитесь к сети Wi-Fi."
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Wi-Fi only uploading. Please connect to Wi-Fi."
+            "state" : "translated",
+            "value" : "Uppladdning endast via Wi-Fi. Anslut till ett Wi-Fi-nätverk."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Wi-Fi only uploading. Please connect to Wi-Fi."
+            "state" : "translated",
+            "value" : "仅限 Wi-Fi 上传。请连接 Wi-Fi。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Wi-Fi only uploading. Please connect to Wi-Fi."
+            "state" : "translated",
+            "value" : "僅限 Wi-Fi 上傳。請連線至 Wi-Fi。"
           }
         }
       }
@@ -626,20 +626,20 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Preparing uploads…"
+            "state" : "translated",
+            "value" : "جاري التحضير لعمليات التحميل…"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Preparing uploads…"
+            "state" : "translated",
+            "value" : "Forbereder uploads…"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Preparing uploads…"
+            "state" : "translated",
+            "value" : "Uploads vorbereiten…"
           }
         },
         "en" : {
@@ -650,8 +650,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Preparing uploads…"
+            "state" : "translated",
+            "value" : "Preparando las subidas…"
           }
         },
         "fr" : {
@@ -662,62 +662,62 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Preparing uploads…"
+            "state" : "translated",
+            "value" : "A feltöltés előkészítése…"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Preparing uploads…"
+            "state" : "translated",
+            "value" : "Mempersiapkan pengunggahan…"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Preparing uploads…"
+            "state" : "translated",
+            "value" : "Preparazione dei caricamenti in corso…"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Preparing uploads…"
+            "state" : "translated",
+            "value" : "アップロードの準備中…"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Preparing uploads…"
+            "state" : "translated",
+            "value" : "Uploads voorbereiden…"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Preparing uploads…"
+            "state" : "translated",
+            "value" : "Przygotowywanie przesyłania…"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Preparing uploads…"
+            "state" : "translated",
+            "value" : "Подготовка к загрузке…"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Preparing uploads…"
+            "state" : "translated",
+            "value" : "Förbereder uppladdningar…"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Preparing uploads…"
+            "state" : "translated",
+            "value" : "正在准备上传…"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Preparing uploads…"
+            "state" : "translated",
+            "value" : "準備上傳中…"
           }
         }
       }
@@ -730,38 +730,38 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads remaining"
+                  "state" : "translated",
+                  "value" : "متبقي تحميل %lld"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads remaining"
+                  "state" : "translated",
+                  "value" : "متبقي تحميل %lld"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld upload remaining"
+                  "state" : "translated",
+                  "value" : "متبقي تحميل %lld"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads remaining"
+                  "state" : "translated",
+                  "value" : "تحميلات %lld المتبقية"
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads remaining"
+                  "state" : "translated",
+                  "value" : "متبقي تحميل %lld"
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads remaining"
+                  "state" : "translated",
+                  "value" : "متبقي تحميل %lld"
                 }
               }
             }
@@ -772,14 +772,14 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld upload remaining"
+                  "state" : "translated",
+                  "value" : "%lld upload tilbage"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads remaining"
+                  "state" : "translated",
+                  "value" : "%lld resterende uploads"
                 }
               }
             }
@@ -790,14 +790,14 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld upload remaining"
+                  "state" : "translated",
+                  "value" : "%lld Upload verbleibend"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads remaining"
+                  "state" : "translated",
+                  "value" : "%lld Uploads verbleibend"
                 }
               }
             }
@@ -826,14 +826,14 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld upload remaining"
+                  "state" : "translated",
+                  "value" : "%lld subida restante"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads remaining"
+                  "state" : "translated",
+                  "value" : "%lld subidas restantes"
                 }
               }
             }
@@ -862,14 +862,14 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld upload remaining"
+                  "state" : "translated",
+                  "value" : "%lld feltöltés hátravan"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads remaining"
+                  "state" : "translated",
+                  "value" : "%lld feltöltés hátravan"
                 }
               }
             }
@@ -880,8 +880,8 @@
             "plural" : {
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads remaining"
+                  "state" : "translated",
+                  "value" : "%lld pengunggahan tersisa"
                 }
               }
             }
@@ -892,14 +892,14 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld upload remaining"
+                  "state" : "translated",
+                  "value" : "%lld caricamento rimanente"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads remaining"
+                  "state" : "translated",
+                  "value" : "%lld caricamenti rimanenti"
                 }
               }
             }
@@ -910,8 +910,8 @@
             "plural" : {
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads remaining"
+                  "state" : "translated",
+                  "value" : "%lld 件のアップロードが残っています"
                 }
               }
             }
@@ -922,14 +922,14 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld upload remaining"
+                  "state" : "translated",
+                  "value" : "%lld upload resterend"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads remaining"
+                  "state" : "translated",
+                  "value" : "%lld resterende uploads"
                 }
               }
             }
@@ -940,26 +940,26 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads remaining"
+                  "state" : "translated",
+                  "value" : "%lld pozostało do przesłania"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads remaining"
+                  "state" : "translated",
+                  "value" : "%lld pozostało do przesłania"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld upload remaining"
+                  "state" : "translated",
+                  "value" : "%lld pozostało do przesłania"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads remaining"
+                  "state" : "translated",
+                  "value" : "%lld pozostało do przesłania"
                 }
               }
             }
@@ -970,26 +970,26 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads remaining"
+                  "state" : "translated",
+                  "value" : "Осталось %lld загрузок"
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads remaining"
+                  "state" : "translated",
+                  "value" : "Осталось %lld загрузок"
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld upload remaining"
+                  "state" : "translated",
+                  "value" : "Осталось загрузить %lld"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads remaining"
+                  "state" : "translated",
+                  "value" : "Осталось %lld загрузок"
                 }
               }
             }
@@ -1000,14 +1000,14 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld upload remaining"
+                  "state" : "translated",
+                  "value" : "%lld uppladdning kvar"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads remaining"
+                  "state" : "translated",
+                  "value" : "%lld uppladdningar kvar"
                 }
               }
             }
@@ -1018,8 +1018,8 @@
             "plural" : {
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads remaining"
+                  "state" : "translated",
+                  "value" : "%lld 次上传剩余"
                 }
               }
             }
@@ -1030,8 +1030,8 @@
             "plural" : {
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld uploads remaining"
+                  "state" : "translated",
+                  "value" : "%lld 個檔案尚待上傳"
                 }
               }
             }
