@@ -17,13 +17,6 @@ final class ImageVars: @unchecked Sendable {
 
     // Remove deprecated stored objects if needed
     init() {
-        // Not yet initialised data?
-        if UserDefaults.standard.object(forKey: "defaultImagePreviewSize") == nil {
-            DispatchQueue.main.async {
-                let rawValue = ImageUtilities.optimumImageSizeForDevice().rawValue
-                UserDefaults.standard.set(rawValue, forKey: "defaultImagePreviewSize")
-            }
-        }
 //        // Deprecated data?
 //        if let _ = UserDefaults.standard.object(forKey: "test") {
 //            UserDefaults.standard.removeObject(forKey: "test")
@@ -36,7 +29,7 @@ final class ImageVars: @unchecked Sendable {
     // MARK: - Vars in UserDefaults / Standard
     // Images variables stored in UserDefaults / Standard
     /// - Size of the image file presented in preview mode on the main screen (i.e. full screen mode)
-    @UserDefault("defaultImagePreviewSize", defaultValue: pwgImageSize.medium.rawValue)
+    @UserDefault("defaultImagePreviewSize", defaultValue: -1)
     var defaultImagePreviewSize: Int16
 
     /// - Share image by AirDrop with metadata by default

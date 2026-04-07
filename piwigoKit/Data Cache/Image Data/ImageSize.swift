@@ -240,10 +240,18 @@ extension pwgImageSize {
         }
     }
     
+    static public func <(left: pwgImageSize, right: pwgImageSize) -> Bool {
+        return left.rawValue < right.rawValue
+    }
+
     static public func <=(left: pwgImageSize, right: pwgImageSize) -> Bool {
         return left.rawValue <= right.rawValue
     }
     
+    static public func >(left: pwgImageSize, right: pwgImageSize) -> Bool {
+        return left.rawValue > right.rawValue
+    }
+
     static public func >=(left: pwgImageSize, right: pwgImageSize) -> Bool {
         return left.rawValue >= right.rawValue
     }

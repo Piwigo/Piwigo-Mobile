@@ -104,7 +104,7 @@ class ExternalDisplayViewController: UIViewController {
             
             // Check if we already have an image of sufficient resolution
             let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-            let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
+            let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
             if let previewImage = imageData.cachedThumbnail(ofSize: previewSize) {
                 // Is this file of sufficient resolution?
                 if previewSize >= optimumSize {
@@ -276,7 +276,7 @@ class ExternalDisplayViewController: UIViewController {
     private func getLowResPDFthumbnail(of imageData: Image) -> UIImage {
         // Determine which thumbnail to use
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-        let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
+        let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
         if let previewImage = imageData.cachedThumbnail(ofSize: previewSize) {
             // Display preview image
             return previewImage

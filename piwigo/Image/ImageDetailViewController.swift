@@ -49,7 +49,7 @@ class ImageDetailViewController: UIViewController
     // Cached variables
     private lazy var scale = CGFloat.zero
     private lazy var imageSize = CGSize.zero
-    private lazy var previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
+    private lazy var previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
     
     
     // MARK: - View Lifecycle
@@ -127,11 +127,15 @@ class ImageDetailViewController: UIViewController
         
         // Look for the first available image of lower resolution
         if previewSize == .fullRes {
-            if NetworkVars.shared.hasXXLargeSizeImages {
+            if pwgImageSize.xxxxLarge.isAvailable {
+                previewSize = .xxxxLarge
+            } else if pwgImageSize.xxxLarge.isAvailable {
+                previewSize = .xxxLarge
+            } else if pwgImageSize.xxLarge.isAvailable {
                 previewSize = .xxLarge
-            } else if NetworkVars.shared.hasXLargeSizeImages {
+            } else if pwgImageSize.xLarge.isAvailable {
                 previewSize = .xLarge
-            } else if NetworkVars.shared.hasLargeSizeImages {
+            } else if pwgImageSize.large.isAvailable {
                 previewSize = .large
             } else {
                 previewSize = .medium

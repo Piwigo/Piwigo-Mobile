@@ -23,14 +23,18 @@ class ImagePreviewViewController: UIViewController
         let viewSize = CGSizeMake(view.bounds.size.width * scale, view.bounds.size.height * scale)
         let sizes = imageData.sizes
         aspectRatio = sizes.medium?.aspectRatio ?? sizes.thumb?.aspectRatio ?? 1.0
-        var previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
+        var previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
         if imageData.isNotImage, previewSize == .fullRes {
-            if NetworkVars.shared.hasXXLargeSizeImages {
-                previewSize = .xxLarge
-            } else if NetworkVars.shared.hasXXXLargeSizeImages {
-                previewSize = .xxxLarge
-            } else if NetworkVars.shared.hasXXXXLargeSizeImages {
+            if pwgImageSize.xxxxLarge.isAvailable {
                 previewSize = .xxxxLarge
+            } else if pwgImageSize.xxxLarge.isAvailable {
+                previewSize = .xxxLarge
+            } else if pwgImageSize.xxLarge.isAvailable {
+                previewSize = .xxLarge
+            } else if pwgImageSize.xLarge.isAvailable {
+                previewSize = .xLarge
+            } else if pwgImageSize.large.isAvailable {
+                previewSize = .large
             } else {
                 previewSize = .medium
             }

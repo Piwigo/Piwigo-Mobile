@@ -64,7 +64,7 @@ struct AlbumUtilities
                 return size
             }
         }
-        return .xxLarge
+        return .xxxxLarge
     }
     
     static func albumWidth(forSafeAreaSize size: CGSize, maxCellWidth: CGFloat) -> CGFloat
@@ -113,7 +113,7 @@ struct AlbumUtilities
                 return size
             }
         }
-        return .xxLarge
+        return .xxxxLarge
     }
     
     @MainActor

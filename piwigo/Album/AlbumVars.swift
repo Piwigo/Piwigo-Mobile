@@ -19,13 +19,6 @@ final class AlbumVars: @unchecked Sendable {
     
     // Remove deprecated stored objects if needed
     init() {
-        // Not yet initialised data?
-        if UserDefaults.standard.object(forKey: "defaultThumbnailSize") == nil {
-            DispatchQueue.main.async {
-                let rawValue = AlbumUtilities.optimumThumbnailSizeForDevice().rawValue
-                UserDefaults.standard.set(rawValue, forKey: "defaultThumbnailSize")
-            }
-        }
         // Deprecated data?
         if let _ = UserDefaults.standard.object(forKey: "recentPeriod") {
             UserDefaults.standard.removeObject(forKey: "recentPeriod")
@@ -48,7 +41,7 @@ final class AlbumVars: @unchecked Sendable {
     var defaultCategory: Int32
 
     /// - Default album thumbnail size determined from the available image sizes to present 144x144 pixel thumbnails
-    @UserDefault("defaultAlbumThumbnailSize", defaultValue: AlbumUtilities.optimumAlbumThumbnailSizeForDevice().rawValue)
+    @UserDefault("defaultAlbumThumbnailSize", defaultValue: -1)
     var defaultAlbumThumbnailSize: Int16
 
     /// - List of albums recently visited / used
@@ -92,7 +85,7 @@ final class AlbumVars: @unchecked Sendable {
     var displayImageTitles: Bool
 
     /// - Image thumbnail size determined from the available image sizes
-    @UserDefault("defaultThumbnailSize", defaultValue: pwgImageSize.thumb.rawValue)
+    @UserDefault("defaultThumbnailSize", defaultValue: -1)
     var defaultThumbnailSize: Int16
 
     /// - Number of images per row in portrait mode

@@ -170,12 +170,12 @@ public class NetworkVars: @unchecked Sendable {
     public var language = ""
         
     /// - Available image sizes
-    public var hasSquareSizeImages = true
-    public var hasThumbSizeImages = true
+    public var hasSquareSizeImages = false
+    public var hasThumbSizeImages = false
     public var hasXXSmallSizeImages = false
     public var hasXSmallSizeImages = false
     public var hasSmallSizeImages = false
-    public var hasMediumSizeImages = true
+    public var hasMediumSizeImages = false
     public var hasLargeSizeImages = false
     public var hasXLargeSizeImages = false
     public var hasXXLargeSizeImages = false
