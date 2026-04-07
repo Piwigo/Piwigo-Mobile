@@ -73,7 +73,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Przesyłanie zostało przerwane. Uruchom ponownie aplikację."
+            "value" : "Przesyłanie zostało przerwane. Uruchom aplikację ponownie."
           }
         },
         "ru" : {
@@ -941,7 +941,7 @@
               "few" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld pozostało do przesłania"
+                  "value" : "%lld pozostały do przesłania"
                 }
               },
               "many" : {
@@ -953,7 +953,7 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld pozostało do przesłania"
+                  "value" : "%lld pozostał do przesłania"
                 }
               },
               "other" : {

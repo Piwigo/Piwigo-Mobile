@@ -37680,7 +37680,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wartość %@ jest zazwyczaj dobrym punktem początkowym. Szybkie połączenia będą miały lepsze wyniki z wysokimi wartościami, takimi jak %@."
+            "value" : "Wartość %@ jest zazwyczaj dobrym punktem wyjścia. Szybkie połączenia będą miały lepsze wyniki z wysokimi wartościami, takimi jak %@."
           }
         },
         "ru" : {
@@ -37781,7 +37781,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Proszę wybrać rozmiar fragmentów, na które pliki są podzielone podczas przesyłania."
+            "value" : "Proszę wybrać rozmiar fragmentów, na które pliki będą dzielone podczas przesyłania."
           }
         },
         "ru" : {
@@ -37882,7 +37882,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rozmiar Fragmentu"
+            "value" : "Rozmiar fragmentu"
           }
         },
         "ru" : {
@@ -37983,7 +37983,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Granica"
+            "value" : "Limit"
           }
         },
         "ru" : {
@@ -38084,7 +38084,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opcje Zaawansowane"
+            "value" : "Opcje zaawansowane"
           }
         },
         "ru" : {
@@ -38185,7 +38185,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Odpowiednia wartość jest nieco wyższa od maksymalnej liczby zdjęć lub filmów które możesz przesłać jednocześnie. Zauważ, że wyższy limit spowoduje większe użycie przestrzeni dyskowej."
+            "value" : "Odpowiednia wartość jest nieco wyższa od maksymalnej liczby zdjęć lub filmów, które możesz przesłać jednocześnie. Zauważ, że wyższy limit spowoduje większe użycie przestrzeni dyskowej."
           }
         },
         "ru" : {
@@ -38387,7 +38387,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Przygotowanie Wgrywania"
+            "value" : "Przygotowanie przesyłania"
           }
         },
         "ru" : {
@@ -38488,7 +38488,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wartość 4 jest zasadniczo dobrym punktem wyjścia. Wskazane jest utrzymanie tego numeru na niskim poziomie lub sprawdzenie go u dostawcy usług hostingowych lub administratora sieci. Jeśli napotkasz opóźnienia lub 503 błędy, spróbuj zmniejszyć tę liczbę."
+            "value" : "Wartość 4 jest zasadniczo dobrym punktem wyjścia. Wskazane jest utrzymanie tej wartości na niskim poziomie lub sprawdzenie go u dostawcy usług hostingowych lub administratora sieci. Jeśli napotkasz przekroczenia limitu czasu lub błędy 503, spróbuj zmniejszyć tę liczbę."
           }
         },
         "ru" : {
@@ -38589,7 +38589,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wybierz maksymalną liczbę plików do równoczesnego przenoszenia."
+            "value" : "Wybierz maksymalną liczbę plików do równoczesnego przesyłania."
           }
         },
         "ru" : {
@@ -38690,7 +38690,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Transfery Plików"
+            "value" : "Transfery plików"
           }
         },
         "ru" : {
