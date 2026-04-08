@@ -153,12 +153,9 @@ final class ClearCache
     }
     
     static func cancelTasks(completion: @escaping () -> Void) {
-        Task { @UploadManagerActor in
-            // Stop upload manager
-            Task { @UploadManagerActor in
-                UploadVars.shared.isPaused = true
-                await UploadManagerActor.shared.removeAllUploads()
-            }
+        Task(priority: .utility) { @UploadManagerActor in
+            UploadVars.shared.isPaused = true
+            await UploadManagerActor.shared.removeAllUploads()
             
             // Cancel upload tasks, then other tasks
             let allUploadTasks = await bckgSession.allTasks
