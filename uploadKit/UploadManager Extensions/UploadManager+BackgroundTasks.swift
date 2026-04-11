@@ -313,7 +313,7 @@ extension UploadManager
                 // Update progress bar
                 task.progress.completedUnitCount += 1
                 let diff = task.progress.totalUnitCount - task.progress.completedUnitCount
-                let subtitle = String(format: String(localized: "backgroundTask_remaining", bundle: .uploadKit, comment: "%lld uploads remaining"), diff)
+                let subtitle = String(localized: "backgroundTask_remaining \(diff)", bundle: .uploadKit, comment: "%lld uploads remaining")
                 task.updateTitle(title, subtitle: subtitle)
                 
                 // Wait before launching a new transfer?
@@ -342,7 +342,7 @@ extension UploadManager
                 preparedCount += 1
                 task.progress.completedUnitCount += 1
                 let diff = task.progress.totalUnitCount - task.progress.completedUnitCount
-                let subtitle = String(format: String(localized: "backgroundTask_remaining", bundle: .uploadKit, comment: "%lld uploads remaining"), diff)
+                let subtitle = String(localized: "backgroundTask_remaining \(diff)", bundle: .uploadKit, comment: "%lld uploads remaining")
                 task.updateTitle(title, subtitle: subtitle)
                 
                 // Low-Power mode activated? No required Wi-Fi? Task cancelled?
@@ -414,7 +414,7 @@ extension UploadManager
                 // Inform that the task is completed with success
                 success = true
                 UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' completed with success.")
-                let subtitle = String(format: String(localized: "backgroundTask_completed", bundle: .uploadKit, comment: "%lld uploads completed"), task.progress.completedUnitCount)
+                let subtitle = String(localized: "backgroundTask_completed \(task.progress.completedUnitCount)", bundle: .uploadKit, comment: "%lld uploads completed")
                 task.updateTitle(task.title, subtitle: subtitle)
             }
         }
