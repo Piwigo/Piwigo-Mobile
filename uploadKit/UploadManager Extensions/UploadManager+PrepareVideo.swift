@@ -478,8 +478,8 @@ extension UploadManager {
                                    completion: @escaping (AVAsset?, PwgKitError?) -> Void) {
         
         // The block Photos calls periodically while downloading the video.
-        options.progressHandler = { progress, error, stop, dict in
-            debugPrint(String(format: "downloading Video — progress %lf", progress))
+        unsafe options.progressHandler = { progress, error, stop, dict in
+            debugPrint("downloading Video — progress \(progress)")
 //         The handler needs to update the user interface => Dispatch to main thread
 //            DispatchQueue.main.async(execute: {
 //                self.iCloudProgress = progress
