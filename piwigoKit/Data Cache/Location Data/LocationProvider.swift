@@ -305,11 +305,13 @@ public final class LocationProvider: NSObject {
         var compoundPredicate = NSCompoundPredicate()
         compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [latitudeMinPredicate,latitudeMaxPredicate,longitudeMinPredicate, longitudeMaxPredicate])
         fetchRequest.predicate = compoundPredicate
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.shouldRefreshRefetchedObjects = true
         
         // Loop over known places
         let mainContext = DataController.shared.mainContext
         do {
-            let knownPlaceNames = try mainContext.fetch(Location.fetchRequest())
+            let knownPlaceNames = try mainContext.fetch(fetchRequest)
             for knownPlace: Location in knownPlaceNames {
                 // Known location
                 let knownLatitude = knownPlace.latitude

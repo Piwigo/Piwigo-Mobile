@@ -51,6 +51,7 @@ public final class DataController {
         context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         context.automaticallyMergesChangesFromParent = true
         context.shouldDeleteInaccessibleFaults = true
+        context.name = "Background context"
         return context
     }
 }

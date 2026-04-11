@@ -118,6 +118,8 @@ public final class UploadProvider {
                 andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
                 andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
                 fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+                fetchRequest.returnsObjectsAsFaults = false
+                fetchRequest.shouldRefreshRefetchedObjects = true
                 
                 // Loop over new uploads
                 let cachedUploads = try taskContext.fetch(fetchRequest)
@@ -449,6 +451,8 @@ public final class UploadProvider {
             andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
             andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
             fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+            fetchRequest.returnsObjectsAsFaults = false
+            fetchRequest.shouldRefreshRefetchedObjects = true
             
             // Perform the fetch.
             do {

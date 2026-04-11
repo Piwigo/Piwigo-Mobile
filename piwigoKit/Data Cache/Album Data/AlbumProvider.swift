@@ -28,6 +28,8 @@ public final class AlbumProvider {
         andPredicates.append(NSPredicate(format: "pwgID == %i", albumId))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         fetchRequest.fetchLimit = 1
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.shouldRefreshRefetchedObjects = true        
         return fetchRequest
     }
     
@@ -261,6 +263,8 @@ public final class AlbumProvider {
                 andPredicates.append(NSCompoundPredicate(orPredicateWithSubpredicates: orSubpredicates))
             }
             fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+            fetchRequest.returnsObjectsAsFaults = false
+            fetchRequest.shouldRefreshRefetchedObjects = true
             
             // Perform the fetch.
             let cachedAlbums:[Album] = try bckgContext.fetch(fetchRequest)
@@ -493,7 +497,9 @@ public final class AlbumProvider {
             .filter({ [0, album.pwgID].contains($0) == false })
         andPredicates.append(NSPredicate(format: "pwgID IN %@", parentIDs))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-                
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.shouldRefreshRefetchedObjects = true
+        
         // Update parent albums
         let bckgContext = DataController.shared.newTaskContext()
         let parentAlbums = try bckgContext.fetch(fetchRequest)
@@ -536,6 +542,8 @@ public final class AlbumProvider {
         andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
         andPredicates.append(NSPredicate(format: "parentId == %i", albumID))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.shouldRefreshRefetchedObjects = true
         
         // Update the rank of all sub-albums
         let bckgContext = DataController.shared.newTaskContext()
@@ -573,7 +581,9 @@ public final class AlbumProvider {
         let pattern = String(format: "(^|.*,)%@(,.*|$)", regExp)
         andPredicates.append(NSPredicate(format: "upperIds MATCHES %@", pattern))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-                
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.shouldRefreshRefetchedObjects = true
+        
         // Update the rank of the other albums
         let bckgContext = DataController.shared.newTaskContext()
         let subAlbums = try bckgContext.fetch(fetchRequest)
@@ -676,6 +686,8 @@ public final class AlbumProvider {
             .filter({ [0, album.pwgID].contains($0) == false })
         andPredicates.append(NSPredicate(format: "pwgID IN %@", parentIDs))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.shouldRefreshRefetchedObjects = true
         
         // Update parent albums
         let parentAlbums = try taskContext.fetch(fetchRequest)

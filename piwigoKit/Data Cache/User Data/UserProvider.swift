@@ -68,6 +68,8 @@ public final class UserProvider {
             return try taskContext.performAndWait { () -> User? in
                 // Create a fetch request for the User entity
                 let fetchRequest = fetchRequestOfUser(withUsername: username, ofServerAtPath: path)
+                fetchRequest.returnsObjectsAsFaults = false
+                fetchRequest.shouldRefreshRefetchedObjects = true
                 
                 // Return the User entity if possible
                 let user = try taskContext.fetch(fetchRequest).first

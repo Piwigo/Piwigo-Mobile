@@ -116,7 +116,9 @@ public final class TagProvider {
 
             // Look for tags belonging to the currently active server
             fetchRequest.predicate = NSPredicate(format: "server.path == %@", server.path)
-
+            fetchRequest.returnsObjectsAsFaults = false
+            fetchRequest.shouldRefreshRefetchedObjects = true
+            
             // Perform the fetch.
             let cachedTags:[Tag] = try bckgContext.fetch(fetchRequest)
 
@@ -232,7 +234,9 @@ public final class TagProvider {
             
             // Look for tags belonging to the currently active server
             fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath)
-
+            fetchRequest.returnsObjectsAsFaults = false
+            fetchRequest.shouldRefreshRefetchedObjects = true
+            
             // Tag selection
             let cachedTags:[Tag] = try taskContext.fetch(fetchRequest)
             let listOfIds = tagIds.components(separatedBy: ",").compactMap({ Int32($0) })

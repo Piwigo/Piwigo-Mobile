@@ -35,6 +35,8 @@ public final class ServerProvider {
         try taskContext.performAndWait {
             // Create a fetch request for the Server entity
             let fetchRequest = fetchRequestOfServer(atPath: path)
+            fetchRequest.returnsObjectsAsFaults = false
+            fetchRequest.shouldRefreshRefetchedObjects = true
             
             // Return the Server entity if possible
             let server = try taskContext.fetch(fetchRequest).first

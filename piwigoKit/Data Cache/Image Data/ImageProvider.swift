@@ -46,7 +46,8 @@ public final class ImageProvider {
         andPredicates.append(NSPredicate(format: "pwgID IN %@", Array(imageIds)))
         andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.shouldRefreshRefetchedObjects = true
         return fetchRequest
     }
     
