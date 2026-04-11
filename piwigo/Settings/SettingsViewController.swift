@@ -103,6 +103,7 @@ class SettingsViewController: UIViewController {
     
     // MARK: - Core Data Objects
     var user: User!
+    lazy var userHasUploadRights = user?.hasUploadRights ?? false
     lazy var mainContext: NSManagedObjectContext = {
         guard let context: NSManagedObjectContext = user?.managedObjectContext else {
             fatalError("!!! Missing Managed Object Context !!!")
@@ -116,7 +117,7 @@ class SettingsViewController: UIViewController {
         super.viewDidLoad()
         
         // Calculate cache sizes
-        guard let server = self.user.server
+        guard let server = self.user?.server
         else { preconditionFailure("!!! User not provided !!!!") }
         if server.isFault {
             // user is not fired yet.
@@ -129,24 +130,27 @@ class SettingsViewController: UIViewController {
         self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
         self.videoCacheSize = server.getCacheSizeOfVideos()
         self.dataCacheSize = server.getAlbumImageCount(inContext: mainContext)
-        if self.hasUploadRights() {
+        if userHasUploadRights {
             let uploadsDirectory = DataDirectories.appUploadsDirectory
             let uploadsDirectorySize = ByteCountFormatter.string(fromByteCount: Int64(uploadsDirectory.folderSize), countStyle: .file)
             self.uploadCacheSize = server.getUploadCount(inContext: mainContext) + " | " + uploadsDirectorySize
         }
         
         // Retrieve data from server in the background
-        if user.hasAdminRights {
+        if userHasUploadRights {
+            let userID = user.objectID
+            let lastUsed = self.user.lastUsed
+            let username = user.username
             Task.detached(priority: .background) { [self] in
                 do {
                     // Check session
-                    try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID, lastConnected: self.user.lastUsed)
+                    try await JSONManager.shared.checkSession(ofUserWithID: userID, lastConnected: lastUsed)
                     
                     // Collect stats from server and store them in cache
                     try await JSONManager.shared.getInfos()
                     
                     // Collect recentPeriod chosen by user
-                    let usersData = try await JSONManager.shared.getUsersInfo(forUserName: self.user.username)
+                    let usersData = try await JSONManager.shared.getUsersInfo(forUserName: username)
                     
                     // Update current index and reload corresponding cell
                     await MainActor.run { [self] in
@@ -286,7 +290,7 @@ class SettingsViewController: UIViewController {
         }
         // Did the user change the recent period?
         let recentPeriodIndex = CacheVars.shared.recentPeriodIndex
-        if hasUploadRights(), oldRecentPeriodIndex != recentPeriodIndex {
+        if userHasUploadRights, oldRecentPeriodIndex != recentPeriodIndex {
             // Update recent period on Piwigo server
             Task.detached {
                 do {
@@ -332,7 +336,7 @@ class SettingsViewController: UIViewController {
     
     @objc func updateAutoUpload(_ notification: Notification) {
         // NOP if the option is not available
-        if !hasUploadRights() { return }
+        if !userHasUploadRights { return }
         
         // Reload section instead of row because user's rights may have changed after logout/login
         children.forEach {

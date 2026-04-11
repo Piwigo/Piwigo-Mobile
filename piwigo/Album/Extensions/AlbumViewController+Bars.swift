@@ -45,8 +45,8 @@ extension AlbumViewController
             // User with admin or upload rights can do everything
             // except may be downloading images (i.e. sharing images)
             // User without admin rights cannot set album thumbnails, delete images
-            // WRONG =====> 'normal' user with upload access to the current category can copy, move, edit images
-            // SHOULD BE => 'normal' user having uploaded images can only edit their images.
+            // WRONG =====> 'generic' or 'normal' user with upload access to the current category can copy, move, edit images
+            // SHOULD BE => 'generic' or 'normal' user having uploaded images can only edit their images.
             //              This requires 'user_id' and 'added_by' values of images for checking rights
             if user.hasUploadRights(forCatID: categoryId) {
                 // Initialise UploadQueue toolbar button if needed

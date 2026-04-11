@@ -14,19 +14,12 @@ import uploadKit
 extension SettingsViewController: UITableViewDataSource
 {
     // MARK: - Sections
-    func hasUploadRights() -> Bool {
-        /// User can upload images/videos if he/she is logged in and has:
-        /// — admin rights
-        /// — normal rights with upload access to some categories with Community
-        return user.hasAdminRights || (user.role == .normal && NetworkVars.shared.usesCommunityPluginV29)
-    }
-    
     func activeSection(_ section: Int) -> SettingsSection {
         // User can upload images/videos if he/she is logged in and has:
         // — admin rights
         // — normal rights with upload access to some categories with Community
         var rawSection = section
-        if !hasUploadRights(), rawSection > SettingsSection.videos.rawValue {
+        if !userHasUploadRights, rawSection > SettingsSection.videos.rawValue {
             rawSection += 1
         }
         guard let activeSection = SettingsSection(rawValue: rawSection)
@@ -36,7 +29,7 @@ extension SettingsViewController: UITableViewDataSource
     
     func numberOfSections(in tableView: UITableView) -> Int {
         var nberSections = SettingsSection.count.rawValue
-        nberSections -= (hasUploadRights() ? 0 : 1)
+        nberSections -= (userHasUploadRights ? 0 : 1)
         return nberSections
     }
     
@@ -66,7 +59,7 @@ extension SettingsViewController: UITableViewDataSource
         case .appearance:
             nberOfRows = 1
         case .cache:
-            nberOfRows = 4 + (hasUploadRights() ? 1 : 0)
+            nberOfRows = 4 + (userHasUploadRights ? 1 : 0)
         case .clear:
             nberOfRows = 1
         case .about:

@@ -94,11 +94,30 @@ extension User {
         return [.webmaster, .admin].contains(self.role)
     }
     
-    public func hasUploadRights(forCatID categoryId: Int32) -> Bool {
-        // Case of Community user?
+    public var hasUploadRights: Bool {
+        // Admin user?
         if self.hasAdminRights { return true }
-        if self.role != .normal { return false }
-        return self.uploadRights.components(separatedBy: ",").contains(String(categoryId))
+        // Guest user?
+        if self.role == .guest { return false }
+        // Community user (.generic or .normal) ?
+        return NetworkVars.shared.usesCommunityPluginV29
+    }
+    
+    public func hasUploadRights(forCatID categoryId: Int32) -> Bool {
+        // Admin user?
+        if self.hasAdminRights { return true }
+        // Guest user?
+        if self.role == .guest { return false }
+        // Community user (.generic or .normal) ?
+        if NetworkVars.shared.usesCommunityPluginV29 == false { return false }
+        switch categoryId {
+        case .zero:
+            return self.uploadRights.isEmpty == false
+        case 1...Int32.max:
+            return self.uploadRights.components(separatedBy: ",").contains(String(categoryId))
+        default:
+            return false
+        }
     }
     
     public func canManageFavorites() -> Bool {

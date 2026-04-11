@@ -33,7 +33,7 @@ extension SettingsViewController
     
     // MARK: - Update Cache Cells
     func updateDataCacheCell() {
-        let section = SettingsSection.cache.rawValue - (hasUploadRights() ? 0 : 1)
+        let section = SettingsSection.cache.rawValue - (userHasUploadRights ? 0 : 1)
         let indexPath = IndexPath(row: 0, section: section)
         if let cell = self.settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
             cell.detailLabel.text = self.dataCacheSize
@@ -41,7 +41,7 @@ extension SettingsViewController
     }
     
     func updateThumbCacheCell() {
-        let section = SettingsSection.cache.rawValue - (hasUploadRights() ? 0 : 1)
+        let section = SettingsSection.cache.rawValue - (userHasUploadRights ? 0 : 1)
         let indexPath = IndexPath(row: 1, section: section)
         if let cell = self.settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
             cell.detailLabel.text = self.thumbCacheSize
@@ -49,7 +49,7 @@ extension SettingsViewController
     }
     
     func updatePhotoCacheCell() {
-        let section = SettingsSection.cache.rawValue - (hasUploadRights() ? 0 : 1)
+        let section = SettingsSection.cache.rawValue - (userHasUploadRights ? 0 : 1)
         let indexPath = IndexPath(row: 2, section: section)
         if let cell = self.settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
             cell.detailLabel.text = self.photoCacheSize
@@ -57,7 +57,7 @@ extension SettingsViewController
     }
     
     func updateVideoCacheCell() {
-        let section = SettingsSection.cache.rawValue - (hasUploadRights() ? 0 : 1)
+        let section = SettingsSection.cache.rawValue - (userHasUploadRights ? 0 : 1)
         let indexPath = IndexPath(row: 3, section: section)
         if let cell = self.settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
             cell.detailLabel.text = self.videoCacheSize
@@ -65,7 +65,7 @@ extension SettingsViewController
     }
     
     func updateUploadCacheCell() {
-        let section = SettingsSection.cache.rawValue - (hasUploadRights() ? 0 : 1)
+        let section = SettingsSection.cache.rawValue - (userHasUploadRights ? 0 : 1)
         let indexPath = IndexPath(row: 4, section: section)
         if let cell = self.settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
             cell.detailLabel.text = self.uploadCacheSize
@@ -168,7 +168,7 @@ extension SettingsViewController
         })
         alert.addAction(clearVideoCacheAction)
         
-        if hasUploadRights() {
+        if userHasUploadRights {
             title = String(format: "%@ (%@)", NSLocalizedString("UploadRequests_cache", comment: "Uploads"), uploadCacheSize)
             let clearUploadCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
                 // Display HUD during deletion
