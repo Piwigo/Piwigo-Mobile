@@ -169,7 +169,7 @@ extension SettingsViewController
         alert.addAction(clearVideoCacheAction)
         
         if userHasUploadRights {
-            title = String(format: "%@ (%@)", NSLocalizedString("UploadRequests_cache", comment: "Uploads"), uploadCacheSize)
+            title = String(format: "%@ (%@)", String(localized: "UploadRequests_cache", comment: "Uploads"), uploadCacheSize)
             let clearUploadCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
                 // Display HUD during deletion
                 self.navigationController?.showHUD(withTitle: hudTitle)

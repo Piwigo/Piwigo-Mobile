@@ -283,7 +283,7 @@ extension AlbumViewController
         button.addTarget(self, action: #selector(didTapUploadQueueButton), for: .touchUpInside)
         button.isHidden = true
         button.accessibilityIdentifier = "Upload Queue"
-        button.accessibilityLabel = NSLocalizedString("UploadRequests_cache", comment: "Uploads")
+        button.accessibilityLabel = String(localized: "UploadRequests_cache", comment: "Uploads")
         return button
     }
     

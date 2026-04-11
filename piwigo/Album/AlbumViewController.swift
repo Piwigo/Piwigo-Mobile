@@ -539,7 +539,7 @@ class AlbumViewController: UIViewController
 //}
 #endif
         if let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
-            if AppVars.shared.didShowWhatsNewAppVersion.compare("3.5", options: .numeric) == .orderedAscending,
+            if AppVars.shared.didShowWhatsNewAppVersion.compare("4.2", options: .numeric) == .orderedAscending,
                appVersionString.compare(AppVars.shared.didShowWhatsNewAppVersion, options: .numeric) == .orderedDescending {
                 // Display What's New in Piwigo
                 let whatsNewSB = UIStoryboard(name: "WhatsNewViewController", bundle: nil)
@@ -549,9 +549,8 @@ class AlbumViewController: UIViewController
                     whatsNewVC.modalPresentationStyle = .pageSheet
                     whatsNewVC.isModalInPresentation = true
                     if let sheet = whatsNewVC.sheetPresentationController {
-                        sheet.detents = [.medium(), .large()]
-                        sheet.selectedDetentIdentifier = view.bounds.height < 750 ? .large : .medium
-                        sheet.prefersGrabberVisible = true
+                        sheet.detents = [.medium()]
+                        sheet.prefersGrabberVisible = false
                         sheet.preferredCornerRadius = 40
                     }
                     present(whatsNewVC, animated: true)

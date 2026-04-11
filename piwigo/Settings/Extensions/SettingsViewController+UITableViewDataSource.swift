@@ -685,7 +685,7 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 4 /* Upload Requests */:
-                let title = NSLocalizedString("UploadRequests_cache", comment: "Uploads")
+                let title = String(localized: "UploadRequests_cache", comment: "Uploads")
                 cell.configure(with: title, detail: self.uploadCacheSize)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
                 cell.accessibilityIdentifier = "uploadCache"

@@ -60241,6 +60241,17 @@
         }
       }
     },
+    "whatsNew_bugFixes" : {
+      "comment" : "Bug fixes and improvement of the interface.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bug fixes and improvement of the interface."
+          }
+        }
+      }
+    },
     "whatsNew_continue" : {
       "comment" : "Continue",
       "localizations" : {
@@ -60342,204 +60353,13 @@
         }
       }
     },
-    "whatsNew_desc1" : {
-      "comment" : "Adopts Liquid Glass and brings iOS 26 compatibility.",
+    "whatsNew_improvements" : {
+      "comment" : "Improvements",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يعتمد Liquid Glass ويوفر التوافق مع iOS 26."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anvender Liquid Glass og giver kompatibilitet med iOS 26."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verwendet Liquid Glass und bietet Kompatibilität mit iOS 26."
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Adopts Liquid Glass and brings iOS 26 compatibility."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Adopta Liquid Glass y ofrece compatibilidad con iOS 26."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Adopte Liquid Glass et apporte la compatibilité avec iOS 26."
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Liquid Glass bevezetése és iOS 26 kompatibilitás."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mengadopsi Liquid Glass dan mendukung kompatibilitas dengan iOS 26."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Adotta Liquid Glass e garantisce la compatibilità con iOS 26."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Liquid Glassを採用し、iOS 26との互換性を実現しました。"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Maakt gebruik van Liquid Glass en biedt compatibiliteit met iOS 26."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wprowadza Liquid Glass i zapewnia zgodność z iOS 26."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Использует технологию Liquid Glass и обеспечивает совместимость с iOS 26."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Använder Liquid Glass och är kompatibel med iOS 26."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "采用Liquid Glass技术，并实现iOS 26兼容性。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "採用液態玻璃設計，並實現與 iOS 26 的相容性。"
-          }
-        }
-      }
-    },
-    "whatsNew_desc2" : {
-      "comment" : "Improved accessibility thanks to support for bold text, larger text sizes, and more.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تحسين إمكانية الوصول بفضل الدعم للنص الجريء، وأحجام النصوص الأكبر وأكثر."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Forbedret tilgængelighed takket være understøttelse af fed tekst, større tekststørrelser og mere."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verbesserte Barrierefreiheit dank Unterstützung für fettgedruckten Text, größere Schriftgrößen und mehr."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Improved accessibility thanks to support for bold text, larger text sizes, and more."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accesibilidad mejorada gracias a la compatibilidad con texto en negrita, tamaños de texto más grandes y mucho más."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Amélioration de l'accessibilité grâce à la prise en charge du texte en gras, des polices de caractères plus grandes, et plus encore."
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jobb akadálymentesség a vastag betűk, nagyobb betűméret és egyéb funkciók támogatásának köszönhetően."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Peningkatan aksesibilitas berkat dukungan untuk teks tebal, ukuran teks yang lebih besar, dan fitur lainnya."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accessibilità migliorata grazie al supporto per il testo in grassetto, dimensioni del testo più grandi e altro ancora."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "太字テキストや大きな文字サイズなどのサポートにより、アクセシビリティが向上しました。"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verbeterde toegankelijkheid dankzij ondersteuning voor vetgedrukte tekst, grotere tekstgroottes en meer."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Poprawiona dostępność dzięki obsłudze pogrubionego tekstu, większym rozmiarom tekstu i innym zmianom."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Улучшенная доступность благодаря поддержке жирного шрифта, увеличенного размера текста и другим функциям."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Förbättrad tillgänglighet tack vare stöd för fetstil, större textstorlekar och mycket mer."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "通过支持粗体文本、更大字号等功能，提升了无障碍体验。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "透過支援粗體文字、加大字型等功能，提升無障礙體驗。"
+            "value" : "Improvements"
           }
         }
       }
@@ -60645,204 +60465,13 @@
         }
       }
     },
-    "whatsNew_title1" : {
-      "comment" : "Major Update",
+    "whatsNew_uploads" : {
+      "comment" : "Faster uploads, new advanced options, and the ability to resume uploads in the background on iOS 26.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تحديث رئيسي"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Større opdatering"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wichtiges Update"
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Major Update"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Actualización importante"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mise à jour majeure"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Főbb frissítések"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pembaruan Besar"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aggiornamento importante"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "メジャーアップデート"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grote update"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Duża aktualizacja"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Крупное обновление"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Större uppdatering"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重大更新"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重大更新"
-          }
-        }
-      }
-    },
-    "whatsNew_title2" : {
-      "comment" : "Accessibility",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "إمكانية الوصول"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tilgængelighed"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Barrierefreiheit"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accessibility"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accesibilidad"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accessibilité"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Akadálymentesség"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aksesibilitas"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accessibilità"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アクセシビリティ"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toegankelijkheid"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dostępność"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Доступность"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tillgänglighet"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "无障碍功能"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無障礙功能"
+            "value" : "Faster uploads, new advanced options, and the ability to resume uploads in the background on iOS 26."
           }
         }
       }
