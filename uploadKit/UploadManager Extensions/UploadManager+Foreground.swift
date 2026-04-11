@@ -174,9 +174,8 @@ extension UploadManager
         options.includeHiddenAssets = false
         options.sortDescriptors = [NSSortDescriptor(key: #keyPath(PHAsset.creationDate), ascending: true)]
         let availableAssets = PHAsset.fetchAssets(withLocalIdentifiers: assetIDsToDelete, options: options)
-        availableAssets.enumerateObjects { asset, _ , _ in
-            // Don't delete upload requests of available asset
-            if let index = assetIDsToDelete.firstIndex(where: {$0 == asset.localIdentifier}) {
+        for asset in availableAssets.objects(at: IndexSet(integersIn: 0..<availableAssets.count)) {
+            if let index = assetIDsToDelete.firstIndex(where: { $0 == asset.localIdentifier }) {
                 toDeleteIDs.remove(at: index)
                 assetIDsToDelete.remove(at: index)
             }
