@@ -37,7 +37,7 @@ extension UploadManager {
         let chunkSize = UploadVars.shared.customUploadChunkSize * 1000
         let chunksDiv: Float = Float(imageData.count) / Float(chunkSize)
         let chunks = Int(chunksDiv.rounded(.up))
-        let chunksStr = String(format: "%ld", chunks)
+        let chunksStr = "\(chunks)"
         if chunks == 0 || uploadData.fileName.isEmpty ||
             uploadData.md5Sum.isEmpty || uploadData.category == 0 {
             throw .missingUploadParameter
@@ -87,7 +87,7 @@ extension UploadManager {
                 }
                 
                 // Prepare URL Request Object
-                let chunkStr = String(format: "%ld", chunk)
+                let chunkStr = "\(chunk)"
                 let request = getHttpRequestForChunk(chunkStr, ofChunks: chunksStr, with: boundary,
                                                      for: uploadUrl, uploadData: uploadData, withID: uploadID)
                 
@@ -343,7 +343,7 @@ extension UploadManager {
                                                      for username: String, password: String,
                                                      uploadData: UploadProperties) -> Data {
         // Current chunk
-        let chunkStr = String(format: "%ld", chunk - 1)
+        let chunkStr = "\(chunk - 1)"
         
         // Prepare HTTP request body
         var httpBody = Data()
