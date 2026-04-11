@@ -102,7 +102,7 @@
         }
       }
     },
-    "backgroundTask_completed" : {
+    "backgroundTask_completed %lld" : {
       "comment" : "%lld uploads completed",
       "localizations" : {
         "ar" : {
@@ -722,7 +722,7 @@
         }
       }
     },
-    "backgroundTask_remaining" : {
+    "backgroundTask_remaining %lld" : {
       "comment" : "%lld uploads remaining",
       "localizations" : {
         "ar" : {
