@@ -27,9 +27,12 @@ public final class UploadManager {
     var transferCounters = [TransferCounter]()
     
     private init() {
-        // Register auto-upload disabler
-        NotificationCenter.default.addObserver(self, selector: #selector(stopAutoUploader(_:)),
-                                               name: Notification.Name.pwgDisableAutoUpload, object: nil)
+        // Disable auto-upload option
+        NotificationCenter.default.addObserver(forName: Notification.Name.pwgDisableAutoUpload, object: nil, queue: nil) { [weak self] _ in
+            Task(priority: .utility) { @UploadManagerActor in
+                await self?.disableAutoUpload(inBckgTask: false)
+            }
+        }
     }
     
     deinit {

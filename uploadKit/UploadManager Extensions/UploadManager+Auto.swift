@@ -122,10 +122,6 @@ extension UploadManager {
     
     
     // MARK: - Delete Auto-Upload Requests
-    @objc nonisolated func stopAutoUploader(_ notification: Notification?) async {
-        await disableAutoUpload(inBckgTask: false)
-    }
-    
     public func disableAutoUpload(withTitle title:String = "", message:String = "",
                                   inBckgTask: Bool) async {
         // Something to do?
