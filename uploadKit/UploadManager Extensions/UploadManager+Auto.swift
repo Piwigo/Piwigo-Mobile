@@ -98,21 +98,21 @@ extension UploadManager {
         
         // Determine which local images are still not considered for upload
         var uploadRequestsToAppend = [UploadProperties]()
-        fetchedImages.enumerateObjects { image, _, stop in
+        for image in fetchedImages.objects(at: IndexSet(integersIn: 0..<fetchedImages.count)) {
             // Keep images which had never been considered for upload
-            if !imageIDs.contains(image.localIdentifier) {
-                // Create upload request
-                var uploadRequest = UploadProperties(localIdentifier: image.localIdentifier,
-                                                     category: categoryId)
-                uploadRequest.markedForAutoUpload = true
-                uploadRequest.tagIds = UploadVars.shared.autoUploadTagIds
-                uploadRequest.comment = UploadVars.shared.autoUploadComments
-                uploadRequestsToAppend.append(uploadRequest)
-                
-                // Check if we have reached the max number of requests to append
-                if uploadRequestsToAppend.count >= maxNberOfQueuedAutoUploads {
-                    stop.pointee = true
-                }
+            if imageIDs.contains(image.localIdentifier) { continue }
+            
+            // Create upload request
+            var uploadRequest = UploadProperties(localIdentifier: image.localIdentifier,
+                                                 category: categoryId)
+            uploadRequest.markedForAutoUpload = true
+            uploadRequest.tagIds = UploadVars.shared.autoUploadTagIds
+            uploadRequest.comment = UploadVars.shared.autoUploadComments
+            uploadRequestsToAppend.append(uploadRequest)
+
+            // Limit the number of upload requests
+            if uploadRequestsToAppend.count >= maxNberOfQueuedAutoUploads {
+                break
             }
         }
         
