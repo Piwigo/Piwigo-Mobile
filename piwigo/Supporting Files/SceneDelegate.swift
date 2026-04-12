@@ -240,6 +240,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Did the user open the app with a Home menu quick action?
         if let savedShortCutItem {
             _ = handleShortCutItem(shortcutItem: savedShortCutItem)
+            self.savedShortCutItem = nil
         }
         
         // Did the user open the app with a deep link?
