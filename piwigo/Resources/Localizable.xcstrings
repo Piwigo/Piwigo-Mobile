@@ -60244,10 +60244,100 @@
     "whatsNew_bugFixes" : {
       "comment" : "Bug fixes and improvement of the interface.",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إصلاح الأخطاء وتحسين الواجهة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fejlrettelser og forbedringer af grænsefladen."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fehlerbehebung und Verbesserung der Schnittstelle."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bug fixes and improvement of the interface."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corrección de errores y mejora de la interfaz."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corrections de bugs et amélioration de l'interface."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hibajavítások és a felület fejlesztése."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perbaikan bug dan peningkatan antarmuka."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Correzioni di bug e miglioramento dell'interfaccia."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バグ修正とインターフェースの改善。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bug fixes en verbetering van de interface."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poprawki błędów i ulepszenia interfejsu."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Исправления ошибок и улучшение интерфейса."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buggfixar och förbättring av gränssnittet."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "错误修复和界面改进。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "修正錯誤並改進介面。"
           }
         }
       }
@@ -60356,10 +60446,100 @@
     "whatsNew_improvements" : {
       "comment" : "Improvements",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التحسينات"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forbedringer"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbesserungen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Improvements"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mejoras"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Améliorations"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fejlesztések"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peningkatan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miglioramenti"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "改善"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbeteringen"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ulepszenia"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Улучшения"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Förbättringar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "改进"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "改良"
           }
         }
       }
@@ -60466,12 +60646,102 @@
       }
     },
     "whatsNew_uploads" : {
-      "comment" : "Faster uploads, new advanced options, and the ability to resume uploads in the background on iOS 26.",
+      "comment" : "Faster uploads, new advanced options, and the ability to continue uploads in the background on iOS 26.",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحميل أسرع، خيارات متقدمة جديدة، والقدرة على مواصلة التحميل في الخلفية على نظام التشغيل iOS 26."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hurtigere uploads, nye avancerede muligheder, og evnen til at fortsætte uploads i baggrunden på iOS 26."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schnellere Uploads, neue erweiterte Optionen und die Möglichkeit, das Hochladen im Hintergrund auf iOS 26 fortzusetzen."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Faster uploads, new advanced options, and the ability to resume uploads in the background on iOS 26."
+            "value" : "Faster uploads, new advanced options, and the ability to continue uploads in the background on iOS 26."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subidas más rápidas, nuevas opciones avanzadas y la capacidad de continuar subidas en segundo plano en iOS 26."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transferts plus rapides, de nouvelles options avancées et la possibilité de poursuivre les transferts en arrière-plan sur iOS 26."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gyorsabb feltöltés, új speciális beállítások, valamint a feltöltés háttérben történő folytatásának lehetősége az iOS 26-ban."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pengunggahan yang lebih cepat, opsi lanjutan baru, dan kemampuan untuk melanjutkan pengunggahan di latar belakang pada iOS 26."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caricamenti più veloci, nuove opzioni avanzate e la possibilità di continuare i caricamenti in background su iOS 26."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "高速アップロード、新しい高度なオプション、iOS 26 のバックグラウンドでのアップロードを継続する機能。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snellere uploads, nieuwe geavanceerde opties en de mogelijkheid om door te gaan met uploaden op de achtergrond op iOS 26."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Szybsze przesyłanie plików, nowe zaawansowane opcje oraz możliwość kontynuowania przesyłania w tle w systemie iOS 26."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Быстрая загрузка, новые расширенные опции и возможность продолжать выгрузку в фоновом режиме на iOS 26."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snabbare uppladdningar, nya avancerade alternativ och möjlighet att fortsätta uppladdningar i bakgrunden på iOS 26."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更快的上传，新的高级选项，以及在iOS 26后台继续上传的能力。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更快的上传，新的高级选项，以及在iOS 26后台继续上传的能力。"
           }
         }
       }

@@ -231,7 +231,7 @@
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld Transferts terminés"
+                  "value" : "%lld transferts terminés"
                 }
               }
             }
@@ -455,7 +455,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mode économie d’énergie activé. Veuillez l'éteindre."
+            "value" : "Mode économie d’énergie activé. Veuillez le désactiver."
           }
         },
         "hu" : {

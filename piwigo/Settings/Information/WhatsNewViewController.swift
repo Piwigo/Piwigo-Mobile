@@ -38,7 +38,7 @@ final class WhatsNewViewController: UIViewController {
             secondNewsImage.image = UIImage(named: "photo.badge.plus")
         }
         firstNewsTitle.text = String(localized: "UploadRequests_cache", comment: "Uploads")
-        firstNewsDescription.text = String(localized: "whatsNew_uploads", comment: "Faster uploads, new advanced options, and the ability to resume uploads in the background on iOS 26.")
+        firstNewsDescription.text = String(localized: "whatsNew_uploads", comment: "Faster uploads, new advanced options, and the ability to continue uploads in the background on iOS 26.")
         
         // What's new — 2nd annoucement
         if #available(iOS 18.0, *) {
