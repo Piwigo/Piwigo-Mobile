@@ -10138,7 +10138,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.2\n\n• Téléverse plus rapidement et propose des options de téléversements avancées\n• Poursuit les téléversements en arrière-plan après le passage à une autre application \n• Accélère l'affichage des albums stockés sur l'appareil avant téléversement\n• Partage les journaux dans un fichier via AirDrop et les regroupe par milliseconde\n• Fixes bugs and improves the interface"
+            "value" : "Version 4.2\n\n• Transfert plus rapidement et propose des options de transfert avancées\n• Poursuit les transferts en arrière-plan après le passage à une autre application \n• Accélère l'affichage des albums stockés sur l'appareil avant transfert\n• Partage les journaux dans un fichier via AirDrop et les regroupe par milliseconde\n• Corrige les bugs et améliore l'interface"
           }
         },
         "hu" : {

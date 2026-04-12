@@ -1,1 +1,5 @@
-• Foutjes verbeterd
+• Upload sneller en biedt geavanceerde uploadopties
+• Zet uploads op de achtergrond voort nadat je naar een andere app bent overgeschakeld
+• Versnelt het weergeven van albums die op het apparaat zijn opgeslagen vóór het uploaden
+• Deelt logbestanden via AirDrop en groepeert ze per milliseconde
+• Lost bugs op en verbetert de interface

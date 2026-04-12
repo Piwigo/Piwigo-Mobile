@@ -1,1 +1,5 @@
-• Fejlrettelser
+• Uploader hurtigere og tilbyder avancerede upload-indstillinger
+• Fortsætter uploads i baggrunden, når du skifter til en anden app
+• Gør visningen af album gemt på enheden hurtigere inden upload
+• Deler logfiler via AirDrop og grupperer dem efter millisekunder
+• Rette fejl og forbedrer brugergrænsefladen

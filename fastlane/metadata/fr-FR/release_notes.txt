@@ -1,1 +1,5 @@
-• Correction de bugs
+• Transfert plus rapidement et propose des options de transfert avancées
+• Poursuit les transferts en arrière-plan après le passage à une autre application 
+• Accélère l'affichage des albums stockés sur l'appareil avant transfert
+• Partage les journaux dans un fichier via AirDrop et les regroupe par milliseconde
+• Corrige les bugs et améliore l'interface
