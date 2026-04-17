@@ -953,7 +953,7 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld pozostał do przesłania"
+                  "value" : "%lld pozostało do przesłania"
                 }
               },
               "other" : {
