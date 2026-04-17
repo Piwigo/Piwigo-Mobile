@@ -260,7 +260,6 @@
 		AD4AAFB725A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD4AAFB325A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard */; };
 		AD4AAFB825A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4AAFB425A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift */; };
 		AD51721D2ED319580024F172 /* StringOrTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5FB3802D949BE300802895 /* StringOrTypes.swift */; };
-		AD51721E2ED319880024F172 /* PwgKitError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB274722676480D0002DD09 /* PwgKitError.swift */; };
 		AD51721F2ED319A80024F172 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC4F6D02E55CF860044528B /* Constants.swift */; };
 		AD5172202ED319D00024F172 /* AlbumSmart.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD44870B29056D50001288E4 /* AlbumSmart.swift */; };
 		AD5317E125ADC47C0027A26A /* ShareVideoActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5317E025ADC47B0027A26A /* ShareVideoActivityItemProvider.swift */; };
@@ -297,6 +296,8 @@
 		AD5FB3852D94A82B00802895 /* JSONManager+Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5FB3842D94A82B00802895 /* JSONManager+Users.swift */; };
 		AD5FB3A32D96A49400802895 /* RenameFileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5FB3A22D96A49400802895 /* RenameFileViewController.swift */; };
 		AD5FB3A52D96A4AB00802895 /* RenameFileViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD5FB3A42D96A4AB00802895 /* RenameFileViewController.storyboard */; };
+		AD615C132F92D04000C24F47 /* PwgKitError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB274722676480D0002DD09 /* PwgKitError.swift */; };
+		AD615C142F92D04600C24F47 /* DataDirectories.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA5FA4529A11D35004A8A59 /* DataDirectories.swift */; };
 		AD61D2FA2571555A00B8DEA0 /* HelpViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD61D2F92571555A00B8DEA0 /* HelpViewController.storyboard */; };
 		AD61D3142571598000B8DEA0 /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD61D3132571598000B8DEA0 /* HelpViewController.swift */; };
 		AD62CC8426828CD400CA66C5 /* Data+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD07A23525CF07D8000EE016 /* Data+AppTools.swift */; };
@@ -400,9 +401,7 @@
 		AD7E06572EFBFD7D003F8A61 /* PwgSessionDelegate+Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E06562EFBFD7D003F8A61 /* PwgSessionDelegate+Task.swift */; };
 		AD7E06592EFBFECA003F8A61 /* ImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E06582EFBFECA003F8A61 /* ImageDownloader.swift */; };
 		AD7E065B2EFD50C9003F8A61 /* JSONManager+Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E065A2EFD50C9003F8A61 /* JSONManager+Image.swift */; };
-		AD7E065D2EFD66CB003F8A61 /* JSONManager+Categories.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E065C2EFD66CB003F8A61 /* JSONManager+Categories.swift */; };
 		AD7E065E2EFD66CB003F8A61 /* JSONManager+Categories.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E065C2EFD66CB003F8A61 /* JSONManager+Categories.swift */; };
-		AD7E06602EFD8E8E003F8A61 /* JSONManager+Tags.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E065F2EFD8E8E003F8A61 /* JSONManager+Tags.swift */; };
 		AD7E06612EFD8E8E003F8A61 /* JSONManager+Tags.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E065F2EFD8E8E003F8A61 /* JSONManager+Tags.swift */; };
 		AD7E06652F032DD1003F8A61 /* UploadManager+TransferInBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E06642F032DD1003F8A61 /* UploadManager+TransferInBackground.swift */; };
 		AD7E9AE72A6D7AEA0079BE8F /* PlayerViewControllerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E9AE62A6D7AEA0079BE8F /* PlayerViewControllerCoordinator.swift */; };
@@ -3886,9 +3885,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AD5172202ED319D00024F172 /* AlbumSmart.swift in Sources */,
-				AD7E06602EFD8E8E003F8A61 /* JSONManager+Tags.swift in Sources */,
 				AD51721F2ED319A80024F172 /* Constants.swift in Sources */,
-				AD51721E2ED319880024F172 /* PwgKitError.swift in Sources */,
 				AD51721D2ED319580024F172 /* StringOrTypes.swift in Sources */,
 				AD865773284CFE6D00C06EF4 /* community.categories.getList.swift in Sources */,
 				AD38C04D24AF746000CDC765 /* community.images.uploadCompleted.swift in Sources */,
@@ -3897,6 +3894,7 @@
 				ADDD2108270A13A100CACFF2 /* pwg.getInfos.swift in Sources */,
 				AD865778284D163800C06EF4 /* pwg.categories.getList.swift in Sources */,
 				AD6759B128D77DC6009C69EC /* pwg.categories.add.swift in Sources */,
+				AD615C132F92D04000C24F47 /* PwgKitError.swift in Sources */,
 				AD6759B228D77DCB009C69EC /* pwg.categories.setInfo.swift in Sources */,
 				AD6759B328D77DCF009C69EC /* pwg.categories.move.swift in Sources */,
 				ADB2C3D6291D9D5C009542FB /* pwg.categories.calculateOrphans.swift in Sources */,
@@ -3913,6 +3911,7 @@
 				AD06E3852A423051007CACD7 /* pwg.images.search.swift in Sources */,
 				ADDD2107270A139300CACFF2 /* pwg.images.delete.swift in Sources */,
 				AD7D13092DFDB42E00EEE90D /* pwg.groups.getList.swift in Sources */,
+				AD615C142F92D04600C24F47 /* DataDirectories.swift in Sources */,
 				ADD485C32B13A24500C7E30E /* pwg.history.log.swift in Sources */,
 				AD211A8A27BAFE30005D5E4F /* pwg.session.login.swift in Sources */,
 				AD98DEB527C2375C00FAC983 /* pwg.session.getStatus.swift in Sources */,
@@ -3923,7 +3922,6 @@
 				AD5FB3792D9477EE00802895 /* pwg.users.getList.swift in Sources */,
 				ADDD2106270A0FB900CACFF2 /* pwg.users.favorites.addRemove.swift in Sources */,
 				AD11E46124A930B000C8876F /* piwigoWebAPI.swift in Sources */,
-				AD7E065D2EFD66CB003F8A61 /* JSONManager+Categories.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

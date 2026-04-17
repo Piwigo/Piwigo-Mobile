@@ -15,8 +15,9 @@ public let kCommunitySessionGetStatusBytes: Int64 = 2100
 public struct CommunitySessionGetStatusJSON: Decodable
 {    
     public var status: String?
-    public var realUser = ""        // "webmaster"
-    public var uploadMethod = ""    // "pwg.categories.getAdminList"
+    public var realUser = ""                // "webmaster"
+    public var uploadMethod = ""            // "pwg.categories.getAdminList"
+    public var createAlbumRights: [Int32]?  // [5,43]
     
     private enum RootCodingKeys: String, CodingKey {
         case status = "stat"
@@ -28,6 +29,7 @@ public struct CommunitySessionGetStatusJSON: Decodable
     private enum ResultCodingKeys: String, CodingKey {
         case realUser = "real_user_status"
         case uploadMethod = "upload_categories_getList_method"
+        case createAlbumRights = "create_categories"
     }
     
     private enum ErrorCodingKeys: String, CodingKey {
@@ -51,6 +53,7 @@ public struct CommunitySessionGetStatusJSON: Decodable
             // Decodes pending properties from the data and store them in the array
             try realUser = resultContainer.decode(String.self, forKey: .realUser)
             try uploadMethod = resultContainer.decode(String.self, forKey: .uploadMethod)
+            try createAlbumRights = resultContainer.decodeIfPresent([Int32].self, forKey: .createAlbumRights)
         }
         else if (status == "fail")
         {
