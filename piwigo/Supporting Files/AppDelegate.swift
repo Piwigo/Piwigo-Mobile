@@ -422,6 +422,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Retrieve assets
         let assetsToDelete = PHAsset.fetchAssets(withLocalIdentifiers: uploadLocalIDs, options: nil)
         
+        // Do not suggest to delete assets when there is none but delete upload requests if any left
+        if assetsToDelete.count == 0 {
+            let myUploadIDs = uploadIDs
+            Task { @UploadManagerActor in
+                // Delete upload requests w/o reporting potential error
+                try? UploadProvider().deleteUploads(withID: myUploadIDs, inContext: UploadManager.shared.uploadBckgContext)
+            }
+            return
+        }
+        
         // Delete images from the library (can't use an async function here)
         PHPhotoLibrary.shared().performChanges {
             PHAssetChangeRequest.deleteAssets(assetsToDelete as (any NSFastEnumeration))
