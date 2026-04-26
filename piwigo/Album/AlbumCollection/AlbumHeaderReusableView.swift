@@ -42,7 +42,8 @@ class AlbumHeaderReusableView: UICollectionReusableView {
             backgroundColor = PwgColor.background.withAlphaComponent(0.75)
         }
         albumDesc.attributedText = description.adaptingTextColorPreservingHue(to: PwgColor.background, defaultColor: PwgColor.header)
-        albumDesc.linkTextAttributes = [NSAttributedString.Key.foregroundColor: PwgColor.orange]
+        albumDesc.linkTextAttributes = [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue,
+                                        NSAttributedString.Key.underlineColor: PwgColor.header]
     }
 
     override func prepareForReuse() {

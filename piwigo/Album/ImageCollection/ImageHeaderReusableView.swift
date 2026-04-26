@@ -118,7 +118,8 @@ class ImageHeaderReusableView: UICollectionReusableView
         selectButton?.layer.shadowColor = AppVars.shared.isDarkPaletteActive ? UIColor.white.cgColor : UIColor.black.cgColor
         selectButton?.layer.shadowOpacity = AppVars.shared.isDarkPaletteActive ? 0.7 : 0.3
         albumDesc?.attributedText = description.adaptingTextColorPreservingHue(to: PwgColor.background, defaultColor: PwgColor.header)
-        albumDesc?.linkTextAttributes = [NSAttributedString.Key.foregroundColor: PwgColor.orange]
+        albumDesc?.linkTextAttributes = [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue,
+                                         NSAttributedString.Key.underlineColor: PwgColor.header]
     }
     
     @objc func updateDetailLabel(_ notification: NSNotification) {
