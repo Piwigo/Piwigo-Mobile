@@ -20640,6 +20640,15 @@
         }
       }
     },
+    "help10_header" : {
+      "comment" : "HTML Descriptions"
+    },
+    "help10_text" : {
+      "comment" : "Use <HTML…> tags to format the text in album and photo descriptions."
+    },
+    "help10_text2" : {
+      "comment" : "Choose a format appropriate for both apps and web pages."
+    },
     "Hour" : {
       "comment" : "Hour",
       "localizations" : {

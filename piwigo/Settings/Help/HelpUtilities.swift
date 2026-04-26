@@ -23,6 +23,7 @@ struct HelpUtilities {
         }
         else {
             helpVC.displayHelpPagesWithID = [8,1,5,6,2,4,7,9,3]
+//            helpVC.displayHelpPagesWithID = [8,1,5,6,2,4,7,10,9,3]
         }
         return helpVC
     }

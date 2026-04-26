@@ -26,7 +26,7 @@ class EditImageParamsViewController: UIViewController
     
     @IBOutlet weak var editImageParamsTableView: UITableView!
     private let kEditImageParamsViewWidth: CGFloat = 512.0
-
+    
     var shouldUpdateTitle = false
     var commonTitle = ""
     
@@ -39,7 +39,7 @@ class EditImageParamsViewController: UIViewController
     var commonDateCreated = DateUtilities.unknownDate
     var oldCreationDate = Date()
     private var timeOffset = TimeInterval.zero
-
+    
     var shouldUpdatePrivacyLevel = false
     var commonPrivacyLevel = pwgPrivacy.everybody.rawValue
     
@@ -64,7 +64,7 @@ class EditImageParamsViewController: UIViewController
         case desc
         case count
     }
-
+    
     // Tell which cell triggered the keyboard appearance
     var editedRow: IndexPath?
     
@@ -77,7 +77,7 @@ class EditImageParamsViewController: UIViewController
         }
         return context
     }()
-
+    
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -121,7 +121,7 @@ class EditImageParamsViewController: UIViewController
         
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-
+        
         // Table view
         editImageParamsTableView?.separatorColor = PwgColor.separator
         editImageParamsTableView?.backgroundColor = PwgColor.background
@@ -134,11 +134,11 @@ class EditImageParamsViewController: UIViewController
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
-
+        
         // Register font changes
         NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
                                                name: UIContentSizeCategory.didChangeNotification, object: nil)
-
+        
         // Register keyboard appearance/disappearance
         NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardWillShow(_:)),
                                                name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -147,6 +147,13 @@ class EditImageParamsViewController: UIViewController
         NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardWillHide(_:)),
                                                name: UIResponder.keyboardWillHideNotification, object: nil)
     }
+    
+//    override func viewDidAppear(_ animated: Bool) {
+//        super.viewDidAppear(animated)
+//        
+//        // Display help view only if not already watched
+//        showHelpIfNeeded()
+//    }
     
     override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
@@ -193,13 +200,13 @@ class EditImageParamsViewController: UIViewController
         // Apply changes
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
-
+            
             DispatchQueue.main.async { [weak self] in
                 guard let self else { return }
                 // Animated update for smoother experience
                 self.editImageParamsTableView?.beginUpdates()
                 self.editImageParamsTableView?.endUpdates()
-
+                
                 // Update navigation bar
                 self.navigationController?.navigationBar.configAppearance(withLargeTitles: true)
             }
@@ -273,11 +280,11 @@ class EditImageParamsViewController: UIViewController
     @objc func cancelEdit() {
         // No change
         resetCommonParameters()
-
+        
         // Return to image preview
         dismiss(animated: true)
     }
-
+    
     @MainActor
     @objc func doneEdit() {
         // Display HUD during the update
@@ -287,7 +294,7 @@ class EditImageParamsViewController: UIViewController
         } else {
             showHUD(withTitle: NSLocalizedString("editImageDetailsHUD_updatingSingle", comment: "Updating Photo…"))
         }
-
+        
         // Determine common time offset to apply
         timeOffset = commonDateCreated.timeIntervalSince(oldCreationDate)
         
@@ -325,7 +332,7 @@ class EditImageParamsViewController: UIViewController
             }
             return
         }
-
+        
         // Update image info on server
         /// The cache will be updated by the parent view controller.
         Task {
@@ -333,7 +340,7 @@ class EditImageParamsViewController: UIViewController
                 // Set image properties
                 let paramsDict = getParameters(forImage: images[index])
                 try await JSONManager.shared.setInfos(with: paramsDict)
-
+                
                 await MainActor.run {
                     // Update cache
                     self.updateProperties(ofImage: images[index], withParameters: paramsDict)
@@ -349,7 +356,7 @@ class EditImageParamsViewController: UIViewController
             }
         }
     }
-
+    
     private func getParameters(forImage imageData: Image) -> [String : Any] {
         // Image ID
         var paramsDict: [String : Any] = ["image_id" : imageData.pwgID,
@@ -359,12 +366,12 @@ class EditImageParamsViewController: UIViewController
         if shouldUpdateTitle {
             paramsDict["name"] = commonTitle.utf8mb3Encoded
         }
-
+        
         // Update image author? (We should never set NSNotFound in the database)
         if shouldUpdateAuthor || imageData.author == "NSNotFound" {
             paramsDict["author"] = commonAuthor.utf8mb3Encoded
         }
-
+        
         // Update image creation date?
         if shouldUpdateDateCreated {
             if imageData.dateCreated < DateUtilities.weekAfterInterval {
@@ -373,13 +380,13 @@ class EditImageParamsViewController: UIViewController
                 paramsDict["date_creation"] = DateUtilities.string(from: imageData.dateCreated + timeOffset)
             }
         }
-
+        
         // Update image privacy level?
         if shouldUpdatePrivacyLevel,
            commonPrivacyLevel != pwgPrivacy.unknown.rawValue {
             paramsDict["level"] = commonPrivacyLevel
         }
-
+        
         // Update image tags?
         if shouldUpdateTags {
             var tags = imageData.tags ?? Set<Tag>()
@@ -394,7 +401,7 @@ class EditImageParamsViewController: UIViewController
             let tagIDs: String = tags.map({"\($0.tagId),"}).reduce("", +)
             paramsDict["tag_ids"] = String(tagIDs.dropLast(1))
         }
-
+        
         // Update image description?
         /// token required for updating HTML in title/comment
         if shouldUpdateComment {
@@ -413,23 +420,23 @@ class EditImageParamsViewController: UIViewController
             imageData.titleStr = newTitle.utf8mb4Encoded
             imageData.title = imageData.titleStr.attributedPlain
         }
-
+        
         // Update image author? (We should never set NSNotFound in the database)
         if shouldUpdateAuthor || imageData.author == "NSNotFound" {
             imageData.author = commonAuthor
         }
-
+        
         // Update image creation date?
         if shouldUpdateDateCreated {
             imageData.dateCreated += timeOffset
         }
-
+        
         // Update image privacy level?
         if shouldUpdatePrivacyLevel,
            commonPrivacyLevel != pwgPrivacy.unknown.rawValue {
             imageData.privacyLevel = commonPrivacyLevel
         }
-
+        
         // Update image tags?
         if shouldUpdateTags {
             // Loop over the removed tags
@@ -445,7 +452,7 @@ class EditImageParamsViewController: UIViewController
                 if let albums = imageData.albums,
                    let albumData = albums.first(where: {$0.pwgID == catID}) {
                     imageData.removeFromAlbums(albumData)
-
+                    
                     // Update albums
                     try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: albumData, inContext: self.mainContext)
                 }
@@ -461,13 +468,13 @@ class EditImageParamsViewController: UIViewController
                 let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.tagId)
                 if let albumData = try? AlbumProvider().getAlbum(ofUser: user, withId: catID) {
                     imageData.addToAlbums(albumData)
-
+                    
                     // Update albums
                     try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: albumData, inContext: self.mainContext)
                 }
             }
         }
-
+        
         // Update image description?
         if shouldUpdateComment,
            let newComment = paramsDict["comment"] as? String {
@@ -476,10 +483,10 @@ class EditImageParamsViewController: UIViewController
             imageData.comment = imageData.commentStr.attributedPlain
             imageData.commentHTML = imageData.commentStr.attributedHTML
         }
-
+        
         // Save changes
         self.mainContext.saveIfNeeded()
-
+        
         // Notify album/image view of modification
         self.delegate?.didChangeImageParameters(imageData)
     }
@@ -492,7 +499,7 @@ class EditImageParamsViewController: UIViewController
             ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }
-
+        
         // Report error
         let title = NSLocalizedString("editImageDetailsError_title", comment: "Failed to Update")
         let message = NSLocalizedString("editImageDetailsError_message", comment: "Failed to update your changes with your server.")
@@ -510,4 +517,34 @@ class EditImageParamsViewController: UIViewController
             }
         }
     }
+    
+    
+    // MARK: - Help Views
+//    @MainActor
+//    private func showHelpIfNeeded() {
+//        
+//        // Display help views less than once a day
+//        let dateOfLastHelpView = AppVars.shared.dateOfLastHelpView
+//        let diff = Date().timeIntervalSinceReferenceDate - dateOfLastHelpView
+//        if diff > TimeInterval(86400) { return }
+//            
+//        // Determine which help pages should be presented
+//        var displayHelpPagesWithID: [UInt16] = []
+//        if (AppVars.shared.didWatchHelpViews & 0b00000010_00000000) == 0 {
+//            displayHelpPagesWithID.append(10)    // i.e. HTML descriptions
+//        }
+//        if displayHelpPagesWithID.count > 0 {
+//            // Present unseen upload management help views
+//            let helpVC = HelpUtilities.getHelpViewController(showingPagesWithIDs: displayHelpPagesWithID)
+//            if view.traitCollection.userInterfaceIdiom == .phone {
+//                helpVC.popoverPresentationController?.permittedArrowDirections = .up
+//                navigationController?.present(helpVC, animated:true)
+//            } else {
+//                helpVC.modalPresentationStyle = .formSheet
+//                helpVC.modalTransitionStyle = .coverVertical
+//                helpVC.popoverPresentationController?.sourceView = view
+//                navigationController?.present(helpVC, animated: true)
+//            }
+//        }
+//    }
 }
