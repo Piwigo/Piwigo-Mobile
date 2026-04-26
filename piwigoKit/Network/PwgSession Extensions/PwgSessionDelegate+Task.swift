@@ -12,12 +12,10 @@ import Foundation
 extension PwgSessionDelegate: URLSessionTaskDelegate {
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: (any Error)?) {
         // Retrieve the original URL of this task
-//        debugPrint("••> Did complete task #\(task.taskIdentifier) with error: \(error?.localizedDescription ?? "none")")
-        let request = task.originalRequest ?? task.currentRequest
-        guard let imageURL = request?.url,
-              let download = ImageDownloader.activeDownloads[imageURL]
+        PwgSessionDelegate.logger.notice("Did complete task #\(task.taskIdentifier, privacy: .public) with error: \(error?.localizedDescription ?? "none")")
+        guard let download = getImageDownload(fromTask: task)
         else { return }
-
+        
         // Manage the error type
         var pwgError: PwgKitError?
         if let error = error as? URLError {
@@ -58,21 +56,19 @@ extension PwgSessionDelegate: URLSessionDownloadDelegate {
                     didWriteData bytesWritten: Int64, totalBytesWritten: Int64,
                     totalBytesExpectedToWrite: Int64) {
         // Retrieve the original URL of this task
-//        debugPrint("••> Progress task #\(downloadTask.taskIdentifier): \(totalBytesWritten) total bytes downloaded from \(String(describing: downloadTask.originalRequest?.url ?? downloadTask.currentRequest?.url))")
 //        activeDownloads.forEach { (key, _) in debugPrint("   Key: \(key)") }
-        let request = downloadTask.originalRequest ?? downloadTask.currentRequest
-        guard let imageURL = request?.url,
-              let download = ImageDownloader.activeDownloads[imageURL]
+        PwgSessionDelegate.logger.notice("Progress task #\(downloadTask.taskIdentifier, privacy: .public): \(totalBytesWritten, privacy: .public) total bytes downloaded from \(downloadTask.taskDescription ?? "<unknown>")")
+        guard let download = getImageDownload(fromTask: downloadTask)
         else { return }
-
+        
         // Update progress bar if any
         if let progressHandler = download.progressHandler {
             if totalBytesExpectedToWrite > 0 {
                 download.progress = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
-//                debugPrint("••> Progress task #\(downloadTask.taskIdentifier) -> written: \(bytesWritten), totalWritten: \(totalBytesWritten), expected: \(totalBytesExpectedToWrite), progress: \(download.progress)")
+//                PwgSessionDelegate.logger.notice("Progress task #\(downloadTask.taskIdentifier, privacy: .public) -> written: \(bytesWritten, privacy: .public), totalWritten: \(totalBytesWritten, privacy: .public), expected: \(totalBytesExpectedToWrite, privacy: .public), progress: \(download.progress, privacy: .public)")
             } else {
                 download.progress = 1.0 - Float(bytesWritten) / Float(totalBytesWritten)
-//                debugPrint("••> Progress task #\(downloadTask.taskIdentifier) -> written: \(bytesWritten), totalWritten: \(totalBytesWritten), expected: \(totalBytesExpectedToWrite), progress: \(download.progress)")
+//                PwgSessionDelegate.logger.notice("Progress task #\(downloadTask.taskIdentifier, privacy: .public) -> written: \(bytesWritten, privacy: .public), totalWritten: \(totalBytesWritten, privacy: .public), expected: \(totalBytesExpectedToWrite, privacy: .public), progress: \(download.progress, privacy: .public)")
             }
             progressHandler(download.progress)
         }
@@ -81,19 +77,17 @@ extension PwgSessionDelegate: URLSessionDownloadDelegate {
     public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask,
                     didFinishDownloadingTo location: URL) {
         // Retrieve the URL of this task
-//        debugPrint("••> Task #\(downloadTask.taskIdentifier) did finish downloading to \(location)")
-        let request = downloadTask.originalRequest ?? downloadTask.currentRequest
-        guard let imageURL = request?.url,
-              let download = ImageDownloader.activeDownloads[imageURL],
+//        PwgSessionDelegate.logger.notice("Task #\(downloadTask.taskIdentifier, privacy: .public) did finish downloading to \(location)")
+        guard let download = getImageDownload(fromTask: downloadTask),
               let fileURL = download.fileURL
         else { return }
-
+        
         // Create parent directories if needed
         do {
             let fm = FileManager.default
             let dirURL = fileURL.deletingLastPathComponent()
             if fm.fileExists(atPath: dirURL.path) == false {
-//                debugPrint("••> Create directory \(dirURL.path)")
+//                PwgSessionDelegate.logger.notice("Create directory \(dirURL.path, privacy: .public)")
                 try fm.createDirectory(at: dirURL, withIntermediateDirectories: true,
                                        attributes: nil)
             }
@@ -103,7 +97,7 @@ extension PwgSessionDelegate: URLSessionDownloadDelegate {
     
             // Store image
             try fm.copyItem(at: location, to: fileURL)
-//            debugPrint("••> Image \(fileURL.lastPathComponent) stored in cache (URL: \(imageURL)")
+//            PwgSessionDelegate.logger.notice("Image \(fileURL.lastPathComponent, privacy: .public) stored in cache (URL: \(imageURL, privacy: .public))")
         }
         catch {
             // Return error with failureHandler

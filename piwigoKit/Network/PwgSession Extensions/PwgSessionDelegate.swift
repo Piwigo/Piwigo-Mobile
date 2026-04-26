@@ -17,6 +17,25 @@ public final class PwgSessionDelegate: NSObject, Sendable {
     
     // Singleton
     public static let shared = PwgSessionDelegate()
+    
+    // For retrieving the image URL from a task
+    func getImageDownload(fromTask task: URLSessionTask) -> ImageDownload? {
+        // Use task description since v4.2
+        if let urlString = task.taskDescription,
+           let imageURL = URL(string: urlString),
+           ImageDownloader.activeDownloads.keys.contains(imageURL) {
+            return ImageDownloader.activeDownloads[imageURL]
+        }
+        
+        // Retrieve URL from request before v4.2 (did crash rarely)
+        if let request = task.originalRequest ?? task.currentRequest,
+           let imageURL = request.url,
+           ImageDownloader.activeDownloads.keys.contains(imageURL) {
+            return ImageDownloader.activeDownloads[imageURL]
+        }
+        
+        return nil
+    }
 }
 
 

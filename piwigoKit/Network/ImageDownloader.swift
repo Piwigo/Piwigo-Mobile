@@ -124,6 +124,7 @@ public final class ImageDownloader {
 
         // Create and resume download task
         download.task = dataSession.downloadTask(with: request)
+        download.task?.taskDescription = imageURL.absoluteString
         download.task?.countOfBytesClientExpectsToSend = Int64((request.allHTTPHeaderFields ?? [:]).count)
         download.task?.countOfBytesClientExpectsToReceive = download.fileSize
         download.task?.resume()
