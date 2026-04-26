@@ -129,13 +129,13 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
                                         fromServer: serverID, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
             // Notify the delegate on the main thread to show how it makes progress.
             self?.updateProgressView(with: Float((0.75 * fractionCompleted)))
-        } completion: { [unowned self] fileURL in
-            self.cachedFileURL = fileURL
+        } completion: { [weak self] fileURL in
+            self?.cachedFileURL = fileURL
             sema.signal()
-        } failure: { [unowned self] error in
+        } failure: { [weak self] error in
             // Will notify the delegate on the main thread that the processing is cancelled
-            self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!\n%@"), error.localizedDescription)
+            self?.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+            self?.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!\n%@"), error.localizedDescription)
             sema.signal()
         }
         _ = sema.wait(timeout: .distantFuture)
