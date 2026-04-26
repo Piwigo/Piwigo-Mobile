@@ -25,6 +25,13 @@ public extension JSONManager {
             throw .unknownUserStatus
         }
         NetworkVars.shared.userStatus = userStatus
+        
+//        // Update user's album list in which he/she can create albums
+//        if let createAlbumRights = pwgData.createAlbumRights {
+//            NetworkVars.shared.createAlbumRights = createAlbumRights.compactMap({"\($0)"}).joined(separator: ",")
+//        } else {
+//            NetworkVars.shared.createAlbumRights = "\(Int32.min)"
+//        }
     }
     
     /**

@@ -110,6 +110,10 @@ public class NetworkVars: @unchecked Sendable {
         }
     }
     
+    /// - IDs of albums in which a Community user can create sub-albums (Int32.min if unknown, i.e. Piwigo version before 16.4)
+//    @UserDefault("createAlbumRights", defaultValue: "\(Int32.min)", userDefaults: UserDefaults.dataSuite)
+//    public var createAlbumRights: String
+    
     /// - Library/Caches/Piwigo/Thumbnail folder size
     @UserDefault("thumbFolderSize", defaultValue: 0, userDefaults: UserDefaults.dataSuite)
     public var thumbFolderSize: UInt
