@@ -13,7 +13,8 @@ extension PwgSessionDelegate: URLSessionTaskDelegate {
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: (any Error)?) {
         // Retrieve the original URL of this task
 //        debugPrint("••> Did complete task #\(task.taskIdentifier) with error: \(error?.localizedDescription ?? "none")")
-        guard let imageURL = task.originalRequest?.url ?? task.currentRequest?.url,
+        let request = task.originalRequest ?? task.currentRequest
+        guard let imageURL = request?.url,
               let download = ImageDownloader.activeDownloads[imageURL]
         else { return }
 
@@ -59,7 +60,8 @@ extension PwgSessionDelegate: URLSessionDownloadDelegate {
         // Retrieve the original URL of this task
 //        debugPrint("••> Progress task #\(downloadTask.taskIdentifier): \(totalBytesWritten) total bytes downloaded from \(String(describing: downloadTask.originalRequest?.url ?? downloadTask.currentRequest?.url))")
 //        activeDownloads.forEach { (key, _) in debugPrint("   Key: \(key)") }
-        guard let imageURL = downloadTask.originalRequest?.url ?? downloadTask.currentRequest?.url,
+        let request = downloadTask.originalRequest ?? downloadTask.currentRequest
+        guard let imageURL = request?.url,
               let download = ImageDownloader.activeDownloads[imageURL]
         else { return }
 
@@ -80,7 +82,8 @@ extension PwgSessionDelegate: URLSessionDownloadDelegate {
                     didFinishDownloadingTo location: URL) {
         // Retrieve the URL of this task
 //        debugPrint("••> Task #\(downloadTask.taskIdentifier) did finish downloading to \(location)")
-        guard let imageURL = downloadTask.originalRequest?.url ?? downloadTask.currentRequest?.url,
+        let request = downloadTask.originalRequest ?? downloadTask.currentRequest
+        guard let imageURL = request?.url,
               let download = ImageDownloader.activeDownloads[imageURL],
               let fileURL = download.fileURL
         else { return }
