@@ -109,7 +109,7 @@ extension UploadManager
                 UploadVars.shared.isProcessingTaskActive = false
                 
                 // Perform last actions according to app state
-                self.finishUploadTask()
+                self.finishUploadProcessingTask()
                 
                 // Inform the background task scheduler that the task is complete.
                 task.setTaskCompleted(success: success)
@@ -211,7 +211,7 @@ extension UploadManager
                 (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi)
     }
     
-    private func finishUploadTask() {
+    private func finishUploadProcessingTask() {
         // Explicitly abort pending CoreData work
         self.uploadBckgContext.rollback()
         
