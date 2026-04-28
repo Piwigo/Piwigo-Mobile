@@ -72,7 +72,7 @@ extension LocalImagesViewController {
             switch view.traitCollection.userInterfaceIdiom {
             case .phone:
                 navigationItem.rightBarButtonItems = [uploadBarButton, actionBarButton].compactMap { $0 }
-
+                
             case .pad:
                 trashBarButton?.isEnabled = canDeleteUploadedImages() || canDeleteSelectedImages()
                 navigationItem.rightBarButtonItems = [uploadBarButton, actionBarButton,
@@ -174,7 +174,7 @@ extension LocalImagesViewController {
             navigationItem.titleView = oneLineTitleView
         }
     }
-
+    
     @MainActor
     func updateActionButton() {
         // Update action button
@@ -251,7 +251,7 @@ extension LocalImagesViewController {
         uploadSwitchVC.user = user
         uploadSwitchVC.categoryId = categoryId
         uploadSwitchVC.categoryCurrentCounter = categoryCurrentCounter
-
+        
         // Will we propose to delete images after upload?
         if let firstLocalID = uploadRequests.first?.localIdentifier {
             if let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [firstLocalID], options: nil).firstObject {
@@ -265,11 +265,16 @@ extension LocalImagesViewController {
         
         // Push Edit view embedded in navigation controller
         let navController = UINavigationController(rootViewController: uploadSwitchVC)
+        #if targetEnvironment(macCatalyst)
+        navController.modalPresentationStyle = .formSheet
+        navController.modalTransitionStyle = .coverVertical
+        #else
         navController.modalPresentationStyle = .popover
         navController.modalTransitionStyle = .coverVertical
-        navController.popoverPresentationController?.sourceView = localImagesCollection
+        navController.popoverPresentationController?.sourceView = view
         navController.popoverPresentationController?.barButtonItem = uploadBarButton
         navController.popoverPresentationController?.permittedArrowDirections = .up
-        navigationController?.present(navController, animated: true)
+        #endif
+        present(navController, animated: true)
     }
 }

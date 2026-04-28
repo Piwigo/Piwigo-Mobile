@@ -269,12 +269,17 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
 
         // Push Edit view embedded in navigation controller
         let navController = UINavigationController(rootViewController: uploadSwitchVC)
+        #if targetEnvironment(macCatalyst)
+        navController.modalPresentationStyle = .formSheet
+        navController.modalTransitionStyle = .coverVertical
+        #else
         navController.modalPresentationStyle = .popover
         navController.modalTransitionStyle = .coverVertical
-        navController.popoverPresentationController?.sourceView = localImagesCollection
+        navController.popoverPresentationController?.sourceView = view
         navController.popoverPresentationController?.barButtonItem = uploadBarButton
         navController.popoverPresentationController?.permittedArrowDirections = .up
-        navigationController?.present(navController, animated: true)
+        #endif
+        present(navController, animated: true)
     }
 }
 

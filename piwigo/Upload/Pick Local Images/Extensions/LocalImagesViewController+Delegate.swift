@@ -279,11 +279,16 @@ extension LocalImagesViewController: UICollectionViewDelegate
             
             // Push Edit view embedded in navigation controller
             let navController = UINavigationController(rootViewController: uploadSwitchVC)
+            #if targetEnvironment(macCatalyst)
+            navController.modalPresentationStyle = .formSheet
+            navController.modalTransitionStyle = .coverVertical
+            #else
             navController.modalPresentationStyle = .popover
             navController.modalTransitionStyle = .coverVertical
-            navController.popoverPresentationController?.sourceView = self.localImagesCollection
-            navController.popoverPresentationController?.barButtonItem = self.uploadBarButton
+            navController.popoverPresentationController?.sourceView = view
+            navController.popoverPresentationController?.barButtonItem = uploadBarButton
             navController.popoverPresentationController?.permittedArrowDirections = .up
+            #endif
             self.navigationController?.present(navController, animated: true)
         }
     }
