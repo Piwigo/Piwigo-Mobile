@@ -100,6 +100,7 @@ extension LocalImagesViewController: UploadSwitchDelegate
                 
                 // Add upload requests to queue
                 UploadVars.shared.isPaused = false
+                #if os(iOS) && !targetEnvironment(macCatalyst)
                 if #available(iOS 26.0, *) {
                     // Launch new continued upload task if possible
                     if UploadVars.shared.isContinuedProcessingTaskActive == false {
@@ -113,7 +114,13 @@ extension LocalImagesViewController: UploadSwitchDelegate
                     // Process next uploads if possible
                     await UploadManagerActor.shared.processNextUpload()
                 }
+                #elseif targetEnvironment(macCatalyst)
+                // Queue uploads to prepare
+                await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
                 
+                // Process next uploads if possible
+                await UploadManagerActor.shared.processNextUpload()
+                #endif
                 // Deselect cells in memory
                 await MainActor.run {
                     self.uploadRequests = []
@@ -131,6 +138,7 @@ extension LocalImagesViewController: UploadSwitchDelegate
                         // Resume upload operations in background queue
                         UploadVars.shared.isPaused = false
                         Task(priority: .utility) { @UploadManagerActor in
+                            #if os(iOS) && !targetEnvironment(macCatalyst)
                             if #available(iOS 26.0, *) {
                                 // Launch new continued upload task if possible
                                 if UploadVars.shared.isContinuedProcessingTaskActive == false {
@@ -141,6 +149,10 @@ extension LocalImagesViewController: UploadSwitchDelegate
                                 // Process next uploads if possible
                                 await UploadManagerActor.shared.processNextUpload()
                             }
+                            #elseif targetEnvironment(macCatalyst)
+                            // Process next uploads if possible
+                            await UploadManagerActor.shared.processNextUpload()
+                            #endif
                         }
                     }
                 }

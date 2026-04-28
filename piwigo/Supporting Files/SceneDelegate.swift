@@ -574,12 +574,16 @@ extension SceneDelegate: AppLockDelegate {
         // Resume upload operations in background queue
         // and update badge and upload button of album navigator
         Task(priority: .utility) { @UploadManagerActor in
+            #if os(iOS) && !targetEnvironment(macCatalyst)
             if #available(iOS 26.0, *) {
                 UploadManager.shared.runContinuedUploadTask()
             }
             else {
                 await UploadManager.shared.resumeInForeground()
             }
+            #elseif targetEnvironment(macCatalyst)
+            await UploadManager.shared.resumeInForeground()
+            #endif
         }
     }
 }

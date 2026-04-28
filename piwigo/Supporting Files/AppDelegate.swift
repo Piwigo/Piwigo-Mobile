@@ -321,6 +321,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         // Register continued background upload task
+        #if os(iOS) && !targetEnvironment(macCatalyst)
         if #available(iOS 26.0, *) {
             BGTaskScheduler.shared.register(forTaskWithIdentifier: pwgBackgroundContinuedUploadTask, using: nil) { bgTask in
                 // Check task creation
@@ -339,6 +340,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             }
         }
+        #endif
     }
     
     @objc func updateBadge(_ notification: Notification) {
@@ -643,6 +645,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     @objc func resumeUploadsWhenLeavingLowPowerMode() {
         if !ProcessInfo.processInfo.isLowPowerModeEnabled {
             Task(priority: .utility) { @UploadManagerActor in
+                #if os(iOS) && !targetEnvironment(macCatalyst)
                 if #available(iOS 26.0, *) {
                     UploadManager.shared.runContinuedUploadTask()
                 }
@@ -650,6 +653,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     UploadVars.shared.didResumeUploads = false
                     await UploadManager.shared.resumeInForeground()
                 }
+                #elseif targetEnvironment(macCatalyst)
+                UploadVars.shared.didResumeUploads = false
+                await UploadManager.shared.resumeInForeground()
+                #endif
             }
         }
     }
@@ -676,12 +683,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Resume upload operations in background queue
         // and update badge, upload button of album navigator
         Task(priority: .utility) { @UploadManagerActor in
+            #if os(iOS) && !targetEnvironment(macCatalyst)
             if #available(iOS 26.0, *) {
                 UploadManager.shared.runContinuedUploadTask()
             }
             else {
                 await UploadManager.shared.resumeInForeground()
             }
+            #elseif targetEnvironment(macCatalyst)
+            await UploadManager.shared.resumeInForeground()
+            #endif
         }
         
         // Observe the PiwigoAddRecentAlbumNotification

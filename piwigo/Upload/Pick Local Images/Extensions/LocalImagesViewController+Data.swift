@@ -122,6 +122,7 @@ extension LocalImagesViewController
         // Resume upload operations in background queue
         UploadVars.shared.isPaused = false
         Task(priority: .utility) { @UploadManagerActor in
+            #if os(iOS) && !targetEnvironment(macCatalyst)
             if #available(iOS 26.0, *) {
                 // Launch new continued upload task if possible
                 if UploadVars.shared.isContinuedProcessingTaskActive == false {
@@ -132,6 +133,10 @@ extension LocalImagesViewController
                 // Process next uploads if possible
                 await UploadManagerActor.shared.processNextUpload()
             }
+            #elseif targetEnvironment(macCatalyst)
+            // Process next uploads if possible
+            await UploadManagerActor.shared.processNextUpload()
+            #endif
         }
         
 //        uploadsInQueue.forEach({
