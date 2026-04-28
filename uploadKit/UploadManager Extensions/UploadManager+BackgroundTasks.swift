@@ -230,6 +230,7 @@ extension UploadManager
     
     
     // MARK: - Continued Processing Task
+    #if os(iOS) && !targetEnvironment(macCatalyst)
     @available(iOS 26.0, *)
     public func runContinuedUploadTask() {
         // Should we postpone uploads?
@@ -281,7 +282,7 @@ extension UploadManager
                 UploadVars.shared.isContinuedProcessingTaskActive = false
                 
                 // Perform last actions according to app state
-                self.finishUploadTask()
+                self.finishUploadContinuedProcessingTask()
                 
                 // Inform the background task scheduler that the task is complete.
                 task.setTaskCompleted(success: success)
@@ -419,4 +420,22 @@ extension UploadManager
             }
         }
     }
+
+    @available(iOS 26.0, *)
+    private func finishUploadContinuedProcessingTask() {
+        // Explicitly abort pending CoreData work
+        self.uploadBckgContext.rollback()
+        
+        // Is the app in the foreground?
+        if UploadVars.shared.isApplicationActive {
+            // Resume upload activities in the foreground
+            Task(priority: .utility) { @UploadManagerActor in
+                UploadManager.shared.runContinuedUploadTask()
+            }
+        } else {
+            // Stop network monitoring
+            NotificationCenter.default.post(name: .pwgStopNetworkMonitoring, object: nil)
+        }
+    }
+    #endif
 }
