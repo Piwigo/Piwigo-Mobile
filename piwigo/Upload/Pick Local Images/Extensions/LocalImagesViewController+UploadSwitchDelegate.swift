@@ -89,7 +89,9 @@ extension LocalImagesViewController: UploadSwitchDelegate
         }
         
         // Disable sleep mode if needed
-        UIApplication.shared.isIdleTimerDisabled = (uploadRequests.isEmpty == false)
+        if #unavailable(iOS 26.0) {
+            UIApplication.shared.isIdleTimerDisabled = (uploadRequests.isEmpty == false)
+        }
         
         // Add selected images to upload queue
         Task(priority: .utility) { @UploadManagerActor in

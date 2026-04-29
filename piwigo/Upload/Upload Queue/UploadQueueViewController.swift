@@ -211,7 +211,9 @@ class UploadQueueViewController: UIViewController {
             else {
                 // Uploads in progress
                 queueTableView.tableHeaderView = nil
-                UIApplication.shared.isIdleTimerDisabled = true
+                if #unavailable(iOS 26.0) {
+                    UIApplication.shared.isIdleTimerDisabled = true
+                }
             }
             self.viewWillLayoutSubviews()
         }

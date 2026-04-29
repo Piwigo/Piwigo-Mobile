@@ -231,13 +231,9 @@ class LocalImagesViewController: UIViewController
         NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
                                                name: UIContentSizeCategory.didChangeNotification, object: nil)
         
-        // Prevent device from sleeping if uploads are in progress
-        let uploading: [pwgUploadState] = [.waiting, .preparing, .prepared,
-                                           .uploading, .uploaded, .finishing]
-        let uploadsToPerform = (uploads.fetchedObjects ?? [])
-            .map({uploading.contains($0.state) ? 1 : 0}).reduce(0, +)
-        if uploadsToPerform > 0 {
-            UIApplication.shared.isIdleTimerDisabled = true
+        // Prevent device from sleeping if uploads are in progress before iOS 26
+        if #unavailable(iOS 26.0) {
+            UIApplication.shared.isIdleTimerDisabled = (UploadVars.shared.nberOfUploadsToComplete > 0)
         }
     }
     
