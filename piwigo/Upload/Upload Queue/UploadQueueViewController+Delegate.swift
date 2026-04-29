@@ -92,11 +92,11 @@ extension UploadQueueViewController: UITableViewDelegate
 
         // Associate actions
         switch upload.state {
-        case .preparing, .prepared, .uploading, .uploaded, .finishing:
+        case .waiting, .preparing, .prepared, .uploading, .uploaded, .finishing, .finished, .moderated:
             return UISwipeActionsConfiguration(actions: [retry])
         case .preparingError, .uploadingError, .finishingError:
             return UISwipeActionsConfiguration(actions: [retry, cancel])
-        case .waiting, .preparingFail, .formatError, .uploadingFail, .finishingFail, .finished, .moderated:
+        case .preparingFail, .formatError, .uploadingFail, .finishingFail:
             return UISwipeActionsConfiguration(actions: [cancel])
         }
     }
