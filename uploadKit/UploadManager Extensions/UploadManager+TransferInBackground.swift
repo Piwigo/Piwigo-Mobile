@@ -291,7 +291,15 @@ extension UploadManager {
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             
             // Finish the upload whichever task launched the transfer
-            await finishTransferOfUpload(withIDs: [uploadID], inTaskType: .unknown)
+            if UploadVars.shared.isProcessingTaskActive {
+                await finishTransferOfUpload(withIDs: [uploadID], inTaskType: .bckgProcessingTask)
+            }
+            else if UploadVars.shared.isContinuedProcessingTaskActive {
+                await finishTransferOfUpload(withIDs: [uploadID], inTaskType: .bckgContinuedProcessingTask)
+            }
+            else {
+                await finishTransferOfUpload(withIDs: [uploadID], inTaskType: .foreground)
+            }
             
             // Add uploaded image to cache and update UI if needed
             if let userURI = URL(string: uploadData.userURIstr),

@@ -23,7 +23,6 @@ public enum UploadTaskType: String, Sendable {      // Task launched by:
     case foreground                                 // - processNextUpload()
     case bckgProcessingTask                         // - the pwgBackgroundUploadTask
     case bckgContinuedProcessingTask                // - the pwgBackgroundContinuedUploadTask
-    case unknown                                    // - an unknown task, or any of the above tasks
 }
 
 public extension UploadTaskType {
