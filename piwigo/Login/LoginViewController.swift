@@ -28,7 +28,7 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var loginButtonHeight: NSLayoutConstraint!
     @IBOutlet weak var websiteNotSecure: UILabel!
-    @IBOutlet weak var versionLabel: UILabel!
+    @IBOutlet weak var piwigoURL: UIButton!
     
     private var isAlreadyTryingToLogin = false
     var httpAlertController: UIAlertController?
@@ -90,12 +90,7 @@ class LoginViewController: UIViewController {
         
         // Website not secure info
         websiteNotSecure.text = NSLocalizedString("settingsHeader_notSecure", comment: "Website Not Secure!")
-        
-        // App version
-        let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-        let appBuildString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
-        versionLabel.text = "— \(NSLocalizedString("version", tableName: "About", bundle: Bundle.main, value: "", comment: "Version:")) \(appVersionString ?? "") (\(appBuildString ?? "")) —"
-
+                
         // Keyboard
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard)))
 
@@ -123,7 +118,7 @@ class LoginViewController: UIViewController {
         // Status bar
         setNeedsStatusBarAppearanceUpdate()
 
-        // Change text colour according to palette colour
+        // Change text colour according to palette color
         piwigoLogo.imageView?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
 
         // Text color depdending on background color
@@ -133,8 +128,8 @@ class LoginViewController: UIViewController {
         userTextField.backgroundColor = PwgColor.cellBackground
         passwordTextField.textColor = PwgColor.text
         passwordTextField.backgroundColor = PwgColor.cellBackground
-        versionLabel.textColor = PwgColor.text
         websiteNotSecure.textColor = PwgColor.text
+        piwigoURL.tintColor = PwgColor.text
     }
 
     override func viewWillAppear(_ animated: Bool) {
