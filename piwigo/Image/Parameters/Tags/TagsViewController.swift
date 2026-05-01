@@ -82,7 +82,7 @@ class TagsViewController: UITableViewController {
     
     func getNonSelectedVars() -> [String : Any] {
         return ["tagIds" : selectedTagIds,
-                "query"  : "*" + searchQuery + "*"]
+                "query"  : "*" + (searchQuery.isEmpty ? "" : searchQuery + "*")]
     }
     
     lazy var fetchNonSelectedTagsRequest: NSFetchRequest = {

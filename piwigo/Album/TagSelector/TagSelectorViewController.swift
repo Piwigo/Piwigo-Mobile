@@ -56,7 +56,7 @@ class TagSelectorViewController: UIViewController {
     }()
     
     func getQueryVar() -> [String : Any] {
-        return ["query"  : "*" + searchQuery + "*"]
+        return ["query"  : "*" + (searchQuery.isEmpty ? "" : searchQuery + "*")]
     }
     
     lazy var fetchRequest: NSFetchRequest = {
