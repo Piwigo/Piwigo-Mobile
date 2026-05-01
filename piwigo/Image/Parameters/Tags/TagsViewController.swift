@@ -124,39 +124,21 @@ class TagsViewController: UITableViewController {
         // Add search bar
         initSearchBar()
         
-        // Use the TagsProvider to fetch tag data. On completion,
-        // handle general UI updates and error alerts on the main queue.
-        Task.detached {
-            do {
-                // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
-                                                          lastConnected: self.user.lastUsed)
-                // Fetch tag data
-                try await TagProvider().fetchTags(asAdmin: self.user.hasAdminRights)
-            }
-            catch let error as PwgKitError {
-                await MainActor.run { [self] in
-                    self.didFetchTagsWithError(error)
-                }
-            }
+        // Initialise data source
+        do {
+            try selectedTags.performFetch()
+            try nonSelectedTags.performFetch()
+        } catch {
+            debugPrint("Error: \(error)")
         }
-        
+                
         // Title
         title = NSLocalizedString("tags", comment: "Tags")
         
-        // Add button for Admins and some Community users
+        // Add button for Admins
         if user.hasAdminRights {
             addBarButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(requestNewTagName))
             navigationItem.setRightBarButton(addBarButton, animated: false)
-        }
-    }
-    
-    @MainActor
-    private func didFetchTagsWithError(_ error: PwgKitError) {
-        // Session logout required?
-        if error.requiresLogout {
-            ClearCache.closeSessionWithPwgError(from: self, error: error)
-            return
         }
         
         // Register palette changes
@@ -189,24 +171,47 @@ class TagsViewController: UITableViewController {
         
         // Set colors, fonts, etc.
         applyColorPalette()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
-        // Initialise data source
-        do {
-            try selectedTags.performFetch()
-            try nonSelectedTags.performFetch()
-        } catch {
-            debugPrint("Error: \(error)")
+        // Show HUD during the fetch
+        self.navigationController?.showHUD(
+            withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+            detail: NSLocalizedString("tags", comment: "Tags"), minWidth: 200)
+        
+        // Use the TagsProvider to fetch tag data. On completion,
+        // handle general UI updates and error alerts on the main queue.
+        Task.detached {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
+                                                          lastConnected: self.user.lastUsed)
+                // Fetch tag data
+                try await TagProvider().fetchTags(asAdmin: self.user.hasAdminRights)
+                
+                // Close HUD
+                await MainActor.run { [self] in
+                    self.navigationController?.hideHUD { }
+                }
+            }
+            catch let error as PwgKitError {
+                await MainActor.run { [self] in
+                    // Session logout required?
+                    if error.requiresLogout {
+                        ClearCache.closeSessionWithPwgError(from: self, error: error)
+                        return
+                    }
+                    
+                    // Report error
+                    self.navigationController?.hideHUD {
+                        let title = PwgKitError.tagCreationError.localizedDescription
+                        self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
+                    }
+                }
+            }
         }
-        
-        // Refresh table
-        tagsTableView.reloadData()
-        
-        // Register palette changes
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: Notification.Name.pwgPaletteChanged, object: nil)
-        // Register font changes
-        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
-                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {

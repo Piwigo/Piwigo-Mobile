@@ -100,22 +100,12 @@ class TagSelectorViewController: UIViewController {
             navigationController?.setToolbarHidden(false, animated: false)
         }
         navigationItem.hidesSearchBarWhenScrolling = false
-
-        // Use the TagsProvider to fetch tag data. On completion,
-        // handle general UI updates and error alerts on the main queue.
-        Task.detached {
-            do {
-                // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
-                                                          lastConnected: self.user.lastUsed)
-                // Fetch tag data
-                try await TagProvider().fetchTags(asAdmin: false)
-            }
-            catch let error as PwgKitError {
-                await MainActor.run { [self] in
-                    self.didFetchTagsWithError(error)
-                }
-            }
+        
+        // Initialise data source
+        do {
+            try tags.performFetch()
+        } catch {
+            debugPrint("Failed to fetch tags: \(error)")
         }
         
         // Add button for returning to albums/images
@@ -158,20 +148,47 @@ class TagSelectorViewController: UIViewController {
         
         // Set colors, fonts, etc.
         applyColorPalette()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
-        // Initialise data source
-        do {
-            try tags.performFetch()
-        } catch {
-            debugPrint("Failed to fetch tags: \(error)")
+        // Show HUD during the fetch
+        self.navigationController?.showHUD(
+            withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+            detail: NSLocalizedString("tags", comment: "Tags"), minWidth: 200)
+        
+        // Use the TagsProvider to fetch tag data. On completion,
+        // handle general UI updates and error alerts on the main queue.
+        Task.detached {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
+                                                          lastConnected: self.user.lastUsed)
+                // Fetch tag data
+                try await TagProvider().fetchTags(asAdmin: false)
+                
+                // Close HUD
+                await MainActor.run { [self] in
+                    self.navigationController?.hideHUD { }
+                }
+            }
+            catch let error as PwgKitError {
+                await MainActor.run { [self] in
+                    // Session logout required?
+                    if error.requiresLogout {
+                        ClearCache.closeSessionWithPwgError(from: self, error: error)
+                        return
+                    }
+                    
+                    // Report error
+                    self.navigationController?.hideHUD {
+                        let title = PwgKitError.tagCreationError.localizedDescription
+                        self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
+                    }
+                }
+            }
         }
-        
-        // Register palette changes
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: Notification.Name.pwgPaletteChanged, object: nil)
-        // Register font changes
-        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
-                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
     }
     
     deinit {
