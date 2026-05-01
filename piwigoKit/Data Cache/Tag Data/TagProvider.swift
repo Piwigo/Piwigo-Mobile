@@ -141,7 +141,7 @@ public final class TagProvider {
                     do {
                         try cachedTags[index].update(with: tagData, server: server)
                         
-                        // Do not delete this tag during the last interation of the import
+                        // Do not delete this tag during the last iteration of the import
                         tagToDeleteIDs.remove(ID)
                     }
                     catch let error as PwgKitError {
