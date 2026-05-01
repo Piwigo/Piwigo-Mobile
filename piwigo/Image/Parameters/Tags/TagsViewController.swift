@@ -105,7 +105,6 @@ class TagsViewController: UITableViewController {
     
     // MARK: - View Lifecycle
     @IBOutlet var tagsTableView: UITableView!
-    private var letterIndex: [String] = []
     var allTagNames = Set<String>()
     let searchController = UISearchController(searchResultsController: nil)
     
