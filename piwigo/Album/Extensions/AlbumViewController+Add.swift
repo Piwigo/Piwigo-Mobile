@@ -122,17 +122,27 @@ extension AlbumViewController
                                                                    status: "public", inAlbumWithId: albumData.pwgID)
                 
                 // Album successfully created ▶ Add new album to cache and update parent albums
-                self.albumProvider.addAlbum(newCatId, withName: albumName, comment: albumComment,
-                                            inAlbumWithObjectID: albumData.objectID,
-                                            forUserWithObjectID: user.objectID)
-                
-                // Add it to list of recently used albums
-                let userInfo = ["categoryId" : NSNumber.init(value: newCatId)]
-                NotificationCenter.default.post(name: Notification.Name.pwgAddRecentAlbum,
-                                                object: nil, userInfo: userInfo)
+                // Remember that the app is fetching all album data
+                AlbumVars.shared.isFetchingAlbumData.insert(0)
 
+                // Fetch album data recursively
+                let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+                try await AlbumProvider().fetchAlbums(forUserWithAdminRights: user.hasAdminRights,
+                                                      inParentWithId: 0, recursively: true,
+                                                      thumbnailSize: thumnailSize)
+                
+                // Remove current album from list of album being fetched
+                AlbumVars.shared.isFetchingAlbumData.remove(0)
+
+                // Remember when album data was fetched recursively
+                AppVars.shared.dateOfLatestRecursiveAlbumDataFetch = Date()
+                
                 // Update UI
                 await MainActor.run {
+                    // Add created album to list of recently used albums
+                    let userInfo = ["categoryId" : NSNumber.init(value: newCatId)]
+                    NotificationCenter.default.post(name: Notification.Name.pwgAddRecentAlbum,
+                                                    object: nil, userInfo: userInfo)
                     // Hide HUD
                     updateHUDwithSuccess() { [self] in
                         hideHUD(afterDelay: pwgDelayHUD) { [self] in
