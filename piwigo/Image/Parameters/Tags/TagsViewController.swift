@@ -31,9 +31,8 @@ class TagsViewController: UITableViewController {
     // MARK: - Core Data Objects
     var user: User!
     lazy var mainContext: NSManagedObjectContext = {
-        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
-            fatalError("!!! Missing Managed Object Context !!!")
-        }
+        guard let context: NSManagedObjectContext = user?.managedObjectContext
+        else { preconditionFailure("!!! Missing Managed Object Context !!!") }
         return context
     }()
     
