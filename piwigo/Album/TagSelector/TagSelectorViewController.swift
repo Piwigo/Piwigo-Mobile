@@ -22,7 +22,6 @@ class TagSelectorViewController: UIViewController {
     
     @IBOutlet var tagsTableView: UITableView!
     
-    private var tagIdsBeforeUpdate = [Int32]()
     private var letterIndex: [String] = []
     private var updateOperations = [BlockOperation]()
     
