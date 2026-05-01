@@ -25,11 +25,11 @@ public final class TagProvider {
         // Fetch tag data
         do {
             if asAdmin {
-                let pwgData = try await JSONManager.shared.fetchTags()
+                let pwgData = try await JSONManager.shared.fetchTagsAsAdmin()
                 try self.importTags(from: pwgData, asAdmin: true)
             }
             else {
-                let pwgData = try await JSONManager.shared.fetchTagsAsAdmin()
+                let pwgData = try await JSONManager.shared.fetchTags()
                 try self.importTags(from: pwgData, asAdmin: false)
             }
         }
