@@ -8,20 +8,31 @@
 
 import UIKit
 
-class RingProgressView: UIView {
+final class RingProgressView: UIView {
 
     fileprivate var progressLayer = CAShapeLayer()
     fileprivate var backgroundLayer = CAShapeLayer()
 
-    private var timeToFill = 0.1
+    fileprivate var lastUpdateTime: CFTimeInterval = 0
+    fileprivate var lastProgress: Float = 0.0
+    fileprivate let minDuration: TimeInterval = 0.05
+    fileprivate let maxDuration: TimeInterval = 0.5
+
     var progress: Float = 0.0 {
         didSet {
-            let pathMoved = max(0, progress - oldValue)
+            progress = min(1.0, max(0.0, progress))
+            let pathMoved = max(0, progress - lastProgress)
+            guard pathMoved > 0 else { return }
+            
+            let duration = adaptiveDuration()
             if self.isHidden { self.isHidden = false }
-            setProgress(duration: timeToFill * Double(pathMoved), to: progress)
+            setProgress(duration: duration, to: progress)
+            
+            lastProgress = progress
+            lastUpdateTime = CACurrentMediaTime()
         }
     }
-
+    
     override func awakeFromNib() {
         // Initialization code
         super.awakeFromNib()
@@ -54,13 +65,35 @@ class RingProgressView: UIView {
         progressLayer.strokeEnd = 0
         layer.addSublayer(progressLayer)
     }
+    
+    private func adaptiveDuration() -> TimeInterval {
+        let now = CACurrentMediaTime()
+        let interval = lastUpdateTime > 0 ? now - lastUpdateTime : maxDuration
 
+        // Animate slightly faster than the update rate to stay ahead,
+        // clamped to sane bounds to handle bursts or stalls
+        let duration = interval * 0.9
+        return min(maxDuration, max(minDuration, duration))
+    }
+    
     private func setProgress(duration: TimeInterval = 3, to newProgress: Float) -> Void{
+        debugPrint("setProgress(duration: \(duration), from: \(progressLayer.strokeEnd), to: \(newProgress)")
         let animation = CABasicAnimation(keyPath: "strokeEnd")
         animation.duration = duration
-        animation.fromValue = progressLayer.strokeEnd
+
+        // Read from the presentation layer to get the current visual position,
+        // falling back to the model layer if no animation is running
+        let fromValue = (progressLayer.presentation() ?? progressLayer).strokeEnd
+        animation.fromValue = fromValue
         animation.toValue = newProgress
+        
+        // Update the model value immediately so the next call reads correctly
         progressLayer.strokeEnd = CGFloat(newProgress)
+
+        // Prevent CABasicAnimation from snapping back to model value on completion
+        animation.fillMode = .forwards
+        animation.isRemovedOnCompletion = false
+
         progressLayer.add(animation, forKey: "animationProgress")
     }
 }
