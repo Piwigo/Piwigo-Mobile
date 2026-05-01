@@ -460,9 +460,11 @@ class AlbumViewController: UIViewController
         navigationItem.backButtonDisplayMode = traitCollection.userInterfaceIdiom == .pad ? .generic : .minimal
         
         // Should we reload the collection view?
-        if collectionView.visibleCells.first is AlbumCollectionViewCell {
+        if AlbumVars.shared.displayAlbumDescriptions,
+           collectionView.visibleCells.first is AlbumCollectionViewCell {
             collectionView?.reloadData()
-        } else if collectionView.visibleCells.first is AlbumCollectionViewCellOld {
+        } else if AlbumVars.shared.displayAlbumDescriptions == false,
+                  collectionView.visibleCells.first is AlbumCollectionViewCellOld {
             collectionView?.reloadData()
         }
         
