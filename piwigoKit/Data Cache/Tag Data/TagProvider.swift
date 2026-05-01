@@ -189,11 +189,6 @@ public final class TagProvider {
 
             // Reset the taskContext to free the cache and lower the memory footprint.
             bckgContext.reset()
-
-            // Save cached data in the main thread
-            Task { @MainActor in
-                DataController.shared.mainContext.saveIfNeeded()
-            }
         }
         return tagToDeleteIDs
     }
