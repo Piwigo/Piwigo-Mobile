@@ -810,9 +810,9 @@ class AlbumViewController: UIViewController
                     }
                     
                     // Report error
-                    let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
-                    self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {
-                        self.navigationController?.hideHUD { }
+                    self.navigationController?.hideHUD {
+                        let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
+                        self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
                     }
                 }
             }
