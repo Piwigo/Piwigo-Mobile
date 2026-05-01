@@ -159,10 +159,12 @@ class TagsViewController: UITableViewController {
             return
         }
         
-        // Report error
-        let title = PwgKitError.tagCreationError.localizedDescription
-        self.dismissPiwigoError(withTitle: title,
-                                message: error.localizedDescription) { }
+        // Register palette changes
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
     }
     
     @MainActor

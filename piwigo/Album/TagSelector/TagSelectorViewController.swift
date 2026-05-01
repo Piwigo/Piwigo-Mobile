@@ -127,19 +127,13 @@ class TagSelectorViewController: UIViewController {
         tagsTableView?.accessibilityIdentifier = "tag selector"
         tagsTableView?.rowHeight = UITableView.automaticDimension
         tagsTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
-    }
-    
-    @MainActor
-    private func didFetchTagsWithError(_ error: PwgKitError) {
-        // Session logout required?
-        if error.requiresLogout {
-            ClearCache.closeSessionWithPwgError(from: self, error: error)
-            return
-        }
-        
-        // Report error
-        let title = PwgKitError.tagCreationError.localizedDescription
-        self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
+
+        // Register palette changes
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
     }
     
     @MainActor
