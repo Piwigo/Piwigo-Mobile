@@ -598,7 +598,7 @@ class LoginViewController: UIViewController {
         updateHUD(title: title, detail: detail,
                   buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
                   buttonTarget: self, buttonSelector: buttonSelector,
-                  inMode: .text)
+                  inMode: pwgHudMode.none)
     }
     
     @MainActor

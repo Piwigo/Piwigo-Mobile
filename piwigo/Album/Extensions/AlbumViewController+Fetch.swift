@@ -284,7 +284,7 @@ extension AlbumViewController
             withTitle: title, detail: detail, minWidth: 240,
             buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
             buttonTarget: self, buttonSelector: buttonSelector,
-            inMode: .text)
+            inMode: pwgHudMode.none)
     }
     
     @objc func hideLoadingAndCloseSession() {
