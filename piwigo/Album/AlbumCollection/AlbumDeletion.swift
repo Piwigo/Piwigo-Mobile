@@ -196,24 +196,40 @@ final class AlbumDeletion: NSObject
                 
                 // Delete album
                 _ = try await JSONManager.shared.delete(albumData.pwgID, inMode: deletionMode)
-
+                
                 // Auto-upload already disabled by AlbumProvider if necessary
                 // Also remove this album from the auto-upload destination
                 if UploadVars.shared.autoUploadCategoryId == albumData.pwgID {
                     UploadVars.shared.autoUploadCategoryId = Int32.min
                 }
-
+                
                 // Update parent albums data
-                await fetchAlbumData(ofParentsWithIDs: parentIDs, forUserWithAdminRights: hasAdminRights)
+                let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+                for parentID in parentIDs {
+                    // Remember that the app is fetching album data
+                    AlbumVars.shared.isFetchingAlbumData.insert(parentID)
 
-                // Update cache and UI
+                    // Fetch parent album data
+                    try await AlbumProvider().fetchAlbums(forUserWithAdminRights: hasAdminRights,
+                                                          inParentWithId: parentID,
+                                                          thumbnailSize: thumnailSize)
+                    
+                    // Remove album from list of albums being fetched
+                    AlbumVars.shared.isFetchingAlbumData.remove(parentID)
+                }
+                
+                // Work completed ► Hide HUD, update UI
                 await MainActor.run { [self] in
-                    // Album successfully deleted ▶ Remove category ID from list of recently used albums
-                    let userInfo = ["categoryId" : NSNumber.init(value: albumData.pwgID)]
-                    NotificationCenter.default.post(name: Notification.Name.pwgRemoveRecentAlbum,
-                                                    object: nil, userInfo: userInfo)
-                    // Hide swipe buttons
-                    completion(true)
+                    self.topViewController.updateHUDwithSuccess() { [self] in
+                        self.topViewController.hideHUD(afterDelay: pwgDelayHUD) { [self] in
+                            // Album successfully deleted ▶ Remove category ID from list of recently used albums
+                            let userInfo = ["categoryId" : NSNumber.init(value: albumData.pwgID)]
+                            NotificationCenter.default.post(name: Notification.Name.pwgRemoveRecentAlbum,
+                                                            object: nil, userInfo: userInfo)
+                            // Hide swipe buttons
+                            completion(true)
+                        }
+                    }
                 }
             }
             catch let error as PwgKitError {
@@ -228,46 +244,7 @@ final class AlbumDeletion: NSObject
             }
         }
     }
-    
-    @concurrent
-    private func fetchAlbumData(ofParentsWithIDs parentIDs: Set<Int32>,
-                                forUserWithAdminRights hasAdminRights: Bool) async {
-        // Fetch data of parent albums
-        let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-        Task {
-            do {
-                for parentID in parentIDs {
-                    // Remember that the app is fetching album data
-                    AlbumVars.shared.isFetchingAlbumData.insert(parentID)
-
-                    // Fetch parent album data
-                    try await AlbumProvider().fetchAlbums(forUserWithAdminRights: hasAdminRights,
-                                                          inParentWithId: parentID,
-                                                          thumbnailSize: thumnailSize)
-                    
-                    // Remove album from list of albums being fetched
-                    AlbumVars.shared.isFetchingAlbumData.remove(parentID)
-                }
-
-                // Work completed ► Hide HUDs
-                await MainActor.run { [self] in
-                    self.topViewController.updateHUDwithSuccess() { [self] in
-                        self.topViewController.hideHUD(afterDelay: pwgDelayHUD) { }
-                    }
-                }
-            }
-            catch let error as PwgKitError {
-                await MainActor.run { [self] in
-                    self.topViewController.hideHUD { [self] in
-                        // Display error alert after fetching album data
-                        let title = NSLocalizedString("loadingHUD_label", comment: "Loading…")
-                        self.deleteAlbumError(error, title: title, message: error.localizedDescription)
-                    }
-                }
-            }
-        }
-    }
-    
+        
     @MainActor
     private func deleteAlbumError(_ error: PwgKitError, title: String, message: String) {
         // Session logout required?
