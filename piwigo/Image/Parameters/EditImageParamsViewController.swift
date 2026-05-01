@@ -148,12 +148,12 @@ class EditImageParamsViewController: UIViewController
                                                name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-//    override func viewDidAppear(_ animated: Bool) {
-//        super.viewDidAppear(animated)
-//        
-//        // Display help view only if not already watched
-//        showHelpIfNeeded()
-//    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // Display help view only if not already watched
+        showHelpIfNeeded()
+    }
     
     override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
@@ -520,31 +520,31 @@ class EditImageParamsViewController: UIViewController
     
     
     // MARK: - Help Views
-//    @MainActor
-//    private func showHelpIfNeeded() {
-//        
-//        // Display help views less than once a day
-//        let dateOfLastHelpView = AppVars.shared.dateOfLastHelpView
-//        let diff = Date().timeIntervalSinceReferenceDate - dateOfLastHelpView
-//        if diff > TimeInterval(86400) { return }
-//            
-//        // Determine which help pages should be presented
-//        var displayHelpPagesWithID: [UInt16] = []
-//        if (AppVars.shared.didWatchHelpViews & 0b00000010_00000000) == 0 {
-//            displayHelpPagesWithID.append(10)    // i.e. HTML descriptions
-//        }
-//        if displayHelpPagesWithID.count > 0 {
-//            // Present unseen upload management help views
-//            let helpVC = HelpUtilities.getHelpViewController(showingPagesWithIDs: displayHelpPagesWithID)
-//            if view.traitCollection.userInterfaceIdiom == .phone {
-//                helpVC.popoverPresentationController?.permittedArrowDirections = .up
-//                navigationController?.present(helpVC, animated:true)
-//            } else {
-//                helpVC.modalPresentationStyle = .formSheet
-//                helpVC.modalTransitionStyle = .coverVertical
-//                helpVC.popoverPresentationController?.sourceView = view
-//                navigationController?.present(helpVC, animated: true)
-//            }
-//        }
-//    }
+    @MainActor
+    private func showHelpIfNeeded() {
+        
+        // Display help views less than once a day
+        let dateOfLastHelpView = AppVars.shared.dateOfLastHelpView
+        let diff = Date().timeIntervalSinceReferenceDate - dateOfLastHelpView
+        if diff > TimeInterval(86400) { return }
+            
+        // Determine which help pages should be presented
+        var displayHelpPagesWithID: [UInt16] = []
+        if (AppVars.shared.didWatchHelpViews & 0b00000010_00000000) == 0 {
+            displayHelpPagesWithID.append(10)    // i.e. HTML descriptions
+        }
+        if displayHelpPagesWithID.count > 0 {
+            // Present unseen upload management help views
+            let helpVC = HelpUtilities.getHelpViewController(showingPagesWithIDs: displayHelpPagesWithID)
+            if view.traitCollection.userInterfaceIdiom == .phone {
+                helpVC.popoverPresentationController?.permittedArrowDirections = .up
+                navigationController?.present(helpVC, animated:true)
+            } else {
+                helpVC.modalPresentationStyle = .formSheet
+                helpVC.modalTransitionStyle = .coverVertical
+                helpVC.popoverPresentationController?.sourceView = view
+                navigationController?.present(helpVC, animated: true)
+            }
+        }
+    }
 }

@@ -584,6 +584,8 @@
 		ADD063BD26A08973002558D2 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = AD7783B2267E4AB700317F36 /* Intents.intentdefinition */; };
 		ADD210412440CC7600DD79A6 /* SettingsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADD210402440CC7600DD79A6 /* SettingsViewController.storyboard */; };
 		ADD210432440DE5A00DD79A6 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD210422440DE5A00DD79A6 /* SettingsViewController.swift */; };
+		ADD3F4A12FA50AB5008B4D5E /* help10.png in Resources */ = {isa = PBXBuildFile; fileRef = ADD3F4A02FA50AB5008B4D5E /* help10.png */; };
+		ADD3F4A32FA50ABE008B4D5E /* help10-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = ADD3F4A22FA50ABE008B4D5E /* help10-iOS18.png */; };
 		ADD485C12B13A16400C7E30E /* JSONManager+History.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD485C02B13A16400C7E30E /* JSONManager+History.swift */; };
 		ADD485C22B13A23D00C7E30E /* pwg.history.log.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD485BF2B139EC700C7E30E /* pwg.history.log.swift */; };
 		ADD485C32B13A24500C7E30E /* pwg.history.log.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD485BF2B139EC700C7E30E /* pwg.history.log.swift */; };
@@ -1388,6 +1390,8 @@
 		ADD210402440CC7600DD79A6 /* SettingsViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SettingsViewController.storyboard; sourceTree = "<group>"; };
 		ADD210422440DE5A00DD79A6 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		ADD3DD5825A9D53C00FD377F /* ImageMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMetadata.swift; sourceTree = "<group>"; };
+		ADD3F4A02FA50AB5008B4D5E /* help10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help10.png; sourceTree = "<group>"; };
+		ADD3F4A22FA50ABE008B4D5E /* help10-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help10-iOS18.png"; sourceTree = "<group>"; };
 		ADD485BD2B139D3D00C7E30E /* pwg.history.log.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.history.log.json; sourceTree = "<group>"; };
 		ADD485BF2B139EC700C7E30E /* pwg.history.log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.history.log.swift; sourceTree = "<group>"; };
 		ADD485C02B13A16400C7E30E /* JSONManager+History.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSONManager+History.swift"; sourceTree = "<group>"; };
@@ -1929,6 +1933,7 @@
 				AD31E7392EB106C100584ECB /* help08-bot-iOS18.png */,
 				AD31E73A2EB106C100584ECB /* help08-top-iOS18.png */,
 				AD31E73B2EB106C100584ECB /* help09-iOS18.png */,
+				ADD3F4A22FA50ABE008B4D5E /* help10-iOS18.png */,
 			);
 			path = "Help for iOS 18";
 			sourceTree = "<group>";
@@ -1949,6 +1954,7 @@
 				AD31E7532EB106CD00584ECB /* help08-bot.png */,
 				AD31E7542EB106CD00584ECB /* help08-top.png */,
 				AD31E7552EB106CD00584ECB /* help09.png */,
+				ADD3F4A02FA50AB5008B4D5E /* help10.png */,
 			);
 			path = "Help for iOS 26";
 			sourceTree = "<group>";
@@ -3588,10 +3594,12 @@
 				AD6A0E7A2C445C860089A25E /* AlbumCollectionViewCell.xib in Resources */,
 				ADC592682C0333B0002B6F82 /* ImageHeaderReusableView.xib in Resources */,
 				ADD210412440CC7600DD79A6 /* SettingsViewController.storyboard in Resources */,
+				ADD3F4A12FA50AB5008B4D5E /* help10.png in Resources */,
 				AD563B422603FCE800B6EF93 /* AutoUploadViewController.storyboard in Resources */,
 				ADEAFB8F25F8198800EEDB1D /* ColorPaletteViewController.storyboard in Resources */,
 				ADFA89042438CF4500F73F0F /* ShareMetadataViewController.storyboard in Resources */,
 				AD1AD61E2DFF195700D25EF9 /* AppShortcuts.strings in Resources */,
+				ADD3F4A32FA50ABE008B4D5E /* help10-iOS18.png in Resources */,
 				ADD741F82699976100B47056 /* UploadPhotoSizeViewController.storyboard in Resources */,
 				AD6FD1FA24BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard in Resources */,
 				AD31E7662EB1082D00584ECB /* help03.png in Resources */,
