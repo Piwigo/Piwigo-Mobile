@@ -17,6 +17,7 @@ enum ActivityType: String {
     case album = "piwigo.album"
     case external = "piwigo.external"
 
+    @MainActor
     func sceneConfiguration() -> UISceneConfiguration {
         switch self {
         case .album:        // Album/images collection view

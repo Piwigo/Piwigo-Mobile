@@ -54,11 +54,11 @@ extension CounterFormatSelectorViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         let text = getContentOfFooter(forSection: section)
-        return TableViewUtilities.shared.heightOfFooter(withText: text, width: tableView.frame.size.width)
+        return TableViewUtilities.heightOfFooter(withText: text, width: tableView.frame.size.width)
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let text = getContentOfFooter(forSection: section)
-        return TableViewUtilities.shared.viewOfFooter(withText: text)
+        return TableViewUtilities.viewOfFooter(withText: text)
     }
 }

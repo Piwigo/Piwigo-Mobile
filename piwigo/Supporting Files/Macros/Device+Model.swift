@@ -323,6 +323,14 @@ extension UIDevice {
             return "iPad Pro 13-inch (M4) (Wi-Fi)"
         case "iPad16,6":
             return "iPad Pro 13-inch (M4) (Wi-Fi + Cellular)"
+        case "iPad16,8":
+            return "iPad Air 11-inch (M4) (Wi-Fi)"
+        case "iPad16,9":
+            return "iPad Air 11-inch (M4) (Wi-Fi + Cellular)"
+        case "iPad16,10":
+            return "iPad Air 13-inch (M4) (Wi-Fi)"
+        case "iPad16,11":
+            return "iPad Air 13-inch (M4) (Wi-Fi + Cellular)"
         case "iPad17,1":
             return "iPad Pro 11-inch (Wi-Fi)"
         case "iPad17,2":
@@ -331,7 +339,7 @@ extension UIDevice {
             return "iPad Pro 13-inch (M5) (Wi-Fi)"
         case "iPad17,4":
             return "iPad Pro 13-inch (M5) (Wi-Fi + Cellular)"
-            
+
         // MARK: iPod
         case "iPod1,1":
             return "iPod touch"
@@ -534,6 +542,14 @@ extension UIDevice {
             return false
         case "iPad16,6":
             return true
+        case "iPad16,8":
+            return false
+        case "iPad16,9":
+            return true
+        case "iPad16,10":
+            return false
+        case "iPad16,11":
+            return true
         case "iPad17,1":
             return false
         case "iPad17,2":
@@ -623,6 +639,7 @@ extension UIDevice {
              "iPad14,8", "iPad14,9", "iPad14,10", "iPad14,11",
              "iPad15,3", "iPad15,4", "iPad15,5", "iPad15,6", "iPad15,7", "iPad15,8",
              "iPad16,1", "iPad16,2", "iPad16,3", "iPad16,4", "iPad16,5", "iPad16,6",
+             "iPad16,8", "iPad16,9", "iPad16,10", "iPad16,11",
              "iPad17,1", "iPad17,2", "iPad17,3", "iPad17,4":
             return "12 Mpx"
             
@@ -702,6 +719,7 @@ extension UIDevice {
              "iPad14,8", "iPad14,9", "iPad14,10", "iPad14,11",
              "iPad15,3", "iPad15,4", "iPad15,5", "iPad15,6", "iPad15,7", "iPad15,8",
              "iPad16,1", "iPad16,2", "iPad16,3", "iPad16,4", "iPad16,5", "iPad16,6",
+             "iPad16,8", "iPad16,9", "iPad16,10", "iPad16,11",
              "iPad17,1", "iPad17,2", "iPad17,3", "iPad17,4":
             return "4K, 60 fps"
             
@@ -797,6 +815,8 @@ extension UIDevice {
              "iPad15,3", "iPad15,4", "iPad15,5", "iPad15,6",
              "iPad16,1", "iPad16,2", "iPad16,3", "iPad16,4", "iPad16,5", "iPad16,6":
             return 8192
+        case "iPad16,8", "iPad16,9", "iPad16,10", "iPad16,11":
+            return 12288
         case "iPad13,5", "iPad13,7", "iPad13,9", "iPad13,11",
              "iPad17,1", "iPad17,2", "iPad17,3", "iPad17,4":
             return 16384

@@ -17,7 +17,7 @@ extension UploadQueueViewController: UITableViewDelegate
     // MARK: - UITableView - Headers
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let sectionKey = SectionKeys(rawValue: diffableDataSource.snapshot().sectionIdentifiers[section]) ?? SectionKeys.Section4
-        return TableViewUtilities.shared.heightOfHeader(withTitle: sectionKey.name,
+        return TableViewUtilities.heightOfHeader(withTitle: sectionKey.name,
                                                         width: tableView.frame.size.width)
     }
     
@@ -54,9 +54,11 @@ extension UploadQueueViewController: UITableViewDelegate
         // Create retry upload action
         let retry = UIContextualAction(style: .normal, title: nil,
                                        handler: { action, view, completionHandler in
-            UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.resumeFailedUpload(withID: upload.localIdentifier)
-                UploadManager.shared.findNextImageToUpload()
+            Task(priority: .utility) { @UploadManagerActor in
+                // Clear upload request error
+                let (toPrepare, toTransfer) = await UploadManager.shared.clearFailedUpload(withID: upload.objectID)
+                // Resume cleared upload
+                await UploadManager.shared.resumeUploads(toTransfer: toTransfer, andToPrepare: toPrepare)
             }
             completionHandler(true)
         })
@@ -66,12 +68,17 @@ extension UploadQueueViewController: UITableViewDelegate
         // Create trash/cancel upload action
         let cancel = UIContextualAction(style: .normal, title: nil,
                                         handler: { action, view, completionHandler in
+            // Remove upload request from database
             let savingContext = upload.managedObjectContext
             savingContext?.delete(upload)
             savingContext?.saveIfNeeded()
-            UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.resumeFailedUpload(withID: upload.localIdentifier)
-                UploadManager.shared.findNextImageToUpload()
+            
+            Task(priority: .utility) { @UploadManagerActor in
+                // Remove upload request from queue
+                await UploadManagerActor.shared.removeUploads(withIDs: [upload.objectID])
+                
+                // Update badge and default album view button
+                UploadManager.shared.updateNberOfUploadsToComplete()
             }
             completionHandler(true)
         })
@@ -85,11 +92,11 @@ extension UploadQueueViewController: UITableViewDelegate
 
         // Associate actions
         switch upload.state {
-        case .preparing, .prepared, .uploading, .uploaded, .finishing:
+        case .waiting, .preparing, .prepared, .uploading, .uploaded, .finishing, .finished, .moderated:
             return UISwipeActionsConfiguration(actions: [retry])
         case .preparingError, .uploadingError, .finishingError:
             return UISwipeActionsConfiguration(actions: [retry, cancel])
-        case .waiting, .preparingFail, .formatError, .uploadingFail, .finishingFail, .finished, .moderated:
+        case .preparingFail, .formatError, .uploadingFail, .finishingFail:
             return UISwipeActionsConfiguration(actions: [cancel])
         }
     }

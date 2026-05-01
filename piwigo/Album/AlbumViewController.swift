@@ -26,7 +26,7 @@ protocol AlbumViewControllerDelegate: NSObjectProtocol {
 
 class AlbumViewController: UIViewController
 {
-    weak var albumDelegate: AlbumViewControllerDelegate?
+    weak var albumDelegate: (any AlbumViewControllerDelegate)?
 
     @IBOutlet weak var noAlbumLabel: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
@@ -164,28 +164,26 @@ class AlbumViewController: UIViewController
     
     // MARK: - Core Data Providers
     private lazy var userProvider: UserProvider = {
-        return UserProvider.shared
+        return UserProvider()
     }()
     lazy var albumProvider: AlbumProvider = {
-        return AlbumProvider.shared
+        return AlbumProvider()
     }()
     lazy var imageProvider: ImageProvider = {
-        return ImageProvider.shared
+        return ImageProvider()
     }()
     
     
     // MARK: - Core Data Object Contexts
+    @MainActor
     lazy var mainContext: NSManagedObjectContext = {
         return DataController.shared.mainContext
-    }()
-    lazy var albumBckgContext: NSManagedObjectContext = {
-        return albumProvider.bckgContext
     }()
     
     
     // MARK: - Core Data Source
     typealias DataSource = UICollectionViewDiffableDataSource<String, NSManagedObjectID>
-    typealias Snaphot = NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
+    typealias Snapshot = NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
     /// Stored properties cannot be marked potentially unavailable with '@available'.
     // "var diffableDataSource: DataSource!" replaced by below lines
     var _diffableDataSource: NSObject? = nil
@@ -197,58 +195,69 @@ class AlbumViewController: UIViewController
     }
     
     lazy var user: User = {
-        guard let user = userProvider.getUserAccount(inContext: mainContext) else {
-            // Unknown user instance! ► Back to login view
+        do {
+            guard let user = try userProvider.getUserAccount(inContext: mainContext) else {
+                // Unknown user instance! ► Back to login view
+                ClearCache.closeSession()
+                return User()
+            }
+            // User available ► Job done
+            if user.isFault {
+                // The user is not fired yet.
+                user.willAccessValue(forKey: nil)
+                user.didAccessValue(forKey: nil)
+            }
+            return user
+        }
+        catch {
             ClearCache.closeSession()
             return User()
         }
-        // User available ► Job done
-        if user.isFault {
-            // The user is not fired yet.
-            user.willAccessValue(forKey: nil)
-            user.didAccessValue(forKey: nil)
-        }
-        return user
     }()
     
     lazy var albumData: Album = {
         return currentAlbumData()
     }()
     func currentAlbumData() -> Album {
-        // Did someone delete this album?
-        if let album = albumProvider.getAlbum(ofUser: user, withId: categoryId) {
-            // Album available ► Job done
-            if album.isFault {
-                // The album is not fired yet.
-                album.willAccessValue(forKey: nil)
-                album.didAccessValue(forKey: nil)
+        do {
+            // Did someone delete this album?
+            if let album = try albumProvider.getAlbum(ofUser: user, withId: categoryId) {
+                // Album available ► Job done
+                if album.isFault {
+                    // The album is not fired yet.
+                    album.willAccessValue(forKey: nil)
+                    album.didAccessValue(forKey: nil)
+                }
+                return album
             }
-            return album
-        }
-        
-        // Album not available anymore ► Back to default album?
-        categoryId = AlbumVars.shared.defaultCategory
-        if let defaultAlbum = albumProvider.getAlbum(ofUser: user, withId: categoryId) {
-            changeAlbumID()
-            if defaultAlbum.isFault {
-                // The default album is not fired yet.
-                defaultAlbum.willAccessValue(forKey: nil)
-                defaultAlbum.didAccessValue(forKey: nil)
+            
+            // Album not available anymore ► Back to default album?
+            categoryId = AlbumVars.shared.defaultCategory
+            if let defaultAlbum = try albumProvider.getAlbum(ofUser: user, withId: categoryId) {
+                if defaultAlbum.isFault {
+                    // The default album is not fired yet.
+                    defaultAlbum.willAccessValue(forKey: nil)
+                    defaultAlbum.didAccessValue(forKey: nil)
+                }
+                changeAlbumID()
+                return defaultAlbum
             }
-            return defaultAlbum
+            
+            // Default album deleted ► Back to root album
+            categoryId = Int32.zero
+            if let rootAlbum = try albumProvider.getAlbum(ofUser: user, withId: Int32.zero) {
+                if rootAlbum.isFault {
+                    // The root album is not fired yet.
+                    rootAlbum.willAccessValue(forKey: nil)
+                    rootAlbum.didAccessValue(forKey: nil)
+                }
+                changeAlbumID()
+                return rootAlbum
+            }
         }
-        
-        // Default album deleted ► Back to root album
-        categoryId = Int32.zero
-        guard let rootAlbum = albumProvider.getAlbum(ofUser: user, withId: Int32.zero)
-        else { fatalError("••> Could not create root album!") }
-        if rootAlbum.isFault {
-            // The root album is not fired yet.
-            rootAlbum.willAccessValue(forKey: nil)
-            rootAlbum.didAccessValue(forKey: nil)
-        }
-        changeAlbumID()
-        return rootAlbum
+        catch { }
+        ClearCache.closeSession()
+        return Album()
     }
     
     lazy var data = AlbumViewData(withAlbum: albumData)
@@ -451,9 +460,11 @@ class AlbumViewController: UIViewController
         navigationItem.backButtonDisplayMode = traitCollection.userInterfaceIdiom == .pad ? .generic : .minimal
         
         // Should we reload the collection view?
-        if collectionView.visibleCells.first is AlbumCollectionViewCell {
+        if AlbumVars.shared.displayAlbumDescriptions,
+           collectionView.visibleCells.first is AlbumCollectionViewCell {
             collectionView?.reloadData()
-        } else if collectionView.visibleCells.first is AlbumCollectionViewCellOld {
+        } else if AlbumVars.shared.displayAlbumDescriptions == false,
+                  collectionView.visibleCells.first is AlbumCollectionViewCellOld {
             collectionView?.reloadData()
         }
         
@@ -470,7 +481,7 @@ class AlbumViewController: UIViewController
         
         // Register upload queue changes for reporting inability to upload and updating upload queue button
         NotificationCenter.default.addObserver(self, selector: #selector(updateNberOfUploads(_:)),
-                                               name: Notification.Name.pwgLeftUploads, object: nil)
+                                               name: Notification.Name.pwgUpdateNberOfUploadsToComplete, object: nil)
         
         // Register upload progress if displaying default album
         if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
@@ -530,7 +541,7 @@ class AlbumViewController: UIViewController
 //}
 #endif
         if let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
-            if AppVars.shared.didShowWhatsNewAppVersion.compare("3.5", options: .numeric) == .orderedAscending,
+            if AppVars.shared.didShowWhatsNewAppVersion.compare("4.2", options: .numeric) == .orderedAscending,
                appVersionString.compare(AppVars.shared.didShowWhatsNewAppVersion, options: .numeric) == .orderedDescending {
                 // Display What's New in Piwigo
                 let whatsNewSB = UIStoryboard(name: "WhatsNewViewController", bundle: nil)
@@ -540,9 +551,8 @@ class AlbumViewController: UIViewController
                     whatsNewVC.modalPresentationStyle = .pageSheet
                     whatsNewVC.isModalInPresentation = true
                     if let sheet = whatsNewVC.sheetPresentationController {
-                        sheet.detents = [.medium(), .large()]
-                        sheet.selectedDetentIdentifier = view.bounds.height < 750 ? .large : .medium
-                        sheet.prefersGrabberVisible = true
+                        sheet.detents = [.medium()]
+                        sheet.prefersGrabberVisible = false
                         sheet.preferredCornerRadius = 40
                     }
                     present(whatsNewVC, animated: true)
@@ -620,7 +630,7 @@ class AlbumViewController: UIViewController
         //#endif
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
         // Hide HUD if needded
@@ -688,7 +698,7 @@ class AlbumViewController: UIViewController
 
         // Cancel remaining tasks
         let catIDstr = String(self.categoryId)
-        PwgSession.shared.dataSession.getAllTasks { tasks in
+        dataSession.getAllTasks { tasks in
             // Select tasks related with this album if any
             let tasksToCancel = tasks.filter({ $0.originalRequest?
                 .value(forHTTPHeaderField: HTTPCatID) == catIDstr })
@@ -780,25 +790,30 @@ class AlbumViewController: UIViewController
         }
         
         // Fetch album data and then image data
-        PwgSession.checkSession(ofUser: self.user) { [self] in
-            DispatchQueue.main.async { [self] in
-                self.fetchAlbumsAndImages()
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
+                                                          lastConnected: self.user.lastUsed)
+                // Fetch album and image data
+                await self.fetchAlbumsAndImages()
             }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
-                // End refreshing if needed
-                self.collectionView?.refreshControl?.endRefreshing()
-                
-                // Session logout required?
-                if error.requiresLogout {
-                    ClearCache.closeSessionWithPwgError(from: self, error: error)
-                    return
-                }
-
-                // Report error
-                let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
-                self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {
-                    self.navigationController?.hideHUD { }
+            catch let error as PwgKitError {
+                await MainActor.run {
+                    // End refreshing if needed
+                    self.collectionView?.refreshControl?.endRefreshing()
+                    
+                    // Session logout required?
+                    if error.requiresLogout {
+                        ClearCache.closeSessionWithPwgError(from: self, error: error)
+                        return
+                    }
+                    
+                    // Report error
+                    self.navigationController?.hideHUD {
+                        let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
+                        self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
+                    }
                 }
             }
         }
@@ -823,7 +838,7 @@ class AlbumViewController: UIViewController
         self.startFetchingAlbumAndImages(withHUD: true)
     }
     
-    @objc func fetchCompleted() {
+    @objc func fetchCompleted() async {
         DispatchQueue.main.async { [self] in
             // Hide HUD if needed
             self.navigationController?.hideHUD { }
@@ -844,29 +859,21 @@ class AlbumViewController: UIViewController
             // End refreshing if needed
             self.collectionView?.refreshControl?.endRefreshing()
         }
-        
-        // Fetch favorites in the background if needed
-        if hasFavorites, categoryId != pwgSmartAlbum.favorites.rawValue,
-           "2.10.0".compare(NetworkVars.shared.pwgVersion, options: .numeric) != .orderedDescending,
-           NetworkVars.shared.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending,
-           AlbumVars.shared.isFetchingAlbumData.contains(pwgSmartAlbum.favorites.rawValue) == false,
-           let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue),
-           Date.timeIntervalSinceReferenceDate - favAlbum.dateGetImages > TimeInterval(86400) { // i.e. a day
-            // Remember that the app is fetching favorites
-            AlbumVars.shared.isFetchingAlbumData.insert(pwgSmartAlbum.favorites.rawValue)
-            // Fetch favorites in the background
-            DispatchQueue.global(qos: .background).async { [self] in
-                self.loadFavoritesInBckg()
-            }
-        }
 
-        // Resume upload operations in background queue
-        // and update badge and upload button of album navigator
-        UploadManager.shared.backgroundQueue.async {
-            UploadManager.shared.isPaused = false
-            UploadManager.shared.isExecutingBackgroundUploadTask = false
-            UploadManager.shared.findNextImageToUpload()
-        }
+        // Fetch favorites in the background if needed
+        do {
+            if hasFavorites, categoryId != pwgSmartAlbum.favorites.rawValue,
+               "2.10.0".compare(NetworkVars.shared.pwgVersion, options: .numeric) != .orderedDescending,
+               NetworkVars.shared.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending,
+               AlbumVars.shared.isFetchingAlbumData.contains(pwgSmartAlbum.favorites.rawValue) == false,
+               let favAlbum = try AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue),
+               Date.timeIntervalSinceReferenceDate - favAlbum.dateGetImages > TimeInterval(86400) { // i.e. a day
+                // Remember that the app is fetching favorites
+                AlbumVars.shared.isFetchingAlbumData.insert(pwgSmartAlbum.favorites.rawValue)
+                // Fetch favorites in the background
+                await self.loadFavoritesInBckg()
+            }
+        } catch { }
     }
 
 
@@ -1016,7 +1023,7 @@ class AlbumViewController: UIViewController
     // MARK: - Utilities
     func nberOfAlbums() -> Int {
         var nberOfAlbums = Int.zero
-        let snapshot = diffableDataSource.snapshot() as Snaphot
+        let snapshot = diffableDataSource.snapshot() as Snapshot
         if let _ = snapshot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
             nberOfAlbums = snapshot.numberOfItems(inSection: pwgAlbumGroup.none.sectionKey)
         }
@@ -1024,7 +1031,7 @@ class AlbumViewController: UIViewController
     }
     
     func nberOfImages() -> Int {
-        let snapshot = diffableDataSource.snapshot() as Snaphot
+        let snapshot = diffableDataSource.snapshot() as Snapshot
         var nberOfImages = diffableDataSource.snapshot().numberOfItems
         if let _ = snapshot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
             nberOfImages -= snapshot.numberOfItems(inSection: pwgAlbumGroup.none.sectionKey)
@@ -1208,8 +1215,8 @@ class AlbumViewController: UIViewController
 
 
 // MARK: - MFMailComposeViewControllerDelegate
-extension AlbumViewController: MFMailComposeViewControllerDelegate {
-    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+extension AlbumViewController: @MainActor MFMailComposeViewControllerDelegate {
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: (any Error)?) {
         // Check the result or perform other tasks.
 
         // Dismiss the mail compose view controller.

@@ -12,14 +12,14 @@ import piwigoKit
 
 protocol VideoDetailDelegate: NSObjectProtocol {
     @MainActor
-    func config(currentTime: TimeInterval, duration: TimeInterval, delegate: VideoControlsDelegate)
+    func config(currentTime: TimeInterval, duration: TimeInterval, delegate: any VideoControlsDelegate)
     @MainActor
     func setCurrentTime(_ value: Double)
 }
 
 class ExternalDisplayViewController: UIViewController {
     
-    weak var videoDetailDelegate: VideoDetailDelegate?
+    weak var videoDetailDelegate: (any VideoDetailDelegate)?
 
     var imageData: Image? {
         didSet {
@@ -63,7 +63,7 @@ class ExternalDisplayViewController: UIViewController {
         
         // Pause download if needed
         if let imageURL = imageURL {
-            PwgSession.shared.pauseDownload(atURL: imageURL)
+            ImageDownloader.shared.pauseDownload(atURL: imageURL)
         }
 
         // Configure image, video or PDF view
@@ -104,7 +104,7 @@ class ExternalDisplayViewController: UIViewController {
             
             // Check if we already have an image of sufficient resolution
             let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-            let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
+            let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
             if let previewImage = imageData.cachedThumbnail(ofSize: previewSize) {
                 // Is this file of sufficient resolution?
                 if previewSize >= optimumSize {
@@ -124,8 +124,8 @@ class ExternalDisplayViewController: UIViewController {
             self.imageURL = imageURL
 
             // Download the image of right size for that display
-            PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: optimumSize, type: .image, atURL: imageURL,
-                                       fromServer: serverID, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
+            ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: optimumSize, type: .image, atURL: imageURL,
+                                            fromServer: serverID, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
                     self.updateProgressView(with: fractionCompleted)
@@ -177,8 +177,8 @@ class ExternalDisplayViewController: UIViewController {
                     self.imageURL = imageURL
                     
                     // Download the image of right size for that display
-                    PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: optimumSize, type: .image, atURL: imageURL,
-                                               fromServer: serverID, fileSize: imageData.fileSize) { _ in
+                    ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: optimumSize, type: .image, atURL: imageURL,
+                                                    fromServer: serverID, fileSize: imageData.fileSize) { _ in
                     } completion: { _ in
                     } failure: { _ in }
                 }
@@ -276,7 +276,7 @@ class ExternalDisplayViewController: UIViewController {
     private func getLowResPDFthumbnail(of imageData: Image) -> UIImage {
         // Determine which thumbnail to use
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-        let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
+        let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
         if let previewImage = imageData.cachedThumbnail(ofSize: previewSize) {
             // Display preview image
             return previewImage

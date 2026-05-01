@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 import piwigoKit
 import uploadKit
 
@@ -85,30 +86,68 @@ extension PasteboardImagesViewController: UploadSwitchDelegate
         }
         
         // Add selected images to upload queue
-        UploadManager.shared.backgroundQueue.async {
-            self.uploadProvider.importUploads(from: self.uploadRequests) { error in
-                // Deselect cells and reset upload queue
-                DispatchQueue.main.async {
-                    self.cancelSelect()
-                }
-                self.uploadRequests = []
+        Task(priority: .utility) { @UploadManagerActor in
+            do {
+                // Create upload requests
+                let uploadIDs = try await UploadManager.shared.importUploads(from: self.uploadRequests)
                 
-                // Error encountered?
-                guard let error = error else {
-                    // Restart UploadManager activities
-                    UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.isPaused = false
-                        UploadManager.shared.findNextImageToUpload()
+                // Add upload requests to queue
+                UploadVars.shared.isPaused = false
+                #if os(iOS) && !targetEnvironment(macCatalyst)
+                if #available(iOS 26.0, *) {
+                    // Launch new continued upload task if possible
+                    if UploadVars.shared.isContinuedProcessingTaskActive == false {
+                        UploadManager.shared.runContinuedUploadTask()
                     }
-                    return
                 }
-                DispatchQueue.main.async {
+                else {
+                    // Queue uploads to prepare
+                    await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
+                    
+                    // Process next uploads if possible
+                    await UploadManagerActor.shared.processNextUpload()
+                }
+                #elseif targetEnvironment(macCatalyst)
+                // Queue uploads to prepare
+                await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
+                
+                // Process next uploads if possible
+                await UploadManagerActor.shared.processNextUpload()
+                #endif
+                
+                // Deselect cells
+                await MainActor.run {
+                    self.cancelSelect()
+                    self.uploadRequests = []
+                }
+            }
+            catch {
+                await MainActor.run {
+                    // Deselect cells
+                    self.cancelSelect()
+                    self.uploadRequests = []
+                    
+                    // Inform user
                     let title = PwgKitError.uploadCreationError.localizedDescription
                     self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {
-                        // Restart UploadManager activities
-                        UploadManager.shared.backgroundQueue.async {
-                            UploadManager.shared.isPaused = false
-                            UploadManager.shared.findNextImageToUpload()
+                        // Resume upload operations in background queue
+                        UploadVars.shared.isPaused = false
+                        Task(priority: .utility) { @UploadManagerActor in
+                            #if os(iOS) && !targetEnvironment(macCatalyst)
+                            if #available(iOS 26.0, *) {
+                                // Launch new continued upload task if possible
+                                if UploadVars.shared.isContinuedProcessingTaskActive == false {
+                                    UploadManager.shared.runContinuedUploadTask()
+                                }
+                            }
+                            else {
+                                // Process next uploads if possible
+                                await UploadManagerActor.shared.processNextUpload()
+                            }
+                            #elseif targetEnvironment(macCatalyst)
+                            // Process next uploads if possible
+                            await UploadManagerActor.shared.processNextUpload()
+                            #endif
                         }
                     }
                 }

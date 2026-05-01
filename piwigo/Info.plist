@@ -7,6 +7,9 @@
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>org.piwigo.uploadManager</string>
+		<string>org.piwigo.uploadManagerContinued</string>
+		<string>net.lelievre-berna.piwigo.uploadManager</string>
+		<string>net.lelievre-berna.piwigo.uploadManagerContinued</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
@@ -25,7 +28,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>659</string>
+	<string>668</string>
 	<key>INIntentsSupported</key>
 	<array>
 		<string>AutoUploadIntent</string>

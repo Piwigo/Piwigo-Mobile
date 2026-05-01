@@ -1,4 +1,4 @@
-Piwigo voor iPhone / iPad / iPod vormt een aanvulling op de fotogalerij-software in de cloud Piwigo (v2.10 of hoger):
+Piwigo voor iPhone / iPad / iPod vormt een aanvulling op de fotogalerij-software in de cloud Piwigo (v12.0 of hoger):
 
 • Blader door jouw albums,
 • Albums maken, verwijderen, verplaatsen en hernoemen,

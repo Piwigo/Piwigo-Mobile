@@ -9,13 +9,13 @@
 import Foundation
 
 // Mark CacheVars as Sendable since Apple documents UserDefaults as thread-safe
-public class CacheVars: NSObject, @unchecked Sendable {
+public class CacheVars: @unchecked Sendable {
     
     // Singleton
     public static let shared = CacheVars()
     
     // Remove deprecated stored objects if needed
-    override init() {
+    init() {
         // Deprecated data?
         if let _ = UserDefaults.standard.object(forKey: "couldNotMigrateCoreDataStore") {
             UserDefaults.standard.removeObject(forKey: "couldNotMigrateCoreDataStore")
@@ -55,6 +55,6 @@ public class CacheVars: NSObject, @unchecked Sendable {
     
     // MARK: - Vars in Memory
     // Variables kept in memory
-    /// Name extension of thumbnails optimised for the device
-    public let optImage = "-opt"
+    /// To prevent Core Data usage until the database migration is finished.
+    public var isMigrationRunning: Bool = false
 }

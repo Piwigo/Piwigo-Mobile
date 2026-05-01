@@ -1,5 +1,5 @@
 //
-//  NetworkVars.shared.swift
+//  NetworkVars.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 24/05/2021.
@@ -12,7 +12,7 @@ import SystemConfiguration
 
 // Mark NetworkVars as Sendable since Apple documents UserDefaults as thread-safe
 // and pwgUserStatus is Sendable
-public class NetworkVars: NSObject, @unchecked Sendable {
+public class NetworkVars: @unchecked Sendable {
     
     // Singleton
     public static let shared = NetworkVars()
@@ -23,15 +23,18 @@ public class NetworkVars: NSObject, @unchecked Sendable {
     }
         
     // Remove deprecated stored objects if needed
-    //    override init() {
-    //        // Deprecated data?
-    //        if let _ = UserDefaults.standard.object(forKey: "test") {
-    //            UserDefaults.standard.removeObject(forKey: "test")
-    //        }
-    //        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
-    //            UserDefaults.dataSuite.removeObject(forKey: "test")
-    //        }
-    //    }
+    init() {
+        // Deprecated data?
+//        if let _ = UserDefaults.standard.object(forKey: "test") {
+//            UserDefaults.standard.removeObject(forKey: "test")
+//        }
+        if let _ = UserDefaults.dataSuite.object(forKey: "usesUploadAsync") {
+            UserDefaults.dataSuite.removeObject(forKey: "usesUploadAsync")
+        }
+        if let _ = UserDefaults.dataSuite.object(forKey: "usesCalcOrphans") {
+            UserDefaults.dataSuite.removeObject(forKey: "usesCalcOrphans")
+        }
+    }
     
     // MARK: - Vars in UserDefaults / Standard
     // Network variables stored in UserDefaults / Standard
@@ -107,6 +110,10 @@ public class NetworkVars: NSObject, @unchecked Sendable {
         }
     }
     
+    /// - IDs of albums in which a Community user can create sub-albums (Int32.min if unknown, i.e. Piwigo version before 16.4)
+//    @UserDefault("createAlbumRights", defaultValue: "\(Int32.min)", userDefaults: UserDefaults.dataSuite)
+//    public var createAlbumRights: String
+    
     /// - Library/Caches/Piwigo/Thumbnail folder size
     @UserDefault("thumbFolderSize", defaultValue: 0, userDefaults: UserDefaults.dataSuite)
     public var thumbFolderSize: UInt
@@ -127,14 +134,6 @@ public class NetworkVars: NSObject, @unchecked Sendable {
     @UserDefault("usesCommunityPluginV29", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var usesCommunityPluginV29:Bool
     
-    /// - pwg.images.uploadAsync method available, false by default (avaiable since Piwigo 11)
-    @UserDefault("usesUploadAsync", defaultValue: false, userDefaults: UserDefaults.dataSuite)
-    public var usesUploadAsync: Bool
-    
-    /// - pwg.categories.calculateOrphans method available, false by default (available since Piwigo 12)
-    @UserDefault("usesCalcOrphans", defaultValue: false, userDefaults: UserDefaults.dataSuite)
-    public var usesCalcOrphans: Bool
-
     /// - pwg.images.setCategory method available, false by default (available since Piwigo 14)
     @UserDefault("usesSetCategory", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var usesSetCategory: Bool
@@ -175,18 +174,21 @@ public class NetworkVars: NSObject, @unchecked Sendable {
     public var language = ""
         
     /// - Available image sizes
-    public var hasSquareSizeImages = true
-    public var hasThumbSizeImages = true
+    public var hasSquareSizeImages = false
+    public var hasThumbSizeImages = false
     public var hasXXSmallSizeImages = false
     public var hasXSmallSizeImages = false
     public var hasSmallSizeImages = false
-    public var hasMediumSizeImages = true
+    public var hasMediumSizeImages = false
     public var hasLargeSizeImages = false
     public var hasXLargeSizeImages = false
     public var hasXXLargeSizeImages = false
     public var hasXXXLargeSizeImages = false
     public var hasXXXXLargeSizeImages = false
 
+    /// — Will tell if the network connection has changed
+    public var hasNetworkConnectionChanged = false
+    
     /// — True if the app should log visits and downloads (since Piwigo 14)
     public var saveVisits = false
     

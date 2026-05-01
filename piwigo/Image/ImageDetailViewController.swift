@@ -49,7 +49,7 @@ class ImageDetailViewController: UIViewController
     // Cached variables
     private lazy var scale = CGFloat.zero
     private lazy var imageSize = CGSize.zero
-    private lazy var previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
+    private lazy var previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
     
     
     // MARK: - View Lifecycle
@@ -97,7 +97,7 @@ class ImageDetailViewController: UIViewController
         self.setExternalImageView()
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
         // Animate change of view size and reposition image
@@ -127,11 +127,15 @@ class ImageDetailViewController: UIViewController
         
         // Look for the first available image of lower resolution
         if previewSize == .fullRes {
-            if NetworkVars.shared.hasXXLargeSizeImages {
+            if pwgImageSize.xxxxLarge.isAvailable {
+                previewSize = .xxxxLarge
+            } else if pwgImageSize.xxxLarge.isAvailable {
+                previewSize = .xxxLarge
+            } else if pwgImageSize.xxLarge.isAvailable {
                 previewSize = .xxLarge
-            } else if NetworkVars.shared.hasXLargeSizeImages {
+            } else if pwgImageSize.xLarge.isAvailable {
                 previewSize = .xLarge
-            } else if NetworkVars.shared.hasLargeSizeImages {
+            } else if pwgImageSize.large.isAvailable {
                 previewSize = .large
             } else {
                 previewSize = .medium
@@ -169,8 +173,8 @@ class ImageDetailViewController: UIViewController
             // Download high-resolution image
             imageURL = ImageUtilities.getPiwigoURL(self.imageData, ofMinSize: previewSize)
             if let imageURL = self.imageURL {
-                PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, type: .image, atURL: imageURL,
-                                           fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
+                ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, type: .image, atURL: imageURL,
+                                                fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
                     self?.updateProgressView(with: fractionCompleted)
                 } completion: { [weak self] cachedImageURL in
                     self?.downsampleImage(atURL: cachedImageURL)

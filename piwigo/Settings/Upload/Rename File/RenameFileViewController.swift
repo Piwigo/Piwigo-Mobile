@@ -29,7 +29,7 @@ enum RenameSection: Int {
     
 class RenameFileViewController: UIViewController {
     
-    weak var delegate: MofifyFilenameDelegate?
+    weak var delegate: (any MofifyFilenameDelegate)?
     
     // Default actions
     var currentCounter: Int64 = UploadVars.shared.categoryCounterInit

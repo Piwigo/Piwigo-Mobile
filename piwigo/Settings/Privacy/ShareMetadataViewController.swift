@@ -79,7 +79,7 @@ class ShareMetadataViewController: UIViewController {
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
         // Reload the tableview on orientation change, to match the new width of the table.
@@ -177,13 +177,13 @@ extension ShareMetadataViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let (title, text) = getContentOfHeader(inSection: section)
-        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
+        return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
                                                         width: tableView.frame.size.width)
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let (title, text) = getContentOfHeader(inSection: section)
-        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
+        return TableViewUtilities.viewOfHeader(withTitle: title, text: text)
     }
     
     

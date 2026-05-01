@@ -10,19 +10,20 @@ import Foundation
 
 // MARK: - Time Format
 // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
-public enum pwgTimeFormat: Equatable, Hashable {
-    public enum Hour: String, CaseIterable, Hashable {
+public enum pwgTimeFormat: Equatable, Hashable, Sendable {
+    
+    public enum Hour: String, CaseIterable, Hashable, Sendable {
         case none
         case hha
         case HH
     }
     
-    public enum Minute: String, CaseIterable, Hashable {
+    public enum Minute: String, CaseIterable, Hashable, Sendable {
         case none
         case mm
     }
     
-    public enum Second: String, CaseIterable, Hashable {
+    public enum Second: String, CaseIterable, Hashable, Sendable {
         case none
         case ss
         case ssSSS = "ss.SSS"

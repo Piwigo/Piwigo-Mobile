@@ -9,41 +9,12 @@
 import CoreData
 import Foundation
 
-public class ImageProvider: NSObject {
+public final class ImageProvider {
     
-    // MARK: - Singleton
-    public static let shared = ImageProvider()
-    
-    
-    // MARK: - Core Data Object Contexts
-    private lazy var mainContext: NSManagedObjectContext = {
-        return DataController.shared.mainContext
-    }()
-    
-    private lazy var bckgContext: NSManagedObjectContext = {
-        return DataController.shared.newTaskContext()
-    }()
-    
-    
-    // MARK: - Core Data Providers
-    private lazy var albumProvider: AlbumProvider = {
-        let provider : AlbumProvider = AlbumProvider.shared
-        return provider
-    }()
-    
-    private lazy var userProvider: UserProvider = {
-        let provider : UserProvider = UserProvider.shared
-        return provider
-    }()
-    
-    private lazy var tagProvider: TagProvider = {
-        let provider : TagProvider = TagProvider.shared
-        return provider
-    }()
-    
+    public init() {}    // To make this class public
     
     // MARK: - Get Images
-    public func getObjectCount() -> Int64 {
+    public func getObjectCount(inContext taskContext: NSManagedObjectContext) -> Int64 {
 
         // Create a fetch request for the Image entity
         let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Image")
@@ -54,17 +25,17 @@ public class ImageProvider: NSObject {
 
         // Fetch number of objects
         do {
-            let countResult = try bckgContext.fetch(fetchRequest)
+            let countResult = try taskContext.fetch(fetchRequest)
             return countResult.first!.int64Value
         }
         catch let error {
-            debugPrint("••> Could not ftech image count, \(error.localizedDescription)")
+            debugPrint("••> Could not fetch image count, \(error.localizedDescription)")
         }
         return Int64.zero
     }
 
-    func frcOfImage(inContext taskContext: NSManagedObjectContext,
-                    withIds imageIds: Set<Int64>) -> NSFetchedResultsController<Image> {
+    func fetchRequestOfImage(inContext taskContext: NSManagedObjectContext,
+                             withIds imageIds: Set<Int64>) -> NSFetchRequest<Image> {
         let fetchRequest = Image.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Image.pwgID), ascending: true)]
         
@@ -75,38 +46,57 @@ public class ImageProvider: NSObject {
         andPredicates.append(NSPredicate(format: "pwgID IN %@", Array(imageIds)))
         andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-
-        // Create a fetched results controller and set its fetch request and context.
-        let image = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                               managedObjectContext: taskContext,
-                                               sectionNameKeyPath: nil, cacheName: nil)
-        return image
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.shouldRefreshRefetchedObjects = true
+        return fetchRequest
     }
     
+//    public func getPropertiesOfImage(withID imageID: Int64,
+//                                     inContext taskContext: NSManagedObjectContext) throws(PwgKitError) -> ImageProperties?
+//    {
+//        var imageProperties: ImageProperties? = nil
+//        do {
+//            try taskContext.performAndWait { () throws -> Void in
+//                
+//                // Create a fetch request for the Album entity
+//                let fetchRequest = fetchRequestOfImage(inContext: taskContext, withIds: [imageID])
+//                
+//                // Return the Image entities if possible
+//                let images = try taskContext.fetch(fetchRequest)
+//                guard let image = images.first
+//                else { throw PwgKitError.imageNotFound }
+//                
+//                imageProperties = image.getProperties()
+//            }
+//        }
+//        catch let error as PwgKitError { throw error }
+//        catch let error as NSError { throw PwgKitError.CoreDataError(innerError: error)}
+//        catch let error { throw PwgKitError.otherError(innerError: error) }
+//        
+//        return imageProperties
+//    }
+    
     public func getImages(inContext taskContext: NSManagedObjectContext,
-                          withIds imageIds: Set<Int64>) -> Set<Image> {
-        
-        // Initialisation
-        var cachedImages = [Image]()
+                          withIds imageIds: Set<Int64>) throws -> Set<Image> {
         
         // Retrieve image objects
-        taskContext.performAndWait {
+        try taskContext.performAndWait {
             
-            // Create a fetched results controller and set its fetch request, context, and delegate.
-            let controller = frcOfImage(inContext: taskContext, withIds: imageIds)
+            // Create a fetch request for the Album entity
+            let fetchRequest = fetchRequestOfImage(inContext: taskContext, withIds: imageIds)
             
-            // Perform the fetch.
+            // Return the Image entities if possible
             do {
-                try controller.performFetch()
-            } catch {
-                fatalError("Unresolved error: \(error.localizedDescription)")
+                let images = try taskContext.fetch(fetchRequest)
+                return Set(images)
             }
-            
-            // Return image objects
-            cachedImages = controller.fetchedObjects ?? []
+            catch let error as PwgKitError {
+                throw error
+            }
+            catch let error {
+                throw PwgKitError.otherError(innerError: error)
+            }
         }
-        
-        return Set(cachedImages)
     }
     
     
@@ -115,115 +105,61 @@ public class ImageProvider: NSObject {
      Fetches the image feed from the remote Piwigo server, and imports it into Core Data.
      */
     public func fetchImages(ofAlbumWithId albumId: Int32, withQuery query: String,
-                            sort: pwgImageSort, fromPage page:Int, perPage: Int,
-                            completion: @escaping (Set<Int64>, Int64, Bool) -> Void,
-                            failure: @escaping (PwgKitError) -> Void) {
+                            sort: pwgImageSort, fromPage page:Int, perPage: Int) async throws(PwgKitError) -> (Set<Int64>, Int64, Bool) {
         debugPrint("••> Fetch images of album \(albumId) at page \(page)…")
-        // Prepare parameters for collecting image data
-        var method = pwgCategoriesGetImages
-        var paramsDict: [String : Any] = [
-            "per_page"  : perPage,
-            "page"      : page,
-            "order"     : sort.param
-        ]
-        switch albumId {
-        case pwgSmartAlbum.search.rawValue:
-            method = pwgImagesSearch
-            paramsDict["query"] = "*" + query + "*"
 
-        case pwgSmartAlbum.visits.rawValue:
-            paramsDict["recursive"] = true
-            paramsDict["f_min_hit"] = 1
-            
-        case pwgSmartAlbum.best.rawValue:
-            paramsDict["recursive"] = true
-            paramsDict["f_min_rate"] = 1
-            
-        case pwgSmartAlbum.recent.rawValue:
-            let recentPeriod = CacheVars.shared.recentPeriodList[CacheVars.shared.recentPeriodIndex]
-            let maxPeriod = CacheVars.shared.recentPeriodList.last ?? 99
-            let nberDays = recentPeriod == 0 ? maxPeriod : recentPeriod
-            let daysAgo1 = Date(timeIntervalSinceNow: TimeInterval(-3600 * 24 * nberDays))
-            let daysAgo2 = Calendar.current.date(byAdding: .day, value: -nberDays, to: Date()) ?? daysAgo1
-            let dateAvailableString = DateUtilities.string(from: daysAgo2.timeIntervalSinceReferenceDate)
-            paramsDict["recursive"] = true
-            paramsDict["f_min_date_available"] = dateAvailableString
-            
-        case pwgSmartAlbum.favorites.rawValue:
-            method = pwgUsersFavoritesGetList
-            
-        case Int32.min...pwgSmartAlbum.tagged.rawValue:
-            method = pwgTagsGetImages
-            paramsDict["tag_id"] = pwgSmartAlbum.tagged.rawValue - albumId
-            
-        default:    // Standard Piwigo album
-            paramsDict["cat_id"] = albumId
-        }
-        
-        // Launch the HTTP(S) request
-        let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: method, paramDict: paramsDict,
-                                jsonObjectClientExpectsToReceive: CategoriesGetImagesJSON.self,
-                                countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { result in
-            switch result {
-            case .success(let pwgData):
-                // Import image data into Core Data.
-                do {
-                    if [.rankAscending, .random].contains(sort) {
-                        let startRank = Int64(page * perPage)
-                        try self.importImages(pwgData.data, inAlbum: albumId,
-                                              sort: sort, fromRank: startRank)
-                    } else {
-                        try self.importImages(pwgData.data, inAlbum: albumId, sort: sort)
-                    }
-                    
-                    // Retrieve total number of images
-                    var totalCount = Int64.zero
-                    if albumId == pwgSmartAlbum.favorites.rawValue {
-                        totalCount = pwgData.paging?.count ?? Int64.zero
-                    } else {
-                        // Bug leading to server providing wrong total_count value
-                        // Discovered in Piwigo 13.5.0, appeared in 13.0.0, fixed in 13.6.0.
-                        // See https://github.com/Piwigo/Piwigo/issues/1871
-                        if NetworkVars.shared.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending ||
-                            NetworkVars.shared.pwgVersion.compare("13.5.0", options: .numeric) == .orderedDescending {
-                            totalCount = pwgData.paging?.totalCount?.int64Value ?? Int64.zero
-                        } else {
-                            totalCount = pwgData.paging?.count ?? Int64.zero
-                        }
-                    }
-                    
-                    // Retrieve IDs of fetched images
-                    let fetchedImageIds = Set(pwgData.data.compactMap({$0.id}))
-                    
-                    // Determine if the user has the right to download images
-                    var hasDownloadRight = false
-                    if pwgData.data.isEmpty == false,
-                       pwgData.data.firstIndex(where: { $0.downloadUrl == nil }) == nil {
-                        hasDownloadRight = true
-                    }
-                    completion(fetchedImageIds, totalCount, hasDownloadRight)
-                }
-                catch let error as PwgKitError {
-                    failure(error)
-                }
-                catch {
-                    failure(.otherError(innerError: error))
-                }
+        // Fetch image data
+        let (paging, data) = try await JSONManager.shared.getImages(ofAlbumWithId: albumId, withQuery: query, sort: sort, fromPage: page, perPage: perPage)
 
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                failure(error)
+        // Import image data into Core Data.
+        do {
+            if [.rankAscending, .random].contains(sort) {
+                let startRank = Int64(page * perPage)
+                try self.importImages(data, inAlbum: albumId,
+                                      sort: sort, fromRank: startRank)
+            } else {
+                try self.importImages(data, inAlbum: albumId, sort: sort)
             }
+
+            // Retrieve total number of images
+            var totalCount = Int64.zero
+            if albumId == pwgSmartAlbum.favorites.rawValue {
+                totalCount = paging.count
+            } else {
+                // Bug leading to server providing wrong total_count value
+                // Discovered in Piwigo 13.5.0, appeared in 13.0.0, fixed in 13.6.0.
+                // See https://github.com/Piwigo/Piwigo/issues/1871
+                if NetworkVars.shared.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending ||
+                    NetworkVars.shared.pwgVersion.compare("13.5.0", options: .numeric) == .orderedDescending {
+                    totalCount = paging.totalCount?.int64Value ?? Int64.zero
+                } else {
+                    totalCount = paging.count
+                }
+            }
+
+            // Retrieve IDs of fetched images
+            let fetchedImageIds = Set(data.compactMap({$0.id}))
+
+            // Determine if the user has the right to download images
+            var hasDownloadRight = false
+            if data.isEmpty == false,
+               data.firstIndex(where: { $0.downloadUrl == nil }) == nil {
+                hasDownloadRight = true
+            }
+            return (fetchedImageIds, totalCount, hasDownloadRight)
+        }
+        catch let error as PwgKitError {
+            throw error
+        }
+        catch {
+            throw .otherError(innerError: error)
         }
     }
     
     /**
      Imports uploaded image data into Core Data.
      */
-    public func didUploadImage(_ imageData: ImagesGetInfo, asVideo: Bool, inAlbumId albumId: Int32) {
+    public func didUploadImage(_ imageData: ImagesGetInfo, inAlbumId albumId: Int32) {
         // Import the image data into Core Data.
         // The provided sort option will not change the rankManual/rankRandom values of Int64.min
         try? self.importImages([imageData], inAlbum: albumId, withAlbumUpdate: true, sort: .albumDefault)
@@ -232,38 +168,21 @@ public class ImageProvider: NSObject {
     /**
      Retrieves the complete image feed from the remote Piwigo server, and imports it into Core Data.
      */
-    public func getInfos(forID imageId: Int64, inCategoryId albumId: Int32,
-                         completion: @escaping () -> Void,
-                         failure: @escaping (PwgKitError) -> Void) {
-        // Prepare parameters for retrieving image/video infos
-        let paramsDict: [String : Any] = ["image_id" : imageId]
-        
-        // Launch request
-        let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: pwgImagesGetInfo, paramDict: paramsDict,
-                                jsonObjectClientExpectsToReceive: ImagesGetInfoJSON.self,
-                                countOfBytesClientExpectsToReceive: 50000) { result in
-            switch result {
-            case .success(let pwgData):
-                // Import the imageJSON into Core Data
-                // The provided sort option will not change the rankManual/rankRandom values.
-                do {
-                    try self.importImages([pwgData.data], inAlbum: albumId, sort: .albumDefault)
-                    completion()
-                }
-                catch let error as PwgKitError {
-                    failure(error)
-                }
-                catch {
-                    failure(.otherError(innerError: error))
-                }
+    @concurrent
+    public func getInfos(forID imageId: Int64, inCategoryId albumId: Int32) async throws(PwgKitError) {
+        // Retrieve image data
+        let pwgData = try await JSONManager.shared.getInfos(forID: imageId)
 
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                failure(error)
-            }
+        // Import the imageJSON into Core Data
+        do {
+            // The provided sort option will not change the rankManual/rankRandom values.
+            try self.importImages([pwgData], inAlbum: albumId, sort: .albumDefault)
+        }
+        catch let error as PwgKitError {
+            throw error
+        }
+        catch {
+            throw .otherError(innerError: error)
         }
     }
     
@@ -278,8 +197,9 @@ public class ImageProvider: NSObject {
                               sort: pwgImageSort, fromRank rank: Int64 = Int64.min) throws {
         // We shall perform at least one import in case where
         // the user did delete all images
-        guard imageArray.isEmpty == false else {
-            _ = importOneBatch([ImagesGetInfo](), inAlbum: albumId, sort: sort)
+        guard imageArray.isEmpty == false
+        else {
+            _ = try importOneBatch([ImagesGetInfo](), inAlbum: albumId, sort: sort)
             return
         }
         
@@ -305,11 +225,9 @@ public class ImageProvider: NSObject {
             
             // Stop the entire import if any batch is unsuccessful.
             let startRank = rank + Int64(batchStart)
-            if !importOneBatch(imagesBatch, inAlbum: albumId,
+            try importOneBatch(imagesBatch, inAlbum: albumId,
                                withAlbumUpdate: withAlbumUpdate,
-                               sort: sort, fromRank: startRank) {
-                return
-            }
+                               sort: sort, fromRank: startRank)
         }
     }
     
@@ -324,15 +242,12 @@ public class ImageProvider: NSObject {
      */
     private func importOneBatch(_ imagesBatch: [ImagesGetInfo],
                                 inAlbum albumId: Int32, withAlbumUpdate: Bool = false,
-                                sort: pwgImageSort, fromRank startRank: Int64 = Int64.min) -> Bool {
-        // Initialisation
-        var success = false
+                                sort: pwgImageSort, fromRank startRank: Int64 = Int64.min) throws {
         
         // Get current user object (will create server and user objects if needed)
-        guard let user = userProvider.getUserAccount(inContext: bckgContext) else {
-            debugPrint("ImageProvider.importOneBatch() unresolved error: Could not get user object!")
-            return false
-        }
+        let bckgContext = DataController.shared.newTaskContext()
+        guard let user = try UserProvider().getUserAccount(inContext: bckgContext)
+        else { throw PwgKitError.userCreationError }
         if user.isFault {
             // user is not fired yet.
             user.willAccessValue(forKey: nil)
@@ -340,10 +255,8 @@ public class ImageProvider: NSObject {
         }
         
         // Get album of selected ID (should exist at this stage)
-        guard let album = user.albums?.first(where: {$0.pwgID == albumId}) else {
-            debugPrint("ImageProvider.importOneBatch() unresolved error: Could not get album object!")
-            return false
-        }
+        guard let album = user.albums?.first(where: {$0.pwgID == albumId})
+        else { throw PwgKitError.albumCreationError }
         if album.isFault {
             // album is not fired yet.
             album.willAccessValue(forKey: nil)
@@ -353,28 +266,21 @@ public class ImageProvider: NSObject {
         // Import tags which are not yet in cache
         let imageTags = imagesBatch.compactMap({$0.tags}).reduce([],+)
         let isAdmin = [pwgUserStatus.admin.rawValue, pwgUserStatus.webmaster.rawValue].contains(user.status)
-        let _ = tagProvider.importOneBatch(imageTags, asAdmin: isAdmin, tagIDs: Set<Int32>())
+        _ = try TagProvider().importOneBatch(imageTags, asAdmin: isAdmin, tagIDs: Set<Int32>())
 
         // Get favorite album if possible (will not prevent import)
-        let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue)
+        let favAlbum = try AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue)
         
-        // taskContext.performAndWait runs on the URLSession's delegate queue
+        // Runs on the URLSession's delegate queue
         // so it won’t block the main thread.
-        bckgContext.performAndWait {
+        try bckgContext.performAndWait {
             
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let imageIds = Set(imagesBatch.compactMap({$0.id}))
-            let controller = frcOfImage(inContext: self.bckgContext, withIds: imageIds)
-            
-            // Perform the fetch.
-            do {
-                try controller.performFetch()
-            } catch {
-                fatalError("Unresolved error: \(error.localizedDescription)")
-            }
-            let cachedImages:[Image] = controller.fetchedObjects ?? []
+            let fetchRequest = fetchRequestOfImage(inContext: bckgContext, withIds: imageIds)
             
             // Loop over new images
+            let cachedImages:[Image] = try bckgContext.fetch(fetchRequest)
             var rank = startRank
             for imageData in imagesBatch {
                 
@@ -410,28 +316,20 @@ public class ImageProvider: NSObject {
                                                        sort: sort, rank: rank,
                                                        user: user, albums: albums)
                     }
-                    catch PwgKitError.missingImageData {
+                    catch let error as PwgKitError {
                         // Could not perform the update
-                        debugPrint(PwgKitError.missingImageData.localizedDescription)
+                        throw error
                     }
-                    catch {
-                        debugPrint(error.localizedDescription)
+                    catch let error {
+                        throw PwgKitError.otherError(innerError: error)
                     }
                 }
                 else {
                     // Create a Sizes managed object on the private queue context.
-                    guard let sizes = NSEntityDescription.insertNewObject(forEntityName: "Sizes",
-                                                                          into: bckgContext) as? Sizes else {
-                        debugPrint(PwgKitError.creationImageError.localizedDescription)
-                        return
-                    }
-
+                    let sizes = Sizes(context: bckgContext)
+                    
                     // Create an Image managed object on the private queue context.
-                    guard let image = NSEntityDescription.insertNewObject(forEntityName: "Image",
-                                                                          into: bckgContext) as? Image else {
-                        debugPrint(PwgKitError.creationImageError.localizedDescription)
-                        return
-                    }
+                    let image = Image(context: bckgContext)
                     
                     // Populate the Image's properties using the raw data.
                     image.sizes = sizes
@@ -443,34 +341,36 @@ public class ImageProvider: NSObject {
                         // Update album data if asked
                         if withAlbumUpdate {
                             // Add image to cached albums
-                            albums.forEach { album in
-                                self.albumProvider.updateAlbums(addingImages: 1, toAlbum: album)
+                            try albums.forEach { album in
+                                try AlbumProvider().updateAlbums(addingImages: 1, toAlbum: album,
+                                                                 inContext: bckgContext)
                             }
                         }
                     }
-                    catch PwgKitError.missingImageData {
+                    catch let error as PwgKitError {
                         // Delete invalid Image from the private queue context.
-                        debugPrint(PwgKitError.missingImageData.localizedDescription)
                         bckgContext.delete(image)
+                        throw error
                     }
                     catch {
-                        debugPrint(error.localizedDescription)
+                        // Delete invalid Image from the private queue context.
+                        bckgContext.delete(image)
+                        throw PwgKitError.otherError(innerError: error)
                     }
                 }
             }
             
             // Save all insertions from the context to the store.
             bckgContext.saveIfNeeded()
-//            DispatchQueue.main.async {
-//                self.mainContext.saveIfNeeded()
-//            }
 
             // Reset the taskContext to free the cache and lower the memory footprint.
             bckgContext.reset()
-            
-            success = true
+
+            // Save cached data in the main thread
+            Task { @MainActor in
+                DataController.shared.mainContext.saveIfNeeded()
+            }
         }
-        return success
     }
     
     
@@ -490,9 +390,10 @@ public class ImageProvider: NSObject {
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         
         // Create batch delete request
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<any NSFetchRequestResult>)
 
         // Execute batch delete request
+        let bckgContext = DataController.shared.newTaskContext()
         try? bckgContext.executeAndMergeChanges(using: batchDeleteRequest)
     }
         
@@ -507,9 +408,10 @@ public class ImageProvider: NSObject {
         fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath)
 
         // Create batch delete request
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<any NSFetchRequestResult>)
 
         // Execute batch delete request
-        try? mainContext.executeAndMergeChanges(using: batchDeleteRequest)
+        let bckgContext = DataController.shared.newTaskContext()
+        try? bckgContext.executeAndMergeChanges(using: batchDeleteRequest)
     }
 }

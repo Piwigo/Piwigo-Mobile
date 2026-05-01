@@ -22,13 +22,13 @@ protocol LocalAlbumsSelectorDelegate: NSObjectProtocol {
 
 class LocalAlbumsViewController: UIViewController {
     
-    weak var delegate: LocalAlbumsSelectorDelegate?
+    weak var delegate: (any LocalAlbumsSelectorDelegate)?
     
     @IBOutlet var localAlbumsTableView: UITableView!
     
     var categoryId: Int32 = AlbumVars.shared.defaultCategory
     var categoryCurrentCounter: Int64 = UploadVars.shared.categoryCounterInit
-    weak var albumDelegate: AlbumViewControllerDelegate?
+    weak var albumDelegate: (any AlbumViewControllerDelegate)?
     
     // Actions to perform after selection
     enum pwgAlbumSelectAction : Int {
@@ -163,7 +163,7 @@ class LocalAlbumsViewController: UIViewController {
                                                name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
         // Save position of collection view
@@ -192,7 +192,7 @@ class LocalAlbumsViewController: UIViewController {
         if self.localAlbumsProvider.didFetchAssetCollections == false {
             self.navigationController?.showHUD(
                 withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                detail: String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums"), minWidth: 200)
+                detail: String(localized: "tabBar_albums", bundle: .piwigoKit, comment: "Albums"), minWidth: 200)
         }
         
         // Fetch local albums in background thread

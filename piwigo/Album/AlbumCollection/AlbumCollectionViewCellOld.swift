@@ -19,7 +19,7 @@ protocol PushAlbumCollectionViewCellDelegate: NSObjectProtocol {
 
 class AlbumCollectionViewCellOld: UICollectionViewCell
 {
-    weak var pushAlbumDelegate: PushAlbumCollectionViewCellDelegate?
+    weak var pushAlbumDelegate: (any PushAlbumCollectionViewCellDelegate)?
     
     var albumData: Album? {
         didSet {
@@ -127,11 +127,14 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
         else { return nil }
 
         // Determine number of orphans if album deleted
-        DispatchQueue.global(qos: .userInteractive).async { [self] in
+        Task { [self] in
             self.nbOrphans = Int64.min
-            AlbumUtilities.calcOrphans(albumData.pwgID) { [self] nbOrphans in
-                self.nbOrphans = nbOrphans
-            } failure: { _ in }
+            do {
+                self.nbOrphans = try await JSONManager.shared.calcOrphans(albumData.pwgID)
+            }
+            catch {
+                debugPrint("Could not retrieve number of orphans: \(error)")
+            }
         }
 
         // Symbol configuration
@@ -148,7 +151,7 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
         // Album deletion
         let trash = UIContextualAction(style: .normal, title: nil,
                                        handler: { _, _, completionHandler in
-            let delete = AlbumDeletion(albumData: albumData, user: user,
+            let delete = AlbumDeletion(albumData: albumData, user: user, nbOrphans: self.nbOrphans,
                                        topViewController: topViewController)
             delete.displayAlert(completion: completionHandler)
         })

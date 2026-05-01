@@ -1,2 +1,5 @@
-• Kompatybilność z Piwigo 16
-• Poprawki błędów i usprawnienia interfejsu
+• Szybsze przesyłanie zdjęć i zaawansowane opcje przesyłania
+• Kontynuacja przesyłania w tle po przejściu do innej aplikacji
+• Szybsze wyświetlanie albumów zapisanych w urządzeniu przed przesłaniem
+• Udostępnianie dzienników w pliku za pośrednictwem AirDrop i grupowanie ich według milisekund
+• Poprawki błędów i ulepszenia interfejsu

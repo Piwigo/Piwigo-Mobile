@@ -20,7 +20,7 @@ extension CounterFormatSelectorViewController
 
         // Calc intersection between the keyboard's frame and the view's bounds
         let fromCoordinateSpace = window.screen.coordinateSpace
-        let toCoordinateSpace: UICoordinateSpace = tableView
+        let toCoordinateSpace: any UICoordinateSpace = tableView
         let convertedKeyboardFrameEnd = fromCoordinateSpace.convert(kbInfo, to: toCoordinateSpace)
         let viewIntersection = tableView.bounds.intersection(convertedKeyboardFrameEnd)
         if viewIntersection.height > 0 {
@@ -34,7 +34,7 @@ extension CounterFormatSelectorViewController
         
         // If necessary, scroll the table so that the cell remains visible
         if let cell = tableView.cellForRow(at: editedRow) {
-            let toCoordinateSpace: UICoordinateSpace = view
+            let toCoordinateSpace: any UICoordinateSpace = view
             let convertedCellFrame = cell.convert(cell.bounds, to: toCoordinateSpace)
             tableView.scrollRectToVisible(convertedCellFrame, animated: true)
         } else {

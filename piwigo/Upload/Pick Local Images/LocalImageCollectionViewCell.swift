@@ -59,7 +59,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         PHImageManager.default().requestImage(for: imageAsset, targetSize: retinaSquare, contentMode: .aspectFit, options: cropToSquare, resultHandler: { result, info in
             DispatchQueue.main.async {
                 guard let image = result else {
-                    if let error = info?[PHImageErrorKey] as? Error {
+                    if let error = info?[PHImageErrorKey] as? (any Error) {
                         debugPrint("••> Error : \(error.localizedDescription)")
                     }
                     self.changeCellImageIfNeeded(withImage: pwgImageType.image.placeHolder)
@@ -139,8 +139,8 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             failedUploadImage?.isHidden = true
         case .preparingFail, .preparingError, .formatError,
              .uploadingError, .uploadingFail, .finishingError, .finishingFail:
-            selectedIcon?.isHidden = true
-            darkenView?.isHidden = true
+            selectedIcon?.isHidden = !selected
+            darkenView?.isHidden = !selected
             uploadingProgress?.isHidden = true
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = false

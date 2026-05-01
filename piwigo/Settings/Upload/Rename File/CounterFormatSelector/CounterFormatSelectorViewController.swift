@@ -24,7 +24,7 @@ class CounterFormatSelectorViewController: UIViewController {
         case count
     }
     
-    weak var delegate: SelectCounterFormatDelegate?
+    weak var delegate: (any SelectCounterFormatDelegate)?
     
     @IBOutlet weak var tableView: UITableView!
     

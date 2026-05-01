@@ -63,7 +63,7 @@ public enum DataDirectories
         // Create the Piwigo/Uploads directory if needed
         let fm = FileManager.default
         if !fm.fileExists(atPath: uploadURL.path) {
-            var errorCreatingDirectory: Error? = nil
+            var errorCreatingDirectory: (any Error)? = nil
             do {
                 try fm.createDirectory(at: uploadURL, withIntermediateDirectories: true, attributes: nil)
             } catch {

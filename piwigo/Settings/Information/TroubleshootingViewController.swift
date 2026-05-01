@@ -95,7 +95,7 @@ class TroubleshootingViewController: UIViewController {
         }
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
         // Update Piwigo authors label
@@ -134,21 +134,38 @@ class TroubleshootingViewController: UIViewController {
                 let duration = (CFAbsoluteTimeGetCurrent() - timeCounter) * CFAbsoluteTime(1000)
                 debugPrint("••> completed in \(duration.rounded()) ms")
                 let entries = allEntries.compactMap({$0 as? OSLogEntryLog})
+                
                 // piwigoKit — Core Data
                 var someLogs = entries.filter({$0.category == String(describing: DataMigrator.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
                 someLogs = entries.filter({$0.category == String(describing: Image.self)})
                 if someLogs.isEmpty ==  false { self.pwgLogs.append(someLogs)}
-                // piwigoKit — Networking
-                someLogs = entries.filter({$0.category == String(describing: PwgSession.self)})
+                
+                // piwigoKit — Session Delegate
+                someLogs = entries.filter({$0.category == String(describing: PwgSessionDelegate.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                // uploadKit — UploadSessions
-                someLogs = entries.filter({$0.category == String(describing: UploadSessions.self)})
+                
+                // piwigoKit — JSON Manager
+                someLogs = entries.filter({$0.category == String(describing: JSONManager.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
+                
+                // piwigoKit — Image Downloader
+                someLogs = entries.filter({$0.category == String(describing: ImageDownloader.self)})
+                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
+                
+                // uploadKit — Upload Sessions Delegate
+                someLogs = entries.filter({$0.category == String(describing: UploadSessionsDelegate.self)})
+                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
+                
                 // uploadKit — UploadManager
                 someLogs = entries.filter({$0.category == String(describing: UploadManager.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-            } catch {
+
+                // uploadKit — UploadManagerActor
+                someLogs = entries.filter({$0.category == String(describing: UploadManagerActor.self)})
+                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
+            }
+            catch {
                 debugPrint("••> Could not retrieve logs.")
                 self.pwgLogs = []
             }
@@ -313,14 +330,14 @@ extension TroubleshootingViewController: UITableViewDelegate
         if title.isEmpty, text.isEmpty {
             return CGFloat(1)
         } else {
-            return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
+            return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
                                                             width: tableView.frame.size.width)
         }
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let (title, text) = getContentOfHeader(inSection: section)
-        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
+        return TableViewUtilities.viewOfHeader(withTitle: title, text: text)
     }
     
     

@@ -26,7 +26,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         case showRecentPhotosAction = "ShowRecentPhotosAction"
     }
     var savedShortCutItem: UIApplicationShortcutItem!
-
+//    var savedUrlContext: UIOpenURLContext?
     
     // MARK: - Core Data Object Contexts
     private lazy var mainContext: NSManagedObjectContext = {
@@ -52,6 +52,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // Save shortcut for later when app becomes active
             savedShortCutItem = shortcutItem
         }
+        
+        // App was launched cold via deep link?
+//        if let urlContext = connectionOptions.urlContexts.first {
+//            // Save URL context for later when app becomes active
+//            savedUrlContext = urlContext
+//        }
         
         debugPrint("••> \(session.persistentIdentifier): Scene will connect to session.")
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate,
@@ -92,7 +98,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             } else {
                 // Create additional scene ► default album unless a migration is running
                 if otherScenes.filter({($0 as? UIWindowScene)?.topMostViewController() is DataMigrationViewController}).isEmpty,
-                   AppVars.shared.isMigrationRunning == false {
+                   CacheVars.shared.isMigrationRunning == false {
                     // Create additional scene ► default album
                     appDelegate.loadNavigation(in: window)
                     
@@ -134,7 +140,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         } else {
             // Restore additional scene ► default album / login view OR wait for migration?
             if otherScenes.filter({($0 as? UIWindowScene)?.topMostViewController() is DataMigrationViewController}).isEmpty,
-               AppVars.shared.isMigrationRunning == false {
+               CacheVars.shared.isMigrationRunning == false {
                 // Restore scene
                 if configure(window: window, session: session, with: userActivity) {
                     // Remember this activity for later when this app quits or suspends.
@@ -215,9 +221,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let appDelegate = UIApplication.shared.delegate as? AppDelegate
             await appDelegate?.networkMonitor?.startMonitoring()
         }
-
-        // Flag used to prevent background tasks from running when the app is active
-        AppVars.shared.applicationIsActive = true
+        
+        // Flag used to:
+        // - prevent the background processing upload task from running when the app is active,
+        // - stop the network monitoring when ending the background continued processing upload task,
+        // - resume upload activities after the completion iof a background task.
+        UploadVars.shared.isApplicationActive = true
         
         // Flag used to force relogin at start
         NetworkVars.shared.applicationShouldRelogin = true
@@ -227,16 +236,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         debugPrint("••> \(scene.session.persistentIdentifier): Scene did become active.")
         // Called when the scene has become active and is now responding to user events.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
-
-        // did the user open the app with a Home menu quick action?
-        if savedShortCutItem != nil {
-             _ = handleShortCutItem(shortcutItem: savedShortCutItem)
+        
+        // Did the user open the app with a Home menu quick action?
+        if let savedShortCutItem {
+            _ = handleShortCutItem(shortcutItem: savedShortCutItem)
+            self.savedShortCutItem = nil
         }
+        
+        // Did the user open the app with a deep link?
+//        if let savedUrlContext {
+//            handleUrlContext(savedUrlContext)
+//        }
         
         // Called during biometric authentication or data migration?
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         let isMigratingData = (scene as? UIWindowScene)?.topMostViewController() is DataMigrationViewController
-        if appDelegate.isAuthenticatingWithBiometrics || isMigratingData || AppVars.shared.isMigrationRunning { return }
+        if appDelegate.isAuthenticatingWithBiometrics || isMigratingData || CacheVars.shared.isMigrationRunning { return }
         
         // Request passcode if necessary
         if AppVars.shared.isAppUnlocked == false {
@@ -343,7 +358,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                                           localizedTitle: pwgSmartAlbum.recent.name,
                                           localizedSubtitle: nil,
                                           icon: UIApplicationShortcutIcon(systemImageName: "sparkles"))
-                ])
+            ])
         }
         UIApplication.shared.shortcutItems = quickActions
     }
@@ -360,30 +375,40 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Remember to ask for passcode or not
         AppVars.shared.isAppUnlocked = !AppVars.shared.isAppLockActive
         
-        // Should we save changes in cache and schedule background tasks?
-        if AppVars.shared.isMigrationRunning == false {
+        // Remember to resume all upload activities at restart
+        UploadVars.shared.didResumeUploads = false
+        
+        // Should we pause upload activities in the foreground?
+        if CacheVars.shared.isMigrationRunning == false {
+            // Pause upload activities (no BGContinuedProcessingTask)
+            if #unavailable(iOS 26.0) {
+                UploadVars.shared.isPaused = true
+            }
             // Save changes in the app's managed object context
             mainContext.saveIfNeeded()
         }
         
         // Schedule background tasks after cancelling pending onces
         BGTaskScheduler.shared.cancelAllTaskRequests()
-        if NetworkVars.shared.usesUploadAsync {
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-            appDelegate?.scheduleNextUpload()
+        Task(priority: .utility) { @UploadManagerActor in
+            UploadManager.shared.scheduleNextUpload()
         }
         
         // Clean up /tmp directory
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         appDelegate?.cleanUpTemporaryDirectory(immediately: false)
         
-        // Flag used to prevent background tasks from running when the app is active
-        AppVars.shared.applicationIsActive = false
-
+        // Flag used to:
+        // - prevent the background processing upload task from running when the app is active,
+        // - stop the network monitoring when ending the background continued processing upload task,
+        // - resume upload activities after the completion iof a background task.
+        UploadVars.shared.isApplicationActive = false
+        
         // Reset list of albums being fetched
         AlbumVars.shared.isFetchingAlbumData = Set<Int32>()
-
-        // Stop network monitoring
+        
+        // Stop network monitoring if possible
+        if UploadVars.shared.isContinuedProcessingTaskActive { return }
         Task { @MainActor in
             let appDelegate = UIApplication.shared.delegate as? AppDelegate
             await appDelegate?.networkMonitor?.stopMonitoring()
@@ -424,7 +449,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         completionHandler(handled)
     }
     
-    func handleShortCutItem(shortcutItem: UIApplicationShortcutItem) -> Bool {
+    private func handleShortCutItem(shortcutItem: UIApplicationShortcutItem) -> Bool {
         // NOP in absence of user session
         if let topMostVC = window?.windowScene?.topMostViewController(),
            topMostVC is LoginViewController {
@@ -433,12 +458,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // Dismiss image or settings view controllers if needed
         dismissNonAlbumViewControllers()
-
+        
         // Load the requested view controller
         if let actionTypeValue = ActionType(rawValue: shortcutItem.type) {
             switch actionTypeValue {
             case .showFavoritesAction:
-
+                
                 // The root view controller should be the AlbumNavigationController
                 if let navController = window?.rootViewController as? AlbumNavigationController {
                     // Return to root view controller
@@ -446,7 +471,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     
                     // Check that an album of favorites exists in cache (create it if necessary)
                     guard let albumVC = navController.viewControllers.first as? AlbumViewController,
-                          let _ = albumVC.albumProvider.getAlbum(ofUser: albumVC.user, withId: pwgSmartAlbum.favorites.rawValue)
+                          let _ = try? AlbumProvider().getAlbum(ofUser: albumVC.user, withId: pwgSmartAlbum.favorites.rawValue)
                     else { return false }
                     
                     // Present favorite images
@@ -479,6 +504,26 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 self.dismissNonAlbumViewControllers()
             }
         }
+    }
+    
+
+    // MARK: - Application Deep Link Support
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        // App was launched cold via deep link?
+        if let urlContext = URLContexts.first {
+            // Save URL context for later when app becomes active
+            handleUrlContext(urlContext)
+        }
+    }
+    
+    private func handleUrlContext(_ urlContext: UIOpenURLContext) {
+        // Submitted to the right app?
+        guard urlContext.url.scheme == "piwigo" else { return }
+        
+        // What should be done?
+        debugPrint("URL context: \(urlContext.debugDescription)")
+        // let components = URLComponents(url: urlContext.url, resolvingAgainstBaseURL: false)
+        
     }
 }
 
@@ -528,8 +573,17 @@ extension SceneDelegate: AppLockDelegate {
         
         // Resume upload operations in background queue
         // and update badge and upload button of album navigator
-        UploadManager.shared.backgroundQueue.async {
-            UploadManager.shared.resumeAll()
+        Task(priority: .utility) { @UploadManagerActor in
+            #if os(iOS) && !targetEnvironment(macCatalyst)
+            if #available(iOS 26.0, *) {
+                UploadManager.shared.runContinuedUploadTask()
+            }
+            else {
+                await UploadManager.shared.resumeInForeground()
+            }
+            #elseif targetEnvironment(macCatalyst)
+            await UploadManager.shared.resumeInForeground()
+            #endif
         }
     }
 }

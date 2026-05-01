@@ -39,7 +39,7 @@ extension ImageViewController
         var children: [UIMenuElement] = []
         for albumId in albumIDs {
             // Get album in cache
-            guard let album = albumProvider.getAlbum(ofUser: user, withId: albumId)
+            guard let album = try? AlbumProvider().getAlbum(ofUser: user, withId: albumId)
             else { continue }
             
             // Create dynamic action
@@ -66,9 +66,9 @@ extension ImageViewController
         let scale = max(self.view.traitCollection.displayScale, 1.0)
         let cellSize = CGSizeMake(40.0 * scale, 40.0 * scale)
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-        PwgSession.shared.getImage(withID: album.thumbnailId, ofSize: thumbSize, type: .album,
-                                   atURL: album.thumbnailUrl as? URL,
-                                   fromServer: album.user?.server?.uuid) { cachedImageURL in
+        ImageDownloader.shared.getImage(withID: album.thumbnailId, ofSize: thumbSize, type: .album,
+                                        atURL: album.thumbnailUrl as? URL,
+                                        fromServer: album.user?.server?.uuid) { cachedImageURL in
             // Downsample image in cache
             let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .album)
             // Return cached image
@@ -89,8 +89,8 @@ extension ImageViewController
         setEnableStateOfButtons(false)
         
         // Get source and destination albums
-        guard let sourceAlbum = self.albumProvider.getAlbum(withId: categoryId),
-              let destinationAlbum = self.albumProvider.getAlbum(withId: albumId)
+        guard let sourceAlbum = try? AlbumProvider().getAlbum(ofUser: user, withId: categoryId),
+              let destinationAlbum = try? AlbumProvider().getAlbum(ofUser: user, withId: albumId)
         else { return }
         
         // Get common path (don't use Set() which does not retain the order)

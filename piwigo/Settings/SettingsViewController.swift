@@ -21,7 +21,7 @@ enum SettingsSection: Int {
     case albums
     case images
     case videos
-    case imageUpload
+    case uploads
     case privacy
     case appearance
     case cache
@@ -45,7 +45,7 @@ class SettingsViewController: UIViewController {
         case author
     }
     
-    weak var settingsDelegate: ChangedSettingsDelegate?
+    weak var settingsDelegate: (any ChangedSettingsDelegate)?
     
     @IBOutlet var settingsTableView: UITableView!
     
@@ -103,6 +103,7 @@ class SettingsViewController: UIViewController {
     
     // MARK: - Core Data Objects
     var user: User!
+    lazy var userHasUploadRights = user?.hasUploadRights ?? false
     lazy var mainContext: NSManagedObjectContext = {
         guard let context: NSManagedObjectContext = user?.managedObjectContext else {
             fatalError("!!! Missing Managed Object Context !!!")
@@ -111,80 +112,71 @@ class SettingsViewController: UIViewController {
     }()
     
     
-    // MARK: - Core Data Providers
-    lazy var albumProvider: AlbumProvider = {
-        let provider : AlbumProvider = AlbumProvider.shared
-        return provider
-    }()
-    
-    
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Launch operations in parallel in the background
-        var operations = [BlockOperation]()
-        operations.append(BlockOperation { [self] in
-            // Calculate cache sizes
-            guard let server = self.user.server,
-                  server.isFault == false
-            else {
-                debugPrint("!!! User not provided !!!!")
-                return
-            }
-            var sizes = self.getThumbnailSizes()
-            self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
-            sizes = self.getPhotoSizes()
-            self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
-            self.videoCacheSize = server.getCacheSizeOfVideos()
-            self.dataCacheSize = server.getAlbumImageCount()
-            if self.hasUploadRights() {
-                self.uploadCacheSize = server.getUploadCount()
-                + " | " + UploadManager.shared.getUploadsDirectorySize()
-            }
-        })
+        // Calculate cache sizes
+        guard let server = self.user?.server
+        else { preconditionFailure("!!! User not provided !!!!") }
+        if server.isFault {
+            // user is not fired yet.
+            server.willAccessValue(forKey: nil)
+            server.didAccessValue(forKey: nil)
+        }
+        var sizes = self.getThumbnailSizes()
+        self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
+        sizes = self.getPhotoSizes()
+        self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
+        self.videoCacheSize = server.getCacheSizeOfVideos()
+        self.dataCacheSize = server.getAlbumImageCount(inContext: mainContext)
+        if userHasUploadRights {
+            let uploadsDirectory = DataDirectories.appUploadsDirectory
+            let uploadsDirectorySize = ByteCountFormatter.string(fromByteCount: Int64(uploadsDirectory.folderSize), countStyle: .file)
+            self.uploadCacheSize = server.getUploadCount(inContext: mainContext) + " | " + uploadsDirectorySize
+        }
         
-        // Retrieve data from server
-        if user.hasAdminRights {
-            operations.append(BlockOperation { [self] in
-                // Check session before collecting server statistics
-                PwgSession.checkSession(ofUser: self.user) {
+        // Retrieve data from server in the background
+        if userHasUploadRights {
+            let userID = user.objectID
+            let lastUsed = self.user.lastUsed
+            let username = user.username
+            Task.detached(priority: .background) { [self] in
+                do {
+                    // Check session
+                    try await JSONManager.shared.checkSession(ofUserWithID: userID, lastConnected: lastUsed)
+                    
                     // Collect stats from server and store them in cache
-                    PwgSession.shared.getInfos()
+                    try await JSONManager.shared.getInfos()
+                    
                     // Collect recentPeriod chosen by user
-                    PwgSession.getUsersInfo(forUserName: self.user.username) { usersData in
+                    let usersData = try await JSONManager.shared.getUsersInfo(forUserName: username)
+                    
+                    // Update current index and reload corresponding cell
+                    await MainActor.run { [self] in
                         // Is the retrieved recent period different?
                         guard let nberOfDays = usersData.recentPeriod?.intValue,
                               let index = CacheVars.shared.recentPeriodList.firstIndex(of: nberOfDays),
                               index != self.oldRecentPeriodIndex
                         else { return }
                         
-                        // Update current index and reload corresponding cell
-                        DispatchQueue.main.async { [self] in
-                            self.user.id = usersData.id ?? Int16.zero
-                            self.user.managedObjectContext?.saveIfNeeded()
-                            self.oldRecentPeriodIndex = index
-                            CacheVars.shared.recentPeriodIndex = index
-                            let indexPath = IndexPath(row: 3, section: SettingsSection.albums.rawValue)
-                            if let cell = self.settingsTableView.cellForRow(at: indexPath) as? SliderTableViewCell {
-                                cell.updateDisplayedValue(Float(index))
-                            }
+                        // Update data
+                        self.user.id = usersData.id ?? Int16.zero
+                        self.user.managedObjectContext?.saveIfNeeded()
+                        self.oldRecentPeriodIndex = index
+                        CacheVars.shared.recentPeriodIndex = index
+                        let indexPath = IndexPath(row: 3, section: SettingsSection.albums.rawValue)
+                        if let cell = self.settingsTableView.cellForRow(at: indexPath) as? SliderTableViewCell {
+                            cell.updateDisplayedValue(Float(index))
                         }
-                    } failure: {
-                        // No error report
                     }
-                } failure: { _ in
-                    /// - Network communication errors
-                    /// - Returned JSON data is empty
-                    /// - Cannot decode data returned by Piwigo server
-                    /// -> no error report
                 }
-            })
+                catch {
+                    // -> no error report
+                    print("Error retrieving server info: \(error)")
+                }
+            }
         }
-        let queue: OperationQueue = OperationQueue()
-        queue.maxConcurrentOperationCount = .max
-        queue.qualityOfService = .userInitiated
-        queue.addOperations(operations, waitUntilFinished: false)
         
         // Title
         title = NSLocalizedString("tabBar_preferences", comment: "Settings")
@@ -293,21 +285,23 @@ class SettingsViewController: UIViewController {
         super.viewWillDisappear(animated)
         
         // Update upload counter in case user cleared the cache
-        UploadManager.shared.updateNberOfUploadsToComplete()
-        
+        Task(priority: .utility) { @UploadManagerActor in
+            UploadManager.shared.updateNberOfUploadsToComplete()
+        }
         // Did the user change the recent period?
         let recentPeriodIndex = CacheVars.shared.recentPeriodIndex
-        if hasUploadRights(), oldRecentPeriodIndex != recentPeriodIndex {
+        if userHasUploadRights, oldRecentPeriodIndex != recentPeriodIndex {
             // Update recent period on Piwigo server
-            DispatchQueue.global(qos: .background).async { [self] in
-                PwgSession.checkSession(ofUser: user) {
+            Task.detached {
+                do {
+                    // Check session
+                    try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID, lastConnected: self.user.lastUsed)
+                    
+                    // Update server data
                     let periodInDays = CacheVars.shared.recentPeriodList[recentPeriodIndex]
-                    PwgSession.setRecentPeriod(periodInDays, forUserWithID: self.user.id) { success in
-                        // No reporting
-                    } failure: { error in
-                        // No reporting
-                    }
-                } failure: { error in
+                    try await JSONManager.shared.setRecentPeriod(periodInDays, forUserWithID: self.user.id)
+                }
+                catch {
                     // No reporting
                 }
             }
@@ -342,12 +336,12 @@ class SettingsViewController: UIViewController {
     
     @objc func updateAutoUpload(_ notification: Notification) {
         // NOP if the option is not available
-        if !hasUploadRights() { return }
+        if !userHasUploadRights { return }
         
         // Reload section instead of row because user's rights may have changed after logout/login
         children.forEach {
             if $0 is SettingsViewController {
-                settingsTableView?.reloadSections(IndexSet(integer: SettingsSection.imageUpload.rawValue), with: .automatic)
+                settingsTableView?.reloadSections(IndexSet(integer: SettingsSection.uploads.rawValue), with: .automatic)
             }
         }
         
@@ -383,24 +377,29 @@ class SettingsViewController: UIViewController {
             // Show HUD
             let title = NSLocalizedString("login_closeSession", comment: "Closing Session...")
             self.navigationController?.showHUD(withTitle: title)
-            
-            // Perform Logout
-            PwgSession.shared.sessionLogout {
-                // Close session
-                DispatchQueue.main.async { [self] in
-                    self.navigationController?.hideHUD(afterDelay: pwgDelayHUD) {
-                        ClearCache.closeSession()
+
+            // Perform Logout on background
+            Task.detached {
+                do {
+                    try await JSONManager.shared.sessionLogout()
+                    
+                    // Close UI session
+                    await MainActor.run {
+                        self.navigationController?.hideHUD(afterDelay: pwgDelayHUD) {
+                            ClearCache.closeSession()
+                        }
                     }
                 }
-            } failure: { error in
-                // Failed! This may be due to the replacement of a self-signed certificate.
-                // So we inform the user that there may be something wrong with the server,
-                // or simply a connection drop.
-                DispatchQueue.main.async { [self] in
-                    self.navigationController?.hideHUD {
-                        self.navigationController?.dismissPiwigoError(withTitle: NSLocalizedString("logoutFail_title", comment: "Logout Failed"),
-                                                                      message: error.localizedDescription) {
-                            ClearCache.closeSession()
+                catch {
+                    // Failed! This may be due to the replacement of a self-signed certificate.
+                    // So we inform the user that there may be something wrong with the server,
+                    // or simply a connection drop.
+                    await MainActor.run {
+                        self.navigationController?.hideHUD {
+                            self.navigationController?.dismissPiwigoError(withTitle: NSLocalizedString("logoutFail_title", comment: "Logout Failed"),
+                                                                          message: error.localizedDescription) {
+                                ClearCache.closeSession()
+                            }
                         }
                     }
                 }
@@ -450,7 +449,7 @@ class SettingsViewController: UIViewController {
 
 // MARK: - MFMailComposeViewControllerDelegate
 extension SettingsViewController: MFMailComposeViewControllerDelegate {
-    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: (any Error)?) {
         // Check the result or perform other tasks.
 
         // Dismiss the mail compose view controller.

@@ -1,2 +1,5 @@
-• Compatibilidad con Piwigo 16.
+• Sube archivos más rápido y ofrece opciones avanzadas de subida
+• Continúa las subidas en segundo plano tras cambiar a otra aplicación
+• Acelera la visualización de los álbumes almacenados en el dispositivo antes de la subida
+• Comparte los registros en un archivo a través de AirDrop y los agrupa por milisegundos
 • Corrige errores y mejora la interfaz

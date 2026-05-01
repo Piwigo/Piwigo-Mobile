@@ -138,63 +138,63 @@ extension pwgImageSort {
    public var name: String {
         switch self {
         case .nameAscending:
-            return String(localized: "categorySort_nameAscending", bundle: piwigoKit,
+            return String(localized: "categorySort_nameAscending", bundle: .piwigoKit,
                           comment: "Photo Title, A → Z")
         case .nameDescending:
-            return String(localized: "categorySort_nameDescending", bundle: piwigoKit,
+            return String(localized: "categorySort_nameDescending", bundle: .piwigoKit,
                           comment: "Photo Title, Z → A")
             
         case .dateCreatedDescending:
-            return String(localized: "categorySort_dateCreatedDescending", bundle: piwigoKit,
+            return String(localized: "categorySort_dateCreatedDescending", bundle: .piwigoKit,
                           comment: "Date Created, new → old")
         case .dateCreatedAscending:
-            return String(localized: "categorySort_dateCreatedAscending", bundle: piwigoKit,
+            return String(localized: "categorySort_dateCreatedAscending", bundle: .piwigoKit,
                           comment: "Date Created, old → new")
             
         case .datePostedDescending:
-            return String(localized: "categorySort_datePostedDescending", bundle: piwigoKit,
+            return String(localized: "categorySort_datePostedDescending", bundle: .piwigoKit,
                           comment: "Date Posted, new → old")
         case .datePostedAscending:
-            return String(localized: "categorySort_datePostedAscending", bundle: piwigoKit,
+            return String(localized: "categorySort_datePostedAscending", bundle: .piwigoKit,
                           comment: "Date Posted, old → new")
             
         case .fileNameAscending:
-            return String(localized: "categorySort_fileNameAscending", bundle: piwigoKit,
+            return String(localized: "categorySort_fileNameAscending", bundle: .piwigoKit,
                           comment: "File Name, A → Z")
         case .fileNameDescending:
-            return String(localized: "categorySort_fileNameDescending", bundle: piwigoKit,
+            return String(localized: "categorySort_fileNameDescending", bundle: .piwigoKit,
                           comment: "File Name, Z → A")
             
         case .ratingScoreDescending:
-            return String(localized: "categorySort_ratingScoreDescending", bundle: piwigoKit,
+            return String(localized: "categorySort_ratingScoreDescending", bundle: .piwigoKit,
                           comment: "Rating Score, high → low")
         case .ratingScoreAscending:
-            return String(localized: "categorySort_ratingScoreAscending", bundle: piwigoKit,
+            return String(localized: "categorySort_ratingScoreAscending", bundle: .piwigoKit,
                           comment: "Rating Score, low → high")
             
         case .visitsDescending:
-            return String(localized: "categorySort_visitsDescending", bundle: piwigoKit,
+            return String(localized: "categorySort_visitsDescending", bundle: .piwigoKit,
                           comment: "Visits, high → low")
         case .visitsAscending:
-            return String(localized: "categorySort_visitsAscending", bundle: piwigoKit,
+            return String(localized: "categorySort_visitsAscending", bundle: .piwigoKit,
                           comment: "Visits, low → high")
             
         case .rankAscending:
-            return String(localized: "categorySort_manual", bundle: piwigoKit,
+            return String(localized: "categorySort_manual", bundle: .piwigoKit,
                           comment: "Manual Order")
         case .random:
-            return String(localized: "categorySort_random", bundle: piwigoKit,
+            return String(localized: "categorySort_random", bundle: .piwigoKit,
                           comment: "Random Order")
             
         case .idDescending:
-            return String(localized: "categorySort_idDescending", bundle: piwigoKit,
+            return String(localized: "categorySort_idDescending", bundle: .piwigoKit,
                           comment: "Identifier, 9 → 1")
         case .idAscending:
-            return String(localized: "categorySort_idAscending", bundle: piwigoKit,
+            return String(localized: "categorySort_idAscending", bundle: .piwigoKit,
                           comment: "Identifier, 1 → 9")
             
         case .albumDefault:
-            return String(localized: "categorySort_default", bundle: piwigoKit,
+            return String(localized: "categorySort_default", bundle: .piwigoKit,
                           comment: "Default")
         }
     }
@@ -203,45 +203,45 @@ extension pwgImageSort {
     public var shortName: String? {
         switch self {
         case .nameAscending:
-            return String(localized: "categorySort_nameAscendingShort", bundle: piwigoKit,
+            return String(localized: "categorySort_nameAscendingShort", bundle: .piwigoKit,
                           comment: "A → Z")
         case .nameDescending:
-            return String(localized: "categorySort_nameDescendingShort", bundle: piwigoKit,
+            return String(localized: "categorySort_nameDescendingShort", bundle: .piwigoKit,
                           comment: "Z → A")
         
         case .dateCreatedDescending:
-            return String(localized: "categorySort_dateDescendingShort", bundle: piwigoKit,
+            return String(localized: "categorySort_dateDescendingShort", bundle: .piwigoKit,
                           comment: "Newest → Oldest")
         case .dateCreatedAscending:
-            return String(localized: "categorySort_dateAscendingShort", bundle: piwigoKit,
+            return String(localized: "categorySort_dateAscendingShort", bundle: .piwigoKit,
                           comment: "Oldest → Newest")
         
         case .datePostedDescending:
-            return String(localized: "categorySort_dateDescendingShort", bundle: piwigoKit,
+            return String(localized: "categorySort_dateDescendingShort", bundle: .piwigoKit,
                           comment: "Newest → Oldest")
         case .datePostedAscending:
-            return String(localized: "categorySort_dateAscendingShort", bundle: piwigoKit,
+            return String(localized: "categorySort_dateAscendingShort", bundle: .piwigoKit,
                           comment: "Oldest → Newest")
         
         case .fileNameAscending:
-            return String(localized: "categorySort_nameAscendingShort", bundle: piwigoKit,
+            return String(localized: "categorySort_nameAscendingShort", bundle: .piwigoKit,
                           comment: "A → Z")
         case .fileNameDescending:
-            return String(localized: "categorySort_nameDescendingShort", bundle: piwigoKit,
+            return String(localized: "categorySort_nameDescendingShort", bundle: .piwigoKit,
                           comment: "Z → A")
         
         case .ratingScoreDescending:
-            return String(localized: "categorySort_rateDescendingShort", bundle: piwigoKit,
+            return String(localized: "categorySort_rateDescendingShort", bundle: .piwigoKit,
                           comment: "Highest → Lowest")
         case .ratingScoreAscending:
-            return String(localized: "categorySort_rateAscendingShort", bundle: piwigoKit,
+            return String(localized: "categorySort_rateAscendingShort", bundle: .piwigoKit,
                           comment: "Lowest → Highest")
         
         case .visitsDescending:
-            return String(localized: "categorySort_visitDescendingShort", bundle: piwigoKit,
+            return String(localized: "categorySort_visitDescendingShort", bundle: .piwigoKit,
                           comment: "Highest → Lowest")
         case .visitsAscending:
-            return String(localized: "categorySort_visitAscendingShort", bundle: piwigoKit,
+            return String(localized: "categorySort_visitAscendingShort", bundle: .piwigoKit,
                           comment: "Lowest → Highest")
         
         case .rankAscending:
@@ -250,10 +250,10 @@ extension pwgImageSort {
             return nil
             
         case .idDescending:
-            return String(localized: "categorySort_idDescendingShort", bundle: piwigoKit,
+            return String(localized: "categorySort_idDescendingShort", bundle: .piwigoKit,
                           comment: "9 → 1")
         case .idAscending:
-            return String(localized: "categorySort_idAscendingShort", bundle: piwigoKit,
+            return String(localized: "categorySort_idAscendingShort", bundle: .piwigoKit,
                           comment: "1 → 9")
             
         case .albumDefault:

@@ -526,7 +526,7 @@ extension AlbumViewController {
 
 
 // MARK: - ImageHeaderDelegate Methods
-extension AlbumViewController: ImageHeaderDelegate
+extension AlbumViewController: @MainActor ImageHeaderDelegate
 {
     func changeImageGrouping(for group: pwgImageGroup) {
         // User changed segmented control choice

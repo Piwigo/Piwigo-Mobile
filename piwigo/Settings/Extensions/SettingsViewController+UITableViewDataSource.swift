@@ -14,19 +14,12 @@ import uploadKit
 extension SettingsViewController: UITableViewDataSource
 {
     // MARK: - Sections
-    func hasUploadRights() -> Bool {
-        /// User can upload images/videos if he/she is logged in and has:
-        /// — admin rights
-        /// — normal rights with upload access to some categories with Community
-        return user.hasAdminRights || (user.role == .normal && NetworkVars.shared.usesCommunityPluginV29)
-    }
-    
     func activeSection(_ section: Int) -> SettingsSection {
         // User can upload images/videos if he/she is logged in and has:
         // — admin rights
         // — normal rights with upload access to some categories with Community
         var rawSection = section
-        if !hasUploadRights(), rawSection > SettingsSection.videos.rawValue {
+        if !userHasUploadRights, rawSection > SettingsSection.videos.rawValue {
             rawSection += 1
         }
         guard let activeSection = SettingsSection(rawValue: rawSection)
@@ -36,10 +29,10 @@ extension SettingsViewController: UITableViewDataSource
     
     func numberOfSections(in tableView: UITableView) -> Int {
         var nberSections = SettingsSection.count.rawValue
-        nberSections -= (hasUploadRights() ? 0 : 1)
+        nberSections -= (userHasUploadRights ? 0 : 1)
         return nberSections
     }
-        
+    
     
     // MARK: - Rows
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -56,18 +49,17 @@ extension SettingsViewController: UITableViewDataSource
             nberOfRows = 3 + (defaultSortUnknown ? 1 : 0)
         case .videos:
             nberOfRows = 2
-        case .imageUpload:
-            nberOfRows = 6 + (user.hasAdminRights ? 1 : 0)
+        case .uploads:
+            nberOfRows = 8 + (user.hasAdminRights ? 1 : 0)
             nberOfRows += (UploadVars.shared.resizeImageOnUpload ? 2 : 0)
             nberOfRows += (UploadVars.shared.compressImageOnUpload ? 1 : 0)
             nberOfRows += UIDevice.current.hasCellular ? 1 : 0
-            nberOfRows += (NetworkVars.shared.usesUploadAsync ? 1 : 0)
         case .privacy:
             nberOfRows = 3
         case .appearance:
             nberOfRows = 1
         case .cache:
-            nberOfRows = 4 + (hasUploadRights() ? 1 : 0)
+            nberOfRows = 4 + (userHasUploadRights ? 1 : 0)
         case .clear:
             nberOfRows = 1
         case .about:
@@ -241,9 +233,9 @@ extension SettingsViewController: UITableViewDataSource
                 // Min/max number of thumbnails per row depends on selected file
                 let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
                 let scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))
-                let defaultWidth = thumbnailSize.minPoints(forScale: scale)
-                let minNberOfImages = Float(AlbumUtilities.imagesPerRowInPortrait(forMaxWidth: defaultWidth))
-
+                let maxWidth = thumbnailSize.minPoints(forScale: scale) * scale // i.e. 1 screen point = 1 image pixel
+                let minNberOfImages = Float(AlbumUtilities.imagesPerRowInPortrait(forMaxWidth: maxWidth))
+                
                 // Slider value, chek that default number fits inside selected range
                 if Float(AlbumVars.shared.thumbnailsPerRowInPortrait) > (2 * minNberOfImages) {
                     AlbumVars.shared.thumbnailsPerRowInPortrait = Int(2 * minNberOfImages)
@@ -252,7 +244,7 @@ extension SettingsViewController: UITableViewDataSource
                     AlbumVars.shared.thumbnailsPerRowInPortrait = Int(minNberOfImages)
                 }
                 let value = Float(AlbumVars.shared.thumbnailsPerRowInPortrait)
-
+                
                 // Slider configuration
                 // See https://iosref.com/res
                 let title = NSLocalizedString("defaultNberOfThumbnails>320px", comment: "Number/Row")
@@ -316,14 +308,13 @@ extension SettingsViewController: UITableViewDataSource
                 break
             }
 
-        // MARK: Upload Settings
-        case .imageUpload /* Default Upload Settings */:
+        // MARK: Uploads
+        case .uploads /* Default Upload Settings */:
             var row = indexPath.row
             row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
             row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
             row += (!UIDevice.current.hasCellular && (row > 8)) ? 1 : 0
-            row += (!NetworkVars.shared.usesUploadAsync && (row > 9)) ? 1 : 0
             switch row {
             case 0 /* Author Name? */:
                 let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
@@ -393,9 +384,9 @@ extension SettingsViewController: UITableViewDataSource
                     UploadVars.shared.resizeImageOnUpload = switchState
                     // Position of the row that should be added/removed
                     let photoAtIndexPath = IndexPath(row: 3 + (self.user.hasAdminRights ? 1 : 0),
-                                                   section: SettingsSection.imageUpload.rawValue)
+                                                   section: SettingsSection.uploads.rawValue)
                     let videoAtIndexPath = IndexPath(row: 4 + (self.user.hasAdminRights ? 1 : 0),
-                                                   section: SettingsSection.imageUpload.rawValue)
+                                                   section: SettingsSection.uploads.rawValue)
                     if switchState {
                         // Insert row in existing table
                         self.settingsTableView?.insertRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
@@ -447,7 +438,7 @@ extension SettingsViewController: UITableViewDataSource
                     // Position of the row that should be added/removed
                     let rowAtIndexPath = IndexPath(row: 4 + (self.user.hasAdminRights ? 1 : 0)
                                                           + (UploadVars.shared.resizeImageOnUpload ? 2 : 0),
-                                                   section: SettingsSection.imageUpload.rawValue)
+                                                   section: SettingsSection.uploads.rawValue)
                     if switchState {
                         // Insert row in existing table
                         self.settingsTableView?.insertRows(at: [rowAtIndexPath], with: .automatic)
@@ -512,10 +503,24 @@ extension SettingsViewController: UITableViewDataSource
                     UploadVars.shared.wifiOnlyUploading = switchState
                     // Relaunch uploads in background queue if disabled
                     if switchState == false {
-                        // Update upload tasks in background queue
-                        // May not restart the uploads
-                        UploadManager.shared.backgroundQueue.async {
-                            UploadManager.shared.findNextImageToUpload()
+                        // Resume upload operations in background queue
+                        UploadVars.shared.isPaused = false
+                        Task(priority: .utility) { @UploadManagerActor in
+                            #if os(iOS) && !targetEnvironment(macCatalyst)
+                            if #available(iOS 26.0, *) {
+                                // Launch new continued upload task if possible
+                                if UploadVars.shared.isContinuedProcessingTaskActive == false {
+                                    UploadManager.shared.runContinuedUploadTask()
+                                }
+                            }
+                            else {
+                                // Process next uploads if possible
+                                await UploadManagerActor.shared.processNextUpload()
+                            }
+                            #elseif targetEnvironment(macCatalyst)
+                            // Process next uploads if possible
+                            await UploadManagerActor.shared.processNextUpload()
+                            #endif
                         }
                     }
                 }
@@ -559,6 +564,18 @@ extension SettingsViewController: UITableViewDataSource
                     UploadVars.shared.deleteImageAfterUpload = switchState
                 }
                 cell.accessibilityIdentifier = "deleteAfterUpload"
+                tableViewCell = cell
+                
+            case 12 /* Advanced Options */:
+                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                    ? "LabelTableViewCell"
+                    : "LabelTableViewCell3"
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
+                // See https://iosref.com/res
+                cell.configure(with: NSLocalizedString("settings_advancedOptions", comment: "Advanced Options"), detail: "")
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "advancedOptions"
                 tableViewCell = cell
                 
             default:
@@ -673,7 +690,7 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 4 /* Upload Requests */:
-                let title = NSLocalizedString("UploadRequests_cache", comment: "Uploads")
+                let title = String(localized: "UploadRequests_cache", comment: "Uploads")
                 cell.configure(with: title, detail: self.uploadCacheSize)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
                 cell.accessibilityIdentifier = "uploadCache"

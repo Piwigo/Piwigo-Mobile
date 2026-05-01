@@ -18,7 +18,7 @@ import piwigoKit
 
 class EditImageDatePickerTableViewCell: UITableViewCell
 {
-    weak var delegate: EditImageDatePickerDelegate?
+    weak var delegate: (any EditImageDatePickerDelegate)?
     
     @IBOutlet private weak var datePicker: UIPickerView!
     @IBOutlet private weak var unsetDateButton: UIButton!

@@ -17,7 +17,7 @@ import CoreData
     - Each instance contains upload requests only belonging to it.
  */
 @objc(User)
-public class User: NSManagedObject {
+public final nonisolated class User: NSManagedObject, Identifiable {
     
     /**
      Updates the attributes of a User Account instance.
@@ -94,11 +94,30 @@ extension User {
         return [.webmaster, .admin].contains(self.role)
     }
     
-    public func hasUploadRights(forCatID categoryId: Int32) -> Bool {
-        // Case of Community user?
+    public var hasUploadRights: Bool {
+        // Admin user?
         if self.hasAdminRights { return true }
-        if self.role != .normal { return false }
-        return self.uploadRights.components(separatedBy: ",").contains(String(categoryId))
+        // Guest user?
+        if self.role == .guest { return false }
+        // Community user (.generic or .normal) ?
+        return NetworkVars.shared.usesCommunityPluginV29
+    }
+    
+    public func hasUploadRights(forCatID categoryId: Int32) -> Bool {
+        // Admin user?
+        if self.hasAdminRights { return true }
+        // Guest user?
+        if self.role == .guest { return false }
+        // Community user (.generic or .normal) ?
+        if NetworkVars.shared.usesCommunityPluginV29 == false { return false }
+        switch categoryId {
+        case .zero:
+            return self.uploadRights.isEmpty == false
+        case 1...Int32.max:
+            return self.uploadRights.components(separatedBy: ",").contains(String(categoryId))
+        default:
+            return false
+        }
     }
     
     public func canManageFavorites() -> Bool {
@@ -119,11 +138,12 @@ extension User {
         return true
     }
     
-    public func setLastUsedToNow() {
-        let dateOfLogin = Date.timeIntervalSinceReferenceDate
-        self.lastUsed = dateOfLogin
-        if let server = self.server {
-            server.lastUsed = dateOfLogin
-        }
+    public func getProperties() -> UserProperties {
+        return UserProperties(
+            pwgID: self.id,
+            username: self.username, name: self.name, email: self.email, status: self.status,
+            recentPeriod: self.recentPeriod,
+            registrationDate: self.registrationDate, lastUsed: self.lastUsed,
+            uploadRights: self.uploadRights, downloadRights: self.downloadRights)
     }
 }

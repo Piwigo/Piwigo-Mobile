@@ -11,7 +11,7 @@ import Foundation
 /**
  A struct for managing upload requests
 */
-public struct UploadProperties
+public struct UploadProperties: Sendable
 {
     public let localIdentifier: String             // Unique PHAsset identifier
     public let category: Int32                     // 8
@@ -21,23 +21,24 @@ public struct UploadProperties
     public var requestState: pwgUploadState        // See enum above
     public var requestError: String
 
-    public var creationDate: TimeInterval          // "2012-08-23 09:18:43" as a number of seconds
-    public var fileName: String                    // "IMG123.JPG"
-    public var fileNameExtensionCase: Int16        // See FileExtCase enum
+    public var creationDate: TimeInterval           // "2012-08-23 09:18:43" as a number of seconds
+    public var fileName: String                     // "IMG123.JPG"
+    public var fileNameExtensionCase: Int16         // See FileExtCase enum
     public var fileNamePrefixEncodedActions: String
     public var fileNameReplaceEncodedActions: String
     public var fileNameSuffixEncodedActions: String
-    public var fileType: Int16                     // See pwgImageFileType
-    public var mimeType: String                    // "image/png"
-    public var md5Sum: String                      // "8b1a9953c4611296a827abf8c47804d7"
+    public var fileType: Int16                      // See pwgImageFileType
+    public var mimeType: String                     // "image/png"
+    public var md5Sum: String                       // "8b1a9953c4611296a827abf8c47804d7"
     
-    public var author: String                      // "Author"
-    public var privacyLevel: pwgPrivacy            // 0
-    public var imageTitle: String                  // "Image title"
-    public var comment: String                     // "A comment…"
-    public var tagIds: String                      // List of tag IDs
-    public var imageId: Int64                      // 1042
+    public var author: String                       // "Author"
+    public var privacyLevel: pwgPrivacy             // 0
+    public var imageTitle: String                   // "Image title"
+    public var comment: String                      // "A comment…"
+    public var tagIds: String                       // List of tag IDs
+    public var imageId: Int64                       // 1042
 
+    public var userURIstr: String                   // User instance URI string
     public var stripGPSdataOnUpload: Bool
     public var resizeImageOnUpload: Bool
     public var photoMaxSize: Int16
@@ -89,6 +90,7 @@ extension UploadProperties {
             imageTitle: "", comment: "", tagIds: "", imageId: Int64.min,
             
             // Upload settings
+            userURIstr: "",
             stripGPSdataOnUpload: UploadVars.shared.stripGPSdataOnUpload,
             resizeImageOnUpload: UploadVars.shared.resizeImageOnUpload,
             photoMaxSize: UploadVars.shared.photoMaxSize,

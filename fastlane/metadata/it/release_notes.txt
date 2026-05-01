@@ -1,2 +1,5 @@
-• Compatibilità con Piwigo 16
-• Correzione di bug e miglioramento dell'interfaccia
+• Caricamento più veloce e opzioni di caricamento avanzate
+• Ripresa dei caricamenti in background dopo il passaggio a un'altra applicazione
+• Visualizzazione più rapida degli album salvati sul dispositivo prima del caricamento
+• Condivisione dei log in un file tramite AirDrop e raggruppamento per millisecondo
+• Correzione di bug e miglioramenti all'interfaccia

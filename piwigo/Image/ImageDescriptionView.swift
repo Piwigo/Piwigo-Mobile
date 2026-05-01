@@ -41,7 +41,8 @@ class ImageDescriptionView: UIVisualEffectView {
         }
         descTextView.isHidden = false
         descTextView.attributedText = desc.adaptingTextColorPreservingHue(to: PwgColor.background, defaultColor: PwgColor.text)
-        descTextView.linkTextAttributes = [NSAttributedString.Key.foregroundColor: PwgColor.orange]
+        descTextView.linkTextAttributes = [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue,
+                                           NSAttributedString.Key.underlineColor: PwgColor.text]
         
         // Don't show the description only when the bar is hidden
         let navController = viewController.navigationController

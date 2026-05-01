@@ -82,7 +82,7 @@ class ReleaseNotesViewController: UIViewController {
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
 
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
         // Update Piwigo authors label
@@ -125,7 +125,10 @@ class ReleaseNotesViewController: UIViewController {
         // Release notes attributed string
         let notesAttributedString = NSMutableAttributedString(string: "")
 
-        // Release 4.1.x — Bundle string
+        // release 4.2.x - Bundle string
+        notesAttributedString.append(releaseNotes("v4.2.0_text", comment: "v4.2.0 Release Notes text"))
+        
+        // Release 4.1.x — Bundle strings
         notesAttributedString.append(releaseNotes("v4.1.4_text", comment: "v4.1.4 Release Notes text"))
         notesAttributedString.append(releaseNotes("v4.1.3_text", comment: "v4.1.3 Release Notes text"))
         notesAttributedString.append(releaseNotes("v4.1.2_text", comment: "v4.1.2 Release Notes text"))
@@ -135,20 +138,20 @@ class ReleaseNotesViewController: UIViewController {
         // Release 4.0.x — Bundle string
         notesAttributedString.append(releaseNotes("v4.0.0_text", comment: "v4.0.0 Release Notes text"))
 
-        // Release 3.5.x — Bundle string
+        // Release 3.5.x — Bundle strings
         notesAttributedString.append(releaseNotes("v3.5.1_text", comment: "v3.5.1 Release Notes text"))
         notesAttributedString.append(releaseNotes("v3.5.0_text", comment: "v3.5.0 Release Notes text"))
 
-        // Release 3.4.x — Bundle string
+        // Release 3.4.x — Bundle strings
         notesAttributedString.append(releaseNotes("v3.4.1_text", comment: "v3.4.1 Release Notes text"))
         notesAttributedString.append(releaseNotes("v3.4.0_text", comment: "v3.4.0 Release Notes text"))
 
-        // Release 3.3.x — Bundle string
+        // Release 3.3.x — Bundle strings
         notesAttributedString.append(releaseNotes("v3.3.2_text", comment: "v3.3.2 Release Notes text"))
         notesAttributedString.append(releaseNotes("v3.3.1_text", comment: "v3.3.1 Release Notes text"))
         notesAttributedString.append(releaseNotes("v3.3.0_text", comment: "v3.3.0 Release Notes text"))
 
-        // Release 3.2.x — Bundle string
+        // Release 3.2.x — Bundle strings
         notesAttributedString.append(releaseNotes("v3.2.5_text", comment: "v3.2.5 Release Notes text"))
         notesAttributedString.append(releaseNotes("v3.2.4_text", comment: "v3.2.4 Release Notes text"))
         notesAttributedString.append(releaseNotes("v3.2.3_text", comment: "v3.2.3 Release Notes text"))
@@ -156,19 +159,19 @@ class ReleaseNotesViewController: UIViewController {
         notesAttributedString.append(releaseNotes("v3.2.1_text", comment: "v3.2.1 Release Notes text"))
         notesAttributedString.append(releaseNotes("v3.2.0_text", comment: "v3.2.0 Release Notes text"))
 
-        // Release 3.1.x — Bundle string
+        // Release 3.1.x — Bundle strings
         notesAttributedString.append(releaseNotes("v3.1.4_text", comment: "v3.1.4 Release Notes text"))
         notesAttributedString.append(releaseNotes("v3.1.3_text", comment: "v3.1.3 Release Notes text"))
         notesAttributedString.append(releaseNotes("v3.1.2_text", comment: "v3.1.2 Release Notes text"))
         notesAttributedString.append(releaseNotes("v3.1.1_text", comment: "v3.1.1 Release Notes text"))
         notesAttributedString.append(releaseNotes("v3.1.0_text", comment: "v3.1.0 Release Notes text"))
 
-        // Release 3.0.x — Bundle string
+        // Release 3.0.x — Bundle strings
         notesAttributedString.append(releaseNotes("v3.0.2_text", comment: "v3.0.2 Release Notes text"))
         notesAttributedString.append(releaseNotes("v3.0.1_text", comment: "v3.0.1 Release Notes text"))
         notesAttributedString.append(releaseNotes("v3.0.0_text", comment: "v3.0.0 Release Notes text"))
 
-        // Release 2.12.x — Bundle string
+        // Release 2.12.x — Bundle strings
         notesAttributedString.append(releaseNotes("v2.12.7_text", comment: "v2.12.7 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.12.6_text", comment: "v2.12.6 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.12.5_text", comment: "v2.12.5 Release Notes text"))
@@ -178,7 +181,7 @@ class ReleaseNotesViewController: UIViewController {
         notesAttributedString.append(releaseNotes("v2.12.1_text", comment: "v2.12.1 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.12.0_text", comment: "v2.12.0 Release Notes text"))
 
-        // Release 2.11.x — Bundle string
+        // Release 2.11.x — Bundle strings
         notesAttributedString.append(releaseNotes("v2.11.2_text", comment: "v2.11.2 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.11.1_text", comment: "v2.11.1 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.11.0_text", comment: "v2.11.0 Release Notes text"))
@@ -186,7 +189,7 @@ class ReleaseNotesViewController: UIViewController {
         // Release 2.10.x — Bundle string
         notesAttributedString.append(releaseNotes("v2.10.0_text", comment: "v2.10.0 Release Notes text"))
 
-        // Release 2.9.x — Bundle string
+        // Release 2.9.x — Bundle strings
         notesAttributedString.append(releaseNotes("v2.9.5_text", comment: "v2.9.5 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.9.4_text", comment: "v2.9.4 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.9.3_text", comment: "v2.9.3 Release Notes text"))
@@ -194,31 +197,31 @@ class ReleaseNotesViewController: UIViewController {
         notesAttributedString.append(releaseNotes("v2.9.1_text", comment: "v2.9.1 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.9.0_text", comment: "v2.9.0 Release Notes text"))
 
-         // Release 2.8.x — Bundle string
+         // Release 2.8.x — Bundle strings
         notesAttributedString.append(releaseNotes("v2.8.2_text", comment: "v2.8.2 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.8.1_text", comment: "v2.8.1 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.8.0_text", comment: "v2.8.0 Release Notes text"))
 
-        // Release 2.7.x — Bundle string
+        // Release 2.7.x — Bundle strings
         notesAttributedString.append(releaseNotes("v2.7.2_text", comment: "v2.7.2 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.7.1_text", comment: "v2.7.1 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.7.0_text", comment: "v2.7.0 Release Notes text"))
 
-        // Release 2.6.x — Bundle string
+        // Release 2.6.x — Bundle strings
         notesAttributedString.append(releaseNotes("v2.6.4_text", comment: "v2.6.4 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.6.3_text", comment: "v2.6.3 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.6.2_text", comment: "v2.6.2 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.6.1_text", comment: "v2.6.1 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.6.0_text", comment: "v2.6.0 Release Notes text"))
 
-        // Release 2.5.x — Bundle string
+        // Release 2.5.x — Bundle strings
         notesAttributedString.append(releaseNotes("v2.5.4_text", comment: "v2.5.4 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.5.3_text", comment: "v2.5.3 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.5.2_text", comment: "v2.5.2 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.5.1_text", comment: "v2.5.1 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.5.0_text", comment: "v2.5.0 Release Notes text"))
 
-        // Release 2.4.x — Bundle string
+        // Release 2.4.x — Bundle strings
         notesAttributedString.append(releaseNotes("v2.4.8_text", comment: "v2.4.8 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.4.7_text", comment: "v2.4.7 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.4.6_text", comment: "v2.4.6 Release Notes text"))
@@ -229,7 +232,7 @@ class ReleaseNotesViewController: UIViewController {
         notesAttributedString.append(releaseNotes("v2.4.1_text", comment: "v2.4.1 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.4.0_text", comment: "v2.4.0 Release Notes text"))
 
-        // Release 2.3.x — Bundle string
+        // Release 2.3.x — Bundle strings
         notesAttributedString.append(releaseNotes("v2.3.5_text", comment: "v2.3.5 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.3.4_text", comment: "v2.3.4 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.3.3_text", comment: "v2.3.3 Release Notes text"))
@@ -237,7 +240,7 @@ class ReleaseNotesViewController: UIViewController {
         notesAttributedString.append(releaseNotes("v2.3.1_text", comment: "v2.3.1 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.3.0_text", comment: "v2.3.0 Release Notes text"))
 
-        // Release 2.2.x — Bundle string
+        // Release 2.2.x — Bundle strings
         notesAttributedString.append(releaseNotes("v2.2.7_text", comment: "v2.2.7 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.2.6_text", comment: "v2.2.6 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.2.5_text", comment: "v2.2.5 Release Notes text"))
@@ -247,7 +250,7 @@ class ReleaseNotesViewController: UIViewController {
         notesAttributedString.append(releaseNotes("v2.2.1_text", comment: "v2.2.1 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.2.0_text", comment: "v2.2.0 Release Notes text"))
 
-        // Release 2.1.x — Bundle string
+        // Release 2.1.x — Bundle strings
         notesAttributedString.append(releaseNotes("v2.1.9_text", comment: "v2.1.9 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.1.8_text", comment: "v2.1.8 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.1.7_text", comment: "v2.1.7 Release Notes text"))
@@ -259,7 +262,7 @@ class ReleaseNotesViewController: UIViewController {
         notesAttributedString.append(releaseNotes("v2.1.1_text", comment: "v2.1.1 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.1.0_text", comment: "v2.1.0 Release Notes text"))
 
-        // Release 2.0.x — Bundle string
+        // Release 2.0.x — Bundle strings
         notesAttributedString.append(releaseNotes("v2.0.4_text", comment: "v2.0.4 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.0.3_text", comment: "v2.0.3 Release Notes text"))
         notesAttributedString.append(releaseNotes("v2.0.2_text", comment: "v2.0.2 Release Notes text"))

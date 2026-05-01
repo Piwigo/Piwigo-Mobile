@@ -30,16 +30,25 @@ class LogsViewController: UIViewController {
         title = NSLocalizedString("settings_logs", comment: "Logs")
 
         // Initialise content
-        if logEntries.isEmpty { return }
-        category?.text = logEntries.first?.category
-        dateTime?.text = DateUtilities.pwgDateFormatter.string(from: logEntries.first?.date ?? Date())
-        let msg = logEntries.map({$0.composedMessage + "\n"}).reduce("", +)
+        guard let firstEntry = logEntries.first else { return }
+        category?.text = firstEntry.category
+        dateTime?.text = DateUtilities.pwgDateFormatter.string(from: firstEntry.date)
+        var currentLogDate = DateUtilities.logsTimeFormatter.string(from: firstEntry.date)
+        var msg = currentLogDate + "\n"
+        for logEntry in logEntries {
+            let logDate = DateUtilities.logsTimeFormatter.string(from: logEntry.date)
+            if logDate != currentLogDate {
+                // Not in the same minute
+                currentLogDate = DateUtilities.logsTimeFormatter.string(from: logEntry.date)
+                msg += "\n" + currentLogDate + "\n"
+            }
+            msg += "➜ " + logEntry.composedMessage + "\n"
+        }
         let attributedMsg = NSMutableAttributedString(string: msg)
         let wholeRange = NSRange(location: 0, length: msg.count)
         let style = NSMutableParagraphStyle()
         style.alignment = NSTextAlignment.left
         style.lineSpacing = 0
-        style.paragraphSpacing = 9
         let attributes = [
             NSAttributedString.Key.foregroundColor: PwgColor.header,
             NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote),
@@ -129,7 +138,17 @@ extension LogsViewController: UIActivityItemSource
     func activityViewController(_ activityViewController: UIActivityViewController, 
                                 itemForActivityType activityType: UIActivity.ActivityType?) -> Any? {
         switch activityType {
-        case .airDrop, .copyToPasteboard, .message:
+        case .airDrop:
+            let fileName = (category?.text ?? "logs") + " " + (dateTime?.text ?? Date().ISO8601Format())  + ".log"
+            let tempDir = FileManager.default.temporaryDirectory
+            let fileURL = tempDir.appendingPathComponent(fileName)
+            do {
+                try (messages?.text ?? "").write(to: fileURL, atomically: true, encoding: .utf8)
+                return fileURL
+            } catch {
+                return messages?.text ?? ""
+            }
+        case .copyToPasteboard, .message:
             return messages?.text ?? ""
         case .mail, .print:
             fallthrough

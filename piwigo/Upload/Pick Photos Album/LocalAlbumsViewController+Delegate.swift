@@ -18,15 +18,15 @@ extension LocalAlbumsViewController: UITableViewDelegate {
         // Get title of section
         let albumType = albumTypeFor(section: section)
         let title = self.localAlbumsProvider.titleForFooterInSectionOf(albumType: albumType)
-        return TableViewUtilities.shared.heightOfHeader(withTitle: title,
-                                                        width: tableView.frame.size.width)
+        return TableViewUtilities.heightOfHeader(withTitle: title,
+                                                 width: tableView.frame.size.width)
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         // Get title of section
         let albumType = albumTypeFor(section: section)
         let title = self.localAlbumsProvider.titleForHeaderInSectionOf(albumType: albumType)
-        return TableViewUtilities.shared.viewOfHeader(withTitle: title)
+        return TableViewUtilities.viewOfHeader(withTitle: title)
     }
     
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
@@ -110,14 +110,14 @@ extension LocalAlbumsViewController: UITableViewDelegate {
         // Get footer of section
         let albumType = albumTypeFor(section: section)
         let footer = self.localAlbumsProvider.titleForFooterInSectionOf(albumType: albumType)
-        return TableViewUtilities.shared.heightOfFooter(withText: footer,
-                                                        width: tableView.frame.width)
+        return TableViewUtilities.heightOfFooter(withText: footer,
+                                                 width: tableView.frame.width)
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         // Get footer of section
         let albumType = albumTypeFor(section: section)
         let footer = self.localAlbumsProvider.titleForFooterInSectionOf(albumType: albumType)
-        return TableViewUtilities.shared.viewOfFooter(withText: footer, alignment: .center)
+        return TableViewUtilities.viewOfFooter(withText: footer, alignment: .center)
     }
 }

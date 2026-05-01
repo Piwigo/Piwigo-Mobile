@@ -234,7 +234,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
      A delegate to give consumers a chance to update
      the user interface when content changes.
      */
-    @objc weak var fetchedLocalAlbumsDelegate: LocalAlbumsProviderDelegate?
+    @objc weak var fetchedLocalAlbumsDelegate: (any LocalAlbumsProviderDelegate)?
     
     func photoLibraryDidChange(_ changeInstance: PHChange) {
         // Check each of the fetches for changes,
@@ -392,8 +392,8 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         }
         let nberOfAlbums = numberFormatter.string(from: NSNumber(value: count)) ?? ""
         let footer = count > 1 ?
-            String(format: String(localized: "severalAlbumsCount", bundle: piwigoKit, comment: "%@ albums"), nberOfAlbums) :
-            String(format: String(localized: "singleAlbumCount", bundle: piwigoKit, comment: "%@ album"), nberOfAlbums)
+        String(format: String(localized: "severalAlbumsCount", bundle: .piwigoKit, comment: "%@ albums"), nberOfAlbums) :
+        String(format: String(localized: "singleAlbumCount", bundle: .piwigoKit, comment: "%@ album"), nberOfAlbums)
         return footer
     }
 }

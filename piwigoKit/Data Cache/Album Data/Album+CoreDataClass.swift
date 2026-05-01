@@ -17,7 +17,7 @@ import UIKit
     - Smart albums are defined with pwgSmartAlbum and have Piwigo IDs <= 0.
  */
 @objc(Album)
-public class Album: NSManagedObject {
+public final nonisolated class Album: NSManagedObject, Identifiable {
     /**
      Updates an Album instance with the values from a CategoryData struct.
      */
@@ -104,7 +104,7 @@ public class Album: NSManagedObject {
         if thumbnailId != newThumbailId {
             thumbnailId = newThumbailId
         }
-        let newThumbnailUrl = PwgSession.encodedImageURL(albumData.thumbnailUrl ?? "")
+        let newThumbnailUrl = JSONManager.encodedImageURL(albumData.thumbnailUrl ?? "")
         if thumbnailUrl != newThumbnailUrl {
             thumbnailUrl = newThumbnailUrl
         }
@@ -133,3 +133,15 @@ public class Album: NSManagedObject {
         }
     }
 }
+
+
+//extension Album
+//{
+//    public func getProperties() -> AlbumProperties {
+//        return AlbumProperties(
+//            pwgID: self.pwgID,
+//            
+//            images: (self.images ?? Set<Image>()).map { $0.pwgID }
+//        )
+//    }
+//}

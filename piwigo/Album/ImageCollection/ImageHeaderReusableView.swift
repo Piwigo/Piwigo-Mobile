@@ -21,7 +21,7 @@ class ImageHeaderReusableView: UICollectionReusableView
     var section = 0
     private var locationHash = Int.zero
     
-    weak var imageHeaderDelegate: ImageHeaderDelegate?
+    weak var imageHeaderDelegate: (any ImageHeaderDelegate)?
 
     @IBOutlet weak var albumDesc: UITextView!
     @IBOutlet weak var albumDescHeight: NSLayoutConstraint!
@@ -80,7 +80,7 @@ class ImageHeaderReusableView: UICollectionReusableView
         else {
             // Determine location from images in section
             let location = AlbumUtilities.getLocation(of: images)
-            LocationProvider.shared.getPlaceName(for: location) { [self] placeName, streetName in
+            LocationProvider().getPlaceName(for: location) { [self] placeName, streetName in
                 if placeName.isEmpty {
                     self.detailLabel?.text = dates.1
                 } else if streetName.isEmpty {
@@ -118,7 +118,8 @@ class ImageHeaderReusableView: UICollectionReusableView
         selectButton?.layer.shadowColor = AppVars.shared.isDarkPaletteActive ? UIColor.white.cgColor : UIColor.black.cgColor
         selectButton?.layer.shadowOpacity = AppVars.shared.isDarkPaletteActive ? 0.7 : 0.3
         albumDesc?.attributedText = description.adaptingTextColorPreservingHue(to: PwgColor.background, defaultColor: PwgColor.header)
-        albumDesc?.linkTextAttributes = [NSAttributedString.Key.foregroundColor: PwgColor.orange]
+        albumDesc?.linkTextAttributes = [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue,
+                                         NSAttributedString.Key.underlineColor: PwgColor.header]
     }
     
     @objc func updateDetailLabel(_ notification: NSNotification) {

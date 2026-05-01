@@ -104,32 +104,6 @@ extension UIImage {
 //        }
 //        #endif
 //    }
-
-    // MARK: - Image Manipulation
-    func rotated(by angle:CGFloat) -> UIImage? {
-        var newSize = CGRect(origin: CGPoint.zero, size: self.size)
-            .applying(CGAffineTransform(rotationAngle: angle)).size
-        // Trim off the extremely small float value to prevent core graphics from rounding it up
-        newSize.width = floor(newSize.width)
-        newSize.height = floor(newSize.height)
-
-        UIGraphicsBeginImageContextWithOptions(newSize, false, self.scale)
-        let context = UIGraphicsGetCurrentContext()!
-
-        // Move origin to middle
-        context.translateBy(x: newSize.width/2, y: newSize.height/2)
-        // Rotate around middle
-        context.rotate(by: angle)
-        // Draw the image at its center
-        let xPos: CGFloat = -self.size.width/2.0
-        let yPos: CGFloat = -self.size.height/2.0
-        self.draw(in: CGRect(x: xPos, y: yPos, width: self.size.width, height: self.size.height))
-
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-
-        return newImage
-    }
 }
 
 //extension UIImage.Orientation {

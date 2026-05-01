@@ -23,7 +23,7 @@ protocol AppLockDelegate: NSObjectProtocol {
 
 class AppLockViewController: UIViewController {
 
-    weak var delegate: AppLockDelegate?
+    weak var delegate: (any AppLockDelegate)?
 
     @IBOutlet weak var blurEffectView: UIVisualEffectView!
     @IBOutlet weak var vibrancyEffectView: UIVisualEffectView!
@@ -244,7 +244,7 @@ class AppLockViewController: UIViewController {
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
         // Update the constraints on orientation change

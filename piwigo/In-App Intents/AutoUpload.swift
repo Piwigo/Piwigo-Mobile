@@ -7,29 +7,32 @@
 //
 
 import Foundation
-@preconcurrency import CoreData
+import CoreData
 import AppIntents
 import Photos
-@preconcurrency import piwigoKit
+import piwigoKit
 import uploadKit
 
 @available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
-struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIntent {
+struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { // , PredictableIntent {
     static let intentClassName = "AutoUploadIntent"
     
     /// Each intent needs to include metadata, such as a localized title. The title of the intent displays throughout the system.
-    static var title = LocalizedStringResource("AutoUploadTitle", table: "In-AppIntents")
-
+    static let title = LocalizedStringResource("AutoUploadTitle", table: "In-AppIntents")
+    
     /// An intent can optionally provide a localized description that the Shortcuts app displays.
-    static var description = IntentDescription(LocalizedStringResource("AutoUploadDescription", table: "In-AppIntents"),
+    static let description = IntentDescription(LocalizedStringResource("AutoUploadDescription", table: "In-AppIntents"),
                                                categoryName:
                                                 LocalizedStringResource("severalImages"), searchKeywords: [
-                                                LocalizedStringResource("Auto-Upload", table: "In-AppIntents"),
-                                                LocalizedStringResource("severalImages"), "Piwigo"])
+                                                    LocalizedStringResource("Auto-Upload", table: "In-AppIntents"),
+                                                    LocalizedStringResource("severalImages"), "Piwigo"])
     
     /// Tell the system to not bring the app to the foreground when the intent runs.
     static let openAppWhenRun: Bool = false
-
+    
+    /// Tell the system to apply a specific task priority
+//    static var priority: TaskPriority { .utility }
+    
     static var parameterSummary: some ParameterSummary {
         Summary("Auto-Upload Photos")
     }
@@ -49,9 +52,10 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
      Intents run on an arbitrary queue. Intents that manipulate UI need to annotate `perform()` with `@MainActor`
      so that the UI operations run on the main actor.
      */
+    @UploadManagerActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
         debugPrint("••> !!!!!!!!!!!!!!!!!!!!!!!!!")
-        debugPrint("••> In-app intent starting...")
+        debugPrint("••> Auto-upload in-app intent starting...")
         
         // If a migration is planned, invite the user to perform the migration.
         let migrator = DataMigrator()
@@ -72,8 +76,8 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
             UploadVars.shared.autoUploadAlbumId = ""               // Unknown source Photos album
             
             // Delete remaining upload requests
-            UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.disableAutoUpload()
+            Task(priority: .utility) { @UploadManagerActor in
+                await UploadManager.shared.disableAutoUpload(inBckgTask: true)
             }
             
             // Inform user
@@ -87,79 +91,40 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
             UploadVars.shared.autoUploadCategoryId = Int32.min    // Unknown destination Piwigo album
             
             // Delete remaining upload requests
-            UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.disableAutoUpload()
+            Task(priority: .utility) { @UploadManagerActor in
+                await UploadManager.shared.disableAutoUpload(inBckgTask: true)
             }
             
             // Inform user
             return .result(dialog: .responseFailure(error: .invalidDestination))
         }
         
-        // Get new local images to be uploaded
-        let uploadRequestsToAppend = UploadManager.shared.getNewRequests(inCollection: collection,
+        // Add new images to upload queue
+        let nberOfRequests = await Task(priority: .utility) { @UploadManagerActor in
+            let uploadRequestsToAppend = UploadManager.shared.getNewRequests(inCollection: collection,
                                                                          toBeUploadedIn: categoryId)
-        
-        // Append auto-upload requests to database
-        do {
-            let count = try await UploadManager.shared.uploadProvider.importUploads(from: uploadRequestsToAppend)
-
-            // Launch upload operations in background thread
-            UploadManager.shared.backgroundQueue.async {
-                launchUploadOperations()
+            do {
+                // Append auto-upload requests to database
+                let uploadIDs = try await UploadManager.shared.importUploads(from: uploadRequestsToAppend)
+                
+                // Return number of upload requests added to queue
+                return uploadIDs.count
             }
-            
-            // Inform user that the shortcut was executed with success
-            return .result(dialog: .responseSuccess(photos: count))
-        }
-        catch {
+            catch {
+                // Return unknown number of upload requests added to queue
+                return Int.min
+            }
+        }.value
+        
+        // Inform user
+        if nberOfRequests == Int.min {
+            // Inform user that the shortcut was executed with error
             return .result(dialog: .responseFailure(error: .importFailed))
         }
-    }
-    
-    private func launchUploadOperations() -> Void {
-        // Create list of operations
-        var uploadOperations = [BlockOperation]()
-
-        // Initialise variables and determine upload requests to prepare and transfer
-        /// - considers only auto-upload requests
-        /// - called by an extension (don't try to append auto-upload requests again)
-        let initOperation = BlockOperation {
-            UploadManager.shared.initialiseBckgTask(autoUploadOnly: true,
-                                                    triggeredByExtension: true)
+        else {
+            // Inform user that the shortcut was executed with success
+            return .result(dialog: .responseSuccess(photos: nberOfRequests))
         }
-        uploadOperations.append(initOperation)
-
-        // Check and resume transfers
-        let resumeOperation = BlockOperation {
-            // Transfer image
-            UploadManager.shared.resumeTransfers()
-        }
-        resumeOperation.addDependency(uploadOperations.last!)
-        uploadOperations.append(resumeOperation)
-
-        // Prepares one image maximum due to the 10s limit
-        let uploadOperation = BlockOperation {
-            // Prepare image
-            UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
-        }
-        uploadOperation.addDependency(uploadOperations.last!)
-        uploadOperations.append(uploadOperation)
-
-        // Save cached data
-        let lastOperation = uploadOperations.last!
-        lastOperation.completionBlock = {
-            // Save cached data in the main thread
-            DispatchQueue.main.async {
-                DataController.shared.mainContext.saveIfNeeded()
-            }
-            debugPrint("    > In-app intent completed with success.")
-        }
-        
-        // Launch upload operations
-        // The badge will be updated during execution.
-        let uploadQueue = OperationQueue()
-        uploadQueue.maxConcurrentOperationCount = 1
-        uploadQueue.addOperations(uploadOperations, waitUntilFinished: true)
     }
 }
 
@@ -178,3 +143,4 @@ fileprivate extension IntentDialog
         "\(error.localizedDescription)"
     }
 }
+

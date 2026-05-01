@@ -9,61 +9,35 @@
 import CoreData
 import CoreMedia
 
-public class TagProvider: NSObject {
+public final class TagProvider {
         
-    // MARK: - Singleton
-    public static let shared = TagProvider()
+    public init() {}    // To make this class public
     
     
-    // MARK: - Core Data Object Contexts
-    private lazy var mainContext: NSManagedObjectContext = {
-        return DataController.shared.mainContext
-    }()
-
-    private lazy var bckgContext: NSManagedObjectContext = {
-        return DataController.shared.newTaskContext()
-    }()
-
-    
-    // MARK: - Core Data Providers
-    private lazy var serverProvider: ServerProvider = {
-        let provider : ServerProvider = ServerProvider.shared
-        return provider
-    }()
-
-
     // MARK: - Fetch Tags
     /**
      Fetches the tag feed from the remote Piwigo server, and imports it into Core Data.
      The API method for admin pwg.tags.getAdminList does not return the number of tagged photos,
      so we must call pwg.tags.getList to present tagged photos when the user has admin rights.
     */
-    public func fetchTags(asAdmin: Bool, completion: @escaping (PwgKitError?) -> Void) {
-        // Launch the HTTP(S) request
-        let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: asAdmin ? pwgTagsGetAdminList : pwgTagsGetList, paramDict: [:],
-                                jsonObjectClientExpectsToReceive: TagJSON.self,
-                                countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { result in
-            switch result {
-            case .success(let pwgData):
-                // Import tag data into Core Data.
-                do {
-                    try self.importTags(from: pwgData.data, asAdmin: asAdmin)
-                    completion(nil)
-                }
-                catch let error as PwgKitError {
-                    completion(error)
-                }
-                catch {
-                    completion(.otherError(innerError: error))
-                }
-                
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                completion(error)
+    @concurrent
+    public func fetchTags(asAdmin: Bool) async throws(PwgKitError) {
+        // Fetch tag data
+        do {
+            if asAdmin {
+                let pwgData = try await JSONManager.shared.fetchTagsAsAdmin()
+                try self.importTags(from: pwgData, asAdmin: true)
             }
+            else {
+                let pwgData = try await JSONManager.shared.fetchTags()
+                try self.importTags(from: pwgData, asAdmin: false)
+            }
+        }
+        catch let error as PwgKitError {
+            throw error
+        }
+        catch {
+            throw .otherError(innerError: error)
         }
     }
     
@@ -80,7 +54,7 @@ public class TagProvider: NSObject {
         // We shall perform at least one import in case where
         // the user did delete all tags or untag all photos
         guard tagPropertiesArray.isEmpty == false else {
-            _ = importOneBatch([TagProperties](), asAdmin: asAdmin, tagIDs: tagToDeleteIDs)
+            _ = try importOneBatch([TagProperties](), asAdmin: asAdmin, tagIDs: tagToDeleteIDs)
             return
         }
         
@@ -103,8 +77,7 @@ public class TagProvider: NSObject {
             let tagsBatch = Array(tagPropertiesArray[range])
             
             // Stop the entire import if any batch is unsuccessful.
-            let (success, tagIDs) = importOneBatch(tagsBatch, asAdmin: asAdmin, tagIDs: tagToDeleteIDs)
-            if success == false { return }
+            let tagIDs = try importOneBatch(tagsBatch, asAdmin: asAdmin, tagIDs: tagToDeleteIDs)
             tagToDeleteIDs = tagIDs
         }
     }
@@ -121,16 +94,17 @@ public class TagProvider: NSObject {
      tagIDs is nil or contains the IDs of tags to delete.
     */
     func importOneBatch(_ tagsBatch: [TagProperties], asAdmin: Bool,
-                        tagIDs: Set<Int32>?) -> (Bool, Set<Int32>) {
-        var success = false
+                        tagIDs: Set<Int32>?) throws -> Set<Int32> {
+
         var tagToDeleteIDs = Set<Int32>()
 
-        // taskContext.performAndWait runs on the URLSession's delegate queue
+        // Runs on the URLSession's delegate queue
         // so it won’t block the main thread.
-        bckgContext.performAndWait {
+        let bckgContext = DataController.shared.newTaskContext()
+        try bckgContext.performAndWait {
             
             // Get current server object
-            guard let server = serverProvider.getServer(inContext: bckgContext) else {
+            guard let server = try ServerProvider().getServer(inContext: bckgContext) else {
                 debugPrint(PwgKitError.tagCreationError.localizedDescription)
                 return
             }
@@ -142,21 +116,11 @@ public class TagProvider: NSObject {
 
             // Look for tags belonging to the currently active server
             fetchRequest.predicate = NSPredicate(format: "server.path == %@", server.path)
-
-            // Create a fetched results controller and set its fetch request, context, and delegate.
-            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                managedObjectContext: self.bckgContext,
-                                                  sectionNameKeyPath: nil, cacheName: nil)
+            fetchRequest.returnsObjectsAsFaults = false
+            fetchRequest.shouldRefreshRefetchedObjects = true
             
             // Perform the fetch.
-            do {
-                try controller.performFetch()
-            }
-            catch {
-                debugPrint(PwgKitError.tagCreationError.localizedDescription)
-                return
-            }
-            let cachedTags:[Tag] = controller.fetchedObjects ?? []
+            let cachedTags:[Tag] = try bckgContext.fetch(fetchRequest)
 
             // Initialise set of tag IDs during the first iteration
             if tagIDs == nil {
@@ -177,36 +141,34 @@ public class TagProvider: NSObject {
                     do {
                         try cachedTags[index].update(with: tagData, server: server)
                         
-                        // Do not delete this tag during the last interation of the import
+                        // Do not delete this tag during the last iteration of the import
                         tagToDeleteIDs.remove(ID)
                     }
-                    catch PwgKitError.missingTagData {
+                    catch let error as PwgKitError {
                         // Could not perform the update
-                        debugPrint(PwgKitError.missingTagData.localizedDescription)
+                        throw error
                     }
                     catch {
-                        debugPrint(error.localizedDescription)
+                        throw PwgKitError.otherError(innerError: error)
                     }
                 }
                 else {
                     // Create a Tag managed object on the private queue context.
-                    guard let tag = NSEntityDescription.insertNewObject(forEntityName: "Tag",
-                                                                        into: bckgContext) as? Tag else {
-                        debugPrint(PwgKitError.tagCreationError.localizedDescription)
-                        return
-                    }
+                    let tag = Tag(context: bckgContext)
                     
                     // Populate the Tag's properties using the raw data.
                     do {
                         try tag.update(with: tagData, server: server)
                     }
-                    catch PwgKitError.missingTagData {
+                    catch let error as PwgKitError {
                         // Delete invalid Tag from the private queue context.
-                        debugPrint(PwgKitError.missingTagData.localizedDescription)
                         bckgContext.delete(tag)
+                        throw error
                     }
                     catch {
-                        debugPrint(error.localizedDescription)
+                        // Delete invalid Tag from the private queue context.
+                        bckgContext.delete(tag)
+                        throw PwgKitError.otherError(innerError: error)
                     }
                 }
             }
@@ -224,16 +186,11 @@ public class TagProvider: NSObject {
             
             // Save all insertions from the context to the store.
             bckgContext.saveIfNeeded()
-            DispatchQueue.main.async {
-                self.mainContext.saveIfNeeded()
-            }
 
             // Reset the taskContext to free the cache and lower the memory footprint.
             bckgContext.reset()
-
-            success = true
         }
-        return (success, tagToDeleteIDs)
+        return tagToDeleteIDs
     }
     
     
@@ -241,37 +198,18 @@ public class TagProvider: NSObject {
     /**
      Adds a tag to the remote Piwigo server, and imports it into Core Data.
     */
-    public func addTag(with name: String, completion: @escaping (PwgKitError?) -> Void) {
-                
+    @concurrent
+    public func addTag(with name: String) async throws(PwgKitError) {
         // Add tag on server
-        let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: pwgTagsAdd, paramDict: ["name" : name],
-                                jsonObjectClientExpectsToReceive: TagAddJSON.self,
-                                countOfBytesClientExpectsToReceive: 3000) { result in
-            switch result {
-            case .success(let pwgData):
-                // Import the tagJSON into Core Data.
-                guard let tagId = pwgData.data.id else {
-                    completion(PwgKitError.missingTagData)
-                    return
-                }
-                let newTag = TagProperties(id: StringOrInt.integer(Int(tagId)),
-                                           name: name.utf8mb4Encoded,
-                                           lastmodified: "", counter: 0, url_name: "", url: "")
-
-                // Import the new tag in a private queue context.
-                if self.importOneBatch([newTag], asAdmin: true, tagIDs: Set<Int32>()).0 {
-                    completion(nil)
-                } else {
-                    completion(PwgKitError.tagCreationError)
-                }
-
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                completion(error)
-            }
+        do {
+            let newTag = try await JSONManager.shared.addTag(with: name)
+            _ = try self.importOneBatch([newTag], asAdmin: true, tagIDs: Set<Int32>())
+        }
+        catch let error as PwgKitError {
+            throw error
+        }
+        catch {
+            throw .otherError(innerError: error)
         }
     }
     
@@ -280,32 +218,22 @@ public class TagProvider: NSObject {
     /**
      Get all Tag instances of the current server matching the list of tag IDs
     */
-    public func getTags(withIDs tagIds: String, taskContext: NSManagedObjectContext) -> Set<Tag> {
+    public func getTags(withIDs tagIds: String, taskContext: NSManagedObjectContext) throws -> Set<Tag> {
         // Initialisation
         var tagList = Set<Tag>()
         
-        taskContext.performAndWait {
+        try taskContext.performAndWait {
             // Retrieve tags in persistent store
             let fetchRequest = Tag.fetchRequest()
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagName), ascending: true)]
             
             // Look for tags belonging to the currently active server
             fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath)
-
-            // Create a fetched results controller and set its fetch request, context, and delegate.
-            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                managedObjectContext: bckgContext,
-                                                  sectionNameKeyPath: nil, cacheName: nil)
-            
-            // Perform the fetch.
-            do {
-                try controller.performFetch()
-            } catch {
-                fatalError("Unresolved error: \(error.localizedDescription)")
-            }
+            fetchRequest.returnsObjectsAsFaults = false
+            fetchRequest.shouldRefreshRefetchedObjects = true
             
             // Tag selection
-            let cachedTags:[Tag] = controller.fetchedObjects ?? []
+            let cachedTags:[Tag] = try taskContext.fetch(fetchRequest)
             let listOfIds = tagIds.components(separatedBy: ",").compactMap({ Int32($0) })
             tagList = Set(cachedTags.filter({ listOfIds.contains($0.tagId)}))
         }
@@ -318,7 +246,7 @@ public class TagProvider: NSObject {
     /**
         Return number of tags stored in cache
      */
-    public func getObjectCount() -> Int64 {
+    public func getObjectCount(inContext taskContext: NSManagedObjectContext) -> Int64 {
 
         // Create a fetch request for the Tag entity
         let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Tag")
@@ -329,7 +257,7 @@ public class TagProvider: NSObject {
 
         // Fetch number of objects
         do {
-            let countResult = try bckgContext.fetch(fetchRequest)
+            let countResult = try taskContext.fetch(fetchRequest)
             return countResult.first!.int64Value
         }
         catch let error {
@@ -350,9 +278,10 @@ public class TagProvider: NSObject {
         fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath)
 
         // Create batch delete request
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<any NSFetchRequestResult>)
 
         // Execute batch delete request
-        try? mainContext.executeAndMergeChanges(using: batchDeleteRequest)
+        let bckgContext = DataController.shared.newTaskContext()
+        try? bckgContext.executeAndMergeChanges(using: batchDeleteRequest)
     }
 }

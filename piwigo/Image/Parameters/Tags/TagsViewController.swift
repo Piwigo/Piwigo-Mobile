@@ -18,7 +18,7 @@ protocol TagsViewControllerDelegate: NSObjectProtocol {
 
 class TagsViewController: UITableViewController {
     
-    weak var delegate: TagsViewControllerDelegate?
+    weak var delegate: (any TagsViewControllerDelegate)?
     private var updateOperations = [BlockOperation]()
     
     // Called before uploading images (Tag class)
@@ -31,17 +31,9 @@ class TagsViewController: UITableViewController {
     // MARK: - Core Data Objects
     var user: User!
     lazy var mainContext: NSManagedObjectContext = {
-        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
-            fatalError("!!! Missing Managed Object Context !!!")
-        }
+        guard let context: NSManagedObjectContext = user?.managedObjectContext
+        else { preconditionFailure("!!! Missing Managed Object Context !!!") }
         return context
-    }()
-    
-    
-    // MARK: - Core Data Providers
-    lazy var tagProvider: TagProvider = {
-        let provider : TagProvider = TagProvider.shared
-        return provider
     }()
     
     
@@ -89,7 +81,7 @@ class TagsViewController: UITableViewController {
     
     func getNonSelectedVars() -> [String : Any] {
         return ["tagIds" : selectedTagIds,
-                "query"  : "*" + searchQuery + "*"]
+                "query"  : "*" + (searchQuery.isEmpty ? "" : searchQuery + "*")]
     }
     
     lazy var fetchNonSelectedTagsRequest: NSFetchRequest = {
@@ -113,7 +105,6 @@ class TagsViewController: UITableViewController {
     
     // MARK: - View Lifecycle
     @IBOutlet var tagsTableView: UITableView!
-    private var letterIndex: [String] = []
     var allTagNames = Set<String>()
     let searchController = UISearchController(searchResultsController: nil)
     
@@ -131,43 +122,29 @@ class TagsViewController: UITableViewController {
         // Add search bar
         initSearchBar()
         
-        // Use the TagsProvider to fetch tag data. On completion,
-        // handle general UI updates and error alerts on the main queue.
-        PwgSession.checkSession(ofUser: user) {
-            self.tagProvider.fetchTags(asAdmin: self.user.hasAdminRights) { [self] error in
-                guard let error = error else { return }     // Done if no error
-                DispatchQueue.main.async { [self] in
-                    didFetchTagsWithError(error)
-                }
-            }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
-                didFetchTagsWithError(error)
-            }
+        // Initialise data source
+        do {
+            try selectedTags.performFetch()
+            try nonSelectedTags.performFetch()
+        } catch {
+            debugPrint("Error: \(error)")
         }
-        
+                
         // Title
         title = NSLocalizedString("tags", comment: "Tags")
         
-        // Add button for Admins and some Community users
+        // Add button for Admins
         if user.hasAdminRights {
             addBarButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(requestNewTagName))
             navigationItem.setRightBarButton(addBarButton, animated: false)
         }
-    }
-    
-    @MainActor
-    private func didFetchTagsWithError(_ error: PwgKitError) {
-        // Session logout required?
-        if error.requiresLogout {
-            ClearCache.closeSessionWithPwgError(from: self, error: error)
-            return
-        }
         
-        // Report error
-        let title = PwgKitError.tagCreationError.localizedDescription
-        self.dismissPiwigoError(withTitle: title,
-                                message: error.localizedDescription) { }
+        // Register palette changes
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
     }
     
     @MainActor
@@ -192,24 +169,47 @@ class TagsViewController: UITableViewController {
         
         // Set colors, fonts, etc.
         applyColorPalette()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
-        // Initialise data source
-        do {
-            try selectedTags.performFetch()
-            try nonSelectedTags.performFetch()
-        } catch {
-            debugPrint("Error: \(error)")
+        // Show HUD during the fetch
+        self.navigationController?.showHUD(
+            withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+            detail: NSLocalizedString("tags", comment: "Tags"), minWidth: 200)
+        
+        // Use the TagsProvider to fetch tag data. On completion,
+        // handle general UI updates and error alerts on the main queue.
+        Task.detached {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
+                                                          lastConnected: self.user.lastUsed)
+                // Fetch tag data
+                try await TagProvider().fetchTags(asAdmin: self.user.hasAdminRights)
+                
+                // Close HUD
+                await MainActor.run { [self] in
+                    self.navigationController?.hideHUD { }
+                }
+            }
+            catch let error as PwgKitError {
+                await MainActor.run { [self] in
+                    // Session logout required?
+                    if error.requiresLogout {
+                        ClearCache.closeSessionWithPwgError(from: self, error: error)
+                        return
+                    }
+                    
+                    // Report error
+                    self.navigationController?.hideHUD {
+                        let title = PwgKitError.tagCreationError.localizedDescription
+                        self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
+                    }
+                }
+            }
         }
-        
-        // Refresh table
-        tagsTableView.reloadData()
-        
-        // Register palette changes
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: Notification.Name.pwgPaletteChanged, object: nil)
-        // Register font changes
-        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
-                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -276,13 +276,13 @@ class TagsViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let title = getContentOfHeader(inSection: section)
-        return TableViewUtilities.shared.heightOfHeader(withTitle: title,
+        return TableViewUtilities.heightOfHeader(withTitle: title,
                                                         width: tableView.frame.size.width)
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let title = getContentOfHeader(inSection: section)
-        return TableViewUtilities.shared.viewOfHeader(withTitle: title)
+        return TableViewUtilities.viewOfHeader(withTitle: title)
     }
     
     
@@ -377,14 +377,14 @@ class TagsViewController: UITableViewController {
 // MARK: - NSFetchedResultsControllerDelegate
 extension TagsViewController: NSFetchedResultsControllerDelegate
 {    
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
         // Initialise update operations
         updateOperations = []
         // Begin the update
         tagsTableView?.beginUpdates()
     }
     
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+    func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 
         // Initialisation
         var hasTagsInSection1 = false
@@ -431,7 +431,7 @@ extension TagsViewController: NSFetchedResultsControllerDelegate
         }
     }
     
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
         // Perform all updates
         tagsTableView?.performBatchUpdates { [weak self] in
             self?.updateOperations.forEach { $0.start() }

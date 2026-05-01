@@ -22,45 +22,32 @@ extension SelectCategoryViewController
         }
         
         // Copy next image to seleted album
-        self.copyImage(imageData, toAlbum: albumData) { [self] in
-            // Next image…
-            DispatchQueue.main.async { [self] in
-                self.inputImages.remove(imageData)
-                self.updateHUD(withProgress: Float(1) - Float(self.inputImages.count) / Float(self.nberOfImages))
-                self.copyImages(toAlbum: albumData)
-            }
-        }
-        onFailure: { [self] error in
-            DispatchQueue.main.async { [self] in
-                self.didFailWithError(error)
-            }
-        }
-    }
-    
-    /// For calling Piwigo server in version 2.10 to 13.x
-    private func copyImage(_ imageData: Image, toAlbum albumData: Album,
-                           onCompletion completion: @escaping () -> Void,
-                           onFailure fail: @escaping (_ error: PwgKitError) -> Void) {
-        // Append selected category ID to image category list
+        // by appending selected category ID to image category list
         let albums = imageData.albums ?? Set<Album>()
         var categoryIds = albums.compactMap({$0.pwgID})
         categoryIds.append(albumData.pwgID)
         
-        // Prepare parameters for copying the image/video to the selected category
-        let newImageCategories = categoryIds.compactMap({ String($0) }).joined(separator: ";")
-        let paramsDict: [String : Any] = ["image_id"            : imageData.pwgID,
-                                          "categories"          : newImageCategories,
-                                          "multiple_value_mode" : "replace"]
-        
-        // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [self] in
-            PwgSession.shared.setInfos(with: paramsDict) { [self] in
-                DispatchQueue.main.async { [self] in
+        // Send requests to Piwigo server
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                
+                // Prepare parameters for copying the image/video to the selected category
+                let newImageCategories = categoryIds.compactMap({ String($0) }).joined(separator: ";")
+                let paramsDict: [String : Any] = ["image_id"            : imageData.pwgID,
+                                                  "categories"          : newImageCategories,
+                                                  "multiple_value_mode" : "replace"]
+                
+                // Set image properties
+                try await JSONManager.shared.setInfos(with: paramsDict)
+                
+                await MainActor.run {
                     // Add image to album
                     albumData.addToImages(imageData)
                     
                     // Update albums
-                    self.albumProvider.updateAlbums(addingImages: 1, toAlbum: albumData)
+                    try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: albumData, inContext: self.mainContext)
                     
                     // Set album thumbnail with first copied image if necessary
                     if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
@@ -68,13 +55,16 @@ extension SelectCategoryViewController
                         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
                         albumData.thumbnailUrl = ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumnailSize) as NSURL?
                     }
+                    
+                    // Next image
+                    self.inputImages.remove(imageData)
+                    self.updateHUD(withProgress: Float(1) - Float(self.inputImages.count) / Float(self.nberOfImages))
+                    self.copyImages(toAlbum: albumData)
                 }
-                completion()
-            } failure: { error in
-                fail(error)
             }
-        } failure: { error in
-            fail(error)
+            catch let error as PwgKitError {
+                self.didFailWithError(error)
+            }
         }
     }
     
@@ -83,16 +73,23 @@ extension SelectCategoryViewController
         // Send request to Piwigo server
         let albumID = albumData.pwgID
         let imageIDs = self.inputImages.map({ $0.pwgID })
-        PwgSession.checkSession(ofUser: user) { [self] in
-            ImageUtilities.setCategory(albumID, forImageIDs: imageIDs, withAction: .associate) {
-                DispatchQueue.main.async { [self] in
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                
+                // Associate images
+                try await JSONManager.shared.setCategory(albumID, forImageIDs: imageIDs, withAction: .associate)
+
+                // Update cache
+                await MainActor.run {
                     // Add image to album
                     albumData.addToImages(self.inputImages)
-                    
+
                     // Update albums
                     let nberOfImages = Int64(self.inputImages.count)
-                    self.albumProvider.updateAlbums(addingImages: nberOfImages, toAlbum: albumData)
-                    
+                    try? AlbumProvider().updateAlbums(addingImages: nberOfImages, toAlbum: albumData, inContext: self.mainContext)
+
                     // Set album thumbnail with first copied image if necessary
                     if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil,
                        let imageData = inputImages.first {
@@ -100,7 +97,7 @@ extension SelectCategoryViewController
                         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
                         albumData.thumbnailUrl = ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumnailSize) as NSURL?
                     }
-                    
+
                     // Should we also dissociate the images?
                     if dissociate {
                         // Dissociate images from the current album
@@ -110,14 +107,11 @@ extension SelectCategoryViewController
                         self.didCopyImagesWithSuccess()
                     }
                 }
-            } failure: { [self] error in
-                DispatchQueue.main.async { [self] in
+            }
+            catch let error as PwgKitError {
+                await MainActor.run {
                     self.didFailWithError(error)
                 }
-            }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
-                self.didFailWithError(error)
             }
         }
     }
@@ -162,68 +156,57 @@ extension SelectCategoryViewController
         }
         
         // Move next image to seleted album
-        moveImage(imageData, toCategory: albumData) { [self] in
-            // Next image…
-            DispatchQueue.main.async { [self] in
-                self.inputImages.remove(imageData)
-                self.updateHUD(withProgress: 1.0 - Float(self.inputImages.count) / Float(self.nberOfImages))
-                self.moveImages(toAlbum: albumData)
-            }
-        }
-        onFailure: { [self] error in
-            DispatchQueue.main.async { [self] in
-                self.didFailWithError(error)
-            }
-        }
-    }
-    
-    /// For calling Piwigo server in version 2.10 to 13.x
-    private func moveImage(_ imageData: Image, toCategory albumData: Album,
-                           onCompletion completion: @escaping () -> Void,
-                           onFailure fail: @escaping (_ error: PwgKitError) -> Void) {
-        // Append selected category ID to image category list
-        let albums = imageData.albums ?? Set<Album>()
-        var categoryIds = albums.compactMap({$0.pwgID})
-        categoryIds.append(albumData.pwgID)
-        
-        // Remove current categoryId from image category list
-        categoryIds.removeAll(where: {$0 == inputAlbum.pwgID})
-        
-        // Prepare parameters for moving the image/video to the selected category
-        let newImageCategories = categoryIds.compactMap({ String($0) }).joined(separator: ";")
-        let paramsDict: [String : Any] = ["image_id"            : imageData.pwgID,
-                                          "categories"          : newImageCategories,
-                                          "multiple_value_mode" : "replace"]
-        
-        // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [self] in
-            PwgSession.shared.setInfos(with: paramsDict) { [self] in
-                DispatchQueue.main.async { [self] in
+        Task {
+            do {
+                // Append selected category ID to image category list
+                let albums = imageData.albums ?? Set<Album>()
+                var categoryIds = albums.compactMap({$0.pwgID})
+                categoryIds.append(albumData.pwgID)
+                
+                // Remove current categoryId from image category list
+                categoryIds.removeAll(where: {$0 == inputAlbum.pwgID})
+
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                
+                // Prepare parameters for moving the image/video to the selected category
+                let newImageCategories = categoryIds.compactMap({ String($0) }).joined(separator: ";")
+                let paramsDict: [String : Any] = ["image_id"            : imageData.pwgID,
+                                                  "categories"          : newImageCategories,
+                                                  "multiple_value_mode" : "replace"]
+                
+                // Set image properties
+                try await JSONManager.shared.setInfos(with: paramsDict)
+                
+                await MainActor.run {
                     // Add image to target album
                     albumData.addToImages(imageData)
-                    
+
                     // Update target albums
-                    self.albumProvider.updateAlbums(addingImages: 1, toAlbum: albumData)
-                    
+                    try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: albumData, inContext: self.mainContext)
+
                     // Set album thumbnail with first copied image if necessary
                     if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
                         albumData.thumbnailId = imageData.pwgID
                         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
                         albumData.thumbnailUrl = ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumnailSize) as NSURL?
                     }
-                    
+
                     // Remove image from source album
                     imageData.removeFromAlbums(self.inputAlbum)
-                    
+
                     // Update albums
-                    self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: self.inputAlbum)
+                    try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: self.inputAlbum, inContext: self.mainContext)
+
+                    // Next image…
+                    self.inputImages.remove(imageData)
+                    self.updateHUD(withProgress: 1.0 - Float(self.inputImages.count) / Float(self.nberOfImages))
+                    self.moveImages(toAlbum: albumData)
                 }
-                completion()
-            } failure: { error in
-                fail(error)
             }
-        } failure: { error in
-            fail(error)
+            catch let error as PwgKitError {
+                self.didFailWithError(error)
+            }
         }
     }
     
@@ -232,28 +215,32 @@ extension SelectCategoryViewController
     func dissociateImages(fromAlbum albumData: Album) {
         let albumID = albumData.pwgID
         let imageIDs = self.inputImages.map({ $0.pwgID })
-        // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [self] in
-            ImageUtilities.setCategory(albumID, forImageIDs: imageIDs, withAction: .dissociate) {
-                DispatchQueue.main.async { [self] in
+        // Send requests to Piwigo server
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                
+                // Associate images
+                try await JSONManager.shared.setCategory(albumID, forImageIDs: imageIDs, withAction: .dissociate)
+
+                // Update cache
+                await MainActor.run {
                     // Remove images from album
                     albumData.removeFromImages(self.inputImages)
-                    
+
                     // Update albums
                     let nberOfImages = Int64(self.inputImages.count)
-                    self.albumProvider.updateAlbums(removingImages: nberOfImages, fromAlbum: albumData)
+                    try? AlbumProvider().updateAlbums(removingImages: nberOfImages, fromAlbum: albumData, inContext: self.mainContext)
 
                     // Close HUD, save modified data
                     self.didMoveImagesWithSuccess()
                 }
-            } failure: { [self] error in
-                DispatchQueue.main.async { [self] in
+            }
+            catch let error as PwgKitError {
+                await MainActor.run {
                     self.didFailWithError(error)
                 }
-            }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
-                self.didFailWithError(error)
             }
         }
     }

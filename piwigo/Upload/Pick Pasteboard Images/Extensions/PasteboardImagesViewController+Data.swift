@@ -42,11 +42,9 @@ extension PasteboardImagesViewController {
                 var identifier = ""
                 // Movies first because objects may contain both movies and images
                 if UIPasteboard.general.contains(pasteboardTypes: [UTType.movie.identifier], inItemSet: indexSet) {
-                    identifier = String(format: "%@%@%@%ld", UploadManager.shared.kClipboardPrefix,
-                                        pbDateTime, UploadManager.shared.kMovieSuffix, idx)
+                    identifier = String(format: "%@%@%@%ld", kClipboardPrefix, pbDateTime, kMovieSuffix, idx)
                 } else {
-                    identifier = String(format: "%@%@%@%ld", UploadManager.shared.kClipboardPrefix,
-                                        pbDateTime, UploadManager.shared.kImageSuffix, idx)
+                    identifier = String(format: "%@%@%@%ld", kClipboardPrefix, pbDateTime, kImageSuffix, idx)
                 }
                 let newObject = PasteboardObject(identifier: identifier, types: types[idx])
                 pbObjects.append(newObject)
@@ -128,12 +126,6 @@ extension PasteboardImagesViewController {
                         header.selectButton.setTitle(forState: self.sectionState)
                     }
                 }
-                
-                // Restart upload manager
-                UploadManager.shared.backgroundQueue.async {
-                    UploadManager.shared.isPaused = false
-                    UploadManager.shared.findNextImageToUpload()
-                }
             }
         }
         
@@ -163,7 +155,7 @@ extension PasteboardImagesViewController {
 // MARK: - Uploads Provider NSFetchedResultsControllerDelegate
 extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate
 {
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+    func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 
         switch type {
         case .insert:
@@ -218,7 +210,7 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate
         }
     }
     
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
 //        debugPrint("••• PasteboardImagesViewController controller:didChangeContent...")
         // Update navigation bar
         DispatchQueue.main.async {

@@ -49,7 +49,7 @@ public var isRenameFileAtiveByDefault: Bool {
  */
 public struct RenameAction: Hashable {
     // Enumeration of action types
-    public enum ActionType: Int, CaseIterable, Comparable {
+    public enum ActionType: Int, CaseIterable, Comparable, Sendable {
         case addText = 1    // A series of actions is enabled/disabled using row 0.
         case addAlbum
         case addDate
@@ -60,19 +60,19 @@ public struct RenameAction: Hashable {
         public var name: String {
             switch self {
             case .addText:
-                return String(localized: "Text", bundle: piwigoKit,
+                return String(localized: "Text", bundle: .piwigoKit,
                               comment: "Text")
             case .addAlbum:
-                return String(localized: "albumID", bundle: piwigoKit,
+                return String(localized: "albumID", bundle: .piwigoKit,
                               comment: "Album ID")
             case .addDate:
-                return String(localized: "editImageDetails_dateCreation", bundle: piwigoKit,
+                return String(localized: "editImageDetails_dateCreation", bundle: .piwigoKit,
                               comment: "Creation Date")
             case .addTime:
-                return String(localized: "editImageDetails_timeCreation", bundle: piwigoKit,
+                return String(localized: "editImageDetails_timeCreation", bundle: .piwigoKit,
                               comment: "Creation Time")
             case .addCounter:
-                return String(localized: "Counter", bundle: piwigoKit,
+                return String(localized: "Counter", bundle: .piwigoKit,
                               comment: "Counter")
             }
         }

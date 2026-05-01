@@ -182,7 +182,7 @@ class ObjectPreparation : Operation, @unchecked Sendable {
 //        let start = CFAbsoluteTimeGetCurrent()
 
         // Set file URL
-        let fileURL = UploadManager.shared.uploadsDirectory
+        let fileURL = DataDirectories.appUploadsDirectory
             .appendingPathComponent(pbObject.identifier)
 
         // Delete file if it already exists (incomplete previous attempt?)
@@ -199,12 +199,12 @@ class ObjectPreparation : Operation, @unchecked Sendable {
                 pbObject.image = AVURLAsset(url: fileURL)
                     .extractedImage()
                     .crop(width: 1.0, height: 1.0) ?? pwgImageType.image.placeHolder
-                    .resize(to: AlbumUtilities.kThumbnailFileSize, opaque: true, scale: scale)
+                    .resize(to: AlbumVars.shared.kThumbnailFileSize, opaque: true, scale: scale)
             } else {
                 pbObject.image = (UIImage(data: data) ?? pwgImageType.image.placeHolder)
                     .fixOrientation()
                     .crop(width: 1.0, height: 1.0) ?? pwgImageType.image.placeHolder
-                    .resize(to: AlbumUtilities.kThumbnailFileSize, opaque: true, scale: scale)
+                    .resize(to: AlbumVars.shared.kThumbnailFileSize, opaque: true, scale: scale)
             }
         }
         catch let error {

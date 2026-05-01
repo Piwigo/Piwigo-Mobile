@@ -11,12 +11,13 @@ import Foundation
 import UIKit
 import piwigoKit
 
-class AlbumDeletion: NSObject
+final class AlbumDeletion: NSObject
 {
     // Initialisation
-    init(albumData: Album, user: User, topViewController: UIViewController) {
+    init(albumData: Album, user: User, nbOrphans: Int64, topViewController: UIViewController) {
         self.albumData = albumData
         self.user = user
+        self.nbOrphans = nbOrphans
         self.topViewController = topViewController
     }
     
@@ -27,12 +28,6 @@ class AlbumDeletion: NSObject
     private var deleteAction: UIAlertAction?
     private var nbOrphans = Int64.min
     
-    // MARK: - Core Data Providers
-    private lazy var albumProvider: AlbumProvider = {
-        let provider : AlbumProvider = AlbumProvider.shared
-        return provider
-    }()
-
     @MainActor
     func displayAlert(completion: @escaping (Bool) -> Void)
     {
@@ -64,9 +59,9 @@ class AlbumDeletion: NSObject
         } else {
             // Album containing images
             let keepImagesAction = UIAlertAction(
-                title: NSLocalizedString("deleteCategory_noImages", comment: "Keep Photos"),
+                title: NSLocalizedString("deleteCategory_noImages", comment: "Keep Photos/Videos"),
                 style: .default, handler: { [self] action in
-                    if NetworkVars.shared.usesCalcOrphans, nbOrphans == Int64.zero {
+                    if nbOrphans == Int64.zero {
                         // There will be no more orphans after the album deletion
                         deleteAlbum(withDeletionMode: .none, completion: completion)
                     } else {
@@ -77,8 +72,7 @@ class AlbumDeletion: NSObject
                 })
             alert.addAction(keepImagesAction)
             
-            if NetworkVars.shared.usesCalcOrphans == false ||
-                (NetworkVars.shared.usesCalcOrphans && nbOrphans == Int64.min) {
+            if nbOrphans == Int64.min {
                 let orphanImagesAction = UIAlertAction(
                     title: NSLocalizedString("deleteCategory_orphanedImages", comment: "Delete Orphans"),
                     style: .destructive,
@@ -99,15 +93,17 @@ class AlbumDeletion: NSObject
                 alert.addAction(orphanImagesAction)
             }
             
-            let allImagesAction = UIAlertAction(
-                title: String.localizedStringWithFormat(NSLocalizedString("deleteSeveralImages_title", comment: "Delete %@ Photos/Videos"), NSNumber(value: albumData.totalNbImages)),
-                style: .destructive,
-                handler: { [self] action in
-                    confirmAlbumDeletion(withNumberOfImages: albumData.totalNbImages,
-                                         deletionMode: .all, completion: completion)
-                })
-            allImagesAction.accessibilityIdentifier = "DeleteAll"
-            alert.addAction(allImagesAction)
+            if nbOrphans != albumData.totalNbImages {
+                let allImagesAction = UIAlertAction(
+                    title: String.localizedStringWithFormat(NSLocalizedString("deleteSeveralImages_title", comment: "Delete %@ Photos/Videos"), NSNumber(value: albumData.totalNbImages)),
+                    style: .destructive,
+                    handler: { [self] action in
+                        confirmAlbumDeletion(withNumberOfImages: albumData.totalNbImages,
+                                             deletionMode: .all, completion: completion)
+                    })
+                allImagesAction.accessibilityIdentifier = "DeleteAll"
+                alert.addAction(allImagesAction)
+            }
         }
         
         // Present list of actions
@@ -188,73 +184,86 @@ class AlbumDeletion: NSObject
     private func deleteAlbum(withDeletionMode deletionMode: pwgAlbumDeletionMode,
                              completion: @escaping (Bool) -> Void) {
         // Prepare set of parent IDs before deleting album (including root album)
-        let parentIds = Set(albumData.upperIds.components(separatedBy: ",")
+        let hasAdminRights = user.hasAdminRights
+        let parentIDs = Set(albumData.upperIds.components(separatedBy: ",")
             .compactMap({Int32($0)})).filter({$0 != albumData.pwgID}).union(Set([pwgSmartAlbum.root.rawValue]))
         
         // Delete the category
-        let title = NSLocalizedString("deleteCategoryError_title", comment: "Delete Fail")
-        let message = NSLocalizedString("deleteCategoryError_message", comment: "Failed to delete your album")
-        PwgSession.checkSession(ofUser: user) { [self] in
-            AlbumUtilities.delete(albumData.pwgID, inMode: deletionMode) { [self] in
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                
+                // Delete album
+                _ = try await JSONManager.shared.delete(albumData.pwgID, inMode: deletionMode)
+
                 // Auto-upload already disabled by AlbumProvider if necessary
                 // Also remove this album from the auto-upload destination
                 if UploadVars.shared.autoUploadCategoryId == albumData.pwgID {
                     UploadVars.shared.autoUploadCategoryId = Int32.min
                 }
-                
-                // Update UI and cache
-                DispatchQueue.main.async {
+
+                // Update parent albums data
+                await fetchAlbumData(ofParentsWithIDs: parentIDs, forUserWithAdminRights: hasAdminRights)
+
+                // Update cache and UI
+                await MainActor.run { [self] in
+                    // Album successfully deleted ▶ Remove category ID from list of recently used albums
+                    let userInfo = ["categoryId" : NSNumber.init(value: albumData.pwgID)]
+                    NotificationCenter.default.post(name: Notification.Name.pwgRemoveRecentAlbum,
+                                                    object: nil, userInfo: userInfo)
                     // Hide swipe buttons
                     completion(true)
                 }
-                
-                // Update parent albums data
-                self.fetchAlbumData(ofParentsWithIDs: parentIds)
-                
-            } failure: { [self] error in
-                DispatchQueue.main.async { [self] in
-                    self.deleteAlbumError(error, title: title, message: message)
-                }
             }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
-                self.deleteAlbumError(error, title: title, message: message)
+            catch let error as PwgKitError {
+                await MainActor.run { [self] in
+                    self.topViewController.hideHUD { [self] in
+                        // Display error alert after fetching album data
+                        let title = NSLocalizedString("deleteCategoryError_title", comment: "Delete Fail")
+                        let message = NSLocalizedString("deleteCategoryError_message", comment: "Failed to delete your album")
+                        self.deleteAlbumError(error, title: title, message: message)
+                    }
+                }
             }
         }
     }
     
-    private func fetchAlbumData(ofParentsWithIDs parentIDs: Set<Int32>) {
+    @concurrent
+    private func fetchAlbumData(ofParentsWithIDs parentIDs: Set<Int32>,
+                                forUserWithAdminRights hasAdminRights: Bool) async {
         // Fetch data of parent albums
         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-        for parentID in parentIDs {
-            // Remember that the app is fetching album data
-            AlbumVars.shared.isFetchingAlbumData.insert(parentID)
-            
-            // Use the AlbumProvider to fetch album data. On completion,
-            // handle general UI updates and error alerts on the main queue.
-            albumProvider.fetchAlbums(forUser: user, inParentWithId: parentID,
-                                      thumbnailSize: thumnailSize) { [self] error in
-                // ► Remove album from list of albums being fetched
-                AlbumVars.shared.isFetchingAlbumData.remove(parentID)
-                
-                // Any error?
-                if let error = error {
-                    DispatchQueue.main.async { [self] in
-                        self.topViewController.hideHUD { [self] in
-                            // Display error alert after fetching album data
-                            let title = NSLocalizedString("loadingHUD_label", comment: "Loading…")
-                            self.deleteAlbumError(error, title: title, message: error.localizedDescription)
-                        }
+        Task {
+            do {
+                for parentID in parentIDs {
+                    // Remember that the app is fetching album data
+                    AlbumVars.shared.isFetchingAlbumData.insert(parentID)
+
+                    // Fetch parent album data
+                    try await AlbumProvider().fetchAlbums(forUserWithAdminRights: hasAdminRights,
+                                                          inParentWithId: parentID,
+                                                          thumbnailSize: thumnailSize)
+                    
+                    // Remove album from list of albums being fetched
+                    AlbumVars.shared.isFetchingAlbumData.remove(parentID)
+                }
+
+                // Work completed ► Hide HUDs
+                await MainActor.run { [self] in
+                    self.topViewController.updateHUDwithSuccess() { [self] in
+                        self.topViewController.hideHUD(afterDelay: pwgDelayHUD) { }
                     }
-                    return
                 }
             }
-        }
-        
-        // Work completed ► Hide HUDs
-        DispatchQueue.main.async { [self] in
-            self.topViewController.updateHUDwithSuccess() { [self] in
-                self.topViewController.hideHUD(afterDelay: pwgDelayHUD) { }
+            catch let error as PwgKitError {
+                await MainActor.run { [self] in
+                    self.topViewController.hideHUD { [self] in
+                        // Display error alert after fetching album data
+                        let title = NSLocalizedString("loadingHUD_label", comment: "Loading…")
+                        self.deleteAlbumError(error, title: title, message: error.localizedDescription)
+                    }
+                }
             }
         }
     }

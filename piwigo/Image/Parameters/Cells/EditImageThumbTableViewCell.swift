@@ -18,7 +18,7 @@ import piwigoKit
 
 class EditImageThumbTableViewCell: UITableViewCell, UICollectionViewDelegate
 {
-    weak var delegate: EditImageThumbnailCellDelegate?
+    weak var delegate: (any EditImageThumbnailCellDelegate)?
     
     @IBOutlet private var editImageThumbCollectionView: UICollectionView!
 
@@ -80,12 +80,12 @@ extension EditImageThumbTableViewCell: UICollectionViewDelegateFlowLayout
 {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         // Avoid unwanted spaces
-        return UIEdgeInsets(top: 0, left: AlbumUtilities.kImageDetailsMarginsSpacing,
-                            bottom: 0, right: AlbumUtilities.kImageDetailsMarginsSpacing)
+        return UIEdgeInsets(top: 0, left: AlbumVars.shared.kImageDetailsMarginsSpacing,
+                            bottom: 0, right: AlbumVars.shared.kImageDetailsMarginsSpacing)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return AlbumUtilities.kImageDetailsCellSpacing
+        return AlbumVars.shared.kImageDetailsCellSpacing
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -129,7 +129,7 @@ extension EditImageThumbTableViewCell: UIScrollViewDelegate
 
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>)
     {
-        let cellWidth: CGFloat = collectionView(editImageThumbCollectionView, layout: editImageThumbCollectionView.collectionViewLayout, sizeForItemAt: IndexPath(row: 0, section: 0)).width + AlbumUtilities.kImageDetailsMarginsSpacing / 2.0
+        let cellWidth: CGFloat = collectionView(editImageThumbCollectionView, layout: editImageThumbCollectionView.collectionViewLayout, sizeForItemAt: IndexPath(row: 0, section: 0)).width + AlbumVars.shared.kImageDetailsMarginsSpacing / 2.0
         let offset:CGFloat = scrollView.contentOffset.x + scrollView.contentInset.left
         let proposedPage: CGFloat = offset / fmax(1.0, cellWidth)
         let floorProposedPage: CGFloat = floor(proposedPage)

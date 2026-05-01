@@ -52,7 +52,7 @@ extension AlbumViewController
         if totalNberToDelete > 1 {
             msg = String.localizedStringWithFormat(NSLocalizedString("deleteSeveralImages_message", comment: "Are you sure you want to delete the selected %@ photos/videos?"), NSNumber(value: totalNberToDelete))
         } else if let imageData = toDelete.first, imageData.isVideo {
-            msg = NSLocalizedString("deleteSingleVideo_title", comment: "Are you sure you want to delete this video?")
+            msg = NSLocalizedString("deleteSingleVideo_message", comment: "Are you sure you want to delete this video?")
         } else {
             msg = NSLocalizedString("deleteSingleImage_message", comment: "Are you sure you want to delete this photo?")
         }
@@ -176,16 +176,23 @@ extension AlbumViewController
             "multiple_value_mode": "replace"
         ]
 
-        // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [self] in
-            PwgSession.shared.setInfos(with: paramsDict) { [self] in
-                DispatchQueue.main.async { [self] in
+        // Send requests to Piwigo server
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                
+                // Set image properties
+                try await JSONManager.shared.setInfos(with: paramsDict)
+                
+                // Update cache
+                await MainActor.run { [self] in
                     // Remove image from source album
                     imageData.removeFromAlbums(albumData)
                     
                     // Update albums
-                    self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: albumData)
-
+                    try? self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: albumData, inContext: self.mainContext)
+                    
                     // Next image
                     imagesToRemove.removeFirst()
                     
@@ -196,14 +203,11 @@ extension AlbumViewController
                     // Next image
                     removeImages(imagesToRemove, andThenDelete:toDelete, total: total)
                 }
-            } failure: { [self] error in
-                DispatchQueue.main.async { [self] in
+            }
+            catch let error as PwgKitError {
+                await MainActor.run { [self] in
                     self.removeImages(imagesToRemove, andThenDelete: toDelete, total: total, error: error)
                 }
-            }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
-                self.removeImages(imagesToRemove, andThenDelete: toDelete, total: total, error: error)
             }
         }
     }
@@ -249,30 +253,33 @@ extension AlbumViewController
     }
 
     /// For calling Piwigo server in version +14.0
+    @MainActor
     private func dissociateImages(_ toRemove: Set<Image>, andThenDelete toDelete: Set<Image>) {
-        // Send request to Piwigo server
+        // Send requests to Piwigo server
         let albumID = albumData.pwgID
         let imageIDs = toRemove.map({ $0.pwgID })
-        PwgSession.checkSession(ofUser: user) { [self] in
-            ImageUtilities.setCategory(albumID, forImageIDs: imageIDs, withAction: .dissociate) {
-                DispatchQueue.main.async { [self] in
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                
+                // Dissociate images
+                try await JSONManager.shared.setCategory(albumID, forImageIDs: imageIDs, withAction: .dissociate)
+                
+                // Update cache and UI
+                await MainActor.run { [self] in
                     // Remove images from album
                     self.albumData.removeFromImages(toRemove)
-                    
+
                     // Update albums
                     let nberOfImages = Int64(toRemove.count)
-                    self.albumProvider.updateAlbums(removingImages: nberOfImages, fromAlbum: self.albumData)
+                    try? self.albumProvider.updateAlbums(removingImages: nberOfImages, fromAlbum: self.albumData, inContext: self.mainContext)
 
                     // Continue with deletion if needed
                     self.deleteImages(toDelete)
                 }
-            } failure: { [self] error in
-                DispatchQueue.main.async { [self] in
-                    self.dissociateImagesError(error)
-                }
             }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
+            catch let error as PwgKitError {
                 self.dissociateImagesError(error)
             }
         }
@@ -314,9 +321,16 @@ extension AlbumViewController
         }
 
         // Let's delete all images at once
-        PwgSession.checkSession(ofUser: user) { [self] in
-            ImageUtilities.delete(toDelete) { [self] in
-                DispatchQueue.main.async { [self] in
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                
+                // Delete images
+                _ = try await JSONManager.shared.delete(toDelete)
+
+                // Update cache and UI
+                await MainActor.run { [self] in
                     // Save image IDs for marking Upload requests in the background
                     let imageIDs = Array(toDelete).map({$0.pwgID})
 
@@ -329,16 +343,16 @@ extension AlbumViewController
                         if let albums = imageData.albums {
                             // Remove image from cached albums
                             albums.forEach { album in
-                                self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: album)
+                                try? self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: album, inContext: self.mainContext)
                             }
                         }
                     }
-                    
+
                     // Save changes
                     self.mainContext.saveIfNeeded()
 
                     // Delete upload requests of images deleted from the Piwigo server
-                    UploadManager.shared.backgroundQueue.async {
+                    Task(priority: .utility) { @UploadManagerActor in
                         UploadManager.shared.deleteUploadsOfDeletedImages(withIDs: imageIDs)
                     }
 
@@ -349,13 +363,8 @@ extension AlbumViewController
                         }
                     }
                 }
-            } failure: { [self] error in
-                DispatchQueue.main.async { [self] in
-                    self.deleteImagesError(error)
-                }
             }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
+            catch let error as PwgKitError {
                 self.deleteImagesError(error)
             }
         }

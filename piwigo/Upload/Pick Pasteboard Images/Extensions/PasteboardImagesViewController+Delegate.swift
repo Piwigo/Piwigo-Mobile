@@ -50,7 +50,7 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
     
     
     // MARK: - Context Menus
-    @available(iOS, introduced: 13.0, deprecated: 16.0, message: "")
+    @available(iOS, introduced: 13.0, obsoleted: 16.0, message: "")
     func collectionView(_ collectionView: UICollectionView,
                         contextMenuConfigurationForItemAt indexPath: IndexPath,
                         point: CGPoint) -> UIContextMenuConfiguration? {
@@ -140,7 +140,7 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
     private func statusAction(_ upload: Upload?) -> UIAction {
         // Check if an upload request exists (should never happen)
         guard let upload = upload else {
-            return UIAction(title: String(localized: "errorHUD_label", bundle: piwigoKit, comment: "Error"),
+            return UIAction(title: String(localized: "errorHUD_label", bundle: .piwigoKit, comment: "Error"),
                             image: UIImage(systemName: "exclamationmark.triangle"), handler: { _ in })
         }
         
@@ -218,7 +218,7 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
             imageUpload = UIImage(named: "photo.badge.plus")
         }
         return UIAction(title: NSLocalizedString("tabBar_upload", comment: "Upload"),
-                        image: imageUpload) { action in
+                        image: imageUpload) { [self] action in
             // Check that an upload request does not exist for that image (should never happen)
             if (self.uploads.fetchedObjects ?? []).filter({$0.md5Sum == cell.md5sum}).first != nil {
                 return
@@ -246,11 +246,16 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
             
             // Push Edit view embedded in navigation controller
             let navController = UINavigationController(rootViewController: uploadSwitchVC)
+            #if targetEnvironment(macCatalyst)
+            navController.modalPresentationStyle = .formSheet
+            navController.modalTransitionStyle = .coverVertical
+            #else
             navController.modalPresentationStyle = .popover
             navController.modalTransitionStyle = .coverVertical
-            navController.popoverPresentationController?.sourceView = self.localImagesCollection
+            navController.popoverPresentationController?.sourceView = self.view
             navController.popoverPresentationController?.barButtonItem = self.uploadBarButton
             navController.popoverPresentationController?.permittedArrowDirections = .up
+            #endif
             self.navigationController?.present(navController, animated: true)
         }
     }

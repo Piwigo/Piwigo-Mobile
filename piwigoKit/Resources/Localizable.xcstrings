@@ -1000,7 +1000,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oldest → Newest"
+            "value" : "最旧→最新"
           }
         },
         "zh-Hant" : {
@@ -1303,7 +1303,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Newest → Oldest"
+            "value" : "最新→最旧"
           }
         },
         "zh-Hant" : {
@@ -2921,7 +2921,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lowest → Highest"
+            "value" : "最低 → 最高"
           }
         },
         "zh-Hant" : {
@@ -3022,7 +3022,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Highest → Lowest"
+            "value" : "最高 → 最低"
           }
         },
         "zh-Hant" : {
@@ -3740,6 +3740,107 @@
         }
       }
     },
+    "CoreData_ImageNotFound" : {
+      "comment" : "Image not in persistent cache.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التصوير/الفيديو ليس في ذاكرة التخزين المؤقت الثابتة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto/video ikke i vedvarende cache."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto/Video nicht im persistenten Cache."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photo/video not in persistent cache."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La foto o el vídeo no está en la caché persistente."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photo/vidéo absente du cache persistant."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A fénykép/videó nincs az állandó gyorsítótárban."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto/video tidak disimpan dalam cache permanen."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto/video non presenti nella cache permanente."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真/動画が永続キャッシュに存在しません。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto/video niet in persistente cache."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zdjęcie/film nie znajduje się w pamięci podręcznej."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фото/видео не находится в постоянном кэше."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto/video ej i ihållande cache."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "照片/视频不在持续缓存中。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "照片/影片未儲存於持久快取中。"
+          }
+        }
+      }
+    },
     "CoreData_MigrationError_timeout" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3931,7 +4032,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to create a new Server object."
+            "value" : "创建新服务器对象失败。"
           }
         },
         "zh-Hant" : {
@@ -4841,7 +4942,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to create a new Location object."
+            "value" : "创建新位置对象失败。"
           }
         },
         "zh-Hant" : {
@@ -4942,7 +5043,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Found and will discard a location missing a valid identifier."
+            "value" : "检测到缺少有效标识的位置信息，将予以舍弃。"
           }
         },
         "zh-Hant" : {
@@ -5448,7 +5549,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to delete an Upload object."
+            "value" : "删除上传对象失败。"
           }
         },
         "zh-Hant" : {
@@ -5650,7 +5751,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Found and will discard an upload missing a valid identifier."
+            "value" : "检测到缺少有效标识的上传记录，将予以舍弃。"
           }
         },
         "zh-Hant" : {
@@ -8075,7 +8176,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo server did not return a valid response."
+            "value" : "Piwigo 服务器没有返回有效的 JSON 对象。"
           }
         },
         "zh-Hant" : {
@@ -11111,7 +11212,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 个用户"
+            "value" : "%@ 位用户"
           }
         },
         "zh-Hant" : {
@@ -12364,7 +12465,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Extra enorme"
+            "value" : "Extra Grande"
           }
         },
         "fr" : {
@@ -12406,7 +12507,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ekstra ogromna"
+            "value" : "Przeogromny"
           }
         },
         "ru" : {
@@ -12537,7 +12638,7 @@
       }
     },
     "uploadParameterMissing_message" : {
-      "comment" : "Missing upload paremeter",
+      "comment" : "Missing upload parameter",
       "localizations" : {
         "ar" : {
           "stringUnit" : {

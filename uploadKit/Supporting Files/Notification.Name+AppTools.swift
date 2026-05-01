@@ -19,15 +19,18 @@ public extension Notification.Name {
     
     
     // MARK: - Uploads
-    /// - Update left number of upload requests
-    static let pwgLeftUploads = Notification.Name("pwgNotificationLeftUploads")
+    /// - Update number of upload requests to complete
+    static let pwgUpdateNberOfUploadsToComplete = Notification.Name("pwgNotificationLeftUploads")
     
     /// - Update progress bars of upload requests
     static let pwgUploadProgress = Notification.Name("pwgNotificationUploadProgress")
     
     /// - Notifies that auto-uploading is enabled/disabled by user or disableAutoUpload()
     static let pwgAutoUploadChanged = Notification.Name("pwgNotificationAutoUploadChanged")
-
+    
     /// - Displays error when appendAutoUploadRequests() fails and resume upload manager operations
     static let pwgAppendAutoUploadRequestsFailed = Notification.Name("pwgNotificationAppendAutoUploadRequestsFail")
+    
+    /// - Delete upload requests and associated assets
+    static let pwgDeleteUploadRequestsAndAssets: Notification.Name = Notification.Name("pwgDeleteUploadRequestsAndAssets")
 }

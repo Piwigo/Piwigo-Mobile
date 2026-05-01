@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum pwgAlbumDeletionMode {
+public enum pwgAlbumDeletionMode: Sendable {
     case none, orphaned, all
 }
 

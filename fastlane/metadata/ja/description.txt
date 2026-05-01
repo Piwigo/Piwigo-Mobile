@@ -1,4 +1,4 @@
-Piwigo for iPhone/iPad/iPodは、クラウド版Piwigo (v2.10以降) 内の写真ギャラリーソフトウェアを補います：
+Piwigo for iPhone/iPad/iPodは、クラウド版Piwigo (v12.0以降) 内の写真ギャラリーソフトウェアを補います：
 
 • アルバムの閲覧。
 • アルバムの作成、削除、移動、名前の変更。

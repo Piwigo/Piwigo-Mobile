@@ -1,2 +1,5 @@
-• Piwigo 16 kompatibilitás
-• Hibajavítások és a kezelőfelület javítása
+• Gyorsabb feltöltés és fejlett feltöltési beállítások
+• A feltöltés háttérben folytatódik, ha másik alkalmazásra váltunk
+• Gyorsabb megjelenítés a készüléken tárolt albumokból a feltöltés előtt
+• A naplófájlok megosztása AirDropon keresztül, milliszekundumonkénti csoportosítással
+• Hibajavítások és a felhasználói felület fejlesztése

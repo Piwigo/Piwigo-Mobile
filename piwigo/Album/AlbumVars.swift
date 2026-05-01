@@ -1,5 +1,5 @@
 //
-//  AlbumVars.shared.swift
+//  AlbumVars.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 25/05/2021.
@@ -10,13 +10,15 @@ import Foundation
 import UIKit
 import piwigoKit
 
-class AlbumVars: NSObject {
+// Mark AlbumVars as Sendable since Apple documents UserDefaults as thread-safe
+// and pwgImageSize, pwgImageSort, pwgImageGroup are Sendable
+final class AlbumVars: @unchecked Sendable {
         
     // Singleton
     static let shared = AlbumVars()
     
     // Remove deprecated stored objects if needed
-    override init() {
+    init() {
         // Deprecated data?
         if let _ = UserDefaults.standard.object(forKey: "recentPeriod") {
             UserDefaults.standard.removeObject(forKey: "recentPeriod")
@@ -39,7 +41,7 @@ class AlbumVars: NSObject {
     var defaultCategory: Int32
 
     /// - Default album thumbnail size determined from the available image sizes to present 144x144 pixel thumbnails
-    @UserDefault("defaultAlbumThumbnailSize", defaultValue: AlbumUtilities.optimumAlbumThumbnailSizeForDevice().rawValue)
+    @UserDefault("defaultAlbumThumbnailSize", defaultValue: -1)
     var defaultAlbumThumbnailSize: Int16
 
     /// - List of albums recently visited / used
@@ -83,7 +85,7 @@ class AlbumVars: NSObject {
     var displayImageTitles: Bool
 
     /// - Image thumbnail size determined from the available image sizes
-    @UserDefault("defaultThumbnailSize", defaultValue: AlbumUtilities.optimumThumbnailSizeForDevice().rawValue)
+    @UserDefault("defaultThumbnailSize", defaultValue: -1)
     var defaultThumbnailSize: Int16
 
     /// - Number of images per row in portrait mode
@@ -96,7 +98,24 @@ class AlbumVars: NSObject {
     /// - None
 
 
-    // MARK: - Vars in Memory
+    // MARK: - Constants and Vars in Memory
+    // Album cell constants
+    let kAlbumCellSpacing = CGFloat(8)               // Horizontal spacing between album cells
+    let kAlbumCellVertSpacing = CGFloat(8)           // Vertical spacing between album cells
+    let kAlbumMarginsSpacing = CGFloat(4)            // Left and right margins for albums
+    
+    // Image cell constants
+    let kImageCellSpacing4iPhone = CGFloat(1)        // Spacing between images (horizontally and vertically)
+    let kImageCellHorSpacing4iPad = CGFloat(8)
+    let kImageCellHorSpacing4iPadPopup = CGFloat(1)
+    let kImageCellVertSpacing4iPad = CGFloat(8)
+    let kImageCellVertSpacing4iPadPopup = CGFloat(1)
+    // let kImageMarginsSpacing = CGFloat(0)            // Left and right margins for images
+    let kThumbnailFileSize = CGFloat(144)            // Default Piwigo thumbnail file size
+    
+    let kImageDetailsCellSpacing = CGFloat(8)        // Spacing between image details cells
+    let kImageDetailsMarginsSpacing = CGFloat(16)    // Left and right margins for image details cells
+
     // Album variables kept in memory
     /// - To remember which album data is being fetched
     var isFetchingAlbumData = Set<Int32>()

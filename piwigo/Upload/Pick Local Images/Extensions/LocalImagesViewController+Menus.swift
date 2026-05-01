@@ -6,6 +6,7 @@
 //  Copyright © 2025 Piwigo.org. All rights reserved.
 //
 
+import CoreData
 import Foundation
 import Photos
 import UIKit
@@ -249,7 +250,7 @@ extension LocalImagesViewController {
     
     @objc func deleteUploadedImages() {
         // Delete uploaded images (fetched on the main queue)
-        uploadsToDelete = [Upload]()
+        var uploadsToDelete = [Upload]()
         let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
         let completed = (uploads.fetchedObjects ?? []).filter({[.finished, .moderated].contains($0.state)})
         for index in 0..<indexedUploads.count {
@@ -259,11 +260,13 @@ extension LocalImagesViewController {
             }
         }
         
-        // Delete selected images
-        let assetsToDelete = selectedImages.compactMap({$0?.localIdentifier}).compactMap({$0})
+        // Also delete selected images
+        var assetIDsToDelete = Set(uploadsToDelete.map(\.localIdentifier))
+        let selectedAssetIDs = selectedImages.compactMap({$0?.localIdentifier}).compactMap({$0})
+        assetIDsToDelete.formUnion(selectedAssetIDs)
         
         // Anything to delete? (should always be true)
-        if assetsToDelete.isEmpty, uploadsToDelete.isEmpty {
+        if assetIDsToDelete.isEmpty, uploadsToDelete.isEmpty {
             return
         }
         
@@ -275,8 +278,26 @@ extension LocalImagesViewController {
             style: .cancel, handler: { action in })
         let deleteAction = UIAlertAction(title: title, style: .destructive, handler: { action in
             // Delete images and upload requests
-            UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.deleteAssets(associatedToUploads: self.uploadsToDelete, and: assetsToDelete)
+            let uploadIDs = uploadsToDelete.map(\.objectID)
+            let assetsToDelete = PHAsset.fetchAssets(withLocalIdentifiers: Array(assetIDsToDelete), options: nil)
+            Task { @MainActor in
+                do {
+                    // Delete image from Photo Library
+                    try await PHPhotoLibrary.shared().performChanges {
+                        PHAssetChangeRequest.deleteAssets(assetsToDelete as (any NSFastEnumeration))
+                    }
+                    
+                    // Delete associated upload request if any
+                    Task { @UploadManagerActor in
+                        // Delete upload requests w/o reporting potential error
+                        try? UploadProvider().deleteUploads(withID: uploadIDs, inContext: UploadManager.shared.uploadBckgContext)
+                    }
+                }
+                catch {
+                    Task { @UploadManagerActor in
+                        UploadManager.shared.disableDeleteAfterUpload(uploadIDs)
+                    }
+                }
             }
         })
         alert.addAction(defaultAction)

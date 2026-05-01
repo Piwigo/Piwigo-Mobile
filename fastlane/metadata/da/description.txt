@@ -1,4 +1,4 @@
-Piwigo til iPhone/iPad/iPod supplerer fotobiblioteksporgrammet i skyen Piwigo (v2.10 eller højere): 
+Piwigo til iPhone/iPad/iPod supplerer fotobiblioteksporgrammet i skyen Piwigo (v12.0 eller højere): 
 
 • Gennemse dine album,
 • Opret, slette, flytte og omdøbe album,

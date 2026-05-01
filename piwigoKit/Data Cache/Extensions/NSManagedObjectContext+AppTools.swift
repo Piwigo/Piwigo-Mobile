@@ -12,44 +12,46 @@ import CoreData
 // MARK: - Core Data Batch Deletion
 extension NSManagedObjectContext {
     /// Executes the given `NSBatchDeleteRequest` and directly merges the changes to bring the given managed object context up to date.
-    public func executeAndMergeChanges(using batchDeleteRequest: NSBatchDeleteRequest) throws {
+    /// Note that such a fast deletion does not trigger NSFetchedResultsController updates
+    public func executeAndMergeChanges(using batchDeleteRequest: NSBatchDeleteRequest) throws(PwgKitError) {
         batchDeleteRequest.resultType = .resultTypeObjectIDs
         do {
             // Execute the request.
             let deleteResult = try execute(batchDeleteRequest) as? NSBatchDeleteResult
             
-            // Extract the IDs of the deleted managed objects from the request's result.
+            // Extract the IDs of the deleted managed objects from the request's result
             if let objectIDs = deleteResult?.result as? [NSManagedObjectID] {
-                // Merge the deletions into the app's managed object context.
-                NSManagedObjectContext.mergeChanges(
-                    fromRemoteContextSave: [NSDeletedObjectsKey: objectIDs],
-                    into: [self]
-                )
+                // Merge the deletions into the app's managed object context
+                let changes: [AnyHashable: Any] = [NSDeletedObjectsKey: objectIDs]
+                NSManagedObjectContext.mergeChanges(fromRemoteContextSave: changes,into: [self])
             }
-        } catch let error {
-            // Handle any thrown errors.
-            fatalError("Unresolved error \(error.localizedDescription)")
+        } catch let error as NSError {
+            throw PwgKitError.CoreDataError(innerError: error)
+        }
+        catch {
+            throw PwgKitError.otherError(innerError: error)
         }
     }
     
     /// Executes the given `NSBatchUpdateRequest` and directly merges the changes to bring the given managed object context up to date.
-    public func executeAndMergeChanges(using batchUpdateRequest: NSBatchUpdateRequest) throws {
+    /// Note that such a fast deletion does not trigger NSFetchedResultsController updates
+    public func executeAndMergeChanges(using batchUpdateRequest: NSBatchUpdateRequest) throws(PwgKitError) {
         batchUpdateRequest.resultType = .updatedObjectIDsResultType
         do {
             // Execute the request.
             let updateResult = try execute(batchUpdateRequest) as? NSBatchUpdateResult
             
-            // Extract the IDs of the deleted managed objects from the request's result.
+            // Extract the IDs of the deleted managed objects from the request's result
             if let objectIDs = updateResult?.result as? [NSManagedObjectID] {
-                // Merge the deletions into the app's managed object context.
-                NSManagedObjectContext.mergeChanges(
-                    fromRemoteContextSave: [NSDeletedObjectsKey: objectIDs],
-                    into: [self]
-                )
+                // Merge the updates into the app's managed object context
+                let changes: [AnyHashable: Any] = [NSUpdatedObjectsKey: objectIDs]
+                NSManagedObjectContext.mergeChanges(fromRemoteContextSave: changes, into: [self])
             }
-        } catch let error {
-            // Handle any thrown errors.
-            fatalError("Unresolved error \(error.localizedDescription)")
+        } catch let error as NSError {
+            throw PwgKitError.CoreDataError(innerError: error)
+        }
+        catch {
+            throw PwgKitError.otherError(innerError: error)
         }
     }
 }

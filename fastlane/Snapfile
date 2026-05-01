@@ -5,8 +5,8 @@
 #	cd '/Users/lelievre/Privé - GitHub/Piwigo-Mobile'
 #
 # Set up a complete Ruby web development environment
-# https://github.com/monfresh/laptop
-#	bash <(curl -s https://raw.githubusercontent.com/monfresh/laptop/master/laptop)
+# brew install openssl@3 libyaml readline ruby-install chruby
+# ruby-install ruby 3.4.0
 #
 # Add GEM to PATH (in .zshrc)
 #	export PATH=$PATH:/Users/lelievre/.gem/ruby/2.7.3/bin

@@ -24,12 +24,6 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
         return context
     }()
 
-    // MARK: - Core Data Providers
-    lazy var uploadProvider: UploadProvider = {
-        let provider = UploadProvider.shared
-        return provider
-    }()
-    
     lazy var fetchUploadRequest: NSFetchRequest = {
         let fetchRequest = Upload.fetchRequest()
         // Priority to uploads requested manually, oldest ones first
@@ -58,7 +52,7 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
     // MARK: - Variables and Cached Values
     var categoryId: Int32 = AlbumVars.shared.defaultCategory
     var categoryCurrentCounter: Int64 = UploadVars.shared.categoryCounterInit
-    weak var albumDelegate: AlbumViewControllerDelegate?
+    weak var albumDelegate: (any AlbumViewControllerDelegate)?
     var reUploadAllowed = false
 
     let pendingOperations = PendingOperations()     // Operations in queue for preparing files and cache
@@ -135,11 +129,9 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
                 var identifier = ""
                 // Movies first because movies may contain images
                 if UIPasteboard.general.contains(pasteboardTypes: [UTType.movie.identifier], inItemSet: indexSet) {
-                    identifier = String(format: "%@%@%@%ld", UploadManager.shared.kClipboardPrefix,
-                                        pbDateTime, UploadManager.shared.kMovieSuffix, idx)
+                    identifier = String(format: "%@%@%@%ld", kClipboardPrefix, pbDateTime, kMovieSuffix, idx)
                 } else {
-                    identifier = String(format: "%@%@%@%ld", UploadManager.shared.kClipboardPrefix,
-                                        pbDateTime, UploadManager.shared.kImageSuffix, idx)
+                    identifier = String(format: "%@%@%@%ld", kClipboardPrefix, pbDateTime, kImageSuffix, idx)
                 }
                 let newObject = PasteboardObject(identifier: identifier, types: types[idx])
                 pbObjects.append(newObject)
@@ -209,17 +201,13 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(checkPasteboard),
                                                name: UIApplication.didBecomeActiveNotification, object: nil)
 
-        // Prevent device from sleeping if uploads are in progress
-        let uploading: [pwgUploadState] = [.waiting, .preparing, .prepared,
-                                           .uploading, .uploaded, .finishing]
-        let uploadsToPerform = (uploads.fetchedObjects ?? [])
-            .map({uploading.contains($0.state) ? 1 : 0}).reduce(0, +)
-        if uploadsToPerform > 0 {
-            UIApplication.shared.isIdleTimerDisabled = true
+        // Prevent device from sleeping if uploads are in progress before iOS 26
+        if #unavailable(iOS 26.0) {
+            UIApplication.shared.isIdleTimerDisabled = (UploadVars.shared.nberOfUploadsToComplete > 0)
         }
     }
-
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
         // Save position of collection view
@@ -247,14 +235,6 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
 
         // Allow device to sleep
         UIApplication.shared.isIdleTimerDisabled = false
-
-        // Resume upload operations in background queue
-        // and update badge and upload button of album navigator
-        UploadManager.shared.backgroundQueue.async {
-            UploadManager.shared.isPaused = false
-            UploadManager.shared.isExecutingBackgroundUploadTask = false
-            UploadManager.shared.findNextImageToUpload()
-        }
     }
 
     deinit {
@@ -285,12 +265,17 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
 
         // Push Edit view embedded in navigation controller
         let navController = UINavigationController(rootViewController: uploadSwitchVC)
+        #if targetEnvironment(macCatalyst)
+        navController.modalPresentationStyle = .formSheet
+        navController.modalTransitionStyle = .coverVertical
+        #else
         navController.modalPresentationStyle = .popover
         navController.modalTransitionStyle = .coverVertical
-        navController.popoverPresentationController?.sourceView = localImagesCollection
+        navController.popoverPresentationController?.sourceView = view
         navController.popoverPresentationController?.barButtonItem = uploadBarButton
         navController.popoverPresentationController?.permittedArrowDirections = .up
-        navigationController?.present(navController, animated: true)
+        #endif
+        present(navController, animated: true)
     }
 }
 

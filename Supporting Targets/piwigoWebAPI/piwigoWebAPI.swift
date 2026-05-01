@@ -75,6 +75,7 @@ class piwigoWebAPI: XCTestCase {
         XCTAssertEqual(result.status, "ok")
         XCTAssertEqual(result.realUser, "webmaster")
         XCTAssertEqual(result.uploadMethod, "pwg.categories.getAdminList")
+        XCTAssertEqual(result.createAlbumRights, [5,43])
     }
 
 

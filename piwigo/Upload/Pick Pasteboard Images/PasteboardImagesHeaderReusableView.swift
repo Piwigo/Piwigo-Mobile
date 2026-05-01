@@ -15,7 +15,7 @@ import UIKit
 class PasteboardImagesHeaderReusableView: UICollectionReusableView {
     
     // MARK: - View
-    @objc weak var headerDelegate: PasteboardImagesHeaderDelegate?
+    @objc weak var headerDelegate: (any PasteboardImagesHeaderDelegate)?
 
     @IBOutlet weak var headerLabel: UILabel!
     @IBOutlet weak var selectButton: UIButton!

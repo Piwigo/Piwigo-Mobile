@@ -234,7 +234,7 @@ extension AlbumViewController
         var totalCount = Int64.zero
         if albumData.pwgID == 0 {
             // Root Album only contains albums  => calculate total number of images
-            let snapshot = diffableDataSource.snapshot() as Snaphot
+            let snapshot = diffableDataSource.snapshot() as Snapshot
             if let albumSection = snapshot.sectionIdentifiers.first {
                 snapshot.itemIdentifiers(inSection: albumSection).forEach { objectID in
                     guard let album = try? self.mainContext.existingObject(with: objectID) as? Album
@@ -268,8 +268,8 @@ extension AlbumViewController
             if let number = numberFormatter.string(from: NSNumber(value: totalCount)) {
                 // Prepare legend
                 let format:String = totalCount > 1
-                    ? String(localized: "severalImagesCount", bundle: piwigoKit, comment: "%@ photos")
-                    : String(localized: "singleImageCount", bundle: piwigoKit, comment: "%@ photo")
+                    ? String(localized: "severalImagesCount", bundle: .piwigoKit, comment: "%@ photos")
+                    : String(localized: "singleImageCount", bundle: .piwigoKit, comment: "%@ photo")
                 legend = String(format: format, number)
 
                 // Show/hide "No album in your Piwigo"
@@ -277,7 +277,7 @@ extension AlbumViewController
                 noAlbumLabel.isHidden = hasItems
             }
             else {
-                legend = String(format: String(localized: "severalImagesCount", bundle: piwigoKit, comment: "%@ photos"), "?")
+                legend = String(format: String(localized: "severalImagesCount", bundle: .piwigoKit, comment: "%@ photos"), "?")
             }
         }
         return legend

@@ -18,7 +18,7 @@ protocol PlayerViewControllerCoordinatorDelegate: AnyObject {
 class PlayerViewControllerCoordinator: NSObject {
     
     // MARK: - Properties
-    weak var delegate: PlayerViewControllerCoordinatorDelegate?
+    weak var delegate: (any PlayerViewControllerCoordinatorDelegate)?
     
     var video: Video
     private let timeScale = CMTimeScale(USEC_PER_SEC)
@@ -654,7 +654,7 @@ extension PlayerViewControllerCoordinator: AVPlayerViewControllerDelegate {
     
     // Update the status when Picture in Picture playback fails to start.
     func playerViewController(_ playerViewController: AVPlayerViewController,
-                              failedToStartPictureInPictureWithError error: Error) {
+                              failedToStartPictureInPictureWithError error: any Error) {
         status.remove(.pictureInPictureActive)
     }
     
@@ -665,7 +665,7 @@ extension PlayerViewControllerCoordinator: AVPlayerViewControllerDelegate {
     
     // Track the presentation of the player view controller's content.
     // Note that this may happen while the player view controller is embedded inline.
-    func playerViewController(_ playerViewController: AVPlayerViewController, willBeginFullScreenPresentationWithAnimationCoordinator coordinator: UIViewControllerTransitionCoordinator)
+    func playerViewController(_ playerViewController: AVPlayerViewController, willBeginFullScreenPresentationWithAnimationCoordinator coordinator: any UIViewControllerTransitionCoordinator)
     {
         status.insert([.fullScreenActive, .beingPresented])
         
@@ -684,7 +684,7 @@ extension PlayerViewControllerCoordinator: AVPlayerViewControllerDelegate {
     // Track the player view controller's dismissal from full-screen playback. This is the mirror
     // image of the playerViewController(_:willBeginFullScreenPresentationWithAnimationCoordinator:) function.
     func playerViewController(_ playerViewController: AVPlayerViewController,
-            willEndFullScreenPresentationWithAnimationCoordinator coordinator: UIViewControllerTransitionCoordinator)
+                              willEndFullScreenPresentationWithAnimationCoordinator coordinator: any UIViewControllerTransitionCoordinator)
     {
         // Store current time for embeded player
         if let player = playerViewController.player,

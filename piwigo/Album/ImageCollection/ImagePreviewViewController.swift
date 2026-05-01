@@ -23,14 +23,18 @@ class ImagePreviewViewController: UIViewController
         let viewSize = CGSizeMake(view.bounds.size.width * scale, view.bounds.size.height * scale)
         let sizes = imageData.sizes
         aspectRatio = sizes.medium?.aspectRatio ?? sizes.thumb?.aspectRatio ?? 1.0
-        var previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
+        var previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
         if imageData.isNotImage, previewSize == .fullRes {
-            if NetworkVars.shared.hasXXLargeSizeImages {
-                previewSize = .xxLarge
-            } else if NetworkVars.shared.hasXXXLargeSizeImages {
-                previewSize = .xxxLarge
-            } else if NetworkVars.shared.hasXXXXLargeSizeImages {
+            if pwgImageSize.xxxxLarge.isAvailable {
                 previewSize = .xxxxLarge
+            } else if pwgImageSize.xxxLarge.isAvailable {
+                previewSize = .xxxLarge
+            } else if pwgImageSize.xxLarge.isAvailable {
+                previewSize = .xxLarge
+            } else if pwgImageSize.xLarge.isAvailable {
+                previewSize = .xLarge
+            } else if pwgImageSize.large.isAvailable {
+                previewSize = .large
             } else {
                 previewSize = .medium
             }
@@ -48,8 +52,8 @@ class ImagePreviewViewController: UIViewController
             
             // Download high-resolution image
             if let imageURL = ImageUtilities.getPiwigoURL(imageData, ofMinSize: previewSize) {
-                PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, type: .image, atURL: imageURL,
-                                           fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] cachedImageURL in
+                ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, type: .image, atURL: imageURL,
+                                                fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] cachedImageURL in
                     // Downsample image in the background
                     guard let self = self else { return }
                     DispatchQueue.global(qos: .userInitiated).async { [self] in

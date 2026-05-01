@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24412" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_12" orientation="portrait" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24765" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24405"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24743"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -14,17 +14,17 @@
             <objects>
                 <viewController storyboardIdentifier="LoginViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Y6W-OH-hqX" customClass="LoginViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" clearsContextBeforeDrawing="NO" contentMode="scaleAspectFill" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5EZ-qb-Rvc">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <rect key="frame" x="0.0" y="0.0" width="440" height="956"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" restorationIdentifier="loginView" insetsLayoutMarginsFromSafeArea="NO" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" bouncesZoom="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0Pp-XO-zb1">
-                                <rect key="frame" x="0.0" y="118" width="393" height="666"/>
+                                <rect key="frame" x="0.0" y="124" width="440" height="764"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iQo-u1-AhM">
-                                        <rect key="frame" x="0.0" y="0.0" width="393" height="666"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="440" height="764"/>
                                         <subviews>
                                             <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" insetsLayoutMarginsFromSafeArea="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CCH-Yv-yXe">
-                                                <rect key="frame" x="80" y="40" width="233" height="57.666666666666657"/>
+                                                <rect key="frame" x="80" y="39.999999999999993" width="280" height="69.333333333333314"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="300" id="Grq-5P-hq2"/>
                                                     <constraint firstAttribute="width" secondItem="CCH-Yv-yXe" secondAttribute="height" multiplier="900:223" id="OHK-VX-2zc"/>
@@ -42,11 +42,11 @@
                                                     </mask>
                                                 </variation>
                                                 <connections>
-                                                    <action selector="openPiwigoURL:" destination="v1i-nc-bpr" eventType="touchUpInside" id="7PR-Mb-lMZ"/>
+                                                    <action selector="openPiwigoURL:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="qmo-F9-gbI"/>
                                                 </connections>
                                             </button>
                                             <textField clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="example.com" textAlignment="center" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" minimumFontSize="14" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="eJO-Fa-ceu">
-                                                <rect key="frame" x="20" y="237" width="353" height="44"/>
+                                                <rect key="frame" x="20" y="286" width="400" height="44"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
                                                 <constraints>
@@ -78,12 +78,12 @@
                                                 </connections>
                                             </textField>
                                             <label hidden="YES" opaque="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Website NotSecure" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" showsExpansionTextWhenTruncated="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rv7-Lg-dyW">
-                                                <rect key="frame" x="138" y="285" width="117" height="16"/>
+                                                <rect key="frame" x="161.66666666666666" y="334" width="116.99999999999997" height="16"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <textField clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Username (optional)" textAlignment="center" adjustsFontForContentSizeCategory="YES" minimumFontSize="14" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="J1S-58-xfG">
-                                                <rect key="frame" x="50" y="341" width="293" height="44"/>
+                                                <rect key="frame" x="50" y="390" width="340" height="44"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
                                                 <constraints>
@@ -116,7 +116,7 @@
                                                 </connections>
                                             </textField>
                                             <textField clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Password (optional)" textAlignment="center" adjustsFontForContentSizeCategory="YES" minimumFontSize="14" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="d5N-dw-hHL">
-                                                <rect key="frame" x="50" y="395" width="293" height="44"/>
+                                                <rect key="frame" x="50" y="444" width="340" height="44"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
                                                 <constraints>
@@ -149,7 +149,7 @@
                                                 </connections>
                                             </textField>
                                             <button clipsSubviews="YES" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OsE-ov-vLE">
-                                                <rect key="frame" x="50" y="449" width="293" height="44"/>
+                                                <rect key="frame" x="50" y="498" width="340" height="44"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="300" id="Qqw-1j-Q2P"/>
@@ -272,22 +272,28 @@
                                     <constraint firstItem="iQo-u1-AhM" firstAttribute="top" secondItem="0Pp-XO-zb1" secondAttribute="top" id="ql2-mC-fEk"/>
                                 </constraints>
                             </scrollView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="— Version 3.0 (511) —" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ems-Z0-ysf">
-                                <rect key="frame" x="0.0" y="767.66666666666663" width="393" height="13.333333333333371"/>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xbk-p6-MG3">
+                                <rect key="frame" x="180.66666666666666" y="857" width="78.999999999999972" height="28"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="piwigo.org" titleAlignment="center">
+                                    <fontDescription key="titleFontDescription" style="UICTFontTextStyleCaption2"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <action selector="openPiwigoURL:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="zRp-bP-mrx"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="dhF-9h-VBH"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="0Pp-XO-zb1" firstAttribute="trailing" secondItem="dhF-9h-VBH" secondAttribute="trailing" id="BOD-k9-pV1"/>
                             <constraint firstItem="0Pp-XO-zb1" firstAttribute="leading" secondItem="dhF-9h-VBH" secondAttribute="leading" id="DA2-W6-Gqs"/>
+                            <constraint firstItem="dhF-9h-VBH" firstAttribute="bottom" secondItem="xbk-p6-MG3" secondAttribute="bottom" constant="3" id="Jzs-VV-3Qa"/>
                             <constraint firstItem="dhF-9h-VBH" firstAttribute="bottom" secondItem="0Pp-XO-zb1" secondAttribute="bottom" id="KWH-Lz-LH3"/>
                             <constraint firstItem="0Pp-XO-zb1" firstAttribute="top" secondItem="dhF-9h-VBH" secondAttribute="top" id="Sdh-v9-b4O"/>
-                            <constraint firstItem="dhF-9h-VBH" firstAttribute="bottom" secondItem="ems-Z0-ysf" secondAttribute="bottom" constant="3" id="V1w-Co-agA"/>
-                            <constraint firstItem="ems-Z0-ysf" firstAttribute="centerX" secondItem="dhF-9h-VBH" secondAttribute="centerX" id="gWx-cf-LfH"/>
-                            <constraint firstItem="ems-Z0-ysf" firstAttribute="width" secondItem="dhF-9h-VBH" secondAttribute="width" id="nBc-JL-F53"/>
+                            <constraint firstItem="xbk-p6-MG3" firstAttribute="centerX" secondItem="dhF-9h-VBH" secondAttribute="centerX" id="zNm-zJ-ye2"/>
                         </constraints>
                     </view>
                     <connections>
@@ -297,17 +303,16 @@
                         <outlet property="passwordTextField" destination="d5N-dw-hHL" id="AbK-sL-krG"/>
                         <outlet property="passwordTextFieldHeight" destination="3cy-3h-VYB" id="pKM-k0-1o9"/>
                         <outlet property="piwigoLogo" destination="CCH-Yv-yXe" id="snI-dO-96P"/>
+                        <outlet property="piwigoURL" destination="xbk-p6-MG3" id="GFM-UU-HMA"/>
                         <outlet property="scrollView" destination="0Pp-XO-zb1" id="wam-SZ-z2U"/>
                         <outlet property="serverTextField" destination="eJO-Fa-ceu" id="IEd-K9-KCk"/>
                         <outlet property="serverTextFiledHeight" destination="lLZ-VD-fQv" id="AIa-4h-S7U"/>
                         <outlet property="userTextField" destination="J1S-58-xfG" id="T1k-17-YJj"/>
                         <outlet property="userTextFieldHeight" destination="5C6-uH-rQF" id="eKW-bv-mEA"/>
-                        <outlet property="versionLabel" destination="ems-Z0-ysf" id="Cfn-pK-sXp"/>
                         <outlet property="websiteNotSecure" destination="Rv7-Lg-dyW" id="H4K-yb-Gid"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <exit id="v1i-nc-bpr" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="54.198473282442748" y="78.16901408450704"/>
         </scene>

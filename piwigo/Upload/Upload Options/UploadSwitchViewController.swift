@@ -18,7 +18,7 @@ import uploadKit
 
 class UploadSwitchViewController: UIViewController {
     
-    weak var delegate: UploadSwitchDelegate?
+    weak var delegate: (any UploadSwitchDelegate)?
 
     private var cancelBarButton: UIBarButtonItem?
     private var uploadBarButton: UIBarButtonItem?
@@ -108,9 +108,6 @@ class UploadSwitchViewController: UIViewController {
     
     // MARK: - Actions
     @objc func didTapUploadButton() {
-        // Pause UploadManager while adding upload requests
-        UploadManager.shared.isPaused = true
-
         // Retrieve custom image parameters and upload settings from child views
         var imageParameters = [String:Any](minimumCapacity: 5)
         var uploadParameters = [String:Any](minimumCapacity: 12)

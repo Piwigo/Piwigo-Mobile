@@ -1,2 +1,5 @@
-• Kompatibilitet med Piwigo 16
-• Fixar buggar och förbättrar gränssnittet
+• Snabbare uppladdning och avancerade uppladdningsalternativ
+• Fortsätter uppladdningen i bakgrunden även efter att du bytt till en annan app
+• Snabbare visning av album som lagrats på enheten före uppladdning
+• Delar loggar i en fil via AirDrop och grupperar dem per millisekund
+• Bugfixar och förbättringar av gränssnittet

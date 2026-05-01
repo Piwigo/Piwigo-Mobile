@@ -12,157 +12,11 @@ import MobileCoreServices
 import piwigoKit
 import UIKit
 
-class ImageUtilities: NSObject {
-    
-    // MARK: - Piwigo Server Methods
-    static func rotate(_ image: Image, by angle: Double,
-                       completion: @escaping () -> Void,
-                       failure: @escaping (PwgKitError) -> Void) {
-        // Prepare parameters for rotating image
-        let paramsDict: [String : Any] = ["image_id"  : image.pwgID,
-                                          "angle"     : angle * 180.0 / .pi,
-                                          "pwg_token" : NetworkVars.shared.pwgToken,
-                                          "rotate_hd" : true]
-        
-        let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: pwgImageRotate, paramDict: paramsDict,
-                                jsonObjectClientExpectsToReceive: ImageRotateJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { result in
-            switch result {
-            case .success:
-                // Image rotated successfully ► Rotate thumbnails in cache
-                /// Image data not always immediately available after rotation.
-                /// We rotate the images stored in cache instead of downloading them.
-                rotateThumbnailsOfImage(image, by: angle)
-                completion()
-            
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                failure(error)
-            }
-        }
-    }
-    
-    static func setCategory(_ albumID: Int32, forImageIDs listOfImageIds: [Int64],
-                            withAction action: pwgImagesSetCategoryAction,
-                            completion: @escaping () -> Void,
-                            failure: @escaping (PwgKitError) -> Void) {
-        // Prepare parameters for retrieving image/video infos
-        let paramsDict: [String : Any] = ["image_id"    : listOfImageIds,
-                                          "category_id" : albumID,
-                                          "action"      : action.rawValue,
-                                          "pwg_token"   : NetworkVars.shared.pwgToken]
-        
-        let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: pwgImagesSetCategory, paramDict: paramsDict,
-                                jsonObjectClientExpectsToReceive: ImagesSetCategoryJSON.self,
-                                countOfBytesClientExpectsToReceive: pwgImagesSetCategoryBytes) { result in
-            switch result {
-            case .success:
-                // Images associated/dissociated/moved successfully
-                completion()
-            
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                failure(error)
-            }
-        }
-    }
-
-    static func delete(_ images: Set<Image>,
-                       completion: @escaping () -> Void,
-                       failure: @escaping (PwgKitError) -> Void) {
-        // Prepare parameters for retrieving image/video infos
-        let listOfImageIds: [Int64] = images.map({ $0.pwgID })
-        let paramsDict: [String : Any] = ["image_id"  : listOfImageIds,
-                                          "pwg_token" : NetworkVars.shared.pwgToken]
-        
-        let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: pwgImagesDelete, paramDict: paramsDict,
-                                jsonObjectClientExpectsToReceive: ImagesDeleteJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { result in
-            switch result {
-            case .success:
-                // Images deleted successfully
-                /// We may check here that the number returned matches the number of images to delete
-                /// and return an error to the user.
-                completion()
-            
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                failure(error)
-            }
-        }
-    }
-    
-    static func addToFavorites(_ imageData: Image,
-                               completion: @escaping () -> Void,
-                               failure: @escaping (PwgKitError) -> Void) {
-        // Prepare parameters for retrieving image/video infos
-        let paramsDict: [String : Any] = ["image_id"  : imageData.pwgID]
-        
-        let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: pwgUsersFavoritesAdd, paramDict: paramsDict,
-                                jsonObjectClientExpectsToReceive: FavoritesAddRemoveJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { result in
-            switch result {
-            case .success:
-                // Images successfully added to user's favorites
-                completion()
-            
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                failure(error)
-            }
-        }
-    }
-    
-    static func removeFromFavorites(_ imageData: Image,
-                                    completion: @escaping () -> Void,
-                                    failure: @escaping (PwgKitError) -> Void) {
-        // Prepare parameters for retrieving image/video infos
-        let paramsDict: [String : Any] = ["image_id"  : imageData.pwgID]
-        
-        let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: pwgUsersFavoritesRemove, paramDict: paramsDict,
-                                jsonObjectClientExpectsToReceive: FavoritesAddRemoveJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { result in
-            switch result {
-            case .success:
-                // Images successfully removed from user's favorites
-                completion()
-            
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                failure(error)
-            }
-        }
-    }
-    
-    
+struct ImageUtilities
+{
     // MARK: - Image Downsampling
     // Downsampling large images for display at smaller size
     /// WWDC 2018 - Session 219 - Image and Graphics Best practices
-    
-    // Bug introduced on 6 September 2024 (commit 18e427379a8132575a72ef053fe7d26090e09525)
-    static let dateCommit18e4273 = ISO8601DateFormatter().date(from: "2024-09-06T00:00:00Z")!
-    static let dateOfFirstOptImageV323 = {
-        if AppVars.shared.dateOfFirstOptImageV323 == Date.distantFuture.timeIntervalSinceReferenceDate {
-            AppVars.shared.dateOfFirstOptImageV323 = Date().timeIntervalSinceReferenceDate
-        }
-        return Date(timeIntervalSinceReferenceDate: AppVars.shared.dateOfFirstOptImageV323)
-    }()
-    
     static func optimumSize(ofImage image: UIImage, forPointSize pointSize: CGSize) -> CGSize? {
         // Check sizes
         if image.size.width < 1 || image.size.height < 1 { return nil }
@@ -188,7 +42,7 @@ class ImageUtilities: NSObject {
     
     static func downsample(imageAt imageURL: URL, to pointSize: CGSize, for type: pwgImageType) -> UIImage {
         // Optimised image available?
-        let filePath = imageURL.path + CacheVars.shared.optImage
+        let filePath = imageURL.path + optimisedImageNameExtension
         if let optImage = UIImage(contentsOfFile: filePath) {
             // Images created since commit 18e4273 can be too small (v3.2.2) — fixed in v3.2.3.
             let fileURL: URL?
@@ -199,7 +53,7 @@ class ImageUtilities: NSObject {
                 fileURL = URL(fileURLWithPath: filePath)
             }
             if let fileCreationDate = fileURL?.creationDate,
-               (fileCreationDate < dateCommit18e4273 || fileCreationDate > dateOfFirstOptImageV323) {
+               (fileCreationDate < ImageVars.shared.dateCommit18e4273 || fileCreationDate > ImageVars.shared.dateOfFirstOptImageV323) {
                 return optImage
             }
         }
@@ -221,7 +75,7 @@ class ImageUtilities: NSObject {
         
         // Save the downsampled image in cache if it does not belong to the app
         if [.album, .image].contains(type) {
-            saveDownsampledImage(downsampledImage, atPath: filePath)
+            downsampledImage.saveInOptimumFormat(atPath: filePath)
         }
         return downsampledImage
     }
@@ -239,90 +93,10 @@ class ImageUtilities: NSObject {
         }
     }
     
-    private static func saveDownsampledImage(_ downSampledImage: UIImage, atPath filePath: String) {
-        autoreleasepool {
-            let fm = FileManager.default
-            try? fm.removeItem(atPath: filePath)
-            if #available(iOS 17, *) {
-                if let data = downSampledImage.heicData() as? NSData {
-                    do {
-                        try data.write(toFile: filePath, options: .atomic)
-                    } catch {
-                        debugPrint(error.localizedDescription)
-                    }
-                }
-            } else if let data = downSampledImage.jpegData(compressionQuality: 1.0) as? NSData {
-                do {
-                    try data.write(toFile: filePath, options: .atomic)
-                } catch {
-                    debugPrint(error.localizedDescription)
-                }
-            }
-        }
-    }
-    
-    // https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/dq_context/dq_context.html#//apple_ref/doc/uid/TP30001066-CH203-BCIBHHBB
-    @available(iOS, introduced: 12.0, deprecated: 15.0, message: "")
-    public static func supportsPixelFormat(ofCGImage image: CGImage) -> Bool {
-        guard let colorSpace = image.colorSpace else {
-            return false
-        }
-        #if os(iOS) || os(watchOS) || os(tvOS)
-        let iOS = true
-        #else
-        let iOS = false
-        #endif
-        
-        #if os(OSX)
-        let macOS = true
-        #else
-        let macOS = false
-        #endif
-        
-        switch (colorSpace.model, image.bitsPerPixel, image.bitsPerComponent,
-                image.alphaInfo, image.bitmapInfo.contains(.floatComponents)) {
-        case (.unknown, 8, 8, .alphaOnly, _):
-            return macOS || iOS
-        case (.monochrome, 8, 8, .none, _):
-            return macOS || iOS
-        case (.monochrome, 8, 8, .alphaOnly, _):
-            return macOS || iOS
-        case (.monochrome, 16, 16, .none, _):
-            return macOS
-        case (.monochrome, 32, 32, .none, true):
-            return macOS
-        case (.rgb, 16, 5, .noneSkipFirst, _):
-            return macOS || iOS
-        case (.rgb, 32, 8, .noneSkipFirst, _):
-            return macOS || iOS
-        case (.rgb, 32, 8, .noneSkipLast, _):
-            return macOS || iOS
-        case (.rgb, 32, 8, .premultipliedFirst, _):
-            return macOS || iOS
-        case (.rgb, 32, 8, .premultipliedLast, _):
-            return macOS || iOS
-        case (.rgb, 64, 16, .premultipliedLast, _):
-            return macOS
-        case (.rgb, 64, 16, .noneSkipLast, _):
-            return macOS
-        case (.rgb, 128, 32, .noneSkipLast, true):
-            return macOS
-        case (.rgb, 128, 32, .premultipliedLast, true):
-            return macOS
-        case (.cmyk, 32, 8, .none, _):
-            return macOS
-        case (.cmyk, 64, 16, .none, _):
-            return macOS
-        case (.cmyk, 128, 32, .none, true):
-            return macOS
-        default:
-            return false
-        }
-    }
-    
     
     // MARK: - Image Size, URLs
-    static func optimumImageSizeForDevice() -> pwgImageSize {
+    @MainActor static
+    func optimumImageSizeForDevice() -> pwgImageSize {
         // Determine the resolution of the screen
         // See https://iosref.com/res
         // See https://www.apple.com/iphone/compare/ and https://www.apple.com/ipad/compare/
@@ -349,6 +123,10 @@ class ImageUtilities: NSObject {
             return .xLarge
         case pwgImageSize.xLarge.minPoints(forScale: scale)+1...pwgImageSize.xxLarge.minPoints(forScale: scale):
             return .xxLarge
+        case pwgImageSize.xxLarge.minPoints(forScale: scale)+1...pwgImageSize.xxxLarge.minPoints(forScale: scale):
+            return .xxxLarge
+        case pwgImageSize.xxxLarge.minPoints(forScale: scale)+1...pwgImageSize.xxxxLarge.minPoints(forScale: scale):
+            return .xxxxLarge
         default:
             return .fullRes
         }
@@ -362,7 +140,7 @@ class ImageUtilities: NSObject {
         var pwgURL: NSURL?
         
         // Square Size (should always be available)
-        if NetworkVars.shared.hasSquareSizeImages,
+        if pwgImageSize.square.isAvailable,
            let imageURL = sizes.square?.url,
            (imageURL.absoluteString ?? "").isEmpty == false {
             // Ensure that at least an URL will be returned
@@ -375,7 +153,7 @@ class ImageUtilities: NSObject {
         }
         
         // Thumbnail Size (should always be available)
-        if NetworkVars.shared.hasThumbSizeImages,
+        if pwgImageSize.thumb.isAvailable,
            let imageURL = sizes.thumb?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
@@ -387,7 +165,7 @@ class ImageUtilities: NSObject {
         }
         
         // XX Small Size
-        if NetworkVars.shared.hasXXSmallSizeImages,
+        if pwgImageSize.xxSmall.isAvailable,
            let imageURL = sizes.xxsmall?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
@@ -399,7 +177,7 @@ class ImageUtilities: NSObject {
         }
         
         // X Small Size
-        if NetworkVars.shared.hasXSmallSizeImages,
+        if pwgImageSize.xSmall.isAvailable,
            let imageURL = sizes.xsmall?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
@@ -411,7 +189,7 @@ class ImageUtilities: NSObject {
         }
         
         // Small Size
-        if NetworkVars.shared.hasSmallSizeImages,
+        if pwgImageSize.small.isAvailable,
            let imageURL = sizes.small?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
@@ -423,7 +201,7 @@ class ImageUtilities: NSObject {
         }
         
         // Medium Size (should always be available)
-        if NetworkVars.shared.hasMediumSizeImages,
+        if pwgImageSize.medium.isAvailable,
            let imageURL = sizes.medium?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
@@ -435,7 +213,7 @@ class ImageUtilities: NSObject {
         }
         
         // Large Size
-        if NetworkVars.shared.hasLargeSizeImages,
+        if pwgImageSize.large.isAvailable,
            let imageURL = sizes.large?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
@@ -447,7 +225,7 @@ class ImageUtilities: NSObject {
         }
         
         // X Large Size
-        if NetworkVars.shared.hasXLargeSizeImages,
+        if pwgImageSize.xLarge.isAvailable,
            let imageURL = sizes.xlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
@@ -459,7 +237,7 @@ class ImageUtilities: NSObject {
         }
         
         // XX Large Size
-        if NetworkVars.shared.hasXXLargeSizeImages,
+        if pwgImageSize.xxLarge.isAvailable,
            let imageURL = sizes.xxlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
@@ -471,7 +249,7 @@ class ImageUtilities: NSObject {
         }
         
         // XXX Large Size
-        if NetworkVars.shared.hasXXXLargeSizeImages,
+        if pwgImageSize.xxxLarge.isAvailable,
            let imageURL = sizes.xxxlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
@@ -483,7 +261,7 @@ class ImageUtilities: NSObject {
         }
         
         // XXXX Large Size
-        if NetworkVars.shared.hasXXXXLargeSizeImages,
+        if pwgImageSize.xxxxLarge.isAvailable,
            let imageURL = sizes.xxxxlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
@@ -501,74 +279,5 @@ class ImageUtilities: NSObject {
             pwgURL = imageURL
         }
         return pwgURL as URL?
-    }
-    
-
-    // MARK: - Image Rotation
-    static func rotateThumbnailsOfImage(_ imageData: Image, by angle: CGFloat) {
-        // Initialisation
-        guard let serverID = imageData.server?.uuid else { return }
-        let cacheDir = DataDirectories.cacheDirectory.appendingPathComponent(serverID)
-        let fm = FileManager.default
-
-        // Loop over all sizes
-        autoreleasepool {
-            pwgImageSize.allCases.forEach { size in
-                // Determine URL of image in cache
-                let fileURL = cacheDir.appendingPathComponent(size.path)
-                    .appendingPathComponent(String(imageData.pwgID))
-                
-                // Rotate thumbnail if any
-                if let image = UIImage(contentsOfFile: fileURL.path),
-                   let rotatedImage = image.rotated(by: -angle),
-                   let data = rotatedImage.jpegData(compressionQuality: 1.0) as? NSData
-                {
-                    let filePath = fileURL.path
-                    try? fm.removeItem(atPath: filePath)
-                    do {
-                        try data.write(toFile: filePath, options: .atomic)
-                    } catch {
-                        debugPrint(error.localizedDescription)
-                    }
-                }
-                
-                // Swap dimensions
-                switch size {
-                case .square:
-                    imageData.sizes.square?.dimensionsSwaped()
-                case .thumb:
-                    imageData.sizes.thumb?.dimensionsSwaped()
-                case .xxSmall:
-                    imageData.sizes.xxsmall?.dimensionsSwaped()
-                case .xSmall:
-                    imageData.sizes.xsmall?.dimensionsSwaped()
-                case .small:
-                    imageData.sizes.small?.dimensionsSwaped()
-                case .medium:
-                    imageData.sizes.medium?.dimensionsSwaped()
-                case .large:
-                    imageData.sizes.large?.dimensionsSwaped()
-                case .xLarge:
-                    imageData.sizes.xlarge?.dimensionsSwaped()
-                case .xxLarge:
-                    imageData.sizes.xxlarge?.dimensionsSwaped()
-                case .xxxLarge:
-                    imageData.sizes.xxxlarge?.dimensionsSwaped()
-                case .xxxxLarge:
-                    imageData.sizes.xxxxlarge?.dimensionsSwaped()
-                case .fullRes:
-                    imageData.fullRes?.dimensionsSwaped()
-                }
- 
-                // Rotate optimised image if any
-                let filePath = fileURL.path + CacheVars.shared.optImage
-                if let image = UIImage(contentsOfFile: filePath),
-                   let rotatedImage = image.rotated(by: -angle) {
-                    saveDownsampledImage(rotatedImage, atPath: filePath)
-                }
-                
-                // The file size and MD5 checksum are unchanged.
-            }
-        }
     }
 }

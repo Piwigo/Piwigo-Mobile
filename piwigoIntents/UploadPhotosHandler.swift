@@ -1,5 +1,5 @@
 //
-//  AutoUploadPhotosHandler.swift
+//  UploadPhotosHandler.swift
 //  piwigoIntents
 //
 //  Created by Eddy Lelièvre-Berna on 03/06/2021.
@@ -13,20 +13,6 @@ import uploadKit
 
 @available(iOSApplicationExtension 13.0, *)
 class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
-    
-    // MARK: - Core Data Object Contexts
-    @MainActor
-    private lazy var mainContext: NSManagedObjectContext = {
-        return DataController.shared.mainContext
-    }()
-    
-
-    // MARK: - Core Data Providers
-    lazy var uploadProvider: UploadProvider = {
-        let provider = UploadProvider.shared
-        return provider
-    }()
-
     
     // MARK: - Handle Intent
     func handle(intent: UploadPhotosIntent, completion: @escaping (UploadPhotosIntentResponse) -> Void)
@@ -46,7 +32,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
             if fileTypes.contains(fileUrl.pathExtension.lowercased()) {
 
                 // Delete file of same name in Uploads directory if it already exists (incomplete previous attempt?)
-                let fileUploadsUrl = UploadManager.shared.uploadsDirectory
+                let fileUploadsUrl = DataDirectories.appUploadsDirectory
                     .appendingPathComponent(fileUrl.lastPathComponent)
                 do { try FileManager.default.removeItem(at: fileUploadsUrl) } catch { }
 
@@ -63,7 +49,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
         
         // We collect the list of images in the upload queue
         // so that we can check which ones are already in the upload queue.
-        let uploadsInQueue: [String] = uploadProvider.getAllMd5sum()
+        let uploadsInQueue: [String] = UploadProvider().getAllMd5sum()
 
         // Get date of action for preparing identifier
         let dateFormatter = DateFormatter()
@@ -79,14 +65,16 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
         var selectedImages = [UploadProperties]()      // Array of images to upload
         for idx in 0..<selectedFiles.count {
             // Determine MD5 checksum
-            let error: Error?, md5Sum: String!
-            (md5Sum, error) = selectedFiles[idx].MD5checksum
-            if let error = error {
+            let md5Sum: String!
+            do {
+                md5Sum = try selectedFiles[idx].MD5checksum()
+            }
+            catch {
                 // Could not determine the MD5 checksum
                 completion(UploadPhotosIntentResponse.failure(error: error.localizedDescription))
                 return
             }
-
+            
             // Check if this file is already in the upload queue (might be slow)
             if let _ = uploadsInQueue.first(where: { $0 == md5Sum }) {
                 // This file is already in the upload queue -> next file
@@ -94,13 +82,13 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
             }
             
             // Set file URL in Uploads directory
-            let identifier = String(format: "%@%@%@%ld", UploadManager.shared.kIntentPrefix,
-                                    actionDateTime, UploadManager.shared.kImageSuffix, idx)
-            let fileUploadsUrl = UploadManager.shared.uploadsDirectory
+            let identifier = String(format: "%@%@%@%ld", kIntentPrefix,
+                                    actionDateTime, kImageSuffix, idx)
+            let fileUploadsUrl = DataDirectories.appUploadsDirectory
                 .appendingPathComponent(identifier)
 
             // Delete file if it already exists (incomplete previous attempt?)
-            do { try FileManager.default.removeItem(at: fileUploadsUrl) } catch { }
+            try? FileManager.default.removeItem(at: fileUploadsUrl)
 
             // Copy file to Uploads directory
             do {
@@ -130,67 +118,72 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
         }
 
         // Add selected images to upload queue
-        uploadProvider.importUploads(from: selectedImages) { error in
-            // Show an alert if there was an error.
-            guard let error = error else {
-                // Create the operation queue
-                let uploadQueue = OperationQueue()
-                uploadQueue.maxConcurrentOperationCount = 1
-                
-                // Add operation setting flag and selecting upload requests
-                let initOperation = BlockOperation {
-                    // Initialse variables and determine upload requests to prepare and transfer
-                    UploadManager.shared.initialiseBckgTask(triggeredByExtension: true)
-                }
-
-                // Initialise list of operations
-                var uploadOperations = [BlockOperation]()
-                uploadOperations.append(initOperation)
-
-                // Resume transfers
-                let resumeOperation = BlockOperation {
-                    // Transfer image
-                    UploadManager.shared.resumeTransfers()
-                }
-                resumeOperation.addDependency(uploadOperations.last!)
-                uploadOperations.append(resumeOperation)
-
-                // Add image preparation which will be followed by transfer operations
-                for _ in 0..<UploadVars.shared.maxNberOfUploadsPerBckgTask {
-                    let uploadOperation = BlockOperation {
-                        // Transfer image
-                        UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
-                    }
-                    uploadOperation.addDependency(uploadOperations.last!)
-                    uploadOperations.append(uploadOperation)
-                }
-                
-                // Inform the system that the background task is complete
-                // when the operation completes
-                let lastOperation = uploadOperations.last!
-                lastOperation.completionBlock = {
-                    debugPrint("••> Task completed with success.")
-                    // Save cached data in the main thread
-                    DispatchQueue.main.async {
-                        self.mainContext.saveIfNeeded()
-                    }
-                }
-
-                // Start the operations
-                debugPrint("••> Start upload operations in background task...");
-                uploadQueue.addOperations(uploadOperations, waitUntilFinished: false)
-
-                // Inform user that the shortcut was excuted with success
-                completion(UploadPhotosIntentResponse.success(nberPhotos: NSNumber(value: selectedImages.count)))
-                return
+        do {
+            Task { @UploadManagerActor in
+                let uploadIDs = try await UploadManager.shared.importUploads(from: selectedImages)
             }
             
-            // Error encountered…
-            DispatchQueue.main.async {
-                let msg = PwgKitError.uploadCreationError.localizedDescription
-                let errorMsg = String(format: "%@: %@", msg, error.localizedDescription)
-                completion(UploadPhotosIntentResponse.failure(error: errorMsg))
+            // Create the operation queue
+            let uploadQueue = OperationQueue()
+            uploadQueue.maxConcurrentOperationCount = 1
+            
+            // Add operation setting flag and selecting upload requests
+            let initOperation = BlockOperation {
+                // Initialse variables and determine upload requests to prepare and transfer
+                Task { @UploadManagerActor in
+                    await UploadManager.shared.initialiseBckgTask(triggeredByExtension: true)
+                }
             }
+            
+            // Initialise list of operations
+            var uploadOperations = [BlockOperation]()
+            uploadOperations.append(initOperation)
+            
+            // Resume transfers
+            let resumeOperation = BlockOperation {
+                // Transfer image
+                Task { @UploadManagerActor in
+                    await UploadManager.shared.resumeTransfers()
+                }
+            }
+            resumeOperation.addDependency(uploadOperations.last!)
+            uploadOperations.append(resumeOperation)
+            
+            // Add image preparation which will be followed by transfer operations
+            for _ in 0..<UploadVars.shared.maxNberOfUploadsPerBckgTask {
+                let uploadOperation = BlockOperation {
+                    // Transfer image
+                    Task { @UploadManagerActor in
+                        await UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
+                    }
+                }
+                uploadOperation.addDependency(uploadOperations.last!)
+                uploadOperations.append(uploadOperation)
+            }
+            
+            // Inform the system that the background task is complete
+            // when the operation completes
+            let lastOperation = uploadOperations.last!
+            lastOperation.completionBlock = {
+                debugPrint("••> Task completed with success.")
+                // Save cached data in the main thread
+                Task { @MainActor in
+                    DataController.shared.mainContext.saveIfNeeded()
+                }
+            }
+            
+            // Start the operations
+            debugPrint("••> Start upload operations in background task...");
+            uploadQueue.addOperations(uploadOperations, waitUntilFinished: false)
+            
+            // Inform user that the shortcut was excuted with success
+            completion(UploadPhotosIntentResponse.success(nberPhotos: NSNumber(value: selectedImages.count)))
+        }
+        catch {
+            // Show an alert if there was an error.
+            let msg = PwgKitError.uploadCreationError.localizedDescription
+            let errorMsg = String(format: "%@: %@", msg, error.localizedDescription)
+            completion(UploadPhotosIntentResponse.failure(error: errorMsg))
         }
     }
 }

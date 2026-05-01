@@ -10,8 +10,9 @@ import Foundation
 
 // MARK: - Counter Format
 // See https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Format_Patterns
-public enum pwgCounterFormat: Equatable, Hashable {
-    public enum Prefix: String, CaseIterable, Hashable {
+public enum pwgCounterFormat: Equatable, Hashable,Sendable {
+    
+    public enum Prefix: String, CaseIterable, Hashable, Sendable {
         case none           = ""
         case round          = "("
         case square         = "["
@@ -23,7 +24,7 @@ public enum pwgCounterFormat: Equatable, Hashable {
         }
     }
     
-    public enum Digits: String, CaseIterable, Hashable {
+    public enum Digits: String, CaseIterable, Hashable, Sendable {
         case one            = "0"
         case two            = "00"
         case three          = "000"
@@ -34,7 +35,7 @@ public enum pwgCounterFormat: Equatable, Hashable {
         case eight          = "00000000"
     }
     
-    public enum Suffix: String, CaseIterable, Hashable {
+    public enum Suffix: String, CaseIterable, Hashable, Sendable {
         case none           = ""
         case round          = ")"
         case square         = "]"

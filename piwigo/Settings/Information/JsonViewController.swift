@@ -107,7 +107,7 @@ class JsonViewController: UIViewController {
     }
     
     
-    // MARK: - Mail File
+    // MARK: - Share JSON Data
     @objc private func shareJSONdata() {
         // Disable buttons during action
         shareBarButton?.isEnabled = false
@@ -133,7 +133,9 @@ extension JsonViewController: UIActivityItemSource
     func activityViewController(_ activityViewController: UIActivityViewController,
                                 itemForActivityType activityType: UIActivity.ActivityType?) -> Any? {
         switch activityType {
-        case .airDrop, .copyToPasteboard, .message:
+        case .airDrop:
+            return fileURL
+        case .copyToPasteboard, .message:
             return fileContent?.text ?? ""
         case .mail, .print:
             fallthrough

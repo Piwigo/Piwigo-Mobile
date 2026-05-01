@@ -32,12 +32,6 @@ class LocalImagesViewController: UIViewController
         return context
     }()
     
-    // MARK: - Core Data Providers
-    lazy var uploadProvider: UploadProvider = {
-        let provider = UploadProvider.shared
-        return provider
-    }()
-    
     lazy var fetchUploadRequest: NSFetchRequest = {
         let fetchRequest = Upload.fetchRequest()
         // Priority to uploads requested manually, oldest ones first
@@ -77,7 +71,6 @@ class LocalImagesViewController: UIViewController
     var imagesBeingTouched = [IndexPath]()          // Array of indexPaths of touched images
     var uploadRequests = [UploadProperties]()       // Array of images to upload
     
-    var uploadsToDelete = [Upload]()
     lazy var imageCellSize: CGSize = getImageCellSize()
     let defaultImageHeaderHeight: CGFloat = 42.0
     lazy var imageHeaderHeight: CGFloat = defaultImageHeaderHeight
@@ -86,7 +79,7 @@ class LocalImagesViewController: UIViewController
     // MARK: - View
     var categoryId: Int32 = AlbumVars.shared.defaultCategory
     var categoryCurrentCounter: Int64 = UploadVars.shared.categoryCounterInit
-    weak var albumDelegate: AlbumViewControllerDelegate?
+    weak var albumDelegate: (any AlbumViewControllerDelegate)?
     var imageCollectionId: String = String()
     var imageCollectionName: String = String()
     
@@ -97,16 +90,16 @@ class LocalImagesViewController: UIViewController
     var uploadBarButton: UIBarButtonItem?           // for uploading selected images
     var trashBarButton: UIBarButtonItem?            // For deleting uploaded images on iPad
     var actionBarButton: UIBarButtonItem?           // on iPhone:
-    //  - for reversing the sort order
-    //  - for grouping by day, week or month (or not)
-    //  - for deleting uploaded images
-    //  - for selecting images in the Photo Library
-    //  - for allowing to re-upload images
-    // on iPad:
-    //  - for reversing the sort order
-    //  - for grouping by day, week or month (or not)
-    //  - for selecting images in the Photo Library
-    //  - for allowing to re-upload images
+                                                    //  - for reversing the sort order
+                                                    //  - for grouping by day, week or month (or not)
+                                                    //  - for deleting uploaded images
+                                                    //  - for selecting images in the Photo Library
+                                                    //  - for allowing to re-upload images
+                                                    // on iPad:
+                                                    //  - for reversing the sort order
+                                                    //  - for grouping by day, week or month (or not)
+                                                    //  - for selecting images in the Photo Library
+                                                    //  - for allowing to re-upload images
     var reUploadAllowed = false
     
     
@@ -238,17 +231,13 @@ class LocalImagesViewController: UIViewController
         NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
                                                name: UIContentSizeCategory.didChangeNotification, object: nil)
         
-        // Prevent device from sleeping if uploads are in progress
-        let uploading: [pwgUploadState] = [.waiting, .preparing, .prepared,
-                                           .uploading, .uploaded, .finishing]
-        let uploadsToPerform = (uploads.fetchedObjects ?? [])
-            .map({uploading.contains($0.state) ? 1 : 0}).reduce(0, +)
-        if uploadsToPerform > 0 {
-            UIApplication.shared.isIdleTimerDisabled = true
+        // Prevent device from sleeping if uploads are in progress before iOS 26
+        if #unavailable(iOS 26.0) {
+            UIApplication.shared.isIdleTimerDisabled = (UploadVars.shared.nberOfUploadsToComplete > 0)
         }
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
         // Save position of collection view
@@ -278,11 +267,25 @@ class LocalImagesViewController: UIViewController
         UIApplication.shared.isIdleTimerDisabled = false
         
         // Resume upload operations in background queue
-        // and update badge and upload button of album navigator
-        UploadManager.shared.backgroundQueue.async {
-            UploadManager.shared.isPaused = false
-            UploadManager.shared.isExecutingBackgroundUploadTask = false
-            UploadManager.shared.findNextImageToUpload()
+        if UploadVars.shared.isPaused {
+            UploadVars.shared.isPaused = false
+            Task(priority: .utility) { @UploadManagerActor in
+                #if os(iOS) && !targetEnvironment(macCatalyst)
+                if #available(iOS 26.0, *) {
+                    // Launch new continued upload task if possible
+                    if UploadVars.shared.isContinuedProcessingTaskActive == false {
+                        UploadManager.shared.runContinuedUploadTask()
+                    }
+                }
+                else {
+                    // Process next uploads if possible
+                    await UploadManagerActor.shared.processNextUpload()
+                }
+                #elseif targetEnvironment(macCatalyst)
+                // Process next uploads if possible
+                await UploadManagerActor.shared.processNextUpload()
+                #endif
+            }
         }
     }
     

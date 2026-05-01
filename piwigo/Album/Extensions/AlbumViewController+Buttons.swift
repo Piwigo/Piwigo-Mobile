@@ -11,7 +11,7 @@ import UIKit
 import piwigoKit
 import uploadKit
 
-@available(iOS, introduced: 15.0, deprecated: 26.0, message: "Exclusively before iOS 26")
+@available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Exclusively before iOS 26")
 extension AlbumViewController
 {
     // MARK: - Buttons Management
@@ -67,7 +67,7 @@ extension AlbumViewController
                     // Show UploadQueue button if needed
                     let nberOfUploads = UploadVars.shared.nberOfUploadsToComplete
                     let userInfo = ["nberOfUploadsToComplete": nberOfUploads]
-                    NotificationCenter.default.post(name: .pwgLeftUploads,
+                    NotificationCenter.default.post(name: .pwgUpdateNberOfUploadsToComplete,
                                                     object: nil, userInfo: userInfo)
                 }
             }
@@ -283,7 +283,7 @@ extension AlbumViewController
         button.addTarget(self, action: #selector(didTapUploadQueueButton), for: .touchUpInside)
         button.isHidden = true
         button.accessibilityIdentifier = "Upload Queue"
-        button.accessibilityLabel = NSLocalizedString("UploadRequests_cache", comment: "Uploads")
+        button.accessibilityLabel = String(localized: "UploadRequests_cache", comment: "Uploads")
         return button
     }
     

@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - Album Sort Types
-public enum pwgSmartAlbum: Int32 {
+public enum pwgSmartAlbum: Int32, Sendable {
     case root      = 0          // Root album
     case search    = -1         // Search
     case visits    = -2         // Most visited
@@ -24,25 +24,25 @@ extension pwgSmartAlbum {
     public var name: String {
         switch self {
         case .root:
-            return String(localized: "categorySelection_root", bundle: piwigoKit,
+            return String(localized: "categorySelection_root", bundle: .piwigoKit,
                           comment: "Root Album")
         case .search:
             return ""
         
         case .visits:
-            return String(localized: "categoryDiscoverVisits_title", bundle: piwigoKit,
+            return String(localized: "categoryDiscoverVisits_title", bundle: .piwigoKit,
                           comment: "Most visited")
         case .best:
-            return String(localized: "categoryDiscoverBest_title", bundle: piwigoKit,
+            return String(localized: "categoryDiscoverBest_title", bundle: .piwigoKit,
                           comment: "Best rated")
         case .recent:
-            return String(localized: "categoryDiscoverRecent_title", bundle: piwigoKit,
+            return String(localized: "categoryDiscoverRecent_title", bundle: .piwigoKit,
                           comment: "Recent photos")
         case .favorites:
-            return String(localized: "categoryDiscoverFavorites_title", bundle: piwigoKit,
+            return String(localized: "categoryDiscoverFavorites_title", bundle: .piwigoKit,
                           comment: "My Favorites")
         case .tagged:
-            return String(localized: "categoryDiscoverTagged_title", bundle: piwigoKit,
+            return String(localized: "categoryDiscoverTagged_title", bundle: .piwigoKit,
                           comment: "Tagged")
         }
     }

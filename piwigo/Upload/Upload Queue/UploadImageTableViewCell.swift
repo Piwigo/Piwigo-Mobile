@@ -57,15 +57,25 @@ class UploadImageTableViewCell: UITableViewCell {
         
         // Prepare image view
         if #available(iOS 26.0, *) {
+            // Apply large corner radius to first and last cells.
+            // Always clear any CAShapeLayer mask left by a previous roundCorners() call before
+            // applying new corner geometry; otherwise a reused cell keeps the old mask and the
+            // new cornerRadius / new mask is composited incorrectly, producing wrong corners.
+            cellImage.layer.mask = nil
+            
             // Apply large corner radius to first and last cells
             let oldCornerRadius: CGFloat = TableViewUtilities.defaultOldRCornerRadius - 2.0
             let newCornerRadius: CGFloat = TableViewUtilities.rowCornerRadius - 2.0
             if maskedCorner.isEmpty {
                 cellImage.layer.cornerRadius = oldCornerRadius
-            } else if maskedCorner.contains(.layerMinXMinYCorner) {
+                cellImage.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner,
+                                                 .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+            }
+            else if maskedCorner.contains(.layerMinXMinYCorner) {
                 cellImage.roundCorners(topLeft: newCornerRadius, topRight: oldCornerRadius,
                                        bottomLeft: oldCornerRadius, bottomRight: oldCornerRadius)
-            } else if maskedCorner.contains(.layerMinXMaxYCorner) {
+            }
+            else if maskedCorner.contains(.layerMinXMaxYCorner) {
                 cellImage.roundCorners(topLeft: oldCornerRadius, topRight: oldCornerRadius,
                                        bottomLeft: newCornerRadius, bottomRight: oldCornerRadius)
             }
@@ -78,7 +88,7 @@ class UploadImageTableViewCell: UITableViewCell {
         // => Photo Library: use PHAsset local identifier
         // => UIPasteborad: use identifier of type "Clipboard-yyyyMMdd-HHmmssSSSS-typ-#"
         //    where "typ" is "img" (photo) or "mov" (video).
-        if upload.localIdentifier.contains(UploadManager.shared.kClipboardPrefix) {
+        if upload.localIdentifier.contains(kClipboardPrefix) {
             // Case of an image retrieved from the pasteboard
             prepareThumbnailFromFile(for: upload, availableWidth: availableWidth)
         } else {
@@ -89,6 +99,13 @@ class UploadImageTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+
+        // Clear any CAShapeLayer mask applied by roundCorners() so that a reused cell
+        // never inherits corner geometry from its previous position in the list.
+        // Without this, a cell that was once a top/bottom row and is reused as a middle
+        // row (or vice-versa) keeps the stale mask, producing incorrect corner rendering.
+        cellImage.layer.mask = nil
+        cellImage.layer.cornerRadius = 0
     }
 
 
@@ -96,7 +113,7 @@ class UploadImageTableViewCell: UITableViewCell {
     /// Case of an image from the pasteboard
     private func prepareThumbnailFromFile(for upload:Upload, availableWidth:Int) {
         // Get file URL from identifier
-        let fileURL = UploadManager.shared.uploadsDirectory
+        let fileURL = DataDirectories.appUploadsDirectory
             .appendingPathComponent(upload.localIdentifier)
         
         // Task depends on file type
@@ -201,7 +218,7 @@ class UploadImageTableViewCell: UITableViewCell {
         PHImageManager.default().requestImage(for: imageAsset, targetSize: squareSize, contentMode: .aspectFill, options: cropToSquare, resultHandler: { result, info in
             DispatchQueue.main.async {
                 guard let image = result else {
-                    if let error = info?[PHImageErrorKey] as? Error {
+                    if let error = info?[PHImageErrorKey] as? (any Error) {
                         debugPrint("••> Error : \(error.localizedDescription)")
                     }
                     self.changeCellImageIfNeeded(withImage: pwgImageType.image.placeHolder)

@@ -8,8 +8,8 @@
 
 import Foundation
 
-public class DateUtilities: NSObject {
-    
+public struct DateUtilities: Sendable
+{
     // Unknown date is 00:00:00 UTC on 1 January 1900
     public static let unknownDate = ISO8601DateFormatter().date(from: "1900-01-01T00:00:00Z")!
     public static let unknownDateInterval = unknownDate.timeIntervalSinceReferenceDate
@@ -37,6 +37,31 @@ public class DateUtilities: NSObject {
         return formatter
     }()
     
+    // Logs times are provided with UTC time
+    public static let logsTimeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "HH:mm:ss.sss"
+        formatter.timeZone = TimeZone(abbreviation: "UTC")!
+        return formatter
+    }()
+    
+    // Return the date of the next day at 4 AM
+    public static func nextDayAt4AM(after timeInterval: TimeInterval) -> Date {
+        // Get the next day by adding 1 day
+        let calendar = Calendar.current
+        let date = Date(timeIntervalSinceReferenceDate: timeInterval)
+        let nextDay = calendar.date(byAdding: .day, value: 1, to: date)!
+        
+        // Set the time to 4:00 AM on that next day
+        var components = calendar.dateComponents([.year, .month, .day], from: nextDay)
+        components.hour = 4
+        components.minute = 0
+        components.second = 0
+        components.nanosecond = 0
+        
+        return calendar.date(from: components)!
+    }
     
     // Return corresponding time interval since 00:00:00 UTC on 1 January 2001
     // if the converted date is after 00:00:00 UTC on 8 January 1900

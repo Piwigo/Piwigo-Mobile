@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum pwgImageFileType : Int16, CaseIterable {
+public enum pwgImageFileType : Int16, CaseIterable, Sendable {
     case image = 0
     case video
     case pdf

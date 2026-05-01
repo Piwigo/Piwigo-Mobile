@@ -18,7 +18,7 @@ import uploadKit
 class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable {
     
     // MARK: - Initialisation
-    weak var delegate: ShareImageActivityItemProviderDelegate?
+    weak var delegate: (any ShareImageActivityItemProviderDelegate)?
     
     private var imageData: Image                        // Core Data image
     private var alertTitle: String?                     // Used if task cancels or fails
@@ -123,8 +123,8 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
 
         // Download PDF file synchronously if not in cache
         let sema = DispatchSemaphore(value: 0)
-        PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: .fullRes, type: .album, atURL: imageURL,
-                                   fromServer: serverID, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
+        ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: .fullRes, type: .album, atURL: imageURL,
+                                        fromServer: serverID, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
             // Notify the delegate on the main thread to show how it makes progress.
             self?.updateProgressView(with: Float((0.75 * fractionCompleted)))
         } completion: { [unowned self] fileURL in
@@ -136,7 +136,7 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
             self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadPdfFail_message", comment: "Failed to download PDF file!\n%@"), error.localizedDescription)
             sema.signal()
         }
-        let _ = sema.wait(timeout: .distantFuture)
+        _ = sema.wait(timeout: .distantFuture)
 
         // Cancel item task if PDF file could not be retrieved
         if alertTitle != nil {
@@ -211,7 +211,7 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
         // Will cancel share when operation starts
         isCancelledByUser = true
         // Cancel image file download
-        PwgSession.shared.cancelDownload(atURL: pwgImageURL)
+        ImageDownloader.shared.cancelDownload(atURL: pwgImageURL)
     }
 
     @objc func didFinishSharingImage() {
@@ -220,7 +220,7 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
 
         // Inform user in case of error after dismissing activity view controller
         if let alertTitle = alertTitle {
-            if delegate?.responds(to: #selector(ShareImageActivityItemProviderDelegate.showError(withTitle:andMessage:))) ?? false {
+            if delegate?.responds(to: #selector((any ShareImageActivityItemProviderDelegate).showError(withTitle:andMessage:))) ?? false {
                 delegate?.showError(withTitle: alertTitle, andMessage: alertMessage)
             }
         }

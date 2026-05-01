@@ -9,6 +9,7 @@
 import Foundation
 import Photos
 import UIKit
+import piwigoKit
 
 // MARK: Navigation Bar & Buttons
 extension LocalImagesViewController {
@@ -71,7 +72,7 @@ extension LocalImagesViewController {
             switch view.traitCollection.userInterfaceIdiom {
             case .phone:
                 navigationItem.rightBarButtonItems = [uploadBarButton, actionBarButton].compactMap { $0 }
-
+                
             case .pad:
                 trashBarButton?.isEnabled = canDeleteUploadedImages() || canDeleteSelectedImages()
                 navigationItem.rightBarButtonItems = [uploadBarButton, actionBarButton,
@@ -82,7 +83,7 @@ extension LocalImagesViewController {
         }
     }
     
-    @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
+    @MainActor @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Specific to iOS 15 to 18")
     func setTitleView(withCount count: Int? = nil) {
         // Create label programmatically
         let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
@@ -173,7 +174,7 @@ extension LocalImagesViewController {
             navigationItem.titleView = oneLineTitleView
         }
     }
-
+    
     @MainActor
     func updateActionButton() {
         // Update action button
@@ -225,7 +226,14 @@ extension LocalImagesViewController {
     // MARK: - Show Upload Options
     @objc func didTapUploadButton() {
         // Avoid potential crash (should never happen, but…)
-        uploadRequests = selectedImages.compactMap({ $0 })
+        switch UploadVars.shared.localImagesSort {
+        case .dateCreatedDescending:
+            uploadRequests = selectedImages.compactMap({ $0 })
+        case .dateCreatedAscending:
+            uploadRequests = selectedImages.compactMap({ $0 }).reversed()
+        default:
+            uploadRequests = selectedImages.compactMap({ $0 })
+        }
         if uploadRequests.isEmpty { return }
         
         // Disable buttons
@@ -243,7 +251,7 @@ extension LocalImagesViewController {
         uploadSwitchVC.user = user
         uploadSwitchVC.categoryId = categoryId
         uploadSwitchVC.categoryCurrentCounter = categoryCurrentCounter
-
+        
         // Will we propose to delete images after upload?
         if let firstLocalID = uploadRequests.first?.localIdentifier {
             if let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [firstLocalID], options: nil).firstObject {
@@ -257,11 +265,16 @@ extension LocalImagesViewController {
         
         // Push Edit view embedded in navigation controller
         let navController = UINavigationController(rootViewController: uploadSwitchVC)
+        #if targetEnvironment(macCatalyst)
+        navController.modalPresentationStyle = .formSheet
+        navController.modalTransitionStyle = .coverVertical
+        #else
         navController.modalPresentationStyle = .popover
         navController.modalTransitionStyle = .coverVertical
-        navController.popoverPresentationController?.sourceView = localImagesCollection
+        navController.popoverPresentationController?.sourceView = view
         navController.popoverPresentationController?.barButtonItem = uploadBarButton
         navController.popoverPresentationController?.permittedArrowDirections = .up
-        navigationController?.present(navController, animated: true)
+        #endif
+        present(navController, animated: true)
     }
 }

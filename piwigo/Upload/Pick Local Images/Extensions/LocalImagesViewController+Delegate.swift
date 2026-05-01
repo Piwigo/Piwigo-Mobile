@@ -54,7 +54,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
     
     
     // MARK: - Context Menus
-    @available(iOS, introduced: 13.0, deprecated: 16.0, message: "")
+    @available(iOS, introduced: 13.0, obsoleted: 16.0, message: "")
     func collectionView(_ collectionView: UICollectionView,
                         contextMenuConfigurationForItemAt indexPath: IndexPath,
                         point: CGPoint) -> UIContextMenuConfiguration? {
@@ -162,7 +162,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
     private func statusAction(_ upload: Upload?) -> UIAction {
         // Check if an upload request exists (should never happen)
         guard let upload = upload else {
-            return UIAction(title: String(localized: "errorHUD_label", bundle: piwigoKit, comment: "Error"),
+            return UIAction(title: String(localized: "errorHUD_label", bundle: .piwigoKit, comment: "Error"),
                             image: UIImage(systemName: "exclamationmark.triangle"), handler: { _ in })
         }
         
@@ -240,7 +240,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
             imageUpload = UIImage(named: "photo.badge.plus")
         }
         return UIAction(title: NSLocalizedString("tabBar_upload", comment: "Upload"),
-                        image: imageUpload) { action in
+                        image: imageUpload) { [self] action in
             // Check that an upload request does not exist for that image (should never happen)
             if (self.uploads.fetchedObjects ?? [])
                 .filter({$0.localIdentifier == cell.localIdentifier}).first != nil {
@@ -279,11 +279,16 @@ extension LocalImagesViewController: UICollectionViewDelegate
             
             // Push Edit view embedded in navigation controller
             let navController = UINavigationController(rootViewController: uploadSwitchVC)
+            #if targetEnvironment(macCatalyst)
+            navController.modalPresentationStyle = .formSheet
+            navController.modalTransitionStyle = .coverVertical
+            #else
             navController.modalPresentationStyle = .popover
             navController.modalTransitionStyle = .coverVertical
-            navController.popoverPresentationController?.sourceView = self.localImagesCollection
+            navController.popoverPresentationController?.sourceView = self.view
             navController.popoverPresentationController?.barButtonItem = self.uploadBarButton
             navController.popoverPresentationController?.permittedArrowDirections = .up
+            #endif
             self.navigationController?.present(navController, animated: true)
         }
     }
@@ -297,17 +302,31 @@ extension LocalImagesViewController: UICollectionViewDelegate
     private func deleteAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
         return UIAction(title: NSLocalizedString("localImages_deleteTitle", comment: "Remove from Camera Roll"),
                         image: UIImage(systemName: "trash"), attributes: .destructive) { action in
-            // Get image identifier and check if this image has been uploaded
-            if let upload = (self.uploads.fetchedObjects ?? []).filter({$0.localIdentifier == cell.localIdentifier}).first {
-                // Delete uploaded image
-                UploadManager.shared.deleteAssets(associatedToUploads: [upload])
-            } else {
-                // Delete images from Photo Library
-                let index = self.getImageIndex(for: indexPath)
-                let imageAsset = self.fetchedImages[index]
-                PHPhotoLibrary.shared().performChanges {
-                    // Delete images from the library
-                    PHAssetChangeRequest.deleteAssets([imageAsset] as NSFastEnumeration)
+            // Get asset to delete
+            let index = self.getImageIndex(for: indexPath)
+            let imageAsset = self.fetchedImages[index]
+            let uploadID = (self.uploads.fetchedObjects ?? []).filter({$0.localIdentifier == cell.localIdentifier}).first?.objectID
+            Task { @MainActor in
+                do {
+                    // Delete image from Photo Library
+                    try await PHPhotoLibrary.shared().performChanges {
+                        PHAssetChangeRequest.deleteAssets([imageAsset] as (any NSFastEnumeration))
+                    }
+                    
+                    // Delete associated upload request if any
+                    if let uploadID {
+                        Task { @UploadManagerActor in
+                            // Delete upload requests w/o reporting potential error
+                            try? UploadProvider().deleteUploads(withID: [uploadID], inContext: UploadManager.shared.uploadBckgContext)
+                        }
+                    }
+                }
+                catch {
+                    if let uploadID {
+                        Task { @UploadManagerActor in
+                            UploadManager.shared.disableDeleteAfterUpload([uploadID])
+                        }
+                    }
                 }
             }
         }

@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import piwigoKit
 
-class HelpUtilities {
+struct HelpUtilities {
     // Return appropriate help view controller
     static func getHelpViewController(showingPagesWithIDs pageIDs: [UInt16]? = nil) -> HelpViewController {
         let helpSB = UIStoryboard(name: "HelpViewController", bundle: nil)
@@ -22,11 +22,8 @@ class HelpUtilities {
             helpVC.displayHelpPagesWithID = pageIDs
         }
         else {
-            if NetworkVars.shared.usesUploadAsync {
-                helpVC.displayHelpPagesWithID = [8,1,5,6,2,4,7,3,9]
-            } else {
-                helpVC.displayHelpPagesWithID = [8,1,5,6,4,3,9]
-            }
+            helpVC.displayHelpPagesWithID = [8,1,5,6,2,4,7,9,3]
+//            helpVC.displayHelpPagesWithID = [8,1,5,6,2,4,7,10,9,3]
         }
         return helpVC
     }

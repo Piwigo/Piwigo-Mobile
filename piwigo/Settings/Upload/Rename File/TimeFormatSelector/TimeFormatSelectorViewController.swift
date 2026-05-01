@@ -24,7 +24,7 @@ class TimeFormatSelectorViewController: UIViewController {
         case count
     }
     
-    weak var delegate: SelectTimeFormatDelegate?
+    weak var delegate: (any SelectTimeFormatDelegate)?
     
     @IBOutlet weak var tableView: UITableView!
     

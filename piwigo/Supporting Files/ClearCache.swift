@@ -11,8 +11,8 @@ import UIKit
 import piwigoKit
 import uploadKit
 
-class ClearCache: NSObject {
-    
+final class ClearCache
+{    
     @MainActor
     static func closeSessionWithPwgError(from viewController: UIViewController, error: PwgKitError) {
         var title = "", message = ""
@@ -38,8 +38,6 @@ class ClearCache: NSObject {
             
             // Back to default server properties
             NetworkVars.shared.usesCommunityPluginV29 = false
-            NetworkVars.shared.usesUploadAsync = false
-            NetworkVars.shared.usesCalcOrphans = false
             NetworkVars.shared.usesSetCategory = false
             NetworkVars.shared.usesAPIkeys = false
             
@@ -126,11 +124,11 @@ class ClearCache: NSObject {
         // Cancel tasks
         cancelTasks {
             // Erase data
-            UploadProvider.shared.clearAll()
-            LocationProvider.shared.clearAll()
-            TagProvider.shared.clearAll()
-            ImageProvider.shared.clearAll()
-            AlbumProvider.shared.clearAll()
+            UploadProvider().clearAll()
+            LocationProvider().clearAll()
+            TagProvider().clearAll()
+            ImageProvider().clearAll()
+            AlbumProvider().clearAll()
             
             // Clean directories (if anything left)
             cleanDirectories {
@@ -144,7 +142,7 @@ class ClearCache: NSObject {
         // Cancel tasks
         cancelTasks {
             // Erase Upload database
-            UploadProvider.shared.clearAll()
+            UploadProvider().clearAll()
             
             // Clean directories (if anything left)
             cleanDirectories {
@@ -155,40 +153,39 @@ class ClearCache: NSObject {
     }
     
     static func cancelTasks(completion: @escaping () -> Void) {
-        // Stop upload manager
-        UploadManager.shared.isPaused = true
-        
-        // Cancel upload tasks, then other tasks
-        UploadManager.shared.bckgSession.getAllTasks { tasks in
-            tasks.forEach({$0.cancel()})
-            UploadManager.shared.frgdSession.getAllTasks { tasks in
-                tasks.forEach({$0.cancel()})
-                
-                // Update badge and upload queue button
-                UploadManager.shared.backgroundQueue.async {
-                    UploadManager.shared.findNextImageToUpload()
-                }
+        Task(priority: .utility) { @UploadManagerActor in
+            UploadVars.shared.isPaused = true
+            await UploadManagerActor.shared.removeAllUploads()
+            
+            // Cancel upload tasks, then other tasks
+            let allUploadTasks = await bckgSession.allTasks
+            allUploadTasks.forEach({$0.cancel()})
+            
+            // Update badge and upload queue button
+            UploadManager.shared.updateNberOfUploadsToComplete()
 
-                // Cancel other tasks
-                PwgSession.shared.dataSession.getAllTasks { tasks in
-                    tasks.forEach({$0.cancel()})
-                    completion()
-                }
-            }
+            // Cancel other tasks
+            let allDataTasks = await dataSession.allTasks
+            allDataTasks.forEach({$0.cancel()})
+            
+            // Job done
+            completion()
         }
     }
     
     static func cleanDirectories(completion: @escaping () -> Void) {
         // Clean up Uploads directory (if any left)
-        UploadManager.shared.deleteFilesInUploadsDirectory() {
-            // Clean up /tmp directory
-            DispatchQueue.main.async {
-                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                appDelegate?.cleanUpTemporaryDirectory(immediately: true)
-                
-                // Job done
-                completion()
-            }
+        Task { @UploadManagerActor in
+            UploadManager.shared.deleteFilesInUploadsDirectory()
+            
+            // Performs next tasks after emptying the Uploads directory
+            completion()
+        }
+        
+        // Clean up /tmp directory in the background in parallel
+        DispatchQueue.main.async {
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+            appDelegate?.cleanUpTemporaryDirectory(immediately: true)
         }
     }
 }

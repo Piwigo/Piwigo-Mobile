@@ -68,21 +68,28 @@ extension AlbumViewController
             return
         }
 
-        // Add image to favorites
-        PwgSession.checkSession(ofUser: user) { [self] in
-            ImageUtilities.addToFavorites(imageData) { [self] in
-                DispatchQueue.main.async { [self] in
+        // Send requests to Piwigo server
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                
+                // Add image to favorites
+                try await JSONManager.shared.addToFavorites(imageData)
+                
+                // Update cache and UI
+                await MainActor.run {
                     // Update HUD
                     navigationController?.updateHUD(withProgress: 1.0 - Float(remainingIDs.count) / total)
-                    
+
                     // Image added to favorites ► Add it in the background
-                    if let favAlbum = self.albumProvider.getAlbum(ofUser: self.user, withId: pwgSmartAlbum.favorites.rawValue) {
+                    if let favAlbum = try? AlbumProvider().getAlbum(ofUser: self.user, withId: pwgSmartAlbum.favorites.rawValue) {
                         // Remove image from favorites album
                         favAlbum.addToImages(imageData)
                         // Update favorites album data
-                        self.albumProvider.updateAlbums(addingImages: 1, toAlbum: favAlbum)
+                        try? self.albumProvider.updateAlbums(addingImages: 1, toAlbum: favAlbum, inContext: self.mainContext)
                     }
-                    
+
                     // pwg.users.favorites… methods available from Piwigo version 2.10
                     if self.hasFavorites {
                         let visibleCells = self.collectionView?.visibleCells ?? []
@@ -91,7 +98,7 @@ extension AlbumViewController
                             cell.isFavorite = true
                         }
                     }
-                    
+
                     // Next image
                     remainingIDs.remove(imageID)
                     if contextually == false {
@@ -99,13 +106,8 @@ extension AlbumViewController
                     }
                     favorite(imagesWithID: remainingIDs, total: total, contextually: contextually)
                 }
-            } failure: { [self] error in
-                DispatchQueue.main.async { [self] in
-                    self.favoriteError(error, contextually: contextually)
-                }
             }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
+            catch let error as PwgKitError {
                 self.favoriteError(error, contextually: contextually)
             }
         }
@@ -175,21 +177,28 @@ extension AlbumViewController
             return
         }
 
-        // Remove image to favorites
-        PwgSession.checkSession(ofUser: user) { [self] in
-            ImageUtilities.removeFromFavorites(imageData) { [self] in
-                DispatchQueue.main.async { [self] in
+        // Send requests to Piwigo server
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                
+                // Remove image from favorites
+                try await JSONManager.shared.removeFromFavorites(imageData)
+                
+                // Update cache and UI
+                await MainActor.run {
                     // Update HUD
                     navigationController?.updateHUD(withProgress: 1.0 - Float(remainingIDs.count) / total)
-                    
+
                     // Image removed from favorites ► Remove it in the foreground
-                    if let favAlbum = self.albumProvider.getAlbum(ofUser: self.user, withId: pwgSmartAlbum.favorites.rawValue) {
+                    if let favAlbum = try? AlbumProvider().getAlbum(ofUser: self.user, withId: pwgSmartAlbum.favorites.rawValue) {
                         // Remove image from favorites album
                         favAlbum.removeFromImages(imageData)
                         // Update favorites album data
-                        self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: favAlbum)
+                        try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: favAlbum, inContext: self.mainContext)
                     }
-                    
+
                     // pwg.users.favorites… methods available from Piwigo version 2.10
                     if self.hasFavorites {
                         let visibleCells = self.collectionView?.visibleCells ?? []
@@ -198,7 +207,7 @@ extension AlbumViewController
                             cell.isFavorite = false
                         }
                     }
-                    
+
                     // Next image
                     remainingIDs.removeFirst()
                     if contextually == false {
@@ -206,13 +215,8 @@ extension AlbumViewController
                     }
                     unfavorite(imagesWithID: remainingIDs, total: total, contextually: contextually)
                 }
-            } failure: { [self] error in
-                DispatchQueue.main.async { [self] in
-                    self.unfavoriteError(error, contextually: contextually)
-                }
             }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
+            catch let error as PwgKitError {
                 self.unfavoriteError(error, contextually: contextually)
             }
         }

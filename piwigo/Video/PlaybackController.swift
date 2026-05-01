@@ -15,7 +15,7 @@ class PlaybackController {
     // Singleton
     static let shared = PlaybackController()
     
-    weak var videoItemDelegate: PlayerViewControllerCoordinatorDelegate?
+    weak var videoItemDelegate: (any PlayerViewControllerCoordinatorDelegate)?
     
     private var playbackItems = [Int64: PlayerViewControllerCoordinator]()
     

@@ -20,215 +20,10 @@ enum pwgImageCollectionType {
     case popup, full
 }
 
-class AlbumUtilities: NSObject {
-    
-    // MARK: - Constants
-    static let kAlbumCellSpacing = CGFloat(8)               // Horizontal spacing between album cells
-    static let kAlbumCellVertSpacing = CGFloat(8)           // Vertical spacing between album cells
-    static let kAlbumMarginsSpacing = CGFloat(4)            // Left and right margins for albums
-    
-    static let kImageCellSpacing4iPhone = CGFloat(1)        // Spacing between images (horizontally and vertically)
-    static let kImageCellHorSpacing4iPad = CGFloat(8)
-    static let kImageCellHorSpacing4iPadPopup = CGFloat(1)
-    static let kImageCellVertSpacing4iPad = CGFloat(8)
-    static let kImageCellVertSpacing4iPadPopup = CGFloat(1)
-    //    static let kImageMarginsSpacing = CGFloat(0)            // Left and right margins for images
-    static let kThumbnailFileSize = CGFloat(144)            // Default Piwigo thumbnail file size
-    
-    static let kImageDetailsCellSpacing = CGFloat(8)        // Spacing between image details cells
-    static let kImageDetailsMarginsSpacing = CGFloat(16)    // Left and right margins for image details cells
-    
-    
-    // MARK: - Piwigo Server Methods
-    static func create(withName name:String, description: String, status: String,
-                       inAlbumWithId parentAlbumId: Int32,
-                       completion: @escaping (Int32) -> Void,
-                       failure: @escaping (PwgKitError) -> Void) {
-        
-        // Prepare parameters for setting album thumbnail
-        let paramsDict: [String : Any] = ["name"    : name,
-                                          "parent"  : parentAlbumId,
-                                          "comment" : description,
-                                          "status"  : status]
-        
-        let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: pwgCategoriesAdd, paramDict: paramsDict,
-                                jsonObjectClientExpectsToReceive: CategoriesAddJSON.self,
-                                countOfBytesClientExpectsToReceive: 1040) { result in
-            switch result {
-            case .success(let pwgData):
-                // Successful?
-                if let catId = pwgData.data.id, catId != Int32.min {
-                    // Album successfully created ▶ Add it to list of recently used albums
-                    let userInfo = ["categoryId" : NSNumber.init(value: catId)]
-                    NotificationCenter.default.post(name: Notification.Name.pwgAddRecentAlbum,
-                                                    object: nil, userInfo: userInfo)
-                    completion(catId)
-                }
-                else {
-                    // Could not retrieve album ID
-                    failure(.unexpectedError)
-                }
-
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                failure(error)
-            }
-        }
-    }
-    
-    static func setInfos(_ albumId: Int32, withName name:String, description: String,
-                         completion: @escaping () -> Void,
-                         failure: @escaping (PwgKitError) -> Void) {
-        
-        // Prepare parameters for setting album thumbnail
-        /// token required for updating HTML in name/comment
-        let paramsDict: [String : Any] = ["category_id" : albumId,
-                                          "name"        : name,
-                                          "comment"     : description,
-                                          "pwg_token"   : NetworkVars.shared.pwgToken
-        ]
-        
-        let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: pwgCategoriesSetInfo, paramDict: paramsDict,
-                                jsonObjectClientExpectsToReceive: CategoriesSetInfoJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { result in
-            switch result {
-            case .success:
-                // Album successfully updated
-                completion()
-            
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                failure(error)
-            }
-        }
-    }
-    
-    static func move(_ albumId: Int32, intoAlbumWithId newParentId: Int32,
-                     completion: @escaping () -> Void,
-                     failure: @escaping (PwgKitError) -> Void) {
-        // Prepare parameters for setting album thumbnail
-        let paramsDict: [String : Any] = ["category_id" : albumId,
-                                          "parent"      : newParentId,
-                                          "pwg_token"   : NetworkVars.shared.pwgToken]
-        
-        let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: pwgCategoriesMove, paramDict: paramsDict,
-                                jsonObjectClientExpectsToReceive: CategoriesMoveJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { result in
-            switch result {
-            case .success:
-                // Album successfully moved
-                completion()
-
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                failure(error)
-            }
-        }
-    }
-    
-    static func calcOrphans(_ catID: Int32,
-                            completion: @escaping (Int64) -> Void,
-                            failure: @escaping (PwgKitError) -> Void) {
-        // Prepare parameters for setting album thumbnail
-        let paramsDict: [String : Any] = ["category_id": catID]
-        
-        let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: pwgCategoriesCalcOrphans, paramDict: paramsDict,
-                                jsonObjectClientExpectsToReceive: CategoriesCalcOrphansJSON.self,
-                                countOfBytesClientExpectsToReceive: 2100) { result in
-            switch result {
-            case .success(let pwgData):
-                // Data retrieved successfully?
-                if let nberOrphans = pwgData.data?.first?.nbImagesBecomingOrphan {
-                    completion(nberOrphans)
-                } else {
-                    failure(.unexpectedError)
-                }
-
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                failure(error)
-            }
-        }
-    }
-    
-    static func delete(_ catID: Int32, inMode mode: pwgAlbumDeletionMode,
-                       completion: @escaping () -> Void,
-                       failure: @escaping (PwgKitError) -> Void) {
-        // Prepare parameters for setting album thumbnail
-        let paramsDict: [String : Any] = ["category_id"         : catID,
-                                          "photo_deletion_mode" : mode.pwgArg,
-                                          "pwg_token"           : NetworkVars.shared.pwgToken]
-        
-        let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: pwgCategoriesDelete, paramDict: paramsDict,
-                                jsonObjectClientExpectsToReceive: CategoriesDeleteJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { result in
-            switch result {
-            case .success:
-                // Album successfully deleted ▶ Remove category ID from list of recently used albums
-                let userInfo = ["categoryId" : NSNumber.init(value: catID)]
-                NotificationCenter.default.post(name: Notification.Name.pwgRemoveRecentAlbum,
-                                                object: nil, userInfo: userInfo)
-                completion()
-                
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                failure(error)
-            }
-        }
-    }
-    
-    static func setRepresentative(_ albumData: Album, with imageData: Image,
-                                  completion: @escaping () -> Void,
-                                  failure: @escaping (PwgKitError) -> Void) {
-        // Prepare parameters for setting album thumbnail
-        let paramsDict: [String : Any] = ["category_id" : albumData.pwgID,
-                                          "image_id"    : imageData.pwgID]
-        
-        let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: pwgCategoriesSetRepresentative, paramDict: paramsDict,
-                                jsonObjectClientExpectsToReceive: CategoriesSetRepresentativeJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { result in
-            switch result {
-            case .success(let pwgData):
-                // Successful?
-                if pwgData.success {
-                    // Album thumbnail successfully changed ▶ Update catagory in cache
-                    albumData.thumbnailId = imageData.pwgID
-                    let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                    albumData.thumbnailUrl = ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumnailSize) as NSURL?
-                    completion()
-                }
-                else {
-                    // Could not set album thumbnail
-                    failure(.unexpectedError)
-                }
-
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                failure(error)
-            }
-        }
-    }
-    
-    
+struct AlbumUtilities
+{
     // MARK: - Album/Images Collections | Common Methods
+    @MainActor
     static func getSafeAreaSize(ofNavigationViewController viewController: UIViewController?) -> CGSize {
         var safeAreaWidth: CGFloat = UIScreen.main.bounds.size.width
         let safeAreaHeight: CGFloat = UIScreen.main.bounds.size.height
@@ -239,6 +34,7 @@ class AlbumUtilities: NSObject {
         return CGSize(width: safeAreaWidth, height: safeAreaHeight)
     }
     
+    @MainActor
     static func sizeOfPage(forView view: UIView? = nil) -> CGSize {
         if let viewBounds = view?.bounds.inset(by: view?.safeAreaInsets ?? UIEdgeInsets.zero) {
             return viewBounds.size
@@ -246,6 +42,7 @@ class AlbumUtilities: NSObject {
         return UIScreen.main.bounds.size
     }
     
+    @MainActor
     static func viewWidth(for view: UIView, pageSize: CGSize) -> CGFloat {
         // Available width in portrait mode
         let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
@@ -267,14 +64,14 @@ class AlbumUtilities: NSObject {
                 return size
             }
         }
-        return .xxLarge
+        return .xxxxLarge
     }
     
     static func albumWidth(forSafeAreaSize size: CGSize, maxCellWidth: CGFloat) -> CGFloat
     {
         // Collection view margins and spacings
-        let margins: CGFloat = 2 * kAlbumMarginsSpacing
-        let spacing: CGFloat = kAlbumCellSpacing
+        let margins: CGFloat = 2 * AlbumVars.shared.kAlbumMarginsSpacing
+        let spacing: CGFloat = AlbumVars.shared.kAlbumCellSpacing
         
         // Number of albums per row in portrait
         let widthInPortrait = min(size.width, size.height)
@@ -294,14 +91,17 @@ class AlbumUtilities: NSObject {
     
     
     // MARK: - Album/Images Collections | Image Thumbnails
+    @MainActor
     static let minNberOfImagesPerRow: Int = {
         return UIDevice.current.userInterfaceIdiom == .phone ? 3 : 5
     }()
     
+    @MainActor
     static let maxNberOfImagesPerRow: Int = {
         return UIDevice.current.userInterfaceIdiom == .phone ? 6 : 10
     }()
     
+    @MainActor
     static func optimumThumbnailSizeForDevice() -> pwgImageSize {
         // Returns the lowest size of sufficient resolution
         // to display the minimum number of thumbnails on the device.
@@ -313,47 +113,60 @@ class AlbumUtilities: NSObject {
                 return size
             }
         }
-        return .xxLarge
+        return .xxxxLarge
     }
     
+    @MainActor
     static func imageCellHorizontalSpacing(forCollectionType type: pwgImageCollectionType) -> CGFloat {
         var horizontalSpacing = CGFloat.zero
         switch type {
         case .popup:
-            horizontalSpacing = UIDevice.current.userInterfaceIdiom == .phone ? kImageCellSpacing4iPhone : kImageCellHorSpacing4iPadPopup
+            horizontalSpacing = UIDevice.current.userInterfaceIdiom == .phone
+                ? AlbumVars.shared.kImageCellSpacing4iPhone
+                : AlbumVars.shared.kImageCellHorSpacing4iPadPopup
         case .full:
-            horizontalSpacing = UIDevice.current.userInterfaceIdiom == .phone ? kImageCellSpacing4iPhone : kImageCellHorSpacing4iPad
+            horizontalSpacing = UIDevice.current.userInterfaceIdiom == .phone
+                ? AlbumVars.shared.kImageCellSpacing4iPhone
+                : AlbumVars.shared.kImageCellHorSpacing4iPad
         }
         return horizontalSpacing
     }
     
+    @MainActor
     static func imageCellVerticalSpacing(forCollectionType type: pwgImageCollectionType) -> CGFloat {
         var verticalSpacing = CGFloat.zero
         switch type {
         case .popup:
-            verticalSpacing = UIDevice.current.userInterfaceIdiom == .phone ? kImageCellSpacing4iPhone : kImageCellVertSpacing4iPadPopup
+            verticalSpacing = UIDevice.current.userInterfaceIdiom == .phone
+                ? AlbumVars.shared.kImageCellSpacing4iPhone
+                : AlbumVars.shared.kImageCellVertSpacing4iPadPopup
         case .full:
-            verticalSpacing = UIDevice.current.userInterfaceIdiom == .phone ? kImageCellSpacing4iPhone : kImageCellVertSpacing4iPad
+            verticalSpacing = UIDevice.current.userInterfaceIdiom == .phone
+                ? AlbumVars.shared.kImageCellSpacing4iPhone
+                : AlbumVars.shared.kImageCellVertSpacing4iPad
         }
         return verticalSpacing
     }
     
+    @MainActor
     static func imagesPerRowInPortrait(forMaxWidth maxWidth: CGFloat) -> Int {
         // Returns the number thumbnails per row for a given image width
         let pageSize = sizeOfPage(forView: nil)
         let viewWidth = min(pageSize.width, pageSize.height)
         let horSpacing = imageCellHorizontalSpacing(forCollectionType: .full)
-        let numerator = viewWidth + horSpacing
+        let numerator = viewWidth - horSpacing
         let denominator = horSpacing + maxWidth
         let nberOfImagePerRow = Int(round(numerator / denominator))
         return max(minNberOfImagesPerRow, nberOfImagePerRow)
     }
     
+    @MainActor
     static func imageSize(forSafeAreaSize size: CGSize, imagesPerRowInPortrait: Int) -> CGFloat {
         return imageSize(forSafeAreaSize: size, imagesPerRowInPortrait: imagesPerRowInPortrait,
                          collectionType: .full)
     }
     
+    @MainActor
     static func imageSize(forSafeAreaSize size: CGSize, imagesPerRowInPortrait: Int,
                           collectionType type: pwgImageCollectionType) -> CGFloat {
         // Collection view margins and spacings
@@ -376,6 +189,7 @@ class AlbumUtilities: NSObject {
         return ((size.width - (imagesPerRow - 1) * spacing - margins) / imagesPerRow).rounded(.down)
     }
     
+    @MainActor
     static func numberOfImagesToDownloadPerPage() -> Int {
         // CGFloat version of imagesPerRowInPortrait
         let nberOfImagesInPortrait = CGFloat(AlbumVars.shared.thumbnailsPerRowInPortrait)
@@ -411,10 +225,11 @@ class AlbumUtilities: NSObject {
         return Int(ceil(viewArea / cellArea))
     }
     
+    @MainActor
     static func imageDetailsSize(forView view: UIView) -> CGFloat {
         // Size of view or screen
         let cellSize = sizeOfPage(forView:view)
-        return CGFloat(min(cellSize.width - 2.0 * kImageDetailsMarginsSpacing, 340.0))
+        return CGFloat(min(cellSize.width - 2.0 * AlbumVars.shared.kImageDetailsMarginsSpacing, 340.0))
     }
     
     // MARK: - Album/Images Collections | Image Section

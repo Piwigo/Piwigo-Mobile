@@ -20,7 +20,7 @@ extension EditImageParamsViewController
         else { return }
         
         // Calc intersection between the keyboard's frame and the view's bounds
-        let toCoordinateSpace: UICoordinateSpace = parentVC.view
+        let toCoordinateSpace: any UICoordinateSpace = parentVC.view
         let convertedViewFrame = view.convert(view.bounds, to: toCoordinateSpace)
         let fromCoordinateSpace = window.screen.coordinateSpace
         let convertedKeyboardFrameEnd = fromCoordinateSpace.convert(kbInfo, to: toCoordinateSpace)

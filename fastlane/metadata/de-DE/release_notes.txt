@@ -1,2 +1,5 @@
-• Piwigo 16 Kompatibilität
+• Schnelleres Hochladen und erweiterte Upload-Optionen
+• Fortsetzung des Uploads im Hintergrund, nachdem zu einer anderen App gewechselt wurde
+• Schnellere Anzeige der auf dem Gerät gespeicherten Alben vor dem Hochladen
+• Freigabe der Protokolle als Datei über AirDrop und Gruppierung nach Millisekunden
 • Fehlerbehebungen und Verbesserungen der Benutzeroberfläche

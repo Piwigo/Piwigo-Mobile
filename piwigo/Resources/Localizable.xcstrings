@@ -1236,7 +1236,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Autocargar fotos"
+            "value" : "Subida automática de fotos"
           }
         },
         "fr" : {
@@ -2604,7 +2604,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aktie"
+            "value" : "Dela"
           }
         },
         "zh-Hans" : {
@@ -13046,102 +13046,102 @@
       }
     },
     "deleteCategory_noImages" : {
-      "comment" : "Keep Photos",
+      "comment" : "Keep Photos/Videos",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الاحتفاظ بالصور"
+            "value" : "الاحتفاظ بالصور/الفيديوهات"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Behold billeder"
+            "value" : "Behold Billeder/Videoer"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Behalte Fotos"
+            "value" : "Fotos/Videos behalten"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Keep Photos"
+            "value" : "Keep Photos/Videos"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mantener las fotos"
+            "value" : "Conservar fotos/vídeos"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Conserver les photos"
+            "value" : "Conserver les photos/vidéos"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fotók megtartása"
+            "value" : "Fotók/videók megőrzése"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Menyimpan gambar"
+            "value" : "Simpan Foto/Video"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tenere immagini"
+            "value" : "Conserva foto/video"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "写真を保存します"
+            "value" : "写真・動画を保存する"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Foto's houden"
+            "value" : "Foto's behouden/video's"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zachowaj zdjęcia"
+            "value" : "Zachowaj zdjęcia/filmy"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Оставить фотографии"
+            "value" : "Сохранить фото/видео"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Behåll bilderna"
+            "value" : "Spara bilder/videor"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "保留图像"
+            "value" : "保留照片/视频"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "保留照片"
+            "value" : "保留照片/影片"
           }
         }
       }
@@ -15282,7 +15282,7 @@
       }
     },
     "deleteSingleVideo_message" : {
-      "comment" : "Are you sure you want to delete this image? This cannot be undone!",
+      "comment" : "Are you sure you want to delete this image? This cannot be undone!\nAre you sure you want to delete this video?",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -15383,7 +15383,7 @@
       }
     },
     "deleteSingleVideo_title" : {
-      "comment" : "Are you sure you want to delete this video?\nDelete Video",
+      "comment" : "Delete Video",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -18722,6 +18722,7 @@
     },
     "goToPage_title" : {
       "comment" : "Go to page…",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -19322,107 +19323,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "將裝置充電後，iOS會在合適的時候啟動自動上傳。"
-          }
-        }
-      }
-    },
-    "help02_text3" : {
-      "comment" : "(requires the uploadAsync extension or Piwigo 11)",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(يتطلب امتداد uploadAsync أو Piwigo 11)"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(kræver uploadAsync udvidelsen eller Piwigo 11)"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(erfordert die UploadAsync-Erweiterung oder Piwigo 11)"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(requires the uploadAsync extension or Piwigo 11)"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(requiere la extensión uploadAsync o Piwigo 11)"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(nécessite l'extension uploadAsync ou Piwigo 11)"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(uploadSync bővítmény, vagy Piwigo 11 szükséges)"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(requires the uploadAsync extension or Piwigo 11)"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(richiede l'estensione uploadAsync o Piwigo 11)"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(uploadAsyncエクステンションまたはPiwigo11が必要です)"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(vereist de uploadAsync extensie of Piwigo 11)"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(wymaga rozszerzenia uploadAsync lub Piwigo 11)"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(требуется расширение uploadAsync или Piwigo 11)"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(kräver tillägget uploadAsync eller Piwigo 11)"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(需要安装 uploadAsync 扩展或升级到 Piwigo 11)"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(需要安裝uploadAsync插件或升級至Piwigo 11)"
           }
         }
       }
@@ -20739,6 +20639,15 @@
           }
         }
       }
+    },
+    "help10_header" : {
+      "comment" : "HTML Descriptions"
+    },
+    "help10_text" : {
+      "comment" : "Use <HTML…> tags to format the text in album and photo descriptions."
+    },
+    "help10_text2" : {
+      "comment" : "Choose a format appropriate for both apps and web pages."
     },
     "Hour" : {
       "comment" : "Hour",
@@ -37607,6 +37516,1218 @@
         }
       }
     },
+    "settings_advancedChunkSize" : {
+      "comment" : "Size",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "‮الحجم"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Størrelse"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Größe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Size"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamaño"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taille"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Méret"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukuran"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dimensione"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サイズ"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grootte"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rozmiar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Размер"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Storlek"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "大小"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "尺寸"
+          }
+        }
+      }
+    },
+    "settings_advancedChunkSizeDesc" : {
+      "comment" : "A value of %@ is generally a good starting point. Fast connections will have better performances with high values, such as %@.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قيمة %@ هي عموما نقطة بداية جيدة. الاتصالات السريعة سيكون لها أداء أفضل مع قيم عالية، مثل %@."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En værdi af %@ er generelt et godt udgangspunkt. Hurtige forbindelser vil have bedre præstationer med høje værdier, såsom %@."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Wert von %@ ist in der Regel ein guter Ausgangspunkt. Bei schnellen Verbindungen lässt sich mit höheren Werten, wie beispielsweise %@, eine bessere Leistung erzielen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A value of %@ is generally a good starting point. Fast connections will have better performances with high values, such as %@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un valor de %@ suele ser un buen punto de partida. Las conexiones rápidas tendrán mejor rendimiento con valores altos, como %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une valeur de %@ est généralement un bon point de départ. Les connexions rapides auront de meilleures performances avec des valeurs élevées, comme %@."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A %@ érték általában jó kiindulási pont. A gyors kapcsolatoknál magasabb értékek, például %@, jobb teljesítményt eredményeznek."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nilai %@ umumnya merupakan titik awal yang baik. Koneksi yang cepat akan memberikan kinerja yang lebih baik dengan nilai yang tinggi, seperti %@."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un valore di %@ è generalmente un buon punto di partenza. Le connessioni veloci avranno prestazioni migliori con valori elevati, come %@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ の値は一般的に良い出発点です。高速接続は、 %@ のような高い値でパフォーマンスが向上します。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Een waarde van %@ is over het algemeen een goed startpunt. Snelle verbindingen hebben betere prestaties met hoge waarden, zoals %@."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wartość %@ jest zazwyczaj dobrym punktem wyjścia. Szybkie połączenia będą miały lepsze wyniki z wysokimi wartościami, takimi jak %@."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Значение %@ обычно это хорошая начальная точка. Быстрые соединения будут иметь лучшую производительность с высокими значениями, например, %@."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ett värde av %@ är i allmänhet en bra utgångspunkt. Snabba anslutningar kommer att ha bättre prestationer med höga värden, såsom %@."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "建议以 %@ 作为初始值。网络速度较快时，可使用更高数值（如 %@）以获得更好性能。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 通常是個不錯的起點。對於高速連線，採用較高的數值（例如 %@）將能獲得更好的效能。"
+          }
+        }
+      }
+    },
+    "settings_advancedChunksText" : {
+      "comment" : "Please select the size of the chunks that files are split into during upload.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الرجاء تحديد حجم القطع التي يتم تقسيم الملفات إليها أثناء التحميل."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vælg størrelsen af de bidder som filer er opdelt i under upload."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte wählen Sie die Größe der Blöcke aus, in die die Dateien beim Hochladen aufgeteilt werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please select the size of the chunks that files are split into during upload."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por favor, seleccione el tamaño de los fragmentos en que se dividirán los archivos durante la subida."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veuillez sélectionner la taille des fragments dans lesquels les fichiers sont divisés pendant le téléchargement."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kérjük, válassza ki, hogy a feltöltés során a fájlok milyen méretű részekre legyenek felosztva."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Silakan pilih ukuran potongan yang akan digunakan untuk membagi file saat proses unggah."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si prega di selezionare la dimensione dei blocchi in cui i file sono suddivisi durante il caricamento."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アップロード中にファイルを分割するチャンクのサイズを選択してください。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecteer de grootte van de segmenten waarin de bestanden zijn gesplitst tijdens het uploaden."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Proszę wybrać rozmiar fragmentów, na które pliki będą dzielone podczas przesyłania."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пожалуйста, выберите размер чанков, которые будут разделены на файлы во время загрузки."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Välj storleken på de chunks som filerna delas upp i under uppladdningen."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请选择上传时文件分块的大小。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請選擇上傳時檔案被分割成的小塊大小。"
+          }
+        }
+      }
+    },
+    "settings_advancedChunksTitle" : {
+      "comment" : "Chunk Size",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حجم القطعة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chunk Størrelse"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blockgröße"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chunk Size"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamaño de fragmento"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taille des fragments"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Darabolási méret"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukuran Blok"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dimensione Chunk"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "チャンクサイズ"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chunk Grootte"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rozmiar fragmentu"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Размер чанка"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitstorleken"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分块大小"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "區塊大小"
+          }
+        }
+      }
+    },
+    "settings_advancedLimit" : {
+      "comment" : "Limit",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الحد"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grænse"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grenze"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Límite"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limite"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Határ"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batas"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limita"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "制限"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limiet"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limit"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лимит"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gräns"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上限"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上限"
+          }
+        }
+      }
+    },
+    "settings_advancedOptions" : {
+      "comment" : "Advanced Options",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خيارات متقدمة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avancerede Indstillinger"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erweiterte Einstellungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Advanced Options"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opciones Avanzadas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Options avancées"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haladó Beállítások"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilihan Lanjutan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opzioni Avanzate"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "詳細オプション"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geavanceerde Opties"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opcje zaawansowane"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дополнительные параметры"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avancerade Alternativ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "高级选项"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "進階選項"
+          }
+        }
+      }
+    },
+    "settings_advancedPreparedDesc" : {
+      "comment" : "A suitable value is one slightly above the maximum number of photos or videos you can upload at a time. Note that a higher limit will result in greater disk space usage.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "القيمة المناسبة هي واحدة أعلى قليلا من الحد الأقصى لعدد الصور أو مقاطع الفيديو التي يمكنك رفعها في كل مرة. لاحظ أن زيادة الحد الأقصى ستؤدي إلى زيادة استخدام مساحة القرص."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En passende værdi er en lidt over det maksimale antal billeder eller videoer, du kan uploade ad gangen. Bemærk, at en højere grænse vil resultere i større diskplads forbrug."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein geeigneter Wert liegt etwas über der maximalen Anzahl an Fotos oder Videos, die Sie auf einmal hochladen können. Beachten Sie, dass ein höheres Limit zu einem höheren Speicherplatzbedarf führt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A suitable value is one slightly above the maximum number of photos or videos you can upload at a time. Note that a higher limit will result in greater disk space usage."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un valor adecuado es uno ligeramente superior al número máximo de fotos o vídeos que se pueden cargar a la vez. Tenga en cuenta que un límite más alto resultará en un mayor uso de espacio en disco."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une valeur appropriée est légèrement supérieure au nombre maximum de photos ou de vidéos que vous pouvez télécharger à la fois. Notez qu'une limite plus élevée entraînera une plus grande utilisation de l'espace disque."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A megfelelő érték az, amely kissé meghaladja az egyszerre feltölthető fotók vagy videók maximális számát. Ne feledje, hogy a magasabb korlát nagyobb lemezterület-igényt jelent."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nilai yang tepat adalah nilai yang sedikit di atas jumlah maksimum foto atau video yang dapat Anda unggah sekaligus. Perlu diingat bahwa batas yang lebih tinggi akan mengakibatkan penggunaan ruang penyimpanan yang lebih besar."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un valore adatto è leggermente superiore al numero massimo di foto o video che puoi caricare alla volta. Si noti che un limite più alto comporterà un maggiore utilizzo dello spazio su disco."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "適切な値は、一度にアップロードできる写真や動画の最大数を少し上回っています。 制限が高いほどディスク容量が大きくなりますのでご注意ください。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Een geschikte waarde ligt een beetje boven het maximale aantal foto's of video's dat je kunt uploaden. Merk op dat een hogere limiet zal resulteren in een groter schijfgebruik van schijfruimte."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odpowiednia wartość jest nieco wyższa od maksymalnej liczby zdjęć lub filmów, które możesz przesłać jednocześnie. Zauważ, że wyższy limit spowoduje większe użycie przestrzeni dyskowej."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подходящее значение немного выше максимального количества фотографий или видео, которые вы можете загрузить одновременно. Заметьте, что более высокий лимит приведет к большему объему дискового пространства."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ett lämpligt värde ligger något över det maximala antalet foton eller videor som du kan ladda upp åt gången. Observera att en högre gräns kommer att resultera i större användning av diskutrymme."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "建议设置为略高于单次可上传照片 / 视频的最大数量。注意：上限越高，占用磁盘空间越大。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "合適的數值應略高於您一次可上傳的照片或影片的最大數量。請注意，設定較高的上限會導致佔用更多的磁碟空間。"
+          }
+        }
+      }
+    },
+    "settings_advancedPreparedText" : {
+      "comment" : "Please select the maximum number of uploads to prepare in advance.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الرجاء تحديد الحد الأقصى لعدد التحميلات للتحضير مسبقاً."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vælg det maksimale antal uploads der skal forberedes på forhånd."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte wählen Sie die maximale Anzahl der Uploads aus, die im Voraus vorbereitet werden sollen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please select the maximum number of uploads to prepare in advance."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por favor, seleccione el número máximo de subidas que preparar de antemano."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veuillez sélectionner le nombre maximum de téléchargements à préparer à l'avance."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kérjük, válassza ki előre a feltöltendő fájlok maximális számát."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Silakan tentukan jumlah maksimum unggahan yang akan disiapkan terlebih dahulu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si prega di selezionare il numero massimo di caricamenti da preparare in anticipo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "事前に準備するアップロードの最大数を選択してください。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecteer het maximale aantal uploads om voor te bereiden op voorhand."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wybierz maksymalną liczbę przesyłanych plików do przygotowania z wyprzedzeniem."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пожалуйста, выберите максимальное количество загрузок, чтобы подготовиться заранее."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Välj det maximala antalet uppladdningar att förbereda i förväg."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请选择要预先准备的上传的最大数量。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請預先設定最多可上傳的檔案數量。"
+          }
+        }
+      }
+    },
+    "settings_advancedPreparedTitle" : {
+      "comment" : "Upload Preparation",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحميل الإعداد"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upload Forberedelse"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upload-Vorbereitung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upload Preparation"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparación de subida"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Préparation des téléchargements"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feltöltés Előkészítése"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Persiapan Pengunggahan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carica Preparazione"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アップロード準備"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voorbereiding uploaden"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przygotowanie przesyłania"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подготовка к загрузке"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uppladdnings förberedelse"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上传准备"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上傳準備"
+          }
+        }
+      }
+    },
+    "settings_advancedTransfersDesc" : {
+      "comment" : "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeouts or 503 errors, try reducing this number.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "وقيمة 4 هي عموما نقطة بداية جيدة. من المستصوب الحفاظ على هذا الرقم منخفض، أو التحقق مع مزود خدمة الاستضافة أو مدير الشبكة. إذا واجهت مهلة أو 503 أخطاء، حاول تقليل هذا العدد."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En værdi på 4 er generelt et godt udgangspunkt. Det er tilrådeligt at holde dette nummer lavt, eller at tjekke med din hostingudbyder eller netværksadministrator. Hvis du støder på timeouts eller 503 fejl, så prøv at reducere dette antal."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Wert 4 ist in der Regel ein guter Ausgangspunkt. Es empfiehlt sich, diesen Wert niedrig zu halten oder sich bei Ihrem Hosting-Anbieter oder Netzwerkadministrator zu erkundigen. Sollten Zeitüberschreitungen oder 503-Fehler auftreten, versuchen Sie, diesen Wert zu verringern."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeouts or 503 errors, try reducing this number."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un valor de 4 suele ser un buen punto de partida. Es recomendable mantener este número bajo, o consultar con su proveedor de alojamiento o administrador de red. Si se encuentra con tiempos de espera excedidos o errores 503, intente reducir este número."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une valeur de 4 est généralement un bon point de départ. Il est conseillé de conserver ce nombre à un niveau bas ou de vérifier auprès de votre fournisseur d'hébergement ou de votre administrateur réseau. Si vous rencontrez des délais expirés ou des erreurs 503, essayez de réduire ce nombre."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A 4-es érték általában jó kiindulási pont. Célszerű ezt az értéket alacsony szinten tartani, vagy egyeztetni a tárhelyszolgáltatóval vagy a hálózati rendszergazdával. Ha időtúllépés vagy 503-as hibaüzenet jelentkezik, próbálja meg csökkenteni ezt az értéket."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nilai 4 umumnya merupakan titik awal yang baik. Disarankan untuk menjaga angka ini tetap rendah, atau berkonsultasi dengan penyedia hosting atau administrator jaringan Anda. Jika Anda mengalami timeout atau kesalahan 503, cobalah kurangi angka ini."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un valore di 4 è generalmente un buon punto di partenza. Si consiglia di mantenere basso questo numero, o di controllare con il provider di hosting o l'amministratore di rete. Se riscontri timeout o errori 503, prova a ridurre questo numero."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4の値は一般的に良い出発点です。 この番号を低く保つか、ホスティングプロバイダまたはネットワーク管理者に確認することをお勧めします。 タイムアウトまたは503エラーが発生した場合は、この数を減らしてみてください。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Een waarde van 4 is over het algemeen een goed uitgangspunt. Het is raadzaam om dit nummer laag te houden, of om te controleren met uw hosting provider of netwerkbeheerder. Als u time-outs of 503 fouten tegenkomt, probeer dan dit nummer te verminderen."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wartość 4 jest zasadniczo dobrym punktem wyjścia. Wskazane jest utrzymanie tej wartości na niskim poziomie lub sprawdzenie go u dostawcy usług hostingowych lub administratora sieci. Jeśli napotkasz przekroczenia limitu czasu lub błędy 503, spróbuj zmniejszyć tę liczbę."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ценность 4 обычно является хорошей отправной точкой. Рекомендуется держать этот номер низким или проверить с вашим хостинг-провайдером или администратором. Если вы встретите таймауты или 503 ошибки, попробуйте уменьшить это число."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ett värde av 4 är i allmänhet en bra utgångspunkt. Det är lämpligt att hålla detta nummer lågt, eller att kontrollera med din webbhotell leverantör eller nätverksadministratör. Om du stöter på timeouts eller 503 fel, försök att minska detta nummer."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "建议初始值设为 4。该数值不宜过高，或可咨询服务器服务商 / 网络管理员。若出现超时或 503 错误，请尝试降低此数值。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通常將此數值設為 4 是個不錯的起點。建議將此數值設得較低，或向您的主機服務供應商或網路管理員確認。若遇到超時或 503 錯誤，請嘗試降低此數值。"
+          }
+        }
+      }
+    },
+    "settings_advancedTransfersText" : {
+      "comment" : "Please select the maximum number of files to transfer simultaneously.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الرجاء تحديد الحد الأقصى لعدد الملفات التي سيتم نقلها في وقت واحد."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vælg det maksimale antal filer, der skal overføres samtidigt."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte wählen Sie die maximale Anzahl an Dateien aus, die gleichzeitig übertragen werden sollen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please select the maximum number of files to transfer simultaneously."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por favor, seleccione el número máximo de archivos que transferir simultáneamente."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veuillez sélectionner le nombre maximum de fichiers à transférer simultanément."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kérjük, válassza ki az egyszerre átvihető fájlok maximális számát."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Silakan pilih jumlah maksimum file yang akan ditransfer secara bersamaan."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleziona il numero massimo di file da trasferire contemporaneamente."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同時に転送するファイルの最大数を選択してください。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecteer het maximum aantal bestanden om gelijktijdig over te dragen."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wybierz maksymalną liczbę plików do równoczesnego przesyłania."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пожалуйста, выберите максимальное количество файлов для одновременной передачи."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Välj det maximala antalet filer att överföra samtidigt."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请选择要同时传输的最大文件数。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請選擇最多可同時傳輸的檔案數量。"
+          }
+        }
+      }
+    },
+    "settings_advancedTransfersTitle" : {
+      "comment" : "File Transfers",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نقل الملفات"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fil Overførsler"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dateiübertragungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "File Transfers"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transferencias de archivos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transferts de fichiers"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fájlátvitel"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transfer Berkas"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trasferimenti File"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイルの転送"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bestand Overdrachten"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transfery plików"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Передача файлов"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fil överföringar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件传输"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "檔案傳輸"
+          }
+        }
+      }
+    },
     "settings_appLock" : {
       "comment" : "App Lock",
       "localizations" : {
@@ -50428,7 +51549,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 张专辑"
+            "value" : "%@ 本相册"
           }
         },
         "zh-Hant" : {
@@ -59129,6 +60250,107 @@
         }
       }
     },
+    "whatsNew_bugFixes" : {
+      "comment" : "Bug fixes and improvement of the interface.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إصلاح الأخطاء وتحسين الواجهة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fejlrettelser og forbedringer af grænsefladen."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fehlerbehebung und Verbesserung der Schnittstelle."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bug fixes and improvement of the interface."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corrección de errores y mejora de la interfaz."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corrections de bugs et amélioration de l'interface."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hibajavítások és a felület fejlesztése."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perbaikan bug dan peningkatan antarmuka."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Correzioni di bug e miglioramento dell'interfaccia."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バグ修正とインターフェースの改善。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bug fixes en verbetering van de interface."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poprawki błędów i ulepszenia interfejsu."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Исправления ошибок и улучшение интерфейса."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buggfixar och förbättring av gränssnittet."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "错误修复和界面改进。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "修正錯誤並改進介面。"
+          }
+        }
+      }
+    },
     "whatsNew_continue" : {
       "comment" : "Continue",
       "localizations" : {
@@ -59230,204 +60452,103 @@
         }
       }
     },
-    "whatsNew_desc1" : {
-      "comment" : "Adopts Liquid Glass and brings iOS 26 compatibility.",
+    "whatsNew_improvements" : {
+      "comment" : "Improvements",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يعتمد Liquid Glass ويوفر التوافق مع iOS 26."
+            "value" : "التحسينات"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anvender Liquid Glass og giver kompatibilitet med iOS 26."
+            "value" : "Forbedringer"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verwendet Liquid Glass und bietet Kompatibilität mit iOS 26."
+            "value" : "Verbesserungen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Adopts Liquid Glass and brings iOS 26 compatibility."
+            "value" : "Improvements"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Adopta Liquid Glass y ofrece compatibilidad con iOS 26."
+            "value" : "Mejoras"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Adopte Liquid Glass et apporte la compatibilité avec iOS 26."
+            "value" : "Améliorations"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Liquid Glass bevezetése és iOS 26 kompatibilitás."
+            "value" : "Fejlesztések"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mengadopsi Liquid Glass dan mendukung kompatibilitas dengan iOS 26."
+            "value" : "Peningkatan"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Adotta Liquid Glass e garantisce la compatibilità con iOS 26."
+            "value" : "Miglioramenti"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Liquid Glassを採用し、iOS 26との互換性を実現しました。"
+            "value" : "改善"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Maakt gebruik van Liquid Glass en biedt compatibiliteit met iOS 26."
+            "value" : "Verbeteringen"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wprowadza Liquid Glass i zapewnia zgodność z iOS 26."
+            "value" : "Ulepszenia"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Использует технологию Liquid Glass и обеспечивает совместимость с iOS 26."
+            "value" : "Улучшения"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Använder Liquid Glass och är kompatibel med iOS 26."
+            "value" : "Förbättringar"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "采用Liquid Glass技术，并实现iOS 26兼容性。"
+            "value" : "改进"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "採用液態玻璃設計，並實現與 iOS 26 的相容性。"
-          }
-        }
-      }
-    },
-    "whatsNew_desc2" : {
-      "comment" : "Improved accessibility thanks to support for bold text, larger text sizes, and more.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تحسين إمكانية الوصول بفضل الدعم للنص الجريء، وأحجام النصوص الأكبر وأكثر."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Forbedret tilgængelighed takket være understøttelse af fed tekst, større tekststørrelser og mere."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verbesserte Barrierefreiheit dank Unterstützung für fettgedruckten Text, größere Schriftgrößen und mehr."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Improved accessibility thanks to support for bold text, larger text sizes, and more."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accesibilidad mejorada gracias a la compatibilidad con texto en negrita, tamaños de texto más grandes y mucho más."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Amélioration de l'accessibilité grâce à la prise en charge du texte en gras, des polices de caractères plus grandes, et plus encore."
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jobb akadálymentesség a vastag betűk, nagyobb betűméret és egyéb funkciók támogatásának köszönhetően."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Peningkatan aksesibilitas berkat dukungan untuk teks tebal, ukuran teks yang lebih besar, dan fitur lainnya."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accessibilità migliorata grazie al supporto per il testo in grassetto, dimensioni del testo più grandi e altro ancora."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "太字テキストや大きな文字サイズなどのサポートにより、アクセシビリティが向上しました。"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verbeterde toegankelijkheid dankzij ondersteuning voor vetgedrukte tekst, grotere tekstgroottes en meer."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Poprawiona dostępność dzięki obsłudze pogrubionego tekstu, większym rozmiarom tekstu i innym zmianom."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Улучшенная доступность благодаря поддержке жирного шрифта, увеличенного размера текста и другим функциям."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Förbättrad tillgänglighet tack vare stöd för fetstil, större textstorlekar och mycket mer."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "通过支持粗体文本、更大字号等功能，提升了无障碍体验。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "透過支援粗體文字、加大字型等功能，提升無障礙體驗。"
+            "value" : "改良"
           }
         }
       }
@@ -59533,204 +60654,103 @@
         }
       }
     },
-    "whatsNew_title1" : {
-      "comment" : "Major Update",
+    "whatsNew_uploads" : {
+      "comment" : "Faster uploads, new advanced options, and the ability to continue uploads in the background on iOS 26.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تحديث رئيسي"
+            "value" : "تحميل أسرع، خيارات متقدمة جديدة، والقدرة على مواصلة التحميل في الخلفية على نظام التشغيل iOS 26."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Større opdatering"
+            "value" : "Hurtigere uploads, nye avancerede muligheder, og evnen til at fortsætte uploads i baggrunden på iOS 26."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wichtiges Update"
+            "value" : "Schnellere Uploads, neue erweiterte Optionen und die Möglichkeit, das Hochladen im Hintergrund auf iOS 26 fortzusetzen."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Major Update"
+            "value" : "Faster uploads, new advanced options, and the ability to continue uploads in the background on iOS 26."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Actualización importante"
+            "value" : "Subidas más rápidas, nuevas opciones avanzadas y la capacidad de continuar subidas en segundo plano en iOS 26."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mise à jour majeure"
+            "value" : "Transferts plus rapides, de nouvelles options avancées et la possibilité de poursuivre les transferts en arrière-plan sur iOS 26."
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Főbb frissítések"
+            "value" : "Gyorsabb feltöltés, új speciális beállítások, valamint a feltöltés háttérben történő folytatásának lehetősége az iOS 26-ban."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pembaruan Besar"
+            "value" : "Pengunggahan yang lebih cepat, opsi lanjutan baru, dan kemampuan untuk melanjutkan pengunggahan di latar belakang pada iOS 26."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aggiornamento importante"
+            "value" : "Caricamenti più veloci, nuove opzioni avanzate e la possibilità di continuare i caricamenti in background su iOS 26."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "メジャーアップデート"
+            "value" : "高速アップロード、新しい高度なオプション、iOS 26 のバックグラウンドでのアップロードを継続する機能。"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Grote update"
+            "value" : "Snellere uploads, nieuwe geavanceerde opties en de mogelijkheid om door te gaan met uploaden op de achtergrond op iOS 26."
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Duża aktualizacja"
+            "value" : "Szybsze przesyłanie plików, nowe zaawansowane opcje oraz możliwość kontynuowania przesyłania w tle w systemie iOS 26."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Крупное обновление"
+            "value" : "Быстрая загрузка, новые расширенные опции и возможность продолжать выгрузку в фоновом режиме на iOS 26."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Större uppdatering"
+            "value" : "Snabbare uppladdningar, nya avancerade alternativ och möjlighet att fortsätta uppladdningar i bakgrunden på iOS 26."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重大更新"
+            "value" : "更快的上传，新的高级选项，以及在iOS 26后台继续上传的能力。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重大更新"
-          }
-        }
-      }
-    },
-    "whatsNew_title2" : {
-      "comment" : "Accessibility",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "إمكانية الوصول"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tilgængelighed"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Barrierefreiheit"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accessibility"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accesibilidad"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accessibilité"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Akadálymentesség"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aksesibilitas"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accessibilità"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アクセシビリティ"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toegankelijkheid"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dostępność"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Доступность"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tillgänglighet"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "无障碍功能"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無障礙功能"
+            "value" : "更快的上传，新的高级选项，以及在iOS 26后台继续上传的能力。"
           }
         }
       }

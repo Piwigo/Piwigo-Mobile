@@ -36,16 +36,23 @@ extension ImageViewController
         // Disable button during action
         favoriteBarButton?.isEnabled = false
 
-        // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [self] in
-            ImageUtilities.addToFavorites(imageData) { [self] in
-                DispatchQueue.main.async { [self] in
+        // Send requests to Piwigo server
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                
+                // Add image to favorites
+                try await JSONManager.shared.addToFavorites(imageData)
+                
+                // Update cache and UI
+                await MainActor.run {
                     // Update Favorite smart album
-                    if let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) {
+                    if let favAlbum = try? AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) {
                         // Add image to favorites album
                         favAlbum.addToImages(imageData)
                         // Update favorites album data
-                        self.albumProvider.updateAlbums(addingImages: 1, toAlbum: favAlbum)
+                        try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: favAlbum, inContext: self.mainContext)
                         // Save changes
                         self.mainContext.saveIfNeeded()
                         // Set button
@@ -65,13 +72,7 @@ extension ImageViewController
                         }
                     }
                 }
-            } failure: { [self] error in
-                DispatchQueue.main.async { [self] in
-                    self.addToFavoritesError(error)
-                }
-            }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
+            } catch let error as PwgKitError {
                 self.addToFavoritesError(error)
             }
         }
@@ -99,16 +100,23 @@ extension ImageViewController
         // Disable button during action
         favoriteBarButton?.isEnabled = false
 
-        // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [self] in
-            ImageUtilities.removeFromFavorites(imageData) { [self] in
-                DispatchQueue.main.async { [self] in
+        // Send requests to Piwigo server
+        Task {
+            do {
+                // Check session
+                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                
+                // Remove image from favorites
+                try await JSONManager.shared.removeFromFavorites(imageData)
+                
+                // Update cache and UI
+                await MainActor.run {
                     // Update Favorite smart album
-                    if let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) {
+                    if let favAlbum = try? AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) {
                         // Remove image from favorites album
                         favAlbum.removeFromImages(imageData)
                         // Update favorites album data
-                        self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: favAlbum)
+                        try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: favAlbum, inContext: self.mainContext)
                         // Save changes
                         self.mainContext.saveIfNeeded()
                         // Back to favorites album or set favorite button?
@@ -134,13 +142,8 @@ extension ImageViewController
                         }
                     }
                 }
-            } failure: { [self] error in
-                DispatchQueue.main.async { [self] in
-                    self.removeFromFavoritesError(error)
-                }
             }
-        } failure: { [self] error in
-            DispatchQueue.main.async { [self] in
+            catch let error as PwgKitError {
                 self.removeFromFavoritesError(error)
             }
         }

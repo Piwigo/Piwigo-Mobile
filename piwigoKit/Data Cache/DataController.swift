@@ -10,24 +10,16 @@ import os
 import Foundation
 import CoreData
 
-public final class DataController: NSObject {
+public final class DataController {
 
     // MARK: - Singleton
     public static let shared = DataController()
     
+    // MARK: - Core Data Stack
+    nonisolated private let persistentContainer: NSPersistentContainer
     
     // MARK: - Initialisation
-    override init() {
-        super.init()                // Create instance
-        self.persistentContainer.loadPersistentStores { _, error in
-            guard let error = error else { return }
-            fatalError("••> Was unable to load store - \(error)")
-        }
-    }
-
-    
-    // MARK: - Core Data Stack
-    lazy var persistentContainer: NSPersistentContainer = {
+    private init() {
         let model = NSManagedObjectModel.managedObjectModel(forVersion: DataMigrationVersion.current)
         let persistentContainer = NSPersistentContainer(name: "DataModel", managedObjectModel: model)
         let description = persistentContainer.persistentStoreDescriptions.first
@@ -36,9 +28,15 @@ public final class DataController: NSObject {
         description?.shouldInferMappingModelAutomatically = false
         description?.shouldMigrateStoreAutomatically = false
         description?.type = NSSQLiteStoreType
-        return persistentContainer
-    }()
+        self.persistentContainer = persistentContainer
+
+        self.persistentContainer.loadPersistentStores { _, error in
+            guard let error = error else { return }
+            fatalError("••> Was unable to load store - \(error)")
+        }
+    }
     
+    @MainActor
     public lazy var mainContext: NSManagedObjectContext = {
         let context = self.persistentContainer.viewContext
         context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
@@ -48,10 +46,12 @@ public final class DataController: NSObject {
         return context
     }()
     
-    public func newTaskContext() -> NSManagedObjectContext {
+    nonisolated public func newTaskContext() -> NSManagedObjectContext {
         let context = self.persistentContainer.newBackgroundContext()
         context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        context.automaticallyMergesChangesFromParent = true
         context.shouldDeleteInaccessibleFaults = true
+        context.name = "Background context"
         return context
     }
 }
@@ -60,7 +60,6 @@ public final class DataController: NSObject {
 // MARK: - Core Data Saving
 extension NSManagedObjectContext {
     /// Only performs a save if there are changes to commit.
-    /// - Returns: `true` if a save was needed. Otherwise, `false`.
     public func saveIfNeeded() {
         // Anything to save?
         guard hasChanges
@@ -68,6 +67,12 @@ extension NSManagedObjectContext {
         
         // Save changes
         do {
+            // For debugging purpose:
+//            let stack = Thread.callStackSymbols
+//                    .dropFirst()        // skip logCallStack itself
+//                    .prefix(3)          // how many frames you want
+//                    .joined(separator: "\n")
+//                print("📍 Call stack:\n\(stack)")
             try save()
         }
         catch let error as NSError {
@@ -89,3 +94,4 @@ extension NSManagedObjectContext {
         }
     }
 }
+

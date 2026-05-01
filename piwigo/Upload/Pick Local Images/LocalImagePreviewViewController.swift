@@ -26,7 +26,7 @@ class LocalImagePreviewViewController: UIViewController {
         PHImageManager.default().requestImage(for: imageAsset, targetSize: pixelSize, contentMode: .aspectFit, options: options, resultHandler: { result, info in
             DispatchQueue.main.async {
                 guard let image = result else {
-                    if let error = info?[PHImageErrorKey] as? Error {
+                    if let error = info?[PHImageErrorKey] as? (any Error) {
                         debugPrint("••> Error : \(error.localizedDescription)")
                     }
                     self.imageView.image = pwgImageType.image.placeHolder

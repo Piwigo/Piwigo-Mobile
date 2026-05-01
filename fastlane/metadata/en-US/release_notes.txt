@@ -1,2 +1,5 @@
-• Piwigo 16 compatibility
+• Uploads faster and offers advanced upload options
+• Continues uploads in the background after switching to another app
+• Speeds up the display of albums stored on the device before uploading
+• Shares logs in a file via AirDrop and groups logs by millisecond
 • Fixes bugs and improves the interface

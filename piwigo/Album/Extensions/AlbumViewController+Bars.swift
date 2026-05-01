@@ -45,8 +45,8 @@ extension AlbumViewController
             // User with admin or upload rights can do everything
             // except may be downloading images (i.e. sharing images)
             // User without admin rights cannot set album thumbnails, delete images
-            // WRONG =====> 'normal' user with upload access to the current category can copy, move, edit images
-            // SHOULD BE => 'normal' user having uploaded images can only edit their images.
+            // WRONG =====> 'generic' or 'normal' user with upload access to the current category can copy, move, edit images
+            // SHOULD BE => 'generic' or 'normal' user having uploaded images can only edit their images.
             //              This requires 'user_id' and 'added_by' values of images for checking rights
             if user.hasUploadRights(forCatID: categoryId) {
                 // Initialise UploadQueue toolbar button if needed
@@ -168,7 +168,7 @@ extension AlbumViewController
         }
     }
     
-    @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
+    @MainActor @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Specific to iOS 15 to 18")
     private func initNavBarsOldInPreviewMode() {
         // Left side of navigation bar
         if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
@@ -245,7 +245,7 @@ extension AlbumViewController
         selectBarButton?.isEnabled = albumData.nbImages != 0
     }
     
-    @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
+    @MainActor @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Specific to iOS 15 to 18")
     private func updateRightBarOldInPreviewMode() {
         // Hide toolbar unless it is displaying the image detail view
         if let displayedVC = navigationController?.viewControllers.last,
@@ -471,7 +471,7 @@ extension AlbumViewController
         }
         
         let title: String = categoryId == Int32.zero
-            ? String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
+            ? String(localized: "tabBar_albums", bundle: .piwigoKit, comment: "Albums")
             : albumData.name
         navigationItem.title = title
         view?.window?.windowScene?.title = title
@@ -541,7 +541,7 @@ extension AlbumViewController
         // Set subtitle
         if prefersLargeTitles {
             navigationItem.subtitle = subTitle
-            navigationItem.largeAttributedSubtitle = TableViewUtilities.shared.largeAttributedSubTitleForAlbum(subTitle)
+            navigationItem.largeAttributedSubtitle = TableViewUtilities.largeAttributedSubTitleForAlbum(subTitle)
         } else {
             navigationItem.titleView = getTitleView(withTitle: title, titleColor: .label,
                                                     subtitle: subTitle, subTitleColor: .label)
@@ -549,11 +549,11 @@ extension AlbumViewController
         self.view?.window?.windowScene?.subtitle = subTitle
     }
     
-    @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
+    @MainActor @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Specific to iOS 15 to 18")
     func setTitleViewOld(progress: Float = 0) {
         // Title
         if [0, pwgSmartAlbum.search.rawValue].contains(categoryId) {
-            self.title = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
+            self.title = String(localized: "tabBar_albums", bundle: .piwigoKit, comment: "Albums")
             self.view?.window?.windowScene?.title = self.title
             return
         }

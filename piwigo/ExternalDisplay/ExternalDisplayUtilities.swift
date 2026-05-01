@@ -9,7 +9,7 @@
 import Foundation
 import piwigoKit
 
-class ExternalDisplayUtilities {
+struct ExternalDisplayUtilities {
     /** Returns:
      - the Piwigo  image size
      - the URL of the image file stored on the Piwigo server
@@ -29,7 +29,7 @@ class ExternalDisplayUtilities {
         var pwgSize: pwgImageSize = .square, pwgURL: NSURL?
 
         // Square Size (should always be available)
-        if NetworkVars.shared.hasSquareSizeImages,
+        if pwgImageSize.square.isAvailable,
            let imageURL = sizes.square?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = sizes.square?.maxSize ?? 1
@@ -40,7 +40,7 @@ class ExternalDisplayUtilities {
         }
         
         // Thumbnail Size (should always be available)
-        if NetworkVars.shared.hasThumbSizeImages,
+        if pwgImageSize.thumb.isAvailable,
            let imageURL = sizes.thumb?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = sizes.thumb?.maxSize ?? 1
@@ -54,7 +54,7 @@ class ExternalDisplayUtilities {
         }
         
         // XX Small Size
-        if NetworkVars.shared.hasXXSmallSizeImages,
+        if pwgImageSize.xxSmall.isAvailable,
            let imageURL = sizes.xxsmall?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = sizes.xxsmall?.maxSize ?? 1
@@ -68,7 +68,7 @@ class ExternalDisplayUtilities {
         }
         
         // X Small Size
-        if NetworkVars.shared.hasXSmallSizeImages,
+        if pwgImageSize.xSmall.isAvailable,
            let imageURL = sizes.xsmall?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = sizes.xsmall?.maxSize ?? 1
@@ -82,7 +82,7 @@ class ExternalDisplayUtilities {
         }
         
         // Small Size
-        if NetworkVars.shared.hasSmallSizeImages,
+        if pwgImageSize.small.isAvailable,
            let imageURL = sizes.small?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = sizes.small?.maxSize ?? 1
@@ -96,7 +96,7 @@ class ExternalDisplayUtilities {
         }
         
         // Medium Size (should always be available)
-        if NetworkVars.shared.hasMediumSizeImages,
+        if pwgImageSize.medium.isAvailable,
            let imageURL = sizes.medium?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = sizes.medium?.maxSize ?? 1
@@ -110,7 +110,7 @@ class ExternalDisplayUtilities {
         }
         
         // Large Size
-        if NetworkVars.shared.hasLargeSizeImages,
+        if pwgImageSize.large.isAvailable,
            let imageURL = sizes.large?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = sizes.large?.maxSize ?? 1
@@ -124,7 +124,7 @@ class ExternalDisplayUtilities {
         }
         
         // X Large Size
-        if NetworkVars.shared.hasXLargeSizeImages,
+        if pwgImageSize.xLarge.isAvailable,
            let imageURL = sizes.xlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = sizes.xlarge?.maxSize ?? 1
@@ -138,7 +138,7 @@ class ExternalDisplayUtilities {
         }
         
         // XX Large Size
-        if NetworkVars.shared.hasXXLargeSizeImages,
+        if pwgImageSize.xxLarge.isAvailable,
            let imageURL = sizes.xxlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = sizes.xxlarge?.maxSize ?? 1
@@ -152,7 +152,7 @@ class ExternalDisplayUtilities {
         }
         
         // XXX Large Size
-        if NetworkVars.shared.hasXXXLargeSizeImages,
+        if pwgImageSize.xxxLarge.isAvailable,
            let imageURL = sizes.xxxlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = sizes.xxxlarge?.maxSize ?? 1
@@ -166,7 +166,7 @@ class ExternalDisplayUtilities {
         }
         
         // XXXX Large Size
-        if NetworkVars.shared.hasXXXXLargeSizeImages,
+        if pwgImageSize.xxxxLarge.isAvailable,
            let imageURL = sizes.xxxxlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = sizes.xxxxlarge?.maxSize ?? 1

@@ -13,7 +13,7 @@ import Foundation
 public actor NetworkMonitoring {
     public static let shared = NetworkMonitoring()
     
-    private init() { }
+    private init() { }  // Prevents duplicate instances
 }
 
 @NetworkMonitoring
@@ -26,12 +26,19 @@ public final class NetworkMonitor {
         
     public init() {
         startMonitoring()
+
+        // Register network monitoring stopper
+        NotificationCenter.default.addObserver(forName: Notification.Name.pwgStopNetworkMonitoring, object: nil, queue: nil) { [weak self] _ in
+            Task { @NetworkMonitoring in
+                self?.stopMonitoring()
+            }
+        }
     }
     
     public func startMonitoring() {
         monitor.pathUpdateHandler = { path in
             // Network connection change
-            PwgSession.shared.hasNetworkConnectionChanged = true
+            NetworkVars.shared.hasNetworkConnectionChanged = true
             
             // Interface type?
             NetworkVars.shared.isConnectedToWiFi = path.usesInterfaceType(.wifi)

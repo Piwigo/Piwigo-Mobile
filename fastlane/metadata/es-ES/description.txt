@@ -1,4 +1,4 @@
-Piwigo para iPhone / iPad / iPod complementa el software de la galería de fotos en la nube Piwigo (v2.10 o superior):
+Piwigo para iPhone / iPad / iPod complementa el software de la galería de fotos en la nube Piwigo (v12.0 o superior):
 
 • Explore sus álbumes,
 • Crear, eliminar, mover y renombrar álbumes,

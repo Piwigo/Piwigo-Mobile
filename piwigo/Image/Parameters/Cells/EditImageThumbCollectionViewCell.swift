@@ -19,7 +19,7 @@ import piwigoKit
 
 class EditImageThumbCollectionViewCell: UICollectionViewCell
 {
-    weak var delegate: EditImageThumbnailDelegate?
+    weak var delegate: (any EditImageThumbnailDelegate)?
 
     @IBOutlet private weak var imageThumbnailView: UIView!
     @IBOutlet private weak var imageThumbnail: UIImageView!
@@ -121,10 +121,10 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         imageThumbnail.layoutIfNeeded()   // Ensure imageView in its final size
         let scale = max(imageThumbnail.traitCollection.displayScale, 1.0)
         let cellSize = CGSizeMake(imageThumbnail.bounds.size.width * scale, imageThumbnail.bounds.size.height * scale)
-        let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
-        PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: thumbnailSize, type: .image,
-                                   atURL: ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumbnailSize),
-                                   fromServer: imageData.server?.uuid) { [weak self] cachedImageURL in
+        let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+        ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: thumbnailSize, type: .image,
+                                        atURL: ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumbnailSize),
+                                        fromServer: imageData.server?.uuid) { [weak self] cachedImageURL in
             self?.downsampleImage(atURL: cachedImageURL, to: cellSize)
         } failure: { [weak self] _ in
             self?.setThumbnailWithImage(pwgImageType.image.placeHolder)
@@ -220,30 +220,26 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                                           "file" : fileName,
                                           "single_value_mode" : "replace"]
         // Launch request
-        let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: pwgImagesSetInfo, paramDict: paramsDict,
-                                jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { result in
-            switch result {
-            case .success:
-                // Filename successfully changed
-                DispatchQueue.main.async {
+        Task {
+            do {
+                // Set image properties
+                try await JSONManager.shared.setInfos(with: paramsDict)
+
+                // Update cache and UI
+                await MainActor.run {
                     topViewController?.updateHUDwithSuccess { [self] in
                         topViewController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                             // Adopt new original filename
                             imageFile.text = fileName
-                            
+
                             // Update parent image view
                             delegate?.didRenameFileOfImage(withId: imageID, andFilename: fileName)
                         }
                     }
                 }
-            
-            case .failure(let error):
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                DispatchQueue.main.async {
+            }
+            catch let error as PwgKitError {
+                await MainActor.run {
                     topViewController?.hideHUD {
                         topViewController?.dismissPiwigoError(
                             withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),

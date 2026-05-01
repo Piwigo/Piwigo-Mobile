@@ -22,7 +22,7 @@ class UploadQueueViewController: UIViewController {
     
     // MARK: - Core Data Source
     typealias DataSource = UITableViewDiffableDataSource<String, NSManagedObjectID>
-    typealias Snaphot = NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
+    typealias Snapshot = NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
     /// Stored properties cannot be marked potentially unavailable with '@available'.
     // "private var diffableDataSource: DataSource!" replaced by below lines
     private var _diffableDataSource: NSObject? = nil
@@ -127,7 +127,7 @@ class UploadQueueViewController: UIViewController {
                                                name: Notification.Name.pwgUploadProgress, object: nil)
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
         // Save position of collection view
@@ -211,7 +211,9 @@ class UploadQueueViewController: UIViewController {
             else {
                 // Uploads in progress
                 queueTableView.tableHeaderView = nil
-                UIApplication.shared.isIdleTimerDisabled = true
+                if #unavailable(iOS 26.0) {
+                    UIApplication.shared.isIdleTimerDisabled = true
+                }
             }
             self.viewWillLayoutSubviews()
         }
@@ -269,11 +271,13 @@ class UploadQueueViewController: UIViewController {
             if failedUploads > 0 {
                 let titleResume = failedUploads > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber(value: failedUploads), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
                 let resumeAction = UIAlertAction(title: titleResume, style: .default, handler: { action in
-                    UploadManager.shared.backgroundQueue.async {
-                        // Resume all failed uploads
-                        UploadManager.shared.resumeAllFailedUploads()
-                        // Relaunch uploads
-                        UploadManager.shared.findNextImageToUpload()
+                    Task(priority: .utility) { @UploadManagerActor in
+                        // Get Upload URI strings of active transfers
+                        let activeUploadsURIstr = await UploadManager.shared.getUploadURIsOfTransfers()
+                        // Clear upload requests which encountered an error
+                        let (toTransfer, toPrepare) = await UploadManager.shared.clearFailedUploads(except: activeUploadsURIstr)
+                        // Resume cleared upload
+                        await UploadManager.shared.resumeUploads(toTransfer: toTransfer, andToPrepare: toPrepare)
                     }
                 })
                 alert.addAction(resumeAction)
@@ -285,10 +289,16 @@ class UploadQueueViewController: UIViewController {
             let impossibleUploads = diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section1.rawValue)
             if impossibleUploads > 0 {
                 let titleClear = impossibleUploads > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber(value: impossibleUploads), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
-                let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { action in
-                    UploadManager.shared.backgroundQueue.async {
-                        // Delete all impossible upload requests
-                        UploadManager.shared.deleteImpossibleUploads()
+                let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { [weak self] action in
+                    guard let self else { return }
+                    let uploadIDs = self.diffableDataSource.snapshot().itemIdentifiers(inSection: SectionKeys.Section1.rawValue)
+                    Task(priority: .utility) { @UploadManagerActor in
+                        // Delete uploads
+                        try? UploadProvider().deleteUploads(withID: uploadIDs, inContext: UploadManager.shared.uploadBckgContext)
+                        UploadManager.shared.uploadBckgContext.saveIfNeeded()
+                        
+                        // Update counter and app badge
+                        UploadManager.shared.updateNberOfUploadsToComplete()
                     }
                 })
                 alert.addAction(clearAction)

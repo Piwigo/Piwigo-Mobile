@@ -144,40 +144,40 @@ extension pwgImageSize {
     public var name: String {
         switch self {
         case .square:
-            return String(localized: "thumbnailSizeSquare", bundle: piwigoKit,
+            return String(localized: "thumbnailSizeSquare", bundle: .piwigoKit,
                           comment: "Square")
         case .thumb:
-            return String(localized: "thumbnailSizeThumbnail", bundle: piwigoKit,
+            return String(localized: "thumbnailSizeThumbnail", bundle: .piwigoKit,
                           comment: "Thumbnail")
         case .xxSmall:
-            return String(localized: "thumbnailSizeXXSmall", bundle: piwigoKit,
+            return String(localized: "thumbnailSizeXXSmall", bundle: .piwigoKit,
                           comment: "Tiny")
         case .xSmall:
-            return String(localized: "thumbnailSizeXSmall", bundle: piwigoKit,
+            return String(localized: "thumbnailSizeXSmall", bundle: .piwigoKit,
                           comment: "Extra Small")
         case .small:
-            return String(localized: "thumbnailSizeSmall", bundle: piwigoKit,
+            return String(localized: "thumbnailSizeSmall", bundle: .piwigoKit,
                           comment: "Small")
         case .medium:
-            return String(localized: "thumbnailSizeMedium", bundle: piwigoKit,
+            return String(localized: "thumbnailSizeMedium", bundle: .piwigoKit,
                           comment: "Medium")
         case .large:
-            return String(localized: "thumbnailSizeLarge", bundle: piwigoKit,
+            return String(localized: "thumbnailSizeLarge", bundle: .piwigoKit,
                           comment: "Large")
         case .xLarge:
-            return String(localized: "thumbnailSizeXLarge", bundle: piwigoKit,
+            return String(localized: "thumbnailSizeXLarge", bundle: .piwigoKit,
                           comment: "Extra Large")
         case .xxLarge:
-            return String(localized: "thumbnailSizeXXLarge", bundle: piwigoKit,
+            return String(localized: "thumbnailSizeXXLarge", bundle: .piwigoKit,
                           comment: "Huge")
         case .xxxLarge:
-            return String(localized: "thumbnailSizeXXXLarge", bundle: piwigoKit,
+            return String(localized: "thumbnailSizeXXXLarge", bundle: .piwigoKit,
                           comment: "Extra Huge")
         case .xxxxLarge:
-            return String(localized: "thumbnailSizeXXXXLarge", bundle: piwigoKit,
+            return String(localized: "thumbnailSizeXXXXLarge", bundle: .piwigoKit,
                           comment: "Gigantic")
         case .fullRes:
-            return String(localized: "thumbnailSizexFullRes", bundle: piwigoKit,
+            return String(localized: "thumbnailSizexFullRes", bundle: .piwigoKit,
                           comment: "Full Resolution")
         }
     }
@@ -240,10 +240,18 @@ extension pwgImageSize {
         }
     }
     
+    static public func <(left: pwgImageSize, right: pwgImageSize) -> Bool {
+        return left.rawValue < right.rawValue
+    }
+
     static public func <=(left: pwgImageSize, right: pwgImageSize) -> Bool {
         return left.rawValue <= right.rawValue
     }
     
+    static public func >(left: pwgImageSize, right: pwgImageSize) -> Bool {
+        return left.rawValue > right.rawValue
+    }
+
     static public func >=(left: pwgImageSize, right: pwgImageSize) -> Bool {
         return left.rawValue >= right.rawValue
     }

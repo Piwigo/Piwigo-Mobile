@@ -9,13 +9,14 @@
 import Foundation
 import piwigoKit
 
-class ImageVars: NSObject {
+// Mark ImageVars as Sendable since Apple documents UserDefaults as thread-safe
+final class ImageVars: @unchecked Sendable {
     
     // Singleton
     static let shared = ImageVars()
-    
+
     // Remove deprecated stored objects if needed
-//    override init() {
+    init() {
 //        // Deprecated data?
 //        if let _ = UserDefaults.standard.object(forKey: "test") {
 //            UserDefaults.standard.removeObject(forKey: "test")
@@ -23,12 +24,12 @@ class ImageVars: NSObject {
 //        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
 //            UserDefaults.dataSuite.removeObject(forKey: "test")
 //        }
-//    }
+    }
 
     // MARK: - Vars in UserDefaults / Standard
     // Images variables stored in UserDefaults / Standard
     /// - Size of the image file presented in preview mode on the main screen (i.e. full screen mode)
-    @UserDefault("defaultImagePreviewSize", defaultValue: ImageUtilities.optimumImageSizeForDevice().rawValue)
+    @UserDefault("defaultImagePreviewSize", defaultValue: -1)
     var defaultImagePreviewSize: Int16
 
     /// - Share image by AirDrop with metadata by default
@@ -109,7 +110,17 @@ class ImageVars: NSObject {
     /// - None
 
 
-    // MARK: - Vars in Memory
+    // MARK: - Constants and Vars in Memory
+    // Constants
+    // Bug introduced on 6 September 2024 (commit 18e427379a8132575a72ef053fe7d26090e09525)
+    let dateCommit18e4273 = ISO8601DateFormatter().date(from: "2024-09-06T00:00:00Z")!
+    let dateOfFirstOptImageV323 = {
+        if AppVars.shared.dateOfFirstOptImageV323 == Date.distantFuture.timeIntervalSinceReferenceDate {
+            AppVars.shared.dateOfFirstOptImageV323 = Date().timeIntervalSinceReferenceDate
+        }
+        return Date(timeIntervalSinceReferenceDate: AppVars.shared.dateOfFirstOptImageV323)
+    }()
+    
     // Image variables kept in memory
     /// - None
 }

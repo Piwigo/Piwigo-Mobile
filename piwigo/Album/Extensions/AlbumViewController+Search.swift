@@ -68,7 +68,7 @@ extension AlbumViewController: UISearchControllerDelegate
         categoryId = pwgSmartAlbum.search.rawValue
         
         // Initialise albumData
-        albumData = albumProvider.getAlbum(ofUser: user, withId: categoryId)!
+        albumData = (try? AlbumProvider().getAlbum(ofUser: user, withId: categoryId))!
         resetSearchAlbum(withQuery: "")
         
         // Update albums and images
@@ -107,7 +107,7 @@ extension AlbumViewController: UISearchControllerDelegate
         categoryId = AlbumVars.shared.defaultCategory
         
         // Title forgotten when searching immediately after launch
-        title = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
+        title = String(localized: "tabBar_albums", bundle: .piwigoKit, comment: "Albums")
         
         // Reset navigation bar
         applyColorPalette()
@@ -116,7 +116,7 @@ extension AlbumViewController: UISearchControllerDelegate
     func didDismissSearchController(_ searchController: UISearchController) {
         debugPrint("didDismissSearchController…")
         // Update albumData
-        albumData = albumProvider.getAlbum(ofUser: user, withId: categoryId)!
+        albumData = (try? AlbumProvider().getAlbum(ofUser: user, withId: categoryId))!
         
         // Update albums and images
         resetPredicatesAndPerformFetch()
@@ -182,13 +182,16 @@ extension AlbumViewController: UISearchBarDelegate
         imageProvider.userDidCancelSearch = false
 
         // Get query string
-        guard let query = searchBar.text else { return }
+        guard let query = searchBar.text, query.isEmpty == false
+        else { return }
         
         // Did the query string change?
         if albumData.query == query {
             // Restart loading pages of images
-            self.fetchImages(withInitialImageIds: self.oldImageIDs, query: query,
-                             fromPage: self.onPage, toPage: self.lastPage)
+            Task {
+                await self.fetchImages(withInitialImageIds: self.oldImageIDs, query: query,
+                                       fromPage: self.onPage, toPage: self.lastPage)
+            }
             return
         }
         

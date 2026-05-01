@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 enum pwgHudMode {
-    case text
+    case none
     case indeterminate
     case determinate
     case success
@@ -19,7 +19,7 @@ enum pwgHudMode {
 let pwgTagHUD = 899
 let pwgDelayHUD = 500
 
-class PiwigoHUD: UIView
+final class PiwigoHUD: UIView
 {
     let stepWidth = CGFloat(10)         // Steps by which the HUD width is increased to limit # of lines
     let context: NSStringDrawingContext = {
@@ -92,9 +92,12 @@ class PiwigoHUD: UIView
             detailLabel.attributedText = getAttributed(detail: detail, forMaxWidth: screenWidth)
             detailLabel?.isHidden = false
             detailLabelTop?.constant = 8.0
+            detailLabelBottom?.constant = 8.0
         } else {
+            detailLabel?.text = nil
             detailLabel?.isHidden = true
             detailLabelTop?.constant = 0.0
+            detailLabelBottom?.constant = 0.0
         }
         
         // Configure HUD button
@@ -107,9 +110,9 @@ class PiwigoHUD: UIView
             button?.isHidden = false
             buttonBottom?.constant = 16.0
         } else {
+            button?.setAttributedTitle(nil, for: .normal)
             button?.isHidden = true
-            buttonBottom?.constant = 0.0
-            detailLabelBottom?.constant = 0.0
+            buttonBottom?.constant = -8.0 * (1.0 + ((mode == .none) ? 1.0 : 0.5))
         }
         
         // Set HUD view width after labels and button configurations
@@ -172,11 +175,13 @@ class PiwigoHUD: UIView
             detailLabel?.text = detail
             detailLabel?.isHidden = false
             detailLabelTop?.constant = 8.0
+            detailLabelBottom?.constant = 8.0
         }
         else {
-            detailLabel?.text = ""
+            detailLabel?.text = nil
             detailLabel?.isHidden = true
             detailLabelTop?.constant = 0.0
+            detailLabelBottom?.constant = 0.0
         }
         
         // Add or update button
@@ -188,7 +193,6 @@ class PiwigoHUD: UIView
             button.backgroundColor = PwgColor.cellBackground
             button.isHidden = false
             buttonBottom?.constant = 16.0
-            detailLabelBottom?.constant = 8.0
         } else {
             // Modify button title and/or target/action
             if let buttonTitle = buttonTitle {
@@ -222,7 +226,7 @@ class PiwigoHUD: UIView
     @MainActor
     private func config(mode: pwgHudMode) {
         switch mode {
-        case .text:                 // No activity indicator or checkmark
+        case .none:                 // No activity indicator or checkmark
             activityIndicator?.isHidden = true
             progressView?.isHidden = true
             completedImage?.isHidden = true

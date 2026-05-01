@@ -27,17 +27,6 @@ class AutoUploadViewController: UIViewController {
         return context
     }()
 
-
-    // MARK: - Core Data Providers
-    lazy var albumProvider: AlbumProvider = {
-        let provider : AlbumProvider = AlbumProvider.shared
-        return provider
-    }()
-    lazy var tagProvider: TagProvider = {
-        let provider : TagProvider = TagProvider.shared
-        return provider
-    }()
-
     private lazy var hasTagCreationRights: Bool = {
         // Depends on the user's rights
         switch NetworkVars.shared.userStatus {
@@ -107,7 +96,7 @@ class AutoUploadViewController: UIViewController {
                                                name: UIResponder.keyboardWillHideNotification, object: nil)
 
         // Pause UploadManager while changing settings
-        UploadManager.shared.isPaused = true
+        UploadVars.shared.isPaused = true
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -124,11 +113,25 @@ class AutoUploadViewController: UIViewController {
         // Check if the user is going to select/deselect tags
         if let visibleVC = navigationController?.visibleViewController,
            visibleVC is TagsViewController { return }
-
-        // Restart UploadManager activities
-        UploadManager.shared.backgroundQueue.async {
-            UploadManager.shared.isPaused = false
-            UploadManager.shared.findNextImageToUpload()
+        
+        // Resume upload operations in background queue
+        UploadVars.shared.isPaused = false
+        Task(priority: .utility) { @UploadManagerActor in
+            #if os(iOS) && !targetEnvironment(macCatalyst)
+            if #available(iOS 26.0, *) {
+                // Launch new continued upload task if possible
+                if UploadVars.shared.isContinuedProcessingTaskActive == false {
+                    UploadManager.shared.runContinuedUploadTask()
+                }
+            }
+            else {
+                // Process next uploads if possible
+                await UploadManagerActor.shared.processNextUpload()
+            }
+            #elseif targetEnvironment(macCatalyst)
+            // Process next uploads if possible
+            await UploadManagerActor.shared.processNextUpload()
+            #endif
         }
     }
 

@@ -12,9 +12,9 @@ import piwigoKit
 import UIKit
 
 // MARK: NSFetchedResultsControllerDelegate Methods
-extension AlbumViewController: NSFetchedResultsControllerDelegate
+extension AlbumViewController: @MainActor NSFetchedResultsControllerDelegate
 {
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+    func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>,
                     didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
         // Data source configured?
         guard let dataSource = collectionView?.dataSource as? DataSource
@@ -24,8 +24,8 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
         }
         
         // Album or Image controller?
-        let snapshot = snapshot as Snaphot
-        var currentSnapshot = dataSource.snapshot() as Snaphot
+        let snapshot = snapshot as Snapshot
+        var currentSnapshot = dataSource.snapshot() as Snapshot
         var updatedItems = Set<NSManagedObjectID>()
         if controller == albums {
             // Remove existing album section if any
@@ -73,25 +73,27 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
             currentSnapshot.deleteSections(sectionsToRemove)
             
             // Append new non-empty image sections
-            currentSnapshot.appendSections(snapshot.sectionIdentifiers)
-            for sectionID in snapshot.sectionIdentifiers {
-                currentSnapshot.appendItems(snapshot.itemIdentifiers(inSection: sectionID), toSection: sectionID)
-            }
-            
-            // Update non-inserted, moved or deleted visible cells
-            updatedItems.formIntersection(snapshot.itemIdentifiers)
-            collectionView.indexPathsForVisibleItems.forEach { indexPath in
-                if let objectID = diffableDataSource.itemIdentifier(for: indexPath), updatedItems.contains(objectID),
-                   let image = try? self.mainContext.existingObject(with: objectID) as? Image,
-                   let cell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell {
-                    cell.config(withImageData: image, size: self.imageSize, sortOption: self.sortOption)
+            if snapshot.numberOfItems != 0 {
+                currentSnapshot.appendSections(snapshot.sectionIdentifiers)
+                for sectionID in snapshot.sectionIdentifiers {
+                    currentSnapshot.appendItems(snapshot.itemIdentifiers(inSection: sectionID), toSection: sectionID)
+                }
+                
+                // Update non-inserted, moved or deleted visible cells
+                updatedItems.formIntersection(snapshot.itemIdentifiers)
+                collectionView.indexPathsForVisibleItems.forEach { indexPath in
+                    if let objectID = diffableDataSource.itemIdentifier(for: indexPath), updatedItems.contains(objectID),
+                       let image = try? self.mainContext.existingObject(with: objectID) as? Image,
+                       let cell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+                        cell.config(withImageData: image, size: self.imageSize, sortOption: self.sortOption)
+                    }
                 }
             }
         }
         
         // Animate only a non-empty UI
         let shouldAnimate = (collectionView?.numberOfSections ?? 0) != 0
-        dataSource.apply(currentSnapshot as Snaphot, animatingDifferences: shouldAnimate)
+        dataSource.apply(currentSnapshot as Snapshot, animatingDifferences: shouldAnimate)
         
         // Update headers if needed
         self.updateHeaders()

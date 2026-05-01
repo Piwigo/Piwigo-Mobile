@@ -57,7 +57,7 @@ extension AlbumViewController
 
 
 // MARK: - EditImageParamsDelegate Methods
-extension AlbumViewController: EditImageParamsDelegate
+extension AlbumViewController: @MainActor EditImageParamsDelegate
 {
     func didDeselectImage(withID imageID: Int64) {
         // Deselect image

@@ -15,7 +15,7 @@ extension SettingsViewController: UITextFieldDelegate {
         // Will tell onKeyboardAppear() which cell is being edited
         switch TextFieldTag(rawValue: textField.tag) {
         case .author:
-            editedRow = IndexPath(row: 0, section: SettingsSection.imageUpload.rawValue)
+            editedRow = IndexPath(row: 0, section: SettingsSection.uploads.rawValue)
         default:
             break
         }
