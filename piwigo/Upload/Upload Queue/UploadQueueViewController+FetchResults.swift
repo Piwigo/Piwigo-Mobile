@@ -28,10 +28,16 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate
         var newSnapshot = snapshot as Snapshot
         let currentSnapshot = dataSource.snapshot() as Snapshot
         
-        // Find items that exist in both snapshots and stayed in same position
+        // Find items that exist in both snapshots and stayed in same position, and have actually changed.
         var itemsToReconfigure: [NSManagedObjectID] = []
         for itemIdentifier in newSnapshot.itemIdentifiers {
-            // Check if item exists in current snapshot at same position
+            // Only reconfigure items that are already displayed (exist in the current snapshot)
+            guard currentSnapshot.indexOfItem(itemIdentifier) != nil else {
+                // New item — the diffable data source will insert it automatically.
+                continue
+            }
+            
+            // Check that the item hasn't moved to a different section or row.
             guard let currentRow = currentSnapshot.indexOfItem(itemIdentifier),
                   let row = newSnapshot.indexOfItem(itemIdentifier),
                   row == currentRow,
@@ -41,20 +47,27 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate
                   let section = newSnapshot.indexOfSection(sectionIdentifier),
                   section == currentSection
             else {
-                // Item moved or is new - let diffable data source handle it
+                // Item moved or is new - let diffable data source handle it via a reload/move.
                 continue
             }
             
+            // Only reconfigure if the underlying managed object actually has pending changes
+            // (i.e. Core Data flagged it as updated in this save cycle). Without this guard
+            // every stable cell is reconfigured on every notification, causing flicker.
+            guard let upload = try? mainContext.existingObject(with: itemIdentifier) as? Upload,
+                  upload.isUpdated || upload.hasChanges
+            else { continue }
+ 
             // Mark for reconfiguration
             itemsToReconfigure.append(itemIdentifier)
         }
-
-        // Reconfigure items that stayed in place
+        
+        // Reconfigure only the cells whose data has genuinely changed in place.
         if !itemsToReconfigure.isEmpty {
             newSnapshot.reconfigureItems(itemsToReconfigure)
         }
-
-        // Apply the new snapshot (this handles deletions, insertions, moves)
+        
+        // Apply the new snapshot (handles deletions, insertions, moves and the reconfigures above).
         let shouldAnimate = queueTableView.numberOfSections != 0
         dataSource.apply(newSnapshot, animatingDifferences: shouldAnimate)
         
