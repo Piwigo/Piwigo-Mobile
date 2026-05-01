@@ -43,6 +43,9 @@ extension SelectCategoryViewController
                 // Remove current album from list of album being fetched
                 AlbumVars.shared.isFetchingAlbumData.remove(0)
 
+                // Remember when album data was fetched recursively
+                AppVars.shared.dateOfLatestRecursiveAlbumDataFetch = Date()
+                
                 // Update cache and UI
                 await MainActor.run {
                     self.updateHUDwithSuccess() { [self] in
