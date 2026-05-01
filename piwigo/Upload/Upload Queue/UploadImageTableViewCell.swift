@@ -57,15 +57,25 @@ class UploadImageTableViewCell: UITableViewCell {
         
         // Prepare image view
         if #available(iOS 26.0, *) {
+            // Apply large corner radius to first and last cells.
+            // Always clear any CAShapeLayer mask left by a previous roundCorners() call before
+            // applying new corner geometry; otherwise a reused cell keeps the old mask and the
+            // new cornerRadius / new mask is composited incorrectly, producing wrong corners.
+            cellImage.layer.mask = nil
+            
             // Apply large corner radius to first and last cells
             let oldCornerRadius: CGFloat = TableViewUtilities.defaultOldRCornerRadius - 2.0
             let newCornerRadius: CGFloat = TableViewUtilities.rowCornerRadius - 2.0
             if maskedCorner.isEmpty {
                 cellImage.layer.cornerRadius = oldCornerRadius
-            } else if maskedCorner.contains(.layerMinXMinYCorner) {
+                cellImage.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner,
+                                                 .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+            }
+            else if maskedCorner.contains(.layerMinXMinYCorner) {
                 cellImage.roundCorners(topLeft: newCornerRadius, topRight: oldCornerRadius,
                                        bottomLeft: oldCornerRadius, bottomRight: oldCornerRadius)
-            } else if maskedCorner.contains(.layerMinXMaxYCorner) {
+            }
+            else if maskedCorner.contains(.layerMinXMaxYCorner) {
                 cellImage.roundCorners(topLeft: oldCornerRadius, topRight: oldCornerRadius,
                                        bottomLeft: newCornerRadius, bottomRight: oldCornerRadius)
             }
@@ -89,6 +99,13 @@ class UploadImageTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+
+        // Clear any CAShapeLayer mask applied by roundCorners() so that a reused cell
+        // never inherits corner geometry from its previous position in the list.
+        // Without this, a cell that was once a top/bottom row and is reused as a middle
+        // row (or vice-versa) keeps the stale mask, producing incorrect corner rendering.
+        cellImage.layer.mask = nil
+        cellImage.layer.cornerRadius = 0
     }
 
 
