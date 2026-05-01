@@ -260,7 +260,7 @@ extension TagSelectorViewController: UITableViewDataSource
 // MARK: - UITableViewDelegate Methods
 extension TagSelectorViewController: UITableViewDelegate
 {
-    // MARK: - UITableView Footers
+    // MARK: - Footers
     private func getContentOfFooter() -> String {
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
@@ -284,6 +284,7 @@ extension TagSelectorViewController: UITableViewDelegate
         return TableViewUtilities.viewOfFooter(withText: text, alignment: .center)
     }
     
+    // MARK: - Rows
     // Display images tagged with the tag selected a row of the table
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // Deselect row
