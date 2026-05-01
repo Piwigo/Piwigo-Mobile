@@ -19,7 +19,7 @@ extension LocalAlbumsViewController: UITableViewDelegate {
         let albumType = albumTypeFor(section: section)
         let title = self.localAlbumsProvider.titleForFooterInSectionOf(albumType: albumType)
         return TableViewUtilities.heightOfHeader(withTitle: title,
-                                                        width: tableView.frame.size.width)
+                                                 width: tableView.frame.size.width)
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -111,7 +111,7 @@ extension LocalAlbumsViewController: UITableViewDelegate {
         let albumType = albumTypeFor(section: section)
         let footer = self.localAlbumsProvider.titleForFooterInSectionOf(albumType: albumType)
         return TableViewUtilities.heightOfFooter(withText: footer,
-                                                        width: tableView.frame.width)
+                                                 width: tableView.frame.width)
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
