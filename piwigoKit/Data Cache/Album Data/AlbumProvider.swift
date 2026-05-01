@@ -548,7 +548,7 @@ public final class AlbumProvider {
         // Update the rank of all sub-albums
         let bckgContext = DataController.shared.newTaskContext()
         let otherAlbums = try bckgContext.fetch(fetchRequest)
-        let minRank = rank.components(separatedBy: ",").compactMap({Int($0)}).last ?? 0
+        let minRank = rank.components(separatedBy: ".").compactMap({Int($0)}).last ?? 0
         try otherAlbums.forEach { otherAlbum in
             // Update rank of sub-albums at first level
             var rankArray = otherAlbum.globalRank.components(separatedBy: ".").compactMap({Int($0)})
@@ -587,11 +587,24 @@ public final class AlbumProvider {
         // Update the rank of the other albums
         let bckgContext = DataController.shared.newTaskContext()
         let subAlbums = try bckgContext.fetch(fetchRequest)
-        let parentRank = album.globalRank
-        let range = parentRank.startIndex..<parentRank.endIndex
+        let parentRank = album.globalRank.components(separatedBy: ".").compactMap({Int($0)})
         subAlbums.forEach { subAlbum in
-            let rank = subAlbum.globalRank
-            subAlbum.globalRank = rank.replacingCharacters(in: range, with: parentRank)
+            let rank = subAlbum.globalRank.components(separatedBy: ".").compactMap({Int($0)})
+            if #available(iOS 16.0, *) {
+                subAlbum.globalRank = String(rank.replacing(rank, with: parentRank).map({"\($0)."}).reduce("", +).dropLast(1))
+            } else {
+                // Fallback on previous version
+                var newRank: [Int] = []
+                let range = parentRank.startIndex..<parentRank.endIndex
+                for (index, value) in rank.enumerated() {
+                    if range.contains(index) {
+                        newRank.append(parentRank[index])
+                    } else {
+                        newRank.append(value)
+                    }
+                }
+                subAlbum.globalRank = String(newRank.map({"\($0)."}).reduce("", +).dropLast(1))
+            }
         }
     }
     
