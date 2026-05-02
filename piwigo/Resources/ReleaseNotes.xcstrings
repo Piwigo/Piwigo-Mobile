@@ -10209,7 +10209,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.2.1\n\n• Bug fixes"
+            "value" : "Version 4.2.1\n\n• Add help views\n• Bug fixes"
           }
         }
       }
