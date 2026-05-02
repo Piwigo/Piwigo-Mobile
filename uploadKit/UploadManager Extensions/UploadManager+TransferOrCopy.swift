@@ -68,10 +68,11 @@ extension UploadManager {
                 try await copyImageWithID(imageID, for: uploadData, withID: uploadID)
                 
                 // Copy completed
+                uploadData.imageId = imageID
                 uploadData.requestState = .moderated
                 uploadData.requestError = ""
                 try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
-
+                
                 // Update number of uploads to complete, badge and default album view button
                 self.updateNberOfUploadsToComplete()
             }
