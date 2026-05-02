@@ -10107,98 +10107,109 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "الإصدار 4.2\n\n• تحميل أسرع مع خيارات تحميل متقدمة\n• استكمال عمليات التحميل في الخلفية بعد الانتقال إلى تطبيق آخر\n• عرض أسرع للألبومات المخزنة على الجهاز قبل التحميل\n• مشاركة السجلات في ملف عبر AirDrop وتجميعها حسب المللي ثانية\n• إصلاح الأخطاء وتحسين الواجهة"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Version 4.2\n\n• Uploader hurtigere og tilbyder avancerede upload-indstillinger\n• Fortsætter uploads i baggrunden, når du skifter til en anden app\n• Gør visningen af album gemt på enheden hurtigere inden upload\n• Deler logfiler via AirDrop og grupperer dem efter millisekunder\n• Rette fejl og forbedrer brugergrænsefladen"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Version 4.2\n\n• Schnelleres Hochladen und erweiterte Upload-Optionen\n• Fortsetzung des Uploads im Hintergrund, nachdem zu einer anderen App gewechselt wurde\n• Schnellere Anzeige der auf dem Gerät gespeicherten Alben vor dem Hochladen\n• Freigabe der Protokolle als Datei über AirDrop und Gruppierung nach Millisekunden\n• Fehlerbehebungen und Verbesserungen der Benutzeroberfläche"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.2\n\n• Uploads faster and offers advanced upload options\n• Continues uploads in the background after switching to another app\n• Speeds up the display of albums stored on the device before uploading\n• Shares logs in a file via AirDrop and groups logs by millisecond\n• Fixes bugs and improves the interface"
+            "value" : "Version 4.2\nMay 1, 2026\n\n• Uploads faster and offers advanced upload options\n• Continues uploads in the background after switching to another app\n• Speeds up the display of albums stored on the device before uploading\n• Shares logs in a file via AirDrop and groups logs by millisecond\n• Fixes bugs and improves the interface"
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Versión 4.2\n\n• Sube archivos más rápido y ofrece opciones avanzadas de subida\n• Continúa las subidas en segundo plano tras cambiar a otra aplicación\n• Acelera la visualización de los álbumes almacenados en el dispositivo antes de la subida\n• Comparte los registros en un archivo a través de AirDrop y los agrupa por milisegundos\n• Corrige errores y mejora la interfaz"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Version 4.2\n\n• Transfert plus rapidement et propose des options de transfert avancées\n• Poursuit les transferts en arrière-plan après le passage à une autre application \n• Accélère l'affichage des albums stockés sur l'appareil avant transfert\n• Partage les journaux dans un fichier via AirDrop et les regroupe par milliseconde\n• Corrige les bugs et améliore l'interface"
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "4.2-es verzió\n\n• Gyorsabb feltöltés és fejlett feltöltési beállítások\n• A feltöltés háttérben folytatódik, ha másik alkalmazásra váltunk\n• Gyorsabb megjelenítés a készüléken tárolt albumokból a feltöltés előtt\n• A naplófájlok megosztása AirDropon keresztül, milliszekundumonkénti csoportosítással\n• Hibajavítások és a felhasználói felület fejlesztése"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Versi 4.2\n\n• Mengunggah lebih cepat dan menawarkan opsi pengunggahan lanjutan\n• Melanjutkan pengunggahan di latar belakang setelah beralih ke aplikasi lain\n• Mempercepat tampilan album yang tersimpan di perangkat sebelum pengunggahan\n• Membagikan log dalam bentuk file melalui AirDrop dan mengelompokkannya berdasarkan milidetik\n• Memperbaiki bug dan meningkatkan antarmuka"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Versione 4.2\n\n• Caricamento più veloce e opzioni di caricamento avanzate\n• Ripresa dei caricamenti in background dopo il passaggio a un'altra applicazione\n• Visualizzazione più rapida degli album salvati sul dispositivo prima del caricamento\n• Condivisione dei log in un file tramite AirDrop e raggruppamento per millisecondo\n• Correzione di bug e miglioramenti all'interfaccia"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "バージョン 4.2\n\n• アップロード速度が向上し、高度なアップロードオプションが追加されました\n• 他のアプリに切り替えても、バックグラウンドでアップロードを継続します\n• アップロード前に、端末に保存されているアルバムの表示が高速化されました\n• ログをファイルとしてAirDropで共有できるようになり、ミリ秒単位でグループ化されます\n• バグの修正とインターフェースの改善"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Versie 4.2\n\n• Upload sneller en biedt geavanceerde uploadopties\n• Zet uploads op de achtergrond voort nadat je naar een andere app bent overgeschakeld\n• Versnelt het weergeven van albums die op het apparaat zijn opgeslagen vóór het uploaden\n• Deelt logbestanden via AirDrop en groepeert ze per milliseconde\n• Lost bugs op en verbetert de interface"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Wersja 4.2\n\n• Szybsze przesyłanie zdjęć i zaawansowane opcje przesyłania\n• Kontynuacja przesyłania w tle po przejściu do innej aplikacji\n• Szybsze wyświetlanie albumów zapisanych w urządzeniu przed przesłaniem\n• Udostępnianie dzienników w pliku za pośrednictwem AirDrop i grupowanie ich według milisekund\n• Poprawki błędów i ulepszenia interfejsu"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Версия 4.2\n\n• Более быстрая загрузка и расширенные настройки загрузки\n• Продолжение загрузки в фоновом режиме после перехода в другое приложение\n• Ускорение просмотра альбомов, хранящихся на устройстве, перед загрузкой\n• Отправка журналов в виде файла через AirDrop с группировкой по миллисекундам\n• Исправление ошибок и улучшение интерфейса"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Version 4.2\n\n• Snabbare uppladdning och avancerade uppladdningsalternativ\n• Fortsätter uppladdningen i bakgrunden även efter att du bytt till en annan app\n• Snabbare visning av album som lagrats på enheten före uppladdning\n• Delar loggar i en fil via AirDrop och grupperar dem per millisekund\n• Bugfixar och förbättringar av gränssnittet"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "4.2 版\n\n• 上传速度更快，并提供高级上传选项\n• 切换至其他应用后，上传任务仍可在后台继续进行\n• 加快了上传前设备中相册的加载速度\n• 支持通过 AirDrop 分享日志文件，并按毫秒进行分组\n• 修复了错误并优化了界面"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "版本 4.2\n\n• 上傳速度更快，並提供進階上傳選項\n• 切換至其他應用程式後，仍會在背景繼續上傳\n• 加速顯示上傳前儲存於裝置中的相簿\n• 透過 AirDrop 將日誌匯出為檔案，並按毫秒進行分組\n• 修正錯誤並改善介面"
+          }
+        }
+      }
+    },
+    "v4.2.1_text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.2.1\n\n• Bug fixes"
           }
         }
       }
