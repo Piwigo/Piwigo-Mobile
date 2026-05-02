@@ -84,7 +84,7 @@ extension AlbumViewController
 
                     // Image added to favorites ► Add it in the background
                     if let favAlbum = try? AlbumProvider().getAlbum(ofUser: self.user, withId: pwgSmartAlbum.favorites.rawValue) {
-                        // Remove image from favorites album
+                        // Add image to favorites album
                         favAlbum.addToImages(imageData)
                         // Update favorites album data
                         try? self.albumProvider.updateAlbums(addingImages: 1, toAlbum: favAlbum, inContext: self.mainContext)
