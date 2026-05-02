@@ -71,6 +71,9 @@ extension UploadManager {
                 uploadData.requestState = .moderated
                 uploadData.requestError = ""
                 try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
+
+                // Update number of uploads to complete, badge and default album view button
+                self.updateNberOfUploadsToComplete()
             }
             else {
                 // Upload new image to the Piwigo server
