@@ -383,10 +383,20 @@ class SelectCategoryViewController: UIViewController {
                 try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
                                                           lastConnected: self.user.lastUsed)
                 
+                // Remember that the app is fetching album data recursively
+                AlbumVars.shared.isFetchingAlbumData.insert(pwgSmartAlbum.root.rawValue)
+
                 // Fetch albums recursively
-                try await AlbumProvider().fetchAlbums(forUserWithAdminRights: self.user.hasAdminRights, inParentWithId: 0,
+                try await AlbumProvider().fetchAlbums(forUserWithAdminRights: self.user.hasAdminRights,
+                                                      inParentWithId: pwgSmartAlbum.root.rawValue,
                                                       recursively: true, thumbnailSize: thumnailSize)
                 
+                // Remove current album from list of album being fetched
+                AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.root.rawValue)
+                
+                // Remember when album data was fetched recursively
+                AppVars.shared.dateOfLatestRecursiveAlbumDataFetch = Date()
+
                 await MainActor.run { [self] in
                     self.navigationController?.hideHUD { }
                 }

@@ -206,6 +206,9 @@ final class AlbumDeletion: NSObject
                 // Update parent albums data
                 let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
                 for parentID in parentIDs {
+                    // Don't fetch an album already being fetched
+                    if AlbumVars.shared.isFetchingAlbumData.contains(parentID) { continue }
+                    
                     // Remember that the app is fetching album data
                     AlbumVars.shared.isFetchingAlbumData.insert(parentID)
 

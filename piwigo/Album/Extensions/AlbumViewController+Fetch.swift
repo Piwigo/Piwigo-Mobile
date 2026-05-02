@@ -59,12 +59,13 @@ extension AlbumViewController
                                                     thumbnailSize: thumnailSize)
                 // Fetch image data?
                 await MainActor.run { [self] in
+                    // ► Remove current album from list of albums being fetched
+                    AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
+                    
+                    // Any image data to fetch?
                     let nbImages = self.albumData.nbImages
                     if self.categoryId == 0 || nbImages == 0 {
                         // Done fetching images
-                        // ► Remove current album from list of album being fetched
-                        AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
-                        
                         // ► Check if the album has been deleted
                         if self.albumData.isDeleted {
                             navigationController?.hideHUD { [self] in
@@ -202,8 +203,6 @@ extension AlbumViewController
                     }
                     
                     // Done fetching images
-                    // ► Remove current album from list of album being fetched
-                    AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
                     // ► Remove non-fetched images from album
                     self.removeImageWithIDs(imageIDs)
                     // ► Delete orphaned images in the background

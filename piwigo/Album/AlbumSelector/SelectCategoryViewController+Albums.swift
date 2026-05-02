@@ -32,16 +32,16 @@ extension SelectCategoryViewController
                 try await JSONManager.shared.move(self.inputAlbum.pwgID, intoAlbumWithId: parentData.pwgID)
                 
                 // Remember that the app is fetching all album data
-                AlbumVars.shared.isFetchingAlbumData.insert(0)
+                AlbumVars.shared.isFetchingAlbumData.insert(pwgSmartAlbum.root.rawValue)
 
                 // Fetch album data recursively
                 let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
                 try await AlbumProvider().fetchAlbums(forUserWithAdminRights: user.hasAdminRights,
-                                                      inParentWithId: 0, recursively: true,
+                                                      inParentWithId: pwgSmartAlbum.root.rawValue, recursively: true,
                                                       thumbnailSize: thumnailSize)
                 
                 // Remove current album from list of album being fetched
-                AlbumVars.shared.isFetchingAlbumData.remove(0)
+                AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.root.rawValue)
 
                 // Remember when album data was fetched recursively
                 AppVars.shared.dateOfLatestRecursiveAlbumDataFetch = Date()
