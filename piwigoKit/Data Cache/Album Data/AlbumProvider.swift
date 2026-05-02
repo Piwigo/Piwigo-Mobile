@@ -95,7 +95,7 @@ public final class AlbumProvider {
                             inParentWithId parentId: Int32, recursively: Bool = false,
                             thumbnailSize: pwgImageSize) async throws(PwgKitError) {
         // Smart album requested?
-        if parentId < 0 { fatalError("••> Cannot fetch data of smart album!") }
+        if parentId < 0 { preconditionFailure("••> Cannot fetch data of smart album!") }
         debugPrint("••> Fetch albums in parent with ID: \(parentId)")
         
         // Launch the HTTP(S) request
