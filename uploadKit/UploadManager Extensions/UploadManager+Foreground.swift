@@ -106,14 +106,26 @@ extension UploadManager
     
     // MARK: - Clear Failed Uploads
     func suggestToDeleteUploadedImages(withPendingUploads nberOfPendingUploads: Int) {
-        let (uploadIDs, localIdentifiers) = UploadProvider().getIDsOfCompletedUploads(onlyDeletable: true, inContext: self.uploadBckgContext)
-        UploadManager.logger.notice("Resuming uploads: \(uploadIDs.count) assets for deletion in the Photo Library")
+        // Get IDs of upload requests and associated photos from the Photo Library
+        var (uploadIDs, localIdentifiers) = UploadProvider().getIDsOfCompletedUploads(onlyDeletable: true, inContext: self.uploadBckgContext)
+        
+        // Removes those already being considered for deletion
+        uploadIDsForDeletion.forEach { uploadID in
+            if let index = uploadIDs.firstIndex(of: uploadID) {
+                uploadIDs.remove(at: index)
+                localIdentifiers.remove(at: index)
+            }
+        }
+        
+        // Appropriate time for suggesting to delete photos of the Photo Library?
         let deadline = DateUtilities.nextDayAt4AM(after: UploadVars.shared.dateOfLastPhotoLibraryDeletion)
         if uploadIDs.isEmpty == false && (nberOfPendingUploads == 0 || Date.now > deadline) {
-            // Store date of proposed deletion
+            // Store date and IDs of proposed deletion
+            uploadIDsForDeletion = Set(uploadIDs)
             UploadVars.shared.dateOfLastPhotoLibraryDeletion = Date().timeIntervalSinceReferenceDate
             
             // Suggest to delete assets from the Photo Library
+            UploadManager.logger.notice("Resuming uploads: \(uploadIDs.count) assets for deletion in the Photo Library")
             let objectURIs = uploadIDs.map({ $0.uriRepresentation().absoluteString + "," }).reduce("",+)
             let localIDs = localIdentifiers.map({ $0 + "," }).reduce ("",+)
             let userInfo: [String : Any] = ["objectURIs" : objectURIs,
