@@ -25,6 +25,9 @@ extension UploadManager {
                 UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Could not retrieve upload request for finsihing!")
                 continue
             }
+            // Check upload status (should never happen)
+            guard uploadData.requestState == .uploaded
+            else { continue }
             uploadDataArray[uploadID] = uploadData
         }
         if uploadDataArray.isEmpty {
