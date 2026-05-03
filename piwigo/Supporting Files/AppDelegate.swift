@@ -430,8 +430,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Task { @UploadManagerActor in
                 // Delete upload requests w/o reporting potential error
                 try? UploadProvider().deleteUploads(withID: myUploadIDs, inContext: UploadManager.shared.uploadBckgContext)
-                // Reset list of upload IDs for deletion
-                UploadManager.shared.uploadIDsForDeletion = []
             }
             return
         }
@@ -449,8 +447,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 } else {
                     UploadManager.shared.disableDeleteAfterUpload(myUploadIDs)
                 }
-                // Reset list of upload IDs for deletion
-                UploadManager.shared.uploadIDsForDeletion = []
             }
         }
     }

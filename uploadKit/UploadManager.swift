@@ -26,11 +26,6 @@ public final class UploadManager {
     // for updating progress bars and managing tasks
     var transferCounters = [TransferCounter]()
     
-    // To prevent duplicate deletion requests,
-    // we store which upload requests are already being considered
-    // for deleting photos of the Photo Library after completing a series of uploads.
-    public var uploadIDsForDeletion: Set<NSManagedObjectID> = []
-    
     private init() {
         // Disable auto-upload option
         NotificationCenter.default.addObserver(forName: Notification.Name.pwgDisableAutoUpload, object: nil, queue: nil) { [weak self] _ in
