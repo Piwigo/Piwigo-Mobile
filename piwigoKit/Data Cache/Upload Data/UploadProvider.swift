@@ -460,7 +460,7 @@ public final class UploadProvider {
                 return cachedUploads.map(\.md5Sum)
             }
             catch {
-                debugPrint("Error fetching uploads: \(error)")
+                debugPrint("••> Error fetching uploads: \(error)")
                 return []
             }
         }
@@ -579,7 +579,7 @@ public final class UploadProvider {
                     }
                 }
             } catch {
-                debugPrint("Unresolved error \(error.localizedDescription)")
+                debugPrint("••> Unresolved error \(error.localizedDescription)")
             }
         }
     }
