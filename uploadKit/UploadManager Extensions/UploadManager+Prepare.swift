@@ -149,7 +149,6 @@ extension UploadManager
                 
         // Set file name and type
         uploadData.fileType = pwgImageFileType.image.rawValue
-        uploadData.fileName = renamedFile(for: uploadData)         // Rename file if requested by user
         
         // Launch preparation job (limited to stripping metadata)
         try await prepareImage(atURL: fileURL, for: &uploadData)
@@ -187,7 +186,6 @@ extension UploadManager
             // Set file name and type
             uploadData.fileType = pwgImageFileType.image.rawValue
             uploadData.fileName = filename
-            uploadData.fileName = renamedFile(for: uploadData)         // Rename file if requested by user
             
             // Chek that the image format is accepted by the Piwigo server
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
@@ -212,7 +210,6 @@ extension UploadManager
             // Set file name and type
             uploadData.fileType = pwgImageFileType.video.rawValue
             uploadData.fileName = filename
-            uploadData.fileName = renamedFile(for: uploadData)         // Rename file if requested by user
             
             // Chek that the video format is accepted by the Piwigo server
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
@@ -261,14 +258,6 @@ extension UploadManager
             // Update upload request
             uploadData.fileType = pwgImageFileType.image.rawValue
             uploadData.fileName = filename
-            uploadData.fileName = renamedFile(for: uploadData)         // Rename file if requested by user
-            
-            // Retrieve creation date from PHAsset (local time, or UTC time if time zone provided)
-            if let creationDate = originalAsset.creationDate {
-                uploadData.creationDate = creationDate.timeIntervalSinceReferenceDate
-            } else {
-                uploadData.creationDate = Date().timeIntervalSinceReferenceDate
-            }
             
             // Launch preparation job according to file format
             let fileExt = (URL(fileURLWithPath: uploadData.fileName).pathExtension).lowercased()
@@ -298,14 +287,6 @@ extension UploadManager
             // Update upload request
             uploadData.fileType = pwgImageFileType.image.rawValue
             uploadData.fileName = filename
-            uploadData.fileName = renamedFile(for: uploadData)         // Rename file if requested by user
-            
-            // Retrieve creation date from PHAsset (local time, or UTC time if time zone provided)
-            if let creationDate = originalAsset.creationDate {
-                uploadData.creationDate = creationDate.timeIntervalSinceReferenceDate
-            } else {
-                uploadData.creationDate = Date().timeIntervalSinceReferenceDate
-            }
             
             // Launch preparation job according to file format
             let fileExt = (URL(fileURLWithPath: uploadData.fileName).pathExtension).lowercased()
@@ -387,8 +368,8 @@ extension UploadManager
         return utf8mb3Filename
     }
     
-    // Rename file according to user's demand
-    fileprivate func renamedFile(for uploadData: UploadProperties) -> String {
+    // Rename file according to user's demand from date/time/counter/etc.
+    func renamedFile(for uploadData: inout UploadProperties) {
         // Anything to do?
         var fileName = uploadData.fileName
         if uploadData.fileNamePrefixEncodedActions.isEmpty,
@@ -396,7 +377,8 @@ extension UploadManager
            uploadData.fileNameSuffixEncodedActions.isEmpty,
            FileExtCase(rawValue: uploadData.fileNameExtensionCase) == .keep {
             // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
-            return fileName.utf8mb3Encoded
+            uploadData.fileName = fileName.utf8mb3Encoded
+            return
         }
         
         // Get album current counter value
@@ -432,7 +414,7 @@ extension UploadManager
                             counter: currentCounter)
         
         // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
-        return fileName.utf8mb3Encoded
+        uploadData.fileName = fileName.utf8mb3Encoded
     }
     
     /// - Rename Upload file if needed

@@ -46,6 +46,9 @@ extension UploadManager {
             uploadData.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
         }
         
+        // Rename file according to user's demand from date/time/counter/etc.
+        renamedFile(for: &uploadData)
+
         // Check if the user wants to:
         /// - reduce the frame size
         /// - remove the private metadata
@@ -83,6 +86,9 @@ extension UploadManager {
             uploadData.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
         }
         
+        // Rename file according to user's demand from date/time/counter/etc.
+        renamedFile(for: &uploadData)
+
         // Check that the video can be exported
         try await checkVideoExportability(of: originalVideo)
         
@@ -223,6 +229,9 @@ extension UploadManager {
                             uploadData.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
                         }
                         
+                        // Rename file according to user's demand from date/time/counter/etc.
+                        self.renamedFile(for: &uploadData)
+                        
                         // Check that the video can be exported
                         try await self.checkVideoExportability(of: originalVideo)
                         
@@ -269,6 +278,9 @@ extension UploadManager {
                     } else {
                         uploadData.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
                     }
+                    
+                    // Rename file according to user's demand from date/time/counter/etc.
+                    self.renamedFile(for: &uploadData)
                     
                     // Get MD5 checksum and MIME type, change URL
                     try self.setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: originalFileURL)
@@ -389,6 +401,9 @@ extension UploadManager {
                     } else {
                         uploadData.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
                     }
+                    
+                    // Rename file according to user's demand from date/time/counter/etc.
+                    self.renamedFile(for: &uploadData)
                     
                     // Check that the video can be exported
                     try await self.checkVideoExportability(of: originalVideo)
