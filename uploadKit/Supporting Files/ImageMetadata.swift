@@ -337,44 +337,18 @@ extension Dictionary where Key == CFString, Value == Any {
 extension Dictionary where Key == CFString, Value == Any {
     // Fix image properties from resized/converted image
     mutating func fixContents(from image:CGImage, resettingOrientation: Bool) {
-        var metadata = self
+        // Fix dimensions from the actual CGImage (the one thing CGImage does know)
+        self[kCGImagePropertyPixelWidth] = image.width
+        self[kCGImagePropertyPixelHeight] = image.height
 
-        // Extract image source from UIImage object (orientation managed)
-        guard let imageData = UIImage(cgImage: image).jpegData(compressionQuality: 1.0),
-              let source = CGImageSourceCreateWithData(imageData as CFData, nil) else {
-            return
+        // Merge metadata from the original source properties
+        self.fixProperties(from: self, resettingOrientation)
+
+        if resettingOrientation {
+            self[kCGImagePropertyOrientation] = CGImagePropertyOrientation.up.rawValue
         }
-
-        // Extract image source container properties
-        if let sourceMetadata = CGImageSourceCopyProperties(source, nil) as? [CFString : Any] {
-            // Update TIFF, GIF, etc. metadata from properties found in the container
-            metadata.fixProperties(from: sourceMetadata, resettingOrientation)
-        }
-
-        // Extract image properties from image data
-        if let imageMetadata = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString : Any] {
-            // Update TIFF, GIF, etc. metadata from properties found in the image
-            metadata.fixProperties(from: imageMetadata, resettingOrientation)
-            
-            // Update/add width from image properties
-            if let width = imageMetadata[kCGImagePropertyPixelWidth] {
-                metadata[kCGImagePropertyPixelWidth] = width
-            }
-
-            // Update/add height from image properties
-            if let height = imageMetadata[kCGImagePropertyPixelHeight] {
-                metadata[kCGImagePropertyPixelHeight] = height
-            }
-
-            // Reset orientation if requested (according to the TIFF and EXIF specifications)
-            if resettingOrientation {
-                metadata[kCGImagePropertyOrientation] = CGImagePropertyOrientation.up.rawValue
-            }
-        }
-        
-        self = metadata
     }
-
+    
     // Fix image properties from (resized) image metadata
     mutating func fixProperties(from imageMetadata: [CFString: Any], _ resettingOrientation: Bool) {
         var metadata = self
@@ -412,7 +386,7 @@ extension Dictionary where Key == CFString, Value == Any {
         }
         
         // Update/add IPTC dictionary from image metadata
-        if let imageIPTCDictionary = metadata[kCGImagePropertyIPTCDictionary] as? [CFString : Any] {
+        if let imageIPTCDictionary = imageMetadata[kCGImagePropertyIPTCDictionary] as? [CFString : Any] {
             // Image contains an IPTC dictionary
             if var metadataIPTCDictionary = metadata[kCGImagePropertyIPTCDictionary] as? [CFString : Any] {
                 // A IPTC dictionary already exists -> update key/value pairs
@@ -425,7 +399,7 @@ extension Dictionary where Key == CFString, Value == Any {
         }
         
         // Update/add GPS dictionary from image metadata
-        if let imageGPSDictionary = metadata[kCGImagePropertyGPSDictionary] as? [CFString : Any] {
+        if let imageGPSDictionary = imageMetadata[kCGImagePropertyGPSDictionary] as? [CFString : Any] {
             // Image contains a GPS dictionary
             if var metadataGPSDictionary = metadata[kCGImagePropertyGPSDictionary] as? [CFString : Any] {
                 // A GPS dictionary already exists -> update key/value pairs
@@ -438,15 +412,15 @@ extension Dictionary where Key == CFString, Value == Any {
         }
         
         // Update/add WebP dictionary from image metadata
-        if let imageWebPDictionary = metadata[kCGImagePropertyWebPDictionary] as? [CFString : Any] {
+        if let imageWebPDictionary = imageMetadata[kCGImagePropertyWebPDictionary] as? [CFString : Any] {
             // Image contains a WebP dictionary
             if var metadataWebPDictionary = metadata[kCGImagePropertyWebPDictionary] as? [CFString : Any] {
                 // A WebP dictionary already exists -> update key/value pairs
                 for (k, v) in imageWebPDictionary { metadataWebPDictionary[k] = v }
-                metadata[kCGImagePropertyGPSDictionary] = metadataWebPDictionary
+                metadata[kCGImagePropertyWebPDictionary] = metadataWebPDictionary
             } else {
                 // No WebP dictionary -> Add it
-                metadata[kCGImagePropertyGPSDictionary] = imageWebPDictionary
+                metadata[kCGImagePropertyWebPDictionary] = imageWebPDictionary
             }
         }
         
@@ -535,7 +509,7 @@ extension Dictionary where Key == CFString, Value == Any {
             if var metadataTGADictionary = metadata[kCGImagePropertyTGADictionary] as? [CFString : Any] {
                 // A TGA dictionary already exists -> update key/value pairs
                 for (k, v) in imageTGADictionary { metadataTGADictionary[k] = v }
-                metadata[kCGImagePropertyTIFFDictionary] = metadataTGADictionary
+                metadata[kCGImagePropertyTGADictionary] = metadataTGADictionary
             } else {
                 // No TGA dictionary -> Add it
                 metadata[kCGImagePropertyTGADictionary] = imageTGADictionary
@@ -584,7 +558,7 @@ extension Dictionary where Key == CFString, Value == Any {
                 metadata[kCGImagePropertyRawDictionary] = imageRawDictionary
             }
         }
-
+        
         self = metadata
     }
 }
