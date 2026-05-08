@@ -26,7 +26,7 @@ class ImageViewController: UIViewController {
     var didPresentNextPage = true
     var pageViewController: UIPageViewController?
     let playbackController = PlaybackController.shared
-
+    
     // MARK: - Core Data Objects
     var user: User!
     lazy var mainContext: NSManagedObjectContext = {
@@ -35,12 +35,12 @@ class ImageViewController: UIViewController {
         }
         return context
     }()
-
+    
     
     // MARK: - Navigation Bar & Toolbar Buttons
     var actionBarButton: UIBarButtonItem?               // - for copying or moving images to other albums
-                                                        // - for setting the image as album thumbnail
-                                                        // - for editing image properties
+    // - for setting the image as album thumbnail
+    // - for editing image properties
     lazy var backButton: UIBarButtonItem = {
         return UIBarButtonItem.backImageButton(target: self, action: #selector(returnToAlbum))
     }()
@@ -62,12 +62,12 @@ class ImageViewController: UIViewController {
         
         // Initialise video players and PiP management
         playbackController.videoItemDelegate = self
-
+        
         // Initialise pageViewController
         pageViewController = children[0] as? UIPageViewController
         pageViewController?.delegate = self
         pageViewController?.dataSource = self
-
+        
         // Load initial image preview view controller
         imageData = getImageData(atIndexPath: indexPath)
         let fileType = pwgImageFileType(rawValue: imageData.fileType) ?? .image
@@ -85,19 +85,19 @@ class ImageViewController: UIViewController {
                 pageViewController?.setViewControllers([pdfDVC], direction: .forward, animated: false)
             }
         }
-                
+        
         // Update server statistics
         logImageVisitIfNeeded(imageData.pwgID)
-
+        
         // Single taps display/hide the navigation bar, toolbar and description
         let tapOnce = UITapGestureRecognizer(target: self, action: #selector(didTapOnce))
         tapOnce.numberOfTapsRequired = 1
-
+        
         // Double taps zoom in/out the image
         let tapTwice = UITapGestureRecognizer(target: self, action: #selector(didTapTwice(_:)))
         tapTwice.numberOfTapsRequired = 2
         tapOnce.require(toFail: tapTwice)
-
+        
         // Down swipes return to album view
         let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(didSwipeDown(_:)))
         swipeDown.numberOfTouchesRequired = 1
@@ -106,7 +106,7 @@ class ImageViewController: UIViewController {
         
         // Add gestures to view
         view.gestureRecognizers = [tapOnce, tapTwice, swipeDown]
-
+        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
@@ -148,22 +148,29 @@ class ImageViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
+        
         // Always open this view with a navigation bar
         // and never present video in full screen
         navigationController?.setNavigationBarHidden(false, animated: true)
-
+        
         // Set colors, fonts, etc.
         applyColorPalette()
-
+        
         // Image options buttons
         updateNavBar()
         setEnableStateOfButtons(imageData.fileSize != Int64.zero)
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // Display help view only if not already watched
+        showHelpIfNeeded()
+    }
 
     override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-
+        
         coordinator.animate(alongsideTransition: { [self] _ in
             // Update image detail view
             updateNavBar()
@@ -184,10 +191,10 @@ class ImageViewController: UIViewController {
             toolbar.layoutIfNeeded()
         })
     }
-
+    
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-
+        
         // Should we update user interface based on the appearance?
         let isSystemDarkModeActive = UIScreen.main.traitCollection.userInterfaceStyle == .dark
         if AppVars.shared.isSystemDarkModeActive != isSystemDarkModeActive {
@@ -208,19 +215,19 @@ class ImageViewController: UIViewController {
         }
         let scenes = UIApplication.shared.connectedScenes.filter({$0.session.role == wantedRole})
         guard let sceneDelegate = scenes.first?.delegate as? ExternalDisplaySceneDelegate
-            else { return }
+        else { return }
         
         // Return to basic screen sharing
         sceneDelegate.window?.windowScene = nil
     }
     
     deinit {
-//        debugPrint("••> ImageViewController is being deinitialized.")
+        //        debugPrint("••> ImageViewController is being deinitialized.")
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
     }
-
-
+    
+    
     // MARK: - Image Data
     func getIndexPath(after indexPath: IndexPath) -> IndexPath? {
         // Check that the current section is still accessible
@@ -278,7 +285,7 @@ class ImageViewController: UIViewController {
             imageData.willAccessValue(forKey: nil)
             imageData.didAccessValue(forKey: nil)
         }
-
+        
         // Retrieve up-to-date complete image data if needed
         if imageData.fileSize == Int64.zero {
             // Image data is incomplete — retrieve it
@@ -287,7 +294,7 @@ class ImageViewController: UIViewController {
             // Image data retrieved more than a day ago — retrieve it
             retrieveImageData(imageData, isIncomplete: false)
         }
-
+        
         return imageData
     }
     
@@ -359,7 +366,7 @@ class ImageViewController: UIViewController {
             }
         }
     }
-
+    
     @MainActor
     private func retrieveImageDataError(_ error: PwgKitError) {
         // Session logout required?
@@ -367,13 +374,13 @@ class ImageViewController: UIViewController {
             ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }
-
+        
         // Report error
         let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
         let message = NSLocalizedString("imageDetailsFetchError_message", comment: "Fetching the image data failed.")
         dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { }
     }
-
+    
     func logImageVisitIfNeeded(_ imageID: Int64, asDownload: Bool = false) {
         // Should we really log visits?
         guard NetworkVars.shared.saveVisits
@@ -398,22 +405,22 @@ class ImageViewController: UIViewController {
             }
         }
     }
-
+    
     
     // MARK: - User Interaction
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
-
+    
     @objc func didTapOnce() {
         // Display/hide the navigation bar
         let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
         navigationController?.setNavigationBarHidden(!isNavigationBarHidden, animated: true)
-
+        
         // Display/hide home indicator
         // Notify UIKit that this view controller updated its preference regarding the visual indicator
         setNeedsUpdateOfHomeIndicatorAutoHidden()
-
+        
         // Display/hide the toolbar on iPhone if required
         if isToolbarRequired {
             navigationController?.setToolbarHidden(!isNavigationBarHidden, animated: true)
@@ -425,7 +432,7 @@ class ImageViewController: UIViewController {
             (imagePVC as? VideoDetailViewController)?.updateDescriptionControlsVisibility()
             (imagePVC as? PdfDetailViewController)?.updateDescriptionVisibility()
         }
-
+        
         // Set background color according to navigation bar visibility
         if navigationController?.isNavigationBarHidden ?? false {
             view.backgroundColor = .black
@@ -441,7 +448,7 @@ class ImageViewController: UIViewController {
             (imagePVC as? VideoDetailViewController)?.didTapTwice(gestureRecognizer)
         }
     }
-
+    
     @objc func didSwipeDown(_ gestureRecognizer: UIGestureRecognizer) {
         // Return to the album view
         returnToAlbum()
@@ -457,26 +464,26 @@ class ImageViewController: UIViewController {
         let phoneInLandscape = view.traitCollection.userInterfaceIdiom == .phone && orientation.isLandscape
         return phoneInLandscape || navigationController?.isNavigationBarHidden ?? false
     }
-
+    
     // Display/hide home indicator
     override var prefersHomeIndicatorAutoHidden: Bool {
         return navigationController?.isNavigationBarHidden ?? false
     }
-
+    
     
     // MARK: - Content Sizes
     @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
         // Apply changes
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
-
+            
             // Update navigation bar
             self.navigationController?.navigationBar.configAppearance(withLargeTitles: false)
             self.setTitleViewFromImageData()
         }
     }
-
-
+    
+    
     // MARK: - Push Views
     func pushView(_ viewController: UIViewController, forButton button: UIBarButtonItem?)
     {
@@ -487,7 +494,7 @@ class ImageViewController: UIViewController {
             case .phone:
                 navController.modalPresentationStyle = .popover
                 navController.popoverPresentationController?.sourceView = view
-            
+                
             case .pad:
                 // Push view embedded in navigation controller
                 navController.modalPresentationStyle = .formSheet
@@ -511,17 +518,47 @@ class ImageViewController: UIViewController {
                 navController.modalTransitionStyle = .coverVertical
                 navController.modalPresentationStyle = .popover
                 navController.popoverPresentationController?.sourceView = view
-
+                
             case .pad:
                 // Push view embedded in navigation controller
                 navController.modalPresentationStyle = .popover
                 navController.popoverPresentationController?.barButtonItem = button
-            
+                
             default:
                 preconditionFailure("!!! Interface not supported !!!")
             }
         }
         present(navController, animated: true)
+    }
+    
+    
+    // MARK: - Help Views
+    @MainActor
+    private func showHelpIfNeeded() {
+        
+        // Display help views less than once a day
+        let dateOfLastHelpView = AppVars.shared.dateOfLastHelpView
+        let diff = Date().timeIntervalSinceReferenceDate - dateOfLastHelpView
+        if diff > TimeInterval(86400) { return }
+        
+        // Determine which help pages should be presented
+        var displayHelpPagesWithID: [UInt16] = []
+        if (AppVars.shared.didWatchHelpViews & 0b00000100_00000000) == 0 {
+            displayHelpPagesWithID.append(11)    // i.e. Show on a TV or Mac
+        }
+        if displayHelpPagesWithID.count > 0 {
+            // Present unseen upload management help views
+            let helpVC = HelpUtilities.getHelpViewController(showingPagesWithIDs: displayHelpPagesWithID)
+            if view.traitCollection.userInterfaceIdiom == .phone {
+                helpVC.popoverPresentationController?.permittedArrowDirections = .up
+                navigationController?.present(helpVC, animated:true)
+            } else {
+                helpVC.modalPresentationStyle = .formSheet
+                helpVC.modalTransitionStyle = .coverVertical
+                helpVC.popoverPresentationController?.sourceView = view
+                navigationController?.present(helpVC, animated: true)
+            }
+        }
     }
 }
 
