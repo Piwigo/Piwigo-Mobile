@@ -402,7 +402,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             }
             catch {
-                debugPrint("Could not clean up the temporary directory")
+                debugPrint("••> Could not clean up the temporary directory")
             }
         }
     }

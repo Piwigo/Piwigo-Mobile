@@ -426,16 +426,8 @@ extension UploadManager
         // Explicitly abort pending CoreData work
         self.uploadBckgContext.rollback()
         
-        // Is the app in the foreground?
-        if UploadVars.shared.isApplicationActive {
-            // Resume upload activities in the foreground
-            Task(priority: .utility) { @UploadManagerActor in
-                UploadManager.shared.runContinuedUploadTask()
-            }
-        } else {
-            // Stop network monitoring
-            NotificationCenter.default.post(name: .pwgStopNetworkMonitoring, object: nil)
-        }
+        // Stop network monitoring
+        NotificationCenter.default.post(name: .pwgStopNetworkMonitoring, object: nil)
     }
     #endif
 }

@@ -203,7 +203,7 @@ class VideoDetailViewController: UIViewController
     @MainActor
     private func configScrollView(withSize size: CGSize) {
         // Calc new zoom scale range
-        debugPrint("••> configScrollView withSize:\(view.bounds.size), \(videoContainerView.bounds.size), \(size)")
+//        debugPrint("••> configScrollView withSize:\(view.bounds.size), \(videoContainerView.bounds.size), \(size)")
         let widthScale = view.bounds.size.width / size.width
         let heightScale = view.bounds.size.height / size.height
         let minScale = min(widthScale, heightScale)
@@ -218,10 +218,10 @@ class VideoDetailViewController: UIViewController
         // Set zoom scale range
         scrollView.minimumZoomScale = minScale
         scrollView.maximumZoomScale = 2 * maxScale
-        //        debugPrint("••> Did reset scrollView scale: ")
-        //        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale); soon: x\(zoomFactor)")
-        //        debugPrint("    Offset: \(scrollView.contentOffset)")
-        //        debugPrint("    Inset : \(scrollView.contentInset)")
+//        debugPrint("••> Did reset scrollView scale: ")
+//        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale); soon: x\(zoomFactor)")
+//        debugPrint("    Offset: \(scrollView.contentOffset)")
+//        debugPrint("    Inset : \(scrollView.contentInset)")
         
         // Next line calls scrollViewDidZoom() if zoomScale has changed
         let newZoomScale = minScale * zoomFactor

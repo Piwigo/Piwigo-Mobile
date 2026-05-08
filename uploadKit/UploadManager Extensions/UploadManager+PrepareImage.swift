@@ -86,6 +86,9 @@ extension UploadManager {
             // Get creation date from metadata if possible
             uploadData.creationDate = self.getCreationDateOfImage(atURL: originalFileURL)
             
+            // Rename file according to user's demand from date/time/counter/etc.
+            renamedFile(for: &uploadData)
+
             // Get MD5 checksum and MIME type, update counter
             try setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: originalFileURL)
             
@@ -101,6 +104,9 @@ extension UploadManager {
             // Strip private metadata
             let fileURL = try stripMetadataOfImage(atURL: originalFileURL, with: &uploadData)
             
+            // Rename file according to user's demand from date/time/counter/etc.
+            renamedFile(for: &uploadData)
+
             // Get MD5 checksum and MIME type, update counter
             try setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: fileURL)
             
@@ -112,6 +118,9 @@ extension UploadManager {
         /// - extracts the creation date from the source
         let fileURL = try modifyImage(atURL: originalFileURL, with: &uploadData)
         
+        // Rename file according to user's demand from date/time/counter/etc.
+        renamedFile(for: &uploadData)
+
         // Get MD5 checksum and MIME type
         try setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: fileURL)
     }
@@ -123,6 +132,9 @@ extension UploadManager {
         /// - extracts the creation date from the source
         let fileURL = try convertImage(atURL: originalFileURL, with: &uploadData)
         
+        // Rename file according to user's demand from date/time/counter/etc.
+        renamedFile(for: &uploadData)
+
         // Get MD5 checksum and MIME type
         try setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: fileURL)
     }

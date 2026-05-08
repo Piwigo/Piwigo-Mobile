@@ -134,7 +134,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     // Blur views if the App Lock is enabled
                     addPrivacyProtection(toFirstScene: true)
                 } else {
-                    debugPrint("Failed to restore scene from \(userActivity)")
+                    debugPrint("••> Failed to restore scene from \(userActivity)")
                 }
             }
         } else {
@@ -150,7 +150,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     // Blur views if the App is locked
                     addPrivacyProtection(toFirstScene: false)
                 } else {
-                    debugPrint("Failed to restore scene from \(userActivity)")
+                    debugPrint("••> Failed to restore scene from \(userActivity)")
                 }
             } else {
                 // Tell user to wait until migration is completed
