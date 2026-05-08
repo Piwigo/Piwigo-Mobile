@@ -36,7 +36,7 @@ class Help11ViewController: UIViewController {
         ]
         
         // Title
-        let titleString = NSLocalizedString("help11_header", comment: "Show album photos and videos on TV or Mac")
+        let titleString = NSLocalizedString("help11_header", comment: "Show your photos and videos on a TV or Mac")
         let titleAttributedString = NSMutableAttributedString(string: titleString)
         let titleRange = NSRange(location: 0, length: titleString.count)
         titleAttributedString.addAttribute(.font, value: titleFont, range: titleRange)

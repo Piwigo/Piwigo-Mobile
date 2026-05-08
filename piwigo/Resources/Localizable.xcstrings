@@ -20843,12 +20843,12 @@
       }
     },
     "help11_header" : {
-      "comment" : "Show album photos and videos on TV or Mac",
+      "comment" : "Show your photos and videos on a TV or Mac",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Show album photos and videos on TV or Mac"
+            "value" : "Show your photos and videos on a TV or Mac"
           }
         }
       }
