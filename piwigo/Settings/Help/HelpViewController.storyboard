@@ -4,6 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24743"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -803,7 +804,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="T60-Xe-VOB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-897" y="620"/>
+            <point key="canvasLocation" x="1039" y="-123"/>
         </scene>
         <!--Help08 View Controller-->
         <scene sceneID="PXj-Wu-4ND">
@@ -904,7 +905,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QIw-qb-ojh" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-249" y="620"/>
+            <point key="canvasLocation" x="1688" y="-124"/>
         </scene>
         <!--Help09 View Controller-->
         <scene sceneID="WWI-ki-DOb">
@@ -1054,8 +1055,153 @@
             </objects>
             <point key="canvasLocation" x="2303" y="-866"/>
         </scene>
+        <!--Help11 View Controller-->
+        <scene sceneID="raP-qn-4jr">
+            <objects>
+                <viewController storyboardIdentifier="help11" useStoryboardIdentifierAsRestorationIdentifier="YES" id="grq-aQ-Ax5" customClass="Help11ViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" id="yL6-IG-zcz">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="558"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="1000" text="Show album photos and videos on TV or Mac" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P8D-8I-WzM" userLabel="titleLabel">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="41"/>
+                                <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1. Connect your iPhone or iPad to the same Wi-Fi network as your Apple TV, AirPlay-compatible smart TV, or Mac." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bln-42-Zwg" userLabel="text1Label">
+                                <rect key="frame" x="0.0" y="53" width="320" height="47"/>
+                                <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2. Open Control Center." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ry9-70-t1c" userLabel="text2Label">
+                                <rect key="frame" x="0.0" y="112.5" width="320" height="16"/>
+                                <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="3. Tap the Screen Mirroring button:" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pwt-pC-ld4" userLabel="text3Label">
+                                <rect key="frame" x="0.0" y="141" width="320" height="16"/>
+                                <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="7l8-X6-GWP" userLabel="Screen Mirroring">
+                                <rect key="frame" x="0.0" y="162" width="320" height="32"/>
+                                <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <imageReference key="image" image="rectangle.on.rectangle" catalog="system" renderingMode="hierarchical-single">
+                                    <hierarchicalColors>
+                                        <color systemColor="labelColor"/>
+                                        <color systemColor="secondaryLabelColor"/>
+                                        <color systemColor="tertiaryLabelColor"/>
+                                    </hierarchicalColors>
+                                </imageReference>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="4. Select your TV or Mac from the list." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jL2-vM-bdT" userLabel="text4Label">
+                                <rect key="frame" x="0.0" y="202.5" width="320" height="16"/>
+                                <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="RyP-ll-9XV">
+                                <rect key="frame" x="0.0" y="226.5" width="320" height="331.5"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="i0w-6C-4hA"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="jL2-vM-bdT" firstAttribute="leading" secondItem="Bln-42-Zwg" secondAttribute="leading" id="7b4-vi-KvD"/>
+                            <constraint firstItem="Ry9-70-t1c" firstAttribute="top" secondItem="Bln-42-Zwg" secondAttribute="baseline" constant="16" symbolType="layoutAnchor" id="D3w-JW-PJb"/>
+                            <constraint firstItem="RyP-ll-9XV" firstAttribute="leading" secondItem="Bln-42-Zwg" secondAttribute="trailing" constant="60" id="DT6-NK-dDp"/>
+                            <constraint firstItem="RyP-ll-9XV" firstAttribute="top" secondItem="jL2-vM-bdT" secondAttribute="bottom" constant="8" symbolic="YES" id="FWa-Dg-gkC"/>
+                            <constraint firstItem="RyP-ll-9XV" firstAttribute="leading" secondItem="P8D-8I-WzM" secondAttribute="leading" id="Fz6-Ja-ONm"/>
+                            <constraint firstItem="RyP-ll-9XV" firstAttribute="leading" secondItem="P8D-8I-WzM" secondAttribute="trailing" constant="60" id="KHP-bA-Oki"/>
+                            <constraint firstAttribute="trailing" secondItem="RyP-ll-9XV" secondAttribute="trailing" constant="30" id="NrP-Zc-uuf"/>
+                            <constraint firstItem="7l8-X6-GWP" firstAttribute="leading" secondItem="Bln-42-Zwg" secondAttribute="leading" id="OCv-ax-Y4U"/>
+                            <constraint firstItem="RyP-ll-9XV" firstAttribute="top" secondItem="yL6-IG-zcz" secondAttribute="top" id="ORr-gM-fdb"/>
+                            <constraint firstItem="jL2-vM-bdT" firstAttribute="trailing" secondItem="Bln-42-Zwg" secondAttribute="trailing" id="QHq-TD-Wcc"/>
+                            <constraint firstItem="Pwt-pC-ld4" firstAttribute="leading" secondItem="Bln-42-Zwg" secondAttribute="leading" id="SXu-Hb-Yey"/>
+                            <constraint firstItem="7l8-X6-GWP" firstAttribute="height" secondItem="RyP-ll-9XV" secondAttribute="height" multiplier="0.1" id="TFx-LW-avr"/>
+                            <constraint firstAttribute="trailing" secondItem="P8D-8I-WzM" secondAttribute="trailing" id="TUi-bb-bqc"/>
+                            <constraint firstItem="P8D-8I-WzM" firstAttribute="top" secondItem="i0w-6C-4hA" secondAttribute="top" id="U7x-Z0-yqz"/>
+                            <constraint firstItem="Ry9-70-t1c" firstAttribute="leading" secondItem="Bln-42-Zwg" secondAttribute="leading" id="Vaa-S1-aSY"/>
+                            <constraint firstItem="P8D-8I-WzM" firstAttribute="leading" secondItem="yL6-IG-zcz" secondAttribute="leading" id="ZOJ-uN-0ej"/>
+                            <constraint firstItem="7l8-X6-GWP" firstAttribute="trailing" secondItem="Bln-42-Zwg" secondAttribute="trailing" id="ZYt-mE-bmu"/>
+                            <constraint firstItem="Bln-42-Zwg" firstAttribute="top" secondItem="P8D-8I-WzM" secondAttribute="baseline" constant="16.5" symbolType="layoutAnchor" id="aVt-eW-QXZ"/>
+                            <constraint firstItem="P8D-8I-WzM" firstAttribute="top" secondItem="yL6-IG-zcz" secondAttribute="top" id="adM-na-LoU"/>
+                            <constraint firstItem="Bln-42-Zwg" firstAttribute="leading" secondItem="P8D-8I-WzM" secondAttribute="leading" id="cbK-Ec-7xR"/>
+                            <constraint firstItem="jL2-vM-bdT" firstAttribute="top" secondItem="7l8-X6-GWP" secondAttribute="bottom" constant="8" symbolic="YES" id="eMl-9t-Kjr"/>
+                            <constraint firstItem="RyP-ll-9XV" firstAttribute="bottom" secondItem="yL6-IG-zcz" secondAttribute="bottom" id="pEm-yI-4Yl"/>
+                            <constraint firstItem="Ry9-70-t1c" firstAttribute="trailing" secondItem="Bln-42-Zwg" secondAttribute="trailing" id="rfS-7F-L7v"/>
+                            <constraint firstItem="P8D-8I-WzM" firstAttribute="trailing" secondItem="Bln-42-Zwg" secondAttribute="trailing" id="ta1-BV-fJ2"/>
+                            <constraint firstItem="7l8-X6-GWP" firstAttribute="top" secondItem="Pwt-pC-ld4" secondAttribute="baseline" constant="8" symbolType="layoutAnchor" id="uBG-Jj-4Du"/>
+                            <constraint firstItem="Pwt-pC-ld4" firstAttribute="top" secondItem="Ry9-70-t1c" secondAttribute="baseline" constant="16" symbolType="layoutAnchor" id="vWg-qU-sSZ"/>
+                            <constraint firstItem="P8D-8I-WzM" firstAttribute="width" secondItem="RyP-ll-9XV" secondAttribute="width" id="vyP-6w-vSn"/>
+                            <constraint firstItem="Pwt-pC-ld4" firstAttribute="trailing" secondItem="Bln-42-Zwg" secondAttribute="trailing" id="xeq-B7-IVY"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="ta1-BV-fJ2"/>
+                                <exclude reference="U7x-Z0-yqz"/>
+                                <exclude reference="TUi-bb-bqc"/>
+                                <exclude reference="adM-na-LoU"/>
+                                <exclude reference="DT6-NK-dDp"/>
+                                <exclude reference="NrP-Zc-uuf"/>
+                                <exclude reference="ORr-gM-fdb"/>
+                                <exclude reference="KHP-bA-Oki"/>
+                                <exclude reference="Fz6-Ja-ONm"/>
+                                <exclude reference="FWa-Dg-gkC"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=compact">
+                            <mask key="constraints">
+                                <include reference="U7x-Z0-yqz"/>
+                                <include reference="DT6-NK-dDp"/>
+                                <include reference="NrP-Zc-uuf"/>
+                                <include reference="ORr-gM-fdb"/>
+                                <include reference="KHP-bA-Oki"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular">
+                            <mask key="constraints">
+                                <include reference="ta1-BV-fJ2"/>
+                                <include reference="TUi-bb-bqc"/>
+                                <include reference="adM-na-LoU"/>
+                                <include reference="Fz6-Ja-ONm"/>
+                                <include reference="FWa-Dg-gkC"/>
+                            </mask>
+                        </variation>
+                    </view>
+                    <modalPageSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <connections>
+                        <outlet property="imageView" destination="RyP-ll-9XV" id="DWx-vW-iQY"/>
+                        <outlet property="text1Label" destination="Bln-42-Zwg" id="XI5-PY-VMG"/>
+                        <outlet property="text2Label" destination="Ry9-70-t1c" id="3Yk-Ly-CLt"/>
+                        <outlet property="text3Label" destination="Pwt-pC-ld4" id="3ps-1m-yFv"/>
+                        <outlet property="text4Label" destination="jL2-vM-bdT" id="1cj-t2-VFV"/>
+                        <outlet property="titleLabel" destination="P8D-8I-WzM" id="45q-x0-B1h"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jeO-ue-nwH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2303" y="-123"/>
+        </scene>
     </scenes>
     <resources>
+        <image name="rectangle.on.rectangle" catalog="system" width="128" height="98"/>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="secondaryLabelColor">
+            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
@@ -1064,6 +1210,9 @@
         </systemColor>
         <systemColor name="systemGrayColor">
             <color red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="tertiaryLabelColor">
+            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.29803921570000003" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

@@ -500,6 +500,9 @@
 		ADAE3C342E19215200E1D634 /* ReleaseNotes.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADAE3C332E19215200E1D634 /* ReleaseNotes.xcstrings */; };
 		ADAE3C362E1932F200E1D634 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADAE3C352E1932F200E1D634 /* InfoPlist.xcstrings */; };
 		ADAE3C382E19497100E1D634 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADAE3C372E19497000E1D634 /* Localizable.xcstrings */; };
+		ADAF43ED2FAE198800C8085F /* help11-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = ADAF43EC2FAE198800C8085F /* help11-iOS18.png */; };
+		ADAF43EF2FAE199700C8085F /* help11.png in Resources */ = {isa = PBXBuildFile; fileRef = ADAF43EE2FAE199700C8085F /* help11.png */; };
+		ADAF43F12FAE1AE400C8085F /* Help11ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAF43F02FAE1AE400C8085F /* Help11ViewController.swift */; };
 		ADB007D72D7B0A5F004A84A7 /* ImageViewController+Bars.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB007D62D7B0A5F004A84A7 /* ImageViewController+Bars.swift */; };
 		ADB007DA2D7C8627004A84A7 /* MappingModel_0G_to_0H.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = ADB007D92D7C8627004A84A7 /* MappingModel_0G_to_0H.xcmappingmodel */; };
 		ADB007DC2D7C8682004A84A7 /* MappingModel_0F_to_0H.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = ADB007DB2D7C8682004A84A7 /* MappingModel_0F_to_0H.xcmappingmodel */; };
@@ -1297,6 +1300,9 @@
 		ADAF3B7B23DDAC55007B0ABA /* ru */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		ADAF3B7D23DDAC6D007B0ABA /* zh-Hans */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/About.strings"; sourceTree = "<group>"; };
 		ADAF3B8123DDAC6D007B0ABA /* zh-Hans */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/PrivacyPolicy.strings"; sourceTree = "<group>"; };
+		ADAF43EC2FAE198800C8085F /* help11-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help11-iOS18.png"; sourceTree = "<group>"; };
+		ADAF43EE2FAE199700C8085F /* help11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help11.png; sourceTree = "<group>"; };
+		ADAF43F02FAE1AE400C8085F /* Help11ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help11ViewController.swift; sourceTree = "<group>"; };
 		ADAF64A729B3AEE2005F3501 /* zh-Hant */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/About.strings"; sourceTree = "<group>"; };
 		ADAF64AB29B3AEE2005F3501 /* zh-Hant */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/PrivacyPolicy.strings"; sourceTree = "<group>"; };
 		ADB007D62D7B0A5F004A84A7 /* ImageViewController+Bars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Bars.swift"; sourceTree = "<group>"; };
@@ -1934,6 +1940,7 @@
 				AD31E73A2EB106C100584ECB /* help08-top-iOS18.png */,
 				AD31E73B2EB106C100584ECB /* help09-iOS18.png */,
 				ADD3F4A22FA50ABE008B4D5E /* help10-iOS18.png */,
+				ADAF43EC2FAE198800C8085F /* help11-iOS18.png */,
 			);
 			path = "Help for iOS 18";
 			sourceTree = "<group>";
@@ -1955,6 +1962,7 @@
 				AD31E7542EB106CD00584ECB /* help08-top.png */,
 				AD31E7552EB106CD00584ECB /* help09.png */,
 				ADD3F4A02FA50AB5008B4D5E /* help10.png */,
+				ADAF43EE2FAE199700C8085F /* help11.png */,
 			);
 			path = "Help for iOS 26";
 			sourceTree = "<group>";
@@ -2386,6 +2394,7 @@
 				AD8A1E7C28846E1300752948 /* Help08ViewController.swift */,
 				AD0FE4BA2E01DB30002395CF /* Help09ViewController.swift */,
 				AD0FF37B2F9BD1F0000195C8 /* Help10ViewController.swift */,
+				ADAF43F02FAE1AE400C8085F /* Help11ViewController.swift */,
 				AD61D2F92571555A00B8DEA0 /* HelpViewController.storyboard */,
 			);
 			path = Help;
@@ -3619,6 +3628,7 @@
 				AD31E7412EB106C100584ECB /* help02-bot-iOS18.png in Resources */,
 				AD31E7422EB106C100584ECB /* help07-bot-iOS18.png in Resources */,
 				AD31E7432EB106C100584ECB /* help08-top-iOS18.png in Resources */,
+				ADAF43ED2FAE198800C8085F /* help11-iOS18.png in Resources */,
 				AD31E7442EB106C100584ECB /* help06-iOS18.png in Resources */,
 				AD31E76A2EB10A3800584ECB /* help05-bot.png in Resources */,
 				AD31E7462EB106C100584ECB /* help07-top-iOS18.png in Resources */,
@@ -3634,6 +3644,7 @@
 				AD8D218726B0B46A0008E907 /* lightPad.png in Resources */,
 				ADAE3C342E19215200E1D634 /* ReleaseNotes.xcstrings in Resources */,
 				AD089CFF2BC2A52200CE4A3E /* ImageCollectionViewCell.xib in Resources */,
+				ADAF43EF2FAE199700C8085F /* help11.png in Resources */,
 				AD089D052BC2A5FC00CE4A3E /* AlbumTableViewCell.xib in Resources */,
 				ADB2E9442DD5A8DC000F3F7C /* TimeFormatSelectorViewController.storyboard in Resources */,
 				ADAE3C362E1932F200E1D634 /* InfoPlist.xcstrings in Resources */,
@@ -4124,6 +4135,7 @@
 				ADCA7CF82E928A7F00EFC3C5 /* HelpUtilities.swift in Sources */,
 				ADEA269A285F8D5F00B6C9A0 /* ImageViewController+Share.swift in Sources */,
 				ADA74B0B2C5BC72500162BE0 /* LocalImagesViewController+FlowLayout.swift in Sources */,
+				ADAF43F12FAE1AE400C8085F /* Help11ViewController.swift in Sources */,
 				AD6BA0F32BA5BDDC00755257 /* LocalImagesViewController+Data.swift in Sources */,
 				AD4AAFB825A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift in Sources */,
 				AD9D684A27DFE9E600517261 /* HapticUtilities.swift in Sources */,

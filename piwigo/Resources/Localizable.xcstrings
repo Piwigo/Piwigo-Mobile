@@ -20842,6 +20842,61 @@
         }
       }
     },
+    "help11_header" : {
+      "comment" : "Show album photos and videos on TV or Mac",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show album photos and videos on TV or Mac"
+          }
+        }
+      }
+    },
+    "help11_text" : {
+      "comment" : "Connect your iPhone or iPad to the same Wi-Fi network…",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Connect your iPhone or iPad to the same Wi-Fi network as your Apple TV, AirPlay-compatible smart TV, or Mac."
+          }
+        }
+      }
+    },
+    "help11_text2" : {
+      "comment" : "Open Control Center.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. Open Control Center."
+          }
+        }
+      }
+    },
+    "help11_text3" : {
+      "comment" : "Tap the Screen Mirroring button:",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3. Tap the Screen Mirroring button:"
+          }
+        }
+      }
+    },
+    "help11_text4" : {
+      "comment" : "Select your TV or Mac from the list.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4. Select your TV or Mac from the list."
+          }
+        }
+      }
+    },
     "Hour" : {
       "comment" : "Hour",
       "localizations" : {
