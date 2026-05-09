@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 55;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -647,6 +647,7 @@
 		ADE250D5266FE99A00285978 /* PwgSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE250D4266FE99A00285978 /* PwgSession.swift */; };
 		ADE250D72670016900285978 /* JSONManager+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE250D62670016900285978 /* JSONManager+Utilities.swift */; };
 		ADE250D926708DF600285978 /* KeychainUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE250D826708DF600285978 /* KeychainUtilities.swift */; };
+		ADE2A7462FAF89F600E5E12A /* shareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = ADE2A73C2FAF89F600E5E12A /* shareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		ADE46684242F978F002FEDE5 /* AboutViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADE46683242F978E002FEDE5 /* AboutViewController.storyboard */; };
 		ADE4C22625754B420060A203 /* Help03ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE4C22525754B420060A203 /* Help03ViewController.swift */; };
 		ADE4C23425755E660060A203 /* Help01ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE4C23325755E660060A203 /* Help01ViewController.swift */; };
@@ -762,6 +763,13 @@
 			remoteGlobalIDString = AD084E452659A27100159FE1;
 			remoteInfo = piwigoKit;
 		};
+		ADE2A7442FAF89F600E5E12A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D82B8CB31A67820A000E47CA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ADE2A73B2FAF89F600E5E12A;
+			remoteInfo = shareExtension;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -775,6 +783,17 @@
 				AD084E4E2659A27100159FE1 /* piwigoKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ADE2A74B2FAF89F600E5E12A /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				ADE2A7462FAF89F600E5E12A /* shareExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -1456,6 +1475,7 @@
 		ADE250D4266FE99A00285978 /* PwgSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PwgSession.swift; sourceTree = "<group>"; };
 		ADE250D62670016900285978 /* JSONManager+Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSONManager+Utilities.swift"; sourceTree = "<group>"; };
 		ADE250D826708DF600285978 /* KeychainUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainUtilities.swift; sourceTree = "<group>"; };
+		ADE2A73C2FAF89F600E5E12A /* shareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = shareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		ADE46683242F978E002FEDE5 /* AboutViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AboutViewController.storyboard; sourceTree = "<group>"; };
 		ADE4C22525754B420060A203 /* Help03ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Help03ViewController.swift; sourceTree = "<group>"; };
 		ADE4C23325755E660060A203 /* Help01ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help01ViewController.swift; sourceTree = "<group>"; };
@@ -1514,6 +1534,20 @@
 		D82B8CBB1A67820A000E47CA /* piwigo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = piwigo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D82B8CEE1A6790BF000E47CA /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		ADE2A7472FAF89F600E5E12A /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = ADE2A73B2FAF89F600E5E12A /* shareExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		ADE2A73D2FAF89F600E5E12A /* shareExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (ADE2A7472FAF89F600E5E12A /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = shareExtension; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		AD084E432659A27100159FE1 /* Frameworks */ = {
@@ -1578,6 +1612,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AD7F1C082B6675AC008E100E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ADE2A7392FAF89F600E5E12A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -3040,6 +3081,7 @@
 			children = (
 				D82B8CBD1A67820A000E47CA /* piwigo */,
 				AD778358267E34F800317F36 /* piwigoIntents */,
+				ADE2A73D2FAF89F600E5E12A /* shareExtension */,
 				AD084E3B2659846400159FE1 /* piwigoKit */,
 				AD2C62632A48ACBA00671582 /* uploadKit */,
 				AD084E3C265984B000159FE1 /* Supporting Targets */,
@@ -3058,6 +3100,7 @@
 				AD778356267E34F800317F36 /* piwigoIntents.appex */,
 				AD2C623A2A4896A600671582 /* uploadKit.framework */,
 				AD7F1C0E2B6675AC008E100E /* piwigoAppPreviews.xctest */,
+				ADE2A73C2FAF89F600E5E12A /* shareExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3355,6 +3398,28 @@
 			productReference = AD7F1C0E2B6675AC008E100E /* piwigoAppPreviews.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		ADE2A73B2FAF89F600E5E12A /* shareExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ADE2A7482FAF89F600E5E12A /* Build configuration list for PBXNativeTarget "shareExtension" */;
+			buildPhases = (
+				ADE2A7382FAF89F600E5E12A /* Sources */,
+				ADE2A7392FAF89F600E5E12A /* Frameworks */,
+				ADE2A73A2FAF89F600E5E12A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				ADE2A73D2FAF89F600E5E12A /* shareExtension */,
+			);
+			name = shareExtension;
+			packageProductDependencies = (
+			);
+			productName = shareExtension;
+			productReference = ADE2A73C2FAF89F600E5E12A /* shareExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		D82B8CBA1A67820A000E47CA /* piwigo */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D82B8CDE1A67820A000E47CA /* Build configuration list for PBXNativeTarget "piwigo" */;
@@ -3364,12 +3429,14 @@
 				D82B8CB81A67820A000E47CA /* Frameworks */,
 				D82B8CB91A67820A000E47CA /* Resources */,
 				AD084E522659A27100159FE1 /* Embed Frameworks */,
+				ADE2A74B2FAF89F600E5E12A /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				AD084E4C2659A27100159FE1 /* PBXTargetDependency */,
 				AD2C623F2A4896A600671582 /* PBXTargetDependency */,
+				ADE2A7452FAF89F600E5E12A /* PBXTargetDependency */,
 			);
 			name = piwigo;
 			productName = piwigo;
@@ -3383,7 +3450,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastSwiftUpdateCheck = 1250;
+				LastSwiftUpdateCheck = 2640;
 				LastUpgradeCheck = 2600;
 				ORGANIZATIONNAME = Piwigo.org;
 				TargetAttributes = {
@@ -3407,6 +3474,9 @@
 					};
 					AD7F1C002B6675AC008E100E = {
 						TestTargetID = D82B8CBA1A67820A000E47CA;
+					};
+					ADE2A73B2FAF89F600E5E12A = {
+						CreatedOnToolsVersion = 26.4.1;
 					};
 					D82B8CBA1A67820A000E47CA = {
 						CreatedOnToolsVersion = 6.1.1;
@@ -3461,6 +3531,7 @@
 			targets = (
 				D82B8CBA1A67820A000E47CA /* piwigo */,
 				AD778355267E34F800317F36 /* piwigoIntents */,
+				ADE2A73B2FAF89F600E5E12A /* shareExtension */,
 				AD084E452659A27100159FE1 /* piwigoKit */,
 				AD2C62392A4896A600671582 /* uploadKit */,
 				AD11E45D24A930B000C8876F /* piwigoWebAPI */,
@@ -3542,6 +3613,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AD7F1C0A2B6675AC008E100E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ADE2A73A2FAF89F600E5E12A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -4006,6 +4084,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		ADE2A7382FAF89F600E5E12A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D82B8CB71A67820A000E47CA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -4334,6 +4419,11 @@
 			target = AD084E452659A27100159FE1 /* piwigoKit */;
 			targetProxy = ADE1AB8C267E4D43001C1EEB /* PBXContainerItemProxy */;
 		};
+		ADE2A7452FAF89F600E5E12A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ADE2A73B2FAF89F600E5E12A /* shareExtension */;
+			targetProxy = ADE2A7442FAF89F600E5E12A /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -4467,7 +4557,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = piwigoKit/Info.plist;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Piwigo.org. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Piwigo.org. All rights reserved.";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -4524,7 +4614,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = piwigoKit/Info.plist;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Piwigo.org. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Piwigo.org. All rights reserved.";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -4659,7 +4749,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = uploadKit/Info.plist;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Piwigo.org. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Piwigo.org. All rights reserved.";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -4717,7 +4807,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = uploadKit/Info.plist;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Piwigo.org. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Piwigo.org. All rights reserved.";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -4844,7 +4934,7 @@
 				ENABLE_DEBUG_DYLIB = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = piwigoIntents/Resources/Info.plist;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Piwigo.org. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Piwigo.org. All rights reserved.";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4895,7 +4985,7 @@
 				ENABLE_DEBUG_DYLIB = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = piwigoIntents/Resources/Info.plist;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Piwigo.org. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Piwigo.org. All rights reserved.";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5010,6 +5100,109 @@
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = piwigo;
+			};
+			name = Release;
+		};
+		ADE2A7492FAF89F600E5E12A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = shareExtension/shareExtensionDebug.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZEC3W885H6;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = ZEC3W885H6;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = shareExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = shareExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Piwigo.org. All rights reserved.";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "net.lelievre-berna.piwigo.shareExtension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Dev profile for Piwigo Share Extension";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "Dev profile for Piwigo Mac Catalyst Share Ext.";
+				REGISTER_APP_GROUPS = YES;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_STRICT_MEMORY_SAFETY = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		ADE2A74A2FAF89F600E5E12A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = shareExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = shareExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Piwigo.org. All rights reserved.";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo.shareExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_STRICT_MEMORY_SAFETY = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -5317,6 +5510,15 @@
 			buildConfigurations = (
 				AD7F1C0C2B6675AC008E100E /* Debug */,
 				AD7F1C0D2B6675AC008E100E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ADE2A7482FAF89F600E5E12A /* Build configuration list for PBXNativeTarget "shareExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ADE2A7492FAF89F600E5E12A /* Debug */,
+				ADE2A74A2FAF89F600E5E12A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
