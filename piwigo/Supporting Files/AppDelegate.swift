@@ -51,7 +51,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UNUserNotificationCenter.current().requestAuthorization(options: .badge) { granted, Error in
 //                if granted { debugPrint("request succeeded!") }
         }
-
+        
+        // Migrate values to shared defaults
+        migrateToSharedDefaults()
+        
         // Remember the natural scale associated with the integrated screen for future initialisations
         AppVars.shared.currentDeviceScale = UIScreen.main.scale
         
@@ -116,20 +119,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //                                               name: Notification.Name.pwgDeleteUploadRequestsAndAssets, object: nil)
         return true
     }
-    
-    func addPrivacyProtectionIfNeeded() {
-        // Blur view if the App Lock is enabled
-        /// The passcode window is not presented  so that the app
-        /// does not request the passcode until it is put into the background.
-        if AppVars.shared.isAppLockActive {
-            // User is not allowed to access albums yet
-            AppVars.shared.isAppUnlocked = false
-            // Protect presented login view
-            addPrivacyProtection(to: window)
-        }
-        else {
-            // User is allowed to access albums
-            AppVars.shared.isAppUnlocked = true
+        
+    private func migrateToSharedDefaults() {
+        // Get shared store
+        let sharedDefaults = UserDefaults.dataSuite
+
+        // Keys of variables to migrate
+        var keys: [String] = []
+        keys.append("recentCategories")                 // List of albums recently visited / used (AlbumVars -> CacheVars)
+        keys.append("maxNberRecentCategories")          // Maximum number of recent abums  presented to the user (AlbumVars -> CacheVars)
+        
+        // Only migrate values that have not been moved yet
+        for key in keys {
+            if sharedDefaults.object(forKey: key) == nil,
+               let value = UserDefaults.standard.object(forKey: key) {
+                sharedDefaults.set(value, forKey: key)
+                UserDefaults.standard.removeObject(forKey: key)
+            }
         }
     }
     
@@ -720,7 +726,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let categoryIdStr = String(categoryId)
 
         // Get current list of recent albums
-        var recentAlbumsStr = AlbumVars.shared.recentCategories.components(separatedBy: ",").compactMap({$0})
+        var recentAlbumsStr = CacheVars.shared.recentCategories.components(separatedBy: ",").compactMap({$0})
         
         // Add or put back album ID to beginning of list
         if recentAlbumsStr.contains(categoryIdStr) {
@@ -731,8 +737,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // We will present 3 - 10 albums (5 by default), but because some recent albums
         // may not be suggested or other may be deleted, we store more than 10, say 20.
         let nberExtraCats: Int = max(0, recentAlbumsStr.count - 20)
-        AlbumVars.shared.recentCategories = recentAlbumsStr.dropLast(nberExtraCats).joined(separator: ",")
-        debugPrint("••> Added album \(categoryId); Recent albums: \(AlbumVars.shared.recentCategories) (max: \(AlbumVars.shared.maxNberRecentCategories))")
+        CacheVars.shared.recentCategories = recentAlbumsStr.dropLast(nberExtraCats).joined(separator: ",")
+        debugPrint("••> Added album \(categoryId); Recent albums: \(CacheVars.shared.recentCategories) (max: \(CacheVars.shared.maxNberRecentCategories))")
     }
 
     @objc func removeRecentAlbumWithAlbumId(_ notification: Notification) {
@@ -746,7 +752,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let categoryIdStr = String(categoryId)
 
         // Get current list of recent albums
-        var recentAlbumsStr = AlbumVars.shared.recentCategories.components(separatedBy: ",").compactMap({$0})
+        var recentAlbumsStr = CacheVars.shared.recentCategories.components(separatedBy: ",").compactMap({$0})
 
         // Remove album ID from list if necessary
         if recentAlbumsStr.contains(categoryIdStr) {
@@ -759,8 +765,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         // Update list
-        AlbumVars.shared.recentCategories = recentAlbumsStr.joined(separator: ",")
-        debugPrint("••> Removed album \(categoryIdStr); Recent albums: \(AlbumVars.shared.recentCategories) (max: \(AlbumVars.shared.maxNberRecentCategories))")
+        CacheVars.shared.recentCategories = recentAlbumsStr.joined(separator: ",")
+        debugPrint("••> Removed album \(categoryIdStr); Recent albums: \(CacheVars.shared.recentCategories) (max: \(CacheVars.shared.maxNberRecentCategories))")
     }
 
 

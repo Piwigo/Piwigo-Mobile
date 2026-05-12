@@ -33,7 +33,7 @@ final class ClearCache
         cancelTasks {
             // Back to default album settings
             AlbumVars.shared.defaultCategory = 0
-            AlbumVars.shared.recentCategories = "0"
+            CacheVars.shared.recentCategories = "0"
             AlbumVars.shared.isFetchingAlbumData = Set<Int32>()
             
             // Back to default server properties

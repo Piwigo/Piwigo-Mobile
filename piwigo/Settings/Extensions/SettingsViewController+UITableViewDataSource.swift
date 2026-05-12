@@ -149,7 +149,7 @@ extension SettingsViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SliderTableViewCell
                 else { preconditionFailure("Could not load SliderTableViewCell") }
                 // Slider value
-                let value = Float(AlbumVars.shared.maxNberRecentCategories)
+                let value = Float(CacheVars.shared.maxNberRecentCategories)
 
                 // Slider configuration
                 // See https://iosref.com/res
@@ -157,7 +157,7 @@ extension SettingsViewController: UITableViewDataSource
                 cell.configure(with: title, value: value, increment: 1, minValue: 3, maxValue: 10, prefix: "", suffix: "/10")
                 cell.cellSliderBlock = { newValue in
                     // Update settings
-                    AlbumVars.shared.maxNberRecentCategories = Int(newValue)
+                    CacheVars.shared.maxNberRecentCategories = Int(newValue)
                 }
                 cell.accessibilityIdentifier = "maxNberRecentAlbums"
                 tableViewCell = cell

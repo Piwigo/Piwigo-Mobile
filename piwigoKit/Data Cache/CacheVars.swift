@@ -50,7 +50,13 @@ public class CacheVars: @unchecked Sendable {
     
     // MARK: - Vars in UserDefaults / App Group
     // Variables stored in UserDefaults / App Group
-    /// - none
+    /// - List of albums recently visited / used
+    @UserDefault("recentCategories", defaultValue: "0")
+    public var recentCategories: String
+    
+    /// - Maximum number of recent abums  presented to the user
+    @UserDefault("maxNberRecentCategories", defaultValue: 5)
+    public var maxNberRecentCategories: Int
     
     
     // MARK: - Vars in Memory

@@ -43,14 +43,6 @@ final class AlbumVars: @unchecked Sendable {
     /// - Default album thumbnail size determined from the available image sizes to present 144x144 pixel thumbnails
     @UserDefault("defaultAlbumThumbnailSize", defaultValue: -1)
     var defaultAlbumThumbnailSize: Int16
-
-    /// - List of albums recently visited / used
-    @UserDefault("recentCategories", defaultValue: "0")
-    var recentCategories: String
-    
-    /// - Maximum number of recent abums  presented to the user
-    @UserDefault("maxNberRecentCategories", defaultValue: 5)
-    var maxNberRecentCategories: Int
     
     /// - Display album description in collection views
     @UserDefault("displayAlbumDescriptions", defaultValue: false)
