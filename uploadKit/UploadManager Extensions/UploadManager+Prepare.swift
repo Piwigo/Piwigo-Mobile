@@ -66,11 +66,15 @@ extension UploadManager
         }
         
         // Determine from where the file comes from:
-        // => Photo Library: use PHAsset local identifier
-        // => UIPasteborad: use identifier of type "Clipboard-yyyyMMdd-HHmmssSSSS-typ-#"
-        //    where "typ" is "img" (photo) or "mov" (video).
-        // => Intent: use identifier of type "Intent-yyyyMMdd-HHmmssSSSS-typ-#"
-        //    where "typ" is "img" (photo) or "mov" (video).
+        /// => Photo Library: use PHAsset local identifier
+        /// => UIPasteborad: use identifier of type "pwgClipboard-yyyyMMdd-HHmmssSSSS-typ-#"
+        ///     see kClipboardPrefix
+        /// => ShareExtension: use identifier of type "pwgShared-yyyyMMdd-HHmmssSSSS-typ-#"
+        ///     see kSharedPrefix
+        /// => Intent: use identifier of type "pwgIntent-yyyyMMdd-HHmmssSSSS-typ-#"
+        ///     see kIntentPrefix
+        /// where "typ" is the type of the file to upload (see kImageSuffix, kMovieSuffix )
+        /// and "#" is the index of the file
         do {
             if uploadData.localIdentifier.hasPrefix(kIntentPrefix) {
                 // Case of an image submitted by an intent

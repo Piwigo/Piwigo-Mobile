@@ -19,11 +19,12 @@ public let maxNberOfUploadsPerBckgTask = 25     // Queue upload requests to prep
 public let maxNberOfQueuedAutoUploads = 500     // i.e. do not queue more than 500 requests at a time
 
 // Constants used to name and identify media
-let kOriginalSuffix = "-original"
-public let kIntentPrefix = "Intent-"
-public let kClipboardPrefix = "Clipboard-"
+public let kClipboardPrefix = "pwgClipboard-"   // File extracted from the pasteboard
+public let kSharedPrefix = "pwgShared-"         // File shared from another app
+public let kIntentPrefix = "pwgIntent-"         // File selected by the shortcut app
 public let kImageSuffix = "-img-"
 public let kMovieSuffix = "-mov-"
+let kOriginalSuffix = "-original"
 
 // Constants returning the list of:
 /// - image formats which can be converted with iOS

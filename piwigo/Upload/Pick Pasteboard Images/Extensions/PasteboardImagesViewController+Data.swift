@@ -32,19 +32,19 @@ extension PasteboardImagesViewController {
             let pbDateTime = dateFormatter.string(from: Date())
 
             // Loop over all pasteboard objects
-            /// Pasteboard images are identified with identifiers of the type "Clipboard-yyyyMMdd-HHmmssSSSS-typ-#" where:
-            /// - "Clipboard" is a header telling that the image/video comes from the pasteboard
+            /// Pasteboard images are identified with identifiers of the type "pwgClipboard-yyyyMMdd-HHmmssSSSS-typ-#" where:
+            /// - "pwgClipboard" is a header telling that the object comes from the pasteboard (see kClipboardPrefix)
             /// - "yyyyMMdd-HHmmssSSSS" is the date at which the objects were retrieved
-            /// - "typ" is "img" or "mov" depending on the nature of the object
+            /// - "typ" is "-img-" or "-mov-" depending on the nature of the object (see kImageSuffix, kMovieSuffix)
             /// - "#" is the index of the object in the pasteboard
             for idx in indexSet {
                 let indexSet = IndexSet(integer: idx)
-                var identifier = ""
+                var identifier = kClipboardPrefix + pbDateTime
                 // Movies first because objects may contain both movies and images
                 if UIPasteboard.general.contains(pasteboardTypes: [UTType.movie.identifier], inItemSet: indexSet) {
-                    identifier = String(format: "%@%@%@%ld", kClipboardPrefix, pbDateTime, kMovieSuffix, idx)
+                    identifier += kMovieSuffix + String(idx)
                 } else {
-                    identifier = String(format: "%@%@%@%ld", kClipboardPrefix, pbDateTime, kImageSuffix, idx)
+                    identifier += kImageSuffix + String(idx)
                 }
                 let newObject = PasteboardObject(identifier: identifier, types: types[idx])
                 pbObjects.append(newObject)

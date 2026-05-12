@@ -120,18 +120,18 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
 
             // Loop over all pasteboard objects
             /// Pasteboard images are identified with identifiers of the type "Clipboard-yyyyMMdd-HHmmssSSSS-typ-#" where:
-            /// - "Clipboard" is a header telling that the image/video comes from the pasteboard
+            /// - "pwgClipboard" is a header telling that the image/video comes from the pasteboard (see kClipboardPrefix)
             /// - "yyyyMMdd-HHmmssSSSS" is the date at which the objects were retrieved
-            /// - "typ" is "img" or "mov" depending on the nature of the object
+            /// - "typ" is "-img-" or "-mov-" depending on the nature of the object (see kImageSuffix, kMovieSuffix)
             /// - "#" is the index of the object in the pasteboard
             for idx in indexSet {
                 let indexSet = IndexSet(integer: idx)
-                var identifier = ""
+                var identifier = kClipboardPrefix + pbDateTime
                 // Movies first because movies may contain images
                 if UIPasteboard.general.contains(pasteboardTypes: [UTType.movie.identifier], inItemSet: indexSet) {
-                    identifier = String(format: "%@%@%@%ld", kClipboardPrefix, pbDateTime, kMovieSuffix, idx)
+                    identifier += kMovieSuffix + String(idx)
                 } else {
-                    identifier = String(format: "%@%@%@%ld", kClipboardPrefix, pbDateTime, kImageSuffix, idx)
+                    identifier += kImageSuffix + String(idx)
                 }
                 let newObject = PasteboardObject(identifier: identifier, types: types[idx])
                 pbObjects.append(newObject)
@@ -140,7 +140,7 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
                 startOperations(for: newObject, at: IndexPath(item: idx, section: 0))
             }
         }
-
+        
         // At start, there is no image selected
         selectedImages = .init(repeating: nil, count: pbObjects.count)
         

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 55;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -94,7 +94,7 @@
 		AD2058A02B77E15700CF7E0B /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD20589F2B77E15700CF7E0B /* LocalAuthentication.framework */; };
 		AD2058A22B77E1B700CF7E0B /* CoreHaptics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058A12B77E1B600CF7E0B /* CoreHaptics.framework */; };
 		AD2058A42B77E1EF00CF7E0B /* Vision.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058A32B77E1EF00CF7E0B /* Vision.framework */; };
-		AD2058A62B77E22000CF7E0B /* BackgroundTasks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058A52B77E22000CF7E0B /* BackgroundTasks.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		AD2058A62B77E22000CF7E0B /* BackgroundTasks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058A52B77E22000CF7E0B /* BackgroundTasks.framework */; };
 		AD2058A72B77E27700CF7E0B /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD20588A2B77DDEA00CF7E0B /* CoreData.framework */; };
 		AD2058A82B77E28000CF7E0B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD20588C2B77DE0B00CF7E0B /* Foundation.framework */; };
 		AD2058A92B77E29D00CF7E0B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD20588C2B77DE0B00CF7E0B /* Foundation.framework */; };
@@ -497,6 +497,10 @@
 		ADACD2972C31906E00F8790B /* SettingsUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADACD2962C31906E00F8790B /* SettingsUtilities.swift */; };
 		ADACD2992C31BD0900F8790B /* JsonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADACD2982C31BD0900F8790B /* JsonViewController.swift */; };
 		ADACD29D2C34852800F8790B /* LogsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADACD29C2C34852800F8790B /* LogsViewController.swift */; };
+		ADADADEC2FB0AA6F003FB43F /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADADADEA2FB0AA6F003FB43F /* ShareViewController.swift */; };
+		ADADADEE2FB0AA6F003FB43F /* ShareViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADADADE72FB0AA6F003FB43F /* ShareViewController.storyboard */; };
+		ADADADEF2FB0AF58003FB43F /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; };
+		ADADADF02FB0AF5C003FB43F /* uploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* uploadKit.framework */; };
 		ADAE3C342E19215200E1D634 /* ReleaseNotes.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADAE3C332E19215200E1D634 /* ReleaseNotes.xcstrings */; };
 		ADAE3C362E1932F200E1D634 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADAE3C352E1932F200E1D634 /* InfoPlist.xcstrings */; };
 		ADAE3C382E19497100E1D634 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADAE3C372E19497000E1D634 /* Localizable.xcstrings */; };
@@ -755,6 +759,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = D82B8CBA1A67820A000E47CA;
 			remoteInfo = piwigo;
+		};
+		ADADADF52FB0AF83003FB43F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D82B8CB31A67820A000E47CA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AD2C62392A4896A600671582;
+			remoteInfo = uploadKit;
+		};
+		ADADADF72FB0AF88003FB43F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D82B8CB31A67820A000E47CA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AD084E452659A27100159FE1;
+			remoteInfo = piwigoKit;
 		};
 		ADE1AB8C267E4D43001C1EEB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1154,8 +1172,8 @@
 		AD770FD523B4BDB5007DAD50 /* EditImageParamsViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = EditImageParamsViewController.storyboard; sourceTree = "<group>"; };
 		AD778356267E34F800317F36 /* piwigoIntents.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = piwigoIntents.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD778359267E34F800317F36 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
-		AD778363267E35D200317F36 /* piwigoIntentsDebug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = piwigoIntentsDebug.entitlements; sourceTree = "<group>"; };
-		AD778364267E35D200317F36 /* piwigoIntentsRelease.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = piwigoIntentsRelease.entitlements; sourceTree = "<group>"; };
+		AD778363267E35D200317F36 /* debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = debug.entitlements; sourceTree = "<group>"; };
+		AD778364267E35D200317F36 /* release.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = release.entitlements; sourceTree = "<group>"; };
 		AD778368267E384500317F36 /* UploadPhotosHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadPhotosHandler.swift; sourceTree = "<group>"; };
 		AD7783B1267E4AB700317F36 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Base; path = Base.lproj/Intents.intentdefinition; sourceTree = "<group>"; };
 		AD79E8A22D63D75500106643 /* pwg.images.setCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.setCategory.swift; sourceTree = "<group>"; };
@@ -1309,6 +1327,10 @@
 		ADACD2962C31906E00F8790B /* SettingsUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsUtilities.swift; sourceTree = "<group>"; };
 		ADACD2982C31BD0900F8790B /* JsonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonViewController.swift; sourceTree = "<group>"; };
 		ADACD29C2C34852800F8790B /* LogsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogsViewController.swift; sourceTree = "<group>"; };
+		ADADADE52FB0AA6F003FB43F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		ADADADE62FB0AA6F003FB43F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/ShareViewController.storyboard; sourceTree = "<group>"; };
+		ADADADE82FB0AA6F003FB43F /* debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = debug.entitlements; sourceTree = "<group>"; };
+		ADADADEA2FB0AA6F003FB43F /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		ADAE3C312E191F8B00E1D634 /* AppStore.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = AppStore.xcstrings; sourceTree = "<group>"; };
 		ADAE3C332E19215200E1D634 /* ReleaseNotes.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = ReleaseNotes.xcstrings; sourceTree = "<group>"; };
 		ADAE3C352E1932F200E1D634 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
@@ -1535,20 +1557,6 @@
 		D82B8CEE1A6790BF000E47CA /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		ADE2A7472FAF89F600E5E12A /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = ADE2A73B2FAF89F600E5E12A /* shareExtension */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		ADE2A73D2FAF89F600E5E12A /* shareExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (ADE2A7472FAF89F600E5E12A /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = shareExtension; sourceTree = "<group>"; };
-/* End PBXFileSystemSynchronizedRootGroup section */
-
 /* Begin PBXFrameworksBuildPhase section */
 		AD084E432659A27100159FE1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -1603,10 +1611,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD2058A82B77E28000CF7E0B /* Foundation.framework in Frameworks */,
-				ADE1AB8A267E4D43001C1EEB /* piwigoKit.framework in Frameworks */,
 				AD2058A72B77E27700CF7E0B /* CoreData.framework in Frameworks */,
+				AD2058A82B77E28000CF7E0B /* Foundation.framework in Frameworks */,
 				AD778357267E34F800317F36 /* Intents.framework in Frameworks */,
+				ADE1AB8A267E4D43001C1EEB /* piwigoKit.framework in Frameworks */,
 				AD2C62582A48993F00671582 /* uploadKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1622,6 +1630,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ADADADEF2FB0AF58003FB43F /* piwigoKit.framework in Frameworks */,
+				ADADADF02FB0AF5C003FB43F /* uploadKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1629,25 +1639,25 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD20588F2B77DE4400CF7E0B /* UIKit.framework in Frameworks */,
-				AD20589B2B77DFD600CF7E0B /* AVFoundation.framework in Frameworks */,
-				AD20588B2B77DDEA00CF7E0B /* CoreData.framework in Frameworks */,
-				AD20588E2B77DE2700CF7E0B /* MessageUI.framework in Frameworks */,
-				AD2058912B77DED300CF7E0B /* CoreMedia.framework in Frameworks */,
-				AD2058852B779B0200CF7E0B /* PhotosUI.framework in Frameworks */,
-				AD2058A22B77E1B700CF7E0B /* CoreHaptics.framework in Frameworks */,
-				AD2058A42B77E1EF00CF7E0B /* Vision.framework in Frameworks */,
-				AD2058832B779AF500CF7E0B /* Photos.framework in Frameworks */,
-				AD20589D2B77E03F00CF7E0B /* UniformTypeIdentifiers.framework in Frameworks */,
-				AD2058932B77DF5C00CF7E0B /* ImageIO.framework in Frameworks */,
-				AD2058A02B77E15700CF7E0B /* LocalAuthentication.framework in Frameworks */,
-				AD2058992B77DFB700CF7E0B /* LinkPresentation.framework in Frameworks */,
-				AD2058A62B77E22000CF7E0B /* BackgroundTasks.framework in Frameworks */,
-				AD084E4D2659A27100159FE1 /* piwigoKit.framework in Frameworks */,
-				AD2058952B77DF6A00CF7E0B /* MobileCoreServices.framework in Frameworks */,
 				AD2058972B77DF8400CF7E0B /* AVKit.framework in Frameworks */,
-				AD20589E2B77E0D200CF7E0B /* Intents.framework in Frameworks */,
+				AD20589B2B77DFD600CF7E0B /* AVFoundation.framework in Frameworks */,
+				AD2058A62B77E22000CF7E0B /* BackgroundTasks.framework in Frameworks */,
+				AD20588B2B77DDEA00CF7E0B /* CoreData.framework in Frameworks */,
+				AD2058A22B77E1B700CF7E0B /* CoreHaptics.framework in Frameworks */,
+				AD2058912B77DED300CF7E0B /* CoreMedia.framework in Frameworks */,
 				AD20588D2B77DE0B00CF7E0B /* Foundation.framework in Frameworks */,
+				AD2058932B77DF5C00CF7E0B /* ImageIO.framework in Frameworks */,
+				AD20589E2B77E0D200CF7E0B /* Intents.framework in Frameworks */,
+				AD2058992B77DFB700CF7E0B /* LinkPresentation.framework in Frameworks */,
+				AD2058A02B77E15700CF7E0B /* LocalAuthentication.framework in Frameworks */,
+				AD20588E2B77DE2700CF7E0B /* MessageUI.framework in Frameworks */,
+				AD2058952B77DF6A00CF7E0B /* MobileCoreServices.framework in Frameworks */,
+				AD2058832B779AF500CF7E0B /* Photos.framework in Frameworks */,
+				AD2058852B779B0200CF7E0B /* PhotosUI.framework in Frameworks */,
+				AD20588F2B77DE4400CF7E0B /* UIKit.framework in Frameworks */,
+				AD2058A42B77E1EF00CF7E0B /* Vision.framework in Frameworks */,
+				AD20589D2B77E03F00CF7E0B /* UniformTypeIdentifiers.framework in Frameworks */,
+				AD084E4D2659A27100159FE1 /* piwigoKit.framework in Frameworks */,
 				AD2C62402A4896A600671582 /* uploadKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1931,8 +1941,8 @@
 			children = (
 				ADE1AB87267E4BB0001C1EEB /* Info.plist */,
 				AD7783B2267E4AB700317F36 /* Intents.intentdefinition */,
-				AD778363267E35D200317F36 /* piwigoIntentsDebug.entitlements */,
-				AD778364267E35D200317F36 /* piwigoIntentsRelease.entitlements */,
+				AD778363267E35D200317F36 /* debug.entitlements */,
+				AD778364267E35D200317F36 /* release.entitlements */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -2552,6 +2562,25 @@
 			path = pwg.tags;
 			sourceTree = "<group>";
 		};
+		ADADADE92FB0AA6F003FB43F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				ADADADE52FB0AA6F003FB43F /* Info.plist */,
+				ADADADE72FB0AA6F003FB43F /* ShareViewController.storyboard */,
+				ADADADE82FB0AA6F003FB43F /* debug.entitlements */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		ADADADEB2FB0AA6F003FB43F /* shareExtension */ = {
+			isa = PBXGroup;
+			children = (
+				ADADADEA2FB0AA6F003FB43F /* ShareViewController.swift */,
+				ADADADE92FB0AA6F003FB43F /* Resources */,
+			);
+			path = shareExtension;
+			sourceTree = "<group>";
+		};
 		ADB007DD2D7DE47A004A84A7 /* Mapping Model 0A to 0B */ = {
 			isa = PBXGroup;
 			children = (
@@ -3081,7 +3110,7 @@
 			children = (
 				D82B8CBD1A67820A000E47CA /* piwigo */,
 				AD778358267E34F800317F36 /* piwigoIntents */,
-				ADE2A73D2FAF89F600E5E12A /* shareExtension */,
+				ADADADEB2FB0AA6F003FB43F /* shareExtension */,
 				AD084E3B2659846400159FE1 /* piwigoKit */,
 				AD2C62632A48ACBA00671582 /* uploadKit */,
 				AD084E3C265984B000159FE1 /* Supporting Targets */,
@@ -3409,9 +3438,8 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				ADE2A73D2FAF89F600E5E12A /* shareExtension */,
+				ADADADF82FB0AF88003FB43F /* PBXTargetDependency */,
+				ADADADF62FB0AF83003FB43F /* PBXTargetDependency */,
 			);
 			name = shareExtension;
 			packageProductDependencies = (
@@ -3623,6 +3651,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ADADADEE2FB0AA6F003FB43F /* ShareViewController.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4068,8 +4097,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD889A2B2F543C24006B663E /* UploadPhotosHandler.swift in Sources */,
 				AD889A2C2F543C2A006B663E /* IntentHandler.swift in Sources */,
+				AD889A2B2F543C24006B663E /* UploadPhotosHandler.swift in Sources */,
 				ADD063BD26A08973002558D2 /* Intents.intentdefinition in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4088,6 +4117,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ADADADEC2FB0AA6F003FB43F /* ShareViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4414,6 +4444,16 @@
 			target = D82B8CBA1A67820A000E47CA /* piwigo */;
 			targetProxy = AD7F1C022B6675AC008E100E /* PBXContainerItemProxy */;
 		};
+		ADADADF62FB0AF83003FB43F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AD2C62392A4896A600671582 /* uploadKit */;
+			targetProxy = ADADADF52FB0AF83003FB43F /* PBXContainerItemProxy */;
+		};
+		ADADADF82FB0AF88003FB43F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AD084E452659A27100159FE1 /* piwigoKit */;
+			targetProxy = ADADADF72FB0AF88003FB43F /* PBXContainerItemProxy */;
+		};
 		ADE1AB8D267E4D43001C1EEB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = AD084E452659A27100159FE1 /* piwigoKit */;
@@ -4526,6 +4566,14 @@
 				AD8D213A26ACC1740008E907 /* id */,
 			);
 			name = InAppIntents.intentdefinition;
+			sourceTree = "<group>";
+		};
+		ADADADE72FB0AA6F003FB43F /* ShareViewController.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				ADADADE62FB0AA6F003FB43F /* Base */,
+			);
+			name = ShareViewController.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -4925,8 +4973,9 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = piwigoIntents/Resources/piwigoIntentsDebug.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_ENTITLEMENTS = piwigoIntents/Resources/debug.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
 				DEVELOPMENT_TEAM = ZEC3W885H6;
@@ -4976,8 +5025,8 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = piwigoIntents/Resources/piwigoIntentsRelease.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_ENTITLEMENTS = piwigoIntents/Resources/release.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
 				DEVELOPMENT_TEAM = ZU5THW8T5W;
@@ -5112,7 +5161,7 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = shareExtension/shareExtensionDebug.entitlements;
+				CODE_SIGN_ENTITLEMENTS = shareExtension/Resources/debug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
 				CODE_SIGN_STYLE = Manual;
@@ -5123,7 +5172,7 @@
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = ZEC3W885H6;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = shareExtension/Info.plist;
+				INFOPLIST_FILE = shareExtension/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = shareExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Piwigo.org. All rights reserved.";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
@@ -5150,7 +5199,10 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = NO;
 				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_STRICT_MEMORY_SAFETY = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
@@ -5176,7 +5228,7 @@
 				DEVELOPMENT_TEAM = "";
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = shareExtension/Info.plist;
+				INFOPLIST_FILE = shareExtension/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = shareExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Piwigo.org. All rights reserved.";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
@@ -5198,6 +5250,9 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = NO;
 				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_STRICT_MEMORY_SAFETY = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;

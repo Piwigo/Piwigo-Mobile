@@ -60,8 +60,8 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
         /// Intents images are identified with identifiers of the type "Intent-yyyyMMdd-HHmmssSSSS-typ-#" where:
         /// - "Intent" is a header telling that the image/video comes from the intent
         /// - "yyyyMMdd-HHmmssSSSS" is the date at which the objects were retrieved
-        /// - "typ" is "img" for this intent
-        /// - "#" is the index of the object in the pasteboard
+        /// - "typ" is "-img-" or "-mov-" depending on the nature of the object (see kImageSuffix, kMovieSuffix)
+        /// - "#" is the index of the object selected by the intent
         var selectedImages = [UploadProperties]()      // Array of images to upload
         for idx in 0..<selectedFiles.count {
             // Determine MD5 checksum
@@ -82,11 +82,10 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
             }
             
             // Set file URL in Uploads directory
-            let identifier = String(format: "%@%@%@%ld", kIntentPrefix,
-                                    actionDateTime, kImageSuffix, idx)
+            let identifier = kIntentPrefix + actionDateTime + kImageSuffix + String(idx)
             let fileUploadsUrl = DataDirectories.appUploadsDirectory
                 .appendingPathComponent(identifier)
-
+            
             // Delete file if it already exists (incomplete previous attempt?)
             try? FileManager.default.removeItem(at: fileUploadsUrl)
 

@@ -5,7 +5,7 @@
 	<key>AppIdentifierPrefix</key>
 	<string>$(AppIdentifierPrefix)</string>
 	<key>CFBundleDisplayName</key>
-	<string>piwigoIntents</string>
+	<string>shareExtension</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleName</key>
@@ -26,19 +26,20 @@
 	<dict>
 		<key>NSExtensionAttributes</key>
 		<dict>
-			<key>IntentsRestrictedWhileLocked</key>
-			<array/>
-			<key>IntentsRestrictedWhileProtectedDataUnavailable</key>
-			<array/>
-			<key>IntentsSupported</key>
-			<array>
-				<string>UploadPhotosIntent</string>
-			</array>
+			<key>NSExtensionActivationDictionaryVersion</key>
+			<integer>2</integer>
+			<key>NSExtensionActivationRule</key>
+			<dict>
+				<key>NSExtensionActivationSupportsImageWithMaxCount</key>
+				<string>10</string>
+				<key>NSExtensionActivationSupportsMovieWithMaxCount</key>
+				<string>1</string>
+			</dict>
 		</dict>
+		<key>NSExtensionMainStoryboard</key>
+		<string>ShareViewController</string>
 		<key>NSExtensionPointIdentifier</key>
-		<string>com.apple.intents-service</string>
-		<key>NSExtensionPrincipalClass</key>
-		<string>$(PRODUCT_MODULE_NAME).IntentHandler</string>
+		<string>com.apple.share-services</string>
 	</dict>
 </dict>
 </plist>
