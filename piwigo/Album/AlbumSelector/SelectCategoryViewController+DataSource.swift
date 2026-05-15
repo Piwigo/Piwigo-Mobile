@@ -6,6 +6,7 @@
 //  Copyright © 2025 Piwigo.org. All rights reserved.
 //
 
+import CoreData
 import Foundation
 import UIKit
 import piwigoKit

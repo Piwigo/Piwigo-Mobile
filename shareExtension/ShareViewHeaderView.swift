@@ -1,0 +1,54 @@
+//
+//  ShareViewHeaderView.swift
+//  piwigo
+//
+//  Created by Eddy Lelièvre-Berna on 12/05/2026.
+//  Copyright © 2026 Piwigo.org. All rights reserved.
+//
+
+import Foundation
+import UIKit
+
+class SelectCategoryHeaderView: UIView {
+
+    private let label = UILabel(frame: .zero)
+    private let margin: CGFloat = 14.0 // + TableViewUtilities.rowCornerRadius
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        backgroundColor = UIColor.clear
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 0
+        label.font = .preferredFont(forTextStyle: .footnote)
+        label.baselineAdjustment = .alignCenters
+        label.lineBreakMode = .byWordWrapping
+        label.textAlignment = .center
+
+        addSubview(label)
+        NSLayoutConstraint.activate([
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: margin),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -margin),
+            label.bottomAnchor.constraint(equalTo: bottomAnchor),
+            label.topAnchor.constraint(equalTo: topAnchor)
+        ])
+    }
+
+    func configure(width: CGFloat, text: String) {
+        let context = NSStringDrawingContext()
+        context.minimumScaleFactor = 1.0
+        let titleAttributes = [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)]
+        var titleRect = text.boundingRect(with: CGSize(width: width - 2 * margin,
+                                                       height: CGFloat.greatestFiniteMagnitude),
+                                          options: .usesLineFragmentOrigin,
+                                          attributes: titleAttributes, context: context)
+        titleRect.size.height += 16
+        self.frame = titleRect
+        label.text = text
+//        label.textColor = PwgColor.leftLabel
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
