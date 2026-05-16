@@ -33,7 +33,7 @@ public struct SessionLogoutJSON: Decodable {
         status = try rootContainer.decodeIfPresent(String.self, forKey: .status)
         if status == "ok"
         {
-            success = true
+            success = try rootContainer.decodeIfPresent(Bool.self, forKey: .result) ?? false
         }
         else if status == "fail"
         {
