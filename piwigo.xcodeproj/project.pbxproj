@@ -414,7 +414,7 @@
 		AD7E9AEB2A6D7BDC0079BE8F /* PlaybackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E9AEA2A6D7BDC0079BE8F /* PlaybackController.swift */; };
 		AD7F1C062B6675AC008E100E /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */; };
 		AD7F1C072B6675AC008E100E /* Device+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF3EC0B2516515500379E53 /* Device+Model.swift */; };
-		AD7F1C132B6676AE008E100E /* piwigoAppPreviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7F1C112B66760F008E100E /* piwigoAppPreviews.swift */; };
+		AD7F1C132B6676AE008E100E /* PiwigoAppPreviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7F1C112B66760F008E100E /* PiwigoAppPreviews.swift */; };
 		AD807F0626E52B8D00008162 /* pwg.getInfos.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD807F0526E52B8D00008162 /* pwg.getInfos.swift */; };
 		AD807F0A26E530ED00008162 /* pwg.images.delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD807F0926E530ED00008162 /* pwg.images.delete.swift */; };
 		AD807F1026E532F700008162 /* pwg.getInfos.json in Resources */ = {isa = PBXBuildFile; fileRef = AD807F0F26E532F700008162 /* pwg.getInfos.json */; };
@@ -1230,8 +1230,8 @@
 		AD7E9AE62A6D7AEA0079BE8F /* PlayerViewControllerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewControllerCoordinator.swift; sourceTree = "<group>"; };
 		AD7E9AE82A6D7B330079BE8F /* Video.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		AD7E9AEA2A6D7BDC0079BE8F /* PlaybackController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackController.swift; sourceTree = "<group>"; };
-		AD7F1C0E2B6675AC008E100E /* piwigoAppPreviews.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = piwigoAppPreviews.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		AD7F1C112B66760F008E100E /* piwigoAppPreviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = piwigoAppPreviews.swift; sourceTree = "<group>"; };
+		AD7F1C0E2B6675AC008E100E /* PiwigoAppPreviews.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PiwigoAppPreviews.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AD7F1C112B66760F008E100E /* PiwigoAppPreviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiwigoAppPreviews.swift; sourceTree = "<group>"; };
 		AD7F1C122B66761B008E100E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AD807F0526E52B8D00008162 /* pwg.getInfos.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.getInfos.swift; sourceTree = "<group>"; };
 		AD807F0726E52F6F00008162 /* pwg.images.delete.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.images.delete.json; sourceTree = "<group>"; };
@@ -1740,7 +1740,7 @@
 			children = (
 				AD11E45F24A930B000C8876F /* piwigoWebAPI */,
 				AD30FD3521316DA8009AA30E /* piwigoScreenshots */,
-				AD7F1C102B6675DE008E100E /* piwigoAppPreviews */,
+				AD7F1C102B6675DE008E100E /* PiwigoAppPreviews */,
 			);
 			path = "Supporting Targets";
 			sourceTree = "<group>";
@@ -2393,13 +2393,13 @@
 			path = Video;
 			sourceTree = "<group>";
 		};
-		AD7F1C102B6675DE008E100E /* piwigoAppPreviews */ = {
+		AD7F1C102B6675DE008E100E /* PiwigoAppPreviews */ = {
 			isa = PBXGroup;
 			children = (
-				AD7F1C112B66760F008E100E /* piwigoAppPreviews.swift */,
+				AD7F1C112B66760F008E100E /* PiwigoAppPreviews.swift */,
 				AD7F1C122B66761B008E100E /* Info.plist */,
 			);
-			path = piwigoAppPreviews;
+			path = PiwigoAppPreviews;
 			sourceTree = "<group>";
 		};
 		AD7F1C142B667BAF008E100E /* UploadManager Extensions */ = {
@@ -3140,7 +3140,7 @@
 				AD084E462659A27100159FE1 /* piwigoKit.framework */,
 				AD778356267E34F800317F36 /* piwigoIntents.appex */,
 				AD2C623A2A4896A600671582 /* uploadKit.framework */,
-				AD7F1C0E2B6675AC008E100E /* piwigoAppPreviews.xctest */,
+				AD7F1C0E2B6675AC008E100E /* PiwigoAppPreviews.xctest */,
 				ADE2A73C2FAF89F600E5E12A /* shareExtension.appex */,
 			);
 			name = Products;
@@ -3418,9 +3418,9 @@
 			productReference = AD778356267E34F800317F36 /* piwigoIntents.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		AD7F1C002B6675AC008E100E /* piwigoAppPreviews */ = {
+		AD7F1C002B6675AC008E100E /* PiwigoAppPreviews */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AD7F1C0B2B6675AC008E100E /* Build configuration list for PBXNativeTarget "piwigoAppPreviews" */;
+			buildConfigurationList = AD7F1C0B2B6675AC008E100E /* Build configuration list for PBXNativeTarget "PiwigoAppPreviews" */;
 			buildPhases = (
 				AD7F1C042B6675AC008E100E /* Sources */,
 				AD7F1C082B6675AC008E100E /* Frameworks */,
@@ -3431,9 +3431,9 @@
 			dependencies = (
 				AD7F1C012B6675AC008E100E /* PBXTargetDependency */,
 			);
-			name = piwigoAppPreviews;
+			name = PiwigoAppPreviews;
 			productName = piwigoUITests;
-			productReference = AD7F1C0E2B6675AC008E100E /* piwigoAppPreviews.xctest */;
+			productReference = AD7F1C0E2B6675AC008E100E /* PiwigoAppPreviews.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 		ADE2A73B2FAF89F600E5E12A /* shareExtension */ = {
@@ -3573,7 +3573,7 @@
 				AD2C62392A4896A600671582 /* uploadKit */,
 				AD11E45D24A930B000C8876F /* piwigoWebAPI */,
 				AD30FD3321316DA7009AA30E /* piwigoScreenshots */,
-				AD7F1C002B6675AC008E100E /* piwigoAppPreviews */,
+				AD7F1C002B6675AC008E100E /* PiwigoAppPreviews */,
 			);
 		};
 /* End PBXProject section */
@@ -4063,7 +4063,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD7F1C132B6676AE008E100E /* piwigoAppPreviews.swift in Sources */,
+				AD7F1C132B6676AE008E100E /* PiwigoAppPreviews.swift in Sources */,
 				AD7F1C062B6675AC008E100E /* SnapshotHelper.swift in Sources */,
 				AD7F1C072B6675AC008E100E /* Device+Model.swift in Sources */,
 			);
@@ -5488,7 +5488,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AD7F1C0B2B6675AC008E100E /* Build configuration list for PBXNativeTarget "piwigoAppPreviews" */ = {
+		AD7F1C0B2B6675AC008E100E /* Build configuration list for PBXNativeTarget "PiwigoAppPreviews" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AD7F1C0C2B6675AC008E100E /* Debug */,

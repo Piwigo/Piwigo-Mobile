@@ -43,8 +43,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "AD7F1C002B6675AC008E100E"
-               BuildableName = "piwigoAppPreviews.xctest"
-               BlueprintName = "piwigoAppPreviews"
+               BuildableName = "PiwigoAppPreviews.xctest"
+               BlueprintName = "PiwigoAppPreviews"
                ReferencedContainer = "container:piwigo.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -81,8 +81,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "AD7F1C002B6675AC008E100E"
-            BuildableName = "piwigoAppPreviews.xctest"
-            BlueprintName = "piwigoAppPreviews"
+            BuildableName = "PiwigoAppPreviews.xctest"
+            BlueprintName = "PiwigoAppPreviews"
             ReferencedContainer = "container:piwigo.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
