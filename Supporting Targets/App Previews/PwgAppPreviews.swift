@@ -1,6 +1,6 @@
 //
-//  PiwigoAppStore.swift
-//  PiwigoAppStore
+//  PwgAppPreviews.swift
+//  PwgAppPreviews
 //
 //  Created by Eddy Lelièvre-Berna on 25/08/2018.
 //  Copyright © 2018 Piwigo.org. All rights reserved.
@@ -8,7 +8,7 @@
 
 import XCTest
 
-class PiwigoAppStore: XCTestCase {
+final class PwgAppPreviews: XCTestCase {
     
     override func setUp() {
         super.setUp()
