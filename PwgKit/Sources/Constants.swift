@@ -9,6 +9,12 @@
 import Foundation
 import Photos
 
+// Swift Package Version
+public enum PwgUploadKit {
+    public static let version = "4.0.0"
+    public static let build = 677
+}
+
 // Bundle name
 public extension Bundle {
     static let piwigoKit = Bundle.allFrameworks.first(where: { ($0.bundleIdentifier ?? "").contains("piwigoKit")})

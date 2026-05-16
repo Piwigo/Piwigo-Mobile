@@ -9,6 +9,12 @@
 import Foundation
 import Photos
 
+// Swift Package Version
+public enum PwgUploadKit {
+    public static let version = "3.0.0"
+    public static let build = 491
+}
+
 // Bundle name
 public extension Bundle {
     static let pwgUploadKit = Bundle.allFrameworks.first(where: { ($0.bundleIdentifier ?? "").contains("uploadKit")})
