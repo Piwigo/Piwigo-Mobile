@@ -1,6 +1,6 @@
 //
-//  piwigoScreenshots.swift
-//  piwigoScreenshots
+//  PwgScreenshots.swift
+//  PwgScreenshots
 //
 //  Created by Eddy Lelièvre-Berna on 25/08/2018.
 //  Copyright © 2018 Piwigo.org. All rights reserved.
@@ -8,7 +8,7 @@
 
 import XCTest
 
-final class piwigoScreenshots: XCTestCase {
+final class PwgScreenshots: XCTestCase {
     
     override func setUp() {
         super.setUp()
