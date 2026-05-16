@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import piwigoKit
+import PwgKit
 
 public enum AutoUploadError: Error, Sendable {
     case migrationRequired

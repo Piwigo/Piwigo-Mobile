@@ -10,7 +10,7 @@
 
 import UIKit
 import CoreData
-import piwigoKit
+import PwgKit
 
 protocol TagSelectorViewDelegate: NSObjectProtocol {
     func pushTaggedImagesView(_ viewController: UIViewController)

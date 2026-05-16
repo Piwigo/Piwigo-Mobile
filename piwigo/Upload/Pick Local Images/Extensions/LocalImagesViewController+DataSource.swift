@@ -8,7 +8,7 @@
 
 import Photos
 import UIKit
-import piwigoKit
+import PwgKit
 
 // MARK: UICollectionViewDataSource Methods
 extension LocalImagesViewController: UICollectionViewDataSource

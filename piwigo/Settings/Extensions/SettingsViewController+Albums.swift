@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import piwigoKit
+import PwgKit
 
 // MARK: DefaultAlbumThumbnailSizeDelegate Methods
 extension SettingsViewController: DefaultAlbumThumbnailSizeDelegate {

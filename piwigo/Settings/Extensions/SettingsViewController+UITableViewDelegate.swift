@@ -7,7 +7,7 @@
 //
 
 import MessageUI
-import piwigoKit
+import PwgKit
 
 extension SettingsViewController: UITableViewDelegate
 {

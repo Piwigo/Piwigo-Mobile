@@ -13,7 +13,7 @@ import MobileCoreServices
 import Photos
 import PhotosUI
 import UIKit
-import piwigoKit
+import PwgKit
 import PwgUploadKit
 
 protocol LocalAlbumsSelectorDelegate: NSObjectProtocol {

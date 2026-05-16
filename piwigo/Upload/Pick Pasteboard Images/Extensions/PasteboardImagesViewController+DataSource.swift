@@ -9,7 +9,7 @@
 import MobileCoreServices
 import UIKit
 import UniformTypeIdentifiers
-import piwigoKit
+import PwgKit
 
 // MARK: UICollectionViewDataSource Methods
 extension PasteboardImagesViewController: UICollectionViewDataSource

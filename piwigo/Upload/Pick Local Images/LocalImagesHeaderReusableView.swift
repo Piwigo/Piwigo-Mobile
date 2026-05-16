@@ -10,7 +10,7 @@
 
 import Photos
 import UIKit
-import piwigoKit
+import PwgKit
 
 @objc protocol LocalImagesHeaderDelegate: NSObjectProtocol {
     func didSelectImagesOfSection(_ section: Int)

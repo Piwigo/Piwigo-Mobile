@@ -10,7 +10,7 @@
 
 import CoreData
 import UIKit
-import piwigoKit
+import PwgKit
 
 @objc protocol EditImageParamsDelegate: NSObjectProtocol {
     func didDeselectImage(withID imageID: Int64)

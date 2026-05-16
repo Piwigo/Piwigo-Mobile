@@ -9,7 +9,7 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
 
 typealias CellSliderBlock = (Float) -> Void
 

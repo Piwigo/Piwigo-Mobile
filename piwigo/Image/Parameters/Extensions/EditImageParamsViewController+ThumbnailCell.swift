@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
 
 // MARK: - EditImageThumbnailCellDelegate Methods
 extension EditImageParamsViewController: EditImageThumbnailCellDelegate

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import piwigoKit
+import PwgKit
 
 // Mark ImageVars as Sendable since Apple documents UserDefaults as thread-safe
 final class ImageVars: @unchecked Sendable {

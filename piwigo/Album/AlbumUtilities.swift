@@ -9,7 +9,7 @@
 import CoreData
 import CoreLocation
 import Foundation
-import piwigoKit
+import PwgKit
 import UIKit
 
 enum pwgAlbumCollectionType {

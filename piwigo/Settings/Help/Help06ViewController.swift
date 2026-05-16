@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
 
 class Help06ViewController: UIViewController {
     

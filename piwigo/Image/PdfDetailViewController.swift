@@ -9,7 +9,7 @@
 import Foundation
 import PDFKit
 import UIKit
-import piwigoKit
+import PwgKit
 
 protocol PdfDetailDelegate: NSObjectProtocol {
     func updateProgressView(with fractionCompleted: Float)

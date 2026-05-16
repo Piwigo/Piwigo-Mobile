@@ -9,7 +9,7 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
 
 enum pwgEditOption : Int {
     case none

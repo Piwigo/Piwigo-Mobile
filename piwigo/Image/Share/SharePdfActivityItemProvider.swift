@@ -11,7 +11,7 @@ import LinkPresentation
 import MobileCoreServices
 import UIKit
 import UniformTypeIdentifiers
-import piwigoKit
+import PwgKit
 import PwgUploadKit
 
 // Warning: class must restate inherited '@unchecked Sendable' conformance

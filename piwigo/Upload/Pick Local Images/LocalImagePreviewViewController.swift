@@ -8,7 +8,7 @@
 
 import Photos
 import UIKit
-import piwigoKit
+import PwgKit
 
 class LocalImagePreviewViewController: UIViewController {
     private var aspectRatio = 1.0

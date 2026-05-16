@@ -8,7 +8,7 @@
 
 import PDFKit
 import UIKit
-import piwigoKit
+import PwgKit
 
 protocol VideoDetailDelegate: NSObjectProtocol {
     @MainActor

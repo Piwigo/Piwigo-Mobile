@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
 
 // MARK: UICollectionView - Diffable Data Source
 extension AlbumViewController

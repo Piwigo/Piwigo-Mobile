@@ -9,7 +9,7 @@
 import Foundation
 import MessageUI
 import UIKit
-import piwigoKit
+import PwgKit
 
 // MARK: Settings Button
 extension AlbumViewController

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import piwigoKit
+import PwgKit
 import PwgUploadKit
 
 extension AlbumViewController

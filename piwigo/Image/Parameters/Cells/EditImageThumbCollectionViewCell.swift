@@ -10,7 +10,7 @@
 
 import Photos
 import UIKit
-import piwigoKit
+import PwgKit
 
 @objc protocol EditImageThumbnailDelegate: NSObjectProtocol {
     func didDeselectImage(withID imageID: Int64)

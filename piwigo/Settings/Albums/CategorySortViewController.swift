@@ -9,7 +9,7 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
 
 protocol CategorySortDelegate: NSObjectProtocol {
     func didSelectCategorySortType(_ sortType: pwgImageSort)

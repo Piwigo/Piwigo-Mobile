@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
 
 enum EditImageDetailsOrder : Int {
     case imageName

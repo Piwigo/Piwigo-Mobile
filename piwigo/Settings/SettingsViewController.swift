@@ -12,7 +12,7 @@ import CoreData
 import Intents
 import MessageUI
 import UIKit
-import piwigoKit
+import PwgKit
 import PwgUploadKit
 
 enum SettingsSection: Int {

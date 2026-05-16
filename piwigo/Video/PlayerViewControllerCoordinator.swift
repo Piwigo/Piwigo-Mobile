@@ -7,7 +7,7 @@
 //
 
 import AVKit
-import piwigoKit
+import PwgKit
 
 protocol PlayerViewControllerCoordinatorDelegate: AnyObject {
     func playerViewControllerCoordinator(_ coordinator: PlayerViewControllerCoordinator,

@@ -9,7 +9,7 @@
 import Foundation
 import Photos
 import UIKit
-import piwigoKit
+import PwgKit
 
 // MARK: Navigation Bar & Buttons
 extension LocalImagesViewController {

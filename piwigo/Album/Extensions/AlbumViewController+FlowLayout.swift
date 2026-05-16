@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
 
 // MARK: UICollectionViewDelegateFlowLayout Methods
 extension AlbumViewController: UICollectionViewDelegateFlowLayout

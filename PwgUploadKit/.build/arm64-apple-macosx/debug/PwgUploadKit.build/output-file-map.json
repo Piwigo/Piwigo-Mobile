@@ -1,0 +1,166 @@
+{
+  "": {
+    "swift-dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/primary.swiftdeps"
+  },
+  "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/Sources/Constants.swift": {
+    "dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/Constants.d",
+    "object": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/Constants.swift.o",
+    "swiftmodule": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/Constants~partial.swiftmodule",
+    "swift-dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/Constants.swiftdeps",
+    "diagnostics": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/Constants.dia"
+  },
+  "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/Sources/SupportingFiles/ImageMetadata.swift": {
+    "dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/ImageMetadata.d",
+    "object": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/ImageMetadata.swift.o",
+    "swiftmodule": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/ImageMetadata~partial.swiftmodule",
+    "swift-dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/ImageMetadata.swiftdeps",
+    "diagnostics": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/ImageMetadata.dia"
+  },
+  "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/Sources/SupportingFiles/Notification.Name+AppTools.swift": {
+    "dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/Notification.Name+AppTools.d",
+    "object": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/Notification.Name+AppTools.swift.o",
+    "swiftmodule": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/Notification.Name+AppTools~partial.swiftmodule",
+    "swift-dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/Notification.Name+AppTools.swiftdeps",
+    "diagnostics": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/Notification.Name+AppTools.dia"
+  },
+  "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/Sources/SupportingFiles/VideoMetadata.swift": {
+    "dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/VideoMetadata.d",
+    "object": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/VideoMetadata.swift.o",
+    "swiftmodule": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/VideoMetadata~partial.swiftmodule",
+    "swift-dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/VideoMetadata.swiftdeps",
+    "diagnostics": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/VideoMetadata.dia"
+  },
+  "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/Sources/UploadManager/UploadManager+Auto.swift": {
+    "dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Auto.d",
+    "object": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Auto.swift.o",
+    "swiftmodule": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Auto~partial.swiftmodule",
+    "swift-dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Auto.swiftdeps",
+    "diagnostics": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Auto.dia"
+  },
+  "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/Sources/UploadManager/UploadManager+BackgroundTasks.swift": {
+    "dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+BackgroundTasks.d",
+    "object": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+BackgroundTasks.swift.o",
+    "swiftmodule": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+BackgroundTasks~partial.swiftmodule",
+    "swift-dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+BackgroundTasks.swiftdeps",
+    "diagnostics": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+BackgroundTasks.dia"
+  },
+  "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/Sources/UploadManager/UploadManager+Finisher.swift": {
+    "dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Finisher.d",
+    "object": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Finisher.swift.o",
+    "swiftmodule": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Finisher~partial.swiftmodule",
+    "swift-dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Finisher.swiftdeps",
+    "diagnostics": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Finisher.dia"
+  },
+  "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/Sources/UploadManager/UploadManager+Foreground.swift": {
+    "dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Foreground.d",
+    "object": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Foreground.swift.o",
+    "swiftmodule": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Foreground~partial.swiftmodule",
+    "swift-dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Foreground.swiftdeps",
+    "diagnostics": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Foreground.dia"
+  },
+  "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/Sources/UploadManager/UploadManager+Prepare.swift": {
+    "dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Prepare.d",
+    "object": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Prepare.swift.o",
+    "swiftmodule": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Prepare~partial.swiftmodule",
+    "swift-dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Prepare.swiftdeps",
+    "diagnostics": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Prepare.dia"
+  },
+  "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/Sources/UploadManager/UploadManager+PrepareImage.swift": {
+    "dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+PrepareImage.d",
+    "object": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+PrepareImage.swift.o",
+    "swiftmodule": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+PrepareImage~partial.swiftmodule",
+    "swift-dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+PrepareImage.swiftdeps",
+    "diagnostics": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+PrepareImage.dia"
+  },
+  "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/Sources/UploadManager/UploadManager+PrepareVideo.swift": {
+    "dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+PrepareVideo.d",
+    "object": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+PrepareVideo.swift.o",
+    "swiftmodule": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+PrepareVideo~partial.swiftmodule",
+    "swift-dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+PrepareVideo.swiftdeps",
+    "diagnostics": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+PrepareVideo.dia"
+  },
+  "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/Sources/UploadManager/UploadManager+TransferCounter.swift": {
+    "dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+TransferCounter.d",
+    "object": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+TransferCounter.swift.o",
+    "swiftmodule": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+TransferCounter~partial.swiftmodule",
+    "swift-dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+TransferCounter.swiftdeps",
+    "diagnostics": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+TransferCounter.dia"
+  },
+  "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/Sources/UploadManager/UploadManager+TransferInBackground.swift": {
+    "dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+TransferInBackground.d",
+    "object": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+TransferInBackground.swift.o",
+    "swiftmodule": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+TransferInBackground~partial.swiftmodule",
+    "swift-dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+TransferInBackground.swiftdeps",
+    "diagnostics": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+TransferInBackground.dia"
+  },
+  "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/Sources/UploadManager/UploadManager+TransferOrCopy.swift": {
+    "dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+TransferOrCopy.d",
+    "object": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+TransferOrCopy.swift.o",
+    "swiftmodule": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+TransferOrCopy~partial.swiftmodule",
+    "swift-dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+TransferOrCopy.swiftdeps",
+    "diagnostics": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+TransferOrCopy.dia"
+  },
+  "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/Sources/UploadManager/UploadManager+Utilities.swift": {
+    "dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Utilities.d",
+    "object": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Utilities.swift.o",
+    "swiftmodule": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Utilities~partial.swiftmodule",
+    "swift-dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Utilities.swiftdeps",
+    "diagnostics": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager+Utilities.dia"
+  },
+  "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/Sources/UploadManager/UploadManager.swift": {
+    "dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager.d",
+    "object": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager.swift.o",
+    "swiftmodule": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager~partial.swiftmodule",
+    "swift-dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager.swiftdeps",
+    "diagnostics": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManager.dia"
+  },
+  "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/Sources/UploadManager/UploadManagerActor.swift": {
+    "dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManagerActor.d",
+    "object": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManagerActor.swift.o",
+    "swiftmodule": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManagerActor~partial.swiftmodule",
+    "swift-dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManagerActor.swiftdeps",
+    "diagnostics": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadManagerActor.dia"
+  },
+  "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/Sources/UploadSessions/UploadSessions.swift": {
+    "dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSessions.d",
+    "object": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSessions.swift.o",
+    "swiftmodule": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSessions~partial.swiftmodule",
+    "swift-dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSessions.swiftdeps",
+    "diagnostics": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSessions.dia"
+  },
+  "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/Sources/UploadSessions/UploadSessionsDelegate+Data.swift": {
+    "dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSessionsDelegate+Data.d",
+    "object": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSessionsDelegate+Data.swift.o",
+    "swiftmodule": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSessionsDelegate+Data~partial.swiftmodule",
+    "swift-dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSessionsDelegate+Data.swiftdeps",
+    "diagnostics": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSessionsDelegate+Data.dia"
+  },
+  "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/Sources/UploadSessions/UploadSessionsDelegate+Task.swift": {
+    "dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSessionsDelegate+Task.d",
+    "object": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSessionsDelegate+Task.swift.o",
+    "swiftmodule": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSessionsDelegate+Task~partial.swiftmodule",
+    "swift-dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSessionsDelegate+Task.swiftdeps",
+    "diagnostics": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSessionsDelegate+Task.dia"
+  },
+  "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/Sources/UploadSessions/UploadSessionsDelegate.swift": {
+    "dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSessionsDelegate.d",
+    "object": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSessionsDelegate.swift.o",
+    "swiftmodule": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSessionsDelegate~partial.swiftmodule",
+    "swift-dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSessionsDelegate.swiftdeps",
+    "diagnostics": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSessionsDelegate.dia"
+  },
+  "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/Sources/UploadSizes.swift": {
+    "dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSizes.d",
+    "object": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSizes.swift.o",
+    "swiftmodule": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSizes~partial.swiftmodule",
+    "swift-dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSizes.swiftdeps",
+    "diagnostics": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/UploadSizes.dia"
+  },
+  "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/DerivedSources/resource_bundle_accessor.swift": {
+    "dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/resource_bundle_accessor.d",
+    "object": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/resource_bundle_accessor.swift.o",
+    "swiftmodule": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/resource_bundle_accessor~partial.swiftmodule",
+    "swift-dependencies": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/resource_bundle_accessor.swiftdeps",
+    "diagnostics": "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgUploadKit/.build/arm64-apple-macosx/debug/PwgUploadKit.build/resource_bundle_accessor.dia"
+  }
+}

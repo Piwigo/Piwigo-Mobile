@@ -9,7 +9,7 @@
 import CoreData
 import Intents
 import Photos
-import piwigoKit
+import PwgKit
 import PwgUploadKit
 
 // Only used on iOS 15.x

@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "AD084E452659A27100159FE1"
-               BuildableName = "piwigoKit.framework"
-               BlueprintName = "piwigoKit"
+               BuildableName = "PwgKit.framework"
+               BlueprintName = "PwgKit"
                ReferencedContainer = "container:piwigo.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -51,8 +51,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "AD084E452659A27100159FE1"
-            BuildableName = "piwigoKit.framework"
-            BlueprintName = "piwigoKit"
+            BuildableName = "PwgKit.framework"
+            BlueprintName = "PwgKit"
             ReferencedContainer = "container:piwigo.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

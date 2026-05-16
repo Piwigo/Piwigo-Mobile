@@ -8,7 +8,7 @@
 
 import Foundation
 import MessageUI
-import piwigoKit
+import PwgKit
 import PwgUploadKit
 
 // MARK: - SelectedPrivacyDelegate Methods

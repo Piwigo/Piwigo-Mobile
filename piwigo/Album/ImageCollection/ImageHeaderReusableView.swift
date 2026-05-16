@@ -9,7 +9,7 @@
 import Foundation
 import CoreLocation
 import UIKit
-import piwigoKit
+import PwgKit
 
 protocol ImageHeaderDelegate: NSObjectProtocol {
     func changeImageGrouping(for group: pwgImageGroup)

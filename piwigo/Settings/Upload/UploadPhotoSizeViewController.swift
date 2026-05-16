@@ -8,7 +8,7 @@
 
 import AVFoundation
 import UIKit
-import piwigoKit
+import PwgKit
 import PwgUploadKit
 
 protocol UploadPhotoSizeDelegate: NSObjectProtocol {

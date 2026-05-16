@@ -8,7 +8,7 @@
 
 import CoreData
 import Foundation
-import piwigoKit
+import PwgKit
 
 @MainActor
 class AlbumViewData: NSObject

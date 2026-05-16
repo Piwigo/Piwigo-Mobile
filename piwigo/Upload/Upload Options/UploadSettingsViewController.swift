@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
 import PwgUploadKit
 
 class UploadSettingsViewController: UITableViewController {

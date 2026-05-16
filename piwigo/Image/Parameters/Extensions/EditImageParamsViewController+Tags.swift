@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
 
 // MARK: - TagsViewControllerDelegate Methods
 extension EditImageParamsViewController: TagsViewControllerDelegate

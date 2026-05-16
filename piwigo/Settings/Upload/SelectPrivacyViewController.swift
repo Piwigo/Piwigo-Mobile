@@ -9,7 +9,7 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
 
 protocol SelectPrivacyDelegate: NSObjectProtocol {
     func didSelectPrivacyLevel(_ privacy: pwgPrivacy)

@@ -9,7 +9,7 @@
 import Foundation
 import OSLog
 import UIKit
-import piwigoKit
+import PwgKit
 
 class LogsViewController: UIViewController {
     

@@ -7,7 +7,7 @@
 //
 
 import MessageUI
-import piwigoKit
+import PwgKit
 import PwgUploadKit
 
 // MARK: UITableViewDataSource Methods

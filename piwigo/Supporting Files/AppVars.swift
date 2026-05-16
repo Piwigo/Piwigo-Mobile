@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
 
 // Constants
 /// - Preferred popover view width on iPad

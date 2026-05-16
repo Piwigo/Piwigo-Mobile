@@ -9,7 +9,7 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
 
 protocol DefaultImageThumbnailSizeDelegate: NSObjectProtocol {
     func didSelectImageDefaultThumbnailSize(_ thumbnailSize: pwgImageSize)

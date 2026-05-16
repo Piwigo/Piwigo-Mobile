@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import piwigoKit
+import PwgKit
 
 // Mark VideoVars as Sendable since Apple documents UserDefaults as thread-safe
 final class VideoVars: @unchecked Sendable {

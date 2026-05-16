@@ -10,7 +10,7 @@ import CoreData
 import MobileCoreServices
 import Photos
 import UIKit
-import piwigoKit
+import PwgKit
 import PwgUploadKit
 
 extension PasteboardImagesViewController {

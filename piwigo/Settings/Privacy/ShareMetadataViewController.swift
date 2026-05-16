@@ -9,7 +9,7 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
 
 let pwgActivityTypeMessenger = UIActivity.ActivityType(rawValue: "com.facebook.Messenger.ShareExtension")
 let pwgActivityTypePostInstagram = UIActivity.ActivityType(rawValue: "com.burbn.instagram.shareextension")

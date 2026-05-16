@@ -9,7 +9,7 @@
 import CoreData
 import Photos
 import UIKit
-import piwigoKit
+import PwgKit
 import PwgUploadKit
 
 extension LocalImagesViewController

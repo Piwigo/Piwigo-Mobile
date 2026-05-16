@@ -8,7 +8,7 @@
 
 import LocalAuthentication
 import UIKit
-import piwigoKit
+import PwgKit
 
 protocol LockOptionsDelegate: NSObjectProtocol {
     func didSetAppLock(toState isLocked: Bool)

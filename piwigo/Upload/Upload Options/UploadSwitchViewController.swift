@@ -8,7 +8,7 @@
 
 import UIKit
 import CoreData
-import piwigoKit
+import PwgKit
 import PwgUploadKit
 
 @objc protocol UploadSwitchDelegate: NSObjectProtocol {

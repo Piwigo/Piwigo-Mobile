@@ -12,7 +12,7 @@ import CoreData
 import LocalAuthentication
 import UIKit
 
-import piwigoKit
+import PwgKit
 import PwgUploadKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {

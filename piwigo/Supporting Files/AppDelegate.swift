@@ -16,7 +16,7 @@ import LocalAuthentication
 import Photos
 import UIKit
 
-import piwigoKit
+import PwgKit
 import PwgUploadKit
 
 @UIApplicationMain

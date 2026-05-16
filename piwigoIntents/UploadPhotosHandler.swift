@@ -8,7 +8,7 @@
 
 import CoreData
 import Foundation
-import piwigoKit
+import PwgKit
 import PwgUploadKit
 
 @available(iOSApplicationExtension 13.0, *)

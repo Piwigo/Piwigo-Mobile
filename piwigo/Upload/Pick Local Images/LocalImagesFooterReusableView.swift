@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
 
 class LocalImagesFooterReusableView: UICollectionReusableView {
 

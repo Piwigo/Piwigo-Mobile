@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import piwigoKit
+import PwgKit
 
 // MARK: - LockOptionsDelegate Methods
 extension SettingsViewController: LockOptionsDelegate {

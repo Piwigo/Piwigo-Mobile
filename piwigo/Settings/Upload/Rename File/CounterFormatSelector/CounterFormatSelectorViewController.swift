@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
 
 protocol SelectCounterFormatDelegate: NSObjectProtocol {
     func didSelectCounter(currentCounter: Int64, format: String)

@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
 
 // MARK: - UITextField Delegate Methods
 extension LoginViewController: UITextFieldDelegate

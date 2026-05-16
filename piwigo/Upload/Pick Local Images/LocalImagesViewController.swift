@@ -11,7 +11,7 @@
 import CoreData
 import Photos
 import UIKit
-import piwigoKit
+import PwgKit
 import PwgUploadKit
 
 enum SectionType: Int {

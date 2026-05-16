@@ -13,7 +13,7 @@ import MobileCoreServices
 import Photos
 import UIKit
 import UniformTypeIdentifiers
-import piwigoKit
+import PwgKit
 import PwgUploadKit
 
 @objc

@@ -8,7 +8,7 @@
 
 import Foundation
 import Photos
-import piwigoKit
+import PwgKit
 
 enum LocalAlbumType {
     case pasteboard

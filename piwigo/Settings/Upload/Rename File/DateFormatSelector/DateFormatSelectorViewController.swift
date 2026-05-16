@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
 
 protocol SelectDateFormatDelegate: NSObjectProtocol {
     func didSelectDateFormat(_ format: String)

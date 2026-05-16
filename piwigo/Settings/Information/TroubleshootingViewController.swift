@@ -9,7 +9,7 @@
 import Foundation
 import OSLog
 import UIKit
-import piwigoKit
+import PwgKit
 import PwgUploadKit
 
 class TroubleshootingViewController: UIViewController {
@@ -135,21 +135,21 @@ class TroubleshootingViewController: UIViewController {
                 debugPrint("••> completed in \(duration.rounded()) ms")
                 let entries = allEntries.compactMap({$0 as? OSLogEntryLog})
                 
-                // piwigoKit — Core Data
+                // PwgKit — Core Data
                 var someLogs = entries.filter({$0.category == String(describing: DataMigrator.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
                 someLogs = entries.filter({$0.category == String(describing: Image.self)})
                 if someLogs.isEmpty ==  false { self.pwgLogs.append(someLogs)}
                 
-                // piwigoKit — Session Delegate
+                // PwgKit — Session Delegate
                 someLogs = entries.filter({$0.category == String(describing: PwgSessionDelegate.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
                 
-                // piwigoKit — JSON Manager
+                // PwgKit — JSON Manager
                 someLogs = entries.filter({$0.category == String(describing: JSONManager.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
                 
-                // piwigoKit — Image Downloader
+                // PwgKit — Image Downloader
                 someLogs = entries.filter({$0.category == String(describing: ImageDownloader.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
                 

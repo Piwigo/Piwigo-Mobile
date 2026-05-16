@@ -10,7 +10,7 @@
 
 import UIKit
 import CoreData
-import piwigoKit
+import PwgKit
 
 protocol TagsViewControllerDelegate: NSObjectProtocol {
     func didSelectTags(_ selectedTags: Set<Tag>)

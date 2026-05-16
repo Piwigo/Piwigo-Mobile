@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
 
 // MARK: - UITextViewDelegate Methods
 extension AutoUploadViewController : UITextViewDelegate {

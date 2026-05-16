@@ -10,7 +10,7 @@ import CoreData
 import Foundation
 import Photos
 import UIKit
-import piwigoKit
+import PwgKit
 import PwgUploadKit
 
 // MARK: Menus

@@ -10,7 +10,7 @@
 
 import Foundation
 import XCTest
-import piwigoKit
+import PwgKit
 import PwgUploadKit
 
 final class PwgAPITesting: XCTestCase {

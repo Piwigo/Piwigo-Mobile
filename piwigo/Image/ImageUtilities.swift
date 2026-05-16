@@ -9,7 +9,7 @@
 import Foundation
 import ImageIO
 import MobileCoreServices
-import piwigoKit
+import PwgKit
 import UIKit
 
 struct ImageUtilities

@@ -9,7 +9,7 @@
 import CoreData
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
 
 final class AlbumDeletion: NSObject
 {

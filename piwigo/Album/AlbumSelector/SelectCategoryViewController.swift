@@ -11,7 +11,7 @@
 import UIKit
 import CoreData
 import CoreMedia
-import piwigoKit
+import PwgKit
 import PwgUploadKit
 
 enum pwgCategorySelectAction {

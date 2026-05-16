@@ -7,7 +7,7 @@
 //
 
 import AVKit
-import piwigoKit
+import PwgKit
 
 // See WWDC 2019 session 503: Delivering Intuitive Media Playback with AVKit
 class PlaybackController {

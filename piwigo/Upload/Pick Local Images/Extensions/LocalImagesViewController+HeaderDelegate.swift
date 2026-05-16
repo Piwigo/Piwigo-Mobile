@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
 
 // MARK: LocalImagesHeaderDelegate Methods
 extension LocalImagesViewController: LocalImagesHeaderDelegate

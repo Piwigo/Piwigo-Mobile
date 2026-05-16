@@ -11,7 +11,7 @@
 import CoreData
 import MessageUI
 import UIKit
-import piwigoKit
+import PwgKit
 import PwgUploadKit
 
 class LoginViewController: UIViewController {
