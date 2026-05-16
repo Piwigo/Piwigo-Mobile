@@ -11,7 +11,7 @@ import BackgroundTasks
 import MobileCoreServices
 import Photos
 import CoreData
-import piwigoKit
+import PwgKit
 
 @UploadManagerActor
 extension UploadManager {

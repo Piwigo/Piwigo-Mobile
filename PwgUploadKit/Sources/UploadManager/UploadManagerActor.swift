@@ -9,7 +9,7 @@
 import os
 import CoreData
 import Foundation
-import piwigoKit
+import PwgKit
 
 @globalActor
 public actor UploadManagerActor {

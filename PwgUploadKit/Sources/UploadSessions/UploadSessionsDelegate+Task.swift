@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import piwigoKit
+import PwgKit
 
 // MARK: - Session Task Delegate
 extension UploadSessionsDelegate: URLSessionTaskDelegate {

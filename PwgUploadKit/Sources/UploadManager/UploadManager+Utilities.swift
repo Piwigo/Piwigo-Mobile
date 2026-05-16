@@ -9,7 +9,7 @@
 import Foundation
 import MobileCoreServices
 import Photos
-import piwigoKit
+import PwgKit
 
 @UploadManagerActor
 extension UploadManager {

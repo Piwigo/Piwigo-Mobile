@@ -1,3 +1,4 @@
+// swift-tools-version:6.0
 //
 //  Package.swift
 //  PwgUploadKit
@@ -6,15 +7,12 @@
 //  Copyright © 2026 Piwigo.org. All rights reserved.
 //
 
-// swift-tools-version:6.0
-import Foundation
 import PackageDescription
 
 let package = Package(
     name: "PwgUploadKit",
     platforms: [
         .iOS(.v15),
-        .macOS(.v12)
     ],
     products: [
         .library(
@@ -22,20 +20,19 @@ let package = Package(
             targets: ["PwgUploadKit"]
         )
     ],
+    dependencies: [
+        .package(path: "../PwgKit"),
+    ],
     targets: [
         .target(
             name: "PwgUploadKit",
-            path: "Sources",
-            exclude: ["Resources/Localizable.xcstrings"],   // Exclude from automatic inclusion
-            sources: [
-                ".",
-                "UploadManager",
-                "UploadSessions",
-                "SupportingFiles"
+            dependencies: [
+                "PwgKit"
             ],
+            path: "Sources",
             resources: [
-                .process("Resources/")
-            ]
+//                .process("Resources/")
+            ],
         ),
     ]
 )

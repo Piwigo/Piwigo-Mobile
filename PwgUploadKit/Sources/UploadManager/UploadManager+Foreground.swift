@@ -9,7 +9,7 @@
 import CoreData
 import Foundation
 import Photos
-import piwigoKit
+import PwgKit
 
 @UploadManagerActor
 extension UploadManager

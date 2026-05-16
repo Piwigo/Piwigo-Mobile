@@ -4,7 +4,20 @@
 
     ],
     "dependencies" : [
-
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "pwgkit",
+          "kind" : "fileSystem",
+          "location" : "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgKit",
+          "name" : "PwgKit"
+        },
+        "state" : {
+          "name" : "fileSystem",
+          "path" : "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/PwgKit"
+        },
+        "subpath" : "pwgkit"
+      }
     ],
     "prebuilts" : [
 

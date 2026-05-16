@@ -9,7 +9,7 @@
 import BackgroundTasks
 import CoreData
 import Foundation
-import piwigoKit
+import PwgKit
 
 // MARK: - Transfer in Background
 // See https://tools.ietf.org/html/rfc7578

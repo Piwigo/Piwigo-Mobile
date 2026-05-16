@@ -8,7 +8,7 @@
 
 import os
 import Foundation
-import piwigoKit
+import PwgKit
 
 public final class UploadSessionsDelegate: NSObject, Sendable {
     

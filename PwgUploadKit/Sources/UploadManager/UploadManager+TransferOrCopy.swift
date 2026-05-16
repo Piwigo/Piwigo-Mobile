@@ -8,7 +8,7 @@
 
 import BackgroundTasks
 import CoreData
-import piwigoKit
+import PwgKit
 
 @UploadManagerActor
 extension UploadManager {

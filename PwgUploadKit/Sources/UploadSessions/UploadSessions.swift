@@ -8,7 +8,7 @@
 
 import os
 import Foundation
-import piwigoKit
+import PwgKit
 
 // Background tasks
 public let pwgBackgroundUploadTask = "\(Bundle.main.bundleIdentifier!).uploadManager"

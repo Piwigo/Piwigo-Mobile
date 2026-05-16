@@ -10,7 +10,7 @@
 import os
 import Foundation
 import CoreData
-import piwigoKit
+import PwgKit
 
 @UploadManagerActor
 public final class UploadManager {
