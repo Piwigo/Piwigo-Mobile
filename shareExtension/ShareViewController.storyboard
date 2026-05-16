@@ -68,7 +68,6 @@
                                                 <constraint firstItem="4E7-dh-lqU" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="t8g-qh-f9T" secondAttribute="trailing" constant="10" id="vnT-8x-IEe"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <connections>
                                             <outlet property="albumLabel" destination="t8g-qh-f9T" id="dD5-ET-c7r"/>
                                             <outlet property="bottomMargin" destination="MO6-yp-3a7" id="pLV-8v-Gjo"/>
