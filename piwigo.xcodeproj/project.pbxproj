@@ -60,7 +60,7 @@
 		AD0FE4BB2E01DB30002395CF /* Help09ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0FE4BA2E01DB30002395CF /* Help09ViewController.swift */; };
 		AD0FF37C2F9BD1F0000195C8 /* Help10ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0FF37B2F9BD1F0000195C8 /* Help10ViewController.swift */; };
 		AD0FF9B821316ECE0094B907 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */; };
-		AD11E46124A930B000C8876F /* piwigoWebAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD11E46024A930B000C8876F /* piwigoWebAPI.swift */; };
+		AD11E46124A930B000C8876F /* PwgAPITesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD11E46024A930B000C8876F /* PwgAPITesting.swift */; };
 		AD129E6628C34FE8007A2A52 /* NSManagedObjectContext+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD129E6528C34FE8007A2A52 /* NSManagedObjectContext+AppTools.swift */; };
 		AD12D6F62AA657080038BBFF /* VideoControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD12D6F52AA657080038BBFF /* VideoControlsView.swift */; };
 		AD13BF5529E9A77B0099DCF5 /* Device+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF3EC0B2516515500379E53 /* Device+Model.swift */; };
@@ -220,7 +220,6 @@
 		AD341D752F7ED1DF00F96F56 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD05F3DF2E4CD5B700217E75 /* NetworkMonitor.swift */; };
 		AD35A16B2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD35A16A2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift */; };
 		AD35C2112849CB8300FCBDD1 /* pwg.categories.add.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD35C2102849CB8300FCBDD1 /* pwg.categories.add.swift */; };
-		AD35C2142849CD8700FCBDD1 /* pwg.categories.add.json in Resources */ = {isa = PBXBuildFile; fileRef = AD35C2122849CCA100FCBDD1 /* pwg.categories.add.json */; };
 		AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD35CA391E9C1EBC00E3B897 /* Images.xcassets */; };
 		AD36C07B2DEA1C6A00D30C8D /* CounterFormatSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD36C07A2DEA1C6A00D30C8D /* CounterFormatSelectorViewController.swift */; };
 		AD36C07D2DEA1CE400D30C8D /* CounterFormatSelectorViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD36C07C2DEA1CE400D30C8D /* CounterFormatSelectorViewController.storyboard */; };
@@ -312,7 +311,6 @@
 		AD673C1E2A4B83170080BC0B /* JSONManager+Reflection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD673C1D2A4B83170080BC0B /* JSONManager+Reflection.swift */; };
 		AD673C202A4B83750080BC0B /* JSONManager+Community.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD673C1F2A4B83750080BC0B /* JSONManager+Community.swift */; };
 		AD6759AC28D77033009C69EC /* pwg.categories.getImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6759AB28D77033009C69EC /* pwg.categories.getImages.swift */; };
-		AD6759AF28D77D47009C69EC /* pwg.categories.getList.json in Resources */ = {isa = PBXBuildFile; fileRef = AD865774284D060400C06EF4 /* pwg.categories.getList.json */; };
 		AD6759B028D77D81009C69EC /* pwg.categories.getImages.json in Resources */ = {isa = PBXBuildFile; fileRef = AD6759AD28D770BB009C69EC /* pwg.categories.getImages.json */; };
 		AD6759B128D77DC6009C69EC /* pwg.categories.add.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD35C2102849CB8300FCBDD1 /* pwg.categories.add.swift */; };
 		AD6759B228D77DCB009C69EC /* pwg.categories.setInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7A8FED28494E1A00171592 /* pwg.categories.setInfo.swift */; };
@@ -688,6 +686,9 @@
 		ADF3AE5E2803529C009F5931 /* ClearClipboardViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADF3AE5D280336B6009F5931 /* ClearClipboardViewController.storyboard */; };
 		ADF3EC0C2516515500379E53 /* Device+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF3EC0B2516515500379E53 /* Device+Model.swift */; };
 		ADF3FD942FB7BD0900C817FB /* ShareViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADF3FD932FB7BD0900C817FB /* ShareViewController.storyboard */; };
+		ADF3FD962FB847BB00C817FB /* pwg.categories.add.json in Resources */ = {isa = PBXBuildFile; fileRef = ADF3FD952FB847BB00C817FB /* pwg.categories.add.json */; };
+		ADF3FD982FB847CF00C817FB /* pwg.categories.getList.json in Resources */ = {isa = PBXBuildFile; fileRef = ADF3FD972FB847CF00C817FB /* pwg.categories.getList.json */; };
+		ADF3FD9A2FB857A500C817FB /* pwg.session.login2.json in Resources */ = {isa = PBXBuildFile; fileRef = ADF3FD992FB857A500C817FB /* pwg.session.login2.json */; };
 		ADF4001F266D705F004352B9 /* TagProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1092EA23D4E4D0006627B0 /* TagProvider.swift */; };
 		ADF40021266D7352004352B9 /* pwg.tags.add.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5F64E824C6024200660BE3 /* pwg.tags.add.swift */; };
 		ADF6264726B9ED410085A299 /* Tag+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF6264626B9ED410085A299 /* Tag+CoreDataClass.swift */; };
@@ -880,8 +881,8 @@
 		AD0FF37B2F9BD1F0000195C8 /* Help10ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help10ViewController.swift; sourceTree = "<group>"; };
 		AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
 		AD1092EA23D4E4D0006627B0 /* TagProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagProvider.swift; sourceTree = "<group>"; };
-		AD11E45E24A930B000C8876F /* piwigoWebAPI.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = piwigoWebAPI.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		AD11E46024A930B000C8876F /* piwigoWebAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = piwigoWebAPI.swift; sourceTree = "<group>"; };
+		AD11E45E24A930B000C8876F /* API Testing.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "API Testing.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AD11E46024A930B000C8876F /* PwgAPITesting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PwgAPITesting.swift; sourceTree = "<group>"; };
 		AD11E46224A930B000C8876F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AD11E46824A9319C00C8876F /* pwg.images.upload.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.images.upload.json; sourceTree = "<group>"; };
 		AD129E6528C34FE8007A2A52 /* NSManagedObjectContext+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+AppTools.swift"; sourceTree = "<group>"; };
@@ -1039,7 +1040,6 @@
 		AD341D722F7EC9AF00F96F56 /* UploadManager+BackgroundTasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadManager+BackgroundTasks.swift"; sourceTree = "<group>"; };
 		AD35A16A2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint+CommonConstraints.swift"; sourceTree = "<group>"; };
 		AD35C2102849CB8300FCBDD1 /* pwg.categories.add.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = pwg.categories.add.swift; path = "piwigoKit/Network/JSONManager Extensions/pwg/pwg.categories/pwg.categories.add.swift"; sourceTree = SOURCE_ROOT; };
-		AD35C2122849CCA100FCBDD1 /* pwg.categories.add.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = pwg.categories.add.json; path = "Supporting Targets/piwigoWebAPI/pwg/pwg.categories/pwg.categories.add.json"; sourceTree = SOURCE_ROOT; };
 		AD35CA391E9C1EBC00E3B897 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		AD36C07A2DEA1C6A00D30C8D /* CounterFormatSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterFormatSelectorViewController.swift; sourceTree = "<group>"; };
 		AD36C07C2DEA1CE400D30C8D /* CounterFormatSelectorViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = CounterFormatSelectorViewController.storyboard; path = "piwigo/Settings/Upload/Rename File/CounterFormatSelector/CounterFormatSelectorViewController.storyboard"; sourceTree = SOURCE_ROOT; };
@@ -1245,7 +1245,6 @@
 		AD8549321FE98CE300155BA1 /* nl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/About.strings; sourceTree = "<group>"; };
 		AD86576F284CF4EB00C06EF4 /* community.categories.getList.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = community.categories.getList.json; sourceTree = "<group>"; };
 		AD865771284CF67E00C06EF4 /* community.categories.getList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = community.categories.getList.swift; path = "piwigoKit/Network/JSONManager Extensions/community/community.categories.getList.swift"; sourceTree = SOURCE_ROOT; };
-		AD865774284D060400C06EF4 /* pwg.categories.getList.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = pwg.categories.getList.json; path = "Supporting Targets/piwigoWebAPI/pwg/pwg.categories/pwg.categories.getList.json"; sourceTree = SOURCE_ROOT; };
 		AD865776284D153F00C06EF4 /* pwg.categories.getList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = pwg.categories.getList.swift; path = "piwigoKit/Network/JSONManager Extensions/pwg/pwg.categories/pwg.categories.getList.swift"; sourceTree = SOURCE_ROOT; };
 		AD8709AA259A8E66008C4E4C /* Help04ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help04ViewController.swift; sourceTree = "<group>"; };
 		AD8803542DBE86EE00ECF990 /* CaseSelectorTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaseSelectorTableViewCell.swift; sourceTree = "<group>"; };
@@ -1545,6 +1544,9 @@
 		ADF3B310207F1EEE0082C384 /* ja */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/About.strings; sourceTree = "<group>"; };
 		ADF3EC0B2516515500379E53 /* Device+Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Device+Model.swift"; sourceTree = "<group>"; };
 		ADF3FD932FB7BD0900C817FB /* ShareViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ShareViewController.storyboard; sourceTree = "<group>"; };
+		ADF3FD952FB847BB00C817FB /* pwg.categories.add.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.categories.add.json; sourceTree = "<group>"; };
+		ADF3FD972FB847CF00C817FB /* pwg.categories.getList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.categories.getList.json; sourceTree = "<group>"; };
+		ADF3FD992FB857A500C817FB /* pwg.session.login2.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.session.login2.json; sourceTree = "<group>"; };
 		ADF6264626B9ED410085A299 /* Tag+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Tag+CoreDataClass.swift"; sourceTree = "<group>"; };
 		ADF6264826B9ED4A0085A299 /* Tag+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Tag+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		ADFA2BD127411E8200CC60BF /* pwg.images.uploadCompleted.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.uploadCompleted.swift; sourceTree = "<group>"; };
@@ -1738,7 +1740,7 @@
 		AD084E3C265984B000159FE1 /* Supporting Targets */ = {
 			isa = PBXGroup;
 			children = (
-				AD11E45F24A930B000C8876F /* piwigoWebAPI */,
+				AD11E45F24A930B000C8876F /* API Testing */,
 				AD30FD3521316DA8009AA30E /* Screenshots */,
 				AD7F1C102B6675DE008E100E /* App Previews */,
 			);
@@ -1810,16 +1812,16 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		AD11E45F24A930B000C8876F /* piwigoWebAPI */ = {
+		AD11E45F24A930B000C8876F /* API Testing */ = {
 			isa = PBXGroup;
 			children = (
-				AD11E46024A930B000C8876F /* piwigoWebAPI.swift */,
+				AD11E46024A930B000C8876F /* PwgAPITesting.swift */,
 				AD38C04924AF73D900CDC765 /* community */,
 				AD211A7C27BAD873005D5E4F /* reflection */,
 				ADF2329F26D4072A002ACEC9 /* pwg */,
 				AD11E46224A930B000C8876F /* Info.plist */,
 			);
-			path = piwigoWebAPI;
+			path = "API Testing";
 			sourceTree = "<group>";
 		};
 		AD129E6328C34F4E007A2A52 /* Migration Tools */ = {
@@ -1881,6 +1883,7 @@
 			isa = PBXGroup;
 			children = (
 				AD211A8327BAFCF2005D5E4F /* pwg.session.login.json */,
+				ADF3FD992FB857A500C817FB /* pwg.session.login2.json */,
 				AD98DEB127C1AF2900FAC983 /* pwg.session.getStatus.json */,
 				AD211A8B27C14B7E005D5E4F /* pwg.session.logout.json */,
 			);
@@ -2127,8 +2130,8 @@
 		AD5A31682847FD8A00948FEE /* pwg.categories */ = {
 			isa = PBXGroup;
 			children = (
-				AD865774284D060400C06EF4 /* pwg.categories.getList.json */,
-				AD35C2122849CCA100FCBDD1 /* pwg.categories.add.json */,
+				ADF3FD972FB847CF00C817FB /* pwg.categories.getList.json */,
+				ADF3FD952FB847BB00C817FB /* pwg.categories.add.json */,
 				AD7A8FEF28494E4F00171592 /* pwg.categories.setInfo.json */,
 				AD7A8FE42849252F00171592 /* pwg.categories.move.json */,
 				ADB2C3D4291D9D4D009542FB /* pwg.categories.calculateOrphans.json */,
@@ -3136,7 +3139,7 @@
 			children = (
 				D82B8CBB1A67820A000E47CA /* piwigo.app */,
 				AD30FD3421316DA7009AA30E /* Screenshots.xctest */,
-				AD11E45E24A930B000C8876F /* piwigoWebAPI.xctest */,
+				AD11E45E24A930B000C8876F /* API Testing.xctest */,
 				AD084E462659A27100159FE1 /* piwigoKit.framework */,
 				AD778356267E34F800317F36 /* piwigoIntents.appex */,
 				AD2C623A2A4896A600671582 /* uploadKit.framework */,
@@ -3344,9 +3347,9 @@
 			productReference = AD084E462659A27100159FE1 /* piwigoKit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		AD11E45D24A930B000C8876F /* piwigoWebAPI */ = {
+		AD11E45D24A930B000C8876F /* API Testing */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AD11E46524A930B000C8876F /* Build configuration list for PBXNativeTarget "piwigoWebAPI" */;
+			buildConfigurationList = AD11E46524A930B000C8876F /* Build configuration list for PBXNativeTarget "API Testing" */;
 			buildPhases = (
 				AD11E45A24A930B000C8876F /* Sources */,
 				AD11E45B24A930B000C8876F /* Frameworks */,
@@ -3357,9 +3360,9 @@
 			dependencies = (
 				AD28F188278E1F7700A16B79 /* PBXTargetDependency */,
 			);
-			name = piwigoWebAPI;
+			name = "API Testing";
 			productName = piwigoWebAPI;
-			productReference = AD11E45E24A930B000C8876F /* piwigoWebAPI.xctest */;
+			productReference = AD11E45E24A930B000C8876F /* API Testing.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		AD2C62392A4896A600671582 /* uploadKit */ = {
@@ -3571,7 +3574,7 @@
 				ADE2A73B2FAF89F600E5E12A /* shareExtension */,
 				AD084E452659A27100159FE1 /* piwigoKit */,
 				AD2C62392A4896A600671582 /* uploadKit */,
-				AD11E45D24A930B000C8876F /* piwigoWebAPI */,
+				AD11E45D24A930B000C8876F /* API Testing */,
 				AD30FD3321316DA7009AA30E /* Screenshots */,
 				AD7F1C002B6675AC008E100E /* AppPreviews */,
 			);
@@ -3592,12 +3595,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				AD865770284CF4EB00C06EF4 /* community.categories.getList.json in Resources */,
+				ADF3FD9A2FB857A500C817FB /* pwg.session.login2.json in Resources */,
+				ADF3FD982FB847CF00C817FB /* pwg.categories.getList.json in Resources */,
 				ADDD2109270A13CB00CACFF2 /* community.images.uploadCompleted.json in Resources */,
+				ADF3FD962FB847BB00C817FB /* pwg.categories.add.json in Resources */,
 				AD211A9527C16045005D5E4F /* community.session.getStatus.json in Resources */,
 				AD211A8027BADECA005D5E4F /* reflection.getMethodList.json in Resources */,
 				AD807F1026E532F700008162 /* pwg.getInfos.json in Resources */,
-				AD6759AF28D77D47009C69EC /* pwg.categories.getList.json in Resources */,
-				AD35C2142849CD8700FCBDD1 /* pwg.categories.add.json in Resources */,
 				AD7A8FF128494E5600171592 /* pwg.categories.setInfo.json in Resources */,
 				AD7A8FE52849252F00171592 /* pwg.categories.move.json in Resources */,
 				ADB2C3D5291D9D4D009542FB /* pwg.categories.calculateOrphans.json in Resources */,
@@ -4006,7 +4010,7 @@
 				AD5FB37D2D94784100802895 /* pwg.users.setInfo.swift in Sources */,
 				AD5FB3792D9477EE00802895 /* pwg.users.getList.swift in Sources */,
 				ADDD2106270A0FB900CACFF2 /* pwg.users.favorites.addRemove.swift in Sources */,
-				AD11E46124A930B000C8876F /* piwigoWebAPI.swift in Sources */,
+				AD11E46124A930B000C8876F /* PwgAPITesting.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4655,7 +4659,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = ZEC3W885H6;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Supporting Targets/piwigoWebAPI/Info.plist";
+				INFOPLIST_FILE = "Supporting Targets/API Testing/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4695,7 +4699,7 @@
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Supporting Targets/piwigoWebAPI/Info.plist";
+				INFOPLIST_FILE = "Supporting Targets/API Testing/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5452,7 +5456,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AD11E46524A930B000C8876F /* Build configuration list for PBXNativeTarget "piwigoWebAPI" */ = {
+		AD11E46524A930B000C8876F /* Build configuration list for PBXNativeTarget "API Testing" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AD11E46624A930B000C8876F /* Debug */,

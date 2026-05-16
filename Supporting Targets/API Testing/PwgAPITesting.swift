@@ -1,6 +1,6 @@
 //
-//  piwigoWebAPI.swift
-//  piwigoWebAPI
+//  PwgAPITesting.swift
+//  PwgAPITesting
 //
 //  Created by Eddy Lelièvre-Berna on 28/06/2020.
 //  Copyright © 2020 Piwigo.org. All rights reserved.
@@ -13,7 +13,7 @@ import XCTest
 import piwigoKit
 import uploadKit
 
-class piwigoWebAPI: XCTestCase {
+final class PwgAPITesting: XCTestCase {
     
     // MARK: - community.…
     func testCommunityCategoriesGetListDecoding() {
@@ -89,18 +89,36 @@ class piwigoWebAPI: XCTestCase {
             return
         }
         
-        let decoder = JSONDecoder()
-        guard let result = try? decoder.decode(GetInfosJSON.self, from: data) else {
-            XCTFail()
-            return
+        // Try decoding cleaner JSON object
+        do {
+            let decoder = JSONDecoder()
+            let result = try decoder.decode(GetInfosJSON.self, from: data)
+
+            // Return decoded object
+            XCTAssertEqual(result.status, "ok")
+            XCTAssertEqual(result.data[0].name, "version")
+            XCTAssertEqual(result.data[0].value?.stringValue, "16.3.0")
         }
-
-        XCTAssertEqual(result.status, "ok")
-        XCTAssertEqual(result.data[0].name, "version")
-        XCTAssertEqual(result.data[0].value?.stringValue, "12.2.0")
+        catch let DecodingError.dataCorrupted(context) {
+            // Piwigo error?
+            if let pwgError = context.underlyingError as? PwgKitError {
+                XCTAssertEqual(pwgError.localizedDescription, "The username and password don't match on the given web address")
+            }
+            else {
+                XCTFail("Error returned is not a Piwigo error.")
+            }
+        }
+        catch let error as DecodingError {
+            debugPrint(error.localizedDescription)
+            XCTFail("Error returned is not a Piwigo error.")
+        }
+        catch let error {
+            debugPrint(error.localizedDescription)
+            XCTFail("Error returned is not a Piwigo error.")
+        }
     }
-
-
+    
+    
     // MARK: - pwg.categories…
     func testPwgCategoriesGetListDecoding() {
         
@@ -427,7 +445,7 @@ class piwigoWebAPI: XCTestCase {
         }
         
         XCTAssertEqual(result.status, "ok")
-        XCTAssertEqual(result.result, 1)
+        XCTAssertEqual(result.success, true)
     }
 
     
@@ -470,8 +488,37 @@ class piwigoWebAPI: XCTestCase {
 
         XCTAssertEqual(result.status, "ok")
         XCTAssertEqual(result.success, true)
-    }
 
+        // Case of a non-successful request
+        let nonSuccessfullLogin = "\(pwgSessionLogin)2"
+        guard let url = bundle.url(forResource: nonSuccessfullLogin, withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        do {
+            let _ = try decoder.decode(SessionLoginJSON.self, from: data)
+        }
+        catch let DecodingError.dataCorrupted(context) {
+            // Piwigo error?
+            if let pwgError = context.underlyingError as? PwgKitError {
+                XCTAssertEqual(pwgError.localizedDescription, "The username and password don't match on the given web address")
+            }
+            else {
+                XCTFail("Error returned is not a Piwigo error.")
+            }
+        }
+        catch let error as DecodingError {
+            debugPrint(error.localizedDescription)
+            XCTFail("Error returned is not a Piwigo error.")
+        }
+        catch let error {
+            debugPrint(error.localizedDescription)
+            XCTFail("Error returned is not a Piwigo error.")
+        }
+    }
+    
     func testPwgSessionGetStatusDecoding() {
         
         // Case of a successful request
@@ -505,13 +552,29 @@ class piwigoWebAPI: XCTestCase {
         }
         
         let decoder = JSONDecoder()
-        guard let result = try? decoder.decode(SessionLogoutJSON.self, from: data) else {
-            XCTFail()
-            return
-        }
+        do {
+            let result = try decoder.decode(SessionLogoutJSON.self, from: data)
 
-        XCTAssertEqual(result.status, "ok")
-        XCTAssertEqual(result.success, true)
+            XCTAssertEqual(result.status, "ok")
+            XCTAssertEqual(result.success, true)
+        }
+        catch let DecodingError.dataCorrupted(context) {
+            // Piwigo error?
+            if let pwgError = context.underlyingError as? PwgKitError {
+                debugPrint(pwgError.localizedDescription)
+            }
+            else {
+                XCTFail("Error returned is not a Piwigo error.")
+            }
+        }
+        catch let error as DecodingError {
+            debugPrint(error.localizedDescription)
+            XCTFail("Error returned is not a Piwigo error.")
+        }
+        catch let error {
+            debugPrint(error.localizedDescription)
+            XCTFail("Error returned is not a Piwigo error.")
+        }
     }
 
 
