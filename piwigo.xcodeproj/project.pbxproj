@@ -984,7 +984,6 @@
 		AD2BEF632D25EA23001FA165 /* UploadQueueViewController+Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadQueueViewController+Delegate.swift"; sourceTree = "<group>"; };
 		AD2C62302A488F4D00671582 /* UploadVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadVars.swift; sourceTree = "<group>"; };
 		AD2C623A2A4896A600671582 /* PwgUploadKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PwgUploadKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		AD2C623C2A4896A600671582 /* uploadKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = uploadKit.h; sourceTree = "<group>"; };
 		AD2C625C2A4899F700671582 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AD2D959927D7F14900AC1FD8 /* AppLockViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AppLockViewController.storyboard; sourceTree = "<group>"; };
 		AD2FEA5725AFA1470072596A /* VideoMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoMetadata.swift; sourceTree = "<group>"; };
@@ -2426,7 +2425,6 @@
 		AD7F1C152B667BD2008E100E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				AD2C623C2A4896A600671582 /* uploadKit.h */,
 				ADC0A1412E55EF40001E62F5 /* Localizable.xcstrings */,
 			);
 			path = Resources;
