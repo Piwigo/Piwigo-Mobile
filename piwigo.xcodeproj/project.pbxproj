@@ -1305,7 +1305,6 @@
 		AD9F9C2E2B4AF2D700943A96 /* EditImageParamsViewController+Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+Keyboard.swift"; sourceTree = "<group>"; };
 		AD9F9C302B4B211900943A96 /* SettingsViewController+Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsViewController+Keyboard.swift"; sourceTree = "<group>"; };
 		AD9F9C322B4B230600943A96 /* LoginViewController+Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginViewController+Keyboard.swift"; sourceTree = "<group>"; };
-		ADA0049C2739C036006FE8ED /* piwigoKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = piwigoKit.h; sourceTree = "<group>"; };
 		ADA0049D2739C038006FE8ED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ADA24DAE243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DefaultImageThumbnailSizeViewController.storyboard; sourceTree = "<group>"; };
 		ADA24DB0243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultImageThumbnailSizeViewController.swift; sourceTree = "<group>"; };
@@ -2433,7 +2432,6 @@
 		AD7F1C162B667BDD008E100E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				ADA0049C2739C036006FE8ED /* piwigoKit.h */,
 				ADC4F6CC2E55A3AC0044528B /* Localizable.xcstrings */,
 			);
 			path = Resources;
