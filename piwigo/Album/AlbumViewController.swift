@@ -11,7 +11,7 @@ import Foundation
 import MessageUI
 import UIKit
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 enum pwgImageAction {
     case edit, delete, share

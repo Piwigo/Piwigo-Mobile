@@ -1,6 +1,6 @@
 //
 //  UploadSessionsDelegate+Task.swift
-//  uploadKit
+//  PwgUploadKit
 //
 //  Created by Eddy Lelièvre-Berna on 24/12/2025.
 //  Copyright © 2025 Piwigo.org. All rights reserved.

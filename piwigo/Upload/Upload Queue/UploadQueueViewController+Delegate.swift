@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 // MARK: - UITableViewDelegate Methods
 extension UploadQueueViewController: UITableViewDelegate

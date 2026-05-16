@@ -9,7 +9,7 @@
 import Photos
 import UIKit
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 extension AutoUploadViewController: UITableViewDataSource
 {

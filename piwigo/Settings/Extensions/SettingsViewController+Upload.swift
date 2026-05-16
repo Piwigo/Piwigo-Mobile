@@ -9,7 +9,7 @@
 import Foundation
 import MessageUI
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 // MARK: - SelectedPrivacyDelegate Methods
 extension SettingsViewController: SelectPrivacyDelegate {

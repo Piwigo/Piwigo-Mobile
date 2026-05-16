@@ -14,7 +14,7 @@ import Photos
 import UIKit
 import UniformTypeIdentifiers
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 @objc
 protocol ShareImageActivityItemProviderDelegate: NSObjectProtocol {

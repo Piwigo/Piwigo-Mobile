@@ -9,7 +9,7 @@
 import AVFoundation
 import UIKit
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 protocol UploadVideoSizeDelegate: NSObjectProtocol {
     func didSelectUploadVideoSize(_ imageSize: Int16)

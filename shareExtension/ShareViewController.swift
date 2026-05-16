@@ -10,7 +10,7 @@ import CoreData
 import UIKit
 import UniformTypeIdentifiers
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 class ShareViewController: UIViewController {
     

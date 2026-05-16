@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 // MARK: - UITextFieldDelegate Methods
 extension RenameFileViewController: UITextFieldDelegate {

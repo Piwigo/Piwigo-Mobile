@@ -10,7 +10,7 @@ import Foundation
 import OSLog
 import UIKit
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 class TroubleshootingViewController: UIViewController {
     
@@ -153,15 +153,15 @@ class TroubleshootingViewController: UIViewController {
                 someLogs = entries.filter({$0.category == String(describing: ImageDownloader.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
                 
-                // uploadKit — Upload Sessions Delegate
+                // PwgUploadKit — Upload Sessions Delegate
                 someLogs = entries.filter({$0.category == String(describing: UploadSessionsDelegate.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
                 
-                // uploadKit — UploadManager
+                // PwgUploadKit — UploadManager
                 someLogs = entries.filter({$0.category == String(describing: UploadManager.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
 
-                // uploadKit — UploadManagerActor
+                // PwgUploadKit — UploadManagerActor
                 someLogs = entries.filter({$0.category == String(describing: UploadManagerActor.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
             }

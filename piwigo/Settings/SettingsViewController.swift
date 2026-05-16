@@ -13,7 +13,7 @@ import Intents
 import MessageUI
 import UIKit
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 enum SettingsSection: Int {
     case server

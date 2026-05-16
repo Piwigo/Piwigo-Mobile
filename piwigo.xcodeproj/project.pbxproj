@@ -33,7 +33,7 @@
 		AD09E3032A92A05C00D8E134 /* SettingsViewController+Privacy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD09E3022A92A05C00D8E134 /* SettingsViewController+Privacy.swift */; };
 		AD09E3052A92A13D00D8E134 /* SettingsViewController+Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD09E3042A92A13D00D8E134 /* SettingsViewController+Upload.swift */; };
 		AD0A0D062B125F5B007552A9 /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; };
-		AD0A0D092B125F5D007552A9 /* uploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* uploadKit.framework */; };
+		AD0A0D092B125F5D007552A9 /* PwgUploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* PwgUploadKit.framework */; };
 		AD0B62E52DEA2916001E9684 /* CounterSuffixSelectorTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B62E42DEA2916001E9684 /* CounterSuffixSelectorTableViewCell.swift */; };
 		AD0B62E72DEA2DAB001E9684 /* CounterFormatSelectorViewController+UITableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B62E62DEA2DAB001E9684 /* CounterFormatSelectorViewController+UITableViewDelegate.swift */; };
 		AD0B62E92DEAF960001E9684 /* UploadRenameAction+DateFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B62E82DEAF960001E9684 /* UploadRenameAction+DateFormat.swift */; };
@@ -160,8 +160,8 @@
 		AD2BEF602D25E9B9001FA165 /* UploadQueueViewController+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2BEF5F2D25E9B9001FA165 /* UploadQueueViewController+DataSource.swift */; };
 		AD2BEF622D25EA15001FA165 /* UploadQueueViewController+FetchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2BEF612D25EA15001FA165 /* UploadQueueViewController+FetchResults.swift */; };
 		AD2BEF642D25EA23001FA165 /* UploadQueueViewController+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2BEF632D25EA23001FA165 /* UploadQueueViewController+Delegate.swift */; };
-		AD2C62402A4896A600671582 /* uploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* uploadKit.framework */; };
-		AD2C62412A4896A600671582 /* uploadKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* uploadKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		AD2C62402A4896A600671582 /* PwgUploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* PwgUploadKit.framework */; };
+		AD2C62412A4896A600671582 /* PwgUploadKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* PwgUploadKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AD2C62452A4896EB00671582 /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; };
 		AD2C624A2A4898A200671582 /* UploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6ACC268A218F007DEE70 /* UploadManager.swift */; };
 		AD2C624B2A4898A200671582 /* UploadManager+Auto.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6AD6268A21C0007DEE70 /* UploadManager+Auto.swift */; };
@@ -175,7 +175,7 @@
 		AD2C62542A4898A200671582 /* VideoMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2FEA5725AFA1470072596A /* VideoMetadata.swift */; };
 		AD2C62552A4898A200671582 /* UploadManager+Prepare.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD958B9429A7DC900022AE23 /* UploadManager+Prepare.swift */; };
 		AD2C62562A4898A200671582 /* UploadManager+Finisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6AD4268A21B7007DEE70 /* UploadManager+Finisher.swift */; };
-		AD2C62582A48993F00671582 /* uploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* uploadKit.framework */; };
+		AD2C62582A48993F00671582 /* PwgUploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* PwgUploadKit.framework */; };
 		AD2C625E2A48A02800671582 /* UploadSizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3335442666CA46000A1487 /* UploadSizes.swift */; };
 		AD2D959A27D7F14900AC1FD8 /* AppLockViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2D959927D7F14900AC1FD8 /* AppLockViewController.storyboard */; };
 		AD30FD3721316DA8009AA30E /* PwgScreenshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD30FD3621316DA8009AA30E /* PwgScreenshots.swift */; };
@@ -501,7 +501,7 @@
 		ADACD29D2C34852800F8790B /* LogsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADACD29C2C34852800F8790B /* LogsViewController.swift */; };
 		ADADADEC2FB0AA6F003FB43F /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADADADEA2FB0AA6F003FB43F /* ShareViewController.swift */; };
 		ADADADEF2FB0AF58003FB43F /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; };
-		ADADADF02FB0AF5C003FB43F /* uploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* uploadKit.framework */; };
+		ADADADF02FB0AF5C003FB43F /* PwgUploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* PwgUploadKit.framework */; };
 		ADAE3C342E19215200E1D634 /* ReleaseNotes.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADAE3C332E19215200E1D634 /* ReleaseNotes.xcstrings */; };
 		ADAE3C362E1932F200E1D634 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADAE3C352E1932F200E1D634 /* InfoPlist.xcstrings */; };
 		ADAE3C382E19497100E1D634 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADAE3C372E19497000E1D634 /* Localizable.xcstrings */; };
@@ -802,7 +802,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				AD2C62412A4896A600671582 /* uploadKit.framework in Embed Frameworks */,
+				AD2C62412A4896A600671582 /* PwgUploadKit.framework in Embed Frameworks */,
 				AD084E4E2659A27100159FE1 /* piwigoKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -983,7 +983,7 @@
 		AD2BEF612D25EA15001FA165 /* UploadQueueViewController+FetchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadQueueViewController+FetchResults.swift"; sourceTree = "<group>"; };
 		AD2BEF632D25EA23001FA165 /* UploadQueueViewController+Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadQueueViewController+Delegate.swift"; sourceTree = "<group>"; };
 		AD2C62302A488F4D00671582 /* UploadVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadVars.swift; sourceTree = "<group>"; };
-		AD2C623A2A4896A600671582 /* uploadKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = uploadKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AD2C623A2A4896A600671582 /* PwgUploadKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PwgUploadKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD2C623C2A4896A600671582 /* uploadKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = uploadKit.h; sourceTree = "<group>"; };
 		AD2C625C2A4899F700671582 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AD2D959927D7F14900AC1FD8 /* AppLockViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AppLockViewController.storyboard; sourceTree = "<group>"; };
@@ -1589,7 +1589,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD0A0D092B125F5D007552A9 /* uploadKit.framework in Frameworks */,
+				AD0A0D092B125F5D007552A9 /* PwgUploadKit.framework in Frameworks */,
 				AD0A0D062B125F5B007552A9 /* piwigoKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1625,7 +1625,7 @@
 				AD2058A82B77E28000CF7E0B /* Foundation.framework in Frameworks */,
 				AD778357267E34F800317F36 /* Intents.framework in Frameworks */,
 				ADE1AB8A267E4D43001C1EEB /* piwigoKit.framework in Frameworks */,
-				AD2C62582A48993F00671582 /* uploadKit.framework in Frameworks */,
+				AD2C62582A48993F00671582 /* PwgUploadKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1641,7 +1641,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ADADADEF2FB0AF58003FB43F /* piwigoKit.framework in Frameworks */,
-				ADADADF02FB0AF5C003FB43F /* uploadKit.framework in Frameworks */,
+				ADADADF02FB0AF5C003FB43F /* PwgUploadKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1668,7 +1668,7 @@
 				AD2058A42B77E1EF00CF7E0B /* Vision.framework in Frameworks */,
 				AD20589D2B77E03F00CF7E0B /* UniformTypeIdentifiers.framework in Frameworks */,
 				AD084E4D2659A27100159FE1 /* piwigoKit.framework in Frameworks */,
-				AD2C62402A4896A600671582 /* uploadKit.framework in Frameworks */,
+				AD2C62402A4896A600671582 /* PwgUploadKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1957,7 +1957,7 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		AD2C62632A48ACBA00671582 /* uploadKit */ = {
+		AD2C62632A48ACBA00671582 /* PwgUploadKit */ = {
 			isa = PBXGroup;
 			children = (
 				ADC0A1452E55FD5D001E62F5 /* Constants.swift */,
@@ -1971,7 +1971,7 @@
 				AD7DE0912A85898D00C1424E /* Supporting Files */,
 				AD2C625C2A4899F700671582 /* Info.plist */,
 			);
-			path = uploadKit;
+			path = PwgUploadKit;
 			sourceTree = "<group>";
 		};
 		AD30FD3521316DA8009AA30E /* Screenshots */ = {
@@ -3127,7 +3127,7 @@
 				AD778358267E34F800317F36 /* piwigoIntents */,
 				ADADADEB2FB0AA6F003FB43F /* shareExtension */,
 				AD084E3B2659846400159FE1 /* piwigoKit */,
-				AD2C62632A48ACBA00671582 /* uploadKit */,
+				AD2C62632A48ACBA00671582 /* PwgUploadKit */,
 				AD084E3C265984B000159FE1 /* Supporting Targets */,
 				1F042DC0C96A55B227088605 /* Frameworks */,
 				D82B8CBC1A67820A000E47CA /* Products */,
@@ -3142,7 +3142,7 @@
 				AD11E45E24A930B000C8876F /* API Testing.xctest */,
 				AD084E462659A27100159FE1 /* piwigoKit.framework */,
 				AD778356267E34F800317F36 /* piwigoIntents.appex */,
-				AD2C623A2A4896A600671582 /* uploadKit.framework */,
+				AD2C623A2A4896A600671582 /* PwgUploadKit.framework */,
 				AD7F1C0E2B6675AC008E100E /* AppPreviews.xctest */,
 				ADE2A73C2FAF89F600E5E12A /* shareExtension.appex */,
 			);
@@ -3365,9 +3365,9 @@
 			productReference = AD11E45E24A930B000C8876F /* API Testing.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		AD2C62392A4896A600671582 /* uploadKit */ = {
+		AD2C62392A4896A600671582 /* PwgUploadKit */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AD2C62422A4896A600671582 /* Build configuration list for PBXNativeTarget "uploadKit" */;
+			buildConfigurationList = AD2C62422A4896A600671582 /* Build configuration list for PBXNativeTarget "PwgUploadKit" */;
 			buildPhases = (
 				AD2C62352A4896A600671582 /* Headers */,
 				AD2C62362A4896A600671582 /* Sources */,
@@ -3379,9 +3379,9 @@
 			dependencies = (
 				AD2C62482A4896EB00671582 /* PBXTargetDependency */,
 			);
-			name = uploadKit;
+			name = PwgUploadKit;
 			productName = uploadKit;
-			productReference = AD2C623A2A4896A600671582 /* uploadKit.framework */;
+			productReference = AD2C623A2A4896A600671582 /* PwgUploadKit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		AD30FD3321316DA7009AA30E /* Screenshots */ = {
@@ -3573,7 +3573,7 @@
 				AD778355267E34F800317F36 /* piwigoIntents */,
 				ADE2A73B2FAF89F600E5E12A /* shareExtension */,
 				AD084E452659A27100159FE1 /* piwigoKit */,
-				AD2C62392A4896A600671582 /* uploadKit */,
+				AD2C62392A4896A600671582 /* PwgUploadKit */,
 				AD11E45D24A930B000C8876F /* API Testing */,
 				AD30FD3321316DA7009AA30E /* Screenshots */,
 				AD7F1C002B6675AC008E100E /* AppPreviews */,
@@ -4385,7 +4385,7 @@
 		};
 		AD2C623F2A4896A600671582 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = AD2C62392A4896A600671582 /* uploadKit */;
+			target = AD2C62392A4896A600671582 /* PwgUploadKit */;
 			targetProxy = AD2C623E2A4896A600671582 /* PBXContainerItemProxy */;
 		};
 		AD2C62482A4896EB00671582 /* PBXTargetDependency */ = {
@@ -4395,7 +4395,7 @@
 		};
 		AD2C625B2A48993F00671582 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = AD2C62392A4896A600671582 /* uploadKit */;
+			target = AD2C62392A4896A600671582 /* PwgUploadKit */;
 			targetProxy = AD2C625A2A48993F00671582 /* PBXContainerItemProxy */;
 		};
 		AD30FD3A21316DA8009AA30E /* PBXTargetDependency */ = {
@@ -4410,7 +4410,7 @@
 		};
 		ADADADF62FB0AF83003FB43F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = AD2C62392A4896A600671582 /* uploadKit */;
+			target = AD2C62392A4896A600671582 /* PwgUploadKit */;
 			targetProxy = ADADADF52FB0AF83003FB43F /* PBXContainerItemProxy */;
 		};
 		ADADADF82FB0AF88003FB43F /* PBXTargetDependency */ = {
@@ -4747,7 +4747,7 @@
 				ENABLE_MODULE_VERIFIER = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = uploadKit/Info.plist;
+				INFOPLIST_FILE = PwgUploadKit/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Piwigo.org. All rights reserved.";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
@@ -4804,7 +4804,7 @@
 				ENABLE_MODULE_VERIFIER = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = uploadKit/Info.plist;
+				INFOPLIST_FILE = PwgUploadKit/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Piwigo.org. All rights reserved.";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
@@ -5253,7 +5253,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				MARKETING_VERSION = 4.3;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu99 gnu++11";
@@ -5322,7 +5322,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				MARKETING_VERSION = 4.3;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu99 gnu++11";
@@ -5465,7 +5465,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AD2C62422A4896A600671582 /* Build configuration list for PBXNativeTarget "uploadKit" */ = {
+		AD2C62422A4896A600671582 /* Build configuration list for PBXNativeTarget "PwgUploadKit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AD2C62432A4896A600671582 /* Debug */,

@@ -8,7 +8,7 @@
 
 import MessageUI
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 // MARK: UITableViewDataSource Methods
 extension SettingsViewController: UITableViewDataSource

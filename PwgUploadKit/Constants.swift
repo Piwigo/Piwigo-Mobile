@@ -1,6 +1,6 @@
 //
 //  Constants.swift
-//  uploadKit
+//  PwgUploadKit
 //
 //  Created by Eddy Lelièvre-Berna on 20/08/2025.
 //  Copyright © 2025 Piwigo.org. All rights reserved.
@@ -11,7 +11,7 @@ import Photos
 
 // Bundle name
 public extension Bundle {
-    static let uploadKit = Bundle.allFrameworks.first(where: { ($0.bundleIdentifier ?? "").contains("uploadKit")})
+    static let pwgUploadKit = Bundle.allFrameworks.first(where: { ($0.bundleIdentifier ?? "").contains("uploadKit")})
 }
 
 // Constants used to manage background tasks

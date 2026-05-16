@@ -11,7 +11,7 @@ import Foundation
 import Photos
 import UIKit
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 // MARK: Menus
 extension LocalImagesViewController {

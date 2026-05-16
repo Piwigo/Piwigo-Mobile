@@ -11,7 +11,7 @@ import MobileCoreServices
 import Photos
 import UIKit
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
     

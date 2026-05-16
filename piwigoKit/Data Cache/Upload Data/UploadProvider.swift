@@ -46,7 +46,7 @@ public final class UploadProvider {
     
     // MARK: - Add/Update Upload Requests
     /**
-     Adds or updates a batch of upload requests into the Core Data store on the uploadKit private queue,
+     Adds or updates a batch of upload requests into the Core Data store on the PwgUploadKit private queue,
      processing the record in batches to avoid a high memory footprint.
      */
     public func importUploads(from uploadRequest: [UploadProperties],
@@ -84,7 +84,7 @@ public final class UploadProvider {
     
     /**
      Adds or updates one batch of upload requests, creating managed objects from the new data,
-     and saving them to the persistent store, on the uploadKit private queue. After saving,
+     and saving them to the persistent store, on the PwgUploadKit private queue. After saving,
      resets the context to clean up the cache and lower the memory footprint.
      */
     private func importOneBatch(_ uploadsBatch: [UploadProperties],
@@ -92,7 +92,7 @@ public final class UploadProvider {
     {
         // Do {} below is used to allow typed throws
         do {
-            // Synchronous execution in the uploadKit background thread
+            // Synchronous execution in the PwgUploadKit background thread
             return try taskContext.performAndWait { () -> [NSManagedObjectID] in
                 // Runs on the URLSession's delegate queue so it won’t block the main thread.
                 // Main context automatically sees changes via merge
@@ -192,7 +192,7 @@ public final class UploadProvider {
     }
         
     /**
-     Clear status of Core Data upload requests on the uploadKit private queue
+     Clear status of Core Data upload requests on the PwgUploadKit private queue
      */
     public func clearFailedUploads(_ toResume: [NSManagedObjectID],
                                    inContext taskContext: NSManagedObjectContext) -> ([NSManagedObjectID], [NSManagedObjectID])
@@ -337,7 +337,7 @@ public final class UploadProvider {
     }
     
     /**
-        Retrieve IDs of upload pending requests in given states on the uploadKit private queue
+        Retrieve IDs of upload pending requests in given states on the PwgUploadKit private queue
      */
     public func getIDsOfPendingUploads(onlyInStates states: [pwgUploadState] = [], onlyImages: [Int64] = [],
                                        onlyDeletable: Bool = false, markedForAutoUpload: Bool = false,
@@ -385,7 +385,7 @@ public final class UploadProvider {
     }
     
     /**
-        Retrieve IDs of completed upload requests marked for deletion on the uploadKit private queue
+        Retrieve IDs of completed upload requests marked for deletion on the PwgUploadKit private queue
      */
     public func getIDsOfCompletedUploads(onlyInStates states: [pwgUploadState] = [], onlyImages: [Int64] = [],
                                          onlyDeletable: Bool = false, notAutoUploaded: Bool = false,
@@ -467,7 +467,7 @@ public final class UploadProvider {
     }
     
     /**
-        Retrieve IDs of upload pending requests in given states on the uploadKit private queue
+        Retrieve IDs of upload pending requests in given states on the PwgUploadKit private queue
      */
     public func getPropertiesOfUpload(withID uploadID: NSManagedObjectID,
                                       inContext taskContext: NSManagedObjectContext) throws -> UploadProperties?

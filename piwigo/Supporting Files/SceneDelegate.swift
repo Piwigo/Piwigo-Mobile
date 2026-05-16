@@ -13,7 +13,7 @@ import LocalAuthentication
 import UIKit
 
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     

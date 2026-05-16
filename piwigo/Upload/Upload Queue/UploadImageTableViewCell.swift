@@ -10,7 +10,7 @@ import CoreData
 import Photos
 import UIKit
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 class UploadImageTableViewCell: UITableViewCell {
     

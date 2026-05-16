@@ -9,7 +9,7 @@
 import Photos
 import UIKit
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 // MARK: UICollectionViewDelegate Methods
 extension LocalImagesViewController: UICollectionViewDelegate

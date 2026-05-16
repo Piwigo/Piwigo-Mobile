@@ -11,7 +11,7 @@ import CoreData
 import AppIntents
 import Photos
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 @available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
 struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { // , PredictableIntent {

@@ -10,7 +10,7 @@ import CoreData
 import Foundation
 import UIKit
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 // MARK: - Uploads Provider NSFetchedResultsControllerDelegate
 extension UploadQueueViewController: NSFetchedResultsControllerDelegate

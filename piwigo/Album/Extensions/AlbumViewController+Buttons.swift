@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Exclusively before iOS 26")
 extension AlbumViewController

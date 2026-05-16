@@ -10,7 +10,7 @@ import CoreData
 import Intents
 import Photos
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 // Only used on iOS 15.x
 final class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {

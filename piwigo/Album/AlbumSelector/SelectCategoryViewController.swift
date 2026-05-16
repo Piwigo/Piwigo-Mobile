@@ -12,7 +12,7 @@ import UIKit
 import CoreData
 import CoreMedia
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 enum pwgCategorySelectAction {
     case none

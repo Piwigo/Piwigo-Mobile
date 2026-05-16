@@ -9,7 +9,7 @@
 import CoreData
 import UIKit
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 class UploadQueueViewController: UIViewController {
     

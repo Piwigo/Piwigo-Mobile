@@ -11,7 +11,7 @@
 import Foundation
 import XCTest
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 final class PwgAPITesting: XCTestCase {
     

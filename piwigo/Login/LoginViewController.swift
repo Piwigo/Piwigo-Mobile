@@ -12,7 +12,7 @@ import CoreData
 import MessageUI
 import UIKit
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 class LoginViewController: UIViewController {
 

@@ -12,7 +12,7 @@ import MobileCoreServices
 import UIKit
 import UniformTypeIdentifiers
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 // Warning: class must restate inherited '@unchecked Sendable' conformance
 class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable {

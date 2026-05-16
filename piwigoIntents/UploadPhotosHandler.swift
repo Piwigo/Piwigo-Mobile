@@ -9,7 +9,7 @@
 import CoreData
 import Foundation
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 @available(iOSApplicationExtension 13.0, *)
 class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {

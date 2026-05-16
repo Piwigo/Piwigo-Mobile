@@ -17,7 +17,7 @@ import Photos
 import UIKit
 
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

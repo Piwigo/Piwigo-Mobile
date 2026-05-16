@@ -1,6 +1,6 @@
 //
 //  UploadManager+BackgroundTasks.swift
-//  uploadKit
+//  PwgUploadKit
 //
 //  Created by Eddy Lelièvre-Berna on 02/04/2026.
 //  Copyright © 2026 Piwigo.org. All rights reserved.
@@ -245,7 +245,8 @@ extension UploadManager
         // Schedule continued upload now
         // Continued uploading requires network connectivity but not external power
         let title = "Piwigo"
-        let subtitle = String(localized: "backgroundTask_preparing", bundle: .uploadKit, comment: "Preparing uploads…")
+        let subtitle = String(localized: "backgroundTask_preparing", bundle: .pwgUploadKit,
+                              comment: "Preparing uploads…")
         let request = BGContinuedProcessingTaskRequest(identifier: pwgBackgroundContinuedUploadTask,
                                                        title: title, subtitle: subtitle)
         request.strategy = .queue   // Queues the task to begin as soon as possible
@@ -314,7 +315,8 @@ extension UploadManager
                 // Update progress bar
                 task.progress.completedUnitCount += 1
                 let diff = task.progress.totalUnitCount - task.progress.completedUnitCount
-                let subtitle = String(localized: "backgroundTask_remaining \(diff)", bundle: .uploadKit, comment: "%lld uploads remaining")
+                let subtitle = String(localized: "backgroundTask_remaining \(diff)", bundle: .pwgUploadKit,
+                                      comment: "%lld uploads remaining")
                 task.updateTitle(title, subtitle: subtitle)
                 
                 // Wait before launching a new transfer?
@@ -343,7 +345,8 @@ extension UploadManager
                 preparedCount += 1
                 task.progress.completedUnitCount += 1
                 let diff = task.progress.totalUnitCount - task.progress.completedUnitCount
-                let subtitle = String(localized: "backgroundTask_remaining \(diff)", bundle: .uploadKit, comment: "%lld uploads remaining")
+                let subtitle = String(localized: "backgroundTask_remaining \(diff)", bundle: .pwgUploadKit,
+                                      comment: "%lld uploads remaining")
                 task.updateTitle(title, subtitle: subtitle)
                 
                 // Low-Power mode activated? No required Wi-Fi? Task cancelled?
@@ -396,26 +399,30 @@ extension UploadManager
             if Task.isCancelled {
                 // Inform that the task is stopped
                 UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' cancelled by iOS.")
-                let subtitle = String(localized: "backgroundTask_cancelled", bundle: .uploadKit, comment: "Uploads interrupted. Please restart the app.")
+                let subtitle = String(localized: "backgroundTask_cancelled", bundle: .pwgUploadKit,
+                                      comment: "Uploads interrupted. Please restart the app.")
                 task.updateTitle(task.title, subtitle: subtitle)
             }
             else if ProcessInfo.processInfo.isLowPowerModeEnabled {
                 // Inform that the task is stopped
                 UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' stopped: Low-Power mode is enabled.")
-                let subtitle = String(localized: "backgroundTask_lowPowerMode", bundle: .uploadKit, comment: "Low power mode enabled. Please turn it off.")
+                let subtitle = String(localized: "backgroundTask_lowPowerMode", bundle: .pwgUploadKit,
+                                      comment: "Low power mode enabled. Please turn it off.")
                 task.updateTitle(task.title, subtitle: subtitle)
             }
             else if UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi {
                 // Inform that the task is stopped
                 UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' stopped: Wi-Fi required, but not connected.")
-                let subtitle = String(localized: "backgroundTask_noWifi", bundle: .uploadKit, comment: "Wi-Fi only uploading. Please connect to Wi-Fi.")
+                let subtitle = String(localized: "backgroundTask_noWifi", bundle: .pwgUploadKit,
+                                      comment: "Wi-Fi only uploading. Please connect to Wi-Fi.")
                 task.updateTitle(task.title, subtitle: subtitle)
             }
             else {
                 // Inform that the task is completed with success
                 success = true
                 UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' completed with success.")
-                let subtitle = String(localized: "backgroundTask_completed \(task.progress.completedUnitCount)", bundle: .uploadKit, comment: "%lld uploads completed")
+                let subtitle = String(localized: "backgroundTask_completed \(task.progress.completedUnitCount)", bundle: .pwgUploadKit,
+                                      comment: "%lld uploads completed")
                 task.updateTitle(task.title, subtitle: subtitle)
             }
         }

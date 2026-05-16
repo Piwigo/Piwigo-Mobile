@@ -14,7 +14,7 @@ import Photos
 import PhotosUI
 import UIKit
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 protocol LocalAlbumsSelectorDelegate: NSObjectProtocol {
     func didSelectPhotoAlbum(withId: String)

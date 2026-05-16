@@ -1,6 +1,6 @@
 //
 //  UploadManagerActor.swift
-//  uploadKit
+//  PwgUploadKit
 //
 //  Created by Eddy Lelièvre-Berna on 11/01/2026.
 //  Copyright © 2026 Piwigo.org. All rights reserved.

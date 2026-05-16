@@ -10,7 +10,7 @@ import Photos
 import Foundation
 import UIKit
 import piwigoKit
-import uploadKit
+import PwgUploadKit
 
 // This enum contains all the possible states of a pasteboard object
 enum PasteboardObjectState {
