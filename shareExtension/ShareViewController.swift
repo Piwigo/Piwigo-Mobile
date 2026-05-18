@@ -52,6 +52,7 @@ class ShareViewController: UIViewController {
                                          selector: #selector(NSString.localizedStandardCompare(_:)))]
         var andPredicates = predicates
         var recentCatIds: [Int32] = CacheVars.shared.recentCategories.components(separatedBy: ",").compactMap({Int32($0)})
+        recentCatIds.removeAll(where: { $0 == Int32.zero })
         // Limit the number of recent albums
         let nberExtraCats: Int = max(0, recentCatIds.count - CacheVars.shared.maxNberRecentCategories)
         andPredicates.append(NSPredicate(format: "pwgID IN %@", recentCatIds.dropLast(nberExtraCats)))
