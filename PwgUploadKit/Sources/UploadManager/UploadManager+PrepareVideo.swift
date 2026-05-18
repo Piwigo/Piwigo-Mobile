@@ -1,6 +1,6 @@
 //
 //  UploadManager+PrepareVideo.swift
-//  piwigoKit
+//  PwgUploadKit
 //
 //  Created by Eddy Lelièvre-Berna on 13/06/2020.
 //  Copyright © 2020 Piwigo.org. All rights reserved.
@@ -12,6 +12,7 @@ import MobileCoreServices
 import Photos
 import CoreData
 import PwgKit
+import PwgCacheKit
 
 @UploadManagerActor
 extension UploadManager {

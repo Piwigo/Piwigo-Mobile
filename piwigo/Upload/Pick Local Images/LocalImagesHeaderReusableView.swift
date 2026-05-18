@@ -11,6 +11,7 @@
 import Photos
 import UIKit
 import PwgKit
+import PwgCacheKit
 
 @objc protocol LocalImagesHeaderDelegate: NSObjectProtocol {
     func didSelectImagesOfSection(_ section: Int)

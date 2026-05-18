@@ -10,6 +10,8 @@
 
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 class ImageCollectionViewCell: UICollectionViewCell {
     

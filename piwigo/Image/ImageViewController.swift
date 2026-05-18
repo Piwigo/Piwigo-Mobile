@@ -10,6 +10,8 @@ import CoreData
 import Photos
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 protocol ImageDetailDelegate: NSObjectProtocol {
     func didSelectImage(atIndexPath indexPath: IndexPath)
@@ -304,10 +306,14 @@ class ImageViewController: UIViewController {
         Task {
             do {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Get complete image data
-                try await ImageProvider().getInfos(forID: imageID, inCategoryId: self.categoryId)
+                let pwgData = try await JSONManager.shared.getInfos(forID: imageID)
+                
+                // Update image data in cache
+                // The provided sort option will not change the rankManual/rankRandom values.
+                try ImageProvider().importImages([pwgData], inAlbum: self.categoryId, sort: .albumDefault)
                 
                 // Update UI and cache
                 await MainActor.run { [self] in
@@ -383,13 +389,13 @@ class ImageViewController: UIViewController {
     
     func logImageVisitIfNeeded(_ imageID: Int64, asDownload: Bool = false) {
         // Should we really log visits?
-        guard NetworkVars.shared.saveVisits
+        guard ServerVars.shared.saveVisits
         else { return }
         
         Task.detached {
             do {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID, lastConnected: self.user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID, lastConnected: self.user.lastUsed)
                 
                 // Update server statistics
                 try await JSONManager.shared.logVisitOfImage(withID: imageID, asDownload: asDownload)

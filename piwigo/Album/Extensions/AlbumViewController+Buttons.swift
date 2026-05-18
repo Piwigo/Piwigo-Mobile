@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgCacheKit
 import PwgUploadKit
 
 @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Exclusively before iOS 26")
@@ -392,7 +393,7 @@ extension AlbumViewController
     @objc func updateOldButton(withNberOfUploads nberOfUploads: Int) {
         // Only called in the root or default album
         if nberOfUploads > 0 {
-            if (!NetworkVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading) ||
+            if (!ServerVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading) ||
                 ProcessInfo.processInfo.isLowPowerModeEnabled {
                 nberOfUploadsLabel.text = "⚠️"
             } else {

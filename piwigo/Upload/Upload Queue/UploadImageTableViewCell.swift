@@ -10,6 +10,7 @@ import CoreData
 import Photos
 import UIKit
 import PwgKit
+import PwgCacheKit
 import PwgUploadKit
 
 class UploadImageTableViewCell: UITableViewCell {

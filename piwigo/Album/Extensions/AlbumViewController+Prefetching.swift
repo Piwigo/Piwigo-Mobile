@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 // MARK: - UICollectionViewDataSourcePrefetching
 extension AlbumViewController: UICollectionViewDataSourcePrefetching

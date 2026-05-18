@@ -9,8 +9,9 @@
 import CoreData
 import CoreLocation
 import Foundation
-import PwgKit
 import UIKit
+import PwgKit
+import PwgCacheKit
 
 enum pwgAlbumCollectionType {
     case new, old

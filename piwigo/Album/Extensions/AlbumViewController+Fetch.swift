@@ -8,6 +8,8 @@
 
 import Foundation
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 import PwgUploadKit
 
 extension AlbumViewController
@@ -54,9 +56,14 @@ extension AlbumViewController
         Task {
             do {
                 // Fetch albums
-                try await albumProvider.fetchAlbums(forUserWithAdminRights: hasAdminRights,
-                                                    inParentWithId: categoryId,
-                                                    thumbnailSize: thumnailSize)
+                let pwgData = try await JSONManager.shared.fetchAlbums(forUserWithAdminRights: hasAdminRights,
+                                                                       inParentWithId: categoryId,
+                                                                       thumbnailSize: thumnailSize)
+                // Update labum data in cache
+                if pwgData.isEmpty == false {
+                    try await albumProvider.importAlbums(pwgData, inParent: categoryId)
+                }
+                
                 // Fetch image data?
                 await MainActor.run { [self] in
                     // ► Remove current album from list of albums being fetched
@@ -106,7 +113,7 @@ extension AlbumViewController
         }
     }
     
-
+    
     // MARK: - Fetch Image Data in the Background
     @concurrent
     func fetchImages(withInitialImageIds oldImageIDs: Set<Int64>, query: String,
@@ -117,8 +124,8 @@ extension AlbumViewController
             do {
                 // Fetch images
                 let (fetchedImageIds, totalCount, hasDownloadRight) =
-                try await imageProvider.fetchImages(ofAlbumWithId: albumData.pwgID, withQuery: query, sort: sortOption,
-                                                    fromPage: onPage, perPage: perPage)
+                try await fetchImages(ofAlbumWithId: albumData.pwgID, withQuery: query, sort: sortOption,
+                                      fromPage: onPage, perPage: perPage)
 
                 await MainActor.run { [self] in
                     // Store user's right to download
@@ -225,6 +232,58 @@ extension AlbumViewController
         }
     }
     
+    private func fetchImages(ofAlbumWithId albumId: Int32, withQuery query: String,
+                             sort: pwgImageSort, fromPage page:Int, perPage: Int) async throws(PwgKitError) -> (Set<Int64>, Int64, Bool) {
+        debugPrint("••> Fetch images of album \(albumId) at page \(page)…")
+
+        // Fetch image data
+        let (paging, data) = try await JSONManager.shared.getImages(ofAlbumWithId: albumId, withQuery: query, sort: sort, fromPage: page, perPage: perPage)
+
+        // Import image data into Core Data.
+        do {
+            if [.rankAscending, .random].contains(sort) {
+                let startRank = Int64(page * perPage)
+                try imageProvider.importImages(data, inAlbum: albumId,
+                                                 sort: sort, fromRank: startRank)
+            } else {
+                try imageProvider.importImages(data, inAlbum: albumId, sort: sort)
+            }
+
+            // Retrieve total number of images
+            var totalCount = Int64.zero
+            if albumId == pwgSmartAlbum.favorites.rawValue {
+                totalCount = paging.count
+            } else {
+                // Bug leading to server providing wrong total_count value
+                // Discovered in Piwigo 13.5.0, appeared in 13.0.0, fixed in 13.6.0.
+                // See https://github.com/Piwigo/Piwigo/issues/1871
+                if ServerVars.shared.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending ||
+                    ServerVars.shared.pwgVersion.compare("13.5.0", options: .numeric) == .orderedDescending {
+                    totalCount = paging.totalCount?.int64Value ?? Int64.zero
+                } else {
+                    totalCount = paging.count
+                }
+            }
+
+            // Retrieve IDs of fetched images
+            let fetchedImageIds = Set(data.compactMap({$0.id}))
+
+            // Determine if the user has the right to download images
+            var hasDownloadRight = false
+            if data.isEmpty == false,
+               data.firstIndex(where: { $0.downloadUrl == nil }) == nil {
+                hasDownloadRight = true
+            }
+            return (fetchedImageIds, totalCount, hasDownloadRight)
+        }
+        catch let error as PwgKitError {
+            throw error
+        }
+        catch {
+            throw .otherError(innerError: error)
+        }
+    }
+
     private func removeImageWithIDs(_ imageIDs: Set<Int64>) {
         // Done fetching images ► Remove non-fetched images from album
         DispatchQueue.main.async { [self] in
@@ -273,7 +332,7 @@ extension AlbumViewController
         }
         else if error.incompatibleVersion {
             title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
-            detail = String.localizedStringWithFormat(PwgKitError.incompatiblePwgVersion.localizedDescription, NetworkVars.shared.pwgVersion, pwgMinVersion)
+            detail = String.localizedStringWithFormat(PwgKitError.incompatiblePwgVersion.localizedDescription, ServerVars.shared.pwgVersion, pwgMinVersion)
             buttonSelector = #selector(hideLoadingAndCloseSession)
         }
         else if detail.isEmpty {
@@ -354,8 +413,9 @@ extension AlbumViewController
         Task {
             do {
                 let (fetchedImageIds, totalCount, _) =
-                try await imageProvider.fetchImages(ofAlbumWithId: album.pwgID, withQuery: "", sort: sortOption,
-                                                    fromPage: onPage, perPage: perPage)
+                try await fetchImages(ofAlbumWithId: album.pwgID, withQuery: "", sort: sortOption,
+                                      fromPage: onPage, perPage: perPage)
+                
                 // Re-calculate number of pages
                 var newLastPage = lastPage
                 newLastPage = Int(totalCount.quotientAndRemainder(dividingBy: Int64(perPage)).quotient)

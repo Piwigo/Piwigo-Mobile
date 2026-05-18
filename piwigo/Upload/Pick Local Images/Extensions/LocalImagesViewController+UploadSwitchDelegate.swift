@@ -10,6 +10,7 @@ import CoreData
 import Foundation
 import UIKit
 import PwgKit
+import PwgCacheKit
 import PwgUploadKit
 
 // MARK: UploadSwitchDelegate Methods

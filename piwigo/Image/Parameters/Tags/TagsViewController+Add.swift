@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 extension TagsViewController
 {
@@ -63,10 +65,13 @@ extension TagsViewController
         Task {
             do {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
-                // Add tag to server and cache
-                try await TagProvider().addTag(with: tagName)
+                // Add tag on server
+                let tagData = try await JSONManager.shared.addTag(with: tagName)
+                
+                // Add tag to cache
+                let _ = try TagProvider().importOneBatch([tagData], asAdmin: true, tagIDs: Set<Int32>())
                 
                 // Update UI
                 await MainActor.run {

@@ -12,6 +12,8 @@ import CoreData
 import MessageUI
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 import PwgUploadKit
 
 class LoginViewController: UIViewController {
@@ -60,19 +62,19 @@ class LoginViewController: UIViewController {
 
         // Server URL text field
         serverTextField.placeholder = NSLocalizedString("login_serverPlaceholder", comment: "example.com")
-        serverTextField.text = NetworkVars.shared.service
+        serverTextField.text = ServerVars.shared.service
         serverTextField.layer.cornerRadius = TableViewUtilities.rowCornerRadius
 
         // Username text field
         userTextField.placeholder = NSLocalizedString("login_userPlaceholder", comment: "Username (optional)")
-        userTextField.text = NetworkVars.shared.username
+        userTextField.text = ServerVars.shared.username
         userTextField.textContentType = .username
         userTextField.layer.cornerRadius = TableViewUtilities.rowCornerRadius
         
         // Password text field
         passwordTextField.placeholder = NSLocalizedString("login_passwordPlaceholder", comment: "Password (optional)")
-        passwordTextField.text = KeychainUtilities.password(forService: NetworkVars.shared.serverPath,
-                                                            account: NetworkVars.shared.username)
+        passwordTextField.text = KeychainUtilities.password(forService: ServerVars.shared.serverPath,
+                                                            account: ServerVars.shared.username)
         passwordTextField.textContentType = .password
         passwordTextField.layer.cornerRadius = TableViewUtilities.rowCornerRadius
         
@@ -142,7 +144,7 @@ class LoginViewController: UIViewController {
         isAlreadyTryingToLogin = false
 
         // Inform user if the connection is not secure
-        websiteNotSecure.isHidden = NetworkVars.shared.serverProtocol == "https://"
+        websiteNotSecure.isHidden = ServerVars.shared.serverProtocol == "https://"
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -208,9 +210,9 @@ class LoginViewController: UIViewController {
 
         // Default settings
         isAlreadyTryingToLogin = true
-        NetworkVars.shared.userStatus = pwgUserStatus.guest
-        NetworkVars.shared.usesCommunityPluginV29 = false
-        NetworkVars.shared.usesSetCategory = false
+        ServerVars.shared.userStatus = pwgUserStatus.guest
+        ServerVars.shared.usesCommunityPluginV29 = false
+        ServerVars.shared.usesSetCategory = false
         NetworkVars.shared.usesAPIkeys = false
         
         // Check server address and cancel login if address not provided
@@ -232,7 +234,7 @@ class LoginViewController: UIViewController {
         if let username = userTextField.text, username.isEmpty == false {
             // Store credentials in Keychain
             KeychainUtilities.setPassword(passwordTextField.text ?? "",
-                                          forService: NetworkVars.shared.serverPath,
+                                          forService: ServerVars.shared.serverPath,
                                           account: username)
         }
 
@@ -254,14 +256,14 @@ class LoginViewController: UIViewController {
             catch let error as PwgKitError {
                 await MainActor.run {
                     // If Piwigo uses a non-trusted certificate, ask permission
-                    if NetworkVars.shared.didRejectCertificate {
+                    if ServerVars.shared.didRejectCertificate {
                         // The SSL certificate is not trusted
                         self.requestCertificateApproval(afterError: error)
                         return
                     }
 
                     // HTTP Basic authentication required?
-                    if error.failedAuthentication || NetworkVars.shared.didFailHTTPauthentication {
+                    if error.failedAuthentication || ServerVars.shared.didFailHTTPauthentication {
                         // Without prior knowledge, the app already tried Piwigo credentials
                         // but unsuccessfully, so we request HTTP credentials
                         self.requestHttpCredentials(afterError: error)
@@ -283,7 +285,7 @@ class LoginViewController: UIViewController {
                     case NSURLErrorCannotConnectToHost,    // Happens when the server does not reply to the request (HTTP or HTTPS)
                          NSURLErrorSecureConnectionFailed:
                         // HTTPS request failed ?
-                        if NetworkVars.shared.serverProtocol == "https://" {
+                        if ServerVars.shared.serverProtocol == "https://" {
                             // Suggest HTTP connection if HTTPS attempt failed
                             self.requestNonSecuredAccess(afterError: error)
                         }
@@ -312,12 +314,12 @@ class LoginViewController: UIViewController {
     @MainActor
     func requestCertificateApproval(afterError error: PwgKitError) {
         let title = NSLocalizedString("loginCertFailed_title", comment: "Connection Not Private")
-        let message = "\(NSLocalizedString("loginCertFailed_message", comment: "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?"))\r\r\(NetworkVars.shared.certificateInformation)"
+        let message = "\(NSLocalizedString("loginCertFailed_message", comment: "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?"))\r\r\(ServerVars.shared.certificateInformation)"
         let cancelAction = UIAlertAction(
             title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
             style: .cancel, handler: { [self] action in
                 // Should forget certificate
-                NetworkVars.shared.didApproveCertificate = false
+                ServerVars.shared.didApproveCertificate = false
                 // Report error
                 logging(inConnectionError: error)
             })
@@ -329,7 +331,7 @@ class LoginViewController: UIViewController {
                     // Cancel task
                     tasks.forEach({ $0.cancel() })
                     // Will accept certificate
-                    NetworkVars.shared.didApproveCertificate = true
+                    ServerVars.shared.didApproveCertificate = true
                     // Try logging in with approved certificate
                     DispatchQueue.main.async {
                         self.launchLogin()
@@ -341,8 +343,8 @@ class LoginViewController: UIViewController {
 
     @MainActor
     func requestHttpCredentials(afterError error: PwgKitError) {
-        let username = NetworkVars.shared.httpUsername
-        let password = KeychainUtilities.password(forService: NetworkVars.shared.service, account: username)
+        let username = ServerVars.shared.httpUsername
+        let password = KeychainUtilities.password(forService: ServerVars.shared.service, account: username)
         httpAlertController = LoginUtilities.getHttpCredentialsAlert(textFieldDelegate: self,
                                                                      username: username, password: password,
                                                                      cancelAction: { [self] action in
@@ -352,9 +354,9 @@ class LoginViewController: UIViewController {
             // Store credentials
             if let httpUsername = httpAlertController?.textFields?[0].text,
                httpUsername.isEmpty == false {
-                NetworkVars.shared.httpUsername = httpUsername
+                ServerVars.shared.httpUsername = httpUsername
                 KeychainUtilities.setPassword(httpAlertController?.textFields?[1].text ?? "",
-                    forService: NetworkVars.shared.service, account: httpUsername)
+                    forService: ServerVars.shared.service, account: httpUsername)
                 // Try logging in with new HTTP credentials
                 launchLogin()
             }
@@ -388,10 +390,10 @@ class LoginViewController: UIViewController {
 
     func tryNonSecuredAccess(afterError error: PwgKitError?) {
         // Proceed at their own risk
-        NetworkVars.shared.serverProtocol = "http://"
+        ServerVars.shared.serverProtocol = "http://"
 
         // Update URL on UI
-        serverTextField.text = NetworkVars.shared.service
+        serverTextField.text = ServerVars.shared.service
 
         // Display security message below credentials
         websiteNotSecure.isHidden = false
@@ -414,7 +416,7 @@ class LoginViewController: UIViewController {
                     // Perform login
                     try await JSONManager.shared.sessionLogin(withUsername: username, password: password)
                     // Session now opened
-                    NetworkVars.shared.username = username
+                    ServerVars.shared.username = username
 
                     await MainActor.run { [self] in
                         // First determine user rights if Community extension installed
@@ -423,7 +425,7 @@ class LoginViewController: UIViewController {
                 }
                 catch let error as PwgKitError {
                     // Don't keep unaccepted credentials
-                    KeychainUtilities.deletePassword(forService: NetworkVars.shared.serverPath,
+                    KeychainUtilities.deletePassword(forService: ServerVars.shared.serverPath,
                                                      account: username)
                     await MainActor.run { [self] in
                         // Login request failed
@@ -433,11 +435,11 @@ class LoginViewController: UIViewController {
             }
         } else {
             // Reset keychain and credentials
-            KeychainUtilities.deletePassword(forService: NetworkVars.shared.serverPath,
+            KeychainUtilities.deletePassword(forService: ServerVars.shared.serverPath,
                                              account: username)
-            NetworkVars.shared.user = ""
-            NetworkVars.shared.username = ""
-            NetworkVars.shared.userStatus = .guest
+            ServerVars.shared.user = ""
+            ServerVars.shared.username = ""
+            ServerVars.shared.userStatus = .guest
             
             // Create/update guest account in persistent cache, create Server if necessary.
             do {
@@ -458,7 +460,7 @@ class LoginViewController: UIViewController {
     @MainActor
     func getCommunityStatus() {
         // Community plugin installed?
-        if NetworkVars.shared.usesCommunityPluginV29 {
+        if ServerVars.shared.usesCommunityPluginV29 {
             // Update HUD during login
             updateHUD(detail: NSLocalizedString("login_communityParameters", comment: "Community Parameters"))
 
@@ -496,19 +498,19 @@ class LoginViewController: UIViewController {
         Task.detached {
             do {
                 // Update Piwigo username (≠ credential)
-                NetworkVars.shared.user = try await JSONManager.shared.sessionGetStatus()
+                ServerVars.shared.user = try await JSONManager.shared.sessionGetStatus()
 
                 await MainActor.run { [self] in
                     // Should this server be updated?
                     let now: Double = Date().timeIntervalSinceReferenceDate
-                    if now > NetworkVars.shared.dateOfLastUpdateRequest + AppVars.shared.pwgOneMonth,
-                       NetworkVars.shared.pwgVersion.compare(pwgRecentVersion, options: .numeric) == .orderedAscending {
+                    if now > ServerVars.shared.dateOfLastUpdateRequest + AppVars.shared.pwgOneMonth,
+                       ServerVars.shared.pwgVersion.compare(pwgRecentVersion, options: .numeric) == .orderedAscending {
                         // Store date of last upgrade request
-                        NetworkVars.shared.dateOfLastUpdateRequest = now
+                        ServerVars.shared.dateOfLastUpdateRequest = now
                         
                         // Piwigo server update recommanded ► Inform user
                         self.hideHUD() {
-                            self.dismissPiwigoError(withTitle: NSLocalizedString("serverVersionOld_title", comment: "Server Update Available"), message: String.localizedStringWithFormat(NSLocalizedString("serverVersionOld_message", comment: "Your Piwigo server version is %@. Please ask the administrator to update it."), NetworkVars.shared.pwgVersion), completion: {
+                            self.dismissPiwigoError(withTitle: NSLocalizedString("serverVersionOld_title", comment: "Server Update Available"), message: String.localizedStringWithFormat(NSLocalizedString("serverVersionOld_message", comment: "Your Piwigo server version is %@. Please ask the administrator to update it."), ServerVars.shared.pwgVersion), completion: {
                                     // Piwigo server version is still appropriate.
                                     self.launchApp()
                             })
@@ -590,7 +592,7 @@ class LoginViewController: UIViewController {
         }
         else if error.incompatibleVersion {
             title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
-            detail = String.localizedStringWithFormat(PwgKitError.incompatiblePwgVersion.localizedDescription, NetworkVars.shared.pwgVersion, pwgMinVersion)
+            detail = String.localizedStringWithFormat(PwgKitError.incompatiblePwgVersion.localizedDescription, ServerVars.shared.pwgVersion, pwgMinVersion)
         }
         else if detail.isEmpty {
                 detail = String(format: "%ld", (error as NSError?)?.code ?? 0)
@@ -615,7 +617,7 @@ class LoginViewController: UIViewController {
         let retrieveAction = UIAlertAction(
             title: NSLocalizedString("alertOkButton", comment: "OK"),
             style: .default, handler: { _ in
-                if let url = URL(string: NetworkVars.shared.service + "/password.php") {
+                if let url = URL(string: ServerVars.shared.service + "/password.php") {
                     UIApplication.shared.open(url)
                 }
             })
@@ -661,7 +663,7 @@ class LoginViewController: UIViewController {
             // Save server address and protocol
             switch serverURL.port {
             case 80:
-                NetworkVars.shared.serverProtocol = "http://"
+                ServerVars.shared.serverProtocol = "http://"
                 if #available(iOS 16.0, *) {
                     serverString = serverString.replacing("https://", with: "http://")
                 } else {
@@ -669,7 +671,7 @@ class LoginViewController: UIViewController {
                     serverString = serverString.replacingOccurrences(of: "https://", with: "http://")
                 }
             case 443:
-                NetworkVars.shared.serverProtocol = "https://"
+                ServerVars.shared.serverProtocol = "https://"
                 if #available(iOS 16.0, *) {
                     serverString = serverString.replacing("http://", with: "https://")
                 } else {
@@ -677,11 +679,11 @@ class LoginViewController: UIViewController {
                     serverString = serverString.replacingOccurrences(of: "http://", with: "https://")
                 }
             default:
-                NetworkVars.shared.serverProtocol = "\(serverURL.scheme ?? "https")://"
+                ServerVars.shared.serverProtocol = "\(serverURL.scheme ?? "https")://"
             }
 
             // Hide/show warning
-            if NetworkVars.shared.serverProtocol == "https://" {
+            if ServerVars.shared.serverProtocol == "https://" {
                 // Hide security message below credentials if needed
                 websiteNotSecure.isHidden = true
             } else {
@@ -690,15 +692,15 @@ class LoginViewController: UIViewController {
             }
 
             // Save server address and protocol to disk
-            NetworkVars.shared.serverPath = "\(serverURL.host ?? ""):\(serverURL.port ?? 0)\(serverURL.path)"
+            ServerVars.shared.serverPath = "\(serverURL.host ?? ""):\(serverURL.port ?? 0)\(serverURL.path)"
             return true
         }
 
         // Store scheme
-        NetworkVars.shared.serverProtocol = "\(serverURL.scheme ?? "https")://"
+        ServerVars.shared.serverProtocol = "\(serverURL.scheme ?? "https")://"
 
         // Hide/show warning
-        if NetworkVars.shared.serverProtocol == "https://" {
+        if ServerVars.shared.serverProtocol == "https://" {
             // Hide security message below credentials if needed
             websiteNotSecure.isHidden = true
         } else {
@@ -707,7 +709,7 @@ class LoginViewController: UIViewController {
         }
 
         // Save server address and protocol to disk
-        NetworkVars.shared.serverPath = "\(serverURL.host ?? "")\(serverURL.path)"
+        ServerVars.shared.serverPath = "\(serverURL.host ?? "")\(serverURL.path)"
         return true
     }
 

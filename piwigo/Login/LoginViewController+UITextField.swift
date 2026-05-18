@@ -8,6 +8,7 @@
 
 import UIKit
 import PwgKit
+import PwgAPIKit
 
 // MARK: - UITextField Delegate Methods
 extension LoginViewController: UITextFieldDelegate
@@ -91,7 +92,7 @@ extension LoginViewController: UITextFieldDelegate
         }
         else if textField == userTextField {
             // User entered username
-            let pwd = KeychainUtilities.password(forService: NetworkVars.shared.serverPath,
+            let pwd = KeychainUtilities.password(forService: ServerVars.shared.serverPath,
                                                  account: userTextField.text ?? "")
             passwordTextField.text = pwd
             passwordTextField.becomeFirstResponder()

@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgCacheKit
 
 protocol SelectTimeFormatDelegate: NSObjectProtocol {
     func didSelectTimeFormat(_ format: String)

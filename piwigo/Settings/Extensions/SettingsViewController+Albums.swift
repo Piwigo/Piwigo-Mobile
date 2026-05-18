@@ -8,6 +8,7 @@
 
 import Foundation
 import PwgKit
+import PwgCacheKit
 
 // MARK: DefaultAlbumThumbnailSizeDelegate Methods
 extension SettingsViewController: DefaultAlbumThumbnailSizeDelegate {

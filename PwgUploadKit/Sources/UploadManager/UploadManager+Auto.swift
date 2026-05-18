@@ -8,6 +8,7 @@
 
 import Photos
 import PwgKit
+import PwgCacheKit
 
 @UploadManagerActor
 extension UploadManager {
@@ -81,7 +82,7 @@ extension UploadManager {
         let fetchOptions = PHFetchOptions()
         fetchOptions.includeHiddenAssets = false
         fetchOptions.sortDescriptors = [NSSortDescriptor(key: #keyPath(PHAsset.creationDate), ascending: false)]
-        if NetworkVars.shared.serverFileTypes.contains("mp4") {
+        if ServerVars.shared.serverFileTypes.contains("mp4") {
             fetchOptions.predicate = NSPredicate(format: "(mediaType == %d) || (mediaType == %d)", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue)
         } else {
             fetchOptions.predicate = NSPredicate(format: "mediaType == %d", PHAssetMediaType.image.rawValue)

@@ -10,6 +10,8 @@ import BackgroundTasks
 import CoreData
 import Foundation
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 // MARK: - Transfer in Background
 // See https://tools.ietf.org/html/rfc7578
@@ -34,7 +36,7 @@ extension UploadManager {
         catch { throw .otherError(innerError: error) }
         
         // Calculate number of chunks
-        let chunkSize = UploadVars.shared.customUploadChunkSize * 1000
+        let chunkSize = ServerVars.shared.customUploadChunkSize * 1000
         let chunksDiv: Float = Float(imageData.count) / Float(chunkSize)
         let chunks = Int(chunksDiv.rounded(.up))
         let chunksStr = "\(chunks)"
@@ -44,16 +46,20 @@ extension UploadManager {
         }
         
         // Prepare upload URL
-        guard let uploadUrl = URL(string: NetworkVars.shared.service + "/ws.php?format=json&method=\(pwgImagesUploadAsync)")
+        guard let uploadUrl = URL(string: ServerVars.shared.service + "/ws.php?format=json&method=\(pwgImagesUploadAsync)")
         else { preconditionFailure("!!! Invalid uploadAsync URL") }
         
         // Get credentials
-        var username, password: String
+        var username, serverPath: String
         do {
-            (username, password) = try UserProvider().getCredentialsOfUser(withID: uploadData.userURIstr, inContext: uploadBckgContext)
+            (username, serverPath) = try UserProvider().getCredentialsOfUser(withID: uploadData.userURIstr, inContext: uploadBckgContext)
         }
         catch let error as PwgKitError { throw error }
         catch { throw .otherError(innerError: error) }
+        
+        // Get password
+        let password = KeychainUtilities.password(forService: serverPath, account: username)
+        guard password.isEmpty == false else { throw .invalidCredentials }
         
         // Prepare boundary, chunk size, creation date as Piwigo string
         let boundary = createBoundary(from: uploadData.md5Sum)

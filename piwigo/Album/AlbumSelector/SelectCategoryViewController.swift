@@ -12,6 +12,8 @@ import UIKit
 import CoreData
 import CoreMedia
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 import PwgUploadKit
 
 enum pwgCategorySelectAction {
@@ -67,15 +69,15 @@ class SelectCategoryViewController: UIViewController {
 
     lazy var userUploadRights: [Int32] = {
         // Case of Community user?
-        if NetworkVars.shared.userStatus != .normal { return [] }
+        if ServerVars.shared.userStatus != .normal { return [] }
         let userUploadRights = user.uploadRights
         return userUploadRights.components(separatedBy: ",").compactMap({ Int32($0) })
     }()
     
     lazy var predicates: [NSPredicate] = {
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
         return andPredicates
     }()
 
@@ -374,22 +376,25 @@ class SelectCategoryViewController: UIViewController {
             AppVars.shared.dateOfLatestRecursiveAlbumDataFetch = Date()
         }
         
-        // Use the AlbumProvider to fetch album data recursively. On completion,
+        // Fetch album data recursively. On completion,
         // handle general UI updates and error alerts on the main queue.
+        let hasAdminRights = user.hasAdminRights
         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
         Task {
             do {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
-                                                          lastConnected: self.user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID,
+                                                        lastConnected: self.user.lastUsed)
                 
                 // Remember that the app is fetching album data recursively
                 AlbumVars.shared.isFetchingAlbumData.insert(pwgSmartAlbum.root.rawValue)
 
-                // Fetch albums recursively
-                try await AlbumProvider().fetchAlbums(forUserWithAdminRights: self.user.hasAdminRights,
-                                                      inParentWithId: pwgSmartAlbum.root.rawValue,
-                                                      recursively: true, thumbnailSize: thumnailSize)
+                // Fetch album data recursively
+                let pwgData = try await JSONManager.shared.fetchAlbums(forUserWithAdminRights: hasAdminRights,
+                                                                       inParentWithId: pwgSmartAlbum.root.rawValue,
+                                                                       thumbnailSize: thumnailSize)
+                // Update cache
+                try AlbumProvider().importAlbums(pwgData, inParent: pwgSmartAlbum.root.rawValue)
                 
                 // Remove current album from list of album being fetched
                 AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.root.rawValue)

@@ -8,6 +8,7 @@
 
 import UIKit
 import PwgKit
+import PwgCacheKit
 
 // MARK: - PasteboardImagesHeaderDelegate Methods
 extension PasteboardImagesViewController: PasteboardImagesHeaderDelegate

@@ -9,6 +9,7 @@
 import Photos
 import UIKit
 import PwgKit
+import PwgCacheKit
 
 // MARK: UICollectionViewDataSource Methods
 extension LocalImagesViewController: UICollectionViewDataSource

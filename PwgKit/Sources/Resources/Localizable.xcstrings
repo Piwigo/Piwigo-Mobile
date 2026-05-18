@@ -1,208 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "albumID" : {
-      "comment" : "Album ID",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "معرّف الألبوم"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Album-ID"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Album-ID"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Album ID"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ID del álbum"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ID de l'album"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Album ID"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Album ID"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ID album"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アルバムID"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Album ID"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Identyfikator albumu"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Идентификатор альбома"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Album-ID"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "相册ID"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "相簿 ID"
-          }
-        }
-      }
-    },
-    "andMore" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " & المزيد"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " & mere"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " & mehr"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " & more"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " y más"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " & plus"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " és több"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " & more"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " & altro"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " & さらに"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " & meer"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " i więcej"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " и многое другое"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " & mer"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " & 更多"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " & 更多"
-          }
-        }
-      }
-    },
     "audioFormat_error" : {
       "comment" : "Sorry, audio files are not supported by Piwigo Mobile yet.",
       "localizations" : {
@@ -970,13 +768,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oldest → Newest"
+            "value" : "古い順 → 新しい順"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oldest → Newest"
+            "value" : "Oudste → Nieuwste"
           }
         },
         "pl" : {
@@ -1006,13 +804,13 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oldest → Newest"
+            "value" : "最舊 → 最新"
           }
         }
       }
     },
     "categorySort_dateCreatedAscending" : {
-      "extractionState" : "manual",
+      "comment" : "Date Created, old → new",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1113,7 +911,7 @@
       }
     },
     "categorySort_dateCreatedDescending" : {
-      "extractionState" : "manual",
+      "comment" : "Date Created, new → old",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1273,13 +1071,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Newest → Oldest"
+            "value" : "新しい順 → 古い順"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Newest → Oldest"
+            "value" : "Nieuwste → Oudste"
           }
         },
         "pl" : {
@@ -1315,7 +1113,7 @@
       }
     },
     "categorySort_datePostedAscending" : {
-      "extractionState" : "manual",
+      "comment" : "Date Posted, old → new",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1416,7 +1214,7 @@
       }
     },
     "categorySort_datePostedDescending" : {
-      "extractionState" : "manual",
+      "comment" : "Date Posted, new → old",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1618,7 +1416,7 @@
       }
     },
     "categorySort_fileNameAscending" : {
-      "extractionState" : "manual",
+      "comment" : "File Name, A → Z",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1719,7 +1517,7 @@
       }
     },
     "categorySort_fileNameDescending" : {
-      "extractionState" : "manual",
+      "comment" : "File Name, Z → A",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1820,7 +1618,7 @@
       }
     },
     "categorySort_idAscending" : {
-      "extractionState" : "manual",
+      "comment" : "Identifier, 1 → 9",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1925,13 +1723,13 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "1 → 9"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "1 → 9"
           }
         },
@@ -1949,7 +1747,7 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "1 → 9"
           }
         },
@@ -1961,69 +1759,68 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "1 → 9"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "1 → 9"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "1 → 9"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "1 → 9"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "1 → 9"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "1 → 9"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "1 → 9"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "1 → 9"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "1 → 9"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "1 → 9"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "categorySort_idDescending" : {
-      "extractionState" : "manual",
+      "comment" : "Identifier, 9 → 1",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -2128,13 +1925,13 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "9 → 1"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "9 → 1"
           }
         },
@@ -2152,7 +1949,7 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "9 → 1"
           }
         },
@@ -2164,66 +1961,65 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "9 → 1"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "9 → 1"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "9 → 1"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "9 → 1"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "9 → 1"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "9 → 1"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "9 → 1"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "9 → 1"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "9 → 1"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "9 → 1"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "categorySort_manual" : {
       "comment" : "Manual Order",
@@ -2327,7 +2123,7 @@
       }
     },
     "categorySort_nameAscending" : {
-      "extractionState" : "manual",
+      "comment" : "Photo Title, A → Z",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -2529,7 +2325,7 @@
       }
     },
     "categorySort_nameDescending" : {
-      "extractionState" : "manual",
+      "comment" : "Photo Title, Z → A",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -2731,7 +2527,7 @@
       }
     },
     "categorySort_random" : {
-      "extractionState" : "manual",
+      "comment" : "Random Order",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -2891,13 +2687,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lowest → Highest"
+            "value" : "低い順 → 高い順"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lowest → Highest"
+            "value" : "Laagste → Hoogste"
           }
         },
         "pl" : {
@@ -2992,13 +2788,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Highest → Lowest"
+            "value" : "高い順 → 低い順"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Highest → Lowest"
+            "value" : "Hoogste → Laagste"
           }
         },
         "pl" : {
@@ -3034,7 +2830,7 @@
       }
     },
     "categorySort_ratingScoreAscending" : {
-      "extractionState" : "manual",
+      "comment" : "Rating Score, low → high",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -3135,7 +2931,7 @@
       }
     },
     "categorySort_ratingScoreDescending" : {
-      "extractionState" : "manual",
+      "comment" : "Rating Score, high → low",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -3438,7 +3234,7 @@
       }
     },
     "categorySort_visitsAscending" : {
-      "extractionState" : "manual",
+      "comment" : "Visits, low → high",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -3539,7 +3335,7 @@
       }
     },
     "categorySort_visitsDescending" : {
-      "extractionState" : "manual",
+      "comment" : "Visits, high → low",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -3640,7 +3436,7 @@
       }
     },
     "CoreData_AlbumNotFound" : {
-      "extractionState" : "manual",
+      "comment" : "Album not in persistent cache.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -3841,107 +3637,6 @@
         }
       }
     },
-    "CoreData_MigrationError_timeout" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تم تعليق التطبيق أثناء ترحيل قاعدة البيانات. الرجاء إعادة تشغيل التطبيق والمحاولة مرة أخرى."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Appen blev suspenderet, mens databasen blev migreret. Genstart venligst appen og prøv igen."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Die Anwendung wurde während der Migration der Datenbank angehalten. Bitte starten Sie die Anwendung neu und versuchen Sie es erneut."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The app was suspended while migrating the database. Please restart the app and try again."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La aplicación se ha suspendido durante la migración de la base de datos. Reinicie la aplicación e inténtelo de nuevo."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L'application a été suspendue lors de la migration de la base de données. Veuillez redémarrer l'application et réessayer."
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Az alkalmazás felfüggesztésre került az adatbázis migrálása közben. Kérjük, indítsa újra az alkalmazást, és próbálja meg újra."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aplikasi dihentikan sementara saat memigrasikan basis data. Silakan mulai ulang aplikasi dan coba lagi."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L'applicazione è stata sospesa durante la migrazione del database. Riavviare l'applicazione e riprovare."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "データベースの移行中にアプリが停止しました。アプリを再起動して再試行してください。"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "De app werd opgeschort tijdens het migreren van de database. Start de app opnieuw op en probeer het opnieuw."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aplikacja zawiesiła się podczas migracji bazy danych. Uruchom ponownie aplikację i spróbuj ponownie."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Работа приложения была приостановлена во время миграции базы данных. Пожалуйста, перезапустите приложение и повторите попытку."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Appen avbröts medan databasen migrerades. Vänligen starta om appen och försök igen."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "迁移数据库时暂停了应用程序。请重启应用程序并重试。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "應用程式在遷移資料庫時暫停。請重新啟動應用程式並重試。"
-          }
-        }
-      }
-    },
     "CoreData_ServerCreateFailed" : {
       "comment" : "Failed to create a new Server object.",
       "localizations" : {
@@ -4002,13 +3697,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to create a new Server object."
+            "value" : "新しいServerオブジェクトの作成に失敗しました。"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to create a new Server object."
+            "value" : "Het is niet gelukt om een nieuw Server-object aan te maken."
           }
         },
         "pl" : {
@@ -4038,13 +3733,13 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to create a new Server object."
+            "value" : "無法建立新的 Server 物件。"
           }
         }
       }
     },
     "CoreData_UserCreateFailed" : {
-      "extractionState" : "manual",
+      "comment" : "Failed to create a new User object.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -4145,7 +3840,7 @@
       }
     },
     "CoreDataFetch_AlbumCreateFailed" : {
-      "extractionState" : "manual",
+      "comment" : "Failed to create a new Album object.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -4347,7 +4042,7 @@
       }
     },
     "CoreDataFetch_AlbumMissingData" : {
-      "extractionState" : "manual",
+      "comment" : "Found and will discard an album missing a valid ID or name.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -4447,109 +4142,8 @@
         }
       }
     },
-    "CoreDataFetch_DigestError" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تعذر استيعاب البياتات التي تم جلبها."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kunne ikke hente data."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Konnte die abgerufenen Daten nicht verarbeiten."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Could not digest the fetched data."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No se han podido procesar los datos obtenidos."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Impossible de digérer les données récupérées."
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Értelmezhetetlen a letöltött adat."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Could not digest the fetched data."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Impossibile digerire i dati recuperati."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "取得データを要約できませんでした。"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kon de opgehaalde gegevens niet verwerken."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nie można przetworzyć pobranych danych."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Не удалось обработать полученные данные."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kunde inte sammanfatta den hämtade datan."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "无法解析获取到的数据"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無法讀取接收到的資料。"
-          }
-        }
-      }
-    },
     "CoreDataFetch_ImageCreateFailed" : {
-      "extractionState" : "manual",
+      "comment" : "Failed to create a new Image object.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -4650,8 +4244,7 @@
       }
     },
     "CoreDataFetch_ImageError" : {
-      "comment" : "MARK: -- Image objects",
-      "extractionState" : "manual",
+      "comment" : "Fetch photos/videos error!",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -4752,7 +4345,7 @@
       }
     },
     "CoreDataFetch_ImageMissingData" : {
-      "extractionState" : "manual",
+      "comment" : "Found and will discard a photo/video missing a valid ID or URL.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -4858,7 +4451,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to create a new Location object."
+            "value" : "فشل إنشاء كائن ”الموقع“ الجديد."
           }
         },
         "da" : {
@@ -4912,13 +4505,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to create a new Location object."
+            "value" : "新しいLocationオブジェクトの作成に失敗しました。"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to create a new Location object."
+            "value" : "Het is niet gelukt om een nieuw Location-object aan te maken."
           }
         },
         "pl" : {
@@ -4948,7 +4541,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to create a new Location object."
+            "value" : "無法建立新的位置物件。"
           }
         }
       }
@@ -4959,7 +4552,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Found and will discard a location missing a valid identifier."
+            "value" : "تم العثور على موقع يفتقر إلى معرّف صالح وسيتم تجاهله."
           }
         },
         "da" : {
@@ -5013,13 +4606,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Found and will discard a location missing a valid identifier."
+            "value" : "有効な識別子がない場所が見つかった場合は、それを破棄します。"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Found and will discard a location missing a valid identifier."
+            "value" : "Er is een locatie gevonden zonder geldige identificatiecode; deze wordt verwijderd."
           }
         },
         "pl" : {
@@ -5049,13 +4642,13 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Found and will discard a location missing a valid identifier."
+            "value" : "若發現位置缺少有效的識別碼，將予以捨棄。"
           }
         }
       }
     },
     "CoreDataFetch_TagCreateFailed" : {
-      "extractionState" : "manual",
+      "comment" : "Failed to create a new Tag object.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -5156,8 +4749,7 @@
       }
     },
     "CoreDataFetch_TagError" : {
-      "comment" : "MARK: -- Tag objects",
-      "extractionState" : "manual",
+      "comment" : "Fetch tags error!",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -5258,7 +4850,7 @@
       }
     },
     "CoreDataFetch_TagMissingData" : {
-      "extractionState" : "manual",
+      "comment" : "Found and will discard a tag missing a valid code or name.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -5519,13 +5111,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to delete an Upload object."
+            "value" : "アップロードオブジェクトの削除に失敗しました。"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to delete an Upload object."
+            "value" : "Het verwijderen van een Upload-object is mislukt."
           }
         },
         "pl" : {
@@ -5555,13 +5147,13 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to delete an Upload object."
+            "value" : "無法刪除上傳物件。"
           }
         }
       }
     },
     "CoreDataFetch_UploadMissingAsset" : {
-      "extractionState" : "manual",
+      "comment" : "Failed to retrieve photo",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -5667,7 +5259,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Found and will discard an upload missing a valid identifier."
+            "value" : "تم العثور على ملف تم تحميله يفتقر إلى معرّف صالح، وسيتم تجاهله."
           }
         },
         "da" : {
@@ -5721,7 +5313,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Found and will discard an upload missing a valid identifier."
+            "value" : "有効な識別子が欠落しているアップロードが見つかった場合、それを破棄します。"
           }
         },
         "nl" : {
@@ -5757,14 +5349,13 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Found and will discard an upload missing a valid identifier."
+            "value" : "若發現上傳檔案缺少有效識別碼，系統將予以刪除。"
           }
         }
       }
     },
     "CoreDataFetch_UserMissingData" : {
-      "comment" : "MARK: -- User objects",
-      "extractionState" : "manual",
+      "comment" : "Will discard a user account missing a valid username.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -5865,7 +5456,7 @@
       }
     },
     "CoreDataFetch_UserUnknownStatus" : {
-      "extractionState" : "manual",
+      "comment" : "Failed to get Community extension parameters.\nTry logging in again.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -5965,406 +5556,103 @@
         }
       }
     },
-    "Counter" : {
-      "comment" : "Counter",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "العداد"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tæller"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zähler"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Counter"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Contador"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Compteur"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Számláló"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Counter"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Contatore"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "カウンター"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Teller"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Licznik"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Счетчик"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Räknare"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "计数器"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "計數器"
-          }
-        }
-      }
-    },
     "downloadImageFail_title" : {
       "comment" : "Download Fail",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "أخفق التنزيل"
+            "value" : "سيتم تجاهل حساب المستخدم الذي يفتقر إلى اسم مستخدم صالح."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hentning Mislykkedes"
+            "value" : "Vil kassere en brugerkonto mangler et gyldigt brugernavn."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Herunterladen fehlgeschlagen"
+            "value" : "Verwirft ein Benutzerkonto ohne gültigen Benutzernamen."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Download Failed"
+            "value" : "Will discard a user account missing a valid username."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Error al descargar"
+            "value" : "Se descartará una cuenta de usuario que no tiene un nombre de usuario válido."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Echec du téléchargement"
+            "value" : "Jettera un compte utilisateur manquant un nom d'utilisateur valide."
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A letöltés nem sikerült"
+            "value" : "Elveti az érvényes felhasználónév nélküli felhasználói fiókokat."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gagal Mengunduh"
+            "value" : "Will discard a user account missing a valid username."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Download non riuscito"
+            "value" : "Scarta un account utente mancante di un nome utente valido."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ダウンロードに失敗しました"
+            "value" : "有効なユーザー名がないユーザーアカウントは破棄されます。"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Download mislukt"
+            "value" : "Verwijdert een gebruikersaccount en mist een geldige gebruikersnaam."
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Błąd Pobierania"
+            "value" : "Odrzuci konto użytkownika bez prawidłowej nazwy użytkownika."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Скачивание не удалось"
+            "value" : "Сбросит имя пользователя без корректного имени пользователя."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hämtning misslyckades"
+            "value" : "Kommer att kassera ett användarkonto som saknar ett giltigt användarnamn."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "下载失败"
+            "value" : "将丢弃缺少有效用户名的用户帐户。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "下載失敗"
-          }
-        }
-      }
-    },
-    "editImageDetails_dateCreation" : {
-      "comment" : "Creation Date",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تاريخ الإنشاء"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oprettelsesdato"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aufnahmedatum"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Creation Date"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fecha de creación"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Date de création"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Létrehozás dátuma"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Creation Date"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Data di creazione"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "作成日"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aanmaakdatum"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Data Utworzenia"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Дата создания"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skapat den"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "创建日期"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "建立日期"
-          }
-        }
-      }
-    },
-    "editImageDetails_timeCreation" : {
-      "comment" : "Creation Time",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "وقت الإنشاء"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oprettelsestid"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erstellungszeit"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Creation Time"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hora de creación"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Heure de création"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Létrehozás ideje"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Creation Time"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tempo di creazione"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " 作成時刻"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tijd van creatie"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Czas utworzenia"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Время создания"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skapelsetid"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "创建时间"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "建立時間"
+            "value" : "會拋棄無效使用者名稱的帳號。"
           }
         }
       }
@@ -6470,107 +5758,6 @@
         }
       }
     },
-    "errorHUD_label" : {
-      "comment" : "Error",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "خطأ"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fejl"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fehler"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Error"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Error"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erreur"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hiba"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kesalahan"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Errore"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "エラー！"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fout"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Błąd"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ошибка"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fel"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "错误"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "錯誤"
-          }
-        }
-      }
-    },
     "imageFormat_error" : {
       "comment" : "Photo file format not supported.",
       "localizations" : {
@@ -6672,816 +5859,8 @@
         }
       }
     },
-    "imageUploadError_format" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تنسيق الملف غير مقبول من قبل خادم Piwigo."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Filformat ikke accepteret af Piwigo server."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dateiformat vom Piwigo-Server nicht akzeptiert."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "File format not accepted by Piwigo server."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Formato de archivo no aceptado por el servidor Piwigo."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Format de fichier non accepté par le serveur Piwigo."
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ezt a formátumot nem fogadja el a Piwigo szerver."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "File format not accepted by Piwigo server."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Formato di file non accettato dal server Piwigo."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Piwigoサーバーでは受け付けられないファイル形式です。"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bestandsindeling niet geaccepteerd door de Piwigo-server."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Format pliku nie został zaakceptowany przez serwer Piwigo."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Формат файла не принят сервером Piwigo."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Filformatet accepteras inte av Piwigo server."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Piwigo服务器不支持这个文件格式"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Piwigo不支援此格式。"
-          }
-        }
-      }
-    },
-    "imageUploadProgressBar_completed" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اكتملت"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fuldført"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abgeschlossen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Completed"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terminado"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terminé"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Befejezve"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Selesai"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Completato"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完了しました"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Klaar"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zakończono"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Выполнено"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Klart"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完成"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完成"
-          }
-        }
-      }
-    },
-    "imageUploadTableCell_finishing" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "التشطيب..."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Afslutter..."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beenden..."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Finishing..."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terminando..."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Finalisation..."
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Már csak pár pillanat..."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Finishing..."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Finitura..."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完了しています..."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Afronden..."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kończenie..."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Завершение..."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Slutför..."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "结束中..."
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "結束中..."
-          }
-        }
-      }
-    },
-    "imageUploadTableCell_prepared" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "جاهز للتحميل..."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Klar til upload..."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bereit zum Upload..."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ready for upload..."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Listo para subir..."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prêt pour le transfert…"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feltöltésre kész..."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ready for upload..."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pronto per il caricamento..."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アップロードの準備ができました..."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Klaar voor upload..."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gotowy do przesłania..."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Готово к загрузке..."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Redo för uppladdning..."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已准备好上传..."
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已經準備好上傳..."
-          }
-        }
-      }
-    },
-    "imageUploadTableCell_preparing" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "التحضير..."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Forbereder..."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vorbereiten..."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Preparing..."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Preparando..."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En cours de préparation..."
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Előkészítés..."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Preparing..."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Preparazione..."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "準備中..."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Voorbereiden..."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Przygotowywanie..."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Подготовка..."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Förbereder..."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "正在准备..."
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "準備中..."
-          }
-        }
-      }
-    },
-    "imageUploadTableCell_uploaded" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تم التحميل"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uploadet"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hochgeladen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uploaded"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Subido"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Transférée"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feltöltve"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uploaded"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Caricato"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アップロード済み"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Geüpload"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Przesłane"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Загружено"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uppladdad"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已上传"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已上傳"
-          }
-        }
-      }
-    },
-    "imageUploadTableCell_uploading" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تحميل..."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uploader..."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wird hochgeladen ..."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uploading..."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Subiendo..."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Transfert..."
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feltöltés..."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mengunggah..."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Caricamento..."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アップロード中..."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bezig met uploaden..."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Przesyłanie..."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Загрузка..."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Laddar upp..."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "上传中..."
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "上傳中..."
-          }
-        }
-      }
-    },
-    "imageUploadTableCell_waiting" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الانتظار..."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Venter..."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Warten..."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Waiting..."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Esperando..."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En attente..."
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Várakozás..."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Waiting..."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Attendere..."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "待機中..."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wachten..."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oczekiwanie..."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ожидание..."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Väntar..."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "请稍等..."
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "等待中..."
-          }
-        }
-      }
-    },
     "internetErrorGeneral_broken" : {
-      "extractionState" : "manual",
+      "comment" : "Sorry, the communication was broken.\nTry logging in again.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -7582,7 +5961,7 @@
       }
     },
     "loginError_message" : {
-      "extractionState" : "manual",
+      "comment" : "The username and password don't match on the given server",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -7885,7 +6264,7 @@
       }
     },
     "PiwigoServer_emptyJSONobject" : {
-      "extractionState" : "manual",
+      "comment" : "Piwigo server did return an empty JSON object.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -7986,7 +6365,7 @@
       }
     },
     "PiwigoServer_invalidJSONobject" : {
-      "extractionState" : "manual",
+      "comment" : "Piwigo server did not return a valid JSON object.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -8098,7 +6477,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo server did not return a valid response."
+            "value" : "Piwigo-serveren returnerede ikke et gyldigt svar."
           }
         },
         "de" : {
@@ -8146,13 +6525,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo server did not return a valid response."
+            "value" : "Piwigoサーバーから有効な応答が返されませんでした。"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo server did not return a valid response."
+            "value" : "De Piwigo-server heeft geen geldig antwoord teruggestuurd."
           }
         },
         "pl" : {
@@ -8182,7 +6561,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo server did not return a valid response."
+            "value" : "Piwigo 伺服器未傳回有效的回應。"
           }
         }
       }
@@ -8390,7 +6769,7 @@
       }
     },
     "PiwigoServer_wrongJSONobject" : {
-      "extractionState" : "manual",
+      "comment" : "Could not digest JSON object returned by Piwigo server.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -8491,7 +6870,7 @@
       }
     },
     "privacyLevel_admin" : {
-      "extractionState" : "manual",
+      "comment" : "Admins",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -8592,7 +6971,7 @@
       }
     },
     "privacyLevel_adminFamily" : {
-      "extractionState" : "manual",
+      "comment" : "Admins, Family",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -8693,7 +7072,7 @@
       }
     },
     "privacyLevel_adminsFamilyFriends" : {
-      "extractionState" : "manual",
+      "comment" : "Admins, Family, Friends",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -8794,7 +7173,7 @@
       }
     },
     "privacyLevel_adminsFamilyFriendsContacts" : {
-      "extractionState" : "manual",
+      "comment" : "Admins, Family, Friends, Contacts",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -8895,7 +7274,7 @@
       }
     },
     "privacyLevel_everybody" : {
-      "extractionState" : "manual",
+      "comment" : "Everybody",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -8996,7 +7375,7 @@
       }
     },
     "serverInvalidMethodError_message" : {
-      "extractionState" : "manual",
+      "comment" : "Failed to call server method.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -9097,7 +7476,7 @@
       }
     },
     "serverMissingParamError_message" : {
-      "extractionState" : "manual",
+      "comment" : "Failed to execute server method with missing parameter.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -9198,7 +7577,7 @@
       }
     },
     "serverUnknownError_message" : {
-      "extractionState" : "manual",
+      "comment" : "Unexpected error encountered while calling server method with provided parameters.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -9904,615 +8283,6 @@
         }
       }
     },
-    "severalAlbumsCount" : {
-      "comment" : "%@ albums",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ ألبومات"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ albums"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ Alben"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ albums"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ álbumes"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ albums"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ album"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ albums"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ album"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ アルバム"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ albums"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ albumów"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ альбомов"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ album"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ 张专辑"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@個相簿"
-          }
-        }
-      }
-    },
-    "severalCommentsCount" : {
-      "comment" : "%@ comments",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ تعليقات"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ kommentarer"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ Kommentare"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ comments"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ comentarios"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ commentaires"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ megjegyzés"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ comments"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ commenti"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ 件のコメント"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ reacties"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ komentarzy"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ комментариев"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ kommentarer"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ 評論"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@個留言"
-          }
-        }
-      }
-    },
-    "severalGroupsCount" : {
-      "comment" : "%@ groups",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@المجموعات"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ grupper"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ Gruppen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ groups"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ grupos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ groupes"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ csoport"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ groups"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ gruppi"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ グループ"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ groepen"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ grup"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ группы"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ grupper"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ 个组"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@個群組"
-          }
-        }
-      }
-    },
-    "severalImagesCount" : {
-      "comment" : "%@ photos",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ الصور"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ billeder"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ Fotos"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ photos"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ fotos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ photos"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ fotó"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ photos"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ foto"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ 枚の写真"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ foto's"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ zdjęć"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ фото"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ foton"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ 张照片"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@張照片"
-          }
-        }
-      }
-    },
-    "severalTagsCount" : {
-      "comment" : "%@ tags",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ العلامات"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ tags"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ Tags"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ tags"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ etiquetas"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ tags"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ címke"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ tags"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ tag"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ タグ"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ labels"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ tagów"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ тегов"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ taggar"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ 个标签"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@個標籤"
-          }
-        }
-      }
-    },
-    "severalUsersCount" : {
-      "comment" : "%@ users",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ المستخدمين"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ brugere"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ Benutzer"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ users"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ usuarios"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ utilisateurs"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ felhasználó"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ users"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ utenti"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ ユーザー"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ gebruikers"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ użytkowników"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ пользователей"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ användare"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ 位用户"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@個用戶"
-          }
-        }
-      }
-    },
     "shareMetadataError_message" : {
       "comment" : "Cannot strip private metadata",
       "localizations" : {
@@ -10610,615 +8380,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "無法刪除私人中繼資料"
-          }
-        }
-      }
-    },
-    "singleAlbumCount" : {
-      "comment" : "%@ album",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ الألبوم"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ album"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ Album"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ album"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ álbum"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ album"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ album"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ album"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ album"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ アルバム"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ album"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ album"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ альбом"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ album"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ 相簿"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@個相簿"
-          }
-        }
-      }
-    },
-    "singleCommentCount" : {
-      "comment" : "%@ comment",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ تعليق"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ kommentar"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ Kommentar"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ comment"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ comentario"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ commentaire"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ megjegyzés"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ comment"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ commento"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ 件のコメント"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ reactie"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ komentarz"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ комментарий"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ kommentar"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ 条评论"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@個留言"
-          }
-        }
-      }
-    },
-    "singleGroupCount" : {
-      "comment" : "%@ group",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ المجموعة"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ gruppe"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ Gruppe"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ group"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ grupo"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ groupe"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ csoport"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ group"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ gruppo"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ グループ"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ groep"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ grupa"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ группа"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ grupp"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ 个组"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@個群組"
-          }
-        }
-      }
-    },
-    "singleImageCount" : {
-      "comment" : "%@ photo",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ صورة فوتوغرافية"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ billede"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ Foto"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ photo"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ foto"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ photo"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ fotó"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ photo"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ foto"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ 写真"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ foto"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ zdjęcie"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ фото"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ foto"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ 张照片"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@張照片"
-          }
-        }
-      }
-    },
-    "singleTagCount" : {
-      "comment" : "%@ tag",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ العلامة"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ tag"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ Tag"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ tag"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ etiqueta"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ tag"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ címke"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ tag"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ tag"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ タグ"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ label"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ tag"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ тег"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ tagg"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ 个标签"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@個標籤"
-          }
-        }
-      }
-    },
-    "singleUserCount" : {
-      "comment" : "%@ user",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ المستخدم"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ bruger"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ Benutzer"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ user"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ usuario"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ utilisateur"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ felhasználó"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ user"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ utente"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ ユーザー"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ gebruiker"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ użytkownik"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ пользователь"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ användare"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ 位用户"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@個用戶"
           }
         }
       }
@@ -11324,109 +8485,8 @@
         }
       }
     },
-    "Text" : {
-      "comment" : "Text",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "النص"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tekst"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Text"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Text"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Texto"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Texte"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Szöveg"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Text"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Testo"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "テキスト"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tekst"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tekst"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Текст"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Text"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "文本"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "文字"
-          }
-        }
-      }
-    },
     "thumbnailSizeLarge" : {
-      "extractionState" : "manual",
+      "comment" : "Large",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -11527,7 +8587,7 @@
       }
     },
     "thumbnailSizeMedium" : {
-      "extractionState" : "manual",
+      "comment" : "Medium",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -11628,7 +8688,7 @@
       }
     },
     "thumbnailSizeSmall" : {
-      "extractionState" : "manual",
+      "comment" : "Small",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -11729,7 +8789,7 @@
       }
     },
     "thumbnailSizeSquare" : {
-      "extractionState" : "manual",
+      "comment" : "Square",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -11830,7 +8890,7 @@
       }
     },
     "thumbnailSizeThumbnail" : {
-      "extractionState" : "manual",
+      "comment" : "Thumbnail",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -11931,7 +8991,7 @@
       }
     },
     "thumbnailSizexFullRes" : {
-      "extractionState" : "manual",
+      "comment" : "Full Resolution",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -12032,7 +9092,7 @@
       }
     },
     "thumbnailSizeXLarge" : {
-      "extractionState" : "manual",
+      "comment" : "Extra Large",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -12133,7 +9193,7 @@
       }
     },
     "thumbnailSizeXSmall" : {
-      "extractionState" : "manual",
+      "comment" : "Extra Small",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -12234,7 +9294,7 @@
       }
     },
     "thumbnailSizeXXLarge" : {
-      "extractionState" : "manual",
+      "comment" : "Huge",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -12335,7 +9395,7 @@
       }
     },
     "thumbnailSizeXXSmall" : {
-      "extractionState" : "manual",
+      "comment" : "Tiny",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -12738,309 +9798,6 @@
         }
       }
     },
-    "uploadSection_impossible" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "التحميلات المستحيلة"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Umulige Uploads"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unmögliche Uploads"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Impossible Uploads"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Subidas imposibles"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Transferts impossibles"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nem feltölthető"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Impossible Uploads"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Caricamenti Impossibili"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "不可なアップロード"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Onmogelijke uploads"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Przesyłania niemożliwe"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Загрузки невозможны"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Omöjliga uppladdningar"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "无法完成的上传任务"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無法上傳"
-          }
-        }
-      }
-    },
-    "uploadSection_queue" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "قائمة انتظار التحميل"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uploads Kø"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Upload-Warteschlange"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Upload Queue"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cola de subidas"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "File d'attente des transferts"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Feltöltési sor"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Upload Queue"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uploads Coda"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アップロードキュー"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uploads wachtrij"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kolejka przesyłania"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Очередь загрузок"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uppladdningar kö"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "上传队列"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "上傳隊列"
-          }
-        }
-      }
-    },
-    "uploadSection_resumable" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "التحميلات القابلة للاستئناف"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Genoptagelige Uploads"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fortsetzbare Uploads"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Resumable Uploads"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Subidas reanudables"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Transferts réamorçables"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Folytatható feltöltés"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Resumable Uploads"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Caricamenti Riutilizzabili"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "再開可能なアップロード"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Herzienbare Uploads"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Przesyłania do wznowienia"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Возобновляемые загрузки"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Återuppladdningsbara uppladdningar"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "可继续的上传任务"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "可回復的上傳"
-          }
-        }
-      }
-    },
     "videoFormat_error" : {
       "comment" : "Video file format not supported.",
       "localizations" : {
@@ -13143,5 +9900,5 @@
       }
     }
   },
-  "version" : "1.1"
+  "version" : "1.2"
 }

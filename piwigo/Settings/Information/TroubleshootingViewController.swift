@@ -10,6 +10,8 @@ import Foundation
 import OSLog
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 import PwgUploadKit
 
 class TroubleshootingViewController: UIViewController {

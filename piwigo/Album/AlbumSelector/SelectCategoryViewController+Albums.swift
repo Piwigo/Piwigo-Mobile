@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 extension SelectCategoryViewController
 {
@@ -26,7 +28,7 @@ extension SelectCategoryViewController
         Task {
             do {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Move album
                 try await JSONManager.shared.move(self.inputAlbum.pwgID, intoAlbumWithId: parentData.pwgID)
@@ -36,9 +38,11 @@ extension SelectCategoryViewController
 
                 // Fetch album data recursively
                 let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                try await AlbumProvider().fetchAlbums(forUserWithAdminRights: user.hasAdminRights,
-                                                      inParentWithId: pwgSmartAlbum.root.rawValue, recursively: true,
-                                                      thumbnailSize: thumnailSize)
+                let pwgData = try await JSONManager.shared.fetchAlbums(forUserWithAdminRights: user.hasAdminRights,
+                                                                       inParentWithId: pwgSmartAlbum.root.rawValue,
+                                                                       recursively: true, thumbnailSize: thumnailSize)
+                // Update cache
+                try AlbumProvider().importAlbums(pwgData, inParent: pwgSmartAlbum.root.rawValue)
                 
                 // Remove current album from list of album being fetched
                 AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.root.rawValue)
@@ -78,10 +82,10 @@ extension SelectCategoryViewController
         Task {
             do {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Set album representative
-                try await JSONManager.shared.setRepresentative(albumData, with: imageData)
+                try await JSONManager.shared.setRepresentative(ofAlbumWithID: albumData.pwgID, withImageID: imageData.pwgID)
                 
                 // Update cache and UI
                 await MainActor.run { [self] in

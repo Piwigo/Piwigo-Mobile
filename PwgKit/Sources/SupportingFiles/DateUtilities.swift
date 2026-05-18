@@ -65,7 +65,7 @@ public struct DateUtilities: Sendable
     
     // Return corresponding time interval since 00:00:00 UTC on 1 January 2001
     // if the converted date is after 00:00:00 UTC on 8 January 1900
-    static func timeInterval(from dateStr: String?) -> TimeInterval? {
+    public static func timeInterval(from dateStr: String?) -> TimeInterval? {
         // Convert Piwigo string to date
         // Since Xcode 16.4, the date format "forgets" the time components of the date format.
         // pwgDateFormatter.dateFormat = Optional(\"yyyy-MM-dd HH:mm:ss\") becomes Optional(\"yyyy-MM-dd\").

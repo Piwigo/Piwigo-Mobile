@@ -1,6 +1,6 @@
 //
 //  UploadManager+Prepare.swift
-//  piwigoKit
+//  PwgUploadKit
 //
 //  Created by Eddy Lelièvre-Berna on 23/02/2023.
 //  Copyright © 2023 Piwigo.org. All rights reserved.
@@ -11,6 +11,7 @@ import CoreData
 import Foundation
 import Photos
 import PwgKit
+import PwgCacheKit
 
 @UploadManagerActor
 extension UploadManager
@@ -192,13 +193,13 @@ extension UploadManager
             uploadData.fileName = filename
             
             // Chek that the image format is accepted by the Piwigo server
-            if NetworkVars.shared.serverFileTypes.contains(fileExt) {
+            if ServerVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
                 try await prepareImage(atURL: fileURL, for: &uploadData)
             }
             
             // Try to convert image if JPEG format is accepted by Piwigo server
-            if NetworkVars.shared.serverFileTypes.contains("jpg"),
+            if ServerVars.shared.serverFileTypes.contains("jpg"),
                acceptedImageExtensions.contains(fileExt) {
                 // Try conversion to JPEG
                 try await convertImage(atURL: fileURL, for: &uploadData)
@@ -216,13 +217,13 @@ extension UploadManager
             uploadData.fileName = filename
             
             // Chek that the video format is accepted by the Piwigo server
-            if NetworkVars.shared.serverFileTypes.contains(fileExt) {
+            if ServerVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
                 try await prepareVideo(atURL: fileURL, for: &uploadData)
             }
             
             // Convert video if MP4 format is accepted by Piwigo server
-            if NetworkVars.shared.serverFileTypes.contains("mp4"),
+            if ServerVars.shared.serverFileTypes.contains("mp4"),
                acceptedMovieExtensions.contains(fileExt) {
                 // Try conversion to MP4
                 try await convertVideo(atURL: fileURL, for: &uploadData)
@@ -267,14 +268,14 @@ extension UploadManager
             let fileExt = (URL(fileURLWithPath: uploadData.fileName).pathExtension).lowercased()
             
             // Chek that the image format is accepted by the Piwigo server
-            if NetworkVars.shared.serverFileTypes.contains(fileExt) {
+            if ServerVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
                 try await prepareImage(atURL: fileURL, for: &uploadData)
                 return true
             }
             
             // Convert image if JPEG format is accepted by Piwigo server
-            if NetworkVars.shared.serverFileTypes.contains("jpg"),
+            if ServerVars.shared.serverFileTypes.contains("jpg"),
                acceptedImageExtensions.contains(fileExt) {
                 // Try conversion to JPEG
                 try await convertImage(atURL: fileURL, for: &uploadData)
@@ -301,14 +302,14 @@ extension UploadManager
             
             // Chek that the video format is accepted by the Piwigo server
             /// NB: Not possible to extract AVAsset with async/await methods as of iOS 26.2
-            if NetworkVars.shared.serverFileTypes.contains(fileExt) {
+            if ServerVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
                 prepareVideo(ofAsset: originalAsset, atURL: outputURL, for: uploadData, withID: uploadID, inTaskType: taskType)
                 return false
             }
             
             // Convert video if MP4 format is accepted by Piwigo server
-            if NetworkVars.shared.serverFileTypes.contains("mp4"),
+            if ServerVars.shared.serverFileTypes.contains("mp4"),
                acceptedMovieExtensions.contains(fileExt) {
                 // Try conversion to MP4
                 convertVideo(ofAsset: originalAsset, atURL: outputURL, for: uploadData, withID: uploadID, inTaskType: taskType)

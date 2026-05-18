@@ -9,6 +9,7 @@
 import Foundation
 import MessageUI
 import PwgKit
+import PwgCacheKit
 import PwgUploadKit
 
 // MARK: - SelectedPrivacyDelegate Methods

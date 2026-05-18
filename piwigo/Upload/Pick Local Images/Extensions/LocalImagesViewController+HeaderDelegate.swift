@@ -8,6 +8,7 @@
 
 import UIKit
 import PwgKit
+import PwgCacheKit
 
 // MARK: LocalImagesHeaderDelegate Methods
 extension LocalImagesViewController: LocalImagesHeaderDelegate

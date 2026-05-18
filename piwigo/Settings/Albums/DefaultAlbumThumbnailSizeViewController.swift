@@ -10,6 +10,7 @@
 
 import UIKit
 import PwgKit
+import PwgCacheKit
 
 protocol DefaultAlbumThumbnailSizeDelegate: NSObjectProtocol {
     func didSelectAlbumDefaultThumbnailSize(_ thumbnailSize: pwgImageSize)
@@ -30,7 +31,7 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController {
         super.viewDidLoad()
         
         // Title
-        title = String(localized: "tabBar_albums", bundle: .piwigoKit, comment: "Albums")
+        title = String(localized: "tabBar_albums", bundle: .pwgKit, comment: "Albums")
 
         // Table view
         tableView?.accessibilityIdentifier = "Album Thumbnail Size"

@@ -9,8 +9,9 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgAPIKit
 
-class JsonViewController: UIViewController {
+final class JsonViewController: UIViewController {
     
     @IBOutlet weak var method: UILabel!
     @IBOutlet weak var dateTime: UILabel!

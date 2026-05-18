@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import PwgCacheKit
 
 // MARK: - UITableViewDelegate Methods
 extension TimeFormatSelectorViewController: UITableViewDelegate

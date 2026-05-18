@@ -8,6 +8,8 @@
 
 import MessageUI
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 extension SettingsViewController: UITableViewDelegate
 {
@@ -19,18 +21,18 @@ extension SettingsViewController: UITableViewDelegate
         case .server:
             title = String(format: "%@ %@",
                            NSLocalizedString("settingsHeader_server", comment: "Piwigo Server"),
-                           NetworkVars.shared.pwgVersion)
-            if (NetworkVars.shared.serverProtocol == "http://") {
+                           ServerVars.shared.pwgVersion)
+            if (ServerVars.shared.serverProtocol == "http://") {
                 title += "\n"
                 text = NSLocalizedString("settingsHeader_notSecure", comment: "Website Not Secure!")
             }
-            if NetworkVars.shared.pwgVersion.compare(pwgRecentVersion, options: .numeric) == .orderedAscending {
+            if ServerVars.shared.pwgVersion.compare(pwgRecentVersion, options: .numeric) == .orderedAscending {
                 if !title.contains("\n") { title += "\n" }
                 if !text.isEmpty { text += " — " }
                 text += NSLocalizedString("serverVersionOld_title", comment: "Server Update Available")
             }
         case .albums:
-            title = String(localized: "tabBar_albums", bundle: .piwigoKit, comment: "Albums")
+            title = String(localized: "tabBar_albums", bundle: .pwgKit, comment: "Albums")
         case .images:
             title = NSLocalizedString("severalImages", comment: "Images")
         case .videos:
@@ -182,16 +184,16 @@ extension SettingsViewController: UITableViewDelegate
         var footer = ""
         switch activeSection(section) {
         case .logout:
-            if NetworkVars.shared.serverFileTypes.isEmpty == false {
+            if ServerVars.shared.serverFileTypes.isEmpty == false {
                 if #available(iOS 16.0, *) {
-                    footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(NetworkVars.shared.serverFileTypes.replacing(",", with: ", "))."
+                    footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(ServerVars.shared.serverFileTypes.replacing(",", with: ", "))."
                 } else {
                     // Fallback on earlier versions
-                    footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(NetworkVars.shared.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
+                    footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(ServerVars.shared.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
                 }
             }
         case .about:
-            footer = NetworkVars.shared.pwgStatistics
+            footer = ServerVars.shared.pwgStatistics
         default:
             footer = ""
         }

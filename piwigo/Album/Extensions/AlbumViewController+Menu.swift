@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgCacheKit
 
 // MARK: - Contextual Menu
 extension AlbumViewController {

@@ -1,6 +1,6 @@
 //
 //  UploadManager+Foreground.swift
-//  piwigoKit
+//  PwgUploadKit
 //
 //  Created by Eddy Lelièvre-Berna on 20/02/2023.
 //  Copyright © 2023 Piwigo.org. All rights reserved.
@@ -10,6 +10,7 @@ import CoreData
 import Foundation
 import Photos
 import PwgKit
+import PwgCacheKit
 
 @UploadManagerActor
 extension UploadManager
@@ -18,7 +19,7 @@ extension UploadManager
     public func resumeInForeground() async
     {
         // Wait until fix and background tasks are completed
-        guard NetworkVars.shared.fixUserIsAPIKeyV412 == false,
+        guard ServerVars.shared.fixUserIsAPIKeyV412 == false,
               UploadVars.shared.didResumeUploads == false,
               UploadVars.shared.isProcessingTaskActive == false,
               UploadVars.shared.isContinuedProcessingTaskActive == false

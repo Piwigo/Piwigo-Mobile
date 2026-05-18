@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgCacheKit
 
 // MARK: - UITableViewDataSource Methods
 extension EditImageParamsViewController: UITableViewDataSource
@@ -170,7 +171,7 @@ extension EditImageParamsViewController: UITableViewDataSource
             
             // Piwigo manages HTML descriptions since v14.0
             // So we disable the editor to prevent a mess when the description contains HTML if needed.
-            if NetworkVars.shared.pwgVersion.compare("14.0", options: .numeric) == .orderedAscending,
+            if ServerVars.shared.pwgVersion.compare("14.0", options: .numeric) == .orderedAscending,
                commonComment.containsHTML {
                 cell.textView.isEditable = false
             } else {

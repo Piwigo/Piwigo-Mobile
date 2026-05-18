@@ -11,6 +11,8 @@
 import CoreData
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 @objc protocol EditImageParamsDelegate: NSObjectProtocol {
     func didDeselectImage(withID imageID: Int64)
@@ -303,8 +305,8 @@ class EditImageParamsViewController: UIViewController
         Task {
             do {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
-                                                          lastConnected: self.user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID,
+                                                        lastConnected: self.user.lastUsed)
                 
                 // Update image properties
                 self.updateImageProperties(fromIndex: index)
@@ -406,7 +408,7 @@ class EditImageParamsViewController: UIViewController
         /// token required for updating HTML in title/comment
         if shouldUpdateComment {
             paramsDict["comment"] = commonComment.utf8mb3Encoded
-            paramsDict["pwg_token"] = NetworkVars.shared.pwgToken
+            paramsDict["pwg_token"] = ServerVars.shared.pwgToken
         }
         
         return paramsDict

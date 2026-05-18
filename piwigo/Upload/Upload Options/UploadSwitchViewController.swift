@@ -9,6 +9,7 @@
 import UIKit
 import CoreData
 import PwgKit
+import PwgCacheKit
 import PwgUploadKit
 
 @objc protocol UploadSwitchDelegate: NSObjectProtocol {

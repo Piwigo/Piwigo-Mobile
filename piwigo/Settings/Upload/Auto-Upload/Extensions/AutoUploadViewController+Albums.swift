@@ -7,6 +7,7 @@
 //
 
 import PwgKit
+import PwgCacheKit
 
 // MARK: - LocalAlbumsSelectorDelegate Methods
 extension AutoUploadViewController: LocalAlbumsSelectorDelegate {

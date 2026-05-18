@@ -11,6 +11,8 @@
 import UIKit
 import CoreData
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 protocol TagSelectorViewDelegate: NSObjectProtocol {
     func pushTaggedImagesView(_ viewController: UIViewController)
@@ -46,7 +48,7 @@ class TagSelectorViewController: UIViewController {
     var searchQuery = ""
     lazy var predicate: NSPredicate = {
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "server.path == %@", ServerVars.shared.serverPath))
         andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", 0))
         andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", Int64.max))
         andPredicates.append(NSPredicate(format: "tagName LIKE[c] $query"))
@@ -161,10 +163,13 @@ class TagSelectorViewController: UIViewController {
         Task.detached {
             do {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
-                                                          lastConnected: self.user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID,
+                                                        lastConnected: self.user.lastUsed)
                 // Fetch tag data
-                try await TagProvider().fetchTags(asAdmin: false)
+                let tagData = try await JSONManager.shared.fetchTags(asAdmin: false)
+                
+                // Update tag data in cache
+                try TagProvider().importTags(from: tagData, asAdmin: false)
                 
                 // Close HUD
                 await MainActor.run { [self] in
@@ -265,8 +270,8 @@ extension TagSelectorViewController: UITableViewDelegate
         let nberOfTags = (tags.fetchedObjects ?? []).count
         let nberAsStr = numberFormatter.string(from: NSNumber(value: nberOfTags)) ?? "0"
         let footer = nberOfTags > 1 ?
-        String(format: String(localized: "severalTagsCount", bundle: .piwigoKit, comment: "%@ tags"), nberAsStr) :
-        String(format: String(localized: "singleTagCount", bundle: .piwigoKit, comment: "%@ tag"), nberAsStr)
+        String(format: String(localized: "severalTagsCount", bundle: .pwgAPIKit, comment: "%@ tags"), nberAsStr) :
+        String(format: String(localized: "singleTagCount", bundle: .pwgAPIKit, comment: "%@ tag"), nberAsStr)
         return footer
     }
     

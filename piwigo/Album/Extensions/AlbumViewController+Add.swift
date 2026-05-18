@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 extension AlbumViewController
 {
@@ -108,6 +110,11 @@ extension AlbumViewController
     @MainActor
     func addCategory(withName albumName: String, andComment albumComment: String,
                      inParent albumData: Album) {
+        // Prepare set of parent IDs before creating album (including root album)
+        let hasAdminRights = user.hasAdminRights
+        let parentIDs = Set(albumData.upperIds.components(separatedBy: ",")
+            .compactMap({Int32($0)})).filter({$0 != albumData.pwgID}).union(Set([pwgSmartAlbum.root.rawValue]))
+        
         // Display HUD during the update
         showHUD(withTitle: NSLocalizedString("createNewAlbumHUD_label", comment: "Creating Album…"))
 
@@ -115,31 +122,32 @@ extension AlbumViewController
         Task {
             do {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Create album
                 let newCatId = try await JSONManager.shared.create(withName: albumName, description: albumComment,
                                                                    status: "public", inAlbumWithId: albumData.pwgID)
                 
-                // Album successfully created ▶ Add new album to cache and update parent albums
-                if AlbumVars.shared.isFetchingAlbumData.isEmpty
-                {
-                    // Remember that the app is fetching all album data
-                    AlbumVars.shared.isFetchingAlbumData.insert(pwgSmartAlbum.root.rawValue)
+                // Update parent album data
+                let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+                for parentID in parentIDs {
+                    // Don't fetch an album already being fetched
+                    if AlbumVars.shared.isFetchingAlbumData.contains(parentID) { continue }
                     
+                    // Remember that the app is fetching album data
+                    AlbumVars.shared.isFetchingAlbumData.insert(parentID)
+
                     // Fetch album data recursively
-                    let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                    try await AlbumProvider().fetchAlbums(forUserWithAdminRights: user.hasAdminRights,
-                                                          inParentWithId: pwgSmartAlbum.root.rawValue, recursively: true,
-                                                          thumbnailSize: thumnailSize)
+                    let pwgData = try await JSONManager.shared.fetchAlbums(forUserWithAdminRights: hasAdminRights,
+                                                                           inParentWithId: parentID,
+                                                                           thumbnailSize: thumnailSize)
+                    // Update cache
+                    try AlbumProvider().importAlbums(pwgData, inParent: parentID)
                     
-                    // Remove current album from list of album being fetched
-                    AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.root.rawValue)
-                    
-                    // Remember when album data was fetched recursively
-                    AppVars.shared.dateOfLatestRecursiveAlbumDataFetch = Date()
+                    // Remove album from list of albums being fetched
+                    AlbumVars.shared.isFetchingAlbumData.remove(parentID)
                 }
-                
+
                 // Update UI
                 await MainActor.run {
                     // Add created album to list of recently used albums

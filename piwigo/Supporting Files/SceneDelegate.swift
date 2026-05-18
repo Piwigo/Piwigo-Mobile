@@ -13,6 +13,7 @@ import LocalAuthentication
 import UIKit
 
 import PwgKit
+import PwgCacheKit
 import PwgUploadKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -229,7 +230,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         UploadVars.shared.isApplicationActive = true
         
         // Flag used to force relogin at start
-        NetworkVars.shared.applicationShouldRelogin = true
+        ServerVars.shared.applicationShouldRelogin = true
     }
     
     func sceneDidBecomeActive(_ scene: UIScene) {

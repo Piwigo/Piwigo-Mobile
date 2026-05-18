@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 class AlbumCollectionViewCell: UICollectionViewCell {
     
@@ -35,10 +37,10 @@ class AlbumCollectionViewCell: UICollectionViewCell {
 
         // If requested, display recent icon when images have been uploaded recently
         let timeSinceLastUpload = Date.timeIntervalSinceReferenceDate - (albumData?.dateLast ?? TimeInterval(-3187296000))
-        var indexOfPeriod: Int = CacheVars.shared.recentPeriodIndex
-        indexOfPeriod = min(indexOfPeriod, CacheVars.shared.recentPeriodList.count - 1)
+        var indexOfPeriod: Int = ServerVars.shared.recentPeriodIndex
+        indexOfPeriod = min(indexOfPeriod, ServerVars.shared.recentPeriodList.count - 1)
         indexOfPeriod = max(0, indexOfPeriod)
-        let periodInDays: Int = CacheVars.shared.recentPeriodList[indexOfPeriod]
+        let periodInDays: Int = ServerVars.shared.recentPeriodList[indexOfPeriod]
         let isRecent = timeSinceLastUpload < TimeInterval(24*3600*periodInDays)
         self.recentlyModified.isHidden = !isRecent
 
@@ -94,10 +96,10 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         // Constants
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = NumberFormatter.Style.decimal
-        let singleImage = String(localized: "singleImageCount", bundle: .piwigoKit, comment: "%@ photo")
-        let severalImages = String(localized: "severalImagesCount", bundle: .piwigoKit, comment: "%@ photos")
-        let singleSubAlbum = NSLocalizedString("singleSubAlbumCount", comment: "%@ sub-album")
-        let severalSubAlbums = NSLocalizedString("severalSubAlbumsCount", comment: "%@ sub-albums")
+        let singleImage = String(localized: "singleImageCount", bundle: .pwgAPIKit, comment: "%@ photo")
+        let severalImages = String(localized: "severalImagesCount", bundle: .pwgAPIKit, comment: "%@ photos")
+        let singleSubAlbum = NSLocalizedString("singleSubAlbumCount", bundle: .pwgAPIKit, comment: "%@ sub-album")
+        let severalSubAlbums = NSLocalizedString("severalSubAlbumsCount", bundle: .pwgAPIKit, comment: "%@ sub-albums")
         // Determine string
         var text = ""
         if albumData?.nbSubAlbums ?? Int32.zero == Int32.zero {

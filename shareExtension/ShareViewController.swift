@@ -10,6 +10,7 @@ import CoreData
 import UIKit
 import UniformTypeIdentifiers
 import PwgKit
+import PwgCacheKit
 import PwgUploadKit
 
 class ShareViewController: UIViewController {
@@ -32,15 +33,15 @@ class ShareViewController: UIViewController {
     var user: User!
     lazy var userUploadRights: [Int32] = {
         // Case of Community user?
-        if NetworkVars.shared.userStatus != .normal { return [] }
+        if ServerVars.shared.userStatus != .normal { return [] }
         let userUploadRights = user.uploadRights
         return userUploadRights.components(separatedBy: ",").compactMap({ Int32($0) })
     }()
     
     lazy var predicates: [NSPredicate] = {
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
         return andPredicates
     }()
     
@@ -107,10 +108,6 @@ class ShareViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Register the CategoryTableViewCell before using it
-//        categoriesTableView?.register(UINib(nibName: "CategoryTableViewCell", bundle: nil),
-//                                      forCellReuseIdentifier: "CategoryTableViewCell")
-
         // Table view identifier
         categoriesTableView?.accessibilityIdentifier = "album selector"
         categoriesTableView?.rowHeight = UITableView.automaticDimension

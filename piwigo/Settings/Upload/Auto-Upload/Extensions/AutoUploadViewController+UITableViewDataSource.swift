@@ -9,6 +9,7 @@
 import Photos
 import UIKit
 import PwgKit
+import PwgCacheKit
 import PwgUploadKit
 
 extension AutoUploadViewController: UITableViewDataSource

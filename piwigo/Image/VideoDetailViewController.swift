@@ -9,6 +9,7 @@
 import AVKit
 import UIKit
 import PwgKit
+import PwgCacheKit
 
 class VideoDetailViewController: UIViewController
 {

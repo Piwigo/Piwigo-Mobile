@@ -10,6 +10,8 @@ import CoreData
 import Foundation
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 // MARK: - Rename Album, Update Description
 class AlbumRenaming: NSObject
@@ -123,7 +125,7 @@ class AlbumRenaming: NSObject
         Task {
             do {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Update album data
                 try await JSONManager.shared.setInfos(albumData.pwgID, withName: albumName, description: albumComment)

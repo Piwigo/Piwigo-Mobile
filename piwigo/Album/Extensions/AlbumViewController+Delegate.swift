@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 // MARK: UICollectionViewDelegate Methods
 extension AlbumViewController: UICollectionViewDelegate

@@ -8,6 +8,7 @@
 
 import Foundation
 import PwgKit
+import PwgAPIKit
 
 // MARK: - Session Task Delegate
 extension UploadSessionsDelegate: URLSessionTaskDelegate {
@@ -29,8 +30,8 @@ extension UploadSessionsDelegate: URLSessionTaskDelegate {
         }
         
         // Get HTTP basic authentification credentials
-        let account = NetworkVars.shared.httpUsername
-        let password = KeychainUtilities.password(forService: NetworkVars.shared.service, account: account)
+        let account = ServerVars.shared.httpUsername
+        let password = KeychainUtilities.password(forService: ServerVars.shared.service, account: account)
         if password.isEmpty {
             completionHandler(.cancelAuthenticationChallenge, nil)
             return

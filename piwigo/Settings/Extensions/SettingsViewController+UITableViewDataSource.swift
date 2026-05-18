@@ -8,6 +8,7 @@
 
 import MessageUI
 import PwgKit
+import PwgCacheKit
 import PwgUploadKit
 
 // MARK: UITableViewDataSource Methods
@@ -87,13 +88,13 @@ extension SettingsViewController: UITableViewDataSource
             case 0:
                 // See https://iosref.com/res
                 let title = NSLocalizedString("settings_server", comment: "Address")
-                cell.configure(with: title, detail: NetworkVars.shared.service)
+                cell.configure(with: title, detail: ServerVars.shared.service)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
                 cell.accessibilityIdentifier = "server"
             
             case 1:
                 let title = NSLocalizedString("settings_username", comment: "Username")
-                let detail = NetworkVars.shared.user.isEmpty ? NSLocalizedString("settings_notLoggedIn", comment: " - Not Logged In - ") : NetworkVars.shared.user
+                let detail = ServerVars.shared.user.isEmpty ? NSLocalizedString("settings_notLoggedIn", comment: " - Not Logged In - ") : ServerVars.shared.user
                 cell.configure(with: title, detail: detail)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
                 cell.accessibilityIdentifier = "user"
@@ -106,7 +107,7 @@ extension SettingsViewController: UITableViewDataSource
         case .logout /* Login/Logout Button */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "ButtonTableViewCell", for: indexPath) as? ButtonTableViewCell
             else { preconditionFailure("Could not load ButtonTableViewCell") }
-            if NetworkVars.shared.user.isEmpty {
+            if ServerVars.shared.user.isEmpty {
                 cell.configure(with: NSLocalizedString("login", comment: "Login"))
             } else {
                 cell.configure(with: NSLocalizedString("settings_logout", comment: "Logout"))
@@ -169,21 +170,21 @@ extension SettingsViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SliderTableViewCell
                 else { preconditionFailure("Could not load SliderTableViewCell") }
                 // Slider value is the index of kRecentPeriods
-                var value:Float = Float(CacheVars.shared.recentPeriodIndex)
-                value = min(value, Float(CacheVars.shared.recentPeriodList.count - 1))
+                var value:Float = Float(ServerVars.shared.recentPeriodIndex)
+                value = min(value, Float(ServerVars.shared.recentPeriodList.count - 1))
                 value = max(0.0, value)
 
                 // Slider configuration
                 let title = NSLocalizedString("recentPeriod_title", comment: "Recent Period")
-                cell.configure(with: title, value: value, increment: Float(CacheVars.shared.recentPeriodKey),
-                               minValue: 0.0, maxValue: Float(CacheVars.shared.recentPeriodList.count - 1),
+                cell.configure(with: title, value: value, increment: Float(ServerVars.shared.recentPeriodKey),
+                               minValue: 0.0, maxValue: Float(ServerVars.shared.recentPeriodList.count - 1),
                                prefix: "", suffix: NSLocalizedString("recentPeriod_days", comment: "%@ days"))
                 cell.cellSliderBlock = { newValue in
                     // Update settings in cache
                     // Server settings will be updated when the view will disappear
                     let index = Int(newValue)
-                    if index >= 0, index < CacheVars.shared.recentPeriodList.count {
-                        CacheVars.shared.recentPeriodIndex = index
+                    if index >= 0, index < ServerVars.shared.recentPeriodList.count {
+                        ServerVars.shared.recentPeriodIndex = index
                     }
                 }
                 cell.accessibilityIdentifier = "recentPeriod"

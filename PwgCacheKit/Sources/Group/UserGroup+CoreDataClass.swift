@@ -1,0 +1,16 @@
+//
+//  Group+CoreDataClass.swift
+//  PwgCacheKit
+//
+//  Created by Eddy Lelièvre-Berna on 14/06/2025.
+//  Copyright © 2025 Piwigo.org. All rights reserved.
+//
+//
+
+import Foundation
+import CoreData
+
+@objc(UserGroup)
+public final nonisolated class UserGroup: NSManagedObject, Identifiable {
+
+}

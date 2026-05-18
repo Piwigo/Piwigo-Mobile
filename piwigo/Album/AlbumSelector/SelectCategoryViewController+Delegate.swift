@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 import PwgKit
-
+import PwgCacheKit
 
 // MARK: - UITableViewDelegate Methods
 extension SelectCategoryViewController: UITableViewDelegate
@@ -22,7 +22,7 @@ extension SelectCategoryViewController: UITableViewDelegate
             // 1st section —> Albums containing image
             if section == 0 {
                 // Title
-                title = String(format: "%@\n", String(localized: "tabBar_albums", bundle: .piwigoKit, comment: "Albums"))
+                title = String(format: "%@\n", String(localized: "tabBar_albums", bundle: .pwgKit, comment: "Albums"))
                 text = inputImages.first?.albums?.count ?? 0 > 1 ?
                 NSLocalizedString("categorySelection_one", comment:"Select one of the albums containing this image") :
                 NSLocalizedString("categorySelection_current", comment:"Select the current album for this image")
@@ -37,7 +37,7 @@ extension SelectCategoryViewController: UITableViewDelegate
                 // Do we have recent albums to show?
                 title = (recentAlbums.fetchedObjects ?? []).count > 0
                     ? NSLocalizedString("maxNberOfRecentAlbums>320px", comment: "Recent Albums")
-                    : String(localized: "tabBar_albums", bundle: .piwigoKit, comment: "Albums")
+                    : String(localized: "tabBar_albums", bundle: .pwgKit, comment: "Albums")
             } else {
                 // 2nd section
                 title = NSLocalizedString("categorySelection_allAlbums", comment: "All Albums")
@@ -263,7 +263,7 @@ extension SelectCategoryViewController: UITableViewDelegate
                     self.showHUD(withTitle: NSLocalizedString("copySingleImageHUD_copying", comment:"Copying Photo…"))
                     
                     // Copy single image to selected album
-                    if NetworkVars.shared.usesSetCategory {
+                    if ServerVars.shared.usesSetCategory {
                         self.associateImages(toAlbum: albumData)
                     } else {
                         self.copyImages(toAlbum: albumData)
@@ -289,7 +289,7 @@ extension SelectCategoryViewController: UITableViewDelegate
                     self.showHUD(withTitle: NSLocalizedString("moveSingleImageHUD_moving", comment:"Moving Photo…"))
                     
                     // Move single image to selected album
-                    if NetworkVars.shared.usesSetCategory {
+                    if ServerVars.shared.usesSetCategory {
                         self.associateImages(toAlbum: albumData, andDissociateFromPreviousAlbum: true)
                     } else {
                         self.moveImages(toAlbum: albumData)
@@ -312,10 +312,10 @@ extension SelectCategoryViewController: UITableViewDelegate
                 if confirmed {
                     // Display HUD
                     self.showHUD(withTitle: NSLocalizedString("copySeveralImagesHUD_copying", comment: "Copying Photos…"),
-                                 inMode: NetworkVars.shared.usesSetCategory ? .indeterminate : .determinate)
+                                 inMode: ServerVars.shared.usesSetCategory ? .indeterminate : .determinate)
                     
                     // Copy several images to selected album
-                    if NetworkVars.shared.usesSetCategory {
+                    if ServerVars.shared.usesSetCategory {
                         self.associateImages(toAlbum: albumData)
                     } else {
                         self.copyImages(toAlbum: albumData)
@@ -338,10 +338,10 @@ extension SelectCategoryViewController: UITableViewDelegate
                 if confirmed {
                     // Display HUD
                     self.showHUD(withTitle: NSLocalizedString("moveSeveralImagesHUD_moving", comment: "Moving Photos…"),
-                                 inMode: NetworkVars.shared.usesSetCategory ? .indeterminate : .determinate)
+                                 inMode: ServerVars.shared.usesSetCategory ? .indeterminate : .determinate)
                     
                     // Move several images to selected album
-                    if NetworkVars.shared.usesSetCategory {
+                    if ServerVars.shared.usesSetCategory {
                         self.associateImages(toAlbum: albumData, andDissociateFromPreviousAlbum: true)
                     } else {
                         self.moveImages(toAlbum: albumData)

@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 import PwgUploadKit
 
 // MARK: - Delete/Remove Image
@@ -98,7 +100,7 @@ extension ImageViewController
         Task {
             do {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Set image properties
                 try await JSONManager.shared.setInfos(with: paramsDict)
@@ -175,10 +177,10 @@ extension ImageViewController
         Task {
             do {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Delete images
-                _ = try await JSONManager.shared.delete(Set([imageData]))
+                _ = try await JSONManager.shared.deleteImages(withID: [imageData.pwgID])
                 
                 // Update cache and UI
                 await MainActor.run { [self] in

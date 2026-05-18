@@ -9,8 +9,9 @@
 import Foundation
 import ImageIO
 import MobileCoreServices
-import PwgKit
 import UIKit
+import PwgKit
+import PwgCacheKit
 
 struct ImageUtilities
 {

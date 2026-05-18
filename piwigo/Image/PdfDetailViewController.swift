@@ -10,6 +10,8 @@ import Foundation
 import PDFKit
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 protocol PdfDetailDelegate: NSObjectProtocol {
     func updateProgressView(with fractionCompleted: Float)

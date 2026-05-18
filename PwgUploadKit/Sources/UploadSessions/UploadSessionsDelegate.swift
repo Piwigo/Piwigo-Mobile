@@ -9,6 +9,7 @@
 import os
 import Foundation
 import PwgKit
+import PwgAPIKit
 
 public final class UploadSessionsDelegate: NSObject, Sendable {
     
@@ -77,7 +78,7 @@ extension UploadSessionsDelegate: URLSessionDelegate {
         // Get protection space for current domain
         let protectionSpace = challenge.protectionSpace
         guard protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
-              protectionSpace.host.contains(NetworkVars.shared.domain()) else {
+              protectionSpace.host.contains(ServerVars.shared.domain()) else {
                 completionHandler(.rejectProtectionSpace, nil)
                 return
         }
@@ -90,7 +91,7 @@ extension UploadSessionsDelegate: URLSessionDelegate {
 
         // Check validity of certificate
         if KeychainUtilities.isSSLtransactionValid(inState: serverTrust,
-                                                   for: NetworkVars.shared.domain()) {
+                                                   for: ServerVars.shared.domain()) {
             let credential = URLCredential(trust: serverTrust)
             completionHandler(.useCredential, credential)
             return
@@ -112,7 +113,7 @@ extension UploadSessionsDelegate: URLSessionDelegate {
 
         // Check if the certificate is trusted by user (i.e. is in the Keychain)
         // Case where the certificate is e.g. self-signed
-        if KeychainUtilities.isCertKnownForSSLtransaction(certificate, for: NetworkVars.shared.domain()) {
+        if KeychainUtilities.isCertKnownForSSLtransaction(certificate, for: ServerVars.shared.domain()) {
             let credential = URLCredential(trust: serverTrust)
             completionHandler(.useCredential, credential)
             return

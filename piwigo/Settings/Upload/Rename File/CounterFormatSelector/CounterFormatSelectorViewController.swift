@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgCacheKit
 
 protocol SelectCounterFormatDelegate: NSObjectProtocol {
     func didSelectCounter(currentCounter: Int64, format: String)

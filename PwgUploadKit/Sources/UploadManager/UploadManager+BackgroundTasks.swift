@@ -11,6 +11,7 @@ import CoreData
 import Foundation
 import Photos
 import PwgKit
+import PwgCacheKit
 
 @UploadManagerActor
 extension UploadManager
@@ -18,7 +19,7 @@ extension UploadManager
     // MARK: - Resume in Background Task
     public func initialiseBckgTask() async -> ([NSManagedObjectID], [NSManagedObjectID], [NSManagedObjectID]) {
         // Wait until fix completed
-        guard NetworkVars.shared.fixUserIsAPIKeyV412 == false
+        guard ServerVars.shared.fixUserIsAPIKeyV412 == false
         else { return ([],[],[]) }
         
         // Reset flags
@@ -193,7 +194,7 @@ extension UploadManager
                 // Inform that the task is stopped
                 UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' stopped: Low-Power mode is enabled.")
             }
-            else if UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi {
+            else if UploadVars.shared.wifiOnlyUploading && !ServerVars.shared.isConnectedToWiFi {
                 // Inform that the task is stopped
                 UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' stopped: Wi-Fi required, but not connected.")
             }
@@ -208,7 +209,7 @@ extension UploadManager
     private func shouldStopUploadTask() -> Bool {
         // Low-Power mode enabled? Wi-Fi required?
         return ProcessInfo.processInfo.isLowPowerModeEnabled ||
-                (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi)
+                (UploadVars.shared.wifiOnlyUploading && !ServerVars.shared.isConnectedToWiFi)
     }
     
     private func finishUploadProcessingTask() {
@@ -238,7 +239,7 @@ extension UploadManager
             UploadVars.shared.isContinuedProcessingTaskActive ||
             UploadVars.shared.isPaused ||
             ProcessInfo.processInfo.isLowPowerModeEnabled ||
-            (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
+            (UploadVars.shared.wifiOnlyUploading && !ServerVars.shared.isConnectedToWiFi) {
             return
         }
         
@@ -410,7 +411,7 @@ extension UploadManager
                                       comment: "Low power mode enabled. Please turn it off.")
                 task.updateTitle(task.title, subtitle: subtitle)
             }
-            else if UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi {
+            else if UploadVars.shared.wifiOnlyUploading && !ServerVars.shared.isConnectedToWiFi {
                 // Inform that the task is stopped
                 UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' stopped: Wi-Fi required, but not connected.")
                 let subtitle = String(localized: "backgroundTask_noWifi", bundle: .pwgUploadKit,

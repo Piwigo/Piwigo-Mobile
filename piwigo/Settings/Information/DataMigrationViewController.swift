@@ -8,6 +8,7 @@
 
 import UIKit
 import PwgKit
+import PwgCacheKit
 
 class DataMigrationViewController: UIViewController {
     

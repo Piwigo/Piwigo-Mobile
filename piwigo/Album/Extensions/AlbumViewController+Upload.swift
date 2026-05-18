@@ -10,6 +10,7 @@ import Foundation
 import Photos
 import UIKit
 import PwgKit
+import PwgCacheKit
 
 extension AlbumViewController
 {
@@ -68,7 +69,7 @@ extension AlbumViewController
               nberOfUploads > 0
         else { return }
         
-        if (!NetworkVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading) ||
+        if (!ServerVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading) ||
             ProcessInfo.processInfo.isLowPowerModeEnabled {
             if uploadQueueBarButton == nil {
                 uploadQueueBarButton = getUploadQueueBarButton(withTitle: "⚠️")!

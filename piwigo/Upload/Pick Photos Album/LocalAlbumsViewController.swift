@@ -14,6 +14,7 @@ import Photos
 import PhotosUI
 import UIKit
 import PwgKit
+import PwgCacheKit
 import PwgUploadKit
 
 protocol LocalAlbumsSelectorDelegate: NSObjectProtocol {
@@ -192,7 +193,7 @@ class LocalAlbumsViewController: UIViewController {
         if self.localAlbumsProvider.didFetchAssetCollections == false {
             self.navigationController?.showHUD(
                 withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                detail: String(localized: "tabBar_albums", bundle: .piwigoKit, comment: "Albums"), minWidth: 200)
+                detail: String(localized: "tabBar_albums", bundle: .pwgKit, comment: "Albums"), minWidth: 200)
         }
         
         // Fetch local albums in background thread
@@ -297,7 +298,7 @@ class LocalAlbumsViewController: UIViewController {
             case .presentLocalAlbum:
                 if ProcessInfo.processInfo.isLowPowerModeEnabled {
                     text += "\r\r⚠️ " + NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled") + " ⚠️"
-                } else if UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi {
+                } else if UploadVars.shared.wifiOnlyUploading && !ServerVars.shared.isConnectedToWiFi {
                     text += "\r\r⚠️ " + NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection") + " ⚠️"
                 }
                 headerView.configure(width: min(localAlbumsTableView.frame.size.width, pwgPadSettingsWidth),

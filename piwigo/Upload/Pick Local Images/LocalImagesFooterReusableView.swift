@@ -8,6 +8,7 @@
 
 import UIKit
 import PwgKit
+import PwgAPIKit
 
 class LocalImagesFooterReusableView: UICollectionReusableView {
 
@@ -29,8 +30,8 @@ class LocalImagesFooterReusableView: UICollectionReusableView {
             numberFormatter.numberStyle = .decimal
             let nberPhotos = (numberFormatter.string(from: NSNumber(value: nberOfImages)) ?? "0") as String
             nberOfImagesLabel.text = nberOfImages > 1 ?
-            String(format: String(localized: "severalImagesCount", bundle: .piwigoKit, comment: "%@ photos"), nberPhotos) :
-            String(format: String(localized: "singleImageCount", bundle: .piwigoKit, comment: "%@ photo"), nberPhotos)
+            String(format: String(localized: "severalImagesCount", bundle: .pwgAPIKit, comment: "%@ photos"), nberPhotos) :
+            String(format: String(localized: "singleImageCount", bundle: .pwgAPIKit, comment: "%@ photo"), nberPhotos)
         }
     }
 }

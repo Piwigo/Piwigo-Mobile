@@ -11,6 +11,8 @@
 import UIKit
 import CoreData
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 protocol TagsViewControllerDelegate: NSObjectProtocol {
     func didSelectTags(_ selectedTags: Set<Tag>)
@@ -39,7 +41,7 @@ class TagsViewController: UITableViewController {
     
     // MARK: - Core Data Source
     lazy var tagPredicates: [NSPredicate] = {
-        let andPredicates = [NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath)]
+        let andPredicates = [NSPredicate(format: "server.path == %@", ServerVars.shared.serverPath)]
         return andPredicates
     }()
     
@@ -184,10 +186,13 @@ class TagsViewController: UITableViewController {
         Task.detached {
             do {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
-                                                          lastConnected: self.user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID,
+                                                        lastConnected: self.user.lastUsed)
                 // Fetch tag data
-                try await TagProvider().fetchTags(asAdmin: self.user.hasAdminRights)
+                let tagData = try await JSONManager.shared.fetchTags(asAdmin: self.user.hasAdminRights)
+                
+                // Update tag data in cache
+                try await TagProvider().importTags(from: tagData, asAdmin: self.user.hasAdminRights)
                 
                 // Close HUD
                 await MainActor.run { [self] in

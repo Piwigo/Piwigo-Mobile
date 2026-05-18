@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 import PwgUploadKit
 
 extension AlbumViewController
@@ -107,7 +109,7 @@ extension AlbumViewController
                         msgHUD = toDelete.isEmpty
                         ? NSLocalizedString("removeSeveralImagesHUD_removing", comment: "Removing Photos/Videos…")
                         : NSLocalizedString("deleteSeveralImagesHUD_deleting", comment: "Deleting Photos/Videos…")
-                        navigationController?.showHUD(withTitle: msgHUD, inMode: NetworkVars.shared.usesSetCategory ? .indeterminate : .determinate)
+                        navigationController?.showHUD(withTitle: msgHUD, inMode: ServerVars.shared.usesSetCategory ? .indeterminate : .determinate)
                     } else if toRemove.isEmpty {
                         // Delete a single image
                         if let imageData = toDelete.first, imageData.isVideo {
@@ -127,7 +129,7 @@ extension AlbumViewController
                     }
 
                     // Start removing images
-                    if NetworkVars.shared.usesSetCategory {
+                    if ServerVars.shared.usesSetCategory {
                         self.dissociateImages(toRemove, andThenDelete: toDelete)
                     } else {
                         self.removeImages(toRemove, andThenDelete: toDelete, total: Float(totalNberToDelete))
@@ -180,7 +182,7 @@ extension AlbumViewController
         Task {
             do {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Set image properties
                 try await JSONManager.shared.setInfos(with: paramsDict)
@@ -261,7 +263,7 @@ extension AlbumViewController
         Task {
             do {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Dissociate images
                 try await JSONManager.shared.setCategory(albumID, forImageIDs: imageIDs, withAction: .dissociate)
@@ -324,10 +326,11 @@ extension AlbumViewController
         Task {
             do {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Delete images
-                _ = try await JSONManager.shared.delete(toDelete)
+                let imageIds: [Int64] = toDelete.map({ $0.pwgID })
+                _ = try await JSONManager.shared.deleteImages(withID: imageIds)
 
                 // Update cache and UI
                 await MainActor.run { [self] in

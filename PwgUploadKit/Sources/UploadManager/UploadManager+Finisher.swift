@@ -1,6 +1,6 @@
 //
 //  UploadManager+Finisher.swift
-//  piwigoKit
+//  PwgUploadKit
 //
 //  Created by Eddy Lelièvre-Berna on 01/06/2020.
 //  Copyright © 2020 Piwigo.org. All rights reserved.
@@ -10,6 +10,8 @@ import BackgroundTasks
 import CoreData
 import Photos
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 @UploadManagerActor
 extension UploadManager {
@@ -110,7 +112,7 @@ extension UploadManager {
             
             // Check session
             let userData = try UserProvider().getPropertiesOfUser(withURIstr: uploadDataArrayForAlbum[0].userURIstr, inContext: self.uploadBckgContext)
-            try await JSONManager.shared.checkSession(ofUserWithID: userID, lastConnected: userData.lastUsed)
+            try await checkSession(ofUserWithID: userID, lastConnected: userData.lastUsed)
             
             // Empty lounge
             let imageIds = uploadDataArrayForAlbum.map({ $0.imageId })
@@ -123,8 +125,8 @@ extension UploadManager {
     func moderateUploadedImagesIfNeeded() async throws(PwgKitError) -> Void
     {
         // Normal user?
-        if (NetworkVars.shared.usesCommunityPluginV29
-            && NetworkVars.shared.userStatus == .normal) == false {
+        if (ServerVars.shared.usesCommunityPluginV29
+            && ServerVars.shared.userStatus == .normal) == false {
             return
         }
         
@@ -146,7 +148,7 @@ extension UploadManager {
         
         // Check session
         let userData = try UserProvider().getPropertiesOfUser(withURIstr: firstUploadData.userURIstr, inContext: self.uploadBckgContext)
-        try await JSONManager.shared.checkSession(ofUserWithID: userID, lastConnected: userData.lastUsed)
+        try await checkSession(ofUserWithID: userID, lastConnected: userData.lastUsed)
 
         // Get properties of upload requests
         var allUploadData: [(NSManagedObjectID, UploadProperties)] = []

@@ -10,6 +10,8 @@ import CoreData
 import Foundation
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 final class AlbumDeletion: NSObject
 {
@@ -192,10 +194,10 @@ final class AlbumDeletion: NSObject
         Task {
             do {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Delete album
-                _ = try await JSONManager.shared.delete(albumData.pwgID, inMode: deletionMode)
+                _ = try await JSONManager.shared.deleteCategory(withID: albumData.pwgID, inMode: deletionMode)
                 
                 // Auto-upload already disabled by AlbumProvider if necessary
                 // Also remove this album from the auto-upload destination
@@ -203,7 +205,7 @@ final class AlbumDeletion: NSObject
                     UploadVars.shared.autoUploadCategoryId = Int32.min
                 }
                 
-                // Update parent albums data
+                // Update parent album data
                 let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
                 for parentID in parentIDs {
                     // Don't fetch an album already being fetched
@@ -212,10 +214,12 @@ final class AlbumDeletion: NSObject
                     // Remember that the app is fetching album data
                     AlbumVars.shared.isFetchingAlbumData.insert(parentID)
 
-                    // Fetch parent album data
-                    try await AlbumProvider().fetchAlbums(forUserWithAdminRights: hasAdminRights,
-                                                          inParentWithId: parentID,
-                                                          thumbnailSize: thumnailSize)
+                    // Fetch album data recursively
+                    let pwgData = try await JSONManager.shared.fetchAlbums(forUserWithAdminRights: hasAdminRights,
+                                                                           inParentWithId: parentID,
+                                                                           thumbnailSize: thumnailSize)
+                    // Update cache
+                    try AlbumProvider().importAlbums(pwgData, inParent: parentID)
                     
                     // Remove album from list of albums being fetched
                     AlbumVars.shared.isFetchingAlbumData.remove(parentID)

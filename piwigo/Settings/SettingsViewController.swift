@@ -13,6 +13,8 @@ import Intents
 import MessageUI
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 import PwgUploadKit
 
 enum SettingsSection: Int {
@@ -54,13 +56,13 @@ class SettingsViewController: UIViewController {
     private var helpBarButton: UIBarButtonItem?
     
     // Remember current user's recent period index
-    private var oldRecentPeriodIndex = CacheVars.shared.recentPeriodIndex
+    private var oldRecentPeriodIndex = ServerVars.shared.recentPeriodIndex
     
     // Tell which cell triggered the keyboard appearance
     var editedRow: IndexPath?
     
     // The image sort type is returned with album data since Piwigo 14.0.
-    lazy var defaultSortUnknown: Bool = NetworkVars.shared.pwgVersion
+    lazy var defaultSortUnknown: Bool = ServerVars.shared.pwgVersion
         .compare("14.0", options: .numeric) == .orderedAscending
     
     // For displaying cache sizes
@@ -144,7 +146,7 @@ class SettingsViewController: UIViewController {
             Task.detached(priority: .background) { [self] in
                 do {
                     // Check session
-                    try await JSONManager.shared.checkSession(ofUserWithID: userID, lastConnected: lastUsed)
+                    try await LoginUtilities().checkSession(ofUserWithID: userID, lastConnected: lastUsed)
                     
                     // Collect stats from server and store them in cache
                     try await JSONManager.shared.getInfos()
@@ -156,7 +158,7 @@ class SettingsViewController: UIViewController {
                     await MainActor.run { [self] in
                         // Is the retrieved recent period different?
                         guard let nberOfDays = usersData.recentPeriod?.intValue,
-                              let index = CacheVars.shared.recentPeriodList.firstIndex(of: nberOfDays),
+                              let index = ServerVars.shared.recentPeriodList.firstIndex(of: nberOfDays),
                               index != self.oldRecentPeriodIndex
                         else { return }
                         
@@ -164,7 +166,7 @@ class SettingsViewController: UIViewController {
                         self.user.id = usersData.id ?? Int16.zero
                         self.user.managedObjectContext?.saveIfNeeded()
                         self.oldRecentPeriodIndex = index
-                        CacheVars.shared.recentPeriodIndex = index
+                        ServerVars.shared.recentPeriodIndex = index
                         let indexPath = IndexPath(row: 3, section: SettingsSection.albums.rawValue)
                         if let cell = self.settingsTableView.cellForRow(at: indexPath) as? SliderTableViewCell {
                             cell.updateDisplayedValue(Float(index))
@@ -289,16 +291,16 @@ class SettingsViewController: UIViewController {
             UploadManager.shared.updateNberOfUploadsToComplete()
         }
         // Did the user change the recent period?
-        let recentPeriodIndex = CacheVars.shared.recentPeriodIndex
+        let recentPeriodIndex = ServerVars.shared.recentPeriodIndex
         if userHasUploadRights, oldRecentPeriodIndex != recentPeriodIndex {
             // Update recent period on Piwigo server
             Task.detached {
                 do {
                     // Check session
-                    try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID, lastConnected: self.user.lastUsed)
+                    try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID, lastConnected: self.user.lastUsed)
                     
                     // Update server data
-                    let periodInDays = CacheVars.shared.recentPeriodList[recentPeriodIndex]
+                    let periodInDays = ServerVars.shared.recentPeriodList[recentPeriodIndex]
                     try await JSONManager.shared.setRecentPeriod(periodInDays, forUserWithID: self.user.id)
                 }
                 catch {
@@ -362,7 +364,7 @@ class SettingsViewController: UIViewController {
         mainContext.saveIfNeeded()
         
         // Guest user?
-        if NetworkVars.shared.user.isEmpty || NetworkVars.shared.user.lowercased() == "guest" {
+        if ServerVars.shared.user.isEmpty || ServerVars.shared.user.lowercased() == "guest" {
             ClearCache.closeSession()
             return
         }

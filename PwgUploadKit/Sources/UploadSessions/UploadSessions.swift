@@ -1,6 +1,6 @@
 //
 //  UploadSessions.swift
-//  piwigoKit
+//  PwgUploadKit
 //
 //  Created by Eddy Lelièvre-Berna on 22/06/2021.
 //  Copyright © 2021 Piwigo.org. All rights reserved.
@@ -9,6 +9,7 @@
 import os
 import Foundation
 import PwgKit
+import PwgCacheKit
 
 // Background tasks
 public let pwgBackgroundUploadTask = "\(Bundle.main.bundleIdentifier!).uploadManager"
@@ -63,7 +64,7 @@ public let bckgSession: URLSession = {
     /// We send a custom cookie to avoid a reject by ModSecurity if it is set to reject requests not containing cookies.
     config.httpShouldSetCookies = false
     config.httpCookieAcceptPolicy = .never
-    if let validUrl = URL(string: NetworkVars.shared.service) {
+    if let validUrl = URL(string: ServerVars.shared.service) {
         var params: [HTTPCookiePropertyKey : Any] = [
             HTTPCookiePropertyKey.version           : NSString("0"),
             HTTPCookiePropertyKey.name              : NSString("pwg_method"),
@@ -73,7 +74,7 @@ public let bckgSession: URLSession = {
             HTTPCookiePropertyKey.expires           : NSDate(),
             HTTPCookiePropertyKey.discard           : NSString("TRUE")
         ]
-        if NetworkVars.shared.serverProtocol == "https" {
+        if ServerVars.shared.serverProtocol == "https" {
             params[HTTPCookiePropertyKey.secure] = "TRUE"
         }
         if let cookie = HTTPCookie(properties: params) {

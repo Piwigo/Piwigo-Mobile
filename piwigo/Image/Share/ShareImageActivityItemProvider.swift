@@ -14,6 +14,8 @@ import Photos
 import UIKit
 import UniformTypeIdentifiers
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 import PwgUploadKit
 
 @objc

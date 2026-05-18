@@ -10,6 +10,7 @@ import CoreData
 import Intents
 import Photos
 import PwgKit
+import PwgCacheKit
 import PwgUploadKit
 
 // Only used on iOS 15.x

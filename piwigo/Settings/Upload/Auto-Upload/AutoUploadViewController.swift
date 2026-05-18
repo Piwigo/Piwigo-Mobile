@@ -10,6 +10,7 @@ import CoreData
 import Photos
 import UIKit
 import PwgKit
+import PwgCacheKit
 import PwgUploadKit
 
 class AutoUploadViewController: UIViewController {
@@ -29,7 +30,7 @@ class AutoUploadViewController: UIViewController {
 
     private lazy var hasTagCreationRights: Bool = {
         // Depends on the user's rights
-        switch NetworkVars.shared.userStatus {
+        switch ServerVars.shared.userStatus {
         case .guest, .generic:
             return false
         case .admin, .webmaster:

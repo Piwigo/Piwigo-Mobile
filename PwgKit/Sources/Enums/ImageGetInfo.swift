@@ -1,0 +1,177 @@
+//
+//  ImageGetInfo.swift
+//  PwgKit
+//
+//  Created by Eddy Lelièvre-Berna on 17/05/2026.
+//
+
+import Foundation
+
+public struct ImageGetInfo: Decodable, Sendable
+{
+    public let id: Int64?                       // 1042
+    public var title: String?                   // "Title"
+    public var comment: String?                 // "…" i.e. text potentially containing HTML encoded characters, selected language
+    public var commentRaw: String?              // "…" i.e. text potentially containing HTML encoded characters, all languages
+    public var visits: Int32?                   // 0
+    public var fileName: String?                // "Image.jpg"
+    public var datePosted: String?              // "yyyy-MM-dd HH:mm:ss"
+    public var dateCreated: String?             // "yyyy-MM-dd HH:mm:ss"
+    public var isFavorite: Bool?                // false (since Piwigo 13.0)
+    public var downloadUrl: String?             // "https://…action.php?id=2&part=e&download" (since Piwigo 14.0)
+ 
+    public let fullResWidth: Int?               // 4092
+    public let fullResHeight: Int?              // 2048
+    public let fullResPath: String?             // "https://…image.jpg"
+     
+    public var author: String?                  // "Eddy"
+    public var privacyLevel: String?            // "0"
+    public var tags: [TagGetInfo]?              // See TagGetInfo
+    public var ratingScore: String?             // "1.0"
+    public var fileSize: Int64?                 // 3025
+    public var md5checksum: String?             // "2141e377254a429be151900e4bedb520"
+    public var categories: [CategoryGetInfo]?   // Defined in Album
+    public let derivatives: Derivatives         // See below
+    
+    public var latitude: StringOrDouble?        // "0.000000"
+    public var longitude: StringOrDouble?       // "0.000000"
+
+    public enum CodingKeys: String, CodingKey, Sendable {
+        case id = "id"
+        case title = "name"
+        case comment = "comment"
+        case commentRaw = "comment_raw"
+        case visits = "hit"
+        case fileName = "file"
+        case datePosted = "date_available"
+        case dateCreated = "date_creation"
+        case isFavorite = "is_favorite"
+        case downloadUrl = "download_url"
+
+        case fullResWidth = "width"
+        case fullResHeight = "height"
+        case fullResPath = "element_url"
+        
+        case author = "author"
+        case privacyLevel = "level"
+        case tags = "tags"
+        case ratingScore = "rating_score"
+        case fileSize = "filesize"
+        case md5checksum = "md5sum"
+        case categories = "categories"
+        case derivatives = "derivatives"
+        
+        case latitude = "latitude"
+        case longitude = "longitude"
+    }
+}
+
+extension ImageGetInfo {
+    public init(id: Int64, title: String, fileName: String,
+                datePosted: Date, dateCreated: Date,
+                author: String, privacyLevel: String,
+                squareImage: Derivative, thumbImage: Derivative) {
+        // Date posted is now (called after uploading in the foreground
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMdd-HHmmssSSSS"
+        let posted = dateFormatter.string(from: datePosted)
+        let created = dateFormatter.string(from: dateCreated)
+        let derivatives = Derivatives(squareImage: squareImage, thumbImage: thumbImage)
+        
+        self.init(id: id, title: title,
+                  comment: "", commentRaw: "", visits: 0,
+                  fileName: fileName, datePosted: posted, dateCreated: created,
+                  isFavorite: false, downloadUrl: "",
+                  fullResWidth: 0, fullResHeight: 0, fullResPath: "",
+                  author: author, privacyLevel: privacyLevel,
+                  tags: nil, ratingScore: nil,
+                  fileSize: nil, md5checksum: nil,
+                  categories: nil, derivatives: derivatives,
+                  latitude: StringOrDouble(), longitude: StringOrDouble())
+        self.fixingUnknowns()
+    }
+    
+    public mutating func fixingUnknowns() {
+        if self.title == nil { self.title = "" }
+        if self.comment == nil { self.comment = "" }
+        if self.commentRaw == nil { self.commentRaw = "" }
+        if self.visits == nil { self.visits = 0 }
+        if self.fileName == nil { self.fileName = "" }
+        if self.datePosted == nil {
+            // Adopts now
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyyMMdd-HHmmssSSSS"
+            self.datePosted = dateFormatter.string(from: Date())
+        }
+        if self.dateCreated == nil {
+            // Adopts the oldest date when the creation date is unknown.
+            self.dateCreated = "1900-01-01 00:00:00"    // see DataModel
+        }
+        if self.downloadUrl == nil { self.downloadUrl = "" }
+        if self.privacyLevel == nil { self.privacyLevel = "0" }
+        if self.tags == nil { self.tags = [TagGetInfo]() }
+        if self.ratingScore == nil { self.ratingScore = "" }
+        if self.fileSize == nil { self.fileSize = Int64.zero }
+        if self.md5checksum == nil { self.md5checksum = "" }
+        if self.latitude == nil { self.latitude = StringOrDouble()}
+        if self.longitude == nil { self.longitude = StringOrDouble()}
+    }
+}
+
+
+// MARK: - Image Derivatives
+public struct Derivatives: Decodable, Sendable {
+    public var squareImage: Derivative?
+    public var thumbImage: Derivative?
+    public var mediumImage: Derivative?
+
+    public var smallImage: Derivative?
+    public var xSmallImage: Derivative?
+    public var xxSmallImage: Derivative?
+
+    public var largeImage: Derivative?
+    public var xLargeImage: Derivative?
+    public var xxLargeImage: Derivative?
+    public var xxxLargeImage: Derivative?
+    public var xxxxLargeImage: Derivative?
+
+    public enum CodingKeys: String, CodingKey, Sendable {
+        case squareImage = "square"
+        case thumbImage = "thumb"
+        case mediumImage = "medium"
+        
+        case smallImage = "small"
+        case xSmallImage = "xsmall"
+        case xxSmallImage = "2small"
+
+        case largeImage = "large"
+        case xLargeImage = "xlarge"
+        case xxLargeImage = "xxlarge"
+        case xxxLargeImage = "3xlarge"
+        case xxxxLargeImage = "4xlarge"
+    }
+}
+
+extension Derivatives {
+    public init(squareImage: Derivative, thumbImage: Derivative) {
+        self.init(squareImage: squareImage, thumbImage: thumbImage, mediumImage: Derivative(),
+                  smallImage: Derivative(), xSmallImage: Derivative(), xxSmallImage: Derivative(),
+                  largeImage: Derivative(), xLargeImage: Derivative(), xxLargeImage: Derivative())
+    }
+}
+
+public struct Derivative: Decodable, Sendable {
+    public let url: String?
+    public let width: StringOrInt?
+    public let height: StringOrInt?
+}
+
+public extension Derivative {
+    init() {
+        self.init(url: nil, width: nil, height: nil)
+    }
+    
+    init(url: String?) {
+        self.init(url: url, width: nil, height: nil)
+    }
+}

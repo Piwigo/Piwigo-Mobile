@@ -9,6 +9,8 @@
 import PDFKit
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 protocol VideoDetailDelegate: NSObjectProtocol {
     @MainActor

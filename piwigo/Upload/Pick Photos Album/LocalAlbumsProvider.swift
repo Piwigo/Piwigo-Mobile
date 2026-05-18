@@ -9,6 +9,7 @@
 import Foundation
 import Photos
 import PwgKit
+import PwgAPIKit
 
 enum LocalAlbumType {
     case pasteboard
@@ -392,8 +393,8 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         }
         let nberOfAlbums = numberFormatter.string(from: NSNumber(value: count)) ?? ""
         let footer = count > 1 ?
-        String(format: String(localized: "severalAlbumsCount", bundle: .piwigoKit, comment: "%@ albums"), nberOfAlbums) :
-        String(format: String(localized: "singleAlbumCount", bundle: .piwigoKit, comment: "%@ album"), nberOfAlbums)
+        String(format: String(localized: "severalAlbumsCount", bundle: .pwgAPIKit, comment: "%@ albums"), nberOfAlbums) :
+        String(format: String(localized: "singleAlbumCount", bundle: .pwgAPIKit, comment: "%@ album"), nberOfAlbums)
         return footer
     }
 }

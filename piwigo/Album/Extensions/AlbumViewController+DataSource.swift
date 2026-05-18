@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 // MARK: UICollectionView - Diffable Data Source
 extension AlbumViewController
@@ -268,8 +270,8 @@ extension AlbumViewController
             if let number = numberFormatter.string(from: NSNumber(value: totalCount)) {
                 // Prepare legend
                 let format:String = totalCount > 1
-                    ? String(localized: "severalImagesCount", bundle: .piwigoKit, comment: "%@ photos")
-                    : String(localized: "singleImageCount", bundle: .piwigoKit, comment: "%@ photo")
+                    ? String(localized: "severalImagesCount", bundle: .pwgAPIKit, comment: "%@ photos")
+                    : String(localized: "singleImageCount", bundle: .pwgAPIKit, comment: "%@ photo")
                 legend = String(format: format, number)
 
                 // Show/hide "No album in your Piwigo"
@@ -277,7 +279,7 @@ extension AlbumViewController
                 noAlbumLabel.isHidden = hasItems
             }
             else {
-                legend = String(format: String(localized: "severalImagesCount", bundle: .piwigoKit, comment: "%@ photos"), "?")
+                legend = String(format: String(localized: "severalImagesCount", bundle: .pwgAPIKit, comment: "%@ photos"), "?")
             }
         }
         return legend

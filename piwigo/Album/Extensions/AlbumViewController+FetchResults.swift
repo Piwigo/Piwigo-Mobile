@@ -8,8 +8,9 @@
 
 import CoreData
 import Foundation
-import PwgKit
 import UIKit
+import PwgKit
+import PwgCacheKit
 
 // MARK: NSFetchedResultsControllerDelegate Methods
 extension AlbumViewController: @MainActor NSFetchedResultsControllerDelegate

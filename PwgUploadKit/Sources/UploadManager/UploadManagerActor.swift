@@ -10,6 +10,7 @@ import os
 import CoreData
 import Foundation
 import PwgKit
+import PwgCacheKit
 
 @globalActor
 public actor UploadManagerActor {
@@ -92,7 +93,7 @@ public actor UploadManagerActor {
         // Should we postpone uploads?
         if UploadVars.shared.isPaused ||
             ProcessInfo.processInfo.isLowPowerModeEnabled ||
-            (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
+            (UploadVars.shared.wifiOnlyUploading && !ServerVars.shared.isConnectedToWiFi) {
             return
         }
         

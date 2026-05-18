@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgCacheKit
 
 // MARK: UICollectionViewDelegateFlowLayout Methods
 extension AlbumViewController: UICollectionViewDelegateFlowLayout

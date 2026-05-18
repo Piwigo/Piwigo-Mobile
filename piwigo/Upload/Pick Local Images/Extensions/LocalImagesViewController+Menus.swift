@@ -11,6 +11,7 @@ import Foundation
 import Photos
 import UIKit
 import PwgKit
+import PwgCacheKit
 import PwgUploadKit
 
 // MARK: Menus

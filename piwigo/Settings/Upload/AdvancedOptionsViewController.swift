@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgCacheKit
 
 class AdvancedOptionsViewController: UIViewController
 {
@@ -125,9 +126,9 @@ extension AdvancedOptionsViewController: UITableViewDataSource
         
         case .chunkSize:
             // Values in bytes
-            let minValue = Float(UploadVars.shared.minChunkSize * 1000)
-            let value = Float(UploadVars.shared.customUploadChunkSize * 1000)
-            let maxValue = Float(UploadVars.shared.maxChunkSize * 1000)
+            let minValue = Float(ServerVars.shared.minChunkSize * 1000)
+            let value = Float(ServerVars.shared.customUploadChunkSize * 1000)
+            let maxValue = Float(ServerVars.shared.maxChunkSize * 1000)
             
             // Slider configuration
             cell.configure(with: NSLocalizedString("settings_advancedChunkSize", comment: "Size"),
@@ -135,7 +136,7 @@ extension AdvancedOptionsViewController: UITableViewDataSource
                            prefix: "", suffix: "", style: sizeStyle)
             cell.cellSliderBlock = { newValue in
                 // Update settings
-                UploadVars.shared.customUploadChunkSize = Int(newValue / 1000)
+                ServerVars.shared.customUploadChunkSize = Int(newValue / 1000)
             }
             cell.accessibilityIdentifier = "chunkSize"
         

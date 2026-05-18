@@ -8,6 +8,7 @@
 
 import UIKit
 import PwgKit
+import PwgCacheKit
 
 // MARK: UICollectionViewDelegate Methods
 extension PasteboardImagesViewController: UICollectionViewDelegate
@@ -140,7 +141,7 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
     private func statusAction(_ upload: Upload?) -> UIAction {
         // Check if an upload request exists (should never happen)
         guard let upload = upload else {
-            return UIAction(title: String(localized: "errorHUD_label", bundle: .piwigoKit, comment: "Error"),
+            return UIAction(title: String(localized: "errorHUD_label", bundle: .pwgCacheKit, comment: "Error"),
                             image: UIImage(systemName: "exclamationmark.triangle"), handler: { _ in })
         }
         

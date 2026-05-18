@@ -11,6 +11,8 @@
 import Photos
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 @objc protocol EditImageThumbnailDelegate: NSObjectProtocol {
     func didDeselectImage(withID imageID: Int64)

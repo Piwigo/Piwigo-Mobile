@@ -11,6 +11,8 @@ import Foundation
 import MessageUI
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 import PwgUploadKit
 
 enum pwgImageAction {
@@ -793,8 +795,8 @@ class AlbumViewController: UIViewController
         Task {
             do {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
-                                                          lastConnected: self.user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID,
+                                                        lastConnected: self.user.lastUsed)
                 // Fetch album and image data
                 await self.fetchAlbumsAndImages()
             }
@@ -863,8 +865,8 @@ class AlbumViewController: UIViewController
         // Fetch favorites in the background if needed
         do {
             if hasFavorites, categoryId != pwgSmartAlbum.favorites.rawValue,
-               "2.10.0".compare(NetworkVars.shared.pwgVersion, options: .numeric) != .orderedDescending,
-               NetworkVars.shared.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending,
+               "2.10.0".compare(ServerVars.shared.pwgVersion, options: .numeric) != .orderedDescending,
+               ServerVars.shared.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending,
                AlbumVars.shared.isFetchingAlbumData.contains(pwgSmartAlbum.favorites.rawValue) == false,
                let favAlbum = try AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue),
                Date.timeIntervalSinceReferenceDate - favAlbum.dateGetImages > TimeInterval(86400) { // i.e. a day
@@ -1048,7 +1050,7 @@ class AlbumViewController: UIViewController
 //                albumImageTableView.tableHeaderView = nil
 //                UIApplication.shared.isIdleTimerDisabled = false
 //            }
-//            else if !NetworkVars.shared.isConnectedToWiFi() && UploadVars.shared.wifiOnlyUploading {
+//            else if !ServerVars.shared.isConnectedToWiFi() && UploadVars.shared.wifiOnlyUploading {
 //                // No Wi-Fi and user wishes to upload only on Wi-Fi
 //                let headerView = TableHeaderView(frame: .zero)
 //                headerView.configure(width: albumImageTableView.frame.size.width,

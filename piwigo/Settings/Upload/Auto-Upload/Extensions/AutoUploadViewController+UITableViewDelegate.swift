@@ -8,6 +8,7 @@
 
 import UIKit
 import PwgKit
+import PwgCacheKit
 
 extension AutoUploadViewController: UITableViewDelegate
 {
@@ -18,7 +19,7 @@ extension AutoUploadViewController: UITableViewDelegate
         case 0:
             title = NSLocalizedString("settings_autoUploadLong", comment: "Auto Upload Photos")
         case 1:
-            title = String(localized: "tabBar_albums", bundle: .piwigoKit, comment: "Albums")
+            title = String(localized: "tabBar_albums", bundle: .pwgKit, comment: "Albums")
         case 2:
             title = NSLocalizedString("imageDetailsView_title", comment: "Properties")
         default:
@@ -64,7 +65,7 @@ extension AutoUploadViewController: UITableViewDelegate
         switch section {
         case 0:
             if UploadVars.shared.isAutoUploadActive {
-                if NetworkVars.shared.serverFileTypes.contains("mp4") {
+                if ServerVars.shared.serverFileTypes.contains("mp4") {
                     footer = NSLocalizedString("settings_autoUploadEnabledInfoAll", comment: "Photos and videos will be automatically uploaded to your Piwigo.")
                 } else {
                     footer = NSLocalizedString("settings_autoUploadEnabledInfo", comment: "Photos will be automatically uploaded to your Piwigo.")

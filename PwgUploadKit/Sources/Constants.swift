@@ -15,9 +15,9 @@ public enum PwgUploadKit {
     public static let build = 491
 }
 
-// Bundle name
+// Bundle for PwgUploadKit localised strings
 public extension Bundle {
-    static let pwgUploadKit = Bundle.allFrameworks.first(where: { ($0.bundleIdentifier ?? "").contains("uploadKit")})
+    static let pwgUploadKit: Bundle = .module
 }
 
 // Constants used to manage background tasks

@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgCacheKit
 
 // MARK: Discover Button
 extension AlbumViewController
@@ -47,8 +48,8 @@ extension AlbumViewController
     func smartAlbumsMenu() -> UIMenu {
         let menuId = UIMenu.Identifier("org.piwigo.discover.smart")
         var children = [taggedAction(), mostVisitedAction(), bestRatedAction(), recentAction()]
-        if NetworkVars.shared.user.isEmpty == false,
-           NetworkVars.shared.user.lowercased() != "guest" {
+        if ServerVars.shared.user.isEmpty == false,
+           ServerVars.shared.user.lowercased() != "guest" {
             children.insert(favoritesAction(), at: 0)
         }
         let menu = UIMenu(title: "", image: nil, identifier: menuId,

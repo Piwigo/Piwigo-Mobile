@@ -1,6 +1,6 @@
 //
 //  UploadManager+TransferOrCopy.swift
-//  piwigoKit
+//  PwgUploadKit
 //
 //  Created by Eddy Lelièvre-Berna on 21/05/2020.
 //  Copyright © 2020 Piwigo.org. All rights reserved.
@@ -9,6 +9,8 @@
 import BackgroundTasks
 import CoreData
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 @UploadManagerActor
 extension UploadManager {
@@ -54,7 +56,7 @@ extension UploadManager {
             
             // Check session
             let userData = try UserProvider().getPropertiesOfUser(withURIstr: uploadData.userURIstr, inContext: self.uploadBckgContext)
-            try await JSONManager.shared.checkSession(ofUserWithID: userID, lastConnected: userData.lastUsed)
+            try await checkSession(ofUserWithID: userID, lastConnected: userData.lastUsed)
             
             // Update state of upload request
             uploadData.requestState = .uploading
@@ -141,7 +143,7 @@ extension UploadManager {
         // Associate the image to the album if needed
         if inserted {
             // Append selected category ID to image category list
-            if NetworkVars.shared.usesSetCategory {
+            if ServerVars.shared.usesSetCategory {
                 // Associate images (since Piwigo 14)
                 try await JSONManager.shared.setCategory(properties.category, forImageIDs: [imageID], withAction: .associate)
             }
@@ -158,7 +160,11 @@ extension UploadManager {
             }
             
             // Retrieve image data from server and update cache
-            try await ImageProvider().getInfos(forID: imageID, inCategoryId: properties.category)
+            let pwgData = try await JSONManager.shared.getInfos(forID: imageID)
+            
+            // Update image data in cache
+            // The provided sort option will not change the rankManual/rankRandom values.
+            try? ImageProvider().importImages([pwgData], inAlbum: properties.category, sort: .albumDefault)
             
             // Update displayed albums which are concerned
             try? AlbumProvider().updateAlbums(addingImages: 1, toAlbumWithID: properties.category,

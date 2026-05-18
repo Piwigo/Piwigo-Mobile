@@ -8,6 +8,7 @@
 
 import AVKit
 import PwgKit
+import PwgAPIKit
 
 protocol PlayerViewControllerCoordinatorDelegate: AnyObject {
     func playerViewControllerCoordinator(_ coordinator: PlayerViewControllerCoordinator,
@@ -741,8 +742,8 @@ extension PlayerViewControllerCoordinator: AVAssetResourceLoaderDelegate
         }
         else if protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPBasic {
             // HTTP basic authentification credentials
-            let user = NetworkVars.shared.httpUsername
-            let password = KeychainUtilities.password(forService: NetworkVars.shared.service, account: user)
+            let user = ServerVars.shared.httpUsername
+            let password = KeychainUtilities.password(forService: ServerVars.shared.service, account: user)
             authenticationChallenge.sender?.use(
                 URLCredential(user: user, password: password, persistence: .synchronizable),
                               for: authenticationChallenge)

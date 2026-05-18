@@ -8,6 +8,7 @@
 
 import UIKit
 import PwgKit
+import PwgCacheKit
 import PwgUploadKit
 
 class UploadSettingsViewController: UITableViewController {

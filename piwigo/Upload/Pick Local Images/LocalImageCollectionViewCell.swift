@@ -11,6 +11,7 @@
 import Photos
 import UIKit
 import PwgKit
+import PwgCacheKit
 
 class LocalImageCollectionViewCell: UICollectionViewCell {
 

@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 // MARK: Buttons
 extension AlbumViewController
@@ -259,7 +261,7 @@ extension AlbumViewController
             NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
             
             // Complete image data is not necessary for Piwigo server version +14.x
-            if NetworkVars.shared.usesSetCategory {
+            if ServerVars.shared.usesSetCategory {
                 // Select album and copy images into that album
                 performAction(action, withImageIDs: imageIDs, contextually: contextually)
             } else {
@@ -354,8 +356,8 @@ extension AlbumViewController
             Task.detached {
                 do {
                     // Check session
-                    try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
-                                                              lastConnected: self.user.lastUsed)
+                    try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID,
+                                                            lastConnected: self.user.lastUsed)
                     
                     // Retrieve image data
                     await MainActor.run { [self] in
@@ -391,8 +393,12 @@ extension AlbumViewController
         // Image data are not complete when retrieved using pwg.categories.getImages
         Task {
             do {
-                // Get complete image data
-                try await imageProvider.getInfos(forID: imageID, inCategoryId: self.albumData.pwgID)
+                // Retrieve image data
+                let pwgData = try await JSONManager.shared.getInfos(forID: imageID)
+                
+                // Update image data in cache
+                // The provided sort option will not change the rankManual/rankRandom values.
+                try ImageProvider().importImages([pwgData], inAlbum: self.albumData.pwgID, sort: .albumDefault)
                 
                 // Proceed with next image
                 await MainActor.run { [self] in

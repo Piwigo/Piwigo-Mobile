@@ -8,6 +8,8 @@
 
 import Foundation
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 extension SelectCategoryViewController
 {
@@ -31,7 +33,7 @@ extension SelectCategoryViewController
         Task {
             do {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Prepare parameters for copying the image/video to the selected category
                 let newImageCategories = categoryIds.compactMap({ String($0) }).joined(separator: ";")
@@ -76,7 +78,7 @@ extension SelectCategoryViewController
         Task {
             do {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Associate images
                 try await JSONManager.shared.setCategory(albumID, forImageIDs: imageIDs, withAction: .associate)
@@ -167,7 +169,7 @@ extension SelectCategoryViewController
                 categoryIds.removeAll(where: {$0 == inputAlbum.pwgID})
 
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Prepare parameters for moving the image/video to the selected category
                 let newImageCategories = categoryIds.compactMap({ String($0) }).joined(separator: ";")
@@ -219,7 +221,7 @@ extension SelectCategoryViewController
         Task {
             do {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Associate images
                 try await JSONManager.shared.setCategory(albumID, forImageIDs: imageIDs, withAction: .dissociate)

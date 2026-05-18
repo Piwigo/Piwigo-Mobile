@@ -13,6 +13,7 @@ import Photos
 import UIKit
 import PwgKit
 import PwgUploadKit
+import PwgCacheKit
 
 enum SectionType: Int {
     case month
@@ -41,8 +42,8 @@ class LocalImagesViewController: UIViewController
         
         // Retrieves upload requests
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         return fetchRequest
     }()

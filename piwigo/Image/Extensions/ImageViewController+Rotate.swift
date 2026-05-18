@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 // MARK: Rotate Image
 extension ImageViewController
@@ -65,10 +67,15 @@ extension ImageViewController
         Task {
             do {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Rotate thumbnails
-                try await JSONManager.shared.rotate(imageData, by: angle)
+                try await JSONManager.shared.rotateImage(withID: imageData.pwgID, by: angle)
+                
+                // Image rotated successfully ► Rotate thumbnails in cache
+                /// Image data not always immediately available from server.
+                /// We rotate the images stored in cache instead of downloading them.
+                imageData.rotateThumbnails(by: angle)
                 
                 // Update UI
                 await MainActor.run {

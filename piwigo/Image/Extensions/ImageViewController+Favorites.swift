@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 extension ImageViewController
 {
@@ -40,10 +42,10 @@ extension ImageViewController
         Task {
             do {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Add image to favorites
-                try await JSONManager.shared.addToFavorites(imageData)
+                try await JSONManager.shared.addToFavorites(imageWithID: imageData.pwgID)
                 
                 // Update cache and UI
                 await MainActor.run {
@@ -104,10 +106,10 @@ extension ImageViewController
         Task {
             do {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Remove image from favorites
-                try await JSONManager.shared.removeFromFavorites(imageData)
+                try await JSONManager.shared.removeFromFavorites(imageWithID: imageData.pwgID)
                 
                 // Update cache and UI
                 await MainActor.run {

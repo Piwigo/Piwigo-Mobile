@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 import PwgUploadKit
 
 final class ClearCache
@@ -19,7 +21,7 @@ final class ClearCache
         switch error {
         case .incompatiblePwgVersion:
             title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
-            message = String.localizedStringWithFormat(PwgKitError.incompatiblePwgVersion.localizedDescription, NetworkVars.shared.pwgVersion, pwgMinVersion)
+            message = String.localizedStringWithFormat(PwgKitError.incompatiblePwgVersion.localizedDescription, ServerVars.shared.pwgVersion, pwgMinVersion)
         default:
             title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
         }
@@ -37,12 +39,12 @@ final class ClearCache
             AlbumVars.shared.isFetchingAlbumData = Set<Int32>()
             
             // Back to default server properties
-            NetworkVars.shared.usesCommunityPluginV29 = false
-            NetworkVars.shared.usesSetCategory = false
+            ServerVars.shared.usesCommunityPluginV29 = false
+            ServerVars.shared.usesSetCategory = false
             NetworkVars.shared.usesAPIkeys = false
             
             // Back to default user properties
-            NetworkVars.shared.userStatus = pwgUserStatus.guest
+            ServerVars.shared.userStatus = pwgUserStatus.guest
             
             // Disable Auto-Uploading and clear settings
             UploadVars.shared.isAutoUploadActive = false

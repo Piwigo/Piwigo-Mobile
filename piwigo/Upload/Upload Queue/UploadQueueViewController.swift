@@ -9,6 +9,7 @@
 import CoreData
 import UIKit
 import PwgKit
+import PwgCacheKit
 import PwgUploadKit
 
 class UploadQueueViewController: UIViewController {
@@ -44,8 +45,8 @@ class UploadQueueViewController: UIViewController {
         
         // Retrieves non-completed upload requests:
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
         var unwantedStates: [pwgUploadState] = [.finished, .moderated]
         andPredicates.append(NSPredicate(format: "NOT (requestState IN %@)", unwantedStates.map({$0.rawValue})))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
@@ -192,7 +193,7 @@ class UploadQueueViewController: UIViewController {
                 queueTableView.tableHeaderView = nil
                 UIApplication.shared.isIdleTimerDisabled = false
             }
-            else if !NetworkVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading {
+            else if !ServerVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading {
                 // No Wi-Fi and user wishes to upload only on Wi-Fi
                 let headerView = TableHeaderView(frame: .zero)
                 headerView.configure(width: self.queueTableView.frame.size.width,

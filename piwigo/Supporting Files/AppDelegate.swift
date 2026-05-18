@@ -17,6 +17,8 @@ import Photos
 import UIKit
 
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 import PwgUploadKit
 
 @UIApplicationMain
@@ -66,10 +68,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         AppVars.shared.supportsHaptics = hapticCapability.supportsHaptics
         
         // "0 day" option added in v3.1.2 for allowing user to disable "recent" icon
-        CacheVars.shared.correctRecentPeriodIndex()
+        ServerVars.shared.correctRecentPeriodIndex()
         
         // Piwigo account added in v4.1.2 for dissociating persistent cache data from credentials
-        NetworkVars.shared.createPiwigoUsernameAccountIfNeeded()
+        ServerVars.shared.createPiwigoUsernameAccountIfNeeded()
         
         // Set Settings Bundle data
         setSettingsBundleData()
@@ -309,7 +311,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // Are conditions appropriate?
             if UploadVars.shared.isContinuedProcessingTaskActive,
                 ProcessInfo.processInfo.isLowPowerModeEnabled ||
-                (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
+                (UploadVars.shared.wifiOnlyUploading && !ServerVars.shared.isConnectedToWiFi) {
                 debugPrint("••> Background upload task halted because in Low-Power mode, Wi-Fi unavailable or already uploading.")
                 task.setTaskCompleted(success: false)
                 return
@@ -875,8 +877,8 @@ extension AppDelegate: AppLockDelegate {
         if let rootVC = self.window?.rootViewController,
             let child = rootVC.children.first, child is LoginViewController {
             // Look for credentials if server address provided
-            let username = NetworkVars.shared.username
-            let service = NetworkVars.shared.serverPath
+            let username = ServerVars.shared.username
+            let service = ServerVars.shared.serverPath
             var password = ""
 
             // Look for paswword in Keychain if server address and username are provided

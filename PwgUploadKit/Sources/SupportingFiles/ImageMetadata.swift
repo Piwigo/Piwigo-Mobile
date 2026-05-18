@@ -1,6 +1,6 @@
 //
 //  ImageMetadata.swift
-//  piwigo
+//  PwgUploadKit
 //
 //  Created by Eddy Lelièvre-Berna on 09/01/2021.
 //  Copyright © 2021 Piwigo.org. All rights reserved.

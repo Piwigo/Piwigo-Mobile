@@ -61,7 +61,7 @@ struct SettingsUtilities
         // Compile ticket number from current date
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyyMMddHHmm"
-        dateFormatter.locale = NSLocale(localeIdentifier: NetworkVars.shared.language) as Locale
+        dateFormatter.locale = NSLocale(localeIdentifier: ServerVars.shared.language) as Locale
         let date = Date()
         let ticketDate = dateFormatter.string(from: date)
         

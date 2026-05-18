@@ -8,6 +8,7 @@
 
 import Foundation
 import PwgKit
+import PwgCacheKit
 
 struct ExternalDisplayUtilities {
     /** Returns:

@@ -12,6 +12,8 @@ import MobileCoreServices
 import UIKit
 import UniformTypeIdentifiers
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 import PwgUploadKit
 
 // Warning: class must restate inherited '@unchecked Sendable' conformance

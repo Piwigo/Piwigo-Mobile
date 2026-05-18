@@ -10,6 +10,7 @@ import Foundation
 import CoreLocation
 import UIKit
 import PwgKit
+import PwgCacheKit
 
 protocol ImageHeaderDelegate: NSObjectProtocol {
     func changeImageGrouping(for group: pwgImageGroup)
