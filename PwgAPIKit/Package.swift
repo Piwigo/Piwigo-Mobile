@@ -47,5 +47,6 @@ let package = Package(
                 .process("pwg")
             ]
         )
-    ]
+    ],
+//    swiftLanguageModes: [.v5],
 )

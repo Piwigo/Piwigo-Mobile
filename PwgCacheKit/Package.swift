@@ -51,5 +51,6 @@ let package = Package(
                 .process("MigrationTools/MappingModel_0L_to_0N/Mapping_Model_0L_to_0N.xcmappingmodel")
             ]
         ),
-    ]
+    ],
+//    swiftLanguageModes: [.v5],
 )
