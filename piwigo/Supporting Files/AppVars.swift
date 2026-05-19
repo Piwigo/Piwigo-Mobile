@@ -11,12 +11,6 @@ import Foundation
 import UIKit
 import PwgKit
 
-// Constants
-/// - Preferred popover view width on iPad
-let pwgPadSubViewWidth = CGFloat(425.0)
-/// - Preferred Settings view width on iPad
-let pwgPadSettingsWidth = CGFloat(512.0)
-
 // Mark AppVars as Sendable since Apple documents UserDefaults as thread-safe
 final class AppVars: @unchecked Sendable {
         

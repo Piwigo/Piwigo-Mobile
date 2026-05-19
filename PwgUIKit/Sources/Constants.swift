@@ -18,3 +18,9 @@ public enum PwgUploadKit {
 public extension Bundle {
     static let pwgUIKit: Bundle = .module
 }
+
+// Constants
+/// - Preferred popover view width on iPad
+public let pwgPadSubViewWidth = CGFloat(425.0)
+/// - Preferred Settings view width on iPad
+public let pwgPadSettingsWidth = CGFloat(512.0)
