@@ -8,6 +8,7 @@
 
 import UIKit
 import PwgKit
+import PwgAPIKit
 import PwgCacheKit
 
 enum pwgCategoryCellButtonState : Int {
@@ -67,8 +68,8 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
             let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData.nbSubAlbums)) ?? "0"
             if traitCollection.preferredContentSizeCategory < .extraLarge {
                 subCategoriesLabel.text = albumData.nbSubAlbums > 1 ?
-                    String(format: NSLocalizedString("severalSubAlbumsCount", comment: "%@ sub-albums"), nberAlbums) :
-                    String(format: NSLocalizedString("singleSubAlbumCount", comment: "%@ sub-album"), nberAlbums);
+                    String(format: String(localized: "severalSubAlbumsCount", bundle: .pwgAPIKit, comment: "%@ sub-albums"), nberAlbums):
+                    String(format: String(localized: "singleSubAlbumCount", bundle: .pwgAPIKit, comment: "%@ sub-album"), nberAlbums)
             } else {
                 subCategoriesLabel.text = nberAlbums
             }
