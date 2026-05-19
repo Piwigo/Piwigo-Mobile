@@ -9,7 +9,7 @@
 import Foundation
 
 // Swift Package Version
-public enum PwgUploadKit {
+public enum PwgUIKit {
     public static let version = "1.0.0"
     public static let build = 1
 }
