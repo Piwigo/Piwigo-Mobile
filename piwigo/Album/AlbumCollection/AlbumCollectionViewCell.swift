@@ -98,8 +98,8 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         numberFormatter.numberStyle = NumberFormatter.Style.decimal
         let singleImage = String(localized: "singleImageCount", bundle: .pwgAPIKit, comment: "%@ photo")
         let severalImages = String(localized: "severalImagesCount", bundle: .pwgAPIKit, comment: "%@ photos")
-        let singleSubAlbum = NSLocalizedString("singleSubAlbumCount", bundle: .pwgAPIKit, comment: "%@ sub-album")
-        let severalSubAlbums = NSLocalizedString("severalSubAlbumsCount", bundle: .pwgAPIKit, comment: "%@ sub-albums")
+        let singleSubAlbum = String(localized: "singleSubAlbumCount", bundle: .pwgAPIKit, comment: "%@ sub-album")
+        let severalSubAlbums = String(localized: "severalSubAlbumsCount", bundle: .pwgAPIKit, comment: "%@ sub-albums")
         // Determine string
         var text = ""
         if albumData?.nbSubAlbums ?? Int32.zero == Int32.zero {
