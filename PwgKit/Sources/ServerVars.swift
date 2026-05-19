@@ -5,7 +5,7 @@
 //  Created by Eddy Lelièvre-Berna on 24/05/2021.
 //  Copyright © 2021 Piwigo.org. All rights reserved.
 //
-// A UserDefaultsManager subclass that persists network settings.
+// A UserDefaultsManager subclass that persists server settings.
 
 import Foundation
 import SystemConfiguration

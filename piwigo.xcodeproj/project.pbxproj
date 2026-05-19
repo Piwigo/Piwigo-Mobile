@@ -394,7 +394,6 @@
 		ADDB2A6F2B416FF500FDC1B1 /* EditImageParamsViewController+UITableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDB2A6E2B416FF500FDC1B1 /* EditImageParamsViewController+UITableViewDataSource.swift */; };
 		ADDFD45027EF4C8900DB5081 /* String+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDFD44F27EF4C8900DB5081 /* String+AppTools.swift */; };
 		ADDFD45227EF4E7C00DB5081 /* UIView+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDFD45127EF4E7C00DB5081 /* UIView+AppTools.swift */; };
-		ADDFFB922EEDD52A003DCCFF /* UIColor+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDFFB902EEDD313003DCCFF /* UIColor+AppTools.swift */; };
 		ADDFFB932EEDD720003DCCFF /* NSAttributedString+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDFFB8E2EEDCD71003DCCFF /* NSAttributedString+AppTools.swift */; };
 		ADE1AB90267F45B8001C1EEB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE1AB8F267F45B8001C1EEB /* AppDelegate.swift */; };
 		ADE2A7462FAF89F600E5E12A /* shareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = ADE2A73C2FAF89F600E5E12A /* shareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -403,6 +402,7 @@
 		ADE4C23425755E660060A203 /* Help01ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE4C23325755E660060A203 /* Help01ViewController.swift */; };
 		ADE4C23E25756BC80060A203 /* Help02ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE4C23D25756BC80060A203 /* Help02ViewController.swift */; };
 		ADE6ADB32DC5196500EAE9C8 /* AddActionTableViewFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE6ADB22DC5196500EAE9C8 /* AddActionTableViewFooterView.swift */; };
+		ADE920442FBCC7CD00CAF83A /* PwgUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = ADE920432FBCC7CD00CAF83A /* PwgUIKit */; };
 		ADE986312A7277740087F031 /* VideoHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE986302A7277740087F031 /* VideoHUD.swift */; };
 		ADEA269A285F8D5F00B6C9A0 /* ImageViewController+Share.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEA2699285F8D5F00B6C9A0 /* ImageViewController+Share.swift */; };
 		ADEA269C285F8F2E00B6C9A0 /* ImageViewController+Favorites.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEA269B285F8F2E00B6C9A0 /* ImageViewController+Favorites.swift */; };
@@ -935,7 +935,6 @@
 		ADDFD44F27EF4C8900DB5081 /* String+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+AppTools.swift"; sourceTree = "<group>"; };
 		ADDFD45127EF4E7C00DB5081 /* UIView+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+AppTools.swift"; sourceTree = "<group>"; };
 		ADDFFB8E2EEDCD71003DCCFF /* NSAttributedString+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+AppTools.swift"; sourceTree = "<group>"; };
-		ADDFFB902EEDD313003DCCFF /* UIColor+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+AppTools.swift"; sourceTree = "<group>"; };
 		ADE1AB87267E4BB0001C1EEB /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ADE1AB8F267F45B8001C1EEB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		ADE2A73C2FAF89F600E5E12A /* shareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = shareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1054,6 +1053,7 @@
 				AD2058A42B77E1EF00CF7E0B /* Vision.framework in Frameworks */,
 				AD20589D2B77E03F00CF7E0B /* UniformTypeIdentifiers.framework in Frameworks */,
 				AD5F5C352FB9A1D600D16523 /* PwgAPIKit in Frameworks */,
+				ADE920442FBCC7CD00CAF83A /* PwgUIKit in Frameworks */,
 				ADC82BA32FB8AD7500118FD4 /* PwgKit in Frameworks */,
 				ADC6690F2FB87FEA0089A564 /* PwgUploadKit in Frameworks */,
 			);
@@ -1867,7 +1867,6 @@
 				ADDFD44F27EF4C8900DB5081 /* String+AppTools.swift */,
 				AD7A0CC12C10FF4A008AB50F /* UIButton+AppTools.swift */,
 				AD69739A271885D10015303E /* UIBarButtonItem+AppTools.swift */,
-				ADDFFB902EEDD313003DCCFF /* UIColor+AppTools.swift */,
 				ADBF55702736E1990014E74A /* UIImage+AppTools.swift */,
 				AD1BFE3D2745A15800858145 /* UIImageView+AppTools.swift */,
 				AD21EB7A2E54D0F7004458D7 /* UINavigationBar+AppTools.swift */,
@@ -2175,6 +2174,7 @@
 				AD5F5C332FB9A1D600D16523 /* XCLocalSwiftPackageReference "PwgAPIKit" */,
 				AD10AF342FB9E31C000F0AB4 /* XCLocalSwiftPackageReference "PwgCacheKit" */,
 				ADDD41252FBA0FC7005D8775 /* XCLocalSwiftPackageReference "PwgCacheKit" */,
+				ADE920422FBCC7CD00CAF83A /* XCLocalSwiftPackageReference "PwgUIKit" */,
 			);
 			productRefGroup = D82B8CBC1A67820A000E47CA /* Products */;
 			projectDirPath = "";
@@ -2412,7 +2412,6 @@
 				AD7D415E2B44361E0095A070 /* AutoUploadViewController+UITableViewDelegate.swift in Sources */,
 				ADCD44792D9815A400111138 /* RenameFileViewController+UITextField.swift in Sources */,
 				AD0B62F52DEB3B60001E9684 /* UITextField+Extensions.swift in Sources */,
-				ADDFFB922EEDD52A003DCCFF /* UIColor+AppTools.swift in Sources */,
 				AD0B62F72DEB5837001E9684 /* UploadParametersViewController+UITableViewDataSource.swift in Sources */,
 				ADC1FD9F29E3202500D8ADDC /* PieProgressView.swift in Sources */,
 				AD6A81402DE7A57900F03151 /* TimeFormatSelectorViewController+UITableViewDelegate.swift in Sources */,
@@ -3588,6 +3587,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = PwgCacheKit;
 		};
+		ADE920422FBCC7CD00CAF83A /* XCLocalSwiftPackageReference "PwgUIKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = PwgUIKit;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -3626,6 +3629,10 @@
 		ADC82BA22FB8AD7500118FD4 /* PwgKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PwgKit;
+		};
+		ADE920432FBCC7CD00CAF83A /* PwgUIKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PwgUIKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
