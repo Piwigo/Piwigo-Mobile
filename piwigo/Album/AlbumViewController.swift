@@ -13,6 +13,7 @@ import UIKit
 import PwgKit
 import PwgAPIKit
 import PwgCacheKit
+import PwgUIKit
 import PwgUploadKit
 
 enum pwgImageAction {
@@ -384,7 +385,7 @@ class AlbumViewController: UIViewController
             homeAlbumButton.configuration = getHomeAlbumConfiguration()
             homeAlbumButton.layer.shadowColor = PwgColor.shadow.cgColor
             
-            if AppVars.shared.isDarkPaletteActive {
+            if InterfaceVars.shared.isDarkPaletteActive {
                 addButton.layer.shadowRadius = 1.0
                 addButton.layer.shadowOffset = CGSize.zero
                 createAlbumButton.layer.shadowRadius = 1.0
@@ -411,7 +412,7 @@ class AlbumViewController: UIViewController
         
         // Collection view
         collectionView?.backgroundColor = PwgColor.background
-        collectionView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        collectionView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
         (collectionView?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader) ?? []).forEach { header in
             if let header = header as? AlbumHeaderReusableView {
                 header.applyColorPalette(withDescription: self.attributedComment())

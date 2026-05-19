@@ -9,6 +9,7 @@
 import LocalAuthentication
 import UIKit
 import PwgKit
+import PwgUIKit
 
 protocol LockOptionsDelegate: NSObjectProtocol {
     func didSetAppLock(toState isLocked: Bool)
@@ -52,7 +53,7 @@ class LockOptionsViewController: UIViewController {
 
         // Table view
         lockOptionsTableView?.separatorColor = PwgColor.separator
-        lockOptionsTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        lockOptionsTableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
         lockOptionsTableView?.reloadData()
     }
     

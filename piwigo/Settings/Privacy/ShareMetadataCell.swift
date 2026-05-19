@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PwgUIKit
 
 enum cellIconType : Int {
     case add, remove

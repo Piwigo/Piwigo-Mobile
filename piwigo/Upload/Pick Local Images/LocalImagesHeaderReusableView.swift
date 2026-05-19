@@ -12,6 +12,7 @@ import Photos
 import UIKit
 import PwgKit
 import PwgCacheKit
+import PwgUIKit
 
 @objc protocol LocalImagesHeaderDelegate: NSObjectProtocol {
     func didSelectImagesOfSection(_ section: Int)
@@ -85,8 +86,8 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         // Select/deselect button
         selectButton.layer.cornerRadius = 13.0
         selectButton.setTitle(forState: selectState)
-        selectButton?.layer.shadowColor = AppVars.shared.isDarkPaletteActive ? UIColor.white.cgColor : UIColor.black.cgColor
-        selectButton?.layer.shadowOpacity = AppVars.shared.isDarkPaletteActive ? 0.7 : 0.3
+        selectButton?.layer.shadowColor = InterfaceVars.shared.isDarkPaletteActive ? UIColor.white.cgColor : UIColor.black.cgColor
+        selectButton?.layer.shadowOpacity = InterfaceVars.shared.isDarkPaletteActive ? 0.7 : 0.3
     }
 
     @objc func updateDetailLabel(_ notification: NSNotification) {

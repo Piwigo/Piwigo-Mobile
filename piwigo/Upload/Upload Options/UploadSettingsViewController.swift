@@ -9,6 +9,7 @@
 import UIKit
 import PwgKit
 import PwgCacheKit
+import PwgUIKit
 import PwgUploadKit
 
 class UploadSettingsViewController: UITableViewController {
@@ -66,7 +67,7 @@ class UploadSettingsViewController: UITableViewController {
 
         // Table view
         settingsTableView.separatorColor = PwgColor.separator
-        settingsTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        settingsTableView.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
         settingsTableView.reloadData()
     }
 

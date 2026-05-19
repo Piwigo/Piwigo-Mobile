@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import PwgKit
 import PwgCacheKit
+import PwgUIKit
 import PwgUploadKit
 
 // MARK: - UITableViewDelegate Methods

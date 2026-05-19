@@ -10,6 +10,7 @@
 
 import UIKit
 import PwgKit
+import PwgUIKit
 
 class AboutViewController: UIViewController, UITextViewDelegate {
     
@@ -34,7 +35,7 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         view.backgroundColor = PwgColor.background
 
         // Change text colour according to palette colour
-        piwigoLogo?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        piwigoLogo?.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
 
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)

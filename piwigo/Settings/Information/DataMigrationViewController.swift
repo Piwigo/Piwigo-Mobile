@@ -9,6 +9,7 @@
 import UIKit
 import PwgKit
 import PwgCacheKit
+import PwgUIKit
 
 class DataMigrationViewController: UIViewController {
     
@@ -43,7 +44,7 @@ class DataMigrationViewController: UIViewController {
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
 
         // Change text colour according to palette colour
-        piwigoLogo?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        piwigoLogo?.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
         
         // Text color depdending on background color
         migrationLabel.textColor = PwgColor.text

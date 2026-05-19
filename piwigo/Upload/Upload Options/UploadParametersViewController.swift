@@ -9,6 +9,7 @@
 import UIKit
 import PwgKit
 import PwgCacheKit
+import PwgUIKit
 
 enum EditImageDetailsOrder : Int {
     case imageName
@@ -54,7 +55,7 @@ class UploadParametersViewController: UITableViewController {
 
         // Table view
         paramsTableView.separatorColor = PwgColor.separator
-        paramsTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        paramsTableView.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
         paramsTableView.reloadData()
     }
 

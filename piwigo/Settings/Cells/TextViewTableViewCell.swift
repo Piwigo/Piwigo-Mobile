@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PwgUIKit
 
 class TextViewTableViewCell: UITableViewCell {
     
@@ -33,7 +34,7 @@ class TextViewTableViewCell: UITableViewCell {
         textView.text = description
         textView.textColor = color
         textView.backgroundColor = PwgColor.background
-        textView.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
+        textView.keyboardAppearance = InterfaceVars.shared.isDarkPaletteActive ? .dark : .default
         textViewHeight.constant = UIFont.preferredFont(forTextStyle: .body).lineHeight * 23.0
     }
 

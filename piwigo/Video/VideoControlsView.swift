@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PwgUIKit
 
 protocol VideoControlsDelegate: NSObjectProtocol {
     func didChangeTime(value: Double)

@@ -12,6 +12,7 @@ import Photos
 import UIKit
 import PwgKit
 import PwgCacheKit
+import PwgUIKit
 import PwgUploadKit
 
 class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
@@ -177,7 +178,7 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
 
         // Collection view
-        localImagesCollection.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        localImagesCollection.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
         localImagesCollection.reloadData()
     }
 

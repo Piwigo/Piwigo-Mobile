@@ -11,6 +11,7 @@ import Photos
 import UIKit
 import PwgKit
 import PwgCacheKit
+import PwgUIKit
 import PwgUploadKit
 
 class UploadImageTableViewCell: UITableViewCell {

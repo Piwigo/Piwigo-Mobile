@@ -8,13 +8,14 @@
 
 import Foundation
 import UIKit
+import PwgUIKit
 
 extension UIToolbar {
     
     @MainActor
     func configAppearance() {
         // Style
-        barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
+        barStyle = InterfaceVars.shared.isDarkPaletteActive ? .black : .default
         
         // Buttons
         tintColor = PwgColor.tintColor

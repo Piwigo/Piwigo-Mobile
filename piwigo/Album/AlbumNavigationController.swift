@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import PwgUIKit
 
 class AlbumNavigationController: UINavigationController
 {
@@ -64,6 +65,6 @@ class AlbumNavigationController: UINavigationController
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return AppVars.shared.isDarkPaletteActive ? .lightContent : .darkContent
+        return InterfaceVars.shared.isDarkPaletteActive ? .lightContent : .darkContent
     }
 }

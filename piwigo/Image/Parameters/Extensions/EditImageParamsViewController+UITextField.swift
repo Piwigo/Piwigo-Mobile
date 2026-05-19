@@ -8,7 +8,7 @@
 
 import UIKit
 import PwgKit
-
+import PwgUIKit
 
 // MARK: - UITextFieldDelegate Methods
 extension EditImageParamsViewController: UITextFieldDelegate

@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import PwgUIKit
 
 enum pwgClearClipboard: Int {
     case after10s
@@ -116,7 +117,7 @@ class ClearClipboardViewController: UIViewController {
 
         // Table view
         delayTableView?.separatorColor = PwgColor.separator
-        delayTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        delayTableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
         delayTableView?.reloadData()
     }
     

@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import PwgKit
 import PwgCacheKit
+import PwgUIKit
 
 protocol SelectCounterFormatDelegate: NSObjectProtocol {
     func didSelectCounter(currentCounter: Int64, format: String)
@@ -80,7 +81,7 @@ class CounterFormatSelectorViewController: UIViewController {
 
         // Table view
         tableView.separatorColor = PwgColor.separator
-        tableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        tableView.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
         tableView.reloadData()
     }
     

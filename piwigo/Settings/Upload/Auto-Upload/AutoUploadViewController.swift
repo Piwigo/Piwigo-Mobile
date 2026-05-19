@@ -12,6 +12,7 @@ import UIKit
 import PwgKit
 import PwgCacheKit
 import PwgUploadKit
+import PwgUIKit
 
 class AutoUploadViewController: UIViewController {
 
@@ -72,7 +73,7 @@ class AutoUploadViewController: UIViewController {
 
         // Table view
         autoUploadTableView?.separatorColor = PwgColor.separator
-        autoUploadTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        autoUploadTableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
         autoUploadTableView?.reloadData()
     }
 

@@ -12,6 +12,7 @@ import UIKit
 import PwgKit
 import PwgAPIKit
 import PwgCacheKit
+import PwgUIKit
 
 // MARK: - Rename Album, Update Description
 class AlbumRenaming: NSObject
@@ -49,7 +50,7 @@ class AlbumRenaming: NSObject
             textField.text = albumData.name
             textField.clearButtonMode = .always
             textField.keyboardType = .default
-            textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = InterfaceVars.shared.isDarkPaletteActive ? .dark : .default
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes
             textField.returnKeyType = .continue
@@ -72,7 +73,7 @@ class AlbumRenaming: NSObject
             textField.attributedText = attributedStr
             textField.clearButtonMode = .always
             textField.keyboardType = .default
-            textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = InterfaceVars.shared.isDarkPaletteActive ? .dark : .default
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes
             textField.returnKeyType = .continue
@@ -103,7 +104,7 @@ class AlbumRenaming: NSObject
             renameAlert?.addAction(renameAction)
         }
         renameAlert?.view.tintColor = PwgColor.tintColor
-        renameAlert?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        renameAlert?.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
         if let alert = renameAlert {
             topViewController.present(alert, animated: true) { [self] in
                 // Bugfix: iOS9 - Tint not fully Applied without Reapplying

@@ -10,6 +10,7 @@
 
 import UIKit
 import PwgKit
+import PwgUIKit
 
 class AlbumHeaderReusableView: UICollectionReusableView {
 

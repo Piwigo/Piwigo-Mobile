@@ -11,6 +11,7 @@ import Foundation
 import UIKit
 import PwgKit
 import PwgCacheKit
+import PwgUIKit
 
 // MARK: - UITableView - Diffable Data Source
 extension SelectCategoryViewController

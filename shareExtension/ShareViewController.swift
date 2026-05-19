@@ -11,6 +11,7 @@ import UIKit
 import UniformTypeIdentifiers
 import PwgKit
 import PwgCacheKit
+import PwgUIKit
 import PwgUploadKit
 
 class ShareViewController: UIViewController {
@@ -155,7 +156,7 @@ class ShareViewController: UIViewController {
         // Table view
 //        setTableViewMainHeader()
 //        categoriesTableView?.separatorColor = PwgColor.separator
-//        categoriesTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        categoriesTableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
     }
 
     override func viewWillAppear(_ animated: Bool) {

@@ -10,6 +10,7 @@ import UIKit
 import PwgKit
 import PwgAPIKit
 import PwgCacheKit
+import PwgUIKit
 
 enum pwgCategoryCellButtonState : Int {
     case none

@@ -10,6 +10,7 @@ import AVFoundation
 import UIKit
 import PwgKit
 import PwgUploadKit
+import PwgUIKit
 
 protocol UploadVideoSizeDelegate: NSObjectProtocol {
     func didSelectUploadVideoSize(_ imageSize: Int16)
@@ -62,7 +63,7 @@ class UploadVideoSizeViewController: UIViewController {
 
         // Table view
         tableView.separatorColor = PwgColor.separator
-        tableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        tableView.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
         tableView.reloadData()
     }
 

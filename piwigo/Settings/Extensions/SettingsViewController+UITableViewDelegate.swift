@@ -10,6 +10,7 @@ import MessageUI
 import PwgKit
 import PwgAPIKit
 import PwgCacheKit
+import PwgUIKit
 
 extension SettingsViewController: UITableViewDelegate
 {
@@ -391,7 +392,7 @@ extension SettingsViewController: UITableViewDelegate
                 // Present list of actions
                 let alert = getClearCacheAlert()
                 alert.view.tintColor = PwgColor.tintColor
-                alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+                alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
                 alert.popoverPresentationController?.sourceView = settingsTableView
                 alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
                 alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero

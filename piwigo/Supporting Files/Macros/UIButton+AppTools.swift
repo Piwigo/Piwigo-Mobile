@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PwgUIKit
 
 enum SelectButtonState : Int {
     case none

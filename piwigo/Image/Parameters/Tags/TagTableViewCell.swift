@@ -12,6 +12,7 @@ import UIKit
 import PwgKit
 import PwgAPIKit
 import PwgCacheKit
+import PwgUIKit
 
 enum pwgEditOption : Int {
     case none

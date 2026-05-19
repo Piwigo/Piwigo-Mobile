@@ -13,6 +13,7 @@ import PwgKit
 import PwgAPIKit
 import PwgCacheKit
 import PwgUploadKit
+import PwgUIKit
 
 class TroubleshootingViewController: UIViewController {
     
@@ -64,7 +65,7 @@ class TroubleshootingViewController: UIViewController {
         
         // Table view
         tableView?.separatorColor = PwgColor.separator
-        tableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        tableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
         tableView?.reloadData()
     }
     

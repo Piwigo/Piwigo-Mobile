@@ -11,6 +11,7 @@
 import UIKit
 import PwgKit
 import PwgCacheKit
+import PwgUIKit
 
 protocol DefaultAlbumThumbnailSizeDelegate: NSObjectProtocol {
     func didSelectAlbumDefaultThumbnailSize(_ thumbnailSize: pwgImageSize)
@@ -52,7 +53,7 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController {
 
         // Table view
         tableView.separatorColor = PwgColor.separator
-        tableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        tableView.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
         tableView.reloadData()
     }
     

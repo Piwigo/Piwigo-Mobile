@@ -11,6 +11,7 @@ import UIKit
 import PwgKit
 import PwgAPIKit
 import PwgCacheKit
+import PwgUIKit
 
 class AlbumCollectionViewCell: UICollectionViewCell {
     

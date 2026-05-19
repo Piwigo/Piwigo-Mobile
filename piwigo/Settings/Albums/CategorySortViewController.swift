@@ -10,6 +10,7 @@
 
 import UIKit
 import PwgKit
+import PwgUIKit
 
 protocol CategorySortDelegate: NSObjectProtocol {
     func didSelectCategorySortType(_ sortType: pwgImageSort)
@@ -54,7 +55,7 @@ class CategorySortViewController: UIViewController {
 
         // Table view
         sortSelectTableView.separatorColor = PwgColor.separator
-        sortSelectTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        sortSelectTableView.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
         sortSelectTableView.reloadData()
     }
     

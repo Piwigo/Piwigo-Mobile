@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import PwgKit
 import PwgCacheKit
+import PwgUIKit
 
 // MARK: - UITableViewDelegate Methods
 extension SelectCategoryViewController: UITableViewDelegate
@@ -375,7 +376,7 @@ extension SelectCategoryViewController: UITableViewDelegate
             
             // Present popover view
             alert.view.tintColor = PwgColor.tintColor
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
             alert.popoverPresentationController?.sourceView = categoriesTableView
             alert.popoverPresentationController?.sourceRect = categoriesTableView.rectForRow(at: indexPath)
             alert.popoverPresentationController?.permittedArrowDirections = [.down, .up]

@@ -9,6 +9,7 @@
 //
 
 import UIKit
+import PwgUIKit
 
 class LabelTableViewCell: UITableViewCell {
 

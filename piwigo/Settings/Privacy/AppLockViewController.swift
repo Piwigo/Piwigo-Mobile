@@ -9,6 +9,7 @@
 import Foundation
 import PwgKit
 import UIKit
+import PwgUIKit
 
 enum AppLockAction {
     case enterPasscode
@@ -148,7 +149,7 @@ class AppLockViewController: UIViewController {
                 /// —> Blur and vibrancy effects
                 view.backgroundColor = .clear
                 var blurEffect = UIBlurEffect(style: .dark)
-                if AppVars.shared.isDarkPaletteActive {
+                if InterfaceVars.shared.isDarkPaletteActive {
                     blurEffect = UIBlurEffect(style: .light)
                 }
                 blurEffectView.effect = blurEffect

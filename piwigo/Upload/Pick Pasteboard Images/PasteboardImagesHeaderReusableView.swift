@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PwgUIKit
 
 @objc protocol PasteboardImagesHeaderDelegate: NSObjectProtocol {
     func didSelectImagesOfSection()

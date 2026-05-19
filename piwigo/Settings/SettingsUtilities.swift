@@ -10,6 +10,7 @@ import Foundation
 import MessageUI
 import UIKit
 import PwgKit
+import PwgUIKit
 
 struct SettingsUtilities
 {

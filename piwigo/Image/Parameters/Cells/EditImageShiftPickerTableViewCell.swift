@@ -10,6 +10,7 @@
 
 import UIKit
 import PwgKit
+import PwgUIKit
 
 @objc protocol EditImageShiftPickerDelegate: NSObjectProtocol {
     func didSelectDate(withPicker date: Date)

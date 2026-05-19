@@ -9,6 +9,7 @@
 import MessageUI
 import PwgKit
 import PwgCacheKit
+import PwgUIKit
 import PwgUploadKit
 
 // MARK: UITableViewDataSource Methods

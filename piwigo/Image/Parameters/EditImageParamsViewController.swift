@@ -13,6 +13,7 @@ import UIKit
 import PwgKit
 import PwgAPIKit
 import PwgCacheKit
+import PwgUIKit
 
 @objc protocol EditImageParamsDelegate: NSObjectProtocol {
     func didDeselectImage(withID imageID: Int64)

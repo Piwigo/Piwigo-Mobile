@@ -13,6 +13,7 @@ import UIKit
 import PwgKit
 import PwgAPIKit
 import PwgCacheKit
+import PwgUIKit
 
 @objc protocol EditImageThumbnailDelegate: NSObjectProtocol {
     func didDeselectImage(withID imageID: Int64)
@@ -176,7 +177,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
             textField.text = imageFile.text
             textField.clearButtonMode = .always
             textField.keyboardType = .default
-            textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = InterfaceVars.shared.isDarkPaletteActive ? .dark : .default
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes
             textField.returnKeyType = .continue
@@ -204,7 +205,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
             alert.addAction(renameFileNameAction)
         }
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
         topViewController?.present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = PwgColor.tintColor

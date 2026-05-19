@@ -10,6 +10,7 @@
 
 import UIKit
 import PwgKit
+import PwgUIKit
 
 let pwgActivityTypeMessenger = UIActivity.ActivityType(rawValue: "com.facebook.Messenger.ShareExtension")
 let pwgActivityTypePostInstagram = UIActivity.ActivityType(rawValue: "com.burbn.instagram.shareextension")
@@ -58,7 +59,7 @@ class ShareMetadataViewController: UIViewController {
 
         // Table view
         shareMetadataTableView?.separatorColor = PwgColor.separator
-        shareMetadataTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        shareMetadataTableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
         shareMetadataTableView?.reloadData()
     }
     

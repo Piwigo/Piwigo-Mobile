@@ -10,6 +10,7 @@ import Foundation
 import OSLog
 import UIKit
 import PwgKit
+import PwgUIKit
 
 class LogsViewController: UIViewController {
     

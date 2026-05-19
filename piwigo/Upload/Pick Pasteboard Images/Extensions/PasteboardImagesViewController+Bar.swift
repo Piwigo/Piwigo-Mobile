@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgUIKit
 
 // MARK: Navigation Bar & Buttons
 extension PasteboardImagesViewController {

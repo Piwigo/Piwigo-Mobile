@@ -8,14 +8,15 @@
 
 import Foundation
 import UIKit
+import PwgUIKit
 
 extension UISearchBar {
     
     @MainActor
     func configAppearance() {
-        barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
+        barStyle = InterfaceVars.shared.isDarkPaletteActive ? .black : .default
         searchTextField.textColor = PwgColor.leftLabel
-        searchTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        searchTextField.keyboardAppearance = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
         tintColor = PwgColor.tintColor
     }
 }

@@ -13,6 +13,7 @@ import CoreData
 import PwgKit
 import PwgAPIKit
 import PwgCacheKit
+import PwgUIKit
 
 protocol TagSelectorViewDelegate: NSObjectProtocol {
     func pushTaggedImagesView(_ viewController: UIViewController)
@@ -139,7 +140,7 @@ class TagSelectorViewController: UIViewController {
         
         // Table view
         tagsTableView?.separatorColor = PwgColor.separator
-        tagsTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        tagsTableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
         tagsTableView?.reloadData()
     }
     

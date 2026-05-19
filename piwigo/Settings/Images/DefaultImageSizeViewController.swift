@@ -10,6 +10,7 @@
 
 import UIKit
 import PwgKit
+import PwgUIKit
 
 protocol DefaultImageSizeDelegate: NSObjectProtocol {
     func didSelectImageDefaultSize(_ imageSize: pwgImageSize)
@@ -50,7 +51,7 @@ class DefaultImageSizeViewController: UIViewController {
 
         // Table view
         tableView.separatorColor = PwgColor.separator
-        tableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        tableView.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
         tableView.reloadData()
     }
     

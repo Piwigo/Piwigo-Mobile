@@ -10,6 +10,7 @@ import CoreData
 import UIKit
 import PwgKit
 import PwgCacheKit
+import PwgUIKit
 import PwgUploadKit
 
 class UploadQueueViewController: UIViewController {
@@ -156,7 +157,7 @@ class UploadQueueViewController: UIViewController {
         
         // Table view
         queueTableView.separatorColor = PwgColor.separator
-        queueTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        queueTableView.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
         
         // Table view items
         let visibleCells = queueTableView.visibleCells as? [UploadImageTableViewCell] ?? []
@@ -314,7 +315,7 @@ class UploadQueueViewController: UIViewController {
         
         // Present list of actions
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.barButtonItem = actionBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying

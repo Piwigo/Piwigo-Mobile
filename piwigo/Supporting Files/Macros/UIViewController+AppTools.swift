@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PwgUIKit
 
 let kDelayPiwigoHUD = 500
 let loadingViewTag = 899
@@ -220,7 +221,7 @@ extension UIViewController {
         
         // Present alert
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
         self.present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = PwgColor.tintColor

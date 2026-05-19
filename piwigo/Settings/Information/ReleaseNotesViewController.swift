@@ -10,6 +10,7 @@
 
 import UIKit
 import PwgKit
+import PwgUIKit
 
 class ReleaseNotesViewController: UIViewController {
     
@@ -49,7 +50,7 @@ class ReleaseNotesViewController: UIViewController {
         closeButton.tintColor = PwgColor.tintColor
 
         // Change text colour according to palette colour
-        piwigoLogo?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        piwigoLogo?.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
 
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)

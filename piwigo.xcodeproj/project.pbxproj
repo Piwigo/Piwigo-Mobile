@@ -403,6 +403,7 @@
 		ADE4C23E25756BC80060A203 /* Help02ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE4C23D25756BC80060A203 /* Help02ViewController.swift */; };
 		ADE6ADB32DC5196500EAE9C8 /* AddActionTableViewFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE6ADB22DC5196500EAE9C8 /* AddActionTableViewFooterView.swift */; };
 		ADE920442FBCC7CD00CAF83A /* PwgUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = ADE920432FBCC7CD00CAF83A /* PwgUIKit */; };
+		ADE920462FBCD4D600CAF83A /* PwgUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = ADE920452FBCD4D600CAF83A /* PwgUIKit */; };
 		ADE986312A7277740087F031 /* VideoHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE986302A7277740087F031 /* VideoHUD.swift */; };
 		ADEA269A285F8D5F00B6C9A0 /* ImageViewController+Share.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEA2699285F8D5F00B6C9A0 /* ImageViewController+Share.swift */; };
 		ADEA269C285F8F2E00B6C9A0 /* ImageViewController+Favorites.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEA269B285F8F2E00B6C9A0 /* ImageViewController+Favorites.swift */; };
@@ -1025,6 +1026,7 @@
 				AD26F1032FB8D3F500C86BAC /* UniformTypeIdentifiers.framework in Frameworks */,
 				AD26F1012FB8D3BD00C86BAC /* UIKit.framework in Frameworks */,
 				AD3D3AA22FB8C7C60022EF50 /* PwgKit in Frameworks */,
+				ADE920462FBCD4D600CAF83A /* PwgUIKit in Frameworks */,
 				AD3D3AA42FB8C7CB0022EF50 /* PwgUploadKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1042,7 +1044,6 @@
 				AD20588D2B77DE0B00CF7E0B /* Foundation.framework in Frameworks */,
 				AD2058932B77DF5C00CF7E0B /* ImageIO.framework in Frameworks */,
 				AD20589E2B77E0D200CF7E0B /* Intents.framework in Frameworks */,
-				AD10AF362FB9E31C000F0AB4 /* PwgCacheKit in Frameworks */,
 				AD2058992B77DFB700CF7E0B /* LinkPresentation.framework in Frameworks */,
 				AD2058A02B77E15700CF7E0B /* LocalAuthentication.framework in Frameworks */,
 				AD20588E2B77DE2700CF7E0B /* MessageUI.framework in Frameworks */,
@@ -1052,6 +1053,7 @@
 				AD20588F2B77DE4400CF7E0B /* UIKit.framework in Frameworks */,
 				AD2058A42B77E1EF00CF7E0B /* Vision.framework in Frameworks */,
 				AD20589D2B77E03F00CF7E0B /* UniformTypeIdentifiers.framework in Frameworks */,
+				AD10AF362FB9E31C000F0AB4 /* PwgCacheKit in Frameworks */,
 				AD5F5C352FB9A1D600D16523 /* PwgAPIKit in Frameworks */,
 				ADE920442FBCC7CD00CAF83A /* PwgUIKit in Frameworks */,
 				ADC82BA32FB8AD7500118FD4 /* PwgKit in Frameworks */,
@@ -2067,6 +2069,7 @@
 			packageProductDependencies = (
 				AD3D3AA12FB8C7C60022EF50 /* PwgKit */,
 				AD3D3AA32FB8C7CB0022EF50 /* PwgUploadKit */,
+				ADE920452FBCD4D600CAF83A /* PwgUIKit */,
 			);
 			productName = shareExtension;
 			productReference = ADE2A73C2FAF89F600E5E12A /* shareExtension.appex */;
@@ -3632,6 +3635,11 @@
 		};
 		ADE920432FBCC7CD00CAF83A /* PwgUIKit */ = {
 			isa = XCSwiftPackageProductDependency;
+			productName = PwgUIKit;
+		};
+		ADE920452FBCD4D600CAF83A /* PwgUIKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = ADE920422FBCC7CD00CAF83A /* XCLocalSwiftPackageReference "PwgUIKit" */;
 			productName = PwgUIKit;
 		};
 /* End XCSwiftPackageProductDependency section */

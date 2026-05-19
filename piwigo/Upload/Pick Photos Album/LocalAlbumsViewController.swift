@@ -15,6 +15,7 @@ import PhotosUI
 import UIKit
 import PwgKit
 import PwgCacheKit
+import PwgUIKit
 import PwgUploadKit
 
 protocol LocalAlbumsSelectorDelegate: NSObjectProtocol {
@@ -120,7 +121,7 @@ class LocalAlbumsViewController: UIViewController {
         // Table view
         setTableViewMainHeader()
         localAlbumsTableView?.separatorColor = PwgColor.separator
-        localAlbumsTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        localAlbumsTableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
         localAlbumsTableView?.reloadData()
     }
     

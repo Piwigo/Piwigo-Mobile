@@ -10,6 +10,7 @@
 
 import UIKit
 import PwgKit
+import PwgUIKit
 
 protocol SelectPrivacyDelegate: NSObjectProtocol {
     func didSelectPrivacyLevel(_ privacy: pwgPrivacy)
@@ -57,7 +58,7 @@ class SelectPrivacyViewController: UIViewController {
 
         // Table view
         privacyTableView.separatorColor = PwgColor.separator
-        privacyTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        privacyTableView.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
         privacyTableView.reloadData()
     }
 

@@ -8,6 +8,7 @@
 
 import UIKit
 import PwgKit
+import PwgUIKit
 
 class ColorPaletteViewController: UIViewController {
     
@@ -41,7 +42,7 @@ class ColorPaletteViewController: UIViewController {
         
         // Table view
         tableView?.separatorColor = PwgColor.separator
-        tableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        tableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
         tableView?.reloadData()
     }
     

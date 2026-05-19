@@ -14,6 +14,7 @@ import UIKit
 import PwgKit
 import PwgUploadKit
 import PwgCacheKit
+import PwgUIKit
 
 enum SectionType: Int {
     case month
@@ -204,7 +205,7 @@ class LocalImagesViewController: UIViewController
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
         
         // Collection view
-        localImagesCollection.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        localImagesCollection.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
         localImagesCollection.reloadData()
     }
         

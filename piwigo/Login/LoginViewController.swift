@@ -14,6 +14,7 @@ import UIKit
 import PwgKit
 import PwgAPIKit
 import PwgCacheKit
+import PwgUIKit
 import PwgUploadKit
 
 class LoginViewController: UIViewController {
@@ -37,7 +38,7 @@ class LoginViewController: UIViewController {
     var httpLoginAction: UIAlertAction?
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return AppVars.shared.isDarkPaletteActive ? .lightContent : .darkContent
+        return InterfaceVars.shared.isDarkPaletteActive ? .lightContent : .darkContent
     }
 
     
@@ -121,7 +122,7 @@ class LoginViewController: UIViewController {
         setNeedsStatusBarAppearanceUpdate()
 
         // Change text colour according to palette color
-        piwigoLogo.imageView?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        piwigoLogo.imageView?.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
 
         // Text color depdending on background color
         serverTextField.textColor = PwgColor.text

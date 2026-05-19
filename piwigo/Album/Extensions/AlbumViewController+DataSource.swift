@@ -11,6 +11,7 @@ import UIKit
 import PwgKit
 import PwgAPIKit
 import PwgCacheKit
+import PwgUIKit
 
 // MARK: UICollectionView - Diffable Data Source
 extension AlbumViewController

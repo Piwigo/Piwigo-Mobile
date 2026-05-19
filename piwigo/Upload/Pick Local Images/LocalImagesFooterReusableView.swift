@@ -9,6 +9,7 @@
 import UIKit
 import PwgKit
 import PwgAPIKit
+import PwgUIKit
 
 class LocalImagesFooterReusableView: UICollectionReusableView {
 

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PwgUIKit
 
 class PhoneTableViewCell: UITableViewCell {
     
@@ -48,7 +49,7 @@ class PhoneTableViewCell: UITableViewCell {
 
         // Buttons
         let config = UIImage.SymbolConfiguration(pointSize: labelHeight / 2.0, weight: .semibold)
-        if AppVars.shared.isDarkPaletteActive {
+        if InterfaceVars.shared.isDarkPaletteActive {
             lightButton.setImage(UIImage(systemName: "circle", withConfiguration: config), for: .normal)
             lightButton.imageView?.tintColor = PwgColor.rightLabel
             darkButton.setImage(UIImage(systemName: "checkmark.circle.fill", withConfiguration: config), for: .normal)

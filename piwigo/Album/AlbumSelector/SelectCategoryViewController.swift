@@ -15,6 +15,7 @@ import PwgKit
 import PwgAPIKit
 import PwgCacheKit
 import PwgUploadKit
+import PwgUIKit
 
 enum pwgCategorySelectAction {
     case none
@@ -344,7 +345,7 @@ class SelectCategoryViewController: UIViewController {
         // Table view
         setTableViewMainHeader()
         categoriesTableView?.separatorColor = PwgColor.separator
-        categoriesTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        categoriesTableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
     }
 
     override func viewWillAppear(_ animated: Bool) {

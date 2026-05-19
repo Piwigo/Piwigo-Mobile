@@ -11,6 +11,7 @@ import UIKit
 import PwgKit
 import PwgAPIKit
 import PwgCacheKit
+import PwgUIKit
 import PwgUploadKit
 
 extension AlbumViewController
@@ -140,7 +141,7 @@ extension AlbumViewController
 
         // Present list of actions
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
         if inSelectionMode, contextually == false {
             alert.popoverPresentationController?.barButtonItem = deleteBarButton
         } else if let imageID = imageIDs.first,

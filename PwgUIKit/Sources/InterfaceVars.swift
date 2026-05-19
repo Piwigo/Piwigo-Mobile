@@ -37,5 +37,5 @@ public final class InterfaceVars: @unchecked Sendable {
     // Network variables stored in UserDefaults / App Group
     /// - App color palette (adopts light/dark modes or not)
     @UserDefault("isDarkPaletteActive", defaultValue: false)
-    var isDarkPaletteActive: Bool
+    public var isDarkPaletteActive: Bool
 }

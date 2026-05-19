@@ -10,6 +10,7 @@
 
 import UIKit
 import PwgKit
+import PwgUIKit
 
 typealias CellSliderBlock = (Float) -> Void
 

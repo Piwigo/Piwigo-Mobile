@@ -12,6 +12,7 @@ import UIKit
 import PwgKit
 import PwgAPIKit
 import PwgCacheKit
+import PwgUIKit
 
 protocol ImageDetailDelegate: NSObjectProtocol {
     func didSelectImage(atIndexPath indexPath: IndexPath)

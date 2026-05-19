@@ -10,6 +10,7 @@
 
 import UIKit
 import PwgKit
+import PwgUIKit
 
 class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
     
@@ -32,7 +33,7 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
         view.backgroundColor = PwgColor.background
 
         // Change text colour according to palette colour
-        piwigoLogo?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        piwigoLogo?.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
 
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)

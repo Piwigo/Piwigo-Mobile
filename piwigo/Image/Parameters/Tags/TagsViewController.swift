@@ -13,6 +13,7 @@ import CoreData
 import PwgKit
 import PwgAPIKit
 import PwgCacheKit
+import PwgUIKit
 
 protocol TagsViewControllerDelegate: NSObjectProtocol {
     func didSelectTags(_ selectedTags: Set<Tag>)
@@ -162,7 +163,7 @@ class TagsViewController: UITableViewController {
         
         // Table view
         tagsTableView?.separatorColor = PwgColor.separator
-        tagsTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        tagsTableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
         tagsTableView?.reloadData()
     }
     

@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgUIKit
 
 @objc protocol EditImageTimePickerDelegate: NSObjectProtocol {
     func didSelectTime(withPicker date: Date)

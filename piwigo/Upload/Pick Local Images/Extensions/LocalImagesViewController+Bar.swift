@@ -11,6 +11,7 @@ import Photos
 import UIKit
 import PwgKit
 import PwgCacheKit
+import PwgUIKit
 
 // MARK: Navigation Bar & Buttons
 extension LocalImagesViewController {
