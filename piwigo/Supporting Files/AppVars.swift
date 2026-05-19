@@ -41,9 +41,7 @@ final class AppVars: @unchecked Sendable {
     
     // MARK: - Vars in UserDefaults / Standard
     // Application variables stored in UserDefaults / Standard
-    /// - App color palette (adopts light/dark modes as from iOS 13)
-    @UserDefault("isDarkPaletteActive", defaultValue: false)
-    var isDarkPaletteActive: Bool
+    /// - App color palette (adopts light/dark modes or not)
     @UserDefault("switchPaletteAutomatically", defaultValue: true)
     var switchPaletteAutomatically: Bool
     @UserDefault("isDarkPaletteModeActive", defaultValue: false)

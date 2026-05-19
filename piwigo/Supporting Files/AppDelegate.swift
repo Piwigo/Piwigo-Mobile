@@ -130,6 +130,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         var keys: [String] = []
         keys.append("recentCategories")                 // List of albums recently visited / used (AlbumVars -> CacheVars)
         keys.append("maxNberRecentCategories")          // Maximum number of recent abums  presented to the user (AlbumVars -> CacheVars)
+        keys.append("isDarkPaletteActive")              // App color palette (adopts light/dark modes or not)
         
         // Only migrate values that have not been moved yet
         for key in keys {
