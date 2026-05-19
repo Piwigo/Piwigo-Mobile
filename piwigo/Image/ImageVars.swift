@@ -5,6 +5,7 @@
 //  Created by Eddy Lelièvre-Berna on 26/05/2021.
 //  Copyright © 2021 Piwigo.org. All rights reserved.
 //
+// A UserDefaultsManager subclass that persists image settings.
 
 import Foundation
 import PwgKit

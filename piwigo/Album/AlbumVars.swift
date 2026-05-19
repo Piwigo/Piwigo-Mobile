@@ -5,6 +5,7 @@
 //  Created by Eddy Lelièvre-Berna on 25/05/2021.
 //  Copyright © 2021 Piwigo.org. All rights reserved.
 //
+// A UserDefaultsManager subclass that persists album settings.
 
 import Foundation
 import UIKit

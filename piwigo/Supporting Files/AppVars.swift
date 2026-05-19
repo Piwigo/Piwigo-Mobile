@@ -5,6 +5,7 @@
 //  Created by Eddy Lelièvre-Berna on 01/06/2021.
 //  Copyright © 2021 Piwigo.org. All rights reserved.
 //
+// A UserDefaultsManager subclass that persists app settings.
 
 import Foundation
 import UIKit
