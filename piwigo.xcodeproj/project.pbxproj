@@ -78,7 +78,6 @@
 		AD2058A72B77E27700CF7E0B /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD20588A2B77DDEA00CF7E0B /* CoreData.framework */; };
 		AD2058A82B77E28000CF7E0B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD20588C2B77DE0B00CF7E0B /* Foundation.framework */; };
 		AD211A7A27BAD596005D5E4F /* LoginUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A7927BAD596005D5E4F /* LoginUtilities.swift */; };
-		AD21EB7B2E54D0F7004458D7 /* UINavigationBar+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD21EB7A2E54D0F7004458D7 /* UINavigationBar+AppTools.swift */; };
 		AD21EB7D2E54D22A004458D7 /* UIToolbar+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD21EB7C2E54D22A004458D7 /* UIToolbar+AppTools.swift */; };
 		AD21EB7F2E54D349004458D7 /* UISearchBar+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD21EB7E2E54D349004458D7 /* UISearchBar+AppTools.swift */; };
 		AD24011B2BF0BC7D0039B416 /* AlbumViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD24011A2BF0BC7D0039B416 /* AlbumViewData.swift */; };
@@ -138,7 +137,6 @@
 		AD3207E9240AD93900F00FEB /* PrivacyPolicyViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3207E8240AD93900F00FEB /* PrivacyPolicyViewController.storyboard */; };
 		AD3335432666B6D4000A1487 /* AppVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3335422666B6D4000A1487 /* AppVars.swift */; };
 		AD3369BF23F035F700F3FA80 /* TagSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3369BC23F035F700F3FA80 /* TagSelectorViewController.swift */; };
-		AD35A16B2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD35A16A2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift */; };
 		AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD35CA391E9C1EBC00E3B897 /* Images.xcassets */; };
 		AD36C07B2DEA1C6A00D30C8D /* CounterFormatSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD36C07A2DEA1C6A00D30C8D /* CounterFormatSelectorViewController.swift */; };
 		AD36C07D2DEA1CE400D30C8D /* CounterFormatSelectorViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD36C07C2DEA1CE400D30C8D /* CounterFormatSelectorViewController.storyboard */; };
@@ -328,7 +326,6 @@
 		ADBE0C332BE9687100F16A50 /* AlbumViewController+FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE0C322BE9687100F16A50 /* AlbumViewController+FlowLayout.swift */; };
 		ADBE0C362BE979BB00F16A50 /* AlbumViewController+FetchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE0C352BE979BB00F16A50 /* AlbumViewController+FetchResults.swift */; };
 		ADBE45272449969C00AE0001 /* PhotosFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE45262449969C00AE0001 /* PhotosFetch.swift */; };
-		ADBE950E279D632800397426 /* TableViewUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE950D279D632800397426 /* TableViewUtilities.swift */; };
 		ADBED55426DEBAE300D1A41B /* EditImageParamsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBED55326DEBAE300D1A41B /* EditImageParamsViewController.swift */; };
 		ADBF55712736E1990014E74A /* UIImage+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBF55702736E1990014E74A /* UIImage+AppTools.swift */; };
 		ADC019742471A70F00532A81 /* UploadQueueViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */; };
@@ -577,7 +574,6 @@
 		AD211A7527A85EDB005D5E4F /* ImageCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		AD211A7727AB1FA8005D5E4F /* ImageCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImageCollectionViewCell.xib; sourceTree = "<group>"; };
 		AD211A7927BAD596005D5E4F /* LoginUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginUtilities.swift; sourceTree = "<group>"; };
-		AD21EB7A2E54D0F7004458D7 /* UINavigationBar+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationBar+AppTools.swift"; sourceTree = "<group>"; };
 		AD21EB7C2E54D22A004458D7 /* UIToolbar+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIToolbar+AppTools.swift"; sourceTree = "<group>"; };
 		AD21EB7E2E54D349004458D7 /* UISearchBar+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UISearchBar+AppTools.swift"; sourceTree = "<group>"; };
 		AD24011A2BF0BC7D0039B416 /* AlbumViewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumViewData.swift; sourceTree = "<group>"; };
@@ -647,7 +643,6 @@
 		AD3335422666B6D4000A1487 /* AppVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVars.swift; sourceTree = "<group>"; };
 		AD3369BC23F035F700F3FA80 /* TagSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagSelectorViewController.swift; sourceTree = "<group>"; };
 		AD3369BE23F035F700F3FA80 /* TagSelectorViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TagSelectorViewController.storyboard; sourceTree = "<group>"; };
-		AD35A16A2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint+CommonConstraints.swift"; sourceTree = "<group>"; };
 		AD35CA391E9C1EBC00E3B897 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		AD36C07A2DEA1C6A00D30C8D /* CounterFormatSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterFormatSelectorViewController.swift; sourceTree = "<group>"; };
 		AD36C07C2DEA1CE400D30C8D /* CounterFormatSelectorViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = CounterFormatSelectorViewController.storyboard; path = "piwigo/Settings/Upload/Rename File/CounterFormatSelector/CounterFormatSelectorViewController.storyboard"; sourceTree = SOURCE_ROOT; };
@@ -875,7 +870,6 @@
 		ADBE0C322BE9687100F16A50 /* AlbumViewController+FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumViewController+FlowLayout.swift"; sourceTree = "<group>"; };
 		ADBE0C352BE979BB00F16A50 /* AlbumViewController+FetchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumViewController+FetchResults.swift"; sourceTree = "<group>"; };
 		ADBE45262449969C00AE0001 /* PhotosFetch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotosFetch.swift; sourceTree = "<group>"; };
-		ADBE950D279D632800397426 /* TableViewUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewUtilities.swift; sourceTree = "<group>"; };
 		ADBE950F279DB4E100397426 /* AlbumCollectionViewCellOld.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumCollectionViewCellOld.swift; sourceTree = "<group>"; };
 		ADBED55326DEBAE300D1A41B /* EditImageParamsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditImageParamsViewController.swift; sourceTree = "<group>"; };
 		ADBF55702736E1990014E74A /* UIImage+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+AppTools.swift"; sourceTree = "<group>"; };
@@ -1862,16 +1856,13 @@
 				ADF3EC0B2516515500379E53 /* Device+Model.swift */,
 				AD9D684927DFE9E600517261 /* HapticUtilities.swift */,
 				AD9A1BE724E04F0000D22C86 /* TableHeaderView.swift */,
-				ADBE950D279D632800397426 /* TableViewUtilities.swift */,
 				AD7DE08F2A8587E600C1424E /* Notification.Name+AppTools.swift */,
 				ADDFFB8E2EEDCD71003DCCFF /* NSAttributedString+AppTools.swift */,
-				AD35A16A2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift */,
 				ADDFD44F27EF4C8900DB5081 /* String+AppTools.swift */,
 				AD7A0CC12C10FF4A008AB50F /* UIButton+AppTools.swift */,
 				AD69739A271885D10015303E /* UIBarButtonItem+AppTools.swift */,
 				ADBF55702736E1990014E74A /* UIImage+AppTools.swift */,
 				AD1BFE3D2745A15800858145 /* UIImageView+AppTools.swift */,
-				AD21EB7A2E54D0F7004458D7 /* UINavigationBar+AppTools.swift */,
 				AD21EB7E2E54D349004458D7 /* UISearchBar+AppTools.swift */,
 				AD0B62F42DEB3B60001E9684 /* UITextField+Extensions.swift */,
 				AD21EB7C2E54D22A004458D7 /* UIToolbar+AppTools.swift */,
@@ -2567,7 +2558,6 @@
 				AD18C74027F22A0D002CD05C /* LockOptionsViewController.swift in Sources */,
 				ADC354D02F782CD900101E09 /* AutoUploadIntentHandler.swift in Sources */,
 				ADD210432440DE5A00DD79A6 /* SettingsViewController.swift in Sources */,
-				AD21EB7B2E54D0F7004458D7 /* UINavigationBar+AppTools.swift in Sources */,
 				AD27B87325A7A91800528F5F /* ShareUtilities.swift in Sources */,
 				ADD65C5E2BE77ACF005AC3B8 /* AlbumViewController+TransitioningDelegate.swift in Sources */,
 				AD27B85D25A22A2400528F5F /* ShareImageActivityItemProvider.swift in Sources */,
@@ -2645,14 +2635,12 @@
 				ADACD28F2C317CC200F8790B /* TroubleshootingViewController.swift in Sources */,
 				AD6FD1FC24BF0321009AA3B7 /* UploadSwitchViewController.swift in Sources */,
 				ADA3CEDB24BF50E200694922 /* UploadParametersViewController.swift in Sources */,
-				ADBE950E279D632800397426 /* TableViewUtilities.swift in Sources */,
 				AD06B6E12BEBBCFA00C5F078 /* AlbumViewController+Prefetching.swift in Sources */,
 				AD54834C2EA3CC740032A95E /* EditImageParamsViewController+ShiftTimePicker.swift in Sources */,
 				AD6BA0FE2BA5D15900755257 /* PasteboardImagesViewController+Data.swift in Sources */,
 				ADA3CED924BF50D000694922 /* UploadSettingsViewController.swift in Sources */,
 				AD07CABE26DBE4BA00BEAEFB /* EditImageShiftPickerTableViewCell.swift in Sources */,
 				ADAC548C26170B1200301C1C /* SelectCategoryHeaderView.swift in Sources */,
-				AD35A16B2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift in Sources */,
 				ADB007D72D7B0A5F004A84A7 /* ImageViewController+Bars.swift in Sources */,
 				ADD063B926A04C12002558D2 /* UploadVideoSizeViewController.swift in Sources */,
 				AD7E9AE72A6D7AEA0079BE8F /* PlayerViewControllerCoordinator.swift in Sources */,

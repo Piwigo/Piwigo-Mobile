@@ -9,7 +9,7 @@
 import UIKit
 import PwgUIKit
 
-final class TableViewUtilities {
+public final class TableViewUtilities {
     
     // Constants
     static let margin: CGFloat = 20.0
@@ -18,7 +18,7 @@ final class TableViewUtilities {
     // MARK: - Title & Subtitle
     // NB: For some reason, the UIBarAppearance defined in UINavigationBar+AppTools is not applied.
     @available(iOS 26.0, *)
-    static func largeAttributedSubTitleForAlbum(_ subtitle: String?) -> AttributedString {
+    public static func largeAttributedSubTitleForAlbum(_ subtitle: String?) -> AttributedString {
         guard let subtitle, subtitle.isEmpty == false else { return AttributedString("") }
 
         // Get title
@@ -32,8 +32,8 @@ final class TableViewUtilities {
     // MARK: - Headers
     // Returns the height of a header containing a title and/or a subtitle
     @MainActor
-    static func heightOfHeader(withTitle title: String, text: String = "",
-                        width: CGFloat = CGFloat.zero) -> CGFloat {
+    public static func heightOfHeader(withTitle title: String, text: String = "",
+                                      width: CGFloat = CGFloat.zero) -> CGFloat {
         // Initialise drawing context
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
@@ -64,7 +64,7 @@ final class TableViewUtilities {
     }
     
     @MainActor
-    static func viewOfHeader(withTitle title: String, text: String = "") -> UIView? {
+    public static func viewOfHeader(withTitle title: String, text: String = "") -> UIView? {
         // Check header content
         if title.isEmpty, text.isEmpty { return nil }
 
@@ -114,7 +114,7 @@ final class TableViewUtilities {
     // Returns the top or bottom margins of a cell
     static let defaultVertMargin: CGFloat = 48.0/3.0
     static let defaultOldVertMargin: CGFloat = 35.0/3.0
-    static let vertMargin: CGFloat = {
+    public static let vertMargin: CGFloat = {
         if #available(iOS 26.0, *) {
             return defaultVertMargin
         } else {
@@ -125,7 +125,7 @@ final class TableViewUtilities {
     // Returns the row height
     static let defaultRowHeight = CGFloat(53)
     static let defaultOldRowHeight = CGFloat(44)
-    static let rowHeight: CGFloat = {
+    public static let rowHeight: CGFloat = {
         if #available(iOS 26.0, *) {
             return defaultRowHeight
         } else {
@@ -133,7 +133,7 @@ final class TableViewUtilities {
         }
     }()
     
-    static func rowHeight(forContentSizeCategory contentSizeCategory: UIContentSizeCategory) -> CGFloat {
+    public static func rowHeight(forContentSizeCategory contentSizeCategory: UIContentSizeCategory) -> CGFloat {
         let rowHeight = TableViewUtilities.rowHeight
         switch contentSizeCategory {
         case .extraSmall:
@@ -169,8 +169,8 @@ final class TableViewUtilities {
     
     // Returns the row corner radius
     static let defaultCornerRadius = CGFloat(26)
-    static let defaultOldRCornerRadius = CGFloat(10)
-    static let rowCornerRadius: CGFloat = {
+    public static let defaultOldRCornerRadius = CGFloat(10)
+    public static let rowCornerRadius: CGFloat = {
         if #available(iOS 26.0, *) {
             return defaultCornerRadius
         } else {
@@ -182,9 +182,8 @@ final class TableViewUtilities {
     // MARK: - Footers
     // Returns the height of a footer containing some text
     @MainActor
-    static func heightOfFooter(withText text: String,
-                        width: CGFloat = CGFloat.zero) -> CGFloat {
-
+    public static func heightOfFooter(withText text: String,
+                                      width: CGFloat = CGFloat.zero) -> CGFloat {
         // Check header content
         if text.isEmpty { return CGFloat.zero }
 
@@ -208,7 +207,7 @@ final class TableViewUtilities {
     }
     
     @MainActor
-    static func viewOfFooter(withText text: String = "", alignment: NSTextAlignment = .left) -> UIView? {
+    public static func viewOfFooter(withText text: String = "", alignment: NSTextAlignment = .left) -> UIView? {
         // Check header content
         if text.isEmpty { return nil }
 

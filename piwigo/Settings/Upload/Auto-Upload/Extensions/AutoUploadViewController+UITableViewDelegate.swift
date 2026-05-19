@@ -9,6 +9,7 @@
 import UIKit
 import PwgKit
 import PwgCacheKit
+import PwgUIKit
 
 extension AutoUploadViewController: UITableViewDelegate
 {

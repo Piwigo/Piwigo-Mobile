@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgUIKit
 
 extension AlbumViewController
 {

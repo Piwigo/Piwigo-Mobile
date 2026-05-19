@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Photos
+import PwgUIKit
 
 // MARK: - UITableViewDataSource Methods
 extension LocalAlbumsViewController: UITableViewDataSource {

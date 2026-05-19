@@ -35,7 +35,7 @@ protocol SelectCategoryImageRemovedDelegate: NSObjectProtocol {
     func didRemoveImage()
 }
 
-class SelectCategoryViewController: UIViewController {
+final class SelectCategoryViewController: UIViewController {
 
     weak var delegate: (any SelectCategoryDelegate)?
     weak var imageCopiedDelegate: (any SelectCategoryImageCopiedDelegate)?
@@ -291,9 +291,8 @@ class SelectCategoryViewController: UIViewController {
         categoriesTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
 
         // Check that a root album exists in cache (create it if necessary)
-        guard let _ = try? AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.root.rawValue) else {
-            return
-        }
+        guard let _ = try? AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.root.rawValue)
+        else { return }
         
         // Initialise data source
         do {
@@ -347,7 +346,7 @@ class SelectCategoryViewController: UIViewController {
         categoriesTableView?.separatorColor = PwgColor.separator
         categoriesTableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
@@ -367,7 +366,7 @@ class SelectCategoryViewController: UIViewController {
         // Display albums
         categoriesTableView?.reloadData()
     }
-
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         

@@ -14,7 +14,7 @@ import PwgCacheKit
 import PwgUIKit
 import PwgUploadKit
 
-class ShareViewController: UIViewController {
+final class ShareViewController: UIViewController {
     
     var updateOperations = [BlockOperation]()
 
@@ -113,10 +113,11 @@ class ShareViewController: UIViewController {
         // Table view identifier
         categoriesTableView?.accessibilityIdentifier = "album selector"
         categoriesTableView?.rowHeight = UITableView.automaticDimension
-//        categoriesTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
+        categoriesTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
 
-        // Retrieve user
-        guard let user = try? userProvider.getUserAccount(inContext: mainContext)
+        // Retrieve user and check that a root album exists in cache (create it if necessary)
+        guard let user = try? userProvider.getUserAccount(inContext: mainContext),
+              let _ = try? AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.root.rawValue)
         else {
             extensionContext?.cancelRequest(withError: URLError(.cancelled))
             return
@@ -136,7 +137,7 @@ class ShareViewController: UIViewController {
         cancelBarButton?.accessibilityIdentifier = "CancelSelect"
         
         // Title
-        title = NSLocalizedString("copyImage_title", comment:"Copy to Album")
+        title = String(localized: "uploadImage_title", comment:"Upload to Album")
         
         // Retrieve shared items
         Task {
@@ -148,17 +149,17 @@ class ShareViewController: UIViewController {
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
-//        view.backgroundColor = PwgColor.background
-
+        view.backgroundColor = PwgColor.background
+        
         // Navigation bar
-//        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-
+        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+        
         // Table view
-//        setTableViewMainHeader()
-//        categoriesTableView?.separatorColor = PwgColor.separator
+        setTableViewMainHeader()
+        categoriesTableView?.separatorColor = PwgColor.separator
         categoriesTableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
@@ -168,12 +169,9 @@ class ShareViewController: UIViewController {
         // Navigation "Cancel" button and identifier
         navigationItem.setLeftBarButton(cancelBarButton, animated: true)
         
-        // Register palette changes
-//        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-//                                               name: Notification.Name.pwgPaletteChanged, object: nil)
         // Register font changes
-//        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
-//                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
         
         // Display albums
         categoriesTableView?.reloadData()
@@ -182,6 +180,32 @@ class ShareViewController: UIViewController {
     @objc
     func cancelSelect() -> Void {
         extensionContext?.cancelRequest(withError: URLError(.cancelled))
+    }
+    
+        
+    // MARK: - TableView Main Header
+    private func setTableViewMainHeader() {
+        let headerView = ShareViewHeaderView(frame: .zero)
+        headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
+                             text: String(localized: "uploadSeveralImages_selectAlbum", comment: "Please, select the album in which you wish to upload the photos."))
+        categoriesTableView?.tableHeaderView = headerView
+    }
+    
+    
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            // Update header
+            self.setTableViewMainHeader()
+
+            // Animated update for smoother experience
+            self.categoriesTableView?.beginUpdates()
+            self.categoriesTableView?.endUpdates()
+
+            // Update navigation bar
+            self.navigationController?.navigationBar.configAppearance(withLargeTitles: true)
+        }
     }
     
     
@@ -371,11 +395,11 @@ extension ShareViewController: @MainActor CategoryCellDelegate {
             // Adds first level of sub-albums of the tapped album
             albumsShowingSubAlbums.insert(parentAlbum.pwgID)
         }
-
+        
         // Don't show smart albums
         var andPredicates = predicates
         andPredicates.append(NSPredicate(format: "pwgID > 0"))
-
+        
         // Show sub-albums of deployed albums
         var parentIDs = albumsShowingSubAlbums
         parentIDs.insert(Int32.zero)
@@ -384,7 +408,7 @@ extension ShareViewController: @MainActor CategoryCellDelegate {
         
         // Perform a new fetch
         try? albums.performFetch()
-
+        
         // Shows albums and sub-albums
         categoriesTableView?.reloadData()
     }

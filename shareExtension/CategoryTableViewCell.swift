@@ -10,6 +10,7 @@ import UIKit
 import PwgKit
 import PwgAPIKit
 import PwgCacheKit
+import PwgUIKit
 
 enum pwgCategoryCellButtonState : Int {
     case none
@@ -39,16 +40,16 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
     func configure(with album: Album, atDepth depth:Int,
                    andButtonState buttonState:pwgCategoryCellButtonState) {
         // General settings
-//        backgroundColor = PwgColor.cellBackground
-//        tintColor = PwgColor.tintColor
-//        topMargin.constant = TableViewUtilities.vertMargin
-//        bottomMargin.constant = TableViewUtilities.vertMargin
-
+        backgroundColor = PwgColor.cellBackground
+        tintColor = PwgColor.tintColor
+        topMargin.constant = TableViewUtilities.vertMargin
+        bottomMargin.constant = TableViewUtilities.vertMargin
+        
         // Category data
         albumData = album
         
         // Is this a sub-category?
-//        albumLabel.textColor = PwgColor.leftLabel
+        albumLabel.textColor = PwgColor.leftLabel
         albumLabel.text = albumData.name
         if depth == 0 {
             // Categories in root album or root album itself
@@ -76,7 +77,7 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
             
             self.buttonState = buttonState  // Remember button state
             showHideSubCategoriesImage.isHidden = false
-//            showHideSubCategoriesImage.tintColor = PwgColor.orange
+            showHideSubCategoriesImage.tintColor = PwgColor.orange
             showHideSubCategoriesImage.image = UIImage(systemName: "chevron.forward")
             if buttonState == .hideSubAlbum {
                 self.showHideSubCategoriesImage.transform = CGAffineTransform(rotationAngle: CGFloat(.pi/2.0))

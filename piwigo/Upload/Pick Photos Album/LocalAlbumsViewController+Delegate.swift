@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Photos
+import PwgUIKit
 
 // MARK: - UITableViewDelegate Methods
 extension LocalAlbumsViewController: UITableViewDelegate {

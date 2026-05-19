@@ -1,6 +1,6 @@
 //
 //  UINavigationBar+AppTools.swift
-//  piwigo
+//  PwgUIKit
 //
 //  Created by Eddy Lelièvre-Berna on 19/08/2025.
 //  Copyright © 2025 Piwigo.org. All rights reserved.
@@ -8,12 +8,11 @@
 
 import Foundation
 import UIKit
-import PwgUIKit
 
 extension UINavigationBar {
     
     @MainActor
-    func configAppearance(withLargeTitles: Bool) {
+    public func configAppearance(withLargeTitles: Bool) {
         // Buttons color
         tintColor = PwgColor.tintColor
         

@@ -8,11 +8,12 @@
 
 import Foundation
 import UIKit
+import PwgUIKit
 
-class SelectCategoryHeaderView: UIView {
+final class ShareViewHeaderView: UIView {
 
     private let label = UILabel(frame: .zero)
-    private let margin: CGFloat = 14.0 // + TableViewUtilities.rowCornerRadius
+    private let margin: CGFloat = 14.0 + TableViewUtilities.rowCornerRadius
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -45,7 +46,7 @@ class SelectCategoryHeaderView: UIView {
         titleRect.size.height += 16
         self.frame = titleRect
         label.text = text
-//        label.textColor = PwgColor.leftLabel
+        label.textColor = PwgColor.leftLabel
     }
 
     required init?(coder aDecoder: NSCoder) {
