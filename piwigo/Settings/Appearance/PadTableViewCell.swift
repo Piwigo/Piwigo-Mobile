@@ -69,7 +69,7 @@ class PadTableViewCell: UITableViewCell {
         InterfaceVars.shared.switchPaletteAutomatically = false
 
         // Apply light color palette
-        InterfaceManager.shared.screenBrightnessChanged()
+        InterfaceManager.shared.applyColorPalette(for: traitCollection.userInterfaceStyle)
         
         // Update button
         lightButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
@@ -83,7 +83,7 @@ class PadTableViewCell: UITableViewCell {
         InterfaceVars.shared.switchPaletteAutomatically = false
 
         // Apply dark color palette
-        InterfaceManager.shared.screenBrightnessChanged()
+        InterfaceManager.shared.applyColorPalette(for: traitCollection.userInterfaceStyle)
         
         // Update button
         lightButton.setImage(UIImage(systemName: "circle"), for: .normal)

@@ -62,7 +62,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         AppVars.shared.currentDeviceScale = UIScreen.main.scale
         
         // Color palette depends on system settings
-        InterfaceManager.shared.initColorPalette()
+        InterfaceManager.shared.applyColorPalette(for: UIScreen.main.traitCollection.userInterfaceStyle)
         
         // Check if the device supports haptics.
         let hapticCapability = CHHapticEngine.capabilitiesForHardware()

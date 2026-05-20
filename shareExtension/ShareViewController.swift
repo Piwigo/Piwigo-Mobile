@@ -156,13 +156,17 @@ final class ShareViewController: UIViewController {
         
         // Table view
         setTableViewMainHeader()
+        categoriesTableView?.backgroundColor = PwgColor.background
         categoriesTableView?.separatorColor = PwgColor.separator
         categoriesTableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
+        
+        // Did the user change system settings?
+        InterfaceManager.shared.applyColorPalette(for: traitCollection.userInterfaceStyle)
+        
         // Set colors, fonts, etc.
         applyColorPalette()
 
@@ -176,7 +180,7 @@ final class ShareViewController: UIViewController {
         // Display albums
         categoriesTableView?.reloadData()
     }
-
+    
     @objc
     func cancelSelect() -> Void {
         extensionContext?.cancelRequest(withError: URLError(.cancelled))

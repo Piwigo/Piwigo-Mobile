@@ -102,7 +102,7 @@ extension ColorPaletteViewController: UITableViewDataSource {
             else { preconditionFailure("Could not load SwitchTableViewCell") }
             cell.configure(with: NSLocalizedString("settings_switchPalette", comment: "Automatic"))
             cell.cellSwitch.setOn(InterfaceVars.shared.switchPaletteAutomatically, animated: true)
-            cell.cellSwitchBlock = { switchState in
+            cell.cellSwitchBlock = { [self] switchState in
                 
                 // Number of rows will change accordingly
                 InterfaceVars.shared.switchPaletteAutomatically = switchState
@@ -115,7 +115,7 @@ extension ColorPaletteViewController: UITableViewDataSource {
                 }
                 
                 // Notify palette change
-                InterfaceManager.shared.screenBrightnessChanged()
+                InterfaceManager.shared.applyColorPalette(for: self.traitCollection.userInterfaceStyle)
             }
             cell.accessibilityIdentifier = "switchColourAuto"
             tableViewCell = cell

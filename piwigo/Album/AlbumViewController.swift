@@ -687,11 +687,7 @@ class AlbumViewController: UIViewController
         super.traitCollectionDidChange(previousTraitCollection)
         
         // Should we update the user interface based on the appearance?
-        let isSystemDarkModeActive = UIScreen.main.traitCollection.userInterfaceStyle == .dark
-        if InterfaceVars.shared.isSystemDarkModeActive != isSystemDarkModeActive {
-            InterfaceVars.shared.isSystemDarkModeActive = isSystemDarkModeActive
-            InterfaceManager.shared.screenBrightnessChanged()
-        }
+        InterfaceManager.shared.applyColorPalette(for: traitCollection.userInterfaceStyle)
     }
     
     override func viewWillDisappear(_ animated: Bool) {

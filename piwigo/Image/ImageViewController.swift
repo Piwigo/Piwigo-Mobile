@@ -198,12 +198,8 @@ class ImageViewController: UIViewController {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
-        // Should we update user interface based on the appearance?
-        let isSystemDarkModeActive = UIScreen.main.traitCollection.userInterfaceStyle == .dark
-        if InterfaceVars.shared.isSystemDarkModeActive != isSystemDarkModeActive {
-            InterfaceVars.shared.isSystemDarkModeActive = isSystemDarkModeActive
-            InterfaceManager.shared.screenBrightnessChanged()
-        }
+        // Should we update the user interface based on the appearance?
+        InterfaceManager.shared.applyColorPalette(for: traitCollection.userInterfaceStyle)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
