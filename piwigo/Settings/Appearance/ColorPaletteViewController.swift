@@ -101,22 +101,21 @@ extension ColorPaletteViewController: UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
             else { preconditionFailure("Could not load SwitchTableViewCell") }
             cell.configure(with: NSLocalizedString("settings_switchPalette", comment: "Automatic"))
-            cell.cellSwitch.setOn(AppVars.shared.switchPaletteAutomatically, animated: true)
+            cell.cellSwitch.setOn(InterfaceVars.shared.switchPaletteAutomatically, animated: true)
             cell.cellSwitchBlock = { switchState in
-
+                
                 // Number of rows will change accordingly
-                AppVars.shared.switchPaletteAutomatically = switchState
-
+                InterfaceVars.shared.switchPaletteAutomatically = switchState
+                
                 // What should we do?
                 if switchState {
                     // Switch off light/dark modes
-                    AppVars.shared.isLightPaletteModeActive = false
-                    AppVars.shared.isDarkPaletteModeActive = false
+                    InterfaceVars.shared.isLightPaletteModeActive = false
+                    InterfaceVars.shared.isDarkPaletteModeActive = false
                 }
-
+                
                 // Notify palette change
-                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                appDelegate?.screenBrightnessChanged()
+                InterfaceManager.shared.screenBrightnessChanged()
             }
             cell.accessibilityIdentifier = "switchColourAuto"
             tableViewCell = cell
@@ -124,11 +123,11 @@ extension ColorPaletteViewController: UITableViewDataSource {
         default:
             fatalError()
         }
-
+        
         // Appearance
         tableViewCell.backgroundColor = PwgColor.cellBackground
         tableViewCell.tintColor = PwgColor.tintColor
-
+        
         return tableViewCell
     }
 }

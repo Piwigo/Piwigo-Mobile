@@ -171,7 +171,6 @@
 		AD46C1DB2FB3C92B00CE3D1C /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD46C1D92FB3C92B00CE3D1C /* CategoryTableViewCell.swift */; };
 		AD46C1DE2FB3CBFE00CE3D1C /* ShareViewHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD46C1DD2FB3CBFE00CE3D1C /* ShareViewHeaderView.swift */; };
 		AD46C1E02FB3CE2A00CE3D1C /* ShareViewController+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD46C1DF2FB3CE2A00CE3D1C /* ShareViewController+DataSource.swift */; };
-		AD46C1E22FB3CF5100CE3D1C /* ShareViewController+FetchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD46C1E12FB3CF5100CE3D1C /* ShareViewController+FetchResults.swift */; };
 		AD4902E324C2142800A96066 /* TagsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD4902E224C2142800A96066 /* TagsViewController.storyboard */; };
 		AD4AAFB625A0A1E4007DCD54 /* PasteboardImagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4AAFB225A0A1E4007DCD54 /* PasteboardImagesViewController.swift */; };
 		AD4AAFB725A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD4AAFB325A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard */; };
@@ -401,6 +400,8 @@
 		ADE6ADB32DC5196500EAE9C8 /* AddActionTableViewFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE6ADB22DC5196500EAE9C8 /* AddActionTableViewFooterView.swift */; };
 		ADE920442FBCC7CD00CAF83A /* PwgUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = ADE920432FBCC7CD00CAF83A /* PwgUIKit */; };
 		ADE920462FBCD4D600CAF83A /* PwgUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = ADE920452FBCD4D600CAF83A /* PwgUIKit */; };
+		ADE920482FBCF85300CAF83A /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADE920472FBCF85300CAF83A /* Localizable.xcstrings */; };
+		ADE9204A2FBD029A00CAF83A /* ShareViewController+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE920492FBD029A00CAF83A /* ShareViewController+Delegate.swift */; };
 		ADE986312A7277740087F031 /* VideoHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE986302A7277740087F031 /* VideoHUD.swift */; };
 		ADEA269A285F8D5F00B6C9A0 /* ImageViewController+Share.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEA2699285F8D5F00B6C9A0 /* ImageViewController+Share.swift */; };
 		ADEA269C285F8F2E00B6C9A0 /* ImageViewController+Favorites.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEA269B285F8F2E00B6C9A0 /* ImageViewController+Favorites.swift */; };
@@ -676,7 +677,6 @@
 		AD46C1D92FB3C92B00CE3D1C /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
 		AD46C1DD2FB3CBFE00CE3D1C /* ShareViewHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewHeaderView.swift; sourceTree = "<group>"; };
 		AD46C1DF2FB3CE2A00CE3D1C /* ShareViewController+DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShareViewController+DataSource.swift"; sourceTree = "<group>"; };
-		AD46C1E12FB3CF5100CE3D1C /* ShareViewController+FetchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShareViewController+FetchResults.swift"; sourceTree = "<group>"; };
 		AD4902E224C2142800A96066 /* TagsViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TagsViewController.storyboard; sourceTree = "<group>"; };
 		AD4AAFB225A0A1E4007DCD54 /* PasteboardImagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasteboardImagesViewController.swift; sourceTree = "<group>"; };
 		AD4AAFB325A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = PasteboardImagesViewController.storyboard; sourceTree = "<group>"; };
@@ -938,6 +938,8 @@
 		ADE4C23325755E660060A203 /* Help01ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help01ViewController.swift; sourceTree = "<group>"; };
 		ADE4C23D25756BC80060A203 /* Help02ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help02ViewController.swift; sourceTree = "<group>"; };
 		ADE6ADB22DC5196500EAE9C8 /* AddActionTableViewFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddActionTableViewFooterView.swift; sourceTree = "<group>"; };
+		ADE920472FBCF85300CAF83A /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		ADE920492FBD029A00CAF83A /* ShareViewController+Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShareViewController+Delegate.swift"; sourceTree = "<group>"; };
 		ADE986302A7277740087F031 /* VideoHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoHUD.swift; sourceTree = "<group>"; };
 		ADEA2699285F8D5F00B6C9A0 /* ImageViewController+Share.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Share.swift"; sourceTree = "<group>"; };
 		ADEA269B285F8F2E00B6C9A0 /* ImageViewController+Favorites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Favorites.swift"; sourceTree = "<group>"; };
@@ -1456,6 +1458,7 @@
 			isa = PBXGroup;
 			children = (
 				ADADADE82FB0AA6F003FB43F /* debug.entitlements */,
+				ADE920472FBCF85300CAF83A /* Localizable.xcstrings */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1466,7 +1469,7 @@
 				ADADADEA2FB0AA6F003FB43F /* ShareViewController.swift */,
 				ADF3FD932FB7BD0900C817FB /* ShareViewController.storyboard */,
 				AD46C1DF2FB3CE2A00CE3D1C /* ShareViewController+DataSource.swift */,
-				AD46C1E12FB3CF5100CE3D1C /* ShareViewController+FetchResults.swift */,
+				ADE920492FBD029A00CAF83A /* ShareViewController+Delegate.swift */,
 				AD46C1DD2FB3CBFE00CE3D1C /* ShareViewHeaderView.swift */,
 				AD46C1D92FB3C92B00CE3D1C /* CategoryTableViewCell.swift */,
 				ADADADE92FB0AA6F003FB43F /* Resources */,
@@ -2166,7 +2169,6 @@
 				ADC6690D2FB87FEA0089A564 /* XCLocalSwiftPackageReference "PwgUploadKit" */,
 				ADC82BA12FB8AD7500118FD4 /* XCLocalSwiftPackageReference "PwgKit" */,
 				AD5F5C332FB9A1D600D16523 /* XCLocalSwiftPackageReference "PwgAPIKit" */,
-				AD10AF342FB9E31C000F0AB4 /* XCLocalSwiftPackageReference "PwgCacheKit" */,
 				ADDD41252FBA0FC7005D8775 /* XCLocalSwiftPackageReference "PwgCacheKit" */,
 				ADE920422FBCC7CD00CAF83A /* XCLocalSwiftPackageReference "PwgUIKit" */,
 			);
@@ -2217,6 +2219,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ADE920482FBCF85300CAF83A /* Localizable.xcstrings in Resources */,
 				ADF3FD942FB7BD0900C817FB /* ShareViewController.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2392,9 +2395,9 @@
 			files = (
 				ADADADEC2FB0AA6F003FB43F /* ShareViewController.swift in Sources */,
 				AD46C1DB2FB3C92B00CE3D1C /* CategoryTableViewCell.swift in Sources */,
-				AD46C1E22FB3CF5100CE3D1C /* ShareViewController+FetchResults.swift in Sources */,
 				AD46C1DE2FB3CBFE00CE3D1C /* ShareViewHeaderView.swift in Sources */,
 				AD46C1E02FB3CE2A00CE3D1C /* ShareViewController+DataSource.swift in Sources */,
+				ADE9204A2FBD029A00CAF83A /* ShareViewController+Delegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2823,7 +2826,7 @@
 				DEVELOPMENT_TEAM = ZEC3W885H6;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Supporting Targets/API Testing/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 15;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2863,7 +2866,7 @@
 				DEVELOPMENT_TEAM = "";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Supporting Targets/API Testing/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 15;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2901,7 +2904,7 @@
 				DEVELOPMENT_TEAM = ZEC3W885H6;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Supporting Targets/Screenshots/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 15;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2940,7 +2943,7 @@
 				DEVELOPMENT_TEAM = "";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Supporting Targets/Screenshots/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 15;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2986,7 +2989,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = piwigoIntents/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Piwigo.org. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 15;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -3036,7 +3039,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = piwigoIntents/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Piwigo.org. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 15;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -3081,7 +3084,7 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZEC3W885H6;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Supporting Targets/App Previews/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 15;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -3124,7 +3127,7 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZEC3W885H6;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Supporting Targets/App Previews/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 15;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -3173,7 +3176,7 @@
 				INFOPLIST_FILE = shareExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = shareExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Piwigo.org. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 15;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -3203,7 +3206,7 @@
 				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_STRICT_MEMORY_SAFETY = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -3226,7 +3229,7 @@
 				INFOPLIST_FILE = shareExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = shareExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Piwigo.org. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 15;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -3249,7 +3252,7 @@
 				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_STRICT_MEMORY_SAFETY = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -3417,7 +3420,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Piwigo.org. All rights reserved.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 15;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -3464,7 +3467,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Piwigo.org. All rights reserved.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 15;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -3558,10 +3561,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		AD10AF342FB9E31C000F0AB4 /* XCLocalSwiftPackageReference "PwgCacheKit" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = PwgCacheKit;
-		};
 		AD5F5C332FB9A1D600D16523 /* XCLocalSwiftPackageReference "PwgAPIKit" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = PwgAPIKit;

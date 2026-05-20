@@ -64,14 +64,13 @@ class PhoneTableViewCell: UITableViewCell {
         
     @IBAction func didTapLightMode(_ sender: Any) {
         // Select static light mode
-        AppVars.shared.isLightPaletteModeActive = true
-        AppVars.shared.isDarkPaletteModeActive = false
-        AppVars.shared.switchPaletteAutomatically = false
+        InterfaceVars.shared.isLightPaletteModeActive = true
+        InterfaceVars.shared.isDarkPaletteModeActive = false
+        InterfaceVars.shared.switchPaletteAutomatically = false
 
         // Apply light color palette
-        let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        appDelegate?.screenBrightnessChanged()
-
+        InterfaceManager.shared.screenBrightnessChanged()
+        
         // Update button
         lightButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
         darkButton.setImage(UIImage(systemName: "circle"), for: .normal)
@@ -79,14 +78,13 @@ class PhoneTableViewCell: UITableViewCell {
     
     @IBAction func didTapDarkMode(_ sender: Any) {
         // Select static dark mode
-        AppVars.shared.isLightPaletteModeActive = false
-        AppVars.shared.isDarkPaletteModeActive = true
-        AppVars.shared.switchPaletteAutomatically = false
+        InterfaceVars.shared.isLightPaletteModeActive = false
+        InterfaceVars.shared.isDarkPaletteModeActive = true
+        InterfaceVars.shared.switchPaletteAutomatically = false
 
         // Apply dark color palette
-        let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        appDelegate?.screenBrightnessChanged()
-
+        InterfaceManager.shared.screenBrightnessChanged()
+        
         // Update button
         lightButton.setImage(UIImage(systemName: "circle"), for: .normal)
         darkButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)

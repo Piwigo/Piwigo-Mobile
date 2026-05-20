@@ -160,10 +160,9 @@ class LoginViewController: UIViewController {
 
         // Should we update user interface based on the appearance?
         let isSystemDarkModeActive = UIScreen.main.traitCollection.userInterfaceStyle == .dark
-        if AppVars.shared.isSystemDarkModeActive != isSystemDarkModeActive {
-            AppVars.shared.isSystemDarkModeActive = isSystemDarkModeActive
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-            appDelegate?.screenBrightnessChanged()
+        if InterfaceVars.shared.isSystemDarkModeActive != isSystemDarkModeActive {
+            InterfaceVars.shared.isSystemDarkModeActive = isSystemDarkModeActive
+            InterfaceManager.shared.screenBrightnessChanged()
         }
     }
 

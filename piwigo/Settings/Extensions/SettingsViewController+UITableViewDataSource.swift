@@ -643,9 +643,9 @@ extension SettingsViewController: UITableViewDataSource
             else { preconditionFailure("Could not load LabelTableViewCell") }
             let title = NSLocalizedString("settingsHeader_colorPalette", comment: "Color Palette")
             let detail: String
-            if AppVars.shared.isLightPaletteModeActive == true {
+            if InterfaceVars.shared.isLightPaletteModeActive == true {
                 detail = NSLocalizedString("settings_lightColor", comment: "Light")
-            } else if AppVars.shared.isDarkPaletteModeActive == true {
+            } else if InterfaceVars.shared.isDarkPaletteModeActive == true {
                 detail = NSLocalizedString("settings_darkColor", comment: "Dark")
             } else {
                 detail = NSLocalizedString("settings_switchPalette", comment: "Automatic")

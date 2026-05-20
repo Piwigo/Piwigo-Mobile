@@ -36,14 +36,6 @@ final class AppVars: @unchecked Sendable {
     
     // MARK: - Vars in UserDefaults / Standard
     // Application variables stored in UserDefaults / Standard
-    /// - App color palette (adopts light/dark modes or not)
-    @UserDefault("switchPaletteAutomatically", defaultValue: true)
-    var switchPaletteAutomatically: Bool
-    @UserDefault("isDarkPaletteModeActive", defaultValue: false)
-    var isDarkPaletteModeActive: Bool
-    @UserDefault("isLightPaletteModeActive", defaultValue: false)
-    var isLightPaletteModeActive: Bool
-    
     /// - App Lock option
     @UserDefault("isAppLockActive", defaultValue: false)
     var isAppLockActive: Bool

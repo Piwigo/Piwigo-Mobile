@@ -62,7 +62,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         AppVars.shared.currentDeviceScale = UIScreen.main.scale
         
         // Color palette depends on system settings
-        initColorPalette()
+        InterfaceManager.shared.initColorPalette()
         
         // Check if the device supports haptics.
         let hapticCapability = CHHapticEngine.capabilitiesForHardware()
@@ -131,7 +131,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         var keys: [String] = []
         keys.append("recentCategories")                 // List of albums recently visited / used (AlbumVars -> CacheVars)
         keys.append("maxNberRecentCategories")          // Maximum number of recent abums  presented to the user (AlbumVars -> CacheVars)
-        keys.append("isDarkPaletteActive")              // App color palette (adopts light/dark modes or not)
+        keys.append("isDarkPaletteActive")              // App and extensions adopt a permanent light/dark mode or switch automatically with system
+        keys.append("switchPaletteAutomatically")
+        keys.append("isDarkPaletteModeActive")
+        keys.append("isLightPaletteModeActive")
         
         // Only migrate values that have not been moved yet
         for key in keys {
@@ -771,100 +774,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Update list
         CacheVars.shared.recentCategories = recentAlbumsStr.joined(separator: ",")
         debugPrint("••> Removed album \(categoryIdStr); Recent albums: \(CacheVars.shared.recentCategories) (max: \(CacheVars.shared.maxNberRecentCategories))")
-    }
-
-
-    // MARK: - Light and Dark Modes
-    private func initColorPalette() {
-        // Color palette depends on system settings
-        AppVars.shared.isSystemDarkModeActive = (UIScreen.main.traitCollection.userInterfaceStyle == .dark)
-        debugPrint("••> iOS mode: \(AppVars.shared.isSystemDarkModeActive ? "Dark" : "Light"), App mode: \(AppVars.shared.isDarkPaletteModeActive ? "Dark" : "Light"), app: \(InterfaceVars.shared.isDarkPaletteActive ? "Dark" : "Light")")
-
-        // Apply color palette
-        screenBrightnessChanged()
-    }
-
-    // Called when the screen brightness has changed, when user changes settings
-    // and by traitCollectionDidChange() when the system switches between Light and Dark modes
-    @objc func screenBrightnessChanged() {
-        if AppVars.shared.isLightPaletteModeActive
-        {
-            if !InterfaceVars.shared.isDarkPaletteActive {
-                // Already in light mode but make sure that images stays in appropriate mode
-                NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
-                return;
-            } else {
-                // "Always Light Mode" selected
-                InterfaceVars.shared.isDarkPaletteActive = false
-            }
-        }
-        else if AppVars.shared.isDarkPaletteModeActive
-        {
-            if InterfaceVars.shared.isDarkPaletteActive {
-                // Already showing dark palette but make sure that images stays in appropriate mode
-                NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
-                return;
-            } else {
-                // "Always Dark Mode" selected or iOS Dark Mode active => Dark palette
-                InterfaceVars.shared.isDarkPaletteActive = true
-            }
-        }
-        else if AppVars.shared.switchPaletteAutomatically
-        {
-            // Dynamic palette mode chosen
-            if AppVars.shared.isSystemDarkModeActive {
-                // System-wide dark mode active
-                if InterfaceVars.shared.isDarkPaletteActive {
-                    // Keep dark palette but make sure that images stays in appropriate mode
-                    NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
-                    return;
-                } else {
-                    // Switch to dark mode
-                    InterfaceVars.shared.isDarkPaletteActive = true
-                }
-            } else {
-                // System-wide light mode active
-                if InterfaceVars.shared.isDarkPaletteActive {
-                    // Switch to light mode
-                    InterfaceVars.shared.isDarkPaletteActive = false
-                } else {
-                    // Keep light palette but make sure that images stays in appropriate mode
-                    NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
-                    return;
-                }
-            }
-        } else {
-            // Return to either static Light or Dark mode
-            AppVars.shared.isLightPaletteModeActive = !AppVars.shared.isSystemDarkModeActive;
-            AppVars.shared.isDarkPaletteModeActive = AppVars.shared.isSystemDarkModeActive;
-            InterfaceVars.shared.isDarkPaletteActive = AppVars.shared.isSystemDarkModeActive;
-        }
-        
-        // Tint colour
-        UIView.appearance().tintColor = PwgColor.tintColor
-        
-        // Activity indicator
-        UIActivityIndicatorView.appearance().color = PwgColor.orange
-        
-        // Tab bars
-        UITabBar.appearance().barTintColor = PwgColor.background
-
-        // Styles
-        if InterfaceVars.shared.isDarkPaletteActive
-        {
-            UITabBar.appearance().barStyle = .black
-            UIToolbar.appearance().barStyle = .black
-            UINavigationBar.appearance().barStyle = .black
-        }
-        else {
-            UITabBar.appearance().barStyle = .default
-            UIToolbar.appearance().barStyle = .default
-            UINavigationBar.appearance().barStyle = .default
-        }
-
-        // Notify palette change to views
-        NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
-//        debugPrint("••> App changed to \(InterfaceVars.shared.isDarkPaletteActive ? "dark" : "light") mode");
     }
 }
 
