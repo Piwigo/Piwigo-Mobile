@@ -137,7 +137,7 @@ final class ShareViewController: UIViewController {
         cancelBarButton?.accessibilityIdentifier = "CancelSelect"
         
         // Title
-        title = String(localized: "uploadImage_title", comment:"Upload to Album")
+        title = String(localized: "uploadToAlbum_title", comment:"Upload to Album")
         
         // Retrieve shared items
         Task {

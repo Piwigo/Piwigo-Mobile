@@ -1,7 +1,60 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-
+    "alertCancelButton" : {
+      "comment" : "Cancel"
+    },
+    "alertYesButton" : {
+      "comment" : "Yes"
+    },
+    "categorySelection_allAlbums" : {
+      "comment" : "All Albums"
+    },
+    "maxNberOfRecentAlbums>320px" : {
+      "comment" : "Recent Albums"
+    },
+    "severalSubAlbumsCount" : {
+      "comment" : "%@ sub-albums"
+    },
+    "singleSubAlbumCount" : {
+      "comment" : "%@ sub-album"
+    },
+    "tabBar_albums" : {
+      "comment" : "Albums"
+    },
+    "uploadSeveralImages_selectAlbum" : {
+      "comment" : "Please, select the album in which you wish to upload the photos.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please, select the album in which you wish to upload the photos."
+          }
+        }
+      }
+    },
+    "uploadToAlbum_message" : {
+      "comment" : "Are you sure you want to upload the photos to the album \"%@\"?",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you sure you want to upload the photos to the album \"%@\"?"
+          }
+        }
+      }
+    },
+    "uploadToAlbum_title" : {
+      "comment" : "Upload to Album",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upload to Album"
+          }
+        }
+      }
+    }
   },
   "version" : "1.2"
 }
