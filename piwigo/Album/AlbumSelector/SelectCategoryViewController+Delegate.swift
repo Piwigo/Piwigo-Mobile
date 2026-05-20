@@ -24,24 +24,24 @@ extension SelectCategoryViewController: UITableViewDelegate
             if section == 0 {
                 // Title
                 title = String(format: "%@\n", String(localized: "tabBar_albums", bundle: .pwgKit, comment: "Albums"))
-                text = inputImages.first?.albums?.count ?? 0 > 1 ?
-                NSLocalizedString("categorySelection_one", comment:"Select one of the albums containing this image") :
-                NSLocalizedString("categorySelection_current", comment:"Select the current album for this image")
+                text = inputImages.first?.albums?.count ?? 0 > 1
+                    ? String(localized: "categorySelection_one", comment:"Select one of the albums containing this image")
+                    : String(localized: "categorySelection_current", comment:"Select the current album for this image")
             } else {
                 // Text
-                text = NSLocalizedString("categorySelection_other", comment:"or select another album for this image")
+                text = String(localized: "categorySelection_other", comment:"or select another album for this image")
             }
             
         default:
-            // 1st section —> Recent albums
+            // 1st section —> Recent albums?
             if section == 0 {
                 // Do we have recent albums to show?
                 title = (recentAlbums.fetchedObjects ?? []).count > 0
-                    ? NSLocalizedString("maxNberOfRecentAlbums>320px", comment: "Recent Albums")
+                    ? String(localized: "maxNberOfRecentAlbums>320px", comment: "Recent Albums")
                     : String(localized: "tabBar_albums", bundle: .pwgKit, comment: "Albums")
             } else {
                 // 2nd section
-                title = NSLocalizedString("categorySelection_allAlbums", comment: "All Albums")
+                title = String(localized: "categorySelection_allAlbums", comment: "All Albums")
             }
         }
         return (title, text)
