@@ -12,7 +12,7 @@ protocol VideoControlsDelegate: NSObjectProtocol {
     func didChangeTime(value: Double)
 }
 
-class VideoControlsView: UIVisualEffectView {
+final class VideoControlsView: UIVisualEffectView {
     
     weak var videoControlsDelegate: (any VideoControlsDelegate)?
     

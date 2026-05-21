@@ -10,7 +10,7 @@ import AVKit
 import piwigoKit
 
 // See WWDC 2019 session 503: Delivering Intuitive Media Playback with AVKit
-class PlaybackController {
+final class PlaybackController {
     
     // Singleton
     static let shared = PlaybackController()
