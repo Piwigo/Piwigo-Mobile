@@ -235,7 +235,7 @@ extension UploadManager
     @available(iOS 26.0, *)
     public func runContinuedUploadTask() {
         // Should we postpone uploads?
-        if UploadVars.shared.nberOfUploadsToComplete == 0 ||
+        if (UploadVars.shared.nberOfUploadsToComplete == 0 && !UploadVars.shared.isAutoUploadActive) ||
             UploadVars.shared.isContinuedProcessingTaskActive ||
             UploadVars.shared.isPaused ||
             ProcessInfo.processInfo.isLowPowerModeEnabled ||
