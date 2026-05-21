@@ -20845,10 +20845,100 @@
     "help11_header" : {
       "comment" : "Show your photos and videos on a TV or Mac",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اعرض صورك ومقاطع الفيديو الخاصة بك على التلفزيون أو جهاز Mac"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vis dine fotos og videoer på et tv eller Mac"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeige deine Fotos und Videos auf einem Fernseher oder Mac an"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Show your photos and videos on a TV or Mac"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muestra tus fotos y vídeos en un televisor o en un Mac"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Montrez vos photos et vidéos sur un téléviseur ou un Mac"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mutassa meg fényképeit és videóit tévéképernyőn vagy Mac számítógépen"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tampilkan foto dan video Anda di TV atau Mac"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra foto e video su TV o Mac"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真や動画をテレビやMacで表示する"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laat je foto’s en video’s zien op een tv of Mac"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pokaż swoje zdjęcia i filmy w telewizorze lub Macu"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Просматривайте свои фото и видео на телевизоре или Mac"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visa dina bilder och videoklipp på en TV eller Mac"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在电视或 Mac 上展示您的照片和视频"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在電視或 Mac 上顯示您的照片和影片"
           }
         }
       }
@@ -20856,10 +20946,100 @@
     "help11_text" : {
       "comment" : "Connect your iPhone or iPad to the same Wi-Fi network…",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. قم بتوصيل iPhone أو iPad بنفس شبكة Wi-Fi مثل تلفزيون Apple أو تلفزيون ذكي متوافق مع أيربلاي، أو ماك."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Slut din iPhone eller iPad til det samme Wi-Fi-netværk som dit Apple TV, dit AirPlay-kompatible smart-tv eller din Mac."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Verbinde dein iPhone oder iPad mit demselben WLAN, mit dem auch dein Apple TV, dein mit AirPlay kompatibler Smart-TV oder dein Mac verbunden ist."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "1. Connect your iPhone or iPad to the same Wi-Fi network as your Apple TV, AirPlay-compatible smart TV, or Mac."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Conecta el iPhone o iPad a la misma red wifi que el Apple TV, televisor inteligente compatible con AirPlay o Mac."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Connectez votre iPhone ou iPad au même réseau Wi-Fi que votre Apple TV, votre Smart TV compatible AirPlay ou votre Mac."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Csatlakoztassa az iPhone-t vagy az iPadet ugyanahhoz a Wi-Fi-hálózathoz, amelyhez az Apple TV, az AirPlay-kompatibilis okostelevízió vagy a Mac is kapcsolódik."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Hubungkan iPhone atau iPad ke jaringan Wi-Fi yang sama dengan Apple TV, smart TV yang kompatibel dengan AirPlay, atau Mac."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Connetti il tuo iPhone o iPad alla stessa rete Wi-Fi della tua Apple TV, della smart TV compatibile con AirPlay o del Mac."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. iPhoneまたはiPadをApple TV、AirPlay対応のスマートテレビ、またはMacと同じWi-Fiネットワークに接続します。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Verbind je iPhone of iPad met hetzelfde wifinetwerk als je Apple TV, met AirPlay compatibele smart-tv of Mac."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Połącz iPhone’a lub iPada z tą samą siecią Wi-Fi, co urządzenie Apple TV, telewizor Smart TV zgodny z funkcją AirPlay lub Mac."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Подключите iPhone или iPad к той же сети Wi-Fi, что и Apple TV, совместимый с AirPlay телевизор Smart TV или компьютер Mac."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Anslut din iPhone eller iPad till samma Wi-Fi-nätverk som din Apple TV, AirPlay-kompatibla smart-tv eller Mac."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. 将您的 iPhone 或 iPad 连接到与您的 Apple TV 、兼容AirPlay的智能电视或 Mac 相同的Wi-Fi 网络。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在電視或 Mac 上顯示您的照片和影片。"
           }
         }
       }
@@ -20867,10 +21047,100 @@
     "help11_text2" : {
       "comment" : "Open Control Center.",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. فتح مركز التحكم."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. Åbn Kontrolcenter."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. Öffne das Kontrollzentrum."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "2. Open Control Center."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. Abre el Centro de Control."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. Ouvrez le centre de contrôle."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. Nyissa meg a Vezérlőközpontot."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. Buka Pusat Kontrol."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. Apri il Centro di Controllo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. コントロールセンターを開きます。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. Open het bedieningspaneel."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. Otwórz centrum sterowania."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. Откройте Пункт управления."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. Öppna Kontrollcenter."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. 开放控制中心。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. 開啟「控制中心」。"
           }
         }
       }
@@ -20878,10 +21148,100 @@
     "help11_text3" : {
       "comment" : "Tap the Screen Mirroring button:",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3. اضغط على زر انعكاس الشاشة:"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3. Tryk på knappen Dubler skærm:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3. Tippe auf die Taste „Bildschirmsynchronisierung“:"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "3. Tap the Screen Mirroring button:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3. Toca el botón Duplicar Pantalla:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3. Touchez le bouton Recopie de l’écran :"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3. Koppintson a Képernyő tükrözése gombra:"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3. Ketuk tombol Pencerminan Layar:"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3. Tocca il pulsante Duplica schermo:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3. 画面ミラーリングボタンnull をタップします："
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3. Tik op de knop 'Synchrone weergave':"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3. Stuknij przycisk Klonowanie ekranu:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3. Нажмите кнопку «Повтор экрана»:"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3. Tryck på knappen Skärmdubblering:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3. 点击屏幕镜像按钮："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3. 點選「螢幕鏡像」按鈕："
           }
         }
       }
@@ -20889,10 +21249,100 @@
     "help11_text4" : {
       "comment" : "Select your TV or Mac from the list.",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4. حدد التلفزيون الخاص بك أو Mac من القائمة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4. Vælg dit fjernsyn eller din Mac på listen."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4. Wähle deinen Fernseher oder Mac aus der Liste aus."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "4. Select your TV or Mac from the list."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4. Selecciona el televisor o Mac de la lista."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4. Sélectionnez votre TV ou votre Mac dans la liste."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4. Válassza ki a listából a televíziót vagy a Macet."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4. Pilih TV atau Mac Anda dari daftar."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4. Seleziona il tuo televisore o il Mac dall'elenco."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4. リストからテレビまたはMacを選択します。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4. Selecteer je tv of Mac in de lijst."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4. Wybierz z listy telewizor lub Maca."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4. Выберите телевизор или компьютер Mac из списка."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4. Välj din tv eller Mac från listan."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4. 从列表中选择您的电视或Mac。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4. 從清單中選擇您的電視或 Mac。"
           }
         }
       }

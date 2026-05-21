@@ -205,7 +205,6 @@
     },
     "v2.0.1_text" : {
       "extractionState" : "manual",
-      "generatesSymbol" : false,
       "localizations" : {
         "ar" : {
           "stringUnit" : {
