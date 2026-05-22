@@ -10303,6 +10303,17 @@
           }
         }
       }
+    },
+    "v4.2.2_text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.2.2\n\n• Fixes a bug related with the auto-upload option\n• Improved translations"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"
