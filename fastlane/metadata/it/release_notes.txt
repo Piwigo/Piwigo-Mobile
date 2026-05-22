@@ -1,2 +1,2 @@
-• Aggiungi visualizzazioni di aiuto
-• Correzioni bug
+• Risolto un bug correlato con l'opzione di caricamento automatico
+• Traduzioni migliorate

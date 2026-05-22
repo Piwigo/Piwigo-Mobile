@@ -1,2 +1,2 @@
-• Dodaj widoki pomocy
-• Poprawki błędów
+• Naprawiono błąd związany z opcją automatycznego wysyłania
+• Ulepszone tłumaczenia

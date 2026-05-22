@@ -1,2 +1,2 @@
-• Add help views
-• Bug fixes
+• Fixed a bug related with the auto-upload option
+• Improved translations

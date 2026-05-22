@@ -1,2 +1,2 @@
-• Súgó nézetek hozzáadása
-• Hibajavítások
+• Kijavítottuk az automatikus feltöltés opcióval kapcsolatos hibát
+• Javítottuk a fordításokat

@@ -1,2 +1,2 @@
-• Hilfeansichten hinzugefügt
-• Fehlerbehebungen
+• Fehler behoben im Zusammenhang mit der Auto-Upload Option
+• Verbesserte Übersetzungen

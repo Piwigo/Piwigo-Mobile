@@ -1,2 +1,2 @@
-• Se han añadido vistas de ayuda
-• Corrección de errores
+• Se corrigió un error relacionado con la opción de subida automática
+• Mejoradas traducciones

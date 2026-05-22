@@ -1,2 +1,2 @@
-• Tilføj hjælpevisning
-• Fejlrettelser
+• Rettet en fejl relateret til auto-upload option
+• Forbedrede oversættelser

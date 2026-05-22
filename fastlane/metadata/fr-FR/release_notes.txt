@@ -1,2 +1,2 @@
-• Ajout de vues d'aide
-• Correction de bugs
+• Correction d'un bug lié à l'option de transfert automatique
+• Amélioration des traductions

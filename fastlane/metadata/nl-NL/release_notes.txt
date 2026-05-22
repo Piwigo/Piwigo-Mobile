@@ -1,2 +1,2 @@
-• Voeg help views toe
-• Foutjes verbeterd
+• Een bug met betrekking tot de auto-upload optie
+• Verbeterde vertalingen
