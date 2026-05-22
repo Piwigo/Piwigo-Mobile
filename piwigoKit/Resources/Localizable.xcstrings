@@ -5667,7 +5667,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Found and will discard an upload missing a valid identifier."
+            "value" : "تم العثور على ملف تم تحميله يفتقر إلى معرّف صالح، وسيتم تجاهله."
           }
         },
         "da" : {
