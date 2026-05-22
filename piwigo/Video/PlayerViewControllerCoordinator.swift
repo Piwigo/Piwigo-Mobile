@@ -16,7 +16,7 @@ protocol PlayerViewControllerCoordinatorDelegate: AnyObject {
 }
 
 // See WWDC 2019 session 503: Delivering Intuitive Media Playback with AVKit
-class PlayerViewControllerCoordinator: NSObject {
+final class PlayerViewControllerCoordinator: NSObject {
     
     // MARK: - Properties
     weak var delegate: (any PlayerViewControllerCoordinatorDelegate)?

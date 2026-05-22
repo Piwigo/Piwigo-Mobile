@@ -1,2 +1,2 @@
-• Hjälpsidor har lagts till
-• Felkorrigeringar
+• Fixade en bugg relaterad till auto-uppladdningsalternativet
+• Förbättrade översättningar

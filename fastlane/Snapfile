@@ -19,6 +19,7 @@
 # Install fastlane
 #	gem install bundler
 #   gem cleanup (from time to time to speed up fastlane)
+#   gem update
 #   bundle install
 #	bundle update --bundler
 #	gem install fastlane -NV
