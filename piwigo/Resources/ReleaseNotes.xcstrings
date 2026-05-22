@@ -10208,19 +10208,19 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "الإصدار 4.2.1\n\n• إضافة مشاهدة المساعدة\n• إصلاحات الشوائب"
+            "state" : "translated",
+            "value" : "الإصدار 4.2.1\n9 مايو 2026\n\n• إضافة مشاهدة المساعدة\n• إصلاحات الشوائب"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Version 4.2.1\n\n• Tilføj hjælpevisning\n• Fejlrettelser"
+            "state" : "translated",
+            "value" : "Version 4.2.1\n9 maj 2026\n\n• Tilføj hjælpevisning\n• Fejlrettelser"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Version 4.2.1\n\n• Hilfeansichten hinzugefügt\n• Fehlerbehebungen"
           }
         },
@@ -10232,74 +10232,74 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Versión 4.2.1\n\n• Se han añadido vistas de ayuda\n• Corrección de errores"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Version 4.2.1\n\n• Ajout de vues d'aide\n• Correction de bugs"
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "4.2.1-es verzió\n\n• Súgó nézetek hozzáadása\n• Hibajavítások"
+            "state" : "translated",
+            "value" : "4.2.1-es verzió\n2026 Május 9\n\n• Súgó nézetek hozzáadása\n• Hibajavítások"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Versi 4.2.1\n\n• Menambahkan tampilan bantuan\n• Perbaikan bug"
+            "state" : "translated",
+            "value" : "Versi 4.2.1\n9 Mei 2026\n\n• Menambahkan tampilan bantuan\n• Perbaikan bug"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Versione 4.2.1\n\n• Aggiungi visualizzazioni di aiuto\n• Correzioni bug"
+            "state" : "translated",
+            "value" : "Versione 4.2.1\n9 maggio 2026\n\n• Aggiungi visualizzazioni di aiuto\n• Correzioni bug"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "バージョン 4.2.1\n\n• ヘルプビューの追加\n• バグ修正"
+            "state" : "translated",
+            "value" : "バージョン 4.2.1\n2026年5月9日\n\n• ヘルプビューの追加\n• バグ修正"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Versie 4.2.1\n\n• Voeg help views toe\n• Foutjes verbeterd"
+            "state" : "translated",
+            "value" : "Versie 4.2.1\n9 Mei 2026\n\n• Voeg help views toe\n• Foutjes verbeterd"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Wersja 4.2.1\n\n• Dodaj widoki pomocy\n• Poprawki błędów"
+            "state" : "translated",
+            "value" : "Wersja 4.2.1\n9 maja 2026\n\n• Dodaj widoki pomocy\n• Poprawki błędów"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Версия 4.2.1\n\n• Добавить вид помощи\n• Исправления ошибок"
+            "state" : "translated",
+            "value" : "Версия 4.2.1\n9 мая 2026\n\n• Добавить вид помощи\n• Исправления ошибок"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Version 4.2.1\n\n• Hjälpsidor har lagts till\n• Felkorrigeringar"
+            "state" : "translated",
+            "value" : "Version 4.2.1\n9 maj 2026\n\n• Hjälpsidor har lagts till\n• Felkorrigeringar"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "版本 4.2.1\n\n• 添加帮助视图\n• 修复了若干问题"
+            "state" : "translated",
+            "value" : "版本 4.2.1\n2026年5月9日\n\n• 添加帮助视图\n• 修复了若干问题"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "版本 4.2.1\n\n• 新增說明頁面\n• 錯誤修正"
+            "state" : "translated",
+            "value" : "版本 4.2.1\n2026年5月9日\n\n• 新增說明頁面\n• 錯誤修正"
           }
         }
       }
@@ -10307,10 +10307,100 @@
     "v4.2.2_text" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإصدار 4.2.2\n\n• إصلاح خطأ يتعلق بخيار التحميل التلقائي\n• تحسين الترجمات"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.2.2\n\n• Rettet en fejl relateret til auto-upload option\n• Forbedrede oversættelser"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.2.2\n\n• Fehler behoben im Zusammenhang mit der Auto-Upload Option\n• Verbesserte Übersetzungen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 4.2.2\n\n• Fixed a bug related with the auto-upload option\n• Improved translations"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión 4.2.2\n\n• Se corrigió un error relacionado con la opción de subida automática\n• Mejoradas traducciones"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.2.2\n\n• Correction d'un bug lié à l'option de transfert automatique\n• Amélioration des traductions"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4.2.2-es verzió\n\n• Kijavítottuk az automatikus feltöltés opcióval kapcsolatos hibát\n• Javítottuk a fordításokat"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versi 4.2.2\n\n• Memperbaiki bug yang terkait dengan opsi unggah otomatis\n• Meningkatkan terjemahan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versione 4.2.2\n\n• Risolto un bug correlato con l'opzione di caricamento automatico\n• Traduzioni migliorate"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バージョン 4.2.2\n\n• 自動アップロードオプションに関する不具合を修正しました\n• 翻訳を改善しました"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versie 4.2.2\n\n• Een bug met betrekking tot de auto-upload optie\n• Verbeterde vertalingen"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wersja 4.2.2\n\n• Naprawiono błąd związany z opcją automatycznego wysyłania\n• Ulepszone tłumaczenia"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версия 4.2.2\n\n• Исправлена ошибка, связанная с функцией автоматической загрузки\n• Улучшены переводы"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.2.2\n\n• Fixade en bugg relaterad till auto-uppladdningsalternativet\n• Förbättrade översättningar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 4.2.2\n\n• 修复了与自动上传选项相关的一个错误\n• 改进了翻译"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 4.2.2\n\n• 修正了與自動上傳選項相關的錯誤\n• 改進了翻譯內容"
           }
         }
       }
