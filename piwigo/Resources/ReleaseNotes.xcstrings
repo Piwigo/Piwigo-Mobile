@@ -10208,97 +10208,97 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "الإصدار 4.2.1\n\n• إضافة مشاهدة المساعدة\n• إصلاحات الشوائب"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Version 4.2.1\n\n• Tilføj hjælpevisning\n• Fejlrettelser"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Version 4.2.1\n\n• Hilfeansichten hinzugefügt\n• Fehlerbehebungen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.2.1\n\n• Add help views\n• Bug fixes"
+            "value" : "Version 4.2.1\nMay 9, 2026\n\n• Add help views\n• Bug fixes"
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Versión 4.2.1\n\n• Se han añadido vistas de ayuda\n• Corrección de errores"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Version 4.2.1\n\n• Ajout de vues d'aide\n• Correction de bugs"
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "4.2.1-es verzió\n\n• Súgó nézetek hozzáadása\n• Hibajavítások"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Versi 4.2.1\n\n• Menambahkan tampilan bantuan\n• Perbaikan bug"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Versione 4.2.1\n\n• Aggiungi visualizzazioni di aiuto\n• Correzioni bug"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "バージョン 4.2.1\n\n• ヘルプビューの追加\n• バグ修正"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Versie 4.2.1\n\n• Voeg help views toe\n• Foutjes verbeterd"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Wersja 4.2.1\n\n• Dodaj widoki pomocy\n• Poprawki błędów"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Версия 4.2.1\n\n• Добавить вид помощи\n• Исправления ошибок"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Version 4.2.1\n\n• Hjälpsidor har lagts till\n• Felkorrigeringar"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "版本 4.2.1\n\n• 添加帮助视图\n• 修复了若干问题"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "版本 4.2.1\n\n• 新增說明頁面\n• 錯誤修正"
           }
         }
