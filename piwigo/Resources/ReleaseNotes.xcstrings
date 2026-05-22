@@ -10310,7 +10310,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.2.2\n\n• Fixes a bug related with the auto-upload option\n• Improved translations"
+            "value" : "Version 4.2.2\n\n• Fixed a bug related with the auto-upload option\n• Improved translations"
           }
         }
       }
