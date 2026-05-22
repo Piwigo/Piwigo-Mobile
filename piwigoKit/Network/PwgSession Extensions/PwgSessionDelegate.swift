@@ -64,7 +64,7 @@ extension PwgSessionDelegate: URLSessionDelegate {
                 completionHandler(.rejectProtectionSpace, nil)
                 return
         }
-
+        
         // Initialise SSL certificate approval flag
         NetworkVars.shared.didRejectCertificate = false
 
@@ -73,7 +73,7 @@ extension PwgSessionDelegate: URLSessionDelegate {
             completionHandler(.performDefaultHandling, nil)
             return
         }
-
+        
         // Check validity of certificate
         if KeychainUtilities.isSSLtransactionValid(inState: serverTrust, for: NetworkVars.shared.domain()) {
             let credential = URLCredential(trust: serverTrust)
@@ -84,8 +84,9 @@ extension PwgSessionDelegate: URLSessionDelegate {
         // If there is no certificate, reject server (should rarely happen)
         if SecTrustGetCertificateCount(serverTrust) == 0 {
             completionHandler(.performDefaultHandling, nil)
+            return
         }
-
+        
         // Retrieve the certificate of the server
         guard let certificates = SecTrustCopyCertificateChain(serverTrust) as? [SecCertificate],
               let certificate = certificates.first
@@ -93,7 +94,7 @@ extension PwgSessionDelegate: URLSessionDelegate {
             completionHandler(.performDefaultHandling, nil)
             return
         }
-
+        
         // Check if the certificate is trusted by user (i.e. is in the Keychain)
         // Case where the certificate is e.g. self-signed
         if KeychainUtilities.isCertKnownForSSLtransaction(certificate, for: NetworkVars.shared.domain()) {
@@ -124,7 +125,7 @@ extension PwgSessionDelegate: URLSessionDelegate {
         // Will ask the user whether we should trust this server.
         NetworkVars.shared.certificateInformation = KeychainUtilities.getCertificateInfo(certificate, for: NetworkVars.shared.domain())
         NetworkVars.shared.didRejectCertificate = true
-
+        
         // Reject the request
         completionHandler(.performDefaultHandling, nil)
     }
