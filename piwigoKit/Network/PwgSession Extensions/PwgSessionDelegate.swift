@@ -19,21 +19,18 @@ public final class PwgSessionDelegate: NSObject, Sendable {
     public static let shared = PwgSessionDelegate()
     
     // For retrieving the image URL from a task
-    func getImageDownload(fromTask task: URLSessionTask) -> ImageDownload? {
+    func imageURL(fromTask task: URLSessionTask) -> URL? {
         // Use task description since v4.2
         if let urlString = task.taskDescription,
-           let imageURL = URL(string: urlString),
-           ImageDownloader.activeDownloads.keys.contains(imageURL) {
-            return ImageDownloader.activeDownloads[imageURL]
+           let imageURL = URL(string: urlString) {
+            return imageURL
         }
-        
+
         // Retrieve URL from request before v4.2 (did crash rarely)
         if let request = task.originalRequest ?? task.currentRequest,
-           let imageURL = request.url,
-           ImageDownloader.activeDownloads.keys.contains(imageURL) {
-            return ImageDownloader.activeDownloads[imageURL]
+           let imageURL = request.url {
+            return imageURL
         }
-        
         return nil
     }
 }
@@ -52,7 +49,7 @@ extension PwgSessionDelegate: URLSessionDelegate {
 
     public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: (any Error)?) {
         PwgSessionDelegate.logger.notice("Session invalidated.")
-        ImageDownloader.activeDownloads = [ : ]
+        Task { await ImageDownloader.shared.cancelAll() }
     }
     
     public func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge,

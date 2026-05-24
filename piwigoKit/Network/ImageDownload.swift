@@ -26,7 +26,7 @@ extension pwgImageType {
     }
 }
 
-final class ImageDownload {
+final class ImageDownload: @unchecked Sendable {
     
     // MARK: - Variables and Properties
     let imageURL: URL!
@@ -34,6 +34,7 @@ final class ImageDownload {
     let fileURL: URL!
     let placeHolder: UIImage!
     var task: URLSessionDownloadTask?
+    var isCancelled: Bool = false
     var resumeData: Data?
     var progress = Float.zero
     var progressHandler: ((Float) -> Void)?
