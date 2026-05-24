@@ -10309,20 +10309,20 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "الإصدار 4.2.2\n\n• إصلاح خطأ يتعلق بخيار التحميل التلقائي\n• تحسين الترجمات"
+            "state" : "translated",
+            "value" : "الإصدار 4.2.2\n24 مايو 2026\n\n• إصلاح خطأ يتعلق بخيار التحميل التلقائي\n• تحسين الترجمات"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Version 4.2.2\n\n• Rettet en fejl relateret til auto-upload option\n• Forbedrede oversættelser"
+            "state" : "translated",
+            "value" : "Version 4.2.2\n24 maj 2026\n\n• Rettet en fejl relateret til auto-upload option\n• Forbedrede oversættelser"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Version 4.2.2\n\n• Fehler behoben im Zusammenhang mit der Auto-Upload Option\n• Verbesserte Übersetzungen"
+            "state" : "translated",
+            "value" : "Version 4.2.2\nMai 24, 2026\n\n• Fehler behoben im Zusammenhang mit der Auto-Upload Option\n• Verbesserte Übersetzungen"
           }
         },
         "en" : {
@@ -10333,73 +10333,73 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Versión 4.2.2\n\n• Se corrigió un error relacionado con la opción de subida automática\n• Mejoradas traducciones"
+            "state" : "translated",
+            "value" : "Versión 4.2.2\n24 de mayo 2026\n\n• Se ha corregido un error relacionado con la opción de subidas automáticas\n• Mejoras en las traducciones"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Version 4.2.2\n\n• Correction d'un bug lié à l'option de transfert automatique\n• Amélioration des traductions"
+            "state" : "translated",
+            "value" : "Version 4.2.2\n24 mai 2026\n\n• Correction d'un bug lié à l'option de transfert automatique\n• Amélioration des traductions"
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "4.2.2-es verzió\n\n• Kijavítottuk az automatikus feltöltés opcióval kapcsolatos hibát\n• Javítottuk a fordításokat"
+            "state" : "translated",
+            "value" : "4.2.2-es verzió\n2026 Május 24\n\n• Kijavítottuk az automatikus feltöltés opcióval kapcsolatos hibát\n• Javítottuk a fordításokat"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Versi 4.2.2\n\n• Memperbaiki bug yang terkait dengan opsi unggah otomatis\n• Meningkatkan terjemahan"
+            "state" : "translated",
+            "value" : "Versi 4.2.2\n24 Mei 2026\n\n• Memperbaiki bug yang terkait dengan opsi unggah otomatis\n• Meningkatkan terjemahan"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Versione 4.2.2\n\n• Risolto un bug correlato con l'opzione di caricamento automatico\n• Traduzioni migliorate"
+            "state" : "translated",
+            "value" : "Versione 4.2.2\n24 maggio 2026\n\n• Risolto un bug correlato con l'opzione di caricamento automatico\n• Traduzioni migliorate"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "バージョン 4.2.2\n\n• 自動アップロードオプションに関する不具合を修正しました\n• 翻訳を改善しました"
+            "state" : "translated",
+            "value" : "バージョン 4.2.2\n2026年5月24日\n\n• 自動アップロードオプションに関する不具合を修正しました\n• 翻訳を改善しました"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Versie 4.2.2\n\n• Een bug met betrekking tot de auto-upload optie\n• Verbeterde vertalingen"
+            "state" : "translated",
+            "value" : "Versie 4.2.2\n24 Mei 2026\n\n• Een bug met betrekking tot de auto-upload optie\n• Verbeterde vertalingen"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Wersja 4.2.2\n\n• Naprawiono błąd związany z opcją automatycznego wysyłania\n• Ulepszone tłumaczenia"
+            "state" : "translated",
+            "value" : "Wersja 4.2.2\n24 maja 2026\n\n• Naprawiono błąd związany z opcją automatycznego wysyłania\n• Ulepszone tłumaczenia"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Версия 4.2.2\n\n• Исправлена ошибка, связанная с функцией автоматической загрузки\n• Улучшены переводы"
+            "state" : "translated",
+            "value" : "Версия 4.2.2\n24 мая 2026\n\n• Исправлена ошибка, связанная с функцией автоматической загрузки\n• Улучшены переводы"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Version 4.2.2\n\n• Fixade en bugg relaterad till auto-uppladdningsalternativet\n• Förbättrade översättningar"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "版本 4.2.2\n\n• 修复了与自动上传选项相关的一个错误\n• 改进了翻译"
+            "state" : "translated",
+            "value" : "版本 4.2.2\n2026年5月24日\n\n• 修复了与自动上传选项相关的一个错误\n• 改进了翻译"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "版本 4.2.2\n\n• 修正了與自動上傳選項相關的錯誤\n• 改進了翻譯內容"
           }
         }
@@ -10408,10 +10408,100 @@
     "v4.2.3_text" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإصدار 4.2.3\n\n• إصلاح الأخطاء وتحسين الواجهة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.2.3\n\n• Retter fejl og forbedrer brugerfladen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.2.3\n\n• Behebt Fehler und verbessert die Benutzeroberfläche"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 4.2.3\n\n• Fixes bugs and improves the interface"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión 4.2.3\n\n• Corrige errores y mejora la interfaz"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.2.3\n\n• Corrige les bugs et améliore l'interface"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4.2.3 verzió\n\n• Hibajavítások és a kezelőfelület javítása"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versi 4.2.3\n\n• Memperbaiki bug dan meningkatkan antarmuka"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versione 4.2.3\n\n• Corregge i bug e migliora l'interfaccia"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バージョン4.2.3\n\n• バグの修正とインターフェイスの改善"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versie 4.2.3\n\n• Lost bugs op en verbetert de interface"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wersja 4.2.3\n\n• Poprawki błędów i usprawnienia interfejsu"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версия 4.2.3\n\n• Исправлены ошибки и улучшен интерфейс"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.2.3\n\n• Fixar buggar och förbättrar gränssnittet"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 4.2.3\n\n• 修正错误并改进界面"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 4.2.3\n\n• 修正錯誤並改進介面"
           }
         }
       }
