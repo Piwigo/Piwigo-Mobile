@@ -394,10 +394,12 @@ extension AlbumViewController
     @objc func updateOldButton(withNberOfUploads nberOfUploads: Int) {
         // Only called in the root or default album
         if nberOfUploads > 0 {
-            if (!ServerVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading) ||
+            if (!NetworkVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading) ||
+                [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) ||
                 ProcessInfo.processInfo.isLowPowerModeEnabled {
                 nberOfUploadsLabel.text = "⚠️"
-            } else {
+            }
+            else {
                 // Set number of uploads
                 let nber = String(format: "%lu", UInt(nberOfUploads))
                 if nber.compare(nberOfUploadsLabel.text ?? "") == .orderedSame,

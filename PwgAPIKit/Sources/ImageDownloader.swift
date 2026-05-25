@@ -10,7 +10,7 @@ import os
 import Foundation
 import PwgKit
 
-public final class ImageDownloader {
+public actor ImageDownloader {
     
     // Logs networking activities
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
@@ -19,17 +19,23 @@ public final class ImageDownloader {
     // Singleton
     public static let shared = ImageDownloader()
     
-    // Active downloads
-    static var activeDownloads: [URL : ImageDownload] = [ : ]
+    // Maximum number of simultaneous downloads.
+    let maxConcurrentDownloads = 4
+    // Enqueued and running downloads
+    var downloads: [URL : ImageDownload] = [ : ]
     
+    
+    // MARK: - Create, Launch Downloads
     // Return image in cache or download it
     public func getImage(withID imageID: Int64?, ofSize imageSize: pwgImageSize, type: pwgImageType,
                          atURL imageURL: URL?, fromServer serverID: String?, fileSize: Int64 = NSURLSessionTransferSizeUnknown,
-                         progress: ((Float) -> Void)? = nil, completion: @escaping (URL) -> Void, failure: @escaping (PwgKitError) -> Void) {
+                         progress: ((Float) -> Void)? = nil,
+                         completion: @escaping (URL) -> Void,
+                         failure: @escaping (PwgKitError) -> Void) {
         // Check arguments
-        guard let imageID = imageID, imageID != 0,
-              let imageURL = imageURL, imageURL.isFileURL == false,
-              let serverID = serverID, serverID.isEmpty == false
+        guard let imageID, imageID != 0,
+              let imageURL, imageURL.isFileURL == false,
+              let serverID, serverID.isEmpty == false
         else {
             failure(.failedToPrepareDownload)
             return
@@ -39,7 +45,7 @@ public final class ImageDownloader {
         let cacheDir = DataDirectories.cacheDirectory.appendingPathComponent(serverID)
         let fileURL = cacheDir.appendingPathComponent(imageSize.path)
             .appendingPathComponent(String(imageID))
-
+        
         // Do we already have this image or video in cache?
         let cachedFileSize = fileURL.fileSize
 //        debugPrint("••> Image \(fileURL.lastPathComponent) of \(cachedFileSize) bytes")
@@ -49,66 +55,91 @@ public final class ImageDownloader {
                 let diff = abs((Double(cachedFileSize) - Double(fileSize)) / Double(fileSize))
 //                debugPrint("••> Image \(fileURL.lastPathComponent): \((diff * 1000).rounded(.awayFromZero)/10)%) retrieved from cache.")
                 if diff < 0.1 {     // i.e. 10%
-                    ImageDownloader.activeDownloads.removeValue(forKey: imageURL)
+                    downloads.removeValue(forKey: imageURL)
                     completion(fileURL)
                     return
                 }
             } else {
 //                debugPrint("••> return cached image \(String(describing: download.fileURL.lastPathComponent)) i.e., downloaded from \(imageURL)")
-                ImageDownloader.activeDownloads.removeValue(forKey: imageURL)
+                downloads.removeValue(forKey: imageURL)
                 completion(fileURL)
                 return
             }
         }
         
-        // Does this download instance already exist?
-        if let download = ImageDownloader.activeDownloads[imageURL] {
-            // Update handlers
+        // Already existing download instance?
+        let runningDownloads: Int = downloads.values.filter({ $0.task?.state == .running }).count
+        if let download = downloads[imageURL]
+        {
+            // Refresh handlers so the new visible cell gets the callbacks
             download.progressHandler = progress
+            download.completionHandler = completion
+            download.failureHandler = failure
             
-            // What should we do with this download instance?
+            // Already existing task?
             if let task = download.task {
                 switch task.state {
                 case .running:
-                    if let progressHandler = download.progressHandler {
-                        progressHandler(download.progress)
-                    }
+                    download.progressHandler?(download.progress)
+                    return
+                
                 case .suspended:
+                    guard runningDownloads < maxConcurrentDownloads
+                    else { return }
+                    
                     #if DEBUG
-                    ImageDownloader.logger.notice("Resume suspended download of image \(fileURL.lastPathComponent) (\(ImageDownloader.activeDownloads.count) active downloads)")
+                    ImageDownloader.logger.notice("Resume suspended download of \(fileURL.lastPathComponent) (\(runningDownloads)/\(self.maxConcurrentDownloads) running, \(self.downloads.count - runningDownloads) waiting)")
                     #endif
+                    download.isCancelled = false
                     task.resume()
+                    return
+                
                 case .completed:
                     #if DEBUG
-                    ImageDownloader.logger.notice("Delete download instance of image \(fileURL.lastPathComponent) (\(ImageDownloader.activeDownloads.count) active downloads)")
+                    ImageDownloader.logger.notice("Delete completed download of \(fileURL.lastPathComponent)")
                     #endif
-                    ImageDownloader.activeDownloads[imageURL] = nil
+                    downloads[imageURL] = nil
+                    return
+                
                 default:
+                    guard runningDownloads < maxConcurrentDownloads
+                    else { return }
+                    
+                    // Resume download task w/ data if possible
                     if let resumeData = download.resumeData {
                         #if DEBUG
-                        ImageDownloader.logger.notice("Resume download of image \(fileURL.lastPathComponent) (\(ImageDownloader.activeDownloads.count) active downloads)")
+                        ImageDownloader.logger.notice("Resume download of \(fileURL.lastPathComponent) (\(runningDownloads)/\(self.maxConcurrentDownloads) running, \(self.downloads.count - runningDownloads) waiting)")
                         #endif
+                        download.isCancelled = false
                         download.task = dataSession.downloadTask(withResumeData: resumeData)
-                        task.resume()
-                    } else {
-                        #if DEBUG
-                        ImageDownloader.logger.notice("Relaunch download of image \(fileURL.lastPathComponent) (\(ImageDownloader.activeDownloads.count) active downloads)")
-                        #endif
+                        download.task?.resume()
+                        return
+                    }
+                    
+                    // Resume download w/o data if possible
+                    download.isCancelled = false
+                    if runningDownloads < maxConcurrentDownloads {
                         launchDownload(download)
                     }
+                    return
                 }
-            } else {
-                #if DEBUG
-                ImageDownloader.logger.notice("Relaunch download of image \(fileURL.lastPathComponent) (\(ImageDownloader.activeDownloads.count) active downloads)")
-                #endif
+            }
+            
+            // No download task
+            download.isCancelled = false
+            if runningDownloads < maxConcurrentDownloads {
                 launchDownload(download)
             }
+            return
         }
-        else {
-            // Create Download instance
-            let download = ImageDownload(type: type, atURL: imageURL, fileSize: fileSize, toCacheAt: fileURL,
-                                         progress: progress, completion: completion, failure: failure)
-            // Launch image download
+        
+        // Create a new download instance
+        let download = ImageDownload(type: type, atURL: imageURL, fileSize: fileSize, toCacheAt: fileURL,
+                                     progress: progress, completion: completion, failure: failure)
+        downloads[imageURL] = download
+        
+        // Launch image download if possible
+        if runningDownloads < maxConcurrentDownloads {
             launchDownload(download)
         }
     }
@@ -122,7 +153,7 @@ public final class ImageDownloader {
         var request = URLRequest(url: imageURL)
         request.addValue(acceptedTypes, forHTTPHeaderField: "Accept")
         request.addValue("utf-8", forHTTPHeaderField: "Accept-Charset")
-
+        
         // Create and resume download task
         download.task = dataSession.downloadTask(with: request)
         download.task?.taskDescription = imageURL.absoluteString
@@ -131,35 +162,40 @@ public final class ImageDownloader {
         download.task?.resume()
         
         // Keep download instance in memory
-        ImageDownloader.activeDownloads[imageURL] = download
-#if DEBUG
-        ImageDownloader.logger.notice("Launch download of image \(download.fileURL.lastPathComponent) (\(ImageDownloader.activeDownloads.count) active downloads)")
-#endif
+        #if DEBUG
+        let runningDownloads: Int = downloads.values.filter({ $0.task?.state == .running }).count
+        ImageDownloader.logger.notice("Task #\(download.task?.taskIdentifier ?? -1) created to download image #\(download.fileURL.lastPathComponent) (\(runningDownloads)/\(self.maxConcurrentDownloads) running, \(self.downloads.count - runningDownloads) waiting)")
+        #endif
     }
     
+    
+    // MARK: - Pause, Cancel Downloads
     public func pauseDownload(atURL imageURL: URL) {
         // Retrieve download instance
-        guard let download = ImageDownloader.activeDownloads[imageURL]
+        guard let download = downloads[imageURL]
         else { return }
         
         // Cancel the download request
-        guard let task = download.task else { return }
+        guard let task = download.task
+        else { return }
         switch task.state {
         case .running, .suspended:
-            download.task?.cancel(byProducingResumeData: { data in
-                if let data = data {
-#if DEBUG
-                    ImageDownloader.logger.notice("Pause download of image \(download.fileURL.lastPathComponent) with resume data (\(ImageDownloader.activeDownloads.count) active downloads)")
-#endif
+            task.cancel { data in
+                if let data {
+                    #if DEBUG
+                    ImageDownloader.logger.notice("Pause download of \(download.fileURL.lastPathComponent) with resume data")
+                    #endif
                     download.resumeData = data
+                    download.isCancelled = true
                 } else {
-#if DEBUG
-                    ImageDownloader.logger.notice("Cancel download of image \(download.fileURL.lastPathComponent) without resume data (\(ImageDownloader.activeDownloads.count) active downloads)")
-#endif
+                    #if DEBUG
+                    ImageDownloader.logger.notice("Cancel download of \(download.fileURL.lastPathComponent) without resume data")
+                    #endif
                     download.task?.cancel()
                     download.task = nil
+                    download.isCancelled = true
                 }
-            })
+            }
         case .canceling:
             break
         case .completed:
@@ -171,14 +207,156 @@ public final class ImageDownloader {
     
     public func cancelDownload(atURL imageURL: URL) {
         // Retrieve download instance
-        guard let download = ImageDownloader.activeDownloads[imageURL]
+        guard let download = downloads[imageURL]
         else { return }
-
+        
         // Cancel the download request
-#if DEBUG
-        ImageDownloader.logger.notice("Cancel download of image \(download.fileURL.lastPathComponent) (\(ImageDownloader.activeDownloads.count) active downloads)")
-#endif
-        download.task?.cancel()
-        download.task = nil
+        #if DEBUG
+        let runningDownloads: Int = downloads.values.filter({ $0.task?.state == .running }).count
+        ImageDownloader.logger.notice("Cancel download of \(download.fileURL.lastPathComponent) (\(runningDownloads)/\(self.maxConcurrentDownloads) running, \(self.downloads.count - runningDownloads) waiting)")
+        #endif
+        download.isCancelled = true
+        
+        if let task = download.task {
+            switch task.state {
+            case .running, .suspended, .canceling:
+                task.cancel()
+                download.task = nil
+            default:
+                downloads.removeValue(forKey: imageURL)
+            }
+        } else {
+            downloads.removeValue(forKey: imageURL)
+       }
+    }
+    
+    public func cancelAll() {
+        // Cancel every active network task.
+        downloads.values.forEach {
+            $0.isCancelled = true
+            $0.task?.cancel()
+        }
+        downloads.removeAll()
+    }
+    
+    
+    // MARK: - Accessors called from PwgSessionDelegate
+    func download(for imageURL: URL) -> ImageDownload? {
+        downloads[imageURL]
+    }
+    
+    func updateProgress(_ progress: Float, for imageURL: URL) {
+        guard let download = downloads[imageURL]
+        else { return }
+        download.progress = progress
+        download.progressHandler?(progress)
+    }
+    
+    func storeAndComplete(tempFile: URL, for imageURL: URL) {
+        guard let download = downloads[imageURL],
+              let fileURL = download.fileURL
+        else {
+            try? FileManager.default.removeItem(at: tempFile)
+            return
+        }
+        storeDownloadedFile(from: tempFile, to: fileURL, forImageURL: imageURL)
+        try? FileManager.default.removeItem(at: tempFile)
+    }
+    
+    func completeDownloadIfReady(for imageURL: URL) {
+        guard let download = downloads[imageURL],
+              let fileURL = download.fileURL
+        else { return }
+        download.completionHandler?(fileURL)
+        downloads.removeValue(forKey: imageURL)
+        
+        // Next downloads?
+        launchDownloadsIfAnyAndPossible()
+    }
+    
+    func failDownload(for imageURL: URL, error: PwgKitError) {
+        guard let download = downloads[imageURL]
+        else { return }
+        if !download.isCancelled {
+            download.failureHandler?(error)
+        }
+        downloads.removeValue(forKey: imageURL)
+        
+        // Next download?
+        launchDownloadsIfAnyAndPossible()
+    }
+    
+    
+    // MARK: - Private helpers
+    private func storeDownloadedFile(from location: URL, to fileURL: URL, forImageURL imageURL: URL) {
+        do {
+            let fm = FileManager.default
+            let dirURL = fileURL.deletingLastPathComponent()
+            if fm.fileExists(atPath: dirURL.path) == false {
+                try fm.createDirectory(at: dirURL, withIntermediateDirectories: true, attributes: nil)
+            }
+            try? fm.removeItem(at: fileURL)
+            try fm.copyItem(at: location, to: fileURL)
+        }
+        catch {
+            failDownload(for: imageURL, error: .otherError(innerError: error))
+        }
+    }
+    
+    private func launchDownloadsIfAnyAndPossible() {
+        var runningDownloads: Int = downloads.values.filter({ $0.task?.state == .running }).count
+        for (_, download) in downloads {
+            // Max number of tasks reached?
+            if runningDownloads >= maxConcurrentDownloads {
+                break
+            }
+            
+            // Cancelled?
+            guard download.isCancelled == false
+            else { continue }
+            
+            // Already existing task?
+            if let task = download.task {
+                switch task.state {
+                case .running:
+                    download.progressHandler?(download.progress)
+                    continue
+                
+                case .suspended:
+                    #if DEBUG
+                    ImageDownloader.logger.notice("Resume suspended download of \(download.fileURL.lastPathComponent) (\(runningDownloads)/\(self.maxConcurrentDownloads) running, \(self.downloads.count - runningDownloads) waiting)")
+                    #endif
+                    runningDownloads += 1
+                    task.resume()
+                    continue
+                
+                case .completed:
+                    continue
+                
+                default:
+                    // Resume download task w/ data if possible
+                    if let resumeData = download.resumeData {
+                        #if DEBUG
+                        ImageDownloader.logger.notice("Resume download of \(download.fileURL.lastPathComponent) (\(runningDownloads)/\(self.maxConcurrentDownloads) running, \(self.downloads.count - runningDownloads) waiting)")
+                        #endif
+                        runningDownloads += 1
+                        download.task = dataSession.downloadTask(withResumeData: resumeData)
+                        download.task?.resume()
+                        continue
+                    }
+                    
+                    // Resume download w/o data if possible
+                    if runningDownloads < maxConcurrentDownloads {
+                        runningDownloads += 1
+                        launchDownload(download)
+                    }
+                    continue
+                }
+            }
+            
+            // No download task
+            runningDownloads += 1
+            launchDownload(download)
+        }
     }
 }

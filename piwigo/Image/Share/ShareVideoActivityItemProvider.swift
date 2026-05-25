@@ -127,18 +127,22 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
 
         // Download video synchronously if not in cache
         let sema = DispatchSemaphore(value: 0)
-        ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: .fullRes, type: .album, atURL: imageURL,
-                                        fromServer: serverID, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
-            // Notify the delegate on the main thread to show how it makes progress.
-            self?.updateProgressView(with: Float((0.75 * fractionCompleted)))
-        } completion: { [weak self] fileURL in
-            self?.cachedFileURL = fileURL
-            sema.signal()
-        } failure: { [weak self] error in
-            // Will notify the delegate on the main thread that the processing is cancelled
-            self?.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            self?.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!\n%@"), error.localizedDescription)
-            sema.signal()
+        Task {
+            await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: .fullRes, type: .album, atURL: imageURL,
+                                                  fromServer: serverID, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
+                // Notify the delegate on the main thread to show how it makes progress.
+                self?.updateProgressView(with: Float((0.75 * fractionCompleted)))
+            }
+            completion: { [weak self] fileURL in
+                self?.cachedFileURL = fileURL
+                sema.signal()
+            }
+            failure: { [weak self] error in
+                // Will notify the delegate on the main thread that the processing is cancelled
+                self?.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+                self?.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!\n%@"), error.localizedDescription)
+                sema.signal()
+            }
         }
         _ = sema.wait(timeout: .distantFuture)
         
@@ -374,7 +378,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         // Will cancel share when operation starts
         isCancelledByUser = true
         // Cancel video file download
-        ImageDownloader.shared.cancelDownload(atURL: pwgImageURL)
+        Task { await ImageDownloader.shared.cancelDownload(atURL: pwgImageURL) }
         // Cancel video export
         exportSession?.cancelExport()
     }

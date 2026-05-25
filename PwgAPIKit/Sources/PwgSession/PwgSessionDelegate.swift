@@ -20,21 +20,18 @@ public final class PwgSessionDelegate: NSObject, Sendable {
     public static let shared = PwgSessionDelegate()
     
     // For retrieving the image URL from a task
-    func getImageDownload(fromTask task: URLSessionTask) -> ImageDownload? {
+    func imageURL(fromTask task: URLSessionTask) -> URL? {
         // Use task description since v4.2
         if let urlString = task.taskDescription,
-           let imageURL = URL(string: urlString),
-           ImageDownloader.activeDownloads.keys.contains(imageURL) {
-            return ImageDownloader.activeDownloads[imageURL]
+           let imageURL = URL(string: urlString) {
+            return imageURL
         }
-        
+
         // Retrieve URL from request before v4.2 (did crash rarely)
         if let request = task.originalRequest ?? task.currentRequest,
-           let imageURL = request.url,
-           ImageDownloader.activeDownloads.keys.contains(imageURL) {
-            return ImageDownloader.activeDownloads[imageURL]
+           let imageURL = request.url {
+            return imageURL
         }
-        
         return nil
     }
 }
@@ -53,7 +50,7 @@ extension PwgSessionDelegate: URLSessionDelegate {
 
     public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: (any Error)?) {
         PwgSessionDelegate.logger.notice("Session invalidated.")
-        ImageDownloader.activeDownloads = [ : ]
+        Task { await ImageDownloader.shared.cancelAll() }
     }
     
     public func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge,
@@ -65,7 +62,7 @@ extension PwgSessionDelegate: URLSessionDelegate {
                 completionHandler(.rejectProtectionSpace, nil)
                 return
         }
-
+        
         // Initialise SSL certificate approval flag
         ServerVars.shared.didRejectCertificate = false
 
@@ -74,7 +71,7 @@ extension PwgSessionDelegate: URLSessionDelegate {
             completionHandler(.performDefaultHandling, nil)
             return
         }
-
+        
         // Check validity of certificate
         if KeychainUtilities.isSSLtransactionValid(inState: serverTrust, for: ServerVars.shared.domain()) {
             let credential = URLCredential(trust: serverTrust)
@@ -85,8 +82,9 @@ extension PwgSessionDelegate: URLSessionDelegate {
         // If there is no certificate, reject server (should rarely happen)
         if SecTrustGetCertificateCount(serverTrust) == 0 {
             completionHandler(.performDefaultHandling, nil)
+            return
         }
-
+        
         // Retrieve the certificate of the server
         guard let certificates = SecTrustCopyCertificateChain(serverTrust) as? [SecCertificate],
               let certificate = certificates.first
@@ -94,7 +92,7 @@ extension PwgSessionDelegate: URLSessionDelegate {
             completionHandler(.performDefaultHandling, nil)
             return
         }
-
+        
         // Check if the certificate is trusted by user (i.e. is in the Keychain)
         // Case where the certificate is e.g. self-signed
         if KeychainUtilities.isCertKnownForSSLtransaction(certificate, for: ServerVars.shared.domain()) {

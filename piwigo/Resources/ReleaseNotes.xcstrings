@@ -10310,79 +10310,79 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الإصدار 4.2.2\n\n• إصلاح خطأ يتعلق بخيار التحميل التلقائي\n• تحسين الترجمات"
+            "value" : "الإصدار 4.2.2\n24 مايو 2026\n\n• إصلاح خطأ يتعلق بخيار التحميل التلقائي\n• تحسين الترجمات"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.2.2\n\n• Rettet en fejl relateret til auto-upload option\n• Forbedrede oversættelser"
+            "value" : "Version 4.2.2\n24 maj 2026\n\n• Rettet en fejl relateret til auto-upload option\n• Forbedrede oversættelser"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.2.2\n\n• Fehler behoben im Zusammenhang mit der Auto-Upload Option\n• Verbesserte Übersetzungen"
+            "value" : "Version 4.2.2\nMai 24, 2026\n\n• Fehler behoben im Zusammenhang mit der Auto-Upload Option\n• Verbesserte Übersetzungen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.2.2\n\n• Fixed a bug related with the auto-upload option\n• Improved translations"
+            "value" : "Version 4.2.2\nMay 24, 2026\n\n• Fixed a bug related with the auto-upload option\n• Improved translations"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versión 4.2.2\n\n• Se corrigió un error relacionado con la opción de subida automática\n• Mejoradas traducciones"
+            "value" : "Versión 4.2.2\n24 de mayo 2026\n\n• Se ha corregido un error relacionado con la opción de subidas automáticas\n• Mejoras en las traducciones"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.2.2\n\n• Correction d'un bug lié à l'option de transfert automatique\n• Amélioration des traductions"
+            "value" : "Version 4.2.2\n24 mai 2026\n\n• Correction d'un bug lié à l'option de transfert automatique\n• Amélioration des traductions"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4.2.2-es verzió\n\n• Kijavítottuk az automatikus feltöltés opcióval kapcsolatos hibát\n• Javítottuk a fordításokat"
+            "value" : "4.2.2-es verzió\n2026 Május 24\n\n• Kijavítottuk az automatikus feltöltés opcióval kapcsolatos hibát\n• Javítottuk a fordításokat"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 4.2.2\n\n• Memperbaiki bug yang terkait dengan opsi unggah otomatis\n• Meningkatkan terjemahan"
+            "value" : "Versi 4.2.2\n24 Mei 2026\n\n• Memperbaiki bug yang terkait dengan opsi unggah otomatis\n• Meningkatkan terjemahan"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versione 4.2.2\n\n• Risolto un bug correlato con l'opzione di caricamento automatico\n• Traduzioni migliorate"
+            "value" : "Versione 4.2.2\n24 maggio 2026\n\n• Risolto un bug correlato con l'opzione di caricamento automatico\n• Traduzioni migliorate"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "バージョン 4.2.2\n\n• 自動アップロードオプションに関する不具合を修正しました\n• 翻訳を改善しました"
+            "value" : "バージョン 4.2.2\n2026年5月24日\n\n• 自動アップロードオプションに関する不具合を修正しました\n• 翻訳を改善しました"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 4.2.2\n\n• Een bug met betrekking tot de auto-upload optie\n• Verbeterde vertalingen"
+            "value" : "Versie 4.2.2\n24 Mei 2026\n\n• Een bug met betrekking tot de auto-upload optie\n• Verbeterde vertalingen"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wersja 4.2.2\n\n• Naprawiono błąd związany z opcją automatycznego wysyłania\n• Ulepszone tłumaczenia"
+            "value" : "Wersja 4.2.2\n24 maja 2026\n\n• Naprawiono błąd związany z opcją automatycznego wysyłania\n• Ulepszone tłumaczenia"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Версия 4.2.2\n\n• Исправлена ошибка, связанная с функцией автоматической загрузки\n• Улучшены переводы"
+            "value" : "Версия 4.2.2\n24 мая 2026\n\n• Исправлена ошибка, связанная с функцией автоматической загрузки\n• Улучшены переводы"
           }
         },
         "sv" : {
@@ -10394,13 +10394,114 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "版本 4.2.2\n\n• 修复了与自动上传选项相关的一个错误\n• 改进了翻译"
+            "value" : "版本 4.2.2\n2026年5月24日\n\n• 修复了与自动上传选项相关的一个错误\n• 改进了翻译"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "版本 4.2.2\n\n• 修正了與自動上傳選項相關的錯誤\n• 改進了翻譯內容"
+          }
+        }
+      }
+    },
+    "v4.2.3_text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإصدار 4.2.3\n\n• إصلاح الأخطاء وتحسين الواجهة\n• إيقاف التحميل عندما يحتاج الجهاز إلى التبريد"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.2.3\n\n• Retter fejl og forbedrer brugerfladen\n• Stopper overførsler, når enheden skal køle af"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.2.3\n\n• Behebt Fehler und verbessert die Benutzeroberfläche\n• Unterbricht den Upload, wenn das Gerät abkühlen muss"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.2.3\n\n• Fixes bugs and improves the interface\n• Pauses uploads when the device needs to cool"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión 4.2.3\n\n• Corrige errores y mejora la interfaz\n• Detiene las subidas cuando el dispositivo necesita enfriarse"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.2.3\n\n• Corrige les bugs et améliore l'interface\n• Met les transferts en pause lorsque l'appareil a besoin de refroidir"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4.2.3 verzió\n\n• Hibajavítások és a kezelőfelület javítása\n• Felfüggeszti a feltöltést, ha az eszköznek lehűlnie kell"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versi 4.2.3\n\n• Memperbaiki bug dan meningkatkan antarmuka\n• Menunda pengunggahan saat perangkat perlu didinginkan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versione 4.2.3\n\n• Corregge i bug e migliora l'interfaccia\n• Sospende i caricamenti quando il dispositivo deve raffreddarsi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バージョン4.2.3\n\n• バグの修正とインターフェイスの改善\n• デバイスの冷却が必要な場合、アップロードを一時停止します"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versie 4.2.3\n\n• Lost bugs op en verbetert de interface\n• Onderbreekt het uploaden wanneer het apparaat moet afkoelen"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wersja 4.2.3\n\n• Poprawki błędów i usprawnienia interfejsu\n• Wstrzymuje przesyłanie danych, gdy urządzenie musi się ochłodzić"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версия 4.2.3\n\n• Исправлены ошибки и улучшен интерфейс\n• Приостанавливает загрузку, когда устройству требуется охлаждение"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.2.3\n\n• Fixar buggar och förbättrar gränssnittet\n• Avbryter uppladdningar när enheten behöver svalna"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 4.2.3\n\n• 修正错误并改进界面\n• 当设备需要散热时，暂停上传"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 4.2.3\n\n• 修正錯誤並改進介面\n• 當裝置需要散熱時，會暫停上傳"
           }
         }
       }

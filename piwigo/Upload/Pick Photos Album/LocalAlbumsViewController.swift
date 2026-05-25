@@ -163,6 +163,10 @@ class LocalAlbumsViewController: UIViewController {
         // Register Low Power Mode status
         NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader),
                                                name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
+        
+        // Register Thermal State notification
+        NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader),
+                                               name: ProcessInfo.thermalStateDidChangeNotification, object: nil)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
@@ -299,7 +303,9 @@ class LocalAlbumsViewController: UIViewController {
             case .presentLocalAlbum:
                 if ProcessInfo.processInfo.isLowPowerModeEnabled {
                     text += "\r\r⚠️ " + NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled") + " ⚠️"
-                } else if UploadVars.shared.wifiOnlyUploading && !ServerVars.shared.isConnectedToWiFi {
+                } else if [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) {
+                    text += "\r\r⚠️ " + NSLocalizedString("uploadThermalStateHigh", comment: "Thermal state high") + " ⚠️"
+                } else if UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi {
                     text += "\r\r⚠️ " + NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection") + " ⚠️"
                 }
                 headerView.configure(width: min(localAlbumsTableView.frame.size.width, pwgPadSettingsWidth),

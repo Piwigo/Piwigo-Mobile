@@ -107,7 +107,7 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
             let title = NSLocalizedString("downloadingPDF", comment: "Downloading PDF file")
             self.delegate?.imageActivityItemProviderPreprocessingDidBegin(self, withTitle: title)
         }
-
+        
         // Get the server ID and URL on server
         guard let serverID = imageData.server?.uuid,
               let imageURL = imageData.downloadUrl as? URL else {
@@ -122,24 +122,28 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
         
         // Store URL of PDF file in Piwigo server for being able to cancel the download
         pwgImageURL = imageURL
-
+        
         // Download PDF file synchronously if not in cache
         let sema = DispatchSemaphore(value: 0)
-        ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: .fullRes, type: .album, atURL: imageURL,
-                                        fromServer: serverID, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
-            // Notify the delegate on the main thread to show how it makes progress.
-            self?.updateProgressView(with: Float((0.75 * fractionCompleted)))
-        } completion: { [unowned self] fileURL in
-            self.cachedFileURL = fileURL
-            sema.signal()
-        } failure: { [unowned self] error in
-            // Will notify the delegate on the main thread that the processing is cancelled
-            self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadPdfFail_message", comment: "Failed to download PDF file!\n%@"), error.localizedDescription)
-            sema.signal()
+        Task {
+            await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: .fullRes, type: .album, atURL: imageURL,
+                                                  fromServer: serverID, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
+                // Notify the delegate on the main thread to show how it makes progress.
+                self?.updateProgressView(with: Float((0.75 * fractionCompleted)))
+            }
+            completion: { [unowned self] fileURL in
+                self.cachedFileURL = fileURL
+                sema.signal()
+            }
+            failure: { [unowned self] error in
+                // Will notify the delegate on the main thread that the processing is cancelled
+                self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+                self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadPdfFail_message", comment: "Failed to download PDF file!\n%@"), error.localizedDescription)
+                sema.signal()
+            }
         }
         _ = sema.wait(timeout: .distantFuture)
-
+        
         // Cancel item task if PDF file could not be retrieved
         if alertTitle != nil {
             // Cancel task
@@ -160,7 +164,7 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
             preprocessingDidEnd()
             return placeholderItem!
         }
-
+        
         // Shared files are stored in the /tmp directory with an appropriate name and will be deleted:
         // - by the app if the user kills it
         // - by the system after a certain amount of time
@@ -186,7 +190,7 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
             preprocessingDidEnd()
             return placeholderItem!
         }
-
+        
         // Notify the delegate on the main thread to show how it makes progress.
         progressFraction = 1.0
         // Notify the delegate on the main thread that the processing has finished.
@@ -194,7 +198,7 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
         // Return PDF file to share
         return imageFileURL
     }
-
+    
     private func updateProgressView(with fractionCompleted: Float) {
         DispatchQueue.main.async { [self] in
             // Show download progress
@@ -213,9 +217,9 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
         // Will cancel share when operation starts
         isCancelledByUser = true
         // Cancel image file download
-        ImageDownloader.shared.cancelDownload(atURL: pwgImageURL)
+        Task { await ImageDownloader.shared.cancelDownload(atURL: pwgImageURL) }
     }
-
+    
     @objc func didFinishSharingImage() {
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
@@ -231,7 +235,7 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
         alertTitle = nil
         alertMessage = nil
     }
-
+    
     
     // MARK: - UIActivityItemSource Methods
     override func activityViewController(_ activityViewController: UIActivityViewController, subjectForActivityType activityType: UIActivity.ActivityType?) -> String {

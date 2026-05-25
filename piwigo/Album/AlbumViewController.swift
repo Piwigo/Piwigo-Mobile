@@ -475,8 +475,8 @@ class AlbumViewController: UIViewController
         applyColorPalette()
 
         // Register Low Power Mode status
-        NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader),
-                                               name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader),
+//                                               name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
         
         // Register fetch progress
         NotificationCenter.default.addObserver(self, selector: #selector(updateTitleView(_:)),

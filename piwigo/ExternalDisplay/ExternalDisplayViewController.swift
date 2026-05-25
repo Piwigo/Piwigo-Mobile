@@ -65,9 +65,9 @@ class ExternalDisplayViewController: UIViewController {
         
         // Pause download if needed
         if let imageURL = imageURL {
-            ImageDownloader.shared.pauseDownload(atURL: imageURL)
+            Task { await ImageDownloader.shared.pauseDownload(atURL: imageURL) }
         }
-
+        
         // Configure image, video or PDF view
         configImage()
     }
@@ -126,23 +126,25 @@ class ExternalDisplayViewController: UIViewController {
             self.imageURL = imageURL
 
             // Download the image of right size for that display
-            ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: optimumSize, type: .image, atURL: imageURL,
-                                            fromServer: serverID, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self else { return }
-                    self.updateProgressView(with: fractionCompleted)
-                }
-            } completion: { [weak self] cachedImageURL in
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self else { return }
-                    self.updateProgressView(with: 1.0)
-                    self.downsampleHighResPhoto(atURL: cachedImageURL, to: screenSize)
-                }
-            } failure: { [weak self] _ in
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self else { return }
-                    let cachedImage = imageData.cachedThumbnail(ofSize: thumbSize) ?? pwgImageType.image.placeHolder
-                    self.presentHighResPhoto(cachedImage)
+            Task {
+                await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: optimumSize, type: .image, atURL: imageURL,
+                                                      fromServer: serverID, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else { return }
+                        self.updateProgressView(with: fractionCompleted)
+                    }
+                } completion: { [weak self] cachedImageURL in
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else { return }
+                        self.updateProgressView(with: 1.0)
+                        self.downsampleHighResPhoto(atURL: cachedImageURL, to: screenSize)
+                    }
+                } failure: { [weak self] _ in
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else { return }
+                        let cachedImage = imageData.cachedThumbnail(ofSize: thumbSize) ?? pwgImageType.image.placeHolder
+                        self.presentHighResPhoto(cachedImage)
+                    }
                 }
             }
 
@@ -179,10 +181,12 @@ class ExternalDisplayViewController: UIViewController {
                     self.imageURL = imageURL
                     
                     // Download the image of right size for that display
-                    ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: optimumSize, type: .image, atURL: imageURL,
-                                                    fromServer: serverID, fileSize: imageData.fileSize) { _ in
-                    } completion: { _ in
-                    } failure: { _ in }
+                    Task {
+                        await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: optimumSize, type: .image, atURL: imageURL,
+                                                              fromServer: serverID, fileSize: imageData.fileSize) { _ in
+                        } completion: { _ in
+                        } failure: { _ in }
+                    }
                 }
             } else {
                 // Display image of lower resolution

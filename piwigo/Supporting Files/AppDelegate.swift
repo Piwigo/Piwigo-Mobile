@@ -316,8 +316,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // Are conditions appropriate?
             if UploadVars.shared.isContinuedProcessingTaskActive,
                 ProcessInfo.processInfo.isLowPowerModeEnabled ||
-                (UploadVars.shared.wifiOnlyUploading && !ServerVars.shared.isConnectedToWiFi) {
-                debugPrint("••> Background upload task halted because in Low-Power mode, Wi-Fi unavailable or already uploading.")
+                [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) ||
+                (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
+                debugPrint("••> Background upload task halted because in Low-Power mode, Wi-Fi unavailable, device in high thermal state, or already uploading.")
                 task.setTaskCompleted(success: false)
                 return
             }
@@ -657,20 +658,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @objc func resumeUploadsWhenLeavingLowPowerMode() {
         if !ProcessInfo.processInfo.isLowPowerModeEnabled {
-            Task(priority: .utility) { @UploadManagerActor in
-                #if os(iOS) && !targetEnvironment(macCatalyst)
-                if #available(iOS 26.0, *) {
-                    UploadManager.shared.runContinuedUploadTask()
-                }
-                else {
-                    UploadVars.shared.didResumeUploads = false
-                    await UploadManager.shared.resumeInForeground()
-                }
-                #elseif targetEnvironment(macCatalyst)
+            resumeUploads()
+        }
+    }
+    
+    @objc func resumeUploadsWhenLeavingHighThermalState() {
+        if [.nominal, .fair].contains(ProcessInfo.processInfo.thermalState) {
+            resumeUploads()
+        }
+    }
+    
+    private func resumeUploads() {
+        Task(priority: .utility) { @UploadManagerActor in
+            #if os(iOS) && !targetEnvironment(macCatalyst)
+            if #available(iOS 26.0, *) {
+                UploadManager.shared.runContinuedUploadTask()
+            }
+            else {
                 UploadVars.shared.didResumeUploads = false
                 await UploadManager.shared.resumeInForeground()
-                #endif
             }
+            #elseif targetEnvironment(macCatalyst)
+            UploadVars.shared.didResumeUploads = false
+            await UploadManager.shared.resumeInForeground()
+            #endif
         }
     }
     
@@ -711,17 +722,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Observe the PiwigoAddRecentAlbumNotification
         NotificationCenter.default.addObserver(self, selector: #selector(addRecentAlbumWithAlbumId),
                                                name: Notification.Name.pwgAddRecentAlbum, object: nil)
-
+        
         // Observe the PiwigoRemoveRecentAlbumNotification
         NotificationCenter.default.addObserver(self, selector: #selector(removeRecentAlbumWithAlbumId),
                                                name: Notification.Name.pwgRemoveRecentAlbum, object: nil)
-
+        
         // Observe the Power State notification
-        let name = Notification.Name.NSProcessInfoPowerStateDidChange
         NotificationCenter.default.addObserver(self, selector: #selector(resumeUploadsWhenLeavingLowPowerMode),
-                                               name: name, object: nil)
+                                               name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
+        
+        // Observe the Thermal State notification
+        NotificationCenter.default.addObserver(self, selector: #selector(resumeUploadsWhenLeavingHighThermalState),
+                                               name: ProcessInfo.thermalStateDidChangeNotification, object: nil)
     }
-
+    
     @objc func addRecentAlbumWithAlbumId(_ notification: Notification) {
         // NOP if albumId undefined, root or smart album
         guard let categoryId = notification.userInfo?["categoryId"] as? Int32 else {

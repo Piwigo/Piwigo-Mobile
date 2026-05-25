@@ -23,16 +23,20 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
             if let objectID = self.diffableDataSource.itemIdentifier(for: indexPath) {
                 if let album = try? self.mainContext.existingObject(with: objectID) as? Album {
                     // Download image if needed
-                    ImageDownloader.shared.getImage(withID: album.thumbnailId, ofSize: thumbSize, type: .album,
-                                                    atURL: album.thumbnailUrl as? URL,
-                                                    fromServer: album.user?.server?.uuid) { _ in
-                    } failure: { _ in }
+                    Task {
+                        await ImageDownloader.shared.getImage(withID: album.thumbnailId, ofSize: thumbSize, type: .album,
+                                                              atURL: album.thumbnailUrl as? URL,
+                                                              fromServer: album.user?.server?.uuid) { _ in
+                        } failure: { _ in }
+                    }
                 } else if let image = try? self.mainContext.existingObject(with: objectID) as? Image {
                     // Download image if needed
-                    ImageDownloader.shared.getImage(withID: image.pwgID, ofSize: imageSize, type: .image,
-                                                    atURL: ImageUtilities.getPiwigoURL(image, ofMinSize: imageSize),
-                                                    fromServer: image.server?.uuid, fileSize: image.fileSize) { _ in
-                    } failure: { _ in }
+                    Task {
+                        await ImageDownloader.shared.getImage(withID: image.pwgID, ofSize: imageSize, type: .image,
+                                                              atURL: ImageUtilities.getPiwigoURL(image, ofMinSize: imageSize),
+                                                              fromServer: image.server?.uuid, fileSize: image.fileSize) { _ in
+                        } failure: { _ in }
+                    }
                 }
             }
         }
@@ -46,12 +50,12 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
                 if let album = try? self.mainContext.existingObject(with: objectID) as? Album,
                    let imageURL = album.thumbnailUrl as? URL {
                     // Pause download if needed
-                    ImageDownloader.shared.pauseDownload(atURL: imageURL)
+                    Task { await ImageDownloader.shared.pauseDownload(atURL: imageURL) }
                 }
                 else if let image = try? self.mainContext.existingObject(with: objectID) as? Image,
                         let imageURL = ImageUtilities.getPiwigoURL(image, ofMinSize: imageSize) {
                     // Pause download if needed
-                    ImageDownloader.shared.pauseDownload(atURL: imageURL)
+                    Task { await ImageDownloader.shared.pauseDownload(atURL: imageURL) }
                 }
             }
         }

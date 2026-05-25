@@ -14,10 +14,11 @@ import PwgKit
 import PwgCacheKit
 import PwgUIKit
 
-class LocalImageCollectionViewCell: UICollectionViewCell {
+final class LocalImageCollectionViewCell: UICollectionViewCell {
 
     var localIdentifier = ""
     var md5sum = ""
+    private var currentProgress: Float = 0
     
     @IBOutlet weak var cellImage: UIImageView!
     @IBOutlet weak var playIcon: UIImageView!
@@ -111,6 +112,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             waitingActivity?.isHidden = false
             waitingActivity?.startAnimating()
             uploadingProgress?.isHidden = false
+            currentProgress = 0
             uploadingProgress?.setProgress(0, animated: false)
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = true
@@ -128,6 +130,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             waitingActivity?.isHidden = false
             waitingActivity?.startAnimating()
             uploadingProgress?.isHidden = false
+            currentProgress = 1.0
             uploadingProgress?.setProgress(1.0, animated: false)
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = true
@@ -150,12 +153,13 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             waitingActivity?.stopAnimating()
         }
     }
-
+    
     func setProgress(_ progressFraction: Float, withAnimation animate: Bool) {
-        let progress = max(uploadingProgress.progress, progressFraction)
-        uploadingProgress?.setProgress(progress, animated: animate)
+        guard progressFraction > currentProgress else { return }
+        currentProgress = progressFraction
+        uploadingProgress?.setProgress(currentProgress, animated: animate)
     }
-
+    
     private func changeCellImageIfNeeded(withImage image: UIImage) {
         if let oldImage = self.cellImage.image,
            oldImage.isEqual(image) { return }
@@ -164,5 +168,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        
+        currentProgress = 0
     }
 }
