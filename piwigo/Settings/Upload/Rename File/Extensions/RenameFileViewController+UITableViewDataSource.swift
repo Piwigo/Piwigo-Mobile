@@ -28,7 +28,7 @@ extension RenameFileViewController: UITableViewDataSource
         switch RenameSection(rawValue: indexPath.section) {
         case .prefix:
             cell.configure(with: title, input: prefixActions[indexPath.row - 1].style,
-                           placeHolder: NSLocalizedString("settings_prefixPlaceholder", comment: "Prefix_"))
+                           placeHolder: String(localized: "settings_prefixPlaceholder", comment: "Prefix_"))
             cell.accessibilityIdentifier = "prefixFileName"
             
         case .replace:
@@ -38,7 +38,7 @@ extension RenameFileViewController: UITableViewDataSource
             
         case .suffix:
             cell.configure(with: title, input: suffixActions[indexPath.row - 1].style,
-                           placeHolder: NSLocalizedString("settings_suffixPlaceholder", comment: "_suffix"))
+                           placeHolder: String(localized: "settings_suffixPlaceholder", comment: "_suffix"))
             cell.accessibilityIdentifier = "suffixFileName"
             
         default:
@@ -136,7 +136,7 @@ extension RenameFileViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 
-                cell.configure(with: NSLocalizedString("settings_renamePrefix", comment: "Prefix File Name"))
+                cell.configure(with: String(localized: "settings_renamePrefix", comment: "Prefix File Name"))
                 cell.cellSwitch.setOn(prefixBeforeUpload, animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Enable/disable prefix actions
@@ -197,7 +197,7 @@ extension RenameFileViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
 
-                cell.configure(with: NSLocalizedString("settings_renameReplace", comment: "Replace File Name"))
+                cell.configure(with: String(localized: "settings_renameReplace", comment: "Replace File Name"))
                 cell.cellSwitch.setOn(replaceBeforeUpload, animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Enable/disable replace actions
@@ -257,7 +257,7 @@ extension RenameFileViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
 
-                cell.configure(with: NSLocalizedString("settings_renameSuffix", comment: "Suffix File Name"))
+                cell.configure(with: String(localized: "settings_renameSuffix", comment: "Suffix File Name"))
                 cell.cellSwitch.setOn(suffixBeforeUpload, animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Enable/disable suffix actions
@@ -316,7 +316,7 @@ extension RenameFileViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
 
-                cell.configure(with: NSLocalizedString("settings_renameChangeCase", comment: "Change Case"))
+                cell.configure(with: String(localized: "settings_renameChangeCase", comment: "Change Case"))
                 cell.cellSwitch.setOn(changeCaseBeforeUpload, animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Number of rows will change accordingly

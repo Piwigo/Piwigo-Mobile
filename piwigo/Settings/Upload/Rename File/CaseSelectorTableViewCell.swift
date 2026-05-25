@@ -44,9 +44,9 @@ class CaseSelectorTableViewCell: UITableViewCell {
         let selectedSegmentIndex: Int = caseType == .keep ? 1 : Int(UploadVars.shared.caseOfFileExtension)
         self.segmentedControl.selectedSegmentIndex = selectedSegmentIndex
         self.segmentedControl.setEnabled(true, forSegmentAt: 0)
-        self.segmentedControl.setTitle(NSLocalizedString("settings_renameLowercase", comment: "Lowercase"), forSegmentAt: 0)
+        self.segmentedControl.setTitle(String(localized: "settings_renameLowercase", comment: "Lowercase"), forSegmentAt: 0)
         self.segmentedControl.setEnabled(true, forSegmentAt: 1)
-        self.segmentedControl.setTitle(NSLocalizedString("settings_renameUppercase", comment: "Uppercase"), forSegmentAt: 1)
+        self.segmentedControl.setTitle(String(localized: "settings_renameUppercase", comment: "Uppercase"), forSegmentAt: 1)
     }
     
     @IBAction func didValueChanged(_ sender: Any) {

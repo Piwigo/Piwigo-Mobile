@@ -39,7 +39,7 @@ extension AlbumViewController
     
     private func selectAction() -> UIAction {
         let actionId = UIAction.Identifier("org.piwigo.images.select")
-        let action = UIAction(title: NSLocalizedString("categoryImageList_selectButton", comment: "Select"),
+        let action = UIAction(title: String(localized: "categoryImageList_selectButton", comment: "Select"),
                               image: UIImage(systemName: "checkmark.circle"),
                               identifier: actionId, handler: { [self] action in
             self.didTapSelect()
@@ -274,8 +274,8 @@ extension AlbumViewController
             
             // Display HUD
             let title = imageIDs.count > 1 ?
-                NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…") :
-                NSLocalizedString("editImageDetailsHUD_updatingSingle", comment: "Updating Photo…")
+                String(localized: "editImageDetailsHUD_updatingPlural", comment: "Updating Photos…") :
+                String(localized: "editImageDetailsHUD_updatingSingle", comment: "Updating Photo…")
             navigationController?.showHUD(withTitle: title, inMode: imageIDs.count > 1 ? .determinate : .indeterminate)
             
             // Add or remove image from favorites
@@ -286,8 +286,8 @@ extension AlbumViewController
             
             // Display HUD
             let title = imageIDs.count > 1 ?
-                NSLocalizedString("rotateSeveralImageHUD_rotating", comment: "Rotating Photos…") :
-                NSLocalizedString("rotateSingleImageHUD_rotating", comment: "Rotating Photo…")
+                String(localized: "rotateSeveralImageHUD_rotating", comment: "Rotating Photos…") :
+                String(localized: "rotateSingleImageHUD_rotating", comment: "Rotating Photo…")
             navigationController?.showHUD(withTitle: title, inMode: imageIDs.count > 1 ? .determinate : .indeterminate)
             
             // Add or remove image from favorites
@@ -305,10 +305,10 @@ extension AlbumViewController
         case .share         /* Check Photo Library access rights */:
             // Display or update HUD
             if navigationController?.isShowingHUD() ?? false {
-                navigationController?.updateHUD(title: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+                navigationController?.updateHUD(title: String(localized: "loadingHUD_label", comment: "Loading…"),
                                                 inMode: .indeterminate)
             } else if selectedImageIDs.count > 200 {
-                navigationController?.showHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+                navigationController?.showHUD(withTitle: String(localized: "loadingHUD_label", comment: "Loading…"),
                                               inMode: .indeterminate)
             }
             // Prepare items to share in background queue
@@ -349,7 +349,7 @@ extension AlbumViewController
             performAction(action, withImageIDs: imageIDs, contextually: contextually)
         } else {
             // Display HUD
-            navigationController?.showHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+            navigationController?.showHUD(withTitle: String(localized: "loadingHUD_label", comment: "Loading…"),
                           inMode: imageIDsToRetrieve.count > 1 ? .determinate : .indeterminate)
             
             // Retrieve image data if needed
@@ -430,8 +430,8 @@ extension AlbumViewController
         }
         
         // Report error
-        let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
-        let message = NSLocalizedString("imageDetailsFetchError_message", comment: "Fetching the photo data failed.")
+        let title = String(localized: "imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
+        let message = String(localized: "imageDetailsFetchError_message", comment: "Fetching the photo data failed.")
         dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
             navigationController?.hideHUD() { [self] in
                 if contextually {

@@ -122,7 +122,7 @@ class AlbumTableViewCell: UITableViewCell {
             desc.addAttributes(attributes, range: wholeRange)
         }
         else if albumData?.user?.hasAdminRights ?? false {
-            let noDesc = NSLocalizedString("createNewAlbumDescription_noDescription", comment: "no description")
+            let noDesc = String(localized: "createNewAlbumDescription_noDescription", comment: "no description")
             desc = NSMutableAttributedString(string: noDesc)
             let wholeRange = NSRange(location: 0, length: desc.string.count)
             let style = NSMutableParagraphStyle()
@@ -186,7 +186,7 @@ class AlbumTableViewCell: UITableViewCell {
         
         // Reset cell
         self.imageURL = nil
-        self.albumName.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
+        self.albumName.text = String(localized: "loadingHUD_label", comment: "Loading…")
         self.albumComment.attributedText = NSAttributedString()
         self.albumThumbnail.image = pwgImageType.album.placeHolder
         self.numberOfImages.text = ""

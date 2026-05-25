@@ -43,17 +43,17 @@ extension pwgClearClipboard {
     var delayText: String {
         switch self {
         case .after10s:
-            return NSLocalizedString("settings_clearClipboard10sText", comment: "10 seconds")
+            return String(localized: "settings_clearClipboard10sText", comment: "10 seconds")
         case .after30s:
-            return NSLocalizedString("settings_clearClipboard30sText", comment: "30 seconds")
+            return String(localized: "settings_clearClipboard30sText", comment: "30 seconds")
         case .after1min:
-            return NSLocalizedString("settings_clearClipboard1minText", comment: "1 minute")
+            return String(localized: "settings_clearClipboard1minText", comment: "1 minute")
         case .after2min:
-            return NSLocalizedString("settings_clearClipboard2minText", comment: "2 minute")
+            return String(localized: "settings_clearClipboard2minText", comment: "2 minute")
         case .after5min:
-            return NSLocalizedString("settings_clearClipboard5minText", comment: "5 minute")
+            return String(localized: "settings_clearClipboard5minText", comment: "5 minute")
         case .never:
-            return NSLocalizedString("settings_clearClipboardNever", comment: "never")
+            return String(localized: "settings_clearClipboardNever", comment: "never")
         case .count:
             return ""
         }
@@ -62,17 +62,17 @@ extension pwgClearClipboard {
     var delayUnit: String {
         switch self {
         case .after10s:
-            return NSLocalizedString("settings_clearClipboard10sUnit", comment: "10 s")
+            return String(localized: "settings_clearClipboard10sUnit", comment: "10 s")
         case .after30s:
-            return NSLocalizedString("settings_clearClipboard30sUnit", comment: "30 s")
+            return String(localized: "settings_clearClipboard30sUnit", comment: "30 s")
         case .after1min:
-            return NSLocalizedString("settings_clearClipboard1minUnit", comment: "1 min")
+            return String(localized: "settings_clearClipboard1minUnit", comment: "1 min")
         case .after2min:
-            return NSLocalizedString("settings_clearClipboard2minUnit", comment: "2 min")
+            return String(localized: "settings_clearClipboard2minUnit", comment: "2 min")
         case .after5min:
-            return NSLocalizedString("settings_clearClipboard5minUnit", comment: "5 min")
+            return String(localized: "settings_clearClipboard5minUnit", comment: "5 min")
         case .never:
-            return NSLocalizedString("settings_clearClipboardNever", comment: "never")
+            return String(localized: "settings_clearClipboardNever", comment: "never")
         case .count:
             return ""
         }
@@ -96,7 +96,7 @@ class ClearClipboardViewController: UIViewController {
         super.viewDidLoad()
         
         // Title
-        title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
+        title = String(localized: "settingsHeader_privacy", comment: "Privacy")
 
         // Table view
         delayTableView?.accessibilityIdentifier = "Clear Clipboard After Delay"
@@ -177,8 +177,8 @@ extension ClearClipboardViewController: UITableViewDelegate {
     
     // MARK: - Header
     private func getContentOfHeader() -> (String, String) {
-        let title = String(format: "%@\n", NSLocalizedString("settings_clearClipboard", comment: "Clear Clipboard"))
-        let text = NSLocalizedString("settings_clearClipboardInfo", comment: "Please select the delay after which the clipboard will be cleared.")
+        let title = String(format: "%@\n", String(localized: "settings_clearClipboard", comment: "Clear Clipboard"))
+        let text = String(localized: "settings_clearClipboardInfo", comment: "Please select the delay after which the clipboard will be cleared.")
         return (title, text)
     }
     

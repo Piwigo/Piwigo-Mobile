@@ -16,8 +16,8 @@ extension UploadParametersViewController {
     
     // MARK: - Header
     private func getContentOfHeader() -> (String, String) {
-        let title = String(format: "%@\n", NSLocalizedString("imageDetailsView_title", comment: "Properties"))
-        let text = NSLocalizedString("imageUploadHeaderText_images", comment: "Please set the parameters to apply to the selection of photos/videos")
+        let title = String(format: "%@\n", String(localized: "imageDetailsView_title", comment: "Properties"))
+        let text = String(localized: "imageUploadHeaderText_images", comment: "Please set the parameters to apply to the selection of photos/videos")
         return (title, text)
     }
 

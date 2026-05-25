@@ -163,7 +163,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
     private func getImageTitle(forSortOption sortOption: pwgImageSort) -> NSAttributedString {
         switch sortOption {
         case .visitsAscending, .visitsDescending:
-            let hits = NSLocalizedString("categoryDiscoverVisits_legend", comment: "hits")
+            let hits = String(localized: "categoryDiscoverVisits_legend", comment: "hits")
             let text = String(format: "%ld %@", Int(imageData.visits), hits)
             return attributedTitle(NSAttributedString(string: text))
         
@@ -262,7 +262,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         // Reset cell
         self.imageURL = nil
         self.nameLabel?.text = ""
-        self.noDataLabel?.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
+        self.noDataLabel?.text = String(localized: "loadingHUD_label", comment: "Loading…")
         self.cellImage?.image = pwgImageType.image.placeHolder
         self.isFavorite = false
         self.isSelection = false

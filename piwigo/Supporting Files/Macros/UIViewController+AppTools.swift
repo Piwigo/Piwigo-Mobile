@@ -83,7 +83,7 @@ extension UIViewController {
         // Retrieve the existing HUD
         if let hud = self.view.viewWithTag(pwgTagHUD) as? PiwigoHUD {
             // Show "Complete" icon and text
-            hud.update(title: NSLocalizedString("completeHUD_label", comment: "Complete"),
+            hud.update(title: String(localized: "completeHUD_label", comment: "Complete"),
                        detail: nil, inMode: .success)
         }
         completion()
@@ -127,7 +127,7 @@ extension UIViewController {
         }
         
         // Prepare actions
-        let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
+        let dismissAction = UIAlertAction(title: String(localized: "alertDismissButton", comment:"Dismiss"),
                                           style: .cancel) { _ in completion() }
 
         // Present alert
@@ -155,10 +155,10 @@ extension UIViewController {
         }
         
         // Prepare actions
-        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment:"Cancel"),
+        let cancelAction = UIAlertAction(title: String(localized: "alertCancelButton", comment:"Cancel"),
                                          style: .cancel) { _ in cancel() }
         return await withCheckedContinuation { continuation in
-            let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
+            let dismissAction = UIAlertAction(title: String(localized: "alertDismissButton", comment:"Dismiss"),
                                               style: .default) { _ in continuation.resume(returning: ()) }
             
             // Present alert
@@ -177,9 +177,9 @@ extension UIViewController {
         }
         
         // Prepare actions
-        let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
+        let dismissAction = UIAlertAction(title: String(localized: "alertDismissButton", comment:"Dismiss"),
                                           style: .cancel) { _ in dismiss() }
-        let retryAction = UIAlertAction(title: NSLocalizedString("alertRetryButton", comment:"Retry"),
+        let retryAction = UIAlertAction(title: String(localized: "alertRetryButton", comment:"Retry"),
                                         style: .default) { _ in retry() }
 
         // Present alert
@@ -197,11 +197,11 @@ extension UIViewController {
         }
         
         // Prepare actions
-        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment:"Cancel"),
+        let cancelAction = UIAlertAction(title: String(localized: "alertCancelButton", comment:"Cancel"),
                                          style: .cancel) { _ in cancel() }
-        let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
+        let dismissAction = UIAlertAction(title: String(localized: "alertDismissButton", comment:"Dismiss"),
                                           style: .default) { _ in dismiss() }
-        let retryAction = UIAlertAction(title: NSLocalizedString("alertRetryButton", comment:"Retry"),
+        let retryAction = UIAlertAction(title: String(localized: "alertRetryButton", comment:"Retry"),
                                         style: .default) { _ in retry() }
 
         // Present alert

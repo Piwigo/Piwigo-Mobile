@@ -147,7 +147,7 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         
         // Reset cell
         self.imageURL = nil
-        self.albumName.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
+        self.albumName.text = String(localized: "loadingHUD_label", comment: "Loading…")
         self.numberOfImages.text = ""
         self.recentlyModified.isHidden = true
         self.albumThumbnail.image = pwgImageType.album.placeHolder

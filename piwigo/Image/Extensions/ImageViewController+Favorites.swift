@@ -89,8 +89,8 @@ extension ImageViewController
         }
 
         // Report error
-        let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
-        let message = NSLocalizedString("imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites.")
+        let title = String(localized: "imageFavorites_title", comment: "Favorites")
+        let message = String(localized: "imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites.")
         dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
             favoriteBarButton?.isEnabled = true
         }
@@ -160,8 +160,8 @@ extension ImageViewController
         }
 
         // Report error
-        let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
-        let message = NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites.")
+        let title = String(localized: "imageFavorites_title", comment: "Favorites")
+        let message = String(localized: "imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites.")
         self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
             self.favoriteBarButton?.isEnabled = true
         }

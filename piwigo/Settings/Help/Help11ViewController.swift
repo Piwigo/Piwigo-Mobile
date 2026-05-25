@@ -37,35 +37,35 @@ class Help11ViewController: UIViewController {
         ]
         
         // Title
-        let titleString = NSLocalizedString("help11_header", comment: "Show your photos and videos on a TV or Mac")
+        let titleString = String(localized: "help11_header", comment: "Show your photos and videos on a TV or Mac")
         let titleAttributedString = NSMutableAttributedString(string: titleString)
         let titleRange = NSRange(location: 0, length: titleString.count)
         titleAttributedString.addAttribute(.font, value: titleFont, range: titleRange)
         titleLabel.attributedText = titleAttributedString
         
         // Text step #1
-        let text1String = NSLocalizedString("help11_text", comment: "Connect your iPhone or iPad to the same Wi-Fi network…")
+        let text1String = String(localized: "help11_text", comment: "Connect your iPhone or iPad to the same Wi-Fi network…")
         let text1AttributedString = NSMutableAttributedString(string: text1String)
         let text1Range = NSRange(location: 0, length: text1String.count)
         text1AttributedString.addAttributes(textAttributes, range: text1Range)
         text1Label.attributedText = text1AttributedString
         
         // Text step #2
-        let text2String = NSLocalizedString("help11_text2", comment: "Open Control Center.")
+        let text2String = String(localized: "help11_text2", comment: "Open Control Center.")
         let text2AttributedString = NSMutableAttributedString(string: text2String)
         let text2Range = NSRange(location: 0, length: text2String.count)
         text2AttributedString.addAttributes(textAttributes, range: text2Range)
         text2Label.attributedText = text2AttributedString
 
         // Text step #3
-        let text3String = NSLocalizedString("help11_text3", comment: "Tap the Screen Mirroring button:")
+        let text3String = String(localized: "help11_text3", comment: "Tap the Screen Mirroring button:")
         let text3AttributedString = NSMutableAttributedString(string: text3String)
         let text3Range = NSRange(location: 0, length: text3String.count)
         text3AttributedString.addAttributes(textAttributes, range: text3Range)
         text3Label.attributedText = text3AttributedString
 
         // Text step #4
-        let text4String = NSLocalizedString("help11_text4", comment: "Select your TV or Mac from the list.")
+        let text4String = String(localized: "help11_text4", comment: "Select your TV or Mac from the list.")
         let text4AttributedString = NSMutableAttributedString(string: text4String)
         let text4Range = NSRange(location: 0, length: text4String.count)
         text4AttributedString.addAttributes(textAttributes, range: text4Range)

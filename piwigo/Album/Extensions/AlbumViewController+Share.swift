@@ -135,8 +135,8 @@ extension AlbumViewController
                 let count = itemsToShare.count
                 let deviceMemory = UIDevice.current.modelMemorySize * 1024 * 1024
                 if totalSize * 5 > deviceMemory {  // i.e. 20% of available memory
-                    let title = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-                    let message = NSLocalizedString("shareFailError_tooLarge", comment: "Selection too large to share")
+                    let title = String(localized: "shareFailError_title", comment: "Share Fail")
+                    let message = String(localized: "shareFailError_tooLarge", comment: "Selection too large to share")
                     let error = ByteCountFormatter.string(fromByteCount: totalSize, countStyle: .file)
                     self.navigationController?.dismissPiwigoError(withTitle: title, message: message, errorMessage: error ) { }
                     return
@@ -242,7 +242,7 @@ extension AlbumViewController: @preconcurrency ShareImageActivityItemProviderDel
             presentedViewController?.updateHUD(title: title, detail: detail)
         } else {
             presentedViewController?.showHUD(withTitle: title, detail: detail,
-                                             buttonTitle: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+                                             buttonTitle: String(localized: "alertCancelButton", comment: "Cancel"),
                                              buttonTarget: self, buttonSelector: #selector(cancelShareImages),
                                              inMode: .determinate)
         }

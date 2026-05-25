@@ -32,7 +32,7 @@ class DefaultImageThumbnailSizeViewController: UIViewController {
         super.viewDidLoad()
         
         // Title
-        title = NSLocalizedString("severalImages", comment: "Images")
+        title = String(localized: "severalImages", comment: "Images")
 
         // Table view
         tableView?.accessibilityIdentifier = "Image Thumbnail Size"
@@ -134,7 +134,7 @@ extension DefaultImageThumbnailSizeViewController: UITableViewDataSource {
         
         // Optimum?
         if size == optimumSize {
-            let detail = NSLocalizedString("defaultImageSize_recommended", comment: "(recommended)")
+            let detail = String(localized: "defaultImageSize_recommended", comment: "(recommended)")
             cell.configure(with: size.name, detail: detail)
         } else {
             cell.configure(with: size.name, detail: size.sizeAndScale(forScale: scale))
@@ -155,8 +155,8 @@ extension DefaultImageThumbnailSizeViewController: UITableViewDelegate {
     
     // MARK: - Header
     private func getContentOfHeader() -> (String, String) {
-        let title = String(format: "%@\n", NSLocalizedString("defaultThumbnailFile>414px", comment: "Images Thumbnail File"))
-        let text = NSLocalizedString("defaultThumbnailSizeHeader", comment: "Please select an image thumbnail size")
+        let title = String(format: "%@\n", String(localized: "defaultThumbnailFile>414px", comment: "Images Thumbnail File"))
+        let text = String(localized: "defaultThumbnailSizeHeader", comment: "Please select an image thumbnail size")
         return (title, text)
     }
     
@@ -196,12 +196,12 @@ extension DefaultImageThumbnailSizeViewController: UITableViewDelegate {
     
     // MARK: - Footer
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        let footer = NSLocalizedString("defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
+        let footer = String(localized: "defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
         return TableViewUtilities.heightOfFooter(withText: footer, width: tableView.frame.width)
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let footer = NSLocalizedString("defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
+        let footer = String(localized: "defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
         return TableViewUtilities.viewOfFooter(withText: footer, alignment: .center)
     }
 }

@@ -52,7 +52,7 @@ class AutoUploadViewController: UIViewController {
         super.viewDidLoad()
 
         // Title
-        title = NSLocalizedString("tabBar_upload", comment: "Upload")
+        title = String(localized: "tabBar_upload", comment: "Upload")
 
         // Table view
         autoUploadTableView?.accessibilityIdentifier = "Privacy"

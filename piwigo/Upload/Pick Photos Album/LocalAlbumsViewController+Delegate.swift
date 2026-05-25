@@ -85,7 +85,7 @@ extension LocalAlbumsViewController: UITableViewDelegate {
         
         // Case of an album
         let albumID = assetCollections[indexPath.row].localIdentifier
-        let albumName = assetCollections[indexPath.row].localizedTitle ?? NSLocalizedString("categoryUpload_LocalAlbums", comment: "Local Albums")
+        let albumName = assetCollections[indexPath.row].localizedTitle ?? String(localized: "categoryUpload_LocalAlbums", comment: "Local Albums")
         if wantedAction == .setAutoUploadAlbum {
             // Return the selected album ID
             delegate?.didSelectPhotoAlbum(withId: albumID)

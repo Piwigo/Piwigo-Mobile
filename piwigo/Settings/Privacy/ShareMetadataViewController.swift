@@ -35,7 +35,7 @@ class ShareMetadataViewController: UIViewController {
         super.viewDidLoad()
         
         // Title
-        title = NSLocalizedString("tabBar_upload", comment: "Upload")
+        title = String(localized: "tabBar_upload", comment: "Upload")
 
         // Table view
         shareMetadataTableView?.accessibilityIdentifier = "Share Metadata"
@@ -166,10 +166,10 @@ extension ShareMetadataViewController: UITableViewDataSource {
         var title = "", text = ""
         switch section {
         case 0:
-            title = String(format: "%@\n", NSLocalizedString("shareImageMetadata_Title", comment: "Share Metadata"))
-            text = NSLocalizedString("shareImageMetadata_subTitle1", comment: "Actions sharing images with private metadata")
+            title = String(format: "%@\n", String(localized: "shareImageMetadata_Title", comment: "Share Metadata"))
+            text = String(localized: "shareImageMetadata_subTitle1", comment: "Actions sharing images with private metadata")
         case 1:
-            text = NSLocalizedString("shareImageMetadata_subTitle2", comment: "Actions sharing images without private metadata")
+            text = String(localized: "shareImageMetadata_subTitle2", comment: "Actions sharing images without private metadata")
         default:
             break
         }
@@ -423,59 +423,59 @@ extension ShareMetadataViewController {
         // Return activity name of appropriate lentgh
         switch activity {
         case .airDrop:
-            name = width > 375 ? NSLocalizedString("shareActivityCode_AirDrop>375px", comment: "Transfer images with AirDrop")
-                               : NSLocalizedString("shareActivityCode_AirDrop", comment: "Transfer with AirDrop")
+            name = width > 375 ? String(localized: "shareActivityCode_AirDrop>375px", comment: "Transfer images with AirDrop")
+                               : String(localized: "shareActivityCode_AirDrop", comment: "Transfer with AirDrop")
         case .assignToContact:
-            name = width > 375 ? NSLocalizedString("shareActivityCode_AssignToContact>375px", comment: "Assign image to contact")
-                               : NSLocalizedString("shareActivityCode_AssignToContact", comment: "Assign to contact")
+            name = width > 375 ? String(localized: "shareActivityCode_AssignToContact>375px", comment: "Assign image to contact")
+                               : String(localized: "shareActivityCode_AssignToContact", comment: "Assign to contact")
         case .copyToPasteboard:
-            name = width > 375 ? NSLocalizedString("shareActivityCode_CopyToPasteboard>375px", comment: "Copy images to Pasteboard")
-                               : NSLocalizedString("shareActivityCode_CopyToPasteboard", comment: "Copy to Pasteboard")
+            name = width > 375 ? String(localized: "shareActivityCode_CopyToPasteboard>375px", comment: "Copy images to Pasteboard")
+                               : String(localized: "shareActivityCode_CopyToPasteboard", comment: "Copy to Pasteboard")
         case .mail:
-            name = width > 375 ? NSLocalizedString("shareActivityCode_Mail>375px", comment: "Post images by email")
-                               : NSLocalizedString("shareActivityCode_Mail", comment: "Post by email")
+            name = width > 375 ? String(localized: "shareActivityCode_Mail>375px", comment: "Post images by email")
+                               : String(localized: "shareActivityCode_Mail", comment: "Post by email")
         case .message:
-            name = width > 375 ? NSLocalizedString("shareActivityCode_Message>375px", comment: "Post images with the Message app")
-                               : NSLocalizedString("shareActivityCode_Message", comment: "Post with Message")
+            name = width > 375 ? String(localized: "shareActivityCode_Message>375px", comment: "Post images with the Message app")
+                               : String(localized: "shareActivityCode_Message", comment: "Post with Message")
         case .postToFacebook:
-            name = width > 375 ? NSLocalizedString("shareActivityCode_Facebook>375px", comment: "Post images to Facebook")
-                               : NSLocalizedString("shareActivityCode_Facebook", comment: "Post to Facebook")
+            name = width > 375 ? String(localized: "shareActivityCode_Facebook>375px", comment: "Post images to Facebook")
+                               : String(localized: "shareActivityCode_Facebook", comment: "Post to Facebook")
         case pwgActivityTypeMessenger:
-            name = width > 375 ? NSLocalizedString("shareActivityCode_Messenger>375px", comment: "Post images with the Messenger app")
-                               : NSLocalizedString("shareActivityCode_Messenger", comment: "Post with Messenger")
+            name = width > 375 ? String(localized: "shareActivityCode_Messenger>375px", comment: "Post images with the Messenger app")
+                               : String(localized: "shareActivityCode_Messenger", comment: "Post with Messenger")
         case .postToFlickr:
-            name = width > 375 ? NSLocalizedString("shareActivityCode_Flickr>375px", comment: "Post images to Flickr")
-                               : NSLocalizedString("shareActivityCode_Flickr", comment: "Post to Flickr")
+            name = width > 375 ? String(localized: "shareActivityCode_Flickr>375px", comment: "Post images to Flickr")
+                               : String(localized: "shareActivityCode_Flickr", comment: "Post to Flickr")
         case pwgActivityTypePostInstagram:
-            name = width > 375 ? NSLocalizedString("shareActivityCode_Instagram>375px", comment: "Post images to Instagram")
-                               : NSLocalizedString("shareActivityCode_Instagram", comment: "Post to Instagram")
+            name = width > 375 ? String(localized: "shareActivityCode_Instagram>375px", comment: "Post images to Instagram")
+                               : String(localized: "shareActivityCode_Instagram", comment: "Post to Instagram")
         case pwgActivityTypePostToSignal:
-            name = width > 375 ? NSLocalizedString("shareActivityCode_Signal>375px", comment: "Post images with the Signal app")
-                               : NSLocalizedString("shareActivityCode_Signal", comment: "Post with Signal")
+            name = width > 375 ? String(localized: "shareActivityCode_Signal>375px", comment: "Post images with the Signal app")
+                               : String(localized: "shareActivityCode_Signal", comment: "Post with Signal")
         case pwgActivityTypePostToSnapchat:
-            name = width > 375 ? NSLocalizedString("shareActivityCode_Snapchat>375px", comment: "Post images to Snapchat app")
-                               : NSLocalizedString("shareActivityCode_Snapchat", comment: "Post to Snapchat")
+            name = width > 375 ? String(localized: "shareActivityCode_Snapchat>375px", comment: "Post images to Snapchat app")
+                               : String(localized: "shareActivityCode_Snapchat", comment: "Post to Snapchat")
         case .postToTencentWeibo:
-            name = width > 375 ? NSLocalizedString("shareActivityCode_TencentWeibo>375px", comment: "Post images to TencentWeibo")
-                               : NSLocalizedString("shareActivityCode_TencentWeibo", comment: "Post to TencentWeibo")
+            name = width > 375 ? String(localized: "shareActivityCode_TencentWeibo>375px", comment: "Post images to TencentWeibo")
+                               : String(localized: "shareActivityCode_TencentWeibo", comment: "Post to TencentWeibo")
         case .postToTwitter:
-            name = width > 375 ? NSLocalizedString("shareActivityCode_Twitter>375px", comment: "Post images to Twitter")
-                               : NSLocalizedString("shareActivityCode_Twitter", comment: "Post to Twitter")
+            name = width > 375 ? String(localized: "shareActivityCode_Twitter>375px", comment: "Post images to Twitter")
+                               : String(localized: "shareActivityCode_Twitter", comment: "Post to Twitter")
         case .postToVimeo:
-            name = width > 375 ? NSLocalizedString("shareActivityCode_Vimeo>375px", comment: "Post videos to Vimeo")
-                               : NSLocalizedString("shareActivityCode_Vimeo", comment: "Post to Vimeo")
+            name = width > 375 ? String(localized: "shareActivityCode_Vimeo>375px", comment: "Post videos to Vimeo")
+                               : String(localized: "shareActivityCode_Vimeo", comment: "Post to Vimeo")
         case .postToWeibo:
-            name = width > 375 ? NSLocalizedString("shareActivityCode_Weibo>375px", comment: "Post images to Weibo")
-                               : NSLocalizedString("shareActivityCode_Weibo", comment: "Post to Weibo")
+            name = width > 375 ? String(localized: "shareActivityCode_Weibo>375px", comment: "Post images to Weibo")
+                               : String(localized: "shareActivityCode_Weibo", comment: "Post to Weibo")
         case pwgActivityTypePostToWhatsApp:
-            name = width > 375 ? NSLocalizedString("shareActivityCode_WhatsApp>375px", comment: "Post images with the WhatsApp app")
-                               : NSLocalizedString("shareActivityCode_WhatsApp", comment: "Post with WhatsApp")
+            name = width > 375 ? String(localized: "shareActivityCode_WhatsApp>375px", comment: "Post images with the WhatsApp app")
+                               : String(localized: "shareActivityCode_WhatsApp", comment: "Post with WhatsApp")
         case .saveToCameraRoll:
-            name = width > 375 ? NSLocalizedString("shareActivityCode_CameraRoll>375px", comment: "Save images to Camera Roll")
-                               : NSLocalizedString("shareActivityCode_CameraRoll", comment: "Save to Camera Roll")
+            name = width > 375 ? String(localized: "shareActivityCode_CameraRoll>375px", comment: "Save images to Camera Roll")
+                               : String(localized: "shareActivityCode_CameraRoll", comment: "Save to Camera Roll")
         case pwgActivityTypeOther:
-            name = width > 375 ? NSLocalizedString("shareActivityCode_Other>375px", comment: "Share images with other apps")
-                               : NSLocalizedString("shareActivityCode_Other", comment: "Share with other apps")
+            name = width > 375 ? String(localized: "shareActivityCode_Other>375px", comment: "Share images with other apps")
+                               : String(localized: "shareActivityCode_Other", comment: "Share with other apps")
             default:
                 debugPrint("Error: Unknown activity \(String(describing: activity))")
         }

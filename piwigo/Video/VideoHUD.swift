@@ -23,7 +23,7 @@ class VideoHUD: UIView {
     private lazy var label: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
+        label.text = String(localized: "loadingHUD_label", comment: "Loading…")
         label.textColor = .white
         label.textAlignment = .center
         label.adjustsFontSizeToFitWidth = true
@@ -40,7 +40,7 @@ class VideoHUD: UIView {
 //    private lazy var button: UIButton = {
 //        var button: UIButton
 //        var filled = UIButton.Configuration.filled()
-//        filled.title = NSLocalizedString("loadingHUD_label", comment: "Loading…")
+//        filled.title = String(localized: "loadingHUD_label", comment: "Loading…")
 //        filled.titleAlignment = .center
 //        filled.buttonSize = .medium
 //        filled.baseBackgroundColor = UIColor(white: 0.0, alpha: 0.35)

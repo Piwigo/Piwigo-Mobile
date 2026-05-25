@@ -94,7 +94,7 @@ extension LocalAlbumsViewController: UITableViewDataSource {
         case .pasteboard:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocalAlbumsNoDatesTableViewCell", for: indexPath) as? LocalAlbumsNoDatesTableViewCell
             else { preconditionFailure("Could not load a LocalAlbumsNoDatesTableViewCell!") }
-            let title = NSLocalizedString("categoryUpload_pasteboard", comment: "Clipboard")
+            let title = String(localized: "categoryUpload_pasteboard", comment: "Clipboard")
             let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes)?.count ?? NSNotFound
             cell.configure(with: title, nberPhotos: Int64(nberPhotos))
             cell.isAccessibilityElement = true

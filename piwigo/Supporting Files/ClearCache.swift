@@ -20,10 +20,10 @@ final class ClearCache
         var title = "", message = ""
         switch error {
         case .incompatiblePwgVersion:
-            title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
+            title = String(localized: "serverVersionNotCompatible_title", comment: "Server Incompatible")
             message = String.localizedStringWithFormat(PwgKitError.incompatiblePwgVersion.localizedDescription, ServerVars.shared.pwgVersion, pwgMinVersion)
         default:
-            title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
+            title = String(localized: "internetErrorGeneral_title", comment: "Connection Error")
         }
         viewController.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) {
             closeSession()

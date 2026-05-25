@@ -27,14 +27,14 @@ class Help01ViewController: UIViewController {
         let legendAttributedString = NSMutableAttributedString(string: "")
 
         // Title
-        let titleString = NSLocalizedString("help01_header", comment: "Multiple Selection") + "\n"
+        let titleString = String(localized: "help01_header", comment: "Multiple Selection") + "\n"
         let titleAttributedString = NSMutableAttributedString(string: titleString)
         let titleRange = NSRange(location: 0, length: titleString.count)
         titleAttributedString.addAttribute(.font, value: titleFont, range: titleRange)
         legendAttributedString.append(titleAttributedString)
 
         // Text
-        let textString = NSLocalizedString("help01_text", comment: "Slide your finger from left to right (or right to left) then down, etc.")
+        let textString = String(localized: "help01_text", comment: "Slide your finger from left to right (or right to left) then down, etc.")
         let textAttributedString = NSMutableAttributedString(string: textString)
         let textRange = NSRange(location: 0, length: textString.count)
         textAttributedString.addAttribute(.font, value: textFont, range: textRange)

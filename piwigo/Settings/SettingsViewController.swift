@@ -67,35 +67,35 @@ class SettingsViewController: UIViewController {
         .compare("14.0", options: .numeric) == .orderedAscending
     
     // For displaying cache sizes
-    var dataCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
+    var dataCacheSize: String = String(localized: "loadingHUD_label", comment: "Loading…") {
         didSet {
             DispatchQueue.main.async {
                 self.updateDataCacheCell()
             }
         }
     }
-    var thumbCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
+    var thumbCacheSize: String = String(localized: "loadingHUD_label", comment: "Loading…") {
         didSet {
             DispatchQueue.main.async {
                 self.updateThumbCacheCell()
             }
         }
     }
-    var photoCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
+    var photoCacheSize: String = String(localized: "loadingHUD_label", comment: "Loading…") {
         didSet {
             DispatchQueue.main.async {
                 self.updatePhotoCacheCell()
             }
         }
     }
-    var videoCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
+    var videoCacheSize: String = String(localized: "loadingHUD_label", comment: "Loading…") {
         didSet {
             DispatchQueue.main.async {
                 self.updateVideoCacheCell()
             }
         }
     }
-    var uploadCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
+    var uploadCacheSize: String = String(localized: "loadingHUD_label", comment: "Loading…") {
         didSet {
             DispatchQueue.main.async {
                 self.updateUploadCacheCell()
@@ -182,7 +182,7 @@ class SettingsViewController: UIViewController {
         }
         
         // Title
-        title = NSLocalizedString("tabBar_preferences", comment: "Settings")
+        title = String(localized: "tabBar_preferences", comment: "Settings")
         
         // Button for returning to albums/images
         closeBarButton = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(quitSettings))
@@ -265,9 +265,9 @@ class SettingsViewController: UIViewController {
             
             // Request a translation
             let alert = UIAlertController(title: kHelpUsTitle, message: kHelpUsTranslatePiwigo, preferredStyle: .alert)
-            let cancelAction = UIAlertAction(title: NSLocalizedString("alertNoButton", comment: "No"), style: .destructive, handler: { action in
+            let cancelAction = UIAlertAction(title: String(localized: "alertNoButton", comment: "No"), style: .destructive, handler: { action in
             })
-            let defaultAction = UIAlertAction(title: NSLocalizedString("alertYesButton", comment: "Yes"), style: .default, handler: { action in
+            let defaultAction = UIAlertAction(title: String(localized: "alertYesButton", comment: "Yes"), style: .default, handler: { action in
                 if let url = URL(string: "https://crowdin.com/project/piwigo-mobile") {
                     UIApplication.shared.open(url)
                 }
@@ -371,14 +371,14 @@ class SettingsViewController: UIViewController {
         }
         
         // Ask user for confirmation
-        let alert = UIAlertController(title: "", message: NSLocalizedString("logoutConfirmation_message", comment: "Are you sure you want to logout?"), preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "", message: String(localized: "logoutConfirmation_message", comment: "Are you sure you want to logout?"), preferredStyle: .actionSheet)
         
-        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in
+        let cancelAction = UIAlertAction(title: String(localized: "alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in
         })
         
-        let logoutAction = UIAlertAction(title: NSLocalizedString("logoutConfirmation_title", comment: "Logout"), style: .destructive, handler: { action in
+        let logoutAction = UIAlertAction(title: String(localized: "logoutConfirmation_title", comment: "Logout"), style: .destructive, handler: { action in
             // Show HUD
-            let title = NSLocalizedString("login_closeSession", comment: "Closing Session...")
+            let title = String(localized: "login_closeSession", comment: "Closing Session...")
             self.navigationController?.showHUD(withTitle: title)
 
             // Perform Logout on background
@@ -399,7 +399,7 @@ class SettingsViewController: UIViewController {
                     // or simply a connection drop.
                     await MainActor.run {
                         self.navigationController?.hideHUD {
-                            self.navigationController?.dismissPiwigoError(withTitle: NSLocalizedString("logoutFail_title", comment: "Logout Failed"),
+                            self.navigationController?.dismissPiwigoError(withTitle: String(localized: "logoutFail_title", comment: "Logout Failed"),
                                                                           message: error.localizedDescription) {
                                 ClearCache.closeSession()
                             }

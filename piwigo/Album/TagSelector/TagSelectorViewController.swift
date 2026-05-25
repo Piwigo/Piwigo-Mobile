@@ -86,7 +86,7 @@ class TagSelectorViewController: UIViewController {
         super.viewDidLoad()
         
         // Title
-        title = NSLocalizedString("tagsTitle_selectOne", comment: "Select a Tag")
+        title = String(localized: "tagsTitle_selectOne", comment: "Select a Tag")
         
         // Initialise search bar
         let searchBar = searchController.searchBar
@@ -156,8 +156,8 @@ class TagSelectorViewController: UIViewController {
         
         // Show HUD during the fetch
         self.navigationController?.showHUD(
-            withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-            detail: NSLocalizedString("tags", comment: "Tags"), minWidth: 200)
+            withTitle: String(localized: "loadingHUD_label", comment: "Loading…"),
+            detail: String(localized: "tags", comment: "Tags"), minWidth: 200)
         
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.

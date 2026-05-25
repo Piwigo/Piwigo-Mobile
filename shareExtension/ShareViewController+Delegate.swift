@@ -26,7 +26,7 @@ extension ShareViewController: UITableViewDelegate
                 : String(localized: "tabBar_albums", bundle: .pwgKit, comment: "Albums")
         } else {
             // 2nd section
-            return NSLocalizedString("categorySelection_allAlbums", comment: "All Albums")
+            return String(localized: "categorySelection_allAlbums", comment: "All Albums")
         }
     }
     
@@ -90,7 +90,7 @@ extension ShareViewController: UITableViewDelegate
         if albumData.pwgID == 0 { return }
 
         // Ask user to confirm
-        let title = NSLocalizedString("uploadToAlbum_title", comment:"Upload to Album")
+        let title = String(localized: "uploadToAlbum_title", comment:"Upload to Album")
         let strFormat = String(localized: "uploadToAlbum_message", comment:"Are you sure you want to upload the photos to the album \"%@\"?")
         let message = unsafe String(format: strFormat, albumData.name)
         Task { @MainActor in
@@ -111,12 +111,12 @@ extension ShareViewController: UITableViewDelegate
                                      forCategory albumData: Album, at indexPath:IndexPath) async -> Bool {
         await withCheckedContinuation { continuation in
             let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
-            let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+            let cancelAction = UIAlertAction(title: String(localized: "alertCancelButton", comment: "Cancel"),
                                              style: .cancel, handler: {_ in
                 // Forget the choice
                 continuation.resume(returning: false)
             })
-            let performAction = UIAlertAction(title: NSLocalizedString("alertYesButton", comment: "Yes"), style: .default, handler: { _ in
+            let performAction = UIAlertAction(title: String(localized: "alertYesButton", comment: "Yes"), style: .default, handler: { _ in
                 continuation.resume(returning: true)
             })
             

@@ -27,14 +27,14 @@ class Help06ViewController: UIViewController {
         let legendAttributedString = NSMutableAttributedString(string: "")
 
         // Title
-        let titleString = NSLocalizedString("help06_header", comment: "Upload Management") + "\n"
+        let titleString = String(localized: "help06_header", comment: "Upload Management") + "\n"
         let titleAttributedString = NSMutableAttributedString(string: titleString)
         let titleRange = NSRange(location: 0, length: titleString.count)
         titleAttributedString.addAttribute(.font, value: titleFont, range: titleRange)
         legendAttributedString.append(titleAttributedString)
 
         // Text
-        let textString = NSLocalizedString("help06_text", comment: "How to manage upload requests")
+        let textString = String(localized: "help06_text", comment: "How to manage upload requests")
         let textAttributedString = NSMutableAttributedString(string: textString)
         let textRange = NSRange(location: 0, length: textString.count)
         textAttributedString.addAttribute(.font, value: textFont, range: textRange)

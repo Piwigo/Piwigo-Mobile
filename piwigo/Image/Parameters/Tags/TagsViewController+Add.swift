@@ -18,10 +18,10 @@ extension TagsViewController
     // MARK: - Add tag (for admins only)
     @MainActor
     @objc func requestNewTagName() {
-        let alert = UIAlertController(title: NSLocalizedString("tagsAdd_title", comment: "Add Tag"), message: NSLocalizedString("tagsAdd_message", comment: "Enter a name for this new tag"), preferredStyle: .alert)
+        let alert = UIAlertController(title: String(localized: "tagsAdd_title", comment: "Add Tag"), message: String(localized: "tagsAdd_message", comment: "Enter a name for this new tag"), preferredStyle: .alert)
 
         alert.addTextField(configurationHandler: { textField in
-            textField.placeholder = NSLocalizedString("tagsAdd_placeholder", comment: "New tag")
+            textField.placeholder = String(localized: "tagsAdd_placeholder", comment: "New tag")
             textField.clearButtonMode = .always
             textField.keyboardType = .default
             textField.keyboardAppearance = InterfaceVars.shared.isDarkPaletteActive ? .dark : .default
@@ -31,10 +31,10 @@ extension TagsViewController
             textField.delegate = self
         })
 
-        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in
+        let cancelAction = UIAlertAction(title: String(localized: "alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in
             })
 
-        addAction = UIAlertAction(title: NSLocalizedString("alertAddButton", comment: "Add"), style: .default, handler: { action in
+        addAction = UIAlertAction(title: String(localized: "alertAddButton", comment: "Add"), style: .default, handler: { action in
             // Rename album if possible
             if (alert.textFields?.first?.text?.count ?? 0) > 0 {
                 self.addTag(withName: alert.textFields?.first?.text)
@@ -60,7 +60,7 @@ extension TagsViewController
         else { return }
         
         // Display HUD during the update
-        showHUD(withTitle: NSLocalizedString("tagsAddHUD_label", comment: "Creating Tag…"))
+        showHUD(withTitle: String(localized: "tagsAddHUD_label", comment: "Creating Tag…"))
 
         // Add new tag
         Task {
@@ -85,8 +85,8 @@ extension TagsViewController
                 await MainActor.run {
                     self.hideHUD {
                         self.dismissPiwigoError(
-                            withTitle: NSLocalizedString("tagsAddError_title", comment: "Create Fail"),
-                            message: NSLocalizedString("tagsAddError_message", comment: "Failed to…"),
+                            withTitle: String(localized: "tagsAddError_title", comment: "Create Fail"),
+                            message: String(localized: "tagsAddError_message", comment: "Failed to…"),
                             errorMessage: error.localizedDescription, completion: { })
                     }
                 }

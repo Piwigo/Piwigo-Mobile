@@ -41,7 +41,7 @@ class UploadPhotoSizeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = NSLocalizedString("tabBar_upload", comment: "Upload")
+        title = String(localized: "tabBar_upload", comment: "Upload")
 
         // Table view
         tableView?.accessibilityIdentifier = "Photo Size"
@@ -130,8 +130,8 @@ extension UploadPhotoSizeViewController: UITableViewDelegate
 {
     // MARK: - Header
     private func getContentOfHeader() -> (String, String) {
-        let title = String(format: "%@\n", NSLocalizedString("UploadPhotoSize_title", comment: "Max Photo Size"))
-        let text = NSLocalizedString("UploadPhotoSize_header", comment: "Please select the maximum size of the photos which will be uploaded.")
+        let title = String(format: "%@\n", String(localized: "UploadPhotoSize_title", comment: "Max Photo Size"))
+        let text = String(localized: "UploadPhotoSize_header", comment: "Please select the maximum size of the photos which will be uploaded.")
         return (title, text)
     }
     
@@ -165,7 +165,7 @@ extension UploadPhotoSizeViewController: UITableViewDelegate
     private func getContentOfFooter() -> String {
         let resolution = UIDevice.current.modelPhotoResolution
         if resolution.isEmpty { return "" }
-        return String(format: "%@ %@.", NSLocalizedString("UploadPhotoSize_resolution", comment: "Built-in cameras maximum resolution:"), resolution)
+        return String(format: "%@ %@.", String(localized: "UploadPhotoSize_resolution", comment: "Built-in cameras maximum resolution:"), resolution)
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
@@ -184,7 +184,7 @@ extension UploadPhotoSizeViewController: UITableViewDelegate
 extension pwgPhotoMaxSizes {
     public var name: String {
         switch self {
-        case .fullResolution:   return NSLocalizedString("UploadPhotoSize_original", comment: "No Downsizing")
+        case .fullResolution:   return String(localized: "UploadPhotoSize_original", comment: "No Downsizing")
         case .Retina5K:         return "5K"
         case .UHD4K:            return "4K"
         case .DCI2K:            return "2K"

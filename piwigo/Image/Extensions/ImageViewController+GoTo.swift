@@ -19,7 +19,7 @@ extension ImageViewController
     // MARK: - Menu
     @MainActor
     func goToAlbumMenu() -> UIMenu {
-        return UIMenu(title: NSLocalizedString("imageOptions_goToAlbum", comment: "Go To Album…"),
+        return UIMenu(title: String(localized: "imageOptions_goToAlbum", comment: "Go To Album…"),
                       image: nil,
                       identifier: UIMenu.Identifier("org.piwigo.image.goToAlbum"),
                       children: [goToAlbumActions()].compactMap({$0}))
@@ -151,7 +151,7 @@ extension ImageViewController
 //        guard imageData.isPDF else { return nil }
 //        
 //        // Copy image to album
-//        let action = UIAction(title: NSLocalizedString("goToPage_title", comment: "Go to page…"),
+//        let action = UIAction(title: String(localized: "goToPage_title", comment: "Go to page…"),
 //                              image: UIImage(systemName: "arrow.turn.down.right"),
 //                              handler: { [self] _ in
 //            // Request page number
@@ -168,7 +168,7 @@ extension ImageViewController
         
         // Request page number
         let alert = UIAlertController(title: "",
-                                      message: NSLocalizedString("goToPage_message", comment: "Page number?"),
+                                      message: String(localized: "goToPage_message", comment: "Page number?"),
                                       preferredStyle: .alert)
         
         alert.addTextField(configurationHandler: { textField in
@@ -183,14 +183,14 @@ extension ImageViewController
         })
         
         let cancelAction = UIAlertAction(
-            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+            title: String(localized: "alertCancelButton", comment: "Cancel"),
             style: .cancel, handler: { [self] action in
                 // Re-enable buttons
                 setEnableStateOfButtons(true)
             })
         
         let goToPageAction = UIAlertAction(
-            title: NSLocalizedString("alertOkButton", comment: "OK"),
+            title: String(localized: "alertOkButton", comment: "OK"),
             style: .default, handler: { [self] action in
                 // Display requested page
                 if let pdfDVC = pageViewController?.viewControllers?.first as? PdfDetailViewController {

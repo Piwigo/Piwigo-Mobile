@@ -178,12 +178,12 @@ extension SelectCategoryViewController: UITableViewDelegate
                 (albumData.pwgID == inputAlbum.pwgID) { return }
             
             // Ask user to confirm
-            let title = NSLocalizedString("setDefaultCategory_title", comment: "Default Album")
+            let title = String(localized: "setDefaultCategory_title", comment: "Default Album")
             let message:String
             if albumData.pwgID == 0 {
-                message = String(format: NSLocalizedString("setDefaultCategory_message", comment: "Are you sure you want to set the album %@ as default album?"),   pwgSmartAlbum.root.name)
+                message = String(format: String(localized: "setDefaultCategory_message", comment: "Are you sure you want to set the album %@ as default album?"),   pwgSmartAlbum.root.name)
             } else {
-                message = String(format: NSLocalizedString("setDefaultCategory_message", comment: "Are you sure you want to set the album %@ as default album?"), albumData.name)
+                message = String(format: String(localized: "setDefaultCategory_message", comment: "Are you sure you want to set the album %@ as default album?"), albumData.name)
             }
             Task { @MainActor in
                 let confirmed = await requestConfirmation(withTitle: title, message: message,
@@ -214,8 +214,8 @@ extension SelectCategoryViewController: UITableViewDelegate
             }
 
             // Ask user to confirm
-            let title = NSLocalizedString("moveCategory", comment: "Move Album")
-            let message = String(format: NSLocalizedString("moveCategory_message", comment: "Are you sure you want to move \"%@\" into the album \"%@\"?"), inputAlbum.name, albumData.name)
+            let title = String(localized: "moveCategory", comment: "Move Album")
+            let message = String(format: String(localized: "moveCategory_message", comment: "Are you sure you want to move \"%@\" into the album \"%@\"?"), inputAlbum.name, albumData.name)
             Task { @MainActor in
                 let confirmed = await requestConfirmation(withTitle: title, message: message,
                                                           forCategory: albumData, at: indexPath)
@@ -227,8 +227,8 @@ extension SelectCategoryViewController: UITableViewDelegate
 
         case .setAlbumThumbnail:
             // Ask user to confirm
-            let title = NSLocalizedString("categoryImageSet_title", comment:"Album Thumbnail")
-            let message = String(format: NSLocalizedString("categoryImageSet_message", comment:"Are you sure you want to set this image for the album \"%@\"?"), albumData.name)
+            let title = String(localized: "categoryImageSet_title", comment:"Album Thumbnail")
+            let message = String(format: String(localized: "categoryImageSet_message", comment:"Are you sure you want to set this image for the album \"%@\"?"), albumData.name)
             Task { @MainActor in
                 let confirmed = await requestConfirmation(withTitle: title, message: message,
                                                           forCategory: albumData, at: indexPath)
@@ -253,15 +253,15 @@ extension SelectCategoryViewController: UITableViewDelegate
             if commonCatIDs.contains(albumData.pwgID) { return }
 
             // Ask user to confirm
-            let title = NSLocalizedString("copyImage_title", comment:"Copy to Album")
+            let title = String(localized: "copyImage_title", comment:"Copy to Album")
             let imageTitle = inputImages.first?.titleStr ?? inputImages.first?.fileName ?? ""
-            let message = String(format: NSLocalizedString("copySingleImage_message", comment:"Are you sure you want to copy the photo \"%@\" to the album \"%@\"?"), imageTitle.isEmpty ? inputImages.first?.fileName ?? "-?-" : imageTitle, albumData.name)
+            let message = String(format: String(localized: "copySingleImage_message", comment:"Are you sure you want to copy the photo \"%@\" to the album \"%@\"?"), imageTitle.isEmpty ? inputImages.first?.fileName ?? "-?-" : imageTitle, albumData.name)
             Task { @MainActor in
                 let confirmed = await requestConfirmation(withTitle: title, message: message,
                                                           forCategory: albumData, at: indexPath)
                 if confirmed {
                     // Display HUD
-                    self.showHUD(withTitle: NSLocalizedString("copySingleImageHUD_copying", comment:"Copying Photo…"))
+                    self.showHUD(withTitle: String(localized: "copySingleImageHUD_copying", comment:"Copying Photo…"))
                     
                     // Copy single image to selected album
                     if ServerVars.shared.usesSetCategory {
@@ -279,15 +279,15 @@ extension SelectCategoryViewController: UITableViewDelegate
             if commonCatIDs.contains(albumData.pwgID) { return }
 
             // Ask user to confirm
-            let title = NSLocalizedString("moveImage_title", comment:"Move to Album")
+            let title = String(localized: "moveImage_title", comment:"Move to Album")
             let imageTitle = inputImages.first?.titleStr ?? inputImages.first?.fileName ?? ""
-            let message = String(format: NSLocalizedString("moveSingleImage_message", comment:"Are you sure you want to move the photo \"%@\" to the album \"%@\"?"), imageTitle.isEmpty ? inputImages.first?.fileName ?? "-?-" : imageTitle, albumData.name)
+            let message = String(format: String(localized: "moveSingleImage_message", comment:"Are you sure you want to move the photo \"%@\" to the album \"%@\"?"), imageTitle.isEmpty ? inputImages.first?.fileName ?? "-?-" : imageTitle, albumData.name)
             Task { @MainActor in
                 let confirmed = await requestConfirmation(withTitle: title, message: message,
                                                           forCategory: albumData, at: indexPath)
                 if confirmed {
                     // Display HUD
-                    self.showHUD(withTitle: NSLocalizedString("moveSingleImageHUD_moving", comment:"Moving Photo…"))
+                    self.showHUD(withTitle: String(localized: "moveSingleImageHUD_moving", comment:"Moving Photo…"))
                     
                     // Move single image to selected album
                     if ServerVars.shared.usesSetCategory {
@@ -305,14 +305,14 @@ extension SelectCategoryViewController: UITableViewDelegate
             if commonCatIDs.contains(albumData.pwgID) { return }
 
             // Ask user to confirm
-            let title = NSLocalizedString("copyImage_title", comment:"Copy to Album")
-            let message = String(format: NSLocalizedString("copySeveralImages_message", comment:"Are you sure you want to copy the photos to the album \"%@\"?"), albumData.name)
+            let title = String(localized: "copyImage_title", comment:"Copy to Album")
+            let message = String(format: String(localized: "copySeveralImages_message", comment:"Are you sure you want to copy the photos to the album \"%@\"?"), albumData.name)
             Task { @MainActor in
                 let confirmed = await requestConfirmation(withTitle: title, message: message,
                                                           forCategory: albumData, at: indexPath)
                 if confirmed {
                     // Display HUD
-                    self.showHUD(withTitle: NSLocalizedString("copySeveralImagesHUD_copying", comment: "Copying Photos…"),
+                    self.showHUD(withTitle: String(localized: "copySeveralImagesHUD_copying", comment: "Copying Photos…"),
                                  inMode: ServerVars.shared.usesSetCategory ? .indeterminate : .determinate)
                     
                     // Copy several images to selected album
@@ -331,14 +331,14 @@ extension SelectCategoryViewController: UITableViewDelegate
             if commonCatIDs.contains(albumData.pwgID) { return }
 
             // Ask user to confirm
-            let title = NSLocalizedString("moveImage_title", comment:"Move to Album")
-            let message = String(format: NSLocalizedString("moveSeveralImages_message", comment:"Are you sure you want to move the photos to the album \"%@\"?"), albumData.name)
+            let title = String(localized: "moveImage_title", comment:"Move to Album")
+            let message = String(format: String(localized: "moveSeveralImages_message", comment:"Are you sure you want to move the photos to the album \"%@\"?"), albumData.name)
             Task { @MainActor in
                 let confirmed = await requestConfirmation(withTitle: title, message: message,
                                                           forCategory: albumData, at: indexPath)
                 if confirmed {
                     // Display HUD
-                    self.showHUD(withTitle: NSLocalizedString("moveSeveralImagesHUD_moving", comment: "Moving Photos…"),
+                    self.showHUD(withTitle: String(localized: "moveSeveralImagesHUD_moving", comment: "Moving Photos…"),
                                  inMode: ServerVars.shared.usesSetCategory ? .indeterminate : .determinate)
                     
                     // Move several images to selected album
@@ -360,13 +360,13 @@ extension SelectCategoryViewController: UITableViewDelegate
                                      forCategory albumData: Album, at indexPath:IndexPath) async -> Bool {
         await withCheckedContinuation { continuation in
             let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
-            let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+            let cancelAction = UIAlertAction(title: String(localized: "alertCancelButton", comment: "Cancel"),
                                              style: .cancel, handler: {_ in
                 // Forget the choice
                 self.selectedCategoryId = Int32.min
                 continuation.resume(returning: false)
             })
-            let performAction = UIAlertAction(title: NSLocalizedString("alertYesButton", comment: "Yes"), style: .default, handler: { _ in
+            let performAction = UIAlertAction(title: String(localized: "alertYesButton", comment: "Yes"), style: .default, handler: { _ in
                 continuation.resume(returning: true)
             })
             

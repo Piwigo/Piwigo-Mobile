@@ -30,14 +30,14 @@ class Help07ViewController: UIViewController {
         let legendBotAttributedString = NSMutableAttributedString(string: "")
 
         // Title of legend above images
-        let titleString = NSLocalizedString("help07_header", comment: "Auto-Uploading") + "\n"
+        let titleString = String(localized: "help07_header", comment: "Auto-Uploading") + "\n"
         let titleAttributedString = NSMutableAttributedString(string: titleString)
         let titleRange = NSRange(location: 0, length: titleString.count)
         titleAttributedString.addAttribute(.font, value: titleFont, range: titleRange)
         legendTopAttributedString.append(titleAttributedString)
 
         // Text of legend above images
-        let aboveString = NSLocalizedString("help07_text", comment: "Select albums in Piwigo and create automations in Shortcuts.")
+        let aboveString = String(localized: "help07_text", comment: "Select albums in Piwigo and create automations in Shortcuts.")
         let aboveAttributedString = NSMutableAttributedString(string: aboveString)
         let aboveRange = NSRange(location: 0, length: aboveString.count)
         aboveAttributedString.addAttribute(.font, value: textFont, range: aboveRange)
@@ -47,7 +47,7 @@ class Help07ViewController: UIViewController {
         legendTop.attributedText = legendTopAttributedString
 
         // Text of legend between images
-        let betweenString = NSLocalizedString("help02_text2", comment: "Plug the device to its charger and let iOS…")
+        let betweenString = String(localized: "help02_text2", comment: "Plug the device to its charger and let iOS…")
         let betweenAttributedString = NSMutableAttributedString(string: betweenString)
         let betweenRange = NSRange(location: 0, length: betweenString.count)
         betweenAttributedString.addAttribute(.font, value: textFont, range: betweenRange)

@@ -24,7 +24,7 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
         super.viewDidLoad()
 
         // Title
-        title = NSLocalizedString("settings_privacy", comment: "Policy Privacy")
+        title = String(localized: "settings_privacy", comment: "Policy Privacy")
     }
     
     @MainActor

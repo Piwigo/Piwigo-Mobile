@@ -161,7 +161,7 @@ extension AlbumViewController
         button.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
         button.isHidden = true
         button.accessibilityIdentifier = "add"
-        button.accessibilityLabel = NSLocalizedString("createNewAlbum_title", comment: "New Album")
+        button.accessibilityLabel = String(localized: "createNewAlbum_title", comment: "New Album")
         return button
     }
     
@@ -539,7 +539,7 @@ extension AlbumViewController
         button.addTarget(self, action: #selector(didTapCreateAlbum), for: .touchUpInside)
         button.isHidden = true
         button.accessibilityIdentifier = "createAlbum"
-        button.accessibilityLabel = NSLocalizedString("createNewAlbum_title", comment: "New Album")
+        button.accessibilityLabel = String(localized: "createNewAlbum_title", comment: "New Album")
         return button
     }
     
@@ -574,7 +574,7 @@ extension AlbumViewController
         button.addTarget(self, action: #selector(didTapUploadImagesButton), for: .touchUpInside)
         button.isHidden = true
         button.accessibilityIdentifier = "org.piwigo.addImages"
-        button.accessibilityLabel = NSLocalizedString("tabBar_upload", comment: "Upload")
+        button.accessibilityLabel = String(localized: "tabBar_upload", comment: "Upload")
         return button
     }
 

@@ -166,7 +166,7 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
         uploadBarButton.accessibilityIdentifier = "Upload"
         
         // Title
-        title = NSLocalizedString("categoryUpload_pasteboard", comment: "Clipboard")
+        title = String(localized: "categoryUpload_pasteboard", comment: "Clipboard")
     }
 
     @MainActor

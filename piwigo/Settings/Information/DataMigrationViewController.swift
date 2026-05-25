@@ -31,8 +31,8 @@ class DataMigrationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        migrationLabel.text = NSLocalizedString("CoreData_MigrationProgress", comment: "Migration in progress...")
-        pleaseWaitLabel.text = NSLocalizedString("Coredata_MigrationPleaseWait", comment: "We are currently migrating some of your data. Please wait until it is complete. Do not kill the application.")
+        migrationLabel.text = String(localized: "CoreData_MigrationProgress", comment: "Migration in progress...")
+        pleaseWaitLabel.text = String(localized: "Coredata_MigrationPleaseWait", comment: "We are currently migrating some of your data. Please wait until it is complete. Do not kill the application.")
     }
     
     @MainActor
@@ -96,8 +96,8 @@ class DataMigrationViewController: UIViewController {
                 // Report error
                 DispatchQueue.main.async {
                     // Prepare messages
-                    let title = NSLocalizedString("CoreData_MigrationError_title", comment: "Migration Failed")
-                    var message = NSLocalizedString("CoreData_MigrationError_generic", comment: "An unexpected error occurred during the migration.")
+                    let title = String(localized: "CoreData_MigrationError_title", comment: "Migration Failed")
+                    var message = String(localized: "CoreData_MigrationError_generic", comment: "An unexpected error occurred during the migration.")
                     var errorMsg = error.localizedDescription
                     if let error = error as? DataMigrationError {
                         message = error.localizedDescription

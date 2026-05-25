@@ -42,12 +42,12 @@ extension LocalImagesViewController {
             // Subtitle
             if hasSelectedImages {
                 let subtitle = nberOfSelectedImages == 1
-                    ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected")
-                    : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
+                    ? String(localized: "selectImageSelected", comment: "1 Photo Selected")
+                    : String(format:String(localized: "selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
                 navigationItem.subtitle = subtitle
             }
             else {
-                let subtitle = NSLocalizedString("selectImages", comment: "Select Photos")
+                let subtitle = String(localized: "selectImages", comment: "Select Photos")
                 navigationItem.subtitle = subtitle
             }
         } else {
@@ -118,9 +118,9 @@ extension LocalImagesViewController {
             let nberOfSelectedImages = count ?? selectedImages.compactMap{ $0 }.count
             switch nberOfSelectedImages {
             case 0:
-                subtitle = NSLocalizedString("selectImages", comment: "Select Photos")
+                subtitle = String(localized: "selectImages", comment: "Select Photos")
             case 1:
-                subtitle = NSLocalizedString("selectImageSelected", comment: "1 Photo Selected")
+                subtitle = String(localized: "selectImageSelected", comment: "1 Photo Selected")
             case 2...nberOfSelectedImages:
                 var nberPhotosStr = ""
                 if #available(iOS 16, *) {
@@ -130,7 +130,7 @@ extension LocalImagesViewController {
                     numberFormatter.numberStyle = NumberFormatter.Style.decimal
                     nberPhotosStr = numberFormatter.string(from: NSNumber(value: nberOfSelectedImages)) ?? String(nberOfSelectedImages)
                 }
-                subtitle = String(format: NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), nberPhotosStr)
+                subtitle = String(format: String(localized: "selectImagesSelected", comment: "%@ Photos Selected"), nberPhotosStr)
             default:
                 subtitle = ""
             }

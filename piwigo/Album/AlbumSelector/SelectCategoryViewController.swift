@@ -315,22 +315,22 @@ final class SelectCategoryViewController: UIViewController {
         // Set title and buttons
         switch wantedAction {
         case .setDefaultAlbum:
-            title = NSLocalizedString("setDefaultCategory_title", comment: "Default Album")
+            title = String(localized: "setDefaultCategory_title", comment: "Default Album")
         
         case .moveAlbum:
-            title = NSLocalizedString("moveCategory", comment:"Move Album")
+            title = String(localized: "moveCategory", comment:"Move Album")
         
         case .setAlbumThumbnail:
-            title = NSLocalizedString("categoryImageSet_title", comment:"Album Thumbnail")
+            title = String(localized: "categoryImageSet_title", comment:"Album Thumbnail")
 
         case .setAutoUploadAlbum:
-            title = NSLocalizedString("settings_autoUploadDestination", comment: "Destination")
+            title = String(localized: "settings_autoUploadDestination", comment: "Destination")
             
         case .copyImage, .copyImages:
-            title = NSLocalizedString("copyImage_title", comment:"Copy to Album")
+            title = String(localized: "copyImage_title", comment:"Copy to Album")
             
         case .moveImage, .moveImages:
-            title = NSLocalizedString("moveImage_title", comment:"Move to Album")
+            title = String(localized: "moveImage_title", comment:"Move to Album")
             
         default:
             title = ""
@@ -376,7 +376,7 @@ final class SelectCategoryViewController: UIViewController {
         
         // Display HUD during fetch after the app launch or if data was fetched more than an hour ago
         if AppVars.shared.dateOfLatestRecursiveAlbumDataFetch.timeIntervalSinceNow < -3600 {
-            navigationController?.showHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"))
+            navigationController?.showHUD(withTitle: String(localized: "loadingHUD_label", comment: "Loading…"))
             AppVars.shared.dateOfLatestRecursiveAlbumDataFetch = Date()
         }
         
@@ -427,7 +427,7 @@ final class SelectCategoryViewController: UIViewController {
             }
             
             // Report error
-            let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
+            let title = String(localized: "internetErrorGeneral_title", comment: "Connection Error")
             dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
         }
     }
@@ -496,16 +496,16 @@ final class SelectCategoryViewController: UIViewController {
         switch wantedAction {
         case .setDefaultAlbum:
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSettingsWidth),
-                                 text: NSLocalizedString("setDefaultCategory_select", comment: "Please select an album or sub-album which will become the new root album."))
+                                 text: String(localized: "setDefaultCategory_select", comment: "Please select an album or sub-album which will become the new root album."))
 
         case .moveAlbum:
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
-                                 text: String(format: NSLocalizedString("moveCategory_select", comment:"Please select an album or sub-album to move album \"%@\" into."), inputAlbum.name))
+                                 text: String(format: String(localized: "moveCategory_select", comment:"Please select an album or sub-album to move album \"%@\" into."), inputAlbum.name))
 
         case .setAlbumThumbnail:
             let title = inputImages.first?.titleStr ?? ""
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
-                                 text: String(format: NSLocalizedString("categorySelection_setThumbnail", comment:"Please select the album which will use the photo \"%@\" as a thumbnail."), title.isEmpty ? inputImages.first?.fileName ?? "-?-" : title))
+                                 text: String(format: String(localized: "categorySelection_setThumbnail", comment:"Please select the album which will use the photo \"%@\" as a thumbnail."), title.isEmpty ? inputImages.first?.fileName ?? "-?-" : title))
 
         case .setAutoUploadAlbum:
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSettingsWidth),
@@ -514,20 +514,20 @@ final class SelectCategoryViewController: UIViewController {
         case .copyImage:
             let title = inputImages.first?.titleStr ?? ""
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
-                                 text: String(format: NSLocalizedString("copySingleImage_selectAlbum", comment:"Please, select the album in which you wish to copy the photo \"%@\"."), title.isEmpty ? inputImages.first?.fileName ?? "-?-" : title))
+                                 text: String(format: String(localized: "copySingleImage_selectAlbum", comment:"Please, select the album in which you wish to copy the photo \"%@\"."), title.isEmpty ? inputImages.first?.fileName ?? "-?-" : title))
 
         case .moveImage:
             let title = inputImages.first?.titleStr ?? ""
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
-                                 text: String(format: NSLocalizedString("moveSingleImage_selectAlbum", comment:"Please, select the album in which you wish to move the photo \"%@\"."), title.isEmpty ? inputImages.first?.fileName ?? "-?-" : title))
+                                 text: String(format: String(localized: "moveSingleImage_selectAlbum", comment:"Please, select the album in which you wish to move the photo \"%@\"."), title.isEmpty ? inputImages.first?.fileName ?? "-?-" : title))
 
         case .copyImages:
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
-                                 text: NSLocalizedString("copySeveralImages_selectAlbum", comment: "Please, select the album in which you wish to copy the photos."))
+                                 text: String(localized: "copySeveralImages_selectAlbum", comment: "Please, select the album in which you wish to copy the photos."))
 
         case .moveImages:
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
-                                 text: NSLocalizedString("moveSeveralImages_selectAlbum", comment: "Please, select the album in which you wish to copy the photos."))
+                                 text: String(localized: "moveSeveralImages_selectAlbum", comment: "Please, select the album in which you wish to copy the photos."))
 
         default:
             preconditionFailure("Action not configured in setTableViewMainHeader().")
@@ -549,23 +549,23 @@ final class SelectCategoryViewController: UIViewController {
         var message:String
         switch wantedAction {
         case .moveAlbum:
-            title = NSLocalizedString("moveCategoryError_title", comment:"Move Fail")
-            message = NSLocalizedString("moveCategoryError_message", comment:"Failed to move your album")
+            title = String(localized: "moveCategoryError_title", comment:"Move Fail")
+            message = String(localized: "moveCategoryError_message", comment:"Failed to move your album")
         case .setAlbumThumbnail:
-            title = NSLocalizedString("categoryImageSetError_title", comment:"Image Set Error")
-            message = NSLocalizedString("categoryImageSetError_message", comment:"Failed to set the album image")
+            title = String(localized: "categoryImageSetError_title", comment:"Image Set Error")
+            message = String(localized: "categoryImageSetError_message", comment:"Failed to set the album image")
         case .copyImage:
-            title = NSLocalizedString("copyImageError_title", comment:"Copy Fail")
-            message = NSLocalizedString("copySingleImageError_message", comment:"Failed to copy your photo")
+            title = String(localized: "copyImageError_title", comment:"Copy Fail")
+            message = String(localized: "copySingleImageError_message", comment:"Failed to copy your photo")
         case .copyImages:
-            title = NSLocalizedString("copyImageError_title", comment:"Copy Fail")
-            message = NSLocalizedString("copySeveralImagesError_message", comment:"Failed to copy some photos")
+            title = String(localized: "copyImageError_title", comment:"Copy Fail")
+            message = String(localized: "copySeveralImagesError_message", comment:"Failed to copy some photos")
         case .moveImage:
-            title = NSLocalizedString("moveImageError_title", comment:"Move Fail")
-            message = NSLocalizedString("moveSingleImageError_message", comment:"Failed to copy your photo")
+            title = String(localized: "moveImageError_title", comment:"Move Fail")
+            message = String(localized: "moveSingleImageError_message", comment:"Failed to copy your photo")
         case .moveImages:
-            title = NSLocalizedString("moveImageError_title", comment:"Move Fail")
-            message = NSLocalizedString("moveSeveralImagesError_message", comment:"Failed to move some photos")
+            title = String(localized: "moveImageError_title", comment:"Move Fail")
+            message = String(localized: "moveSeveralImagesError_message", comment:"Failed to move some photos")
         default:
             return
         }

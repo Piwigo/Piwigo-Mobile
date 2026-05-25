@@ -27,14 +27,14 @@ class Help04ViewController: UIViewController {
         let legendAttributedString = NSMutableAttributedString(string: "")
 
         // Title
-        let titleString = NSLocalizedString("localImages_deleteTitle", comment: "Remove from Camera Roll") + "\n"
+        let titleString = String(localized: "localImages_deleteTitle", comment: "Remove from Camera Roll") + "\n"
         let titleAttributedString = NSMutableAttributedString(string: titleString)
         let titleRange = NSRange(location: 0, length: titleString.count)
         titleAttributedString.addAttribute(.font, value: titleFont, range: titleRange)
         legendAttributedString.append(titleAttributedString)
 
         // Text
-        let textString = NSLocalizedString("help04_text", comment: "Message explaining what happens")
+        let textString = String(localized: "help04_text", comment: "Message explaining what happens")
         let textAttributedString = NSMutableAttributedString(string: textString)
         let textRange = NSRange(location: 0, length: textString.count)
         textAttributedString.addAttribute(.font, value: textFont, range: textRange)

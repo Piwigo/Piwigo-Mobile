@@ -53,17 +53,17 @@ extension AlbumViewController
         // Ask if the user really wants to delete these images?
         var msg = "";
         if totalNberToDelete > 1 {
-            msg = String.localizedStringWithFormat(NSLocalizedString("deleteSeveralImages_message", comment: "Are you sure you want to delete the selected %@ photos/videos?"), NSNumber(value: totalNberToDelete))
+            msg = String.localizedStringWithFormat(String(localized: "deleteSeveralImages_message", comment: "Are you sure you want to delete the selected %@ photos/videos?"), NSNumber(value: totalNberToDelete))
         } else if let imageData = toDelete.first, imageData.isVideo {
-            msg = NSLocalizedString("deleteSingleVideo_message", comment: "Are you sure you want to delete this video?")
+            msg = String(localized: "deleteSingleVideo_message", comment: "Are you sure you want to delete this video?")
         } else {
-            msg = NSLocalizedString("deleteSingleImage_message", comment: "Are you sure you want to delete this photo?")
+            msg = String(localized: "deleteSingleImage_message", comment: "Are you sure you want to delete this photo?")
         }
         let alert = UIAlertController(title: nil, message: msg, preferredStyle: .actionSheet)
 
         // Button for cancelling the action
         let cancelAction = UIAlertAction(
-            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+            title: String(localized: "alertCancelButton", comment: "Cancel"),
             style: .cancel, handler: { [self] action in
                 updateBarsInSelectMode()
             })
@@ -71,11 +71,11 @@ extension AlbumViewController
 
         // Button for deleting all images
         if totalNberToDelete > 1 {
-            msg = String.localizedStringWithFormat(NSLocalizedString("deleteSeveralImages_title", comment: "Delete %@ Photos/Videos"), NSNumber(value: totalNberToDelete))
+            msg = String.localizedStringWithFormat(String(localized: "deleteSeveralImages_title", comment: "Delete %@ Photos/Videos"), NSNumber(value: totalNberToDelete))
         } else if let imageData = toDelete.first, imageData.isVideo {
-            msg = NSLocalizedString("deleteSingleVideo_title", comment: "Delete Video")
+            msg = String(localized: "deleteSingleVideo_title", comment: "Delete Video")
         } else {
-            msg = NSLocalizedString("deleteSingleImage_title", comment: "Delete Photo")
+            msg = String(localized: "deleteSingleImage_title", comment: "Delete Photo")
         }
         let deleteImagesAction = UIAlertAction(
             title: msg, style: .destructive, handler: { [self] action in
@@ -85,11 +85,11 @@ extension AlbumViewController
                 // Display HUD during server update
                 var msgHUD = ""
                 if imageIDs.count > 1 {
-                    msgHUD = NSLocalizedString("deleteSeveralImagesHUD_deleting", comment: "Deleting Photos/Videos…")
+                    msgHUD = String(localized: "deleteSeveralImagesHUD_deleting", comment: "Deleting Photos/Videos…")
                 } else if let imageData = toDelete.first, imageData.isVideo {
-                    msgHUD = NSLocalizedString("deleteSingleVideoHUD_deleting", comment: "Deleting Video…")
+                    msgHUD = String(localized: "deleteSingleVideoHUD_deleting", comment: "Deleting Video…")
                 } else {
-                    msgHUD = NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Photo…")
+                    msgHUD = String(localized: "deleteSingleImageHUD_deleting", comment: "Deleting Photo…")
                 }
                 navigationController?.showHUD(withTitle: msgHUD, inMode: .indeterminate)
 
@@ -100,7 +100,7 @@ extension AlbumViewController
 
         if !toRemove.isEmpty {
             let removeImagesAction = UIAlertAction(
-                title: toDelete.isEmpty ? NSLocalizedString("removeSingleImage_title", comment: "Remove from Album") : NSLocalizedString("deleteCategory_orphanedImages", comment: "Delete Orphans"),
+                title: toDelete.isEmpty ? String(localized: "removeSingleImage_title", comment: "Remove from Album") : String(localized: "deleteCategory_orphanedImages", comment: "Delete Orphans"),
                 style: toDelete.isEmpty ? .default : .destructive,
                 handler: { [self] action in
                     // Display HUD during server update
@@ -108,23 +108,23 @@ extension AlbumViewController
                     let totalNberOfImages = toRemove.count + (toDelete.isEmpty ? 0 : 1)
                     if totalNberOfImages > 1 {
                         msgHUD = toDelete.isEmpty
-                        ? NSLocalizedString("removeSeveralImagesHUD_removing", comment: "Removing Photos/Videos…")
-                        : NSLocalizedString("deleteSeveralImagesHUD_deleting", comment: "Deleting Photos/Videos…")
+                        ? String(localized: "removeSeveralImagesHUD_removing", comment: "Removing Photos/Videos…")
+                        : String(localized: "deleteSeveralImagesHUD_deleting", comment: "Deleting Photos/Videos…")
                         navigationController?.showHUD(withTitle: msgHUD, inMode: ServerVars.shared.usesSetCategory ? .indeterminate : .determinate)
                     } else if toRemove.isEmpty {
                         // Delete a single image
                         if let imageData = toDelete.first, imageData.isVideo {
-                            msgHUD = NSLocalizedString("deleteSingleVideoHUD_deleting", comment: "Deleting Video…")
+                            msgHUD = String(localized: "deleteSingleVideoHUD_deleting", comment: "Deleting Video…")
                         } else {
-                            msgHUD = NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Photo…")
+                            msgHUD = String(localized: "deleteSingleImageHUD_deleting", comment: "Deleting Photo…")
                         }
                         navigationController?.showHUD(withTitle: msgHUD, inMode: .indeterminate)
                     } else {
                         // Remove a single image
                         if let imageData = toRemove.first, imageData.isVideo {
-                            msgHUD = NSLocalizedString("removeSingleVideoHUD_removing", comment: "Removing Video…")
+                            msgHUD = String(localized: "removeSingleVideoHUD_removing", comment: "Removing Video…")
                         } else {
-                            msgHUD = NSLocalizedString("removeSingleImageHUD_removing", comment: "Removing Photo…")
+                            msgHUD = String(localized: "removeSingleImageHUD_removing", comment: "Removing Photo…")
                         }
                         navigationController?.showHUD(withTitle: msgHUD, inMode: .indeterminate)
                     }
@@ -227,8 +227,8 @@ extension AlbumViewController
         
         // Report error
         var imagesToRemove = toRemove
-        let title = NSLocalizedString("moveImageError_title", comment: "Delete Failed")
-        let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted.")
+        let title = String(localized: "moveImageError_title", comment: "Delete Failed")
+        let message = String(localized: "deleteImageFail_message", comment: "Image could not be deleted.")
         if imagesToRemove.count > 1 {
             cancelDismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
                 navigationController?.hideHUD() { [self] in
@@ -297,8 +297,8 @@ extension AlbumViewController
         }
         
         // Report error
-        let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
-        let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted.")
+        let title = String(localized: "deleteImageFail_title", comment: "Delete Failed")
+        let message = String(localized: "deleteImageFail_message", comment: "Image could not be deleted.")
         dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
             navigationController?.hideHUD() { [self] in
                 // Save changes
@@ -383,8 +383,8 @@ extension AlbumViewController
         }
 
         // Report error
-        let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
-        let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted.")
+        let title = String(localized: "deleteImageFail_title", comment: "Delete Failed")
+        let message = String(localized: "deleteImageFail_message", comment: "Image could not be deleted.")
         dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
             // Save changes
             self.mainContext.saveIfNeeded()

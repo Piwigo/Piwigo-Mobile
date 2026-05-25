@@ -19,7 +19,7 @@ class TextViewTableViewCell: UITableViewCell {
         // Initialization code
         super.awakeFromNib()
 
-        label.text = NSLocalizedString("editImageDetails_description", comment: "Description")
+        label.text = String(localized: "editImageDetails_description", comment: "Description")
         textView.layer.cornerRadius = 8.0
     }
 

@@ -17,7 +17,7 @@ extension AlbumViewController
 {
     func rotateMenu() -> UIMenu? {
         if selectedVideosIDs.isEmpty {
-            return UIMenu(title: NSLocalizedString("rotateImage_rotate", comment: "Rotate 90°…"),
+            return UIMenu(title: String(localized: "rotateImage_rotate", comment: "Rotate 90°…"),
                           image: nil,
                           identifier: UIMenu.Identifier("org.piwigo.images.rotate"),
                           children: [rotateRightAction(), rotateLeftAction()])
@@ -27,7 +27,7 @@ extension AlbumViewController
     
     private func rotateRightAction() -> UIAction {
         // Rotate image right
-        let action = UIAction(title: NSLocalizedString("rotateImage_right", comment: "Clockwise"),
+        let action = UIAction(title: String(localized: "rotateImage_right", comment: "Clockwise"),
                               image: UIImage(systemName: "rotate.right"),
                               handler: { [self] _ in
             // Rotate images right
@@ -39,7 +39,7 @@ extension AlbumViewController
 
     private func rotateLeftAction() -> UIAction {
         // Rotate image left
-        let action = UIAction(title: NSLocalizedString("rotateImage_left", comment: "Counterclockwise"),
+        let action = UIAction(title: String(localized: "rotateImage_left", comment: "Counterclockwise"),
                               image: UIImage(systemName: "rotate.left"),
                               handler: { [self] _ in
             // Rotate images left
@@ -157,13 +157,13 @@ extension AlbumViewController
         // Hide HUD
         navigationController?.hideHUD { [self] in
             // Plugin rotateImage installed?
-            let title = NSLocalizedString("rotateImageFail_title", comment: "Rotation Failed")
+            let title = String(localized: "rotateImageFail_title", comment: "Rotation Failed")
             var message = ""
             if error.pluginMissing {
-                message = NSLocalizedString("rotateImageFail_plugin", comment: "The rotateImage plugin is not activated.")
+                message = String(localized: "rotateImageFail_plugin", comment: "The rotateImage plugin is not activated.")
             }
             else {
-                message = NSLocalizedString("rotateImageFail_message", comment: "Image could not be rotated")
+                message = String(localized: "rotateImageFail_message", comment: "Image could not be rotated")
             }
             
             // Report error

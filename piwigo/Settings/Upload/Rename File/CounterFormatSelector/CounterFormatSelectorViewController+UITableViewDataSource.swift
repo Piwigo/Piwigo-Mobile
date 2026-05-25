@@ -48,9 +48,9 @@ extension CounterFormatSelectorViewController: UITableViewDataSource
 
             var title = ""
             if parent?.parent is SettingsViewController {
-                title = NSLocalizedString("settings_renameCounterCurrent", comment: "Starts From")
+                title = String(localized: "settings_renameCounterCurrent", comment: "Starts From")
             } else {
-                title = NSLocalizedString("settings_renameCounterStart", comment: "Current Value")
+                title = String(localized: "settings_renameCounterStart", comment: "Current Value")
             }
             cell.configure(with: title, input: String(currentCounter), placeHolder: "1")
             cell.accessibilityIdentifier = "startCounterValue"
@@ -63,7 +63,7 @@ extension CounterFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
 
-                cell.configure(with: NSLocalizedString("settings_prefix", comment: "Prefix"))
+                cell.configure(with: String(localized: "settings_prefix", comment: "Prefix"))
                 cell.cellSwitch.setOn(counterFormats[indexPath.section - 1] != .prefix(format: .none), animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Get indexPath of option to display or hide
@@ -119,7 +119,7 @@ extension CounterFormatSelectorViewController: UITableViewDataSource
             }
             
             // Slider configuration
-            let title = NSLocalizedString("settings_renameCounterDigits", comment: "Digits")
+            let title = String(localized: "settings_renameCounterDigits", comment: "Digits")
             let minValue: Float = Float(pwgCounterFormat.Digits.allCases.first!.rawValue.count)
             let maxValue: Float = Float(pwgCounterFormat.Digits.allCases.last!.rawValue.count)
             cell.configure(with: title, value: value, increment: 1, minValue: minValue, maxValue: maxValue, prefix: "", suffix: "")
@@ -140,7 +140,7 @@ extension CounterFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
 
-                cell.configure(with: NSLocalizedString("settings_suffix", comment: "Suffix"))
+                cell.configure(with: String(localized: "settings_suffix", comment: "Suffix"))
                 cell.cellSwitch.setOn(counterFormats[indexPath.section - 1] != .suffix(format: .none), animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Get indexPath of option to display or hide

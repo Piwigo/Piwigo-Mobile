@@ -30,14 +30,14 @@ class Help05ViewController: UIViewController {
         let legendBotAttributedString = NSMutableAttributedString(string: "")
 
         // Title of legend above images
-        let titleString = NSLocalizedString("help05_header", comment: "Uploading Photos") + "\n"
+        let titleString = String(localized: "help05_header", comment: "Uploading Photos") + "\n"
         let titleAttributedString = NSMutableAttributedString(string: titleString)
         let titleRange = NSRange(location: 0, length: titleString.count)
         titleAttributedString.addAttribute(.font, value: titleFont, range: titleRange)
         legendTopAttributedString.append(titleAttributedString)
 
         // Text of legend above images
-        let aboveString = NSLocalizedString("help05_text", comment: "Submit requests and let go")
+        let aboveString = String(localized: "help05_text", comment: "Submit requests and let go")
         let aboveAttributedString = NSMutableAttributedString(string: aboveString)
         let aboveRange = NSRange(location: 0, length: aboveString.count)
         aboveAttributedString.addAttribute(.font, value: textFont, range: aboveRange)
@@ -47,7 +47,7 @@ class Help05ViewController: UIViewController {
         legendTop.attributedText = legendTopAttributedString
 
         // Text of legend between images
-        let betweenString = NSLocalizedString("help05_text2", comment: "Access the UploadQueue.")
+        let betweenString = String(localized: "help05_text2", comment: "Access the UploadQueue.")
         let betweenAttributedString = NSMutableAttributedString(string: betweenString)
         let betweenRange: NSRange = NSRange(location: 0, length: betweenString.count)
         betweenAttributedString.addAttribute(.font, value: textFont, range: betweenRange)

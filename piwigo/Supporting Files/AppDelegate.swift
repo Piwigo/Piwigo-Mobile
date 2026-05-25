@@ -381,7 +381,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let errorMsg = notification.userInfo?["errorMsg"] as? String
 
         // Display error message and resume Upload Manager operation
-        let title = NSLocalizedString("settings_autoUpload", comment: "Auto Upload")
+        let title = String(localized: "settings_autoUpload", comment: "Auto Upload")
         let keyWindows = UIApplication.shared.connectedScenes
             .filter({$0.session.role == .windowApplication})
             .filter({$0.activationState == .foregroundActive})
@@ -562,7 +562,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Get a fresh context
         let context = LAContext()
         context.localizedFallbackTitle = ""
-        context.localizedReason = NSLocalizedString("settings_appLockEnter", comment: "Enter Passcode")
+        context.localizedReason = String(localized: "settings_appLockEnter", comment: "Enter Passcode")
 
         // First check if we have the needed hardware support
         var error: NSError?
@@ -570,7 +570,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if context.canEvaluatePolicy(policy, error: &error) {
             // Exploit TouchID or FaceID
             self.isAuthenticatingWithBiometrics = true
-            let reason = NSLocalizedString("settings_biometricsReason", comment: "Access your Piwigo albums")
+            let reason = String(localized: "settings_biometricsReason", comment: "Access your Piwigo albums")
             context.evaluatePolicy(policy, localizedReason: reason ) { success, error in
                 // Biometric authentication completed
                 self.isAuthenticatingWithBiometrics = false

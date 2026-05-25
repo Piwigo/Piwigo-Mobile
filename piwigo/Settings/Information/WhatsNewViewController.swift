@@ -29,7 +29,7 @@ final class WhatsNewViewController: UIViewController {
         super.viewDidLoad()
         
         // Main title
-        titleLabel.text = NSLocalizedString("whatsNew_title", comment: "What's New in Piwigo")
+        titleLabel.text = String(localized: "whatsNew_title", comment: "What's New in Piwigo")
         
         // What's new — 1st annoucement
         if #available(iOS 18.0, *) {

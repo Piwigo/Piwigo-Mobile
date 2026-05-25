@@ -48,7 +48,7 @@ extension TimeFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
 
-                cell.configure(with: NSLocalizedString("Hour", comment: "Hour"))
+                cell.configure(with: String(localized: "Hour", comment: "Hour"))
                 cell.cellSwitch.setOn(timeFormats[indexPath.section] != .hour(format: .none), animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Get indexPaths of options to display or hide
@@ -76,7 +76,7 @@ extension TimeFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
-                cell.configure(with: NSLocalizedString("12-hour", comment: "12-hour cycle"), detail: "")
+                cell.configure(with: String(localized: "12-hour", comment: "12-hour cycle"), detail: "")
                 let isSelected = timeFormats[indexPath.section] == .hour(format: .hha)
                 cell.accessoryType = isSelected ? .checkmark : .none
                 cell.isUserInteractionEnabled = !isSelected
@@ -87,7 +87,7 @@ extension TimeFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
-                cell.configure(with: NSLocalizedString("24-hour", comment: "24-hour cycle"), detail: "")
+                cell.configure(with: String(localized: "24-hour", comment: "24-hour cycle"), detail: "")
                 let isSelected = timeFormats[indexPath.section] == .hour(format: .HH)
                 cell.accessoryType = isSelected ? .checkmark : .none
                 cell.isUserInteractionEnabled = !isSelected
@@ -104,7 +104,7 @@ extension TimeFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
 
-                cell.configure(with: NSLocalizedString("Minute", comment: "Minute"))
+                cell.configure(with: String(localized: "Minute", comment: "Minute"))
                 cell.cellSwitch.setOn(timeFormats[indexPath.section] != .minute(format: .none), animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Get indexPaths of options to display or hide
@@ -132,7 +132,7 @@ extension TimeFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
-                cell.configure(with: NSLocalizedString("settings_renameTwoDigit", comment: "2-digit version"), detail: "")
+                cell.configure(with: String(localized: "settings_renameTwoDigit", comment: "2-digit version"), detail: "")
                 let isSelected = timeFormats[indexPath.section] == .minute(format: .mm)
                 cell.accessoryType = isSelected ? .checkmark : .none
                 cell.isUserInteractionEnabled = !isSelected
@@ -149,7 +149,7 @@ extension TimeFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
 
-                cell.configure(with: NSLocalizedString("Second", comment: "Second"))
+                cell.configure(with: String(localized: "Second", comment: "Second"))
                 cell.cellSwitch.setOn(timeFormats[indexPath.section] != .second(format: .none), animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Get indexPaths of options to display or hide
@@ -177,7 +177,7 @@ extension TimeFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
-                cell.configure(with: NSLocalizedString("settings_renameTwoDigit", comment: "2-digit version"), detail: "")
+                cell.configure(with: String(localized: "settings_renameTwoDigit", comment: "2-digit version"), detail: "")
                 let isSelected = timeFormats[indexPath.section] == .second(format: .ss)
                 cell.accessoryType = isSelected ? .checkmark : .none
                 cell.isUserInteractionEnabled = !isSelected
@@ -188,7 +188,7 @@ extension TimeFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
-                cell.configure(with: NSLocalizedString("settings_renameFiveDigit", comment: "5-digit version"), detail: "")
+                cell.configure(with: String(localized: "settings_renameFiveDigit", comment: "5-digit version"), detail: "")
                 let isSelected = timeFormats[indexPath.section] == .second(format: .ssSSS)
                 cell.accessoryType = isSelected ? .checkmark : .none
                 cell.isUserInteractionEnabled = !isSelected
@@ -205,7 +205,7 @@ extension TimeFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
 
-                cell.configure(with: NSLocalizedString("Separator", comment: "Separator"))
+                cell.configure(with: String(localized: "Separator", comment: "Separator"))
                 cell.cellSwitch.setOn(timeFormats[indexPath.section] != .separator(format: .none), animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Get indexPath of option to display or hide

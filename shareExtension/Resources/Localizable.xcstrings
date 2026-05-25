@@ -2,25 +2,32 @@
   "sourceLanguage" : "en",
   "strings" : {
     "alertCancelButton" : {
-      "comment" : "Cancel"
+      "comment" : "Cancel",
+      "shouldTranslate" : false
     },
     "alertYesButton" : {
-      "comment" : "Yes"
+      "comment" : "Yes",
+      "shouldTranslate" : false
     },
     "categorySelection_allAlbums" : {
-      "comment" : "All Albums"
+      "comment" : "All Albums",
+      "shouldTranslate" : false
     },
     "maxNberOfRecentAlbums>320px" : {
-      "comment" : "Recent Albums"
+      "comment" : "Recent Albums",
+      "shouldTranslate" : false
     },
     "severalSubAlbumsCount" : {
-      "comment" : "%@ sub-albums"
+      "comment" : "%@ sub-albums",
+      "shouldTranslate" : false
     },
     "singleSubAlbumCount" : {
-      "comment" : "%@ sub-album"
+      "comment" : "%@ sub-album",
+      "shouldTranslate" : false
     },
     "tabBar_albums" : {
-      "comment" : "Albums"
+      "comment" : "Albums",
+      "shouldTranslate" : false
     },
     "uploadSeveralImages_selectAlbum" : {
       "comment" : "Please, select the album in which you wish to upload the photos.",

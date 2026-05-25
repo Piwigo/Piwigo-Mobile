@@ -34,17 +34,17 @@ extension PasteboardImagesViewController {
         // Title and subtitle
         if #available(iOS 26.0, *) {
             // Title
-            title = NSLocalizedString("categoryUpload_pasteboard", comment: "Clipboard")
+            title = String(localized: "categoryUpload_pasteboard", comment: "Clipboard")
             
             // Subtitle
             if hasSelectedImages {
                 let subtitle = nberOfSelectedImages == 1
-                    ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected")
-                    : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
+                    ? String(localized: "selectImageSelected", comment: "1 Photo Selected")
+                    : String(format:String(localized: "selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
                 navigationItem.subtitle = subtitle
             }
             else {
-                let subtitle = NSLocalizedString("selectImages", comment: "Select Photos")
+                let subtitle = String(localized: "selectImages", comment: "Select Photos")
                 navigationItem.subtitle = subtitle
             }
         } else {
@@ -65,7 +65,7 @@ extension PasteboardImagesViewController {
     
     @MainActor @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Specific to iOS 15 to 18")
     func setTitleView(withCount count: Int? = nil) {
-        let title = NSLocalizedString("categoryUpload_pasteboard", comment: "Clipboard")
+        let title = String(localized: "categoryUpload_pasteboard", comment: "Clipboard")
         
         // Create label programmatically
         let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
@@ -98,9 +98,9 @@ extension PasteboardImagesViewController {
             let nberOfSelectedImages = count ?? selectedImages.compactMap{ $0 }.count
             switch nberOfSelectedImages {
             case 0:
-                subtitle = NSLocalizedString("selectImages", comment: "Select Photos")
+                subtitle = String(localized: "selectImages", comment: "Select Photos")
             case 1:
-                subtitle = NSLocalizedString("selectImageSelected", comment: "1 Photo Selected")
+                subtitle = String(localized: "selectImageSelected", comment: "1 Photo Selected")
             case 2...nberOfSelectedImages:
                 var nberPhotosStr = ""
                 if #available(iOS 16, *) {
@@ -110,7 +110,7 @@ extension PasteboardImagesViewController {
                     numberFormatter.numberStyle = NumberFormatter.Style.decimal
                     nberPhotosStr = numberFormatter.string(from: NSNumber(value: nberOfSelectedImages)) ?? String(nberOfSelectedImages)
                 }
-                subtitle = String(format: NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), nberPhotosStr)
+                subtitle = String(format: String(localized: "selectImagesSelected", comment: "%@ Photos Selected"), nberPhotosStr)
             default:
                 subtitle = ""
             }

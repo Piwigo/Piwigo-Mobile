@@ -17,9 +17,9 @@ extension SettingsViewController: LockOptionsDelegate {
         if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(appLockAtIndexPath),
            let cell = settingsTableView.cellForRow(at: appLockAtIndexPath) as? LabelTableViewCell {
             if isLocked {
-                cell.detailLabel.text = NSLocalizedString("settings_autoUploadEnabled", comment: "On")
+                cell.detailLabel.text = String(localized: "settings_autoUploadEnabled", comment: "On")
             } else {
-                cell.detailLabel.text = NSLocalizedString("settings_autoUploadDisabled", comment: "Off")
+                cell.detailLabel.text = String(localized: "settings_autoUploadDisabled", comment: "Off")
             }
         }
     }

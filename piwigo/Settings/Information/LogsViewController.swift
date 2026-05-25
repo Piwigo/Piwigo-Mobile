@@ -28,7 +28,7 @@ class LogsViewController: UIViewController {
         super.viewDidLoad()
         
         // Title
-        title = NSLocalizedString("settings_logs", comment: "Logs")
+        title = String(localized: "settings_logs", comment: "Logs")
 
         // Initialise content
         guard let firstEntry = logEntries.first else { return }
@@ -164,7 +164,7 @@ extension LogsViewController: UIActivityItemSource
             let deviceOSversion = UIDevice.current.systemVersion
 
             // Set message body
-            var content = NSLocalizedString("settings_appName", comment: "Piwigo Mobile")
+            var content = String(localized: "settings_appName", comment: "Piwigo Mobile")
             content += " " + (appVersionString ?? "") + " (" + (appBuildString ?? "") + ")\n"
             content += deviceModel + " — " + deviceOS + " " + deviceOSversion + "\n"
             content += "\n"
@@ -177,8 +177,8 @@ extension LogsViewController: UIActivityItemSource
     
     func activityViewController(_ activityViewController: UIActivityViewController, 
                                 subjectForActivityType activityType: UIActivity.ActivityType?) -> String {
-        var subject = NSLocalizedString("settings_appName", comment: "Piwigo Mobile")
-        subject += " - " + NSLocalizedString("settings_logs", comment: "Logs")
+        var subject = String(localized: "settings_appName", comment: "Piwigo Mobile")
+        subject += " - " + String(localized: "settings_logs", comment: "Logs")
         return subject
     }
 }

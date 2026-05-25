@@ -52,7 +52,7 @@ class TimeFormatSelectorViewController: UIViewController {
         super.viewDidLoad()
         
         // Title, header and example
-        title = NSLocalizedString("tabBar_upload", comment: "Upload")
+        title = String(localized: "tabBar_upload", comment: "Upload")
 
         // Table view
         tableView?.accessibilityIdentifier = "Time Format Settings"
@@ -137,7 +137,7 @@ class TimeFormatSelectorViewController: UIViewController {
     private func setTableViewMainHeader() {
         let headerView = RenameFileTableHeaderView(frame: CGRect.zero)
         let title = RenameAction.ActionType.addTime.name
-        let text = NSLocalizedString("settings_renameTimeHeader", comment: "Please select a time format…")
+        let text = String(localized: "settings_renameTimeHeader", comment: "Please select a time format…")
         headerView.config(with: title, text: text, forWidth: view.bounds.width)
         headerView.updateExample(prefix: prefixBeforeUpload, prefixActions: prefixActions,
                                  replace: replaceBeforeUpload, replaceActions: replaceActions,

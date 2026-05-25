@@ -30,7 +30,7 @@ class LockOptionsViewController: UIViewController {
         super.viewDidLoad()
         
         // Title
-        title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
+        title = String(localized: "settingsHeader_privacy", comment: "Privacy")
         
         // Table view
         lockOptionsTableView?.accessibilityIdentifier = "Lock Settings"
@@ -103,7 +103,7 @@ extension LockOptionsViewController: UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
             else { preconditionFailure("Could not load SwitchTableViewCell") }
 
-            let title = NSLocalizedString("settings_appLock", comment: "App Lock")
+            let title = String(localized: "settings_appLock", comment: "App Lock")
             cell.configure(with: title)
             cell.cellSwitch.setOn(AppVars.shared.isAppLockActive, animated: true)
             cell.cellSwitchBlock = { switchState in
@@ -125,9 +125,9 @@ extension LockOptionsViewController: UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "ButtonTableViewCell", for: indexPath) as? ButtonTableViewCell
             else { preconditionFailure("Could not load a ButtonTableViewCell!") }
             if AppVars.shared.appLockKey.isEmpty {
-                cell.configure(with: NSLocalizedString("settings_appLockEnter", comment: "Enter Passcode"))
+                cell.configure(with: String(localized: "settings_appLockEnter", comment: "Enter Passcode"))
             } else {
-                cell.configure(with: NSLocalizedString("settings_appLockModify", comment: "Modify Passcode"))
+                cell.configure(with: String(localized: "settings_appLockModify", comment: "Modify Passcode"))
             }
             cell.accessibilityIdentifier = "passcode"
             tableViewCell = cell
@@ -138,11 +138,11 @@ extension LockOptionsViewController: UITableViewDataSource {
             var title = ""
             switch context.biometryType {
             case .touchID:
-                title = NSLocalizedString("settings_biometricsTouchID", comment: "Touch ID")
+                title = String(localized: "settings_biometricsTouchID", comment: "Touch ID")
             case .faceID:
-                title = NSLocalizedString("settings_biometricsFaceID", comment: "Face ID")
+                title = String(localized: "settings_biometricsFaceID", comment: "Face ID")
             case .opticID:
-                title = NSLocalizedString("settings_biometricsOpticID", comment: "Optic ID")
+                title = String(localized: "settings_biometricsOpticID", comment: "Optic ID")
             default:
                 title = "—?—"
             }
@@ -218,20 +218,20 @@ extension LockOptionsViewController: UITableViewDelegate {
         var footer = ""
         switch section {
         case 0:     // App-Lock On/Off
-            footer = NSLocalizedString("settings_appLockInfo", comment: "With App Lock, ...")
+            footer = String(localized: "settings_appLockInfo", comment: "With App Lock, ...")
         case 1:     // Change Passcode
-            footer = NSLocalizedString("settings_passcodeInfo", comment: "The passcode is separate…")
+            footer = String(localized: "settings_passcodeInfo", comment: "The passcode is separate…")
         case 2:     // Touch ID / Face ID On/Off
             if contextErrorMsg.isEmpty {
                 switch context.biometryType {
                 case .none:
                     footer = ""
                 case .touchID:
-                    footer = NSLocalizedString("settings_biometricsTouchIDinfo", comment: "Use Touch ID…")
+                    footer = String(localized: "settings_biometricsTouchIDinfo", comment: "Use Touch ID…")
                 case .faceID:
-                    footer = NSLocalizedString("settings_biometricsFaceIDinfo", comment:"Use Face ID…")
+                    footer = String(localized: "settings_biometricsFaceIDinfo", comment:"Use Face ID…")
                 case .opticID:
-                    footer = NSLocalizedString("settings_biometricsOpticIDinfo", comment:"Use Optic ID…")
+                    footer = String(localized: "settings_biometricsOpticIDinfo", comment:"Use Optic ID…")
                 @unknown default:
                     footer = ""
                 }

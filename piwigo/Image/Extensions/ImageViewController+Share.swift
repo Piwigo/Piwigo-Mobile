@@ -175,7 +175,7 @@ extension ImageViewController: @preconcurrency ShareImageActivityItemProviderDel
     @MainActor
     func imageActivityItemProviderPreprocessingDidBegin(_ imageActivityItemProvider: UIActivityItemProvider?, withTitle title: String) {
         // Show HUD to let the user know the image is being downloaded in the background.
-        let cancelButton = NSLocalizedString("alertCancelButton", comment: "Cancel")
+        let cancelButton = String(localized: "alertCancelButton", comment: "Cancel")
         presentedViewController?.showHUD(withTitle: title, buttonTitle: cancelButton, buttonTarget: self, 
                                          buttonSelector: #selector(cancelShareImage), inMode: .determinate)
     }

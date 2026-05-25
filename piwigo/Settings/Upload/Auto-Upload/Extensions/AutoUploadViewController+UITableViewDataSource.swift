@@ -41,7 +41,7 @@ extension AutoUploadViewController: UITableViewDataSource
         case 0:     // Auto-Upload On/Off
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
             else { preconditionFailure("Could not load SwitchTableViewCell") }
-            let title = NSLocalizedString("settings_autoUpload", comment: "Auto Upload")
+            let title = String(localized: "settings_autoUpload", comment: "Auto Upload")
             cell.configure(with: title)
             cell.cellSwitch.setOn(UploadVars.shared.isAutoUploadActive, animated: true)
             cell.cellSwitchBlock = { switchState in
@@ -73,7 +73,7 @@ extension AutoUploadViewController: UITableViewDataSource
             var title = "", detail = ""
             switch indexPath.row {
             case 0 /* Select Photos Library album */ :
-                title = NSLocalizedString("settings_autoUploadSource", comment: "Source")
+                title = String(localized: "settings_autoUploadSource", comment: "Source")
                 let collectionID = UploadVars.shared.autoUploadAlbumId
                 if collectionID.isEmpty == false,
                    let collection = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [collectionID], options: nil).firstObject {
@@ -88,7 +88,7 @@ extension AutoUploadViewController: UITableViewDataSource
                 tableViewCell = cell
 
             case 1 /* Select Piwigo album*/ :
-                title = NSLocalizedString("settings_autoUploadDestination", comment: "Destination")
+                title = String(localized: "settings_autoUploadDestination", comment: "Destination")
                 let categoryId = UploadVars.shared.autoUploadCategoryId
                 if let albumData = try? AlbumProvider().getAlbum(ofUser: user, withId: categoryId) {
                     detail = albumData.name
@@ -113,7 +113,7 @@ extension AutoUploadViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell2", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell")}
                 // Retrieve tags and switch to old cache data format
-                let title = NSLocalizedString("editImageDetails_tags", comment: "Tags")
+                let title = String(localized: "editImageDetails_tags", comment: "Tags")
                 let tags = (try? TagProvider().getTags(withIDs: UploadVars.shared.autoUploadTagIds, taskContext: mainContext)) ?? []
                 let tagList: String = tags.compactMap({"\($0.tagName), "}).reduce("", +)
                 let detail = String(tagList.dropLast(2))

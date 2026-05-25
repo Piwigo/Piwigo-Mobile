@@ -295,9 +295,9 @@ class AlbumViewController: UIViewController
         
         // Initialise "no album / no photo" label
         if albumData.pwgID == Int64.zero {
-            noAlbumLabel.text = NSLocalizedString("categoryMainEmtpy", comment: "No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.")
+            noAlbumLabel.text = String(localized: "categoryMainEmtpy", comment: "No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.")
         } else {
-            noAlbumLabel.text = NSLocalizedString("noImages", comment:"No Images")
+            noAlbumLabel.text = String(localized: "noImages", comment:"No Images")
         }
 
         // Add buttons above table view and other buttons
@@ -446,7 +446,7 @@ class AlbumViewController: UIViewController
             NSAttributedString.Key.foregroundColor: PwgColor.header,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .light)
         ]
-        collectionView?.refreshControl?.attributedTitle = NSAttributedString(string: NSLocalizedString("pullToRefresh", comment: "Reload Photos"), attributes: attributesRefresh)
+        collectionView?.refreshControl?.attributedTitle = NSAttributedString(string: String(localized: "pullToRefresh", comment: "Reload Photos"), attributes: attributesRefresh)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -783,8 +783,8 @@ class AlbumViewController: UIViewController
         // Display HUD while downloading album data
         if withHUD {
             self.navigationController?.showHUD(
-                withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                detail: NSLocalizedString("severalImages", comment: "Photos"), minWidth: 200)
+                withTitle: String(localized: "loadingHUD_label", comment: "Loading…"),
+                detail: String(localized: "severalImages", comment: "Photos"), minWidth: 200)
         }
         
         // Fetch album data and then image data
@@ -809,7 +809,7 @@ class AlbumViewController: UIViewController
                     
                     // Report error
                     self.navigationController?.hideHUD {
-                        let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
+                        let title = String(localized: "internetErrorGeneral_title", comment: "Connection Error")
                         self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
                     }
                 }
@@ -1050,7 +1050,7 @@ class AlbumViewController: UIViewController
 //                // No Wi-Fi and user wishes to upload only on Wi-Fi
 //                let headerView = TableHeaderView(frame: .zero)
 //                headerView.configure(width: albumImageTableView.frame.size.width,
-//                                     text: NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
+//                                     text: String(localized: "uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
 //                albumImageTableView.tableHeaderView = headerView
 //                UIApplication.shared.isIdleTimerDisabled = false
 //            }
@@ -1058,7 +1058,7 @@ class AlbumViewController: UIViewController
 //                // Low Power mode enabled
 //                let headerView = TableHeaderView(frame: .zero)
 //                headerView.configure(width: albumImageTableView.frame.size.width,
-//                                     text: NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled"))
+//                                     text: String(localized: "uploadLowPowerMode", comment: "Low Power Mode enabled"))
 //                albumImageTableView.tableHeaderView = headerView
 //                UIApplication.shared.isIdleTimerDisabled = false
 //            } else {

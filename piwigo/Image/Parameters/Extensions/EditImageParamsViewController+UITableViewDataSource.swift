@@ -50,8 +50,8 @@ extension EditImageParamsViewController: UITableViewDataSource
                 : "TextFieldTableViewCell2"
             guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? TextFieldTableViewCell
             else { preconditionFailure("Could not load TextFieldTableViewCell") }
-            let title = NSLocalizedString("editImageDetails_title", comment: "Title")
-            let placeholder = NSLocalizedString("editImageDetails_titlePlaceholder", comment: "Title placeholder")
+            let title = String(localized: "editImageDetails_title", comment: "Title")
+            let placeholder = String(localized: "editImageDetails_titlePlaceholder", comment: "Title placeholder")
             cell.configure(with: title, input: commonTitle, placeHolder: placeholder)
             cell.rightTextField.textColor = shouldUpdateTitle ? PwgColor.orange : PwgColor.rightLabel
             cell.rightTextField.tag = row
@@ -64,8 +64,8 @@ extension EditImageParamsViewController: UITableViewDataSource
                 : "TextFieldTableViewCell2"
             guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? TextFieldTableViewCell
             else { preconditionFailure("Could not load TextFieldTableViewCell") }
-            let title = NSLocalizedString("editImageDetails_author", comment: "Author")
-            let placeholder = NSLocalizedString("settings_defaultAuthorPlaceholder", comment: "Author Name")
+            let title = String(localized: "editImageDetails_author", comment: "Author")
+            let placeholder = String(localized: "settings_defaultAuthorPlaceholder", comment: "Author Name")
             cell.configure(with: title, input: commonAuthor, placeHolder: placeholder)
             cell.rightTextField.textColor = shouldUpdateAuthor ? PwgColor.orange : PwgColor.rightLabel
             cell.rightTextField.tag = row
@@ -144,11 +144,11 @@ extension EditImageParamsViewController: UITableViewDataSource
         case .tags:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell2", for: indexPath) as? LabelTableViewCell
             else { preconditionFailure("Could not load LabelTableViewCell")}
-            let title = NSLocalizedString("editImageDetails_tags", comment: "Tags")
+            let title = String(localized: "editImageDetails_tags", comment: "Tags")
             // Retrieve tags and switch to old cache data format
             let tagList: String = commonTags.compactMap({"\($0.tagName), "}).reduce("", +)
             let tagString = String(tagList.dropLast(2))
-            let detail = tagString.isEmpty ? NSLocalizedString("none", comment: "none") : tagString
+            let detail = tagString.isEmpty ? String(localized: "none", comment: "none") : tagString
             cell.configure(with: title, detail: detail)
             cell.detailLabel.textColor = shouldUpdateTags ? PwgColor.orange : PwgColor.rightLabel
             cell.accessoryType = .disclosureIndicator
@@ -157,7 +157,7 @@ extension EditImageParamsViewController: UITableViewDataSource
         case .privacy:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell2", for: indexPath) as? LabelTableViewCell
             else { preconditionFailure("Could not load LabelTableViewCell")}
-            let title = NSLocalizedString("editImageDetails_privacyLevel", comment: "Who can see this photo?")
+            let title = String(localized: "editImageDetails_privacyLevel", comment: "Who can see this photo?")
             let privacy = pwgPrivacy(rawValue: commonPrivacyLevel) ?? .everybody
             cell.configure(with: title, detail: privacy.name)
             cell.detailLabel.textColor = shouldUpdatePrivacyLevel ? PwgColor.orange : PwgColor.rightLabel

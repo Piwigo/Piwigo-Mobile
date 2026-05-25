@@ -254,14 +254,14 @@ extension AlbumViewController
         var legend = " "
         if totalCount == Int64.min {
             // Is loading…
-            legend = NSLocalizedString("loadingHUD_label", comment:"Loading…")
+            legend = String(localized: "loadingHUD_label", comment:"Loading…")
         }
         else if totalCount == Int64.zero {
             // Not loading and no images
             if albumData.pwgID == Int64.zero {
-                legend = NSLocalizedString("categoryMainEmtpy", comment: "No albums in your Piwigo yet. You may pull down to refresh or re-login.")
+                legend = String(localized: "categoryMainEmtpy", comment: "No albums in your Piwigo yet. You may pull down to refresh or re-login.")
             } else {
-                legend = NSLocalizedString("noImages", comment:"No Images")
+                legend = String(localized: "noImages", comment:"No Images")
             }
         }
         else {

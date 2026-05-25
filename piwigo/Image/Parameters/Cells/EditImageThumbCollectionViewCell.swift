@@ -171,12 +171,12 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         let topViewController = window?.topMostViewController()
 
         let alert = UIAlertController(
-            title: NSLocalizedString("renameImage_title", comment: "Original File"),
-            message: "\(NSLocalizedString("renameImage_message", comment: "Enter a new file name for this image")) \"\(imageFile.text ?? "")\":",
+            title: String(localized: "renameImage_title", comment: "Original File"),
+            message: "\(String(localized: "renameImage_message", comment: "Enter a new file name for this image")) \"\(imageFile.text ?? "")\":",
             preferredStyle: .alert)
 
         alert.addTextField(configurationHandler: { [self] textField in
-            textField.placeholder = NSLocalizedString("renameImage_title", comment: "Original File")
+            textField.placeholder = String(localized: "renameImage_title", comment: "Original File")
             textField.text = imageFile.text
             textField.clearButtonMode = .always
             textField.keyboardType = .default
@@ -188,12 +188,12 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         })
 
         let cancelAction = UIAlertAction(
-            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+            title: String(localized: "alertCancelButton", comment: "Cancel"),
             style: .cancel,
             handler: { _ in })
 
         renameFileNameAction = UIAlertAction(
-            title: NSLocalizedString("renameCategory_button", comment: "Rename"),
+            title: String(localized: "renameCategory_button", comment: "Rename"),
             style: .default,
             handler: { [self] action in
                 // Rename album if possible
@@ -219,7 +219,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
     private func renameImageFile(withName fileName: String,
                                  andViewController topViewController: UIViewController?) {
         // Display HUD during the update
-        topViewController?.showHUD(withTitle: NSLocalizedString("renameImageHUD_label", comment: "Renaming Original File…"))
+        topViewController?.showHUD(withTitle: String(localized: "renameImageHUD_label", comment: "Renaming Original File…"))
 
         // Prepare parameters for renaming the image/video filename
         let paramsDict: [String : Any] = ["image_id" : imageID,
@@ -248,8 +248,8 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                 await MainActor.run {
                     topViewController?.hideHUD {
                         topViewController?.dismissPiwigoError(
-                            withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),
-                            message: NSLocalizedString("renameImageError_message", comment: "Failed to rename your image filename"),
+                            withTitle: String(localized: "renameCategoyError_title", comment: "Rename Fail"),
+                            message: String(localized: "renameImageError_message", comment: "Failed to rename your image filename"),
                             errorMessage: error.localizedDescription) { }
                     }
                 }

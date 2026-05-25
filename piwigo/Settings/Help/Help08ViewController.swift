@@ -30,14 +30,14 @@ class Help08ViewController: UIViewController {
         let legendBotAttributedString = NSMutableAttributedString(string: "")
 
         // Title of legend above images
-        let titleString = NSLocalizedString("help08_header", comment: "Parent Albums") + "\n"
+        let titleString = String(localized: "help08_header", comment: "Parent Albums") + "\n"
         let titleAttributedString = NSMutableAttributedString(string: titleString)
         let titleRange = NSRange(location: 0, length: titleString.count)
         titleAttributedString.addAttribute(.font, value: titleFont, range: titleRange)
         legendTopAttributedString.append(titleAttributedString)
 
         // Text of legend above images
-        let aboveString = NSLocalizedString("help08_text", comment: "Long-press back button")
+        let aboveString = String(localized: "help08_text", comment: "Long-press back button")
         let aboveAttributedString = NSMutableAttributedString(string: aboveString)
         let aboveRange = NSRange(location: 0, length: aboveString.count)
         aboveAttributedString.addAttribute(.font, value: textFont, range: aboveRange)
@@ -47,7 +47,7 @@ class Help08ViewController: UIViewController {
         legendTop.attributedText = legendTopAttributedString
 
         // Text of legend between images
-        let betweenString = NSLocalizedString("help08_text2", comment: "Tap parent album")
+        let betweenString = String(localized: "help08_text2", comment: "Tap parent album")
         let betweenAttributedString = NSMutableAttributedString(string: betweenString)
         let betweenRange = NSRange(location: 0, length: betweenString.count)
         betweenAttributedString.addAttribute(.font, value: textFont, range: betweenRange)

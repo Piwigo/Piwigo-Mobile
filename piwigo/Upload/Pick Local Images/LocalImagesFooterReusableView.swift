@@ -24,7 +24,7 @@ class LocalImagesFooterReusableView: UICollectionReusableView {
         // Number of images
         if nberOfImages == 0 {
             // Display "No images"
-            nberOfImagesLabel.text = NSLocalizedString("noImages", comment: "No Images")
+            nberOfImagesLabel.text = String(localized: "noImages", comment: "No Images")
         } else {
             // Display number of images…
             let numberFormatter = NumberFormatter()

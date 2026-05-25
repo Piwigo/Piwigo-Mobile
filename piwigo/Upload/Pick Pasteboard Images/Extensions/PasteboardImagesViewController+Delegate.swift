@@ -155,7 +155,7 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
             return UIAction(title: upload.stateLabel,
                             image: UIImage(systemName: "exclamationmark.triangle"), handler: { _ in })
         case .finished, .moderated:
-            return UIAction(title: NSLocalizedString("imageUploadCompleted_title", comment: "Upload Completed"),
+            return UIAction(title: String(localized: "imageUploadCompleted_title", comment: "Upload Completed"),
                             image: UIImage(systemName: "checkmark"), handler: { _ in })
         }
     }
@@ -164,7 +164,7 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
                               inUploadSate uploadState: pwgUploadState?) -> UIAction
     {
         // Image not selected and selectable ► Propose to select it
-        return UIAction(title: NSLocalizedString("categoryImageList_selectButton", comment: "Select"),
+        return UIAction(title: String(localized: "categoryImageList_selectButton", comment: "Select"),
                         image: UIImage(systemName: "checkmark.circle")) { _ in
             // Select the cell
             self.selectedImages[indexPath.item] = UploadProperties(localIdentifier: cell.localIdentifier,
@@ -192,7 +192,7 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
         } else {
             image = UIImage(systemName: "checkmark.circle")
         }
-        return UIAction(title: NSLocalizedString("categoryImageList_deselectButton", comment: "Deselect"),
+        return UIAction(title: String(localized: "categoryImageList_deselectButton", comment: "Deselect"),
                         image: image) { _ in
             // Deselect the cell
             self.selectedImages[indexPath.item] = nil
@@ -218,7 +218,7 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
         } else {
             imageUpload = UIImage(named: "photo.badge.plus")
         }
-        return UIAction(title: NSLocalizedString("tabBar_upload", comment: "Upload"),
+        return UIAction(title: String(localized: "tabBar_upload", comment: "Upload"),
                         image: imageUpload) { [self] action in
             // Check that an upload request does not exist for that image (should never happen)
             if (self.uploads.fetchedObjects ?? []).filter({$0.md5Sum == cell.md5sum}).first != nil {

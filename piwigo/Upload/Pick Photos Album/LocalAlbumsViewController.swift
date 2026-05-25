@@ -78,7 +78,7 @@ class LocalAlbumsViewController: UIViewController {
         super.viewDidLoad()
         
         // Title
-        title = NSLocalizedString("localAlbums", comment: "Photo Library")
+        title = String(localized: "localAlbums", comment: "Photo Library")
         
         // Button for selecting Photo Library items (.limited access mode)
         selectPhotoLibraryItemsButton = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(selectPhotoLibraryItems))
@@ -192,12 +192,12 @@ class LocalAlbumsViewController: UIViewController {
         super.viewDidAppear(animated)
         
         // Update title of current scene (iPad only)
-        view.window?.windowScene?.title = NSLocalizedString("tabBar_upload", comment: "Upload")
+        view.window?.windowScene?.title = String(localized: "tabBar_upload", comment: "Upload")
         
         // Show HUD while fetching local albums
         if self.localAlbumsProvider.didFetchAssetCollections == false {
             self.navigationController?.showHUD(
-                withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+                withTitle: String(localized: "loadingHUD_label", comment: "Loading…"),
                 detail: String(localized: "tabBar_albums", bundle: .pwgKit, comment: "Albums"), minWidth: 200)
         }
         
@@ -302,11 +302,11 @@ class LocalAlbumsViewController: UIViewController {
             switch wantedAction {
             case .presentLocalAlbum:
                 if ProcessInfo.processInfo.isLowPowerModeEnabled {
-                    text += "\r\r⚠️ " + NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled") + " ⚠️"
+                    text += "\r\r⚠️ " + String(localized: "uploadLowPowerMode", comment: "Low Power Mode enabled") + " ⚠️"
                 } else if [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) {
-                    text += "\r\r⚠️ " + NSLocalizedString("uploadThermalStateHigh", comment: "Thermal state high") + " ⚠️"
+                    text += "\r\r⚠️ " + String(localized: "uploadThermalStateHigh", comment: "Thermal state high") + " ⚠️"
                 } else if UploadVars.shared.wifiOnlyUploading && !ServerVars.shared.isConnectedToWiFi {
-                    text += "\r\r⚠️ " + NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection") + " ⚠️"
+                    text += "\r\r⚠️ " + String(localized: "uploadNoWiFiNetwork", comment: "No Wi-Fi Connection") + " ⚠️"
                 }
                 headerView.configure(width: min(localAlbumsTableView.frame.size.width, pwgPadSettingsWidth),
                                      text: text)

@@ -40,10 +40,10 @@ class PhoneTableViewCell: UITableViewCell {
 
         // Labels
         let labelHeight = UIFont.preferredFont(forTextStyle: .footnote).pointSize + TableViewUtilities.vertMargin
-        lightLabel.setTitle(NSLocalizedString("settings_lightColor", comment: "Light"), for: .normal)
+        lightLabel.setTitle(String(localized: "settings_lightColor", comment: "Light"), for: .normal)
         lightLabel.setTitleColor(PwgColor.leftLabel, for: .normal)
         lightLabelHeight.constant = labelHeight
-        darkLabel.setTitle(NSLocalizedString("settings_darkColor", comment: "Dark"), for: .normal)
+        darkLabel.setTitle(String(localized: "settings_darkColor", comment: "Dark"), for: .normal)
         darkLabel.setTitleColor(PwgColor.leftLabel, for: .normal)
         darkLabelHeight.constant = labelHeight
 

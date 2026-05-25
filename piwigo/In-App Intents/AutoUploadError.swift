@@ -21,10 +21,10 @@ extension AutoUploadError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .migrationRequired:
-            return NSLocalizedString("CoreData_MigrationRequired",
+            return String(localized: "CoreData_MigrationRequired",
                                      comment: "The persistent database of your Piwigo data requires migration. Please launch the application.")
         case .autoUploadDisabled:
-            return NSLocalizedString("AutoUploadError_Disabled",
+            return String(localized: "AutoUploadError_Disabled",
                                      comment: "Auto-uploading is disabled in the app settings.")
         case .invalidSource:
             return PwgKitError.autoUploadSourceInvalid.localizedDescription + ": " +

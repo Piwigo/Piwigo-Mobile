@@ -18,7 +18,7 @@ extension TagsViewController
         searchController.searchBar.searchBarStyle = .minimal
         searchController.searchBar.isTranslucent = false
         searchController.searchBar.showsSearchResultsButton = false
-        searchController.searchBar.placeholder = NSLocalizedString("tags", comment: "Tags")
+        searchController.searchBar.placeholder = String(localized: "tags", comment: "Tags")
         searchController.searchBar.delegate = self
         searchController.hidesNavigationBarDuringPresentation = false
         if #unavailable(iOS 26.0) {

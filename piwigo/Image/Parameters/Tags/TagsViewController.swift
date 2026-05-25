@@ -134,7 +134,7 @@ class TagsViewController: UITableViewController {
         }
                 
         // Title
-        title = NSLocalizedString("tags", comment: "Tags")
+        title = String(localized: "tags", comment: "Tags")
         
         // Add button for Admins
         if user.hasAdminRights {
@@ -179,8 +179,8 @@ class TagsViewController: UITableViewController {
         
         // Show HUD during the fetch
         self.navigationController?.showHUD(
-            withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-            detail: NSLocalizedString("tags", comment: "Tags"), minWidth: 200)
+            withTitle: String(localized: "loadingHUD_label", comment: "Loading…"),
+            detail: String(localized: "tags", comment: "Tags"), minWidth: 200)
         
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
@@ -274,9 +274,9 @@ class TagsViewController: UITableViewController {
     // MARK: -- Headers
     private func getContentOfHeader(inSection section: Int) -> String {
         if section == 0 {
-            return NSLocalizedString("tagsHeader_selected", comment: "Selected")
+            return String(localized: "tagsHeader_selected", comment: "Selected")
         } else {
-            return NSLocalizedString("tagsHeader_notSelected", comment: "Not Selected")
+            return String(localized: "tagsHeader_notSelected", comment: "Not Selected")
         }
     }
     

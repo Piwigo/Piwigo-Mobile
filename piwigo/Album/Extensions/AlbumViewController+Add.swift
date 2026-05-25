@@ -51,12 +51,12 @@ extension AlbumViewController
     @MainActor
     func showCreateCategoryDialog() {
         let alert = UIAlertController(
-            title: NSLocalizedString("createNewAlbum_title", comment: "New Album"),
-            message: NSLocalizedString("createNewAlbum_message", comment: "Enter a name for this album:"),
+            title: String(localized: "createNewAlbum_title", comment: "New Album"),
+            message: String(localized: "createNewAlbum_message", comment: "Enter a name for this album:"),
             preferredStyle: .alert)
 
         alert.addTextField(configurationHandler: { textField in
-            textField.placeholder = NSLocalizedString("createNewAlbum_placeholder", comment: "Album Name")
+            textField.placeholder = String(localized: "createNewAlbum_placeholder", comment: "Album Name")
             textField.clearButtonMode = .always
             textField.keyboardType = .default
             textField.keyboardAppearance = InterfaceVars.shared.isDarkPaletteActive ? .dark : .default
@@ -67,7 +67,7 @@ extension AlbumViewController
         })
 
         alert.addTextField(configurationHandler: { textField in
-            textField.placeholder = NSLocalizedString("createNewAlbumDescription_placeholder", comment: "Description")
+            textField.placeholder = String(localized: "createNewAlbumDescription_placeholder", comment: "Description")
             textField.clearButtonMode = .always
             textField.keyboardType = .default
             textField.keyboardAppearance = InterfaceVars.shared.isDarkPaletteActive ? .dark : .default
@@ -78,7 +78,7 @@ extension AlbumViewController
         })
 
         let cancelAction = UIAlertAction(
-            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+            title: String(localized: "alertCancelButton", comment: "Cancel"),
             style: .cancel, handler: { [self] action in
                 // Cancel action
                 if homeAlbumButton.isHidden {
@@ -87,10 +87,10 @@ extension AlbumViewController
         })
 
         createAlbumAction = UIAlertAction(
-            title: NSLocalizedString("alertAddButton", comment: "Add"),
+            title: String(localized: "alertAddButton", comment: "Add"),
             style: .default, handler: { [self] action in
                 // Create album
-                let albumName = alert.textFields?.first?.text ?? NSLocalizedString("categorySelection_title", comment: "Album")
+                let albumName = alert.textFields?.first?.text ?? String(localized: "categorySelection_title", comment: "Album")
                 addCategory(withName: albumName, andComment: alert.textFields?.last?.text ?? "",
                             inParent: albumData)
         })
@@ -117,7 +117,7 @@ extension AlbumViewController
             .compactMap({Int32($0)})).filter({$0 != albumData.pwgID}).union(Set([pwgSmartAlbum.root.rawValue]))
         
         // Display HUD during the update
-        showHUD(withTitle: NSLocalizedString("createNewAlbumHUD_label", comment: "Creating Album…"))
+        showHUD(withTitle: String(localized: "createNewAlbumHUD_label", comment: "Creating Album…"))
 
         // Send request to Piwigo server
         Task {
@@ -186,8 +186,8 @@ extension AlbumViewController
             }
             
             // Report error
-            let title = NSLocalizedString("createAlbumError_title", comment: "Create Album Error")
-            let message = NSLocalizedString("createAlbumError_message", comment: "Failed to create a new album")
+            let title = String(localized: "createAlbumError_title", comment: "Create Album Error")
+            let message = String(localized: "createAlbumError_message", comment: "Failed to create a new album")
             dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
                 // Reset buttons
                 didCancelTapAddButton()
@@ -202,7 +202,7 @@ extension AlbumViewController: UITextFieldDelegate
 {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         // Disable Add Category action
-        if textField.placeholder == NSLocalizedString("createNewAlbum_placeholder", comment: "Album Name") {
+        if textField.placeholder == String(localized: "createNewAlbum_placeholder", comment: "Album Name") {
             createAlbumAction?.isEnabled = (textField.text?.count ?? 0) >= 1
         }
         return true
@@ -210,7 +210,7 @@ extension AlbumViewController: UITextFieldDelegate
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         // Enable Add Category action if album name is non null
-        if textField.placeholder == NSLocalizedString("createNewAlbum_placeholder", comment: "Album Name") {
+        if textField.placeholder == String(localized: "createNewAlbum_placeholder", comment: "Album Name") {
             let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
             createAlbumAction?.isEnabled = (finalString?.count ?? 0) >= 1
         }
@@ -219,7 +219,7 @@ extension AlbumViewController: UITextFieldDelegate
 
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
         // Disable Add Category action
-        if textField.placeholder == NSLocalizedString("createNewAlbum_placeholder", comment: "Album Name") {
+        if textField.placeholder == String(localized: "createNewAlbum_placeholder", comment: "Album Name") {
             createAlbumAction?.isEnabled = false
         }
         return true

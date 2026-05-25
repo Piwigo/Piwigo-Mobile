@@ -38,7 +38,7 @@ extension AlbumViewController
         let menuId = UIMenu.Identifier("org.piwigo.help.menu")
         let config = UIImage.SymbolConfiguration(weight: .regular)
         let helpIcon = UIImage(systemName: "questionmark", withConfiguration: config)
-        let menu = UIMenu(title: NSLocalizedString("settings_help", comment: "Help"),
+        let menu = UIMenu(title: String(localized: "settings_help", comment: "Help"),
                           image: helpIcon, identifier: menuId,
                           children: [showHelpAction(), showReleaseNotesAction(), contactMenu()].compactMap({ $0 }))
         return menu
@@ -54,7 +54,7 @@ extension AlbumViewController
         } else {
             helpIcon = UIImage(systemName: "book", withConfiguration: config)
         }
-        let action = UIAction(title: NSLocalizedString("settings_helpViews", comment: "Help Pages"),
+        let action = UIAction(title: String(localized: "settings_helpViews", comment: "Help Pages"),
                               image: helpIcon, identifier: actionId, handler: { [self] action in
             // Present help views
             let helpVC = HelpUtilities.getHelpViewController()
@@ -73,7 +73,7 @@ extension AlbumViewController
         } else {
             releaseNotesIcon = UIImage(systemName: "doc.plaintext", withConfiguration: config)
         }
-        let action = UIAction(title: NSLocalizedString("settings_releaseNotes", comment: "Release Notes"),
+        let action = UIAction(title: String(localized: "settings_releaseNotes", comment: "Release Notes"),
                               image: releaseNotesIcon, identifier: actionId, handler: { [self] _ in
             // Present release notes in settings navigation controller
             let releaseNotesSB = UIStoryboard(name: "ReleaseNotesViewController", bundle: nil)
@@ -103,10 +103,10 @@ extension AlbumViewController
         } else {
             forumIcon = UIImage(systemName: "bubble.left.and.bubble.right", withConfiguration: config)
         }
-        let action = UIAction(title: NSLocalizedString("settings_supportForum", comment: "Support Forum"),
+        let action = UIAction(title: String(localized: "settings_supportForum", comment: "Support Forum"),
                               image: forumIcon, identifier: actionId, handler: { action in
             // Open Piwigo support forum webpage with default browser
-            if let url = URL(string: NSLocalizedString("settings_pwgForumURL", comment: "http://piwigo.org/forum")) {
+            if let url = URL(string: String(localized: "settings_pwgForumURL", comment: "http://piwigo.org/forum")) {
                 UIApplication.shared.open(url)
             }
         })
@@ -121,7 +121,7 @@ extension AlbumViewController
         // Create action
         let actionId = UIAction.Identifier("org.piwigo.help.contact.action")
         let config = UIImage.SymbolConfiguration(weight: .regular)
-        let action = UIAction(title: NSLocalizedString("settings_contact", comment: "Contact Support"),
+        let action = UIAction(title: String(localized: "settings_contact", comment: "Contact Support"),
                               image: UIImage(systemName: "envelope", withConfiguration: config),
                               identifier: actionId, handler: { [self] action in
             // Get mail composer if possible
@@ -140,7 +140,7 @@ extension AlbumViewController
         let actionId = UIAction.Identifier("org.piwigo.settings.action")
         let boldConfig = UIImage.SymbolConfiguration(weight: .bold)
         let boldSettingsIcon = UIImage(systemName: "gear", withConfiguration: boldConfig)
-        let action = UIAction(title: NSLocalizedString("tabBar_preferences", comment: "Settings"),
+        let action = UIAction(title: String(localized: "tabBar_preferences", comment: "Settings"),
                               image: boldSettingsIcon,
                               identifier: actionId, handler: { [self] action in
             // Present settings

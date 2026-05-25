@@ -57,7 +57,7 @@ class RenameFileViewController: UIViewController {
         super.viewDidLoad()
         
         // Title
-        title = NSLocalizedString("tabBar_upload", comment: "Upload")
+        title = String(localized: "tabBar_upload", comment: "Upload")
         
         // Table view
         tableView?.accessibilityIdentifier = "Rename File Settings"
@@ -257,8 +257,8 @@ class RenameFileViewController: UIViewController {
     @MainActor
     private func setTableViewMainHeader() {
         let headerView = RenameFileTableHeaderView(frame: CGRect.zero)
-        let title = NSLocalizedString("settings_renameFileLong", comment: "Rename File Before Upload")
-        let text = NSLocalizedString("settings_renameFile_info", comment: "Please define how file names should be modified before uploading.")
+        let title = String(localized: "settings_renameFileLong", comment: "Rename File Before Upload")
+        let text = String(localized: "settings_renameFile_info", comment: "Please define how file names should be modified before uploading.")
         headerView.config(with: title, text: text, forWidth: view.bounds.width)
         headerView.updateExample(prefix: prefixBeforeUpload, prefixActions: prefixActions,
                                  replace: replaceBeforeUpload, replaceActions: replaceActions,
@@ -310,7 +310,7 @@ class RenameFileViewController: UIViewController {
         
         // Create alert
         let section = RenameSection.prefix.rawValue
-        let alert = UIAlertController(title: "", message: NSLocalizedString("settings_addActionMsg", comment: "Please select the action to add"), preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "", message: String(localized: "settings_addActionMsg", comment: "Please select the action to add"), preferredStyle: .actionSheet)
         
         // Loop over all unused actions
         for actionType in availableActionTypes {
@@ -328,7 +328,7 @@ class RenameFileViewController: UIViewController {
         }
         
         // Add Cancel option
-        alert.addAction(UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: { [weak self] _ in
+        alert.addAction(UIAlertAction(title: String(localized: "alertDismissButton", comment: "Dismiss"), style: .cancel, handler: { [weak self] _ in
             guard let self = self else { return }
             self.updatePrefixSettingsAndSection()
         }))
@@ -402,7 +402,7 @@ class RenameFileViewController: UIViewController {
         
         // Create alert
         let section = RenameSection.replace.rawValue
-        let alert = UIAlertController(title: "", message: NSLocalizedString("settings_addActionMsg", comment: "Please select the action to add"), preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "", message: String(localized: "settings_addActionMsg", comment: "Please select the action to add"), preferredStyle: .actionSheet)
         
         // Loop over all unused actions
         for actionType in availableActionTypes {
@@ -420,7 +420,7 @@ class RenameFileViewController: UIViewController {
         }
         
         // Add Cancel option
-        alert.addAction(UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: { [weak self] _ in
+        alert.addAction(UIAlertAction(title: String(localized: "alertDismissButton", comment: "Dismiss"), style: .cancel, handler: { [weak self] _ in
             guard let self = self else { return }
             self.updateReplaceSettingsAndSection()
         }))
@@ -493,7 +493,7 @@ class RenameFileViewController: UIViewController {
 
         // Create alert
         let section = RenameSection.suffix.rawValue
-        let alert = UIAlertController(title: "", message: NSLocalizedString("settings_addActionMsg", comment: "Please select the action to add"), preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "", message: String(localized: "settings_addActionMsg", comment: "Please select the action to add"), preferredStyle: .actionSheet)
         
         // Loop over all unused actions
         for actionType in availableActionTypes {
@@ -511,7 +511,7 @@ class RenameFileViewController: UIViewController {
         }
         
         // Add Cancel option
-        alert.addAction(UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: { [weak self] _ in
+        alert.addAction(UIAlertAction(title: String(localized: "alertDismissButton", comment: "Dismiss"), style: .cancel, handler: { [weak self] _ in
             guard let self = self else { return }
             self.updateSuffixSettingsAndSection()
         }))

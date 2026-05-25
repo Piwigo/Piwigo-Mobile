@@ -18,7 +18,7 @@ extension SelectCategoryViewController
     @MainActor
     func moveCategory(intoCategory parentData: Album) {
         // Display HUD during the update
-        showHUD(withTitle: NSLocalizedString("moveCategoryHUD_moving", comment: "Moving Album…"))
+        showHUD(withTitle: String(localized: "moveCategoryHUD_moving", comment: "Moving Album…"))
 
         // Add category ID to list of recently used albums
         let userInfo = ["categoryId": parentData.pwgID]
@@ -76,7 +76,7 @@ extension SelectCategoryViewController
         guard let imageData = self.inputImages.first else { return }
         
         // Display HUD during the update
-        showHUD(withTitle: NSLocalizedString("categoryImageSetHUD_updating", comment:"Updating Album Thumbnail…"))
+        showHUD(withTitle: String(localized: "categoryImageSetHUD_updating", comment:"Updating Album Thumbnail…"))
         
         // Set image as representative
         Task {

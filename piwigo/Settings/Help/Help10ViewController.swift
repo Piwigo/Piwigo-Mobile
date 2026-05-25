@@ -27,14 +27,14 @@ class Help10ViewController: UIViewController {
         let legendAttributedString = NSMutableAttributedString(string: "")
 
         // Title
-        let titleString = NSLocalizedString("help10_header", comment: "Descriptions in HTML") + "\n"
+        let titleString = String(localized: "help10_header", comment: "Descriptions in HTML") + "\n"
         let titleAttributedString = NSMutableAttributedString(string: titleString)
         let titleRange = NSRange(location: 0, length: titleString.count)
         titleAttributedString.addAttribute(.font, value: titleFont, range: titleRange)
         legendAttributedString.append(titleAttributedString)
         
         // Text
-        let textString = NSLocalizedString("help10_text", comment: "Use <HTML…> tags to format the text in album and photo descriptions.")
+        let textString = String(localized: "help10_text", comment: "Use <HTML…> tags to format the text in album and photo descriptions.")
         let textAttributedString = NSMutableAttributedString(string: textString)
         let textRange = NSRange(location: 0, length: textString.count)
         textAttributedString.addAttribute(.font, value: textFont, range: textRange)

@@ -118,7 +118,7 @@ class AppLockViewController: UIViewController {
         super.viewDidLoad()
 
         // Title
-        title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
+        title = String(localized: "settingsHeader_privacy", comment: "Privacy")
     }
 
     @MainActor
@@ -228,13 +228,13 @@ class AppLockViewController: UIViewController {
         // Title and Info labels
         switch wantedAction {
         case .enterPasscode, .unlockApp:
-            titleLabel.text = NSLocalizedString("settings_appLockEnter", comment: "Enter Passcode")
+            titleLabel.text = String(localized: "settings_appLockEnter", comment: "Enter Passcode")
         case .verifyPasscode:
-            titleLabel.text = NSLocalizedString("settings_appLockVerify", comment: "Verify Passcode")
+            titleLabel.text = String(localized: "settings_appLockVerify", comment: "Verify Passcode")
         case .modifyPasscode:
-            titleLabel.text = NSLocalizedString("settings_appLockModify", comment: "Modify Passcode")
+            titleLabel.text = String(localized: "settings_appLockModify", comment: "Modify Passcode")
         }
-        infoLabel.text = NSLocalizedString("settings_appLockInfo", comment: "With App Lock, ...")
+        infoLabel.text = String(localized: "settings_appLockInfo", comment: "With App Lock, ...")
 
         // Set constraints, colors, fonts, etc.
         configConstraints()

@@ -29,7 +29,7 @@ class CategorySortViewController: UIViewController {
         super.viewDidLoad()
         
         // Apply attributes to title
-        title = NSLocalizedString("severalImages", comment: "Images")
+        title = String(localized: "severalImages", comment: "Images")
         
         // Table view
         sortSelectTableView?.accessibilityIdentifier = "sortSelect"
@@ -117,8 +117,8 @@ extension CategorySortViewController: UITableViewDelegate {
     
     // MARK: - Header
     private func getContentOfHeader() -> (String, String) {
-        let title = String(format: "%@\n", NSLocalizedString("defaultImageSort>414px", comment: "Default Sort of Images"))
-        let text = NSLocalizedString("imageSortMessage", comment: "Please select how you wish to sort images")
+        let title = String(format: "%@\n", String(localized: "defaultImageSort>414px", comment: "Default Sort of Images"))
+        let text = String(localized: "imageSortMessage", comment: "Please select how you wish to sort images")
         return (title, text)
     }
     

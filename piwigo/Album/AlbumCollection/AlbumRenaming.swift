@@ -41,12 +41,12 @@ class AlbumRenaming: NSObject
     func displayAlert(completion: @escaping (Bool) -> Void)
     {
         renameAlert = UIAlertController(
-            title: NSLocalizedString("renameCategory_title", comment: "Rename Album"),
-            message: String(format: "%@ (%@):", NSLocalizedString("renameCategory_message", comment: "Enter a new name for this album"), albumData.name),
+            title: String(localized: "renameCategory_title", comment: "Rename Album"),
+            message: String(format: "%@ (%@):", String(localized: "renameCategory_message", comment: "Enter a new name for this album"), albumData.name),
             preferredStyle: .alert)
 
         renameAlert?.addTextField(configurationHandler: { [self] textField in
-            textField.placeholder = NSLocalizedString("createNewAlbum_placeholder", comment: "Album Name")
+            textField.placeholder = String(localized: "createNewAlbum_placeholder", comment: "Album Name")
             textField.text = albumData.name
             textField.clearButtonMode = .always
             textField.keyboardType = .default
@@ -59,7 +59,7 @@ class AlbumRenaming: NSObject
         })
 
         renameAlert?.addTextField(configurationHandler: { [self] textField in
-            textField.placeholder = NSLocalizedString("createNewAlbumDescription_placeholder", comment: "Description")
+            textField.placeholder = String(localized: "createNewAlbumDescription_placeholder", comment: "Description")
             let attributedStr = NSMutableAttributedString(attributedString: albumData.comment)
             let wholeRange = NSRange(location: 0, length: attributedStr.string.count)
             let style = NSMutableParagraphStyle()
@@ -82,14 +82,14 @@ class AlbumRenaming: NSObject
         })
 
         let cancelAction = UIAlertAction(
-            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+            title: String(localized: "alertCancelButton", comment: "Cancel"),
             style: .cancel, handler: { action in
                 // Hide swipe buttons
                 completion(true)
             })
 
         renameAction = UIAlertAction(
-            title: NSLocalizedString("renameCategory_button", comment: "Rename"),
+            title: String(localized: "renameCategory_button", comment: "Rename"),
             style: .default, handler: { [self] action in
                 // Rename album if possible
                 if (self.renameAlert?.textFields?.first?.text?.count ?? 0) > 0 {
@@ -120,7 +120,7 @@ class AlbumRenaming: NSObject
               let albumComment = albumComment else { return }
 
         // Display HUD during the update
-        topViewController.showHUD(withTitle: NSLocalizedString("renameCategoryHUD_label", comment: "Renaming Album…"))
+        topViewController.showHUD(withTitle: String(localized: "renameCategoryHUD_label", comment: "Renaming Album…"))
 
         // Rename album, modify comment
         Task {
@@ -171,8 +171,8 @@ class AlbumRenaming: NSObject
         }
 
         // Report error
-        let title = NSLocalizedString("renameCategoyError_title", comment: "Rename Fail")
-        let message = NSLocalizedString("renameCategoyError_message", comment: "Failed to rename your album")
+        let title = String(localized: "renameCategoyError_title", comment: "Rename Fail")
+        let message = String(localized: "renameCategoyError_message", comment: "Failed to rename your album")
         self.topViewController.hideHUD() { [self] in
             self.topViewController.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) {
                 completion(true)

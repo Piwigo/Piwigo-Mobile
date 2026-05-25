@@ -177,7 +177,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
             return UIAction(title: upload.stateLabel,
                             image: UIImage(systemName: "exclamationmark.triangle"), handler: { _ in })
         case .finished, .moderated:
-            return UIAction(title: NSLocalizedString("imageUploadCompleted_title", comment: "Upload Completed"),
+            return UIAction(title: String(localized: "imageUploadCompleted_title", comment: "Upload Completed"),
                             image: UIImage(systemName: "checkmark"), handler: { _ in })
         }
     }
@@ -186,7 +186,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
                               index: Int, inUploadSate uploadState: pwgUploadState?) -> UIAction
     {
         // Image not selected and selectable ► Propose to select it
-        return UIAction(title: NSLocalizedString("categoryImageList_selectButton", comment: "Select"),
+        return UIAction(title: String(localized: "categoryImageList_selectButton", comment: "Select"),
                         image: UIImage(systemName: "checkmark.circle")) { _ in
             // Select the cell
             self.selectedImages[index] = UploadProperties(localIdentifier: cell.localIdentifier,
@@ -214,7 +214,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
         } else {
             image = UIImage(systemName: "checkmark.circle")
         }
-        return UIAction(title: NSLocalizedString("categoryImageList_deselectButton", comment: "Deselect"),
+        return UIAction(title: String(localized: "categoryImageList_deselectButton", comment: "Deselect"),
                         image: image) { _ in
             // Deselect the cell
             self.selectedImages[index] = nil
@@ -240,7 +240,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
         } else {
             imageUpload = UIImage(named: "photo.badge.plus")
         }
-        return UIAction(title: NSLocalizedString("tabBar_upload", comment: "Upload"),
+        return UIAction(title: String(localized: "tabBar_upload", comment: "Upload"),
                         image: imageUpload) { [self] action in
             // Check that an upload request does not exist for that image (should never happen)
             if (self.uploads.fetchedObjects ?? [])
@@ -301,7 +301,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
     }
     
     private func deleteAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
-        return UIAction(title: NSLocalizedString("localImages_deleteTitle", comment: "Remove from Camera Roll"),
+        return UIAction(title: String(localized: "localImages_deleteTitle", comment: "Remove from Camera Roll"),
                         image: UIImage(systemName: "trash"), attributes: .destructive) { action in
             // Get asset to delete
             let index = self.getImageIndex(for: indexPath)

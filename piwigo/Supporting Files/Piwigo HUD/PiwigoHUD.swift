@@ -82,7 +82,7 @@ final class PiwigoHUD: UIView
         // Configure HUD title (always shown and non-empty)
         let screenWidth = view.window?.screen.bounds.width ?? view.bounds.width
         if title.isEmpty {
-            titleLabel?.attributedText = getAttributed(title: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+            titleLabel?.attributedText = getAttributed(title: String(localized: "loadingHUD_label", comment: "Loading…"),
                                                       forMaxWidth: screenWidth)
         } else {
             titleLabel?.attributedText = getAttributed(title: title, forMaxWidth: screenWidth)
@@ -166,7 +166,7 @@ final class PiwigoHUD: UIView
         if let title = title, title.isEmpty == false {
             titleLabel.attributedText = getAttributed(title: title,forMaxWidth: screenWidth)
         } else {
-            titleLabel.attributedText = getAttributed(title: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+            titleLabel.attributedText = getAttributed(title: String(localized: "loadingHUD_label", comment: "Loading…"),
                                                       forMaxWidth: screenWidth)
         }
         

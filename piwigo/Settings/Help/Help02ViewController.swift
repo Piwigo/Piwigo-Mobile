@@ -30,14 +30,14 @@ class Help02ViewController: UIViewController {
         let legendBotAttributedString = NSMutableAttributedString(string: "")
 
         // Title of legend above images
-        let titleString = NSLocalizedString("help02_header", comment: "Background Uploading") + "\n"
+        let titleString = String(localized: "help02_header", comment: "Background Uploading") + "\n"
         let titleAttributedString = NSMutableAttributedString(string: titleString)
         let titleRange = NSRange(location: 0, length: titleString.count)
         titleAttributedString.addAttribute(.font, value: titleFont, range: titleRange)
         legendTopAttributedString.append(titleAttributedString)
 
         // Text of legend above images
-        let aboveString = NSLocalizedString("help02_text", comment: "Select photos/videos, tap Upload")
+        let aboveString = String(localized: "help02_text", comment: "Select photos/videos, tap Upload")
         let aboveAttributedString = NSMutableAttributedString(string: aboveString)
         let aboveRange = NSRange(location: 0, length: aboveString.count)
         aboveAttributedString.addAttribute(.font, value: textFont, range: aboveRange)
@@ -47,7 +47,7 @@ class Help02ViewController: UIViewController {
         legendTop.attributedText = legendTopAttributedString
 
         // Text of legend between images
-        let belowString = NSLocalizedString("help02_text2", comment: "Plug the device to its charger and let iOS…")
+        let belowString = String(localized: "help02_text2", comment: "Plug the device to its charger and let iOS…")
         let belowAttributedString = NSMutableAttributedString(string: belowString)
         let belowRange: NSRange = NSRange(location: 0, length: belowString.count)
         belowAttributedString.addAttribute(.font, value: textFont, range: belowRange)

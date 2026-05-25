@@ -54,7 +54,7 @@ class DateFormatSelectorViewController: UIViewController {
         super.viewDidLoad()
         
         // Title, header and example
-        title = NSLocalizedString("tabBar_upload", comment: "Upload")
+        title = String(localized: "tabBar_upload", comment: "Upload")
 
         // Table view
         tableView?.accessibilityIdentifier = "Date Format Settings"
@@ -155,7 +155,7 @@ class DateFormatSelectorViewController: UIViewController {
     private func setTableViewMainHeader() {
         let headerView = RenameFileTableHeaderView(frame: CGRect.zero)
         let title = RenameAction.ActionType.addDate.name
-        let text = NSLocalizedString("settings_renameDateHeader", comment: "Please select a date format…")
+        let text = String(localized: "settings_renameDateHeader", comment: "Please select a date format…")
         headerView.config(with: title, text: text, forWidth: view.bounds.width)
         headerView.updateExample(prefix: prefixBeforeUpload, prefixActions: prefixActions,
                                  replace: replaceBeforeUpload, replaceActions: replaceActions,

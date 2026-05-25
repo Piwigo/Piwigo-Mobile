@@ -32,7 +32,7 @@ class PasteboardImagesHeaderReusableView: UICollectionReusableView {
 
         // Data label used when place name known
         headerLabel.textColor = PwgColor.header
-        headerLabel.text = NSLocalizedString("categoryUpload_pasteboard", comment: "Clipboard")
+        headerLabel.text = String(localized: "categoryUpload_pasteboard", comment: "Clipboard")
 
         // Select/deselect button
         selectButton.layer.cornerRadius = 13.0

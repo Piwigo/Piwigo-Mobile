@@ -85,12 +85,12 @@ struct LoginUtilities
                                         cancelAction: @escaping ((UIAlertAction) -> Void),
                                         loginAction: @escaping ((UIAlertAction) -> Void)) -> UIAlertController {
         let alert = UIAlertController(
-            title: NSLocalizedString("loginHTTP_title", comment: "HTTP Credentials"),
-            message: NSLocalizedString("loginHTTP_message", comment: "Piwigo server requires HTTP basic access authentication…"),
+            title: String(localized: "loginHTTP_title", comment: "HTTP Credentials"),
+            message: String(localized: "loginHTTP_message", comment: "Piwigo server requires HTTP basic access authentication…"),
             preferredStyle: .alert)
         
         alert.addTextField(configurationHandler: { textField in
-            textField.placeholder = NSLocalizedString("loginHTTPuser_placeholder", comment: "username")
+            textField.placeholder = String(localized: "loginHTTPuser_placeholder", comment: "username")
             textField.text = (username.count > 0) ? username : ""
             textField.clearButtonMode = .always
             textField.keyboardType = .default
@@ -101,7 +101,7 @@ struct LoginUtilities
             textField.delegate = textFieldDelegate
         })
         alert.addTextField(configurationHandler: { textField in
-            textField.placeholder = NSLocalizedString("loginHTTPpwd_placeholder", comment: "password")
+            textField.placeholder = String(localized: "loginHTTPpwd_placeholder", comment: "password")
             textField.text = (password.count > 0) ? password : ""
             textField.clearButtonMode = .always
             textField.keyboardType = .default
@@ -114,12 +114,12 @@ struct LoginUtilities
         })
         
         let cancelAction = UIAlertAction(
-            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+            title: String(localized: "alertCancelButton", comment: "Cancel"),
             style: .cancel, handler: cancelAction)
         alert.addAction(cancelAction)
         
         let loginAction = UIAlertAction(
-            title: NSLocalizedString("alertOkButton", comment: "OK"),
+            title: String(localized: "alertOkButton", comment: "OK"),
             style: .default, handler: loginAction)
         alert.addAction(loginAction)
         

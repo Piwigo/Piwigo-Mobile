@@ -21,13 +21,13 @@ extension RenameFileViewController: UITableViewDelegate
         var title: String = "", text: String = ""
         switch section {
         case RenameSection.prefix.rawValue:
-            title = NSLocalizedString("settings_renameAddBefore", comment: "Add Before Name")
+            title = String(localized: "settings_renameAddBefore", comment: "Add Before Name")
         case RenameSection.replace.rawValue:
-            title = NSLocalizedString("settings_renameReplace", comment: "Replace Name")
+            title = String(localized: "settings_renameReplace", comment: "Replace Name")
         case RenameSection.suffix.rawValue:
-            title = NSLocalizedString("settings_renameAddAfter", comment: "Add After Name")
+            title = String(localized: "settings_renameAddAfter", comment: "Add After Name")
         case RenameSection.fileExtension.rawValue:
-            title = NSLocalizedString("settings_renameFileExtension", comment: "File Extension")
+            title = String(localized: "settings_renameFileExtension", comment: "File Extension")
         default:
             preconditionFailure("Invalid section \(section)")
         }

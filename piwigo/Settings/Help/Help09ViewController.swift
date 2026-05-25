@@ -27,14 +27,14 @@ class Help09ViewController: UIViewController {
         let legendAttributedString = NSMutableAttributedString(string: "")
 
         // Title
-        let titleString = NSLocalizedString("help03_header", comment: "Administrators") + "\n"
+        let titleString = String(localized: "help03_header", comment: "Administrators") + "\n"
         let titleAttributedString = NSMutableAttributedString(string: titleString)
         let titleRange = NSRange(location: 0, length: titleString.count)
         titleAttributedString.addAttribute(.font, value: titleFont, range: titleRange)
         legendAttributedString.append(titleAttributedString)
 
         // Text
-        let textString = NSLocalizedString("help03_text", comment: "Create, delete, move and rename albums.")
+        let textString = String(localized: "help03_text", comment: "Create, delete, move and rename albums.")
         let textAttributedString = NSMutableAttributedString(string: textString)
         let textRange = NSRange(location: 0, length: textString.count)
         textAttributedString.addAttribute(.font, value: textFont, range: textRange)

@@ -21,7 +21,7 @@ class ColorPaletteViewController: UIViewController {
         super.viewDidLoad()
         
         // Title
-        title = NSLocalizedString("settingsHeader_appearance", comment: "Appearance")
+        title = String(localized: "settingsHeader_appearance", comment: "Appearance")
 
         // Table view
         tableView?.accessibilityIdentifier = "Color Palette Selector"
@@ -100,7 +100,7 @@ extension ColorPaletteViewController: UITableViewDataSource {
         case 1:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
             else { preconditionFailure("Could not load SwitchTableViewCell") }
-            cell.configure(with: NSLocalizedString("settings_switchPalette", comment: "Automatic"))
+            cell.configure(with: String(localized: "settings_switchPalette", comment: "Automatic"))
             cell.cellSwitch.setOn(InterfaceVars.shared.switchPaletteAutomatically, animated: true)
             cell.cellSwitchBlock = { [self] switchState in
                 
@@ -138,7 +138,7 @@ extension ColorPaletteViewController: UITableViewDelegate {
     
     // MARK: - Header
     private func getContentOfHeader() -> String {
-        let title = NSLocalizedString("settingsHeader_colorPalette", comment: "Color Palette")
+        let title = String(localized: "settingsHeader_colorPalette", comment: "Color Palette")
         return title
     }
     

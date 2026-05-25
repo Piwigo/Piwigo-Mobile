@@ -28,7 +28,7 @@ class ReleaseNotesViewController: UIViewController {
         super.viewDidLoad()
 
         // Title
-        title = NSLocalizedString("settings_releaseNotes", comment: "Release Notes")
+        title = String(localized: "settings_releaseNotes", comment: "Release Notes")
         
         // Show close button?
         if #available(iOS 26.0, *) {

@@ -16,7 +16,7 @@ extension AlbumViewController
     // MARK: - Copy/Move Image Actions
     func imagesCopyAction() -> UIAction {
         let actionId = UIAction.Identifier("Copy")
-        let action = UIAction(title: NSLocalizedString("copyImage_title", comment: "Copy to Album"),
+        let action = UIAction(title: String(localized: "copyImage_title", comment: "Copy to Album"),
                               image: UIImage(systemName: "photo.on.rectangle"),
                               identifier: actionId, handler: { [self] action in
             // Disable buttons during action
@@ -30,7 +30,7 @@ extension AlbumViewController
     
     func imagesMoveAction() -> UIAction {
         let actionId = UIAction.Identifier("Move")
-        let action = UIAction(title: NSLocalizedString("moveImage_title", comment: "Move to Album"),
+        let action = UIAction(title: String(localized: "moveImage_title", comment: "Move to Album"),
                               image: UIImage(systemName: "arrow.forward"),
                               identifier: actionId, handler: { [self] action in
             // Disable buttons during action

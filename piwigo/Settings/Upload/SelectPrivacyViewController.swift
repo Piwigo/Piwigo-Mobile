@@ -37,7 +37,7 @@ class SelectPrivacyViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = NSLocalizedString("tabBar_upload", comment: "Upload")
+        title = String(localized: "tabBar_upload", comment: "Upload")
 
         // Table view
         privacyTableView?.accessibilityIdentifier = "Privacy"
@@ -116,8 +116,8 @@ extension SelectPrivacyViewController: UITableViewDelegate
 {
     // MARK: - Header
     private func getContentOfHeader() -> (String, String) {
-        let title = String(format: "%@\n", NSLocalizedString("privacyLevel", comment: "Privacy Level"))
-        let text = NSLocalizedString("settings_defaultPrivacy>414px", comment: "Please select who will be able to see images")
+        let title = String(format: "%@\n", String(localized: "privacyLevel", comment: "Privacy Level"))
+        let text = String(localized: "settings_defaultPrivacy>414px", comment: "Please select who will be able to see images")
         return (title, text)
     }
 

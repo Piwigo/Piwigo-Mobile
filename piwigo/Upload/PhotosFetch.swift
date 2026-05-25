@@ -105,9 +105,9 @@ class PhotosFetch {
     @MainActor
     func requestPhotoLibraryAccess(in viewController: UIViewController?) {
         // Invite user to provide access to photos
-        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .destructive, handler: { action in })
+        let cancelAction = UIAlertAction(title: String(localized: "alertCancelButton", comment: "Cancel"), style: .destructive, handler: { action in })
 
-        let prefsAction = UIAlertAction(title: NSLocalizedString("alertOkButton", comment: "OK"), style: .default, handler: { action in
+        let prefsAction = UIAlertAction(title: String(localized: "alertOkButton", comment: "OK"), style: .default, handler: { action in
                 // Redirect user to Settings app
                 if let url = URL(string: UIApplication.openSettingsURLString) {
                     UIApplication.shared.open(url)
@@ -115,14 +115,14 @@ class PhotosFetch {
             })
 
         // Present alert
-        let title = NSLocalizedString("localAlbums_photosNotAuthorized_title", comment: "No Access")
-        let message = NSLocalizedString("localAlbums_photosNotAuthorized_msg", comment: "tell user to change settings, how")
+        let title = String(localized: "localAlbums_photosNotAuthorized_title", comment: "No Access")
+        let message = String(localized: "localAlbums_photosNotAuthorized_msg", comment: "tell user to change settings, how")
         viewController?.presentPiwigoAlert(withTitle: title, message: message,
                                 actions: [cancelAction, prefsAction])
     }
 
     @MainActor
     func showPhotosLibraryAccessRestricted(in viewController: UIViewController?) {
-        viewController?.dismissPiwigoError(withTitle: NSLocalizedString("localAlbums_photosNiltitle", comment: "Problem Reading Photos"), message: NSLocalizedString("localAlbums_photosNnil_msg", comment: "There is a problem reading your local photo library."), completion: {})
+        viewController?.dismissPiwigoError(withTitle: String(localized: "localAlbums_photosNiltitle", comment: "Problem Reading Photos"), message: String(localized: "localAlbums_photosNnil_msg", comment: "There is a problem reading your local photo library."), completion: {})
     }
 }

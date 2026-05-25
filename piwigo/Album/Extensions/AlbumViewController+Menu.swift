@@ -51,7 +51,7 @@ extension AlbumViewController {
             options.insert(.displayInline)
         }
         let menuId = UIMenu.Identifier("org.piwigo.images.sort")
-        return UIMenu(title: NSLocalizedString("categorySort_sort", comment: "Sort Images By…"),
+        return UIMenu(title: String(localized: "categorySort_sort", comment: "Sort Images By…"),
                       image: nil, identifier: menuId,
                       options: options,
                       children: [defaultSortAction(), titleSortAction(),
@@ -94,7 +94,7 @@ extension AlbumViewController {
         }
         var action: UIAction?
         let actionId = UIAction.Identifier("org.piwigo.images.sort.title")
-        let title = NSLocalizedString("categorySort_name", comment: "Photo Title")
+        let title = String(localized: "categorySort_name", comment: "Photo Title")
         switch sortOption {
         case .nameAscending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
@@ -139,7 +139,7 @@ extension AlbumViewController {
         
         var action: UIAction?
         let actionId = UIAction.Identifier("org.piwigo.images.sort.created")
-        let title = NSLocalizedString("categorySort_dateCreated", comment: "Date Created")
+        let title = String(localized: "categorySort_dateCreated", comment: "Date Created")
         switch sortOption {
         case .dateCreatedAscending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
@@ -184,7 +184,7 @@ extension AlbumViewController {
         
         var action: UIAction?
         let actionId = UIAction.Identifier("org.piwigo.images.sort.posted")
-        let title = NSLocalizedString("categorySort_datePosted", comment: "Date Posted")
+        let title = String(localized: "categorySort_datePosted", comment: "Date Posted")
         switch sortOption {
         case .datePostedAscending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
@@ -229,7 +229,7 @@ extension AlbumViewController {
         
         var action: UIAction?
         let actionId = UIAction.Identifier("org.piwigo.images.sort.rate")
-        let title = NSLocalizedString("categorySort_ratingScore", comment: "Rating Score")
+        let title = String(localized: "categorySort_ratingScore", comment: "Rating Score")
         switch sortOption {
         case .ratingScoreAscending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
@@ -274,7 +274,7 @@ extension AlbumViewController {
         
         var action: UIAction?
         let actionId = UIAction.Identifier("org.piwigo.images.sort.visits")
-        let title = NSLocalizedString("categorySort_visits", comment: "Visits")
+        let title = String(localized: "categorySort_visits", comment: "Visits")
         switch sortOption {
         case .visitsAscending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
@@ -346,7 +346,7 @@ extension AlbumViewController {
         
         let actionId = UIAction.Identifier("org.piwigo.images.sort.random")
         let isActive = sortOption == .random
-        let action = UIAction(title: NSLocalizedString("categorySort_randomly", comment: "Randomly"),
+        let action = UIAction(title: String(localized: "categorySort_randomly", comment: "Randomly"),
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: actionId, handler: { [self] action in
             // Should sorting be changed?
@@ -368,7 +368,7 @@ extension AlbumViewController {
     // MARK: - View Options
     /// - for choosing how to group images
     func viewOptionsMenu() -> UIMenu {
-        return UIMenu(title: NSLocalizedString("categoryView_options", comment: "View Options"),
+        return UIMenu(title: String(localized: "categoryView_options", comment: "View Options"),
                       image: nil,
                       identifier: UIMenu.Identifier("org.piwigo.view.options"),
                       children: [groupMenu(), showMenu()].compactMap({$0}))
@@ -383,7 +383,7 @@ extension AlbumViewController {
         
         // Create a menu for selecting how to group images
         let children = [byDayAction(), byWeekAction(), byMonthAction(), byNoneAction()].compactMap({$0})
-        return UIMenu(title: NSLocalizedString("categoryView_group", comment: "Group Images By…"),
+        return UIMenu(title: String(localized: "categoryView_group", comment: "Group Images By…"),
                       image: nil,
                       identifier: UIMenu.Identifier("org.piwigo.images.group.main"),
                       options: UIMenu.Options.displayInline,
@@ -392,7 +392,7 @@ extension AlbumViewController {
     
     func byDayAction() -> UIAction? {
         let isActive = AlbumVars.shared.defaultGroup == .day
-        let action = UIAction(title: NSLocalizedString("Day", comment: "Day"),
+        let action = UIAction(title: String(localized: "Day", comment: "Day"),
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: UIAction.Identifier("org.piwigo.images.group.day"),
                               handler: { [self] action in
@@ -411,7 +411,7 @@ extension AlbumViewController {
     
     func byWeekAction() -> UIAction? {
         let isActive = AlbumVars.shared.defaultGroup == .week
-        let action = UIAction(title: NSLocalizedString("Week", comment: "Week"),
+        let action = UIAction(title: String(localized: "Week", comment: "Week"),
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: UIAction.Identifier("org.piwigo.images.group.week"),
                               handler: { [self] action in
@@ -430,7 +430,7 @@ extension AlbumViewController {
     
     func byMonthAction() -> UIAction? {
         let isActive = AlbumVars.shared.defaultGroup == .month
-        let action = UIAction(title: NSLocalizedString("Month", comment: "Month"),
+        let action = UIAction(title: String(localized: "Month", comment: "Month"),
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: UIAction.Identifier("org.piwigo.images.group.month"),
                               handler: { [self] action in
@@ -449,7 +449,7 @@ extension AlbumViewController {
     
     func byNoneAction() -> UIAction? {
         let isActive = AlbumVars.shared.defaultGroup == .none
-        let action = UIAction(title: NSLocalizedString("None", comment: "None"),
+        let action = UIAction(title: String(localized: "None", comment: "None"),
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: UIAction.Identifier("org.piwigo.images.group.none"),
                               handler: { [self] action in
@@ -469,7 +469,7 @@ extension AlbumViewController {
     func showMenu() -> UIMenu? {
         // Create a menu for selecting what to show
         let children = [showHideTitlesAction(), showHideDescriptionsAction()].compactMap({$0})
-        return UIMenu(title: NSLocalizedString("categoryView_show", comment: "Show…"),
+        return UIMenu(title: String(localized: "categoryView_show", comment: "Show…"),
                       image: nil,
                       identifier: UIMenu.Identifier("org.piwigo.images.show.main"),
                       options: UIMenu.Options.displayInline,
@@ -478,7 +478,7 @@ extension AlbumViewController {
     
     func showHideDescriptionsAction() -> UIAction? {
         let isActive = AlbumVars.shared.displayAlbumDescriptions
-        let action = UIAction(title: NSLocalizedString("settings_displayDescriptions", comment: "Album Descriptions"),
+        let action = UIAction(title: String(localized: "settings_displayDescriptions", comment: "Album Descriptions"),
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: UIAction.Identifier("org.piwigo.images.show.descriptions"),
                               handler: { [self] action in
@@ -504,7 +504,7 @@ extension AlbumViewController {
 
     func showHideTitlesAction() -> UIAction? {
         let isActive = AlbumVars.shared.displayImageTitles
-        let action = UIAction(title: NSLocalizedString("settings_displayTitles", comment: "Image Titles"),
+        let action = UIAction(title: String(localized: "settings_displayTitles", comment: "Image Titles"),
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: UIAction.Identifier("org.piwigo.images.show.titles"),
                               handler: { [self] action in

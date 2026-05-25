@@ -124,8 +124,8 @@ extension AlbumViewController
         }
         
         // Report error
-        let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
-        let message = NSLocalizedString("imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites.")
+        let title = String(localized: "imageFavorites_title", comment: "Favorites")
+        let message = String(localized: "imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites.")
         navigationController?.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
             navigationController?.hideHUD() { [self] in
                 if contextually {
@@ -233,8 +233,8 @@ extension AlbumViewController
         }
 
         // Report error
-        let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
-        let message = NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites.")
+        let title = String(localized: "imageFavorites_title", comment: "Favorites")
+        let message = String(localized: "imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites.")
         navigationController?.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
             navigationController?.hideHUD() { [self] in
                 if contextually {

@@ -26,7 +26,7 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         super.viewDidLoad()
 
         // Title
-        title = NSLocalizedString("settings_acknowledgements", comment: "Acknowledgements")
+        title = String(localized: "settings_acknowledgements", comment: "Acknowledgements")
     }
 
     @MainActor

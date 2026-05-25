@@ -40,7 +40,7 @@ class TroubleshootingViewController: UIViewController {
         super.viewDidLoad()
         
         // Title
-        title = NSLocalizedString("settings_logs", comment: "Logs")
+        title = String(localized: "settings_logs", comment: "Logs")
 
         // Button for returning to albums/images
         clearBarButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(deleteJSONfiles))
@@ -93,8 +93,8 @@ class TroubleshootingViewController: UIViewController {
         // Display HUD while retrieving logs and invalid JSON data
         if queue.operations.count != 0 {
             navigationController?.showHUD(
-                withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                detail: NSLocalizedString("settings_logs", comment: "Logs"), minWidth: 200)
+                withTitle: String(localized: "loadingHUD_label", comment: "Loading…"),
+                detail: String(localized: "settings_logs", comment: "Logs"), minWidth: 200)
         }
     }
     
@@ -319,9 +319,9 @@ extension TroubleshootingViewController: UITableViewDelegate
         var title = "", text = ""
         switch section {
         case 0 /* Logs */:
-            title = NSLocalizedString("settings_logs", comment: "Logs")
+            title = String(localized: "settings_logs", comment: "Logs")
         case 1 /* Invalid JSON data */:
-            title = NSLocalizedString("settings_JSONinvalid", comment: "Invalid JSON data")
+            title = String(localized: "settings_JSONinvalid", comment: "Invalid JSON data")
         default:
             title = ""
         }

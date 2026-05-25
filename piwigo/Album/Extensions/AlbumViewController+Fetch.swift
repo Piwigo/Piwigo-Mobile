@@ -320,18 +320,18 @@ extension AlbumViewController
     @MainActor
     private func showError(_ error: PwgKitError)
     {
-        var title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
+        var title = String(localized: "internetErrorGeneral_title", comment: "Connection Error")
         var detail = error.localizedDescription
         var buttonSelector = #selector(hideLoading)
         if error.requestCancelled {
-            title = NSLocalizedString("internetCancelledConnection_title", comment: "Connection Cancelled")
+            title = String(localized: "internetCancelledConnection_title", comment: "Connection Cancelled")
         }
         else if error.failedAuthentication {
-            title = NSLocalizedString("loginError_title", comment: "Login Fail")
+            title = String(localized: "loginError_title", comment: "Login Fail")
             buttonSelector = #selector(hideLoadingAndCloseSession)
         }
         else if error.incompatibleVersion {
-            title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
+            title = String(localized: "serverVersionNotCompatible_title", comment: "Server Incompatible")
             detail = String.localizedStringWithFormat(PwgKitError.incompatiblePwgVersion.localizedDescription, ServerVars.shared.pwgVersion, pwgMinVersion)
             buttonSelector = #selector(hideLoadingAndCloseSession)
         }
@@ -340,7 +340,7 @@ extension AlbumViewController
         }
         navigationController?.showHUD(
             withTitle: title, detail: detail, minWidth: 240,
-            buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
+            buttonTitle: String(localized: "alertDismissButton", comment: "Dismiss"),
             buttonTarget: self, buttonSelector: buttonSelector,
             inMode: pwgHudMode.none)
     }

@@ -95,7 +95,7 @@ class EditImageParamsViewController: UIViewController
         editImageParamsTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
         
         // Title
-        title = NSLocalizedString("imageDetailsView_title", comment: "Properties")
+        title = String(localized: "imageDetailsView_title", comment: "Properties")
         
         // Buttons
         let cancel = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(cancelEdit))
@@ -292,10 +292,10 @@ class EditImageParamsViewController: UIViewController
     @objc func doneEdit() {
         // Display HUD during the update
         if images.count > 1 {
-            showHUD(withTitle: NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"),
+            showHUD(withTitle: String(localized: "editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"),
                     inMode: .determinate)
         } else {
-            showHUD(withTitle: NSLocalizedString("editImageDetailsHUD_updatingSingle", comment: "Updating Photo…"))
+            showHUD(withTitle: String(localized: "editImageDetailsHUD_updatingSingle", comment: "Updating Photo…"))
         }
         
         // Determine common time offset to apply
@@ -504,8 +504,8 @@ class EditImageParamsViewController: UIViewController
         }
         
         // Report error
-        let title = NSLocalizedString("editImageDetailsError_title", comment: "Failed to Update")
-        let message = NSLocalizedString("editImageDetailsError_message", comment: "Failed to update your changes with your server.")
+        let title = String(localized: "editImageDetailsError_title", comment: "Failed to Update")
+        let message = String(localized: "editImageDetailsError_message", comment: "Failed to update your changes with your server.")
         if index + 1 < images.count {
             cancelDismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) {
                 // Stop updating properties

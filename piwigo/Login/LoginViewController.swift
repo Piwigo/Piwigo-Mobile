@@ -62,25 +62,25 @@ class LoginViewController: UIViewController {
         scrollView.contentSize = contentView.bounds.size
 
         // Server URL text field
-        serverTextField.placeholder = NSLocalizedString("login_serverPlaceholder", comment: "example.com")
+        serverTextField.placeholder = String(localized: "login_serverPlaceholder", comment: "example.com")
         serverTextField.text = ServerVars.shared.service
         serverTextField.layer.cornerRadius = TableViewUtilities.rowCornerRadius
 
         // Username text field
-        userTextField.placeholder = NSLocalizedString("login_userPlaceholder", comment: "Username (optional)")
+        userTextField.placeholder = String(localized: "login_userPlaceholder", comment: "Username (optional)")
         userTextField.text = ServerVars.shared.username
         userTextField.textContentType = .username
         userTextField.layer.cornerRadius = TableViewUtilities.rowCornerRadius
         
         // Password text field
-        passwordTextField.placeholder = NSLocalizedString("login_passwordPlaceholder", comment: "Password (optional)")
+        passwordTextField.placeholder = String(localized: "login_passwordPlaceholder", comment: "Password (optional)")
         passwordTextField.text = KeychainUtilities.password(forService: ServerVars.shared.serverPath,
                                                             account: ServerVars.shared.username)
         passwordTextField.textContentType = .password
         passwordTextField.layer.cornerRadius = TableViewUtilities.rowCornerRadius
         
         // Login button
-        loginButton.setTitle(NSLocalizedString("login", comment: "Login"), for: .normal)
+        loginButton.setTitle(String(localized: "login", comment: "Login"), for: .normal)
         loginButton.addTarget(self, action: #selector(launchLogin), for: .touchUpInside)
         loginButton.layer.cornerRadius = TableViewUtilities.rowCornerRadius
         if #available(iOS 26.0, *) {
@@ -92,7 +92,7 @@ class LoginViewController: UIViewController {
         updateContentSizes(for: traitCollection.preferredContentSizeCategory)
         
         // Website not secure info
-        websiteNotSecure.text = NSLocalizedString("settingsHeader_notSecure", comment: "Website Not Secure!")
+        websiteNotSecure.text = String(localized: "settingsHeader_notSecure", comment: "Website Not Secure!")
                 
         // Keyboard
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard)))
@@ -152,7 +152,7 @@ class LoginViewController: UIViewController {
         super.viewDidAppear(animated)
         
         // Update title of current scene (iPad only)
-        view.window?.windowScene?.title = NSLocalizedString("login", comment: "Login")
+        view.window?.windowScene?.title = String(localized: "login", comment: "Login")
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -213,16 +213,16 @@ class LoginViewController: UIViewController {
         
         // Check server address and cancel login if address not provided
         if let serverURL = serverTextField.text, serverURL.isEmpty {
-            let title = NSLocalizedString("loginEmptyServer_title", comment: "Enter a Web Address")
-            let message = NSLocalizedString("loginEmptyServer_message", comment: "Please select a protocol and enter a Piwigo web address in order to proceed.")
+            let title = String(localized: "loginEmptyServer_title", comment: "Enter a Web Address")
+            let message = String(localized: "loginEmptyServer_message", comment: "Please select a protocol and enter a Piwigo web address in order to proceed.")
             dismissPiwigoError(withTitle: title, message: message) { }
             return
         }
 
         // Display HUD during login
-        let buttonTitle = NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection")
-        showHUD(withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
-                detail: NSLocalizedString("login_connecting", comment: "Connecting"),
+        let buttonTitle = String(localized: "internetCancelledConnection_button", comment: "Cancel Connection")
+        showHUD(withTitle: String(localized: "login_loggingIn", comment: "Logging In..."),
+                detail: String(localized: "login_connecting", comment: "Connecting"),
                 buttonTitle: buttonTitle,
                 buttonTarget: self, buttonSelector: #selector(cancelLoggingIn), inMode: .indeterminate)
 
@@ -309,10 +309,10 @@ class LoginViewController: UIViewController {
 
     @MainActor
     func requestCertificateApproval(afterError error: PwgKitError) {
-        let title = NSLocalizedString("loginCertFailed_title", comment: "Connection Not Private")
-        let message = "\(NSLocalizedString("loginCertFailed_message", comment: "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?"))\r\r\(ServerVars.shared.certificateInformation)"
+        let title = String(localized: "loginCertFailed_title", comment: "Connection Not Private")
+        let message = "\(String(localized: "loginCertFailed_message", comment: "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?"))\r\r\(ServerVars.shared.certificateInformation)"
         let cancelAction = UIAlertAction(
-            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+            title: String(localized: "alertCancelButton", comment: "Cancel"),
             style: .cancel, handler: { [self] action in
                 // Should forget certificate
                 ServerVars.shared.didApproveCertificate = false
@@ -320,7 +320,7 @@ class LoginViewController: UIViewController {
                 logging(inConnectionError: error)
             })
         let acceptAction = UIAlertAction(
-            title: NSLocalizedString("alertOkButton", comment: "OK"),
+            title: String(localized: "alertOkButton", comment: "OK"),
             style: .default, handler: { [self] action in
                 // Cancel task and relaunch login
                 dataSession.getAllTasks { tasks in
@@ -367,16 +367,16 @@ class LoginViewController: UIViewController {
 
     @MainActor
     func requestNonSecuredAccess(afterError error: PwgKitError) {
-        let title = NSLocalizedString("loginHTTPSfailed_title", comment: "Secure Connection Failed")
-        let message = NSLocalizedString("loginHTTPSfailed_message", comment: "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?")
+        let title = String(localized: "loginHTTPSfailed_title", comment: "Secure Connection Failed")
+        let message = String(localized: "loginHTTPSfailed_message", comment: "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?")
         let cancelAction = UIAlertAction(
-            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+            title: String(localized: "alertCancelButton", comment: "Cancel"),
             style: .cancel, handler: { [self] action in
                 // Stop logging in action, display error message
                 logging(inConnectionError: error)
             })
         let loginAction = UIAlertAction(
-            title: NSLocalizedString("alertOkButton", comment: "OK"),
+            title: String(localized: "alertOkButton", comment: "OK"),
             style: .default, handler: { [self] action in
                 // Try logging in with HTTP scheme
                 tryNonSecuredAccess(afterError: error)
@@ -405,7 +405,7 @@ class LoginViewController: UIViewController {
         let password = passwordTextField.text ?? ""
         if username.isEmpty == false {
             // Update HUD during login
-            updateHUD(detail: NSLocalizedString("login_newSession", comment: "Opening Session"))
+            updateHUD(detail: String(localized: "login_newSession", comment: "Opening Session"))
 
             Task.detached {
                 do {
@@ -458,7 +458,7 @@ class LoginViewController: UIViewController {
         // Community plugin installed?
         if ServerVars.shared.usesCommunityPluginV29 {
             // Update HUD during login
-            updateHUD(detail: NSLocalizedString("login_communityParameters", comment: "Community Parameters"))
+            updateHUD(detail: String(localized: "login_communityParameters", comment: "Community Parameters"))
 
             Task.detached {
                 do {
@@ -489,7 +489,7 @@ class LoginViewController: UIViewController {
     @MainActor
     func getSessionStatus() {
         // Update HUD during login
-        updateHUD(detail: NSLocalizedString("login_serverParameters", comment: "Piwigo Parameters"))
+        updateHUD(detail: String(localized: "login_serverParameters", comment: "Piwigo Parameters"))
 
         Task.detached {
             do {
@@ -506,7 +506,7 @@ class LoginViewController: UIViewController {
                         
                         // Piwigo server update recommanded ► Inform user
                         self.hideHUD() {
-                            self.dismissPiwigoError(withTitle: NSLocalizedString("serverVersionOld_title", comment: "Server Update Available"), message: String.localizedStringWithFormat(NSLocalizedString("serverVersionOld_message", comment: "Your Piwigo server version is %@. Please ask the administrator to update it."), ServerVars.shared.pwgVersion), completion: {
+                            self.dismissPiwigoError(withTitle: String(localized: "serverVersionOld_title", comment: "Server Update Available"), message: String.localizedStringWithFormat(String(localized: "serverVersionOld_message", comment: "Your Piwigo server version is %@. Please ask the administrator to update it."), ServerVars.shared.pwgVersion), completion: {
                                     // Piwigo server version is still appropriate.
                                     self.launchApp()
                             })
@@ -559,7 +559,7 @@ class LoginViewController: UIViewController {
     @MainActor
     @objc func cancelLoggingIn() {
         // Update login HUD
-        updateHUD(detail: NSLocalizedString("internetCancellingConnection_button", comment: "Cancelling Connection…"))
+        updateHUD(detail: String(localized: "internetCancellingConnection_button", comment: "Cancelling Connection…"))
 
         // Propagate user's request
         dataSession.getAllTasks() { tasks in
@@ -576,25 +576,25 @@ class LoginViewController: UIViewController {
         }
 
         // Error returned
-        var title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
+        var title = String(localized: "internetErrorGeneral_title", comment: "Connection Error")
         var detail = error.localizedDescription
         var buttonSelector = #selector(hideLoading)
         if error.requestCancelled {
-            title = NSLocalizedString("internetCancelledConnection_title", comment: "Connection Cancelled")
+            title = String(localized: "internetCancelledConnection_title", comment: "Connection Cancelled")
         }
         else if error.failedAuthentication {
-            title = NSLocalizedString("loginError_title", comment: "Login Fail")
+            title = String(localized: "loginError_title", comment: "Login Fail")
             buttonSelector = #selector(suggestPwdRetrieval)
         }
         else if error.incompatibleVersion {
-            title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
+            title = String(localized: "serverVersionNotCompatible_title", comment: "Server Incompatible")
             detail = String.localizedStringWithFormat(PwgKitError.incompatiblePwgVersion.localizedDescription, ServerVars.shared.pwgVersion, pwgMinVersion)
         }
         else if detail.isEmpty {
                 detail = String(format: "%ld", (error as NSError?)?.code ?? 0)
         }
         updateHUD(title: title, detail: detail,
-                  buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
+                  buttonTitle: String(localized: "alertDismissButton", comment: "Dismiss"),
                   buttonTarget: self, buttonSelector: buttonSelector,
                   inMode: pwgHudMode.none)
     }
@@ -605,13 +605,13 @@ class LoginViewController: UIViewController {
         hideLoading()
         
         // Suggest to retrieve password
-        let title = NSLocalizedString("loginError_title", comment: "Login Fail")
-        let message = NSLocalizedString("loginError_resetPwd", comment: "Would you like to reset your password from the web interface?")
+        let title = String(localized: "loginError_title", comment: "Login Fail")
+        let message = String(localized: "loginError_resetPwd", comment: "Would you like to reset your password from the web interface?")
         let cancelAction = UIAlertAction(
-            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+            title: String(localized: "alertCancelButton", comment: "Cancel"),
             style: .cancel, handler: { _ in })
         let retrieveAction = UIAlertAction(
-            title: NSLocalizedString("alertOkButton", comment: "OK"),
+            title: String(localized: "alertOkButton", comment: "OK"),
             style: .default, handler: { _ in
                 if let url = URL(string: ServerVars.shared.service + "/password.php") {
                     UIApplication.shared.open(url)
@@ -713,7 +713,7 @@ class LoginViewController: UIViewController {
     func showIncorrectWebAddressAlert() {
         // The URL is not correct —> inform user
         let defaultAction = UIAlertAction(
-            title: NSLocalizedString("alertOkButton", comment: "OK"),
+            title: String(localized: "alertOkButton", comment: "OK"),
             style: .cancel, handler: { action in })
         presentPiwigoAlert(withTitle: PwgKitError.wrongServerURL.localizedDescription,
                            message: PwgKitError.invalidURL.localizedDescription, actions: [defaultAction])

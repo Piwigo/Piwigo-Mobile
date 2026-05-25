@@ -35,12 +35,12 @@ final class AlbumDeletion: NSObject
     func displayAlert(completion: @escaping (Bool) -> Void)
     {
         let alert = UIAlertController(
-            title: NSLocalizedString("deleteCategory_title", comment: "DELETE ALBUM"),
-            message: String.localizedStringWithFormat(NSLocalizedString("deleteCategory_message", comment: "ARE YOU SURE YOU WANT TO DELETE THE ALBUM \"%@\" AND ALL %lld IMAGES?"), albumData.name, albumData.totalNbImages),
+            title: String(localized: "deleteCategory_title", comment: "DELETE ALBUM"),
+            message: String.localizedStringWithFormat(String(localized: "deleteCategory_message", comment: "ARE YOU SURE YOU WANT TO DELETE THE ALBUM \"%@\" AND ALL %lld IMAGES?"), albumData.name, albumData.totalNbImages),
             preferredStyle: .alert)
         
         let cancelAction = UIAlertAction(
-            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+            title: String(localized: "alertCancelButton", comment: "Cancel"),
             style: .cancel, handler: { _ in
                 // Hide swipe buttons
                 completion(true)
@@ -50,10 +50,10 @@ final class AlbumDeletion: NSObject
         if albumData.totalNbImages == 0 {
             // Empty album
             let emptyCategoryAction = UIAlertAction(
-                title: NSLocalizedString("deleteCategory_empty", comment: "Delete Empty Album"),
+                title: String(localized: "deleteCategory_empty", comment: "Delete Empty Album"),
                 style: .destructive, handler: { [self] action in
                     // Display HUD during the deletion
-                    topViewController.showHUD(withTitle: NSLocalizedString("deleteCategoryHUD_label", comment: "Deleting Album…"))
+                    topViewController.showHUD(withTitle: String(localized: "deleteCategoryHUD_label", comment: "Deleting Album…"))
                     
                     // Delete empty album
                     deleteAlbum(withDeletionMode: .none, completion: completion)
@@ -62,7 +62,7 @@ final class AlbumDeletion: NSObject
         } else {
             // Album containing images
             let keepImagesAction = UIAlertAction(
-                title: NSLocalizedString("deleteCategory_noImages", comment: "Keep Photos/Videos"),
+                title: String(localized: "deleteCategory_noImages", comment: "Keep Photos/Videos"),
                 style: .default, handler: { [self] action in
                     if nbOrphans == Int64.zero {
                         // There will be no more orphans after the album deletion
@@ -77,7 +77,7 @@ final class AlbumDeletion: NSObject
             
             if nbOrphans == Int64.min {
                 let orphanImagesAction = UIAlertAction(
-                    title: NSLocalizedString("deleteCategory_orphanedImages", comment: "Delete Orphans"),
+                    title: String(localized: "deleteCategory_orphanedImages", comment: "Delete Orphans"),
                     style: .destructive,
                     handler: { [self] action in
                         confirmAlbumDeletion(withNumberOfImages: albumData.totalNbImages,
@@ -87,7 +87,7 @@ final class AlbumDeletion: NSObject
             }
             else if nbOrphans != 0 {
                 let orphanImagesAction = UIAlertAction(
-                    title: String.localizedStringWithFormat(NSLocalizedString("deleteCategory_severalOrphanedImages", comment: "Delete %lld Orphans"), self.nbOrphans),
+                    title: String.localizedStringWithFormat(String(localized: "deleteCategory_severalOrphanedImages", comment: "Delete %lld Orphans"), self.nbOrphans),
                     style: .destructive,
                     handler: { [self] action in
                         confirmAlbumDeletion(withNumberOfImages: albumData.totalNbImages,
@@ -98,7 +98,7 @@ final class AlbumDeletion: NSObject
             
             if nbOrphans != albumData.totalNbImages {
                 let allImagesAction = UIAlertAction(
-                    title: String.localizedStringWithFormat(NSLocalizedString("deleteSeveralImages_title", comment: "Delete %@ Photos/Videos"), NSNumber(value: albumData.totalNbImages)),
+                    title: String.localizedStringWithFormat(String(localized: "deleteSeveralImages_title", comment: "Delete %@ Photos/Videos"), NSNumber(value: albumData.totalNbImages)),
                     style: .destructive,
                     handler: { [self] action in
                         confirmAlbumDeletion(withNumberOfImages: albumData.totalNbImages,
@@ -125,8 +125,8 @@ final class AlbumDeletion: NSObject
                                       completion: @escaping (Bool) -> Void) {
         // Are you sure?
         let alert = UIAlertController(
-            title: NSLocalizedString("deleteCategoryConfirm_title", comment: "Are you sure?"),
-            message: String.localizedStringWithFormat(NSLocalizedString("deleteCategoryConfirm_message", comment: "Please enter the number of images in order to delete this album\nNumber of images: %@"), NSNumber(value: albumData.totalNbImages)),
+            title: String(localized: "deleteCategoryConfirm_title", comment: "Are you sure?"),
+            message: String.localizedStringWithFormat(String(localized: "deleteCategoryConfirm_message", comment: "Please enter the number of images in order to delete this album\nNumber of images: %@"), NSNumber(value: albumData.totalNbImages)),
             preferredStyle: .alert)
         
         alert.addTextField(configurationHandler: { [self] textField in
@@ -138,14 +138,14 @@ final class AlbumDeletion: NSObject
         })
         
         let defaultAction = UIAlertAction(
-            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+            title: String(localized: "alertCancelButton", comment: "Cancel"),
             style: .cancel,
             handler: { _ in
                 completion(true)
             })
         
         deleteAction = UIAlertAction(
-            title: NSLocalizedString("deleteCategoryConfirm_deleteButton", comment: "DELETE"),
+            title: String(localized: "deleteCategoryConfirm_deleteButton", comment: "DELETE"),
             style: .destructive,
             handler: { [self] action in
                 if (alert.textFields?.first?.text?.count ?? 0) > 0 {
@@ -172,13 +172,13 @@ final class AlbumDeletion: NSObject
                                completion: @escaping (Bool) -> Void) {
         // Check provided number of images
         if number != albumData.totalNbImages {
-            topViewController.dismissPiwigoError(withTitle: NSLocalizedString("deleteCategoryMatchError_title", comment: "Number Doesn't Match"), message: NSLocalizedString("deleteCategoryMatchError_message", comment: "The number of images you entered doesn't match the number of images in the category. Please try again if you desire to delete this album"), errorMessage: "") {
+            topViewController.dismissPiwigoError(withTitle: String(localized: "deleteCategoryMatchError_title", comment: "Number Doesn't Match"), message: String(localized: "deleteCategoryMatchError_message", comment: "The number of images you entered doesn't match the number of images in the category. Please try again if you desire to delete this album"), errorMessage: "") {
             }
             return
         }
         
         // Display HUD during the deletion
-        topViewController.showHUD(withTitle: NSLocalizedString("deleteCategoryHUD_label", comment: "Deleting Album…"))
+        topViewController.showHUD(withTitle: String(localized: "deleteCategoryHUD_label", comment: "Deleting Album…"))
         
         // Delete album (deleted images will remain in cache)
         deleteAlbum(withDeletionMode: deletionMode, completion: completion)
@@ -244,8 +244,8 @@ final class AlbumDeletion: NSObject
                 await MainActor.run { [self] in
                     self.topViewController.hideHUD { [self] in
                         // Display error alert after fetching album data
-                        let title = NSLocalizedString("deleteCategoryError_title", comment: "Delete Fail")
-                        let message = NSLocalizedString("deleteCategoryError_message", comment: "Failed to delete your album")
+                        let title = String(localized: "deleteCategoryError_title", comment: "Delete Fail")
+                        let message = String(localized: "deleteCategoryError_message", comment: "Failed to delete your album")
                         self.deleteAlbumError(error, title: title, message: message)
                     }
                 }

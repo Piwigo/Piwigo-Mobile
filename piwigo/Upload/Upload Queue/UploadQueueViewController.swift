@@ -202,7 +202,7 @@ class UploadQueueViewController: UIViewController {
                 // No Wi-Fi and user wishes to upload only on Wi-Fi
                 let headerView = TableHeaderView(frame: .zero)
                 headerView.configure(width: self.queueTableView.frame.size.width,
-                                     text: NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
+                                     text: String(localized: "uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
                 self.queueTableView.tableHeaderView = headerView
                 UIApplication.shared.isIdleTimerDisabled = false
             }
@@ -210,7 +210,7 @@ class UploadQueueViewController: UIViewController {
                 // Low Power mode enabled
                 let headerView = TableHeaderView(frame: .zero)
                 headerView.configure(width: self.queueTableView.frame.size.width,
-                                     text: NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled"))
+                                     text: String(localized: "uploadLowPowerMode", comment: "Low Power Mode enabled"))
                 self.queueTableView.tableHeaderView = headerView
                 UIApplication.shared.isIdleTimerDisabled = false
             }
@@ -218,7 +218,7 @@ class UploadQueueViewController: UIViewController {
                 // Reduce usage of system resources at higher thermal states
                 let headerView = TableHeaderView(frame: .zero)
                 headerView.configure(width: self.queueTableView.frame.size.width,
-                                     text: NSLocalizedString("uploadThermalStateHigh", comment: "Thermal state high"))
+                                     text: String(localized: "uploadThermalStateHigh", comment: "Thermal state high"))
                 self.queueTableView.tableHeaderView = headerView
                 UIApplication.shared.isIdleTimerDisabled = false
             }
@@ -250,8 +250,8 @@ class UploadQueueViewController: UIViewController {
         var nberOfImagesInQueue = 0
         nberOfImagesInQueue = diffableDataSource.snapshot().numberOfItems
         title = nberOfImagesInQueue > 1
-        ? String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("severalImages", comment: "Photos"))
-        : String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("singleImage", comment: "Photo"))
+        ? String(format: "%ld %@", nberOfImagesInQueue, String(localized: "severalImages", comment: "Photos"))
+        : String(format: "%ld %@", nberOfImagesInQueue, String(localized: "singleImage", comment: "Photo"))
         
         // Set title of current scene (iPad only)
         view.window?.windowScene?.title = title
@@ -276,14 +276,14 @@ class UploadQueueViewController: UIViewController {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
         // Cancel action
-        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in })
+        let cancelAction = UIAlertAction(title: String(localized: "alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in })
         alert.addAction(cancelAction)
         
         // Resume upload requests in section 2
         if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section2.rawValue) {
             let failedUploads = diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section2.rawValue)
             if failedUploads > 0 {
-                let titleResume = failedUploads > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber(value: failedUploads), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
+                let titleResume = failedUploads > 1 ? String(format: String(localized: "imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber(value: failedUploads), number: .decimal)) : String(localized: "imageUploadResumeSingle", comment: "Resume Failed Upload")
                 let resumeAction = UIAlertAction(title: titleResume, style: .default, handler: { action in
                     Task(priority: .utility) { @UploadManagerActor in
                         // Get Upload URI strings of active transfers
@@ -302,7 +302,7 @@ class UploadQueueViewController: UIViewController {
         if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section1.rawValue) {
             let impossibleUploads = diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section1.rawValue)
             if impossibleUploads > 0 {
-                let titleClear = impossibleUploads > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber(value: impossibleUploads), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
+                let titleClear = impossibleUploads > 1 ? String(format: String(localized: "imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber(value: impossibleUploads), number: .decimal)) : String(localized: "imageUploadClearFailedSingle", comment: "Clear 1 Failed")
                 let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { [weak self] action in
                     guard let self else { return }
                     let uploadIDs = self.diffableDataSource.snapshot().itemIdentifiers(inSection: SectionKeys.Section1.rawValue)

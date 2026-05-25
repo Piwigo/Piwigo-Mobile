@@ -185,7 +185,7 @@ extension AlbumViewController: UICollectionViewDelegate
         } else {
             imageUpload = UIImage(named: "photo.badge.plus")
         }
-        return UIAction(title: NSLocalizedString("categoryCellOption_addPhotos", comment: "Add Photos"),
+        return UIAction(title: String(localized: "categoryCellOption_addPhotos", comment: "Add Photos"),
                         image: imageUpload) { action in
             // Push album view
             let albumSB = UIStoryboard(name: "AlbumViewController", bundle: nil)
@@ -200,7 +200,7 @@ extension AlbumViewController: UICollectionViewDelegate
     }
     
     private func renameAlbumAction(_ indexPath: IndexPath) -> UIAction {
-        return UIAction(title: NSLocalizedString("categoryCellOption_rename", comment: "Rename Album"),
+        return UIAction(title: String(localized: "categoryCellOption_rename", comment: "Rename Album"),
                         image: UIImage(systemName: "character.cursor.ibeam")) { action in
             guard let objectID = self.diffableDataSource.itemIdentifier(for: indexPath),
                   let albumData = try? self.mainContext.existingObject(with: objectID) as? Album,
@@ -213,7 +213,7 @@ extension AlbumViewController: UICollectionViewDelegate
     }
     
     private func moveAlbumAction(_ indexPath: IndexPath) -> UIAction {
-        return UIAction(title: NSLocalizedString("categoryCellOption_move", comment: "Move Album"),
+        return UIAction(title: String(localized: "categoryCellOption_move", comment: "Move Album"),
                         image: UIImage(systemName: "arrow.forward")) { action in
             let moveSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
             guard let objectID = self.diffableDataSource.itemIdentifier(for: indexPath),
@@ -234,7 +234,7 @@ extension AlbumViewController: UICollectionViewDelegate
     }
     
     private func deleteAlbumAction(_ indexPath: IndexPath) -> UIAction {
-        return UIAction(title: NSLocalizedString("categoryCellOption_delete", comment: "Delete Album"),
+        return UIAction(title: String(localized: "categoryCellOption_delete", comment: "Delete Album"),
                         image: UIImage(systemName: "trash"),
                         attributes: .destructive) { action in
             guard let objectID = self.diffableDataSource.itemIdentifier(for: indexPath),
@@ -293,21 +293,21 @@ extension AlbumViewController: UICollectionViewDelegate
     }
     
     private func shareImageAction(withID imageID: Int64) -> UIAction {
-        return UIAction(title: NSLocalizedString("categoryImageList_share", comment: "Share"),
+        return UIAction(title: String(localized: "categoryImageList_share", comment: "Share"),
                         image: UIImage(systemName: "square.and.arrow.up")) { _ in
             self.initSelection(ofImagesWithIDs: Set([imageID]), beforeAction: .share, contextually: true)
         }
     }
     
     private func favoriteImageAction(withID imageID: Int64) -> UIAction {
-        return UIAction(title: NSLocalizedString("categoryImageList_favorite", comment: "Favorite"),
+        return UIAction(title: String(localized: "categoryImageList_favorite", comment: "Favorite"),
                         image: UIImage(systemName: "heart")) { _ in
             self.initSelection(ofImagesWithIDs: Set([imageID]), beforeAction: .favorite, contextually: true)
         }
     }
     
     private func unfavoriteImageAction(withID imageID: Int64) -> UIAction {
-        return UIAction(title: NSLocalizedString("categoryImageList_unfavorite", comment: "Unfavorite"),
+        return UIAction(title: String(localized: "categoryImageList_unfavorite", comment: "Unfavorite"),
                         image: UIImage(systemName: "heart.slash")) { _ in
             self.initSelection(ofImagesWithIDs: Set([imageID]), beforeAction: .unfavorite, contextually: true)
         }
@@ -315,7 +315,7 @@ extension AlbumViewController: UICollectionViewDelegate
     
     private func selectImageAction(forCell cell: ImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
         // Image not selected ► Propose to select it
-        return UIAction(title: NSLocalizedString("categoryImageList_selectButton", comment: "Select"),
+        return UIAction(title: String(localized: "categoryImageList_selectButton", comment: "Select"),
                         image: UIImage(systemName: "checkmark.circle")) { [self] _ in
             // Select image
             guard let imageData = cell.imageData else { return }
@@ -350,7 +350,7 @@ extension AlbumViewController: UICollectionViewDelegate
         } else {
             image = UIImage(systemName: "checkmark.circle")
         }
-        return UIAction(title: NSLocalizedString("categoryImageList_deselectButton", comment: "Deselect"),
+        return UIAction(title: String(localized: "categoryImageList_deselectButton", comment: "Deselect"),
                         image: image) { _ in
             // Deselect image
             guard let imageData = cell.imageData else { return }
@@ -383,7 +383,7 @@ extension AlbumViewController: UICollectionViewDelegate
     
     private func deleteImageAction(forImageID imageID: Int64) -> UIAction {
         // Image selected ► Propose to deselect it
-        return UIAction(title: NSLocalizedString("deleteSingleImage_title", comment: "Delete Photo"),
+        return UIAction(title: String(localized: "deleteSingleImage_title", comment: "Delete Photo"),
                         image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
             self.initSelection(ofImagesWithIDs: Set([imageID]), beforeAction: .delete, contextually: true)
         }

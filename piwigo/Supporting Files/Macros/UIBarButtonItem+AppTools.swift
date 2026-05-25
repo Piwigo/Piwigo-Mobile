@@ -115,7 +115,7 @@ extension UIBarButtonItem {
         let button = UIBarButtonItem(title: nil, style: .plain, target: target, action: action)
         button.setHelpImage()
         button.accessibilityIdentifier = "Help"
-        button.accessibilityLabel = NSLocalizedString("settings_help", comment: "Help")
+        button.accessibilityLabel = String(localized: "settings_help", comment: "Help")
         button.tintColor = PwgColor.tintColor
         return button
     }
