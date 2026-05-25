@@ -392,7 +392,7 @@ final class SelectCategoryViewController: UIViewController {
                 // Fetch album data recursively
                 let pwgData = try await JSONManager.shared.fetchAlbums(forUserWithAdminRights: hasAdminRights,
                                                                        inParentWithId: pwgSmartAlbum.root.rawValue,
-                                                                       thumbnailSize: thumnailSize)
+                                                                       recursively: true, thumbnailSize: thumnailSize)
                 // Update cache
                 try AlbumProvider().importAlbums(pwgData, inParent: pwgSmartAlbum.root.rawValue)
                 
