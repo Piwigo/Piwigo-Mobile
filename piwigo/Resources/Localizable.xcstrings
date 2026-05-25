@@ -60544,6 +60544,17 @@
         }
       }
     },
+    "uploadThermalStateHigh" : {
+      "comment" : "Thermal state high",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thermal state high"
+          }
+        }
+      }
+    },
     "UploadVideoSize_header" : {
       "comment" : "Please select the maximum size of the videos which will be uploaded.",
       "localizations" : {

@@ -69,6 +69,7 @@ extension AlbumViewController
         else { return }
         
         if (!NetworkVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading) ||
+            [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) ||
             ProcessInfo.processInfo.isLowPowerModeEnabled {
             if uploadQueueBarButton == nil {
                 uploadQueueBarButton = getUploadQueueBarButton(withTitle: "⚠️")!

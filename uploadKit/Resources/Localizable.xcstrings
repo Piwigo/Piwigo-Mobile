@@ -419,6 +419,17 @@
         }
       }
     },
+    "backgroundTask_highThermalState" : {
+      "comment" : "The device needs to cool down.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The device needs to cool down."
+          }
+        }
+      }
+    },
     "backgroundTask_lowPowerMode" : {
       "comment" : "Low power mode enabled. Please turn it off.",
       "localizations" : {

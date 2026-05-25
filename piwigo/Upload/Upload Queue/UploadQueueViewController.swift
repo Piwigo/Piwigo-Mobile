@@ -122,6 +122,10 @@ class UploadQueueViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader),
                                                name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
         
+        // Register Thermal State notification
+        NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader),
+                                               name: ProcessInfo.thermalStateDidChangeNotification, object: nil)
+        
         // Register upload progress
         NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress),
                                                name: Notification.Name.pwgUploadProgress, object: nil)
@@ -205,6 +209,14 @@ class UploadQueueViewController: UIViewController {
                 let headerView = TableHeaderView(frame: .zero)
                 headerView.configure(width: self.queueTableView.frame.size.width,
                                      text: NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled"))
+                self.queueTableView.tableHeaderView = headerView
+                UIApplication.shared.isIdleTimerDisabled = false
+            }
+            else if [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) {
+                // Reduce usage of system resources at higher thermal states
+                let headerView = TableHeaderView(frame: .zero)
+                headerView.configure(width: self.queueTableView.frame.size.width,
+                                     text: NSLocalizedString("uploadThermalStateHigh", comment: "Thermal state high"))
                 self.queueTableView.tableHeaderView = headerView
                 UIApplication.shared.isIdleTimerDisabled = false
             }
