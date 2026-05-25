@@ -102,6 +102,8 @@ final class SelectCategoryViewController: UIViewController {
         andPredicates.append(NSPredicate(format: "pwgID IN %@", recentCatIds.dropLast(nberExtraCats)))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         fetchRequest.fetchLimit = CacheVars.shared.maxNberRecentCategories
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.shouldRefreshRefetchedObjects = true
         return fetchRequest
     }()
 
@@ -139,6 +141,8 @@ final class SelectCategoryViewController: UIViewController {
             fetchRequest.predicate = albumPredicates
         }
         fetchRequest.fetchBatchSize = 20
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.shouldRefreshRefetchedObjects = true
         return fetchRequest
     }()
 

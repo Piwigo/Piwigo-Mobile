@@ -59,6 +59,8 @@ final class ShareViewController: UIViewController {
         andPredicates.append(NSPredicate(format: "pwgID IN %@", recentCatIds.dropLast(nberExtraCats)))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         fetchRequest.fetchLimit = CacheVars.shared.maxNberRecentCategories
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.shouldRefreshRefetchedObjects = true
         return fetchRequest
     }()
     
@@ -86,6 +88,8 @@ final class ShareViewController: UIViewController {
         andPredicates.append(NSPredicate(format: "parentId IN %@", parentIDs))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         fetchRequest.fetchBatchSize = 20
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.shouldRefreshRefetchedObjects = true
         return fetchRequest
     }()
     
