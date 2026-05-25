@@ -51,8 +51,8 @@ extension PwgSessionDelegate: URLSessionTaskDelegate {
 extension PwgSessionDelegate: URLSessionDownloadDelegate {
     
     public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask,
-                    didWriteData bytesWritten: Int64, totalBytesWritten: Int64,
-                    totalBytesExpectedToWrite: Int64) {
+                           didWriteData bytesWritten: Int64, totalBytesWritten: Int64,
+                           totalBytesExpectedToWrite: Int64) {
         // Retrieve the original URL of this task
 //        #if DEBUG
 //        PwgSessionDelegate.logger.notice("Progress task #\(downloadTask.taskIdentifier, privacy: .public): \(totalBytesWritten, privacy: .public) total bytes downloaded from \(downloadTask.taskDescription ?? "<unknown>")")
@@ -74,7 +74,7 @@ extension PwgSessionDelegate: URLSessionDownloadDelegate {
     }
     
     public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask,
-                    didFinishDownloadingTo location: URL) {
+                           didFinishDownloadingTo location: URL) {
         // Retrieve the URL of this task
         #if DEBUG
         PwgSessionDelegate.logger.notice("Task #\(downloadTask.taskIdentifier, privacy: .public) did finish downloading to \(location, privacy: .public)")
