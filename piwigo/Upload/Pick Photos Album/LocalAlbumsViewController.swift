@@ -305,7 +305,7 @@ class LocalAlbumsViewController: UIViewController {
                     text += "\r\r⚠️ " + NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled") + " ⚠️"
                 } else if [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) {
                     text += "\r\r⚠️ " + NSLocalizedString("uploadThermalStateHigh", comment: "Thermal state high") + " ⚠️"
-                } else if UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi {
+                } else if UploadVars.shared.wifiOnlyUploading && !ServerVars.shared.isConnectedToWiFi {
                     text += "\r\r⚠️ " + NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection") + " ⚠️"
                 }
                 headerView.configure(width: min(localAlbumsTableView.frame.size.width, pwgPadSettingsWidth),

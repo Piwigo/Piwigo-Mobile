@@ -317,7 +317,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if UploadVars.shared.isContinuedProcessingTaskActive,
                 ProcessInfo.processInfo.isLowPowerModeEnabled ||
                 [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) ||
-                (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
+                (UploadVars.shared.wifiOnlyUploading && !ServerVars.shared.isConnectedToWiFi) {
                 debugPrint("••> Background upload task halted because in Low-Power mode, Wi-Fi unavailable, device in high thermal state, or already uploading.")
                 task.setTaskCompleted(success: false)
                 return

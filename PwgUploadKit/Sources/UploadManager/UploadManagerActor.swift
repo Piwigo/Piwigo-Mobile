@@ -94,7 +94,7 @@ public actor UploadManagerActor {
         if UploadVars.shared.isPaused ||
             ProcessInfo.processInfo.isLowPowerModeEnabled ||
             [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) ||
-            (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
+            (UploadVars.shared.wifiOnlyUploading && !ServerVars.shared.isConnectedToWiFi) {
             return
         }
         

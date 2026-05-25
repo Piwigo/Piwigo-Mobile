@@ -394,7 +394,7 @@ extension AlbumViewController
     @objc func updateOldButton(withNberOfUploads nberOfUploads: Int) {
         // Only called in the root or default album
         if nberOfUploads > 0 {
-            if (!NetworkVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading) ||
+            if (!ServerVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading) ||
                 [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) ||
                 ProcessInfo.processInfo.isLowPowerModeEnabled {
                 nberOfUploadsLabel.text = "⚠️"

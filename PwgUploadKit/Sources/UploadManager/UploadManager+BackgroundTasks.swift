@@ -198,7 +198,7 @@ extension UploadManager
                 // Inform that the task is stopped
                 UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' stopped: Device in high thermal state.")
             }
-            else if UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi {
+            else if UploadVars.shared.wifiOnlyUploading && !ServerVars.shared.isConnectedToWiFi {
                 // Inform that the task is stopped
                 UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' stopped: Wi-Fi required, but not connected.")
             }
@@ -214,7 +214,7 @@ extension UploadManager
         // Low-Power mode enabled? Wi-Fi required? Device in high thermal state?
         return ProcessInfo.processInfo.isLowPowerModeEnabled ||
                 [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) ||
-                (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi)
+                (UploadVars.shared.wifiOnlyUploading && !ServerVars.shared.isConnectedToWiFi)
     }
     
     private func finishUploadProcessingTask() {
@@ -245,7 +245,7 @@ extension UploadManager
             UploadVars.shared.isPaused ||
             ProcessInfo.processInfo.isLowPowerModeEnabled ||
             [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) ||
-            (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
+            (UploadVars.shared.wifiOnlyUploading && !ServerVars.shared.isConnectedToWiFi) {
             return
         }
         
@@ -420,10 +420,11 @@ extension UploadManager
             else if [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) {
                 // Inform that the task is stopped
                 UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' stopped: Device in high thermal state.")
-                let subtitle = String(localized: "backgroundTask_highThermalState", bundle: .uploadKit, comment: "The device needs to cool down.")
+                let subtitle = String(localized: "backgroundTask_highThermalState", bundle: .pwgUploadKit,
+                                      comment: "The device needs to cool down.")
                 task.updateTitle(task.title, subtitle: subtitle)
             }
-            else if UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi {
+            else if UploadVars.shared.wifiOnlyUploading && !ServerVars.shared.isConnectedToWiFi {
                 // Inform that the task is stopped
                 UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' stopped: Wi-Fi required, but not connected.")
                 let subtitle = String(localized: "backgroundTask_noWifi", bundle: .pwgUploadKit,
@@ -440,7 +441,7 @@ extension UploadManager
             }
         }
     }
-
+    
     @available(iOS 26.0, *)
     private func finishUploadContinuedProcessingTask() {
         // Explicitly abort pending CoreData work
