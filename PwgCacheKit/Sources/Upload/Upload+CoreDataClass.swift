@@ -17,6 +17,7 @@ import PwgKit
     - Tag instances are associated to upload requests.
     - Image files are stored in a temporary folder until the upload is complete.
  */
+@objc(Upload)
 public final nonisolated class Upload: NSManagedObject, Identifiable {
     
     /**
