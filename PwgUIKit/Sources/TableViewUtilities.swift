@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import PwgUIKit
 
 public final class TableViewUtilities {
     

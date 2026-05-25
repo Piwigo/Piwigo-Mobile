@@ -15,9 +15,9 @@ public enum PwgUIKit {
 }
 
 // Bundle for PwgUploadKit localised strings
-public extension Bundle {
-    static let pwgUIKit: Bundle = .module
-}
+//public extension Bundle {
+//    static let pwgUIKit: Bundle = .module
+//}
 
 // Constants
 /// - Preferred popover view width on iPad

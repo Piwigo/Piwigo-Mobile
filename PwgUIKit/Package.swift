@@ -31,9 +31,9 @@ let package = Package(
                 "PwgKit"
             ],
             path: "Sources",
-            resources: [
-                .process("Resources"),
-            ]
+//            resources: [
+//                .process("Resources"),
+//            ]
         ),
     ],
     swiftLanguageModes: [.v6],
