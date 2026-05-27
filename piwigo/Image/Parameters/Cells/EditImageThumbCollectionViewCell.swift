@@ -126,10 +126,16 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
             await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: thumbnailSize, type: .image,
                                                   atURL: ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumbnailSize),
                                                   fromServer: imageData.server?.uuid) { [weak self] cachedImageURL in
-                self?.downsampleImage(atURL: cachedImageURL, to: cellSize)
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else { return }
+                    self.downsampleImage(atURL: cachedImageURL, to: cellSize)
+                }
             }
             failure: { [weak self] _ in
-                self?.setThumbnailWithImage(pwgImageType.image.placeHolder)
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else { return }
+                    self.setThumbnailWithImage(pwgImageType.image.placeHolder)
+                }
             }
         }
     }

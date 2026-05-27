@@ -80,20 +80,17 @@ class AlbumTableViewCell: UITableViewCell {
                 // Guard against cell reuse
                 guard let self = self, self.imageURL == expectedURL else { return }
 
-                // Process image in the background (.userInitiated leads to concurrency issues)
-                // Can be called too many times leading to thread management issues
-                DispatchQueue.global(qos: .default).async { [self] in
-                    // Downsample image in cache
-                    let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .album)
-                    
-                    // Set backgoround image
-                    DispatchQueue.main.async { [self] in
-                        self.albumThumbnail?.image = cachedImage
-                    }
-                }
-            } failure: { [self] _ in
+                // Downsample image in cache
+                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .album)
+                
                 // Set backgoround image
                 DispatchQueue.main.async { [self] in
+                    self.albumThumbnail?.image = cachedImage
+                }
+            } failure: { [weak self] _ in
+                // Set backgoround image
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
                     self.albumThumbnail?.image = pwgImageType.album.placeHolder
                 }
             }
@@ -175,11 +172,6 @@ class AlbumTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        
-        // Pause the ongoing image download if needed
-//        if let imageURL = self.imageURL {
-//            Task { await ImageDownloader.shared.pauseDownload(atURL: imageURL) }
-//        }
         
         // Reset cell
         self.imageURL = nil
