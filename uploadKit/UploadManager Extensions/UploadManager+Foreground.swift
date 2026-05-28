@@ -70,7 +70,7 @@ extension UploadManager
         // Append uploads to prepare
         let toPrepare = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.waiting], inContext: self.uploadBckgContext).0
         await UploadManagerActor.shared.addUploadsToPrepare(withIDs: toPrepare)
-        UploadManager.logger.notice("Resuming uploads: \(toFinish.count, privacy: .public) transfer(s) to finish, \(toTransfer.count, privacy: .public) file(s) to transfer, \(toPrepare.count, privacy: .public) uploads to prepare")
+        UploadManager.logger.notice("Resuming uploads: \(toFinish.count, privacy: .public) transfer(s) to finish, \(toTransfer.count, privacy: .public) file(s) to transfer, \(toPrepare.count, privacy: .public) upload(s) to prepare")
         
         // Propose to delete uploaded images of the photo Library once a day
         // or immediately if there is no pending upload request, if any

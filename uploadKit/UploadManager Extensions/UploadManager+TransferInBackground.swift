@@ -252,7 +252,7 @@ extension UploadManager {
                 if tasksToCancel.count > 1 {
                     tasksToCancel.removeLast()
                     tasksToCancel.forEach { task in
-                        UploadSessionsDelegate.logger.notice("\(objectIDstr) • Task \(task.taskIdentifier) cancelled")
+                        UploadSessionsDelegate.logger.notice("\(objectIDstr, privacy: .public) • Task \(task.taskIdentifier, privacy: .public) cancelled")
                         // Remember that this task was cancelled
                         task.taskDescription = uploadBckgSessionIdentifier + " " + pwgHTTPCancelled
                         task.cancel()

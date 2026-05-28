@@ -56,7 +56,7 @@ extension UploadManager
         }
         
         // Logs stats
-        UploadManager.logger.notice("Resuming uploads: \(toTransfer.count, privacy: .public) file(s) to transfer, \(toPrepare.count, privacy: .public) uploads to prepare")
+        UploadManager.logger.notice("Resuming uploads: \(toTransfer.count, privacy: .public) file(s) to transfer, \(toPrepare.count, privacy: .public) upload(s) to prepare")
         
         // Returns object IDs of upload requests to transfer and prepare
         return (toFinish, toTransfer, toPrepare)
