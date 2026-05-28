@@ -47,13 +47,19 @@ extension UploadManager {
         guard let uploadUrl = URL(string: NetworkVars.shared.service + "/ws.php?format=json&method=\(pwgImagesUploadAsync)")
         else { preconditionFailure("!!! Invalid uploadAsync URL") }
         
-        // Get credentials
-        var username, password: String
-        do {
-            (username, password) = try UserProvider().getCredentialsOfUser(withID: uploadData.userURIstr, inContext: uploadBckgContext)
-        }
-        catch let error as PwgKitError { throw error }
-        catch { throw .otherError(innerError: error) }
+        // Get credentials (not appropriate for several accounts)
+        let username = NetworkVars.shared.username
+        let serverPath = NetworkVars.shared.serverPath
+        let password = KeychainUtilities.password(forService: serverPath, account: username)
+        guard password.isEmpty == false
+        else { throw .emptyUsername }
+        // Code below to be used when we will be able to determine if the user uses 2FA.
+//        var username, password: String
+//        do {
+//            (username, password) = try UserProvider().getCredentialsOfUser(withID: uploadData.userURIstr, inContext: uploadBckgContext)
+//        }
+//        catch let error as PwgKitError { throw error }
+//        catch { throw .otherError(innerError: error) }
         
         // Prepare boundary, chunk size, creation date as Piwigo string
         let boundary = createBoundary(from: uploadData.md5Sum)
