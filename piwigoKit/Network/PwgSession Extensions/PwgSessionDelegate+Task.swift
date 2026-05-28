@@ -40,6 +40,7 @@ extension PwgSessionDelegate: URLSessionTaskDelegate {
             }
             else {
                 // Return cached image with completionHandler
+                PwgSessionDelegate.logger.notice("Did complete task #\(task.taskIdentifier, privacy: .public)")
                 await ImageDownloader.shared.completeDownloadIfReady(for: imageURL)
             }
         }
