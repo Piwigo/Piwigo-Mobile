@@ -156,6 +156,7 @@ extension UploadManager {
         if let error {
             uploadData.requestState = .uploadingError
             uploadData.requestError = error.localizedDescription
+            UploadManager.logger.notice("\(objectIDstr, privacy: .public) • Task \(task.taskIdentifier, privacy: .public) failed with communication error: \(error.localizedDescription, privacy: .public)")
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             await UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: task.taskIdentifier)
             return
@@ -166,6 +167,7 @@ extension UploadManager {
         else {
             uploadData.requestState = .uploadingError
             uploadData.requestError = PwgKitError.invalidResponse.localizedDescription
+            UploadManager.logger.notice("\(objectIDstr, privacy: .public) • Task \(task.taskIdentifier, privacy: .public) failed with HTTP response error: \(PwgKitError.invalidResponse.localizedDescription, privacy: .public)")
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             await UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: task.taskIdentifier)
             return
@@ -176,6 +178,7 @@ extension UploadManager {
         else {
             uploadData.requestState = .uploadingError
             uploadData.requestError = PwgKitError.invalidStatusCode(statusCode: response.statusCode).localizedDescription
+            UploadManager.logger.notice("\(objectIDstr, privacy: .public) • Task \(task.taskIdentifier, privacy: .public) failed with HTTP response error: \(PwgKitError.invalidStatusCode(statusCode: response.statusCode).localizedDescription, privacy: .public)")
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             await UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: task.taskIdentifier)
             return
@@ -237,8 +240,7 @@ extension UploadManager {
             if let chunkMsg = uploadJSON.chunks, let message = chunkMsg.message {
                 // Upload not completed
                 // ► Get list of uploaded chunks
-                let uploadedChunks = Set(message.dropFirst(18).components(separatedBy: ",")
-                    .compactMap({Int($0)}))
+                let uploadedChunks = Set(message.dropFirst(18).components(separatedBy: ",").compactMap({Int($0)}))
                 UploadManager.logger.notice("\(objectIDstr, privacy: .public) • \(uploadedChunks, privacy: .public) i.e. \(uploadedChunks.count, privacy: .public) chunk(s) uploaded")
                 
                 // Select running tasks of chunks already uploaded, if any
