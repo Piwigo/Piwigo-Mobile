@@ -20,7 +20,7 @@ extension UploadManager {
         // Retrieve upload request properties
         guard var uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID, inContext: self.uploadBckgContext)
         else {
-            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Could not retrieve upload request for transfer/copy!")
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent, privacy: .public) • Could not retrieve upload request for transfer/copy!")
             // Should we process a next upload?
             if taskType.isForeground {
                 await UploadManagerActor.shared.processNextUpload()
@@ -31,7 +31,7 @@ extension UploadManager {
         // Check upload status (should never happen)
         guard uploadData.requestState == .prepared
         else {
-            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Upload in wrong state '\(uploadData.stateLabel)' before transfer/copy")
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent, privacy: .public) • Upload in wrong state '\(uploadData.stateLabel, privacy: .public)' before transfer/copy")
             // In foreground, process next upload if any
             if taskType.isForeground {
                 if uploadData.requestState == .uploaded {
@@ -64,7 +64,7 @@ extension UploadManager {
             // Check whether an image with that MD5 checksum exists on the server
             if let imageID = try await JSONManager.shared.getIDofImage(withMD5: uploadData.md5Sum) {
                 // Already stored on the Piwigo server ► Copy to Album
-                UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Start copying file…")
+                UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent, privacy: .public) • Start copying file…")
                 try await copyImageWithID(imageID, for: uploadData, withID: uploadID)
                 
                 // Copy completed
@@ -78,7 +78,7 @@ extension UploadManager {
             }
             else {
                 // Upload new image to the Piwigo server
-                UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • File transfer starting…")
+                UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent, privacy: .public) • File transfer starting…")
                 try await transferInBackground(for: uploadData, withID: uploadID, inTaskType: taskType)
             }
         }

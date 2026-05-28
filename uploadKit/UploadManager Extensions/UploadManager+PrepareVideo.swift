@@ -171,12 +171,12 @@ extension UploadManager {
                       for uploadProperties: UploadProperties, withID uploadID: NSManagedObjectID,
                       inTaskType taskType: UploadTaskType)
     {
-        UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Prepare video \(uploadProperties.fileName) from Asset")
+        UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent, privacy: .public) • Prepare video \(uploadProperties.fileName) from Asset")
 
         // Retrieve video data
         let options = getVideoRequestOptions()
         retrieveVideo(from: imageAsset, with: options) { (avasset, error) in
-            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Returned AVAsset")
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent, privacy: .public) • Returned AVAsset")
             // Error?
             if let error = error {
                 Task(priority: .utility) { @UploadManagerActor in
@@ -348,12 +348,12 @@ extension UploadManager {
                       for uploadProperties: UploadProperties, withID uploadID: NSManagedObjectID,
                       inTaskType taskType: UploadTaskType) -> Void
     {
-        UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Convert video \(uploadProperties.fileName) from Asset")
+        UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent, privacy: .public) • Convert video \(uploadProperties.fileName) from Asset")
 
         // Retrieve video data
         let options = getVideoRequestOptions()
         retrieveVideo(from: imageAsset, with: options) { [self] (avasset, error) in
-            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Returned AVAsset")
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent, privacy: .public) • Returned AVAsset")
             // Error?
             if let error = error {
                 Task(priority: .utility) { @UploadManagerActor in
@@ -444,7 +444,7 @@ extension UploadManager {
     private func didPrepareVideo(using uploadData: UploadProperties, withID uploadID: NSManagedObjectID,
                                  inTaskType taskType: UploadTaskType) async
     {
-        UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Did finish preparing video from PHAsset.")
+        UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent, privacy: .public) • Did finish preparing video from PHAsset.")
 
         // Preparation completed
         try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)

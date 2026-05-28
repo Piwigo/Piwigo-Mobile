@@ -114,7 +114,7 @@ extension UploadManager {
                 // Resume task
                 task.resume()
                 self.removeChunk(chunk, fromCounterWithID: uploadID.uriRepresentation().lastPathComponent)
-                UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent, privacy: .private(mask: .hash)) • Task \(task.taskIdentifier, privacy: .public) resumed (\(chunk, privacy: .public)/\(chunks, privacy: .public))")
+                UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent, privacy: .public) • Task \(task.taskIdentifier, privacy: .public) resumed (\(chunk, privacy: .public)/\(chunks, privacy: .public))")
             }
             
             // Stop preparing the transfer if called by a background task now expired
@@ -137,7 +137,7 @@ extension UploadManager {
         // Do not report the error if the task was cancelled by the app
         if (task.taskDescription ?? "").contains(pwgHTTPCancelled) {
             // Delete chunk file from Piwigo/Uploads directory
-            UploadManager.logger.notice("\(objectIDstr, privacy: .private(mask: .hash)) • Cancelled background upload task \(task.taskIdentifier, privacy: .public), chunk \(chunk, privacy: .public)")
+            UploadManager.logger.notice("\(objectIDstr, privacy: .public) • Cancelled background upload task \(task.taskIdentifier, privacy: .public), chunk \(chunk, privacy: .public)")
             deleteChunk(chunk, ofImageWith: identifier)
             return
         }
@@ -147,7 +147,7 @@ extension UploadManager {
               let uploadID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI),
               var uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID, inContext: self.uploadBckgContext)
         else {
-            UploadManager.logger.notice("\(objectIDstr, privacy: .private(mask: .hash)) • Failed to retrieve Core Data object from task \(task.taskIdentifier, privacy: .public)")
+            UploadManager.logger.notice("\(objectIDstr, privacy: .public) • Failed to retrieve Core Data object from task \(task.taskIdentifier, privacy: .public)")
             deleteChunk(chunk, ofImageWith: identifier)
             return
         }
@@ -182,7 +182,7 @@ extension UploadManager {
         }
 
         // Delete chunk file uploaded successfully from Piwigo/Uploads directory
-        UploadManager.logger.notice("\(objectIDstr, privacy: .private(mask: .hash)) • Delete chunk \(chunk, privacy: .public)")
+        UploadManager.logger.notice("\(objectIDstr, privacy: .public) • Delete chunk \(chunk, privacy: .public)")
         deleteChunk(chunk, ofImageWith: identifier)
     }
     
@@ -198,7 +198,7 @@ extension UploadManager {
               let uploadID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI),
               var uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID, inContext: self.uploadBckgContext)
         else {
-            UploadManager.logger.notice("\(objectIDstr, privacy: .private(mask: .hash)) • Failed to retrieve Core Data object from task \(task.taskIdentifier, privacy: .public)")
+            UploadManager.logger.notice("\(objectIDstr, privacy: .public) • Failed to retrieve Core Data object from task \(task.taskIdentifier, privacy: .public)")
             return
         }
         
@@ -210,7 +210,7 @@ extension UploadManager {
         // Check returned data
         if data.isEmpty {
             // Update upload request status
-            UploadManager.logger.notice("\(objectIDstr, privacy: .private(mask: .hash)) • Task \(task.taskIdentifier, privacy: .public) returned an Empty JSON object")
+            UploadManager.logger.notice("\(objectIDstr, privacy: .public) • Task \(task.taskIdentifier, privacy: .public) returned an Empty JSON object")
             uploadData.requestState = .uploadingError
             uploadData.requestError = PwgKitError.emptyJSONobject.localizedDescription
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
@@ -220,7 +220,7 @@ extension UploadManager {
         var jsonData = data
         guard jsonData.extractingBalancedBraces() else {
             // Update upload request status
-            UploadManager.logger.notice("\(objectIDstr, privacy: .private(mask: .hash)) • Task \(task.taskIdentifier, privacy: .public) returned the invalid JSON object")
+            UploadManager.logger.notice("\(objectIDstr, privacy: .public) • Task \(task.taskIdentifier, privacy: .public) returned the invalid JSON object")
             uploadData.requestState = .uploadingError
             uploadData.requestError = PwgKitError.invalidJSONobject.localizedDescription
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
@@ -239,7 +239,7 @@ extension UploadManager {
                 // ► Get list of uploaded chunks
                 let uploadedChunks = Set(message.dropFirst(18).components(separatedBy: ",")
                     .compactMap({Int($0)}))
-                UploadManager.logger.notice("\(objectIDstr, privacy: .private(mask: .hash)) • \(uploadedChunks, privacy: .public) i.e. \(uploadedChunks.count, privacy: .public) chunk(s) uploaded")
+                UploadManager.logger.notice("\(objectIDstr, privacy: .public) • \(uploadedChunks, privacy: .public) i.e. \(uploadedChunks.count, privacy: .public) chunk(s) uploaded")
                 
                 // Select running tasks of chunks already uploaded, if any
                 let uploadTasks: [URLSessionTask] = await bckgSession.allTasks
@@ -326,7 +326,7 @@ extension UploadManager {
         catch {
             // Error type?
             if let error = error as? PwgKitError {
-                UploadManager.logger.notice("\(objectIDstr, privacy: .private(mask: .hash)) • Task \(task.taskIdentifier, privacy: .public) returned the error \(error.localizedDescription, privacy: .public)")
+                UploadManager.logger.notice("\(objectIDstr, privacy: .public) • Task \(task.taskIdentifier, privacy: .public) returned the error \(error.localizedDescription, privacy: .public)")
                 if error.failedAuthentication {
                     uploadData.requestState = .uploadingFail
                     uploadData.requestError = error.localizedDescription
@@ -336,7 +336,7 @@ extension UploadManager {
                 }
             } else {
                 // JSON object cannot be digested, image still ready for upload
-                UploadManager.logger.notice("\(objectIDstr, privacy: .private(mask: .hash)) • Task \(task.taskIdentifier, privacy: .public) returned a wrong JSON object!")
+                UploadManager.logger.notice("\(objectIDstr, privacy: .public) • Task \(task.taskIdentifier, privacy: .public) returned a wrong JSON object!")
                 uploadData.requestState = .uploadingError
                 uploadData.requestError = PwgKitError.wrongJSONobject.localizedDescription
             }

@@ -23,7 +23,7 @@ extension UploadManager
               UploadVars.shared.isProcessingTaskActive == false,
               UploadVars.shared.isContinuedProcessingTaskActive == false
         else {
-            UploadManager.logger.notice("Will not resume uploads (\(UploadVars.shared.didResumeUploads), \(UploadVars.shared.isProcessingTaskActive), \(UploadVars.shared.isContinuedProcessingTaskActive))")
+            UploadManager.logger.notice("Will not resume uploads (\(UploadVars.shared.didResumeUploads, privacy: .public), \(UploadVars.shared.isProcessingTaskActive, privacy: .public), \(UploadVars.shared.isContinuedProcessingTaskActive))")
             return
         }
         
@@ -90,14 +90,14 @@ extension UploadManager
                   let chunkStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk), let chunk = Int(chunkStr),
                   let chunksStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks), let chunks = Int(chunksStr)
             else {
-                UploadManager.logger.notice("Found task \(task.taskIdentifier) not associated to an upload!")
+                UploadManager.logger.notice("Found task \(task.taskIdentifier, privacy: .public) not associated to an upload!")
                 return
             }
             
             // Task associated to an upload
             activeUploadsURIstr.insert(objectURIstr)
             let objectIDstr = URL(string: objectURIstr)?.lastPathComponent ?? objectURIstr
-            UploadManager.logger.notice("\(objectIDstr) • Detected task \(task.taskIdentifier) uploading chunk \(chunk)/\(chunks)")
+            UploadManager.logger.notice("\(objectIDstr) • Detected task \(task.taskIdentifier, privacy: .public) uploading chunk \(chunk, privacy: .public)/\(chunks, privacy: .public)")
             self.initIfNeededCounter(withID: objectIDstr, chunk: chunk, chunks: chunks)
         }
         return activeUploadsURIstr
@@ -107,7 +107,7 @@ extension UploadManager
     // MARK: - Clear Failed Uploads
     func suggestToDeleteUploadedImages(withPendingUploads nberOfPendingUploads: Int) {
         let (uploadIDs, localIdentifiers) = UploadProvider().getIDsOfCompletedUploads(onlyDeletable: true, inContext: self.uploadBckgContext)
-        UploadManager.logger.notice("Resuming uploads: \(uploadIDs.count) assets for deletion in the Photo Library")
+        UploadManager.logger.notice("Resuming uploads: \(uploadIDs.count, privacy: .public) assets for deletion in the Photo Library")
         let deadline = DateUtilities.nextDayAt4AM(after: UploadVars.shared.dateOfLastPhotoLibraryDeletion)
         if uploadIDs.isEmpty == false && (nberOfPendingUploads == 0 || Date.now > deadline) {
             // Store date of proposed deletion
