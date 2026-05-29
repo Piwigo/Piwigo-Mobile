@@ -1,2 +1,2 @@
-• Se corrigió un error relacionado con la opción de subida automática
-• Mejoradas traducciones
+• Corrige errores y mejora la interfaz
+• Detiene las subidas cuando el dispositivo necesita enfriarse

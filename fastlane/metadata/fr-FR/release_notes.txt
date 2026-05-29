@@ -1,2 +1,2 @@
-• Correction d'un bug lié à l'option de transfert automatique
-• Amélioration des traductions
+• Corrige les bugs et améliore l'interface
+• Met les transferts en pause lorsque l'appareil a besoin de refroidir

@@ -1,2 +1,2 @@
-• Fixade en bugg relaterad till auto-uppladdningsalternativet
-• Förbättrade översättningar
+• Fixar buggar och förbättrar gränssnittet
+• Avbryter uppladdningar när enheten behöver svalna

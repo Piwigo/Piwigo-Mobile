@@ -1,2 +1,2 @@
-• Fehler behoben im Zusammenhang mit der Auto-Upload Option
-• Verbesserte Übersetzungen
+• Behebt Fehler und verbessert die Benutzeroberfläche
+• Unterbricht den Upload, wenn das Gerät abkühlen muss

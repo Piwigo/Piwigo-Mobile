@@ -1,2 +1,2 @@
-• Naprawiono błąd związany z opcją automatycznego wysyłania
-• Ulepszone tłumaczenia
+• Poprawki błędów i usprawnienia interfejsu
+• Wstrzymuje przesyłanie danych, gdy urządzenie musi się ochłodzić

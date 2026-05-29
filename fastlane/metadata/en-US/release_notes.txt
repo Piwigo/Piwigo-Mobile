@@ -1,2 +1,2 @@
-• Fixed a bug related with the auto-upload option
-• Improved translations
+• Fixes bugs and improves the interface
+• Pauses uploads when the device needs to cool
