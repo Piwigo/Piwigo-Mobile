@@ -92,6 +92,7 @@ public actor UploadManagerActor {
         // Should we postpone uploads?
         if UploadVars.shared.isPaused ||
             ProcessInfo.processInfo.isLowPowerModeEnabled ||
+            [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) ||
             (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
             return
         }

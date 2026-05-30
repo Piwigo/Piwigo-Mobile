@@ -73,12 +73,13 @@ class AlbumTableViewCell: UITableViewCell {
         let cellSize = CGSizeMake(self.albumThumbnail.bounds.size.width * scale, self.albumThumbnail.bounds.size.height * scale)
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
         imageURL = albumData?.thumbnailUrl as? URL
-        ImageDownloader.shared.getImage(withID: albumData?.thumbnailId, ofSize: thumbSize, type: .album,
-                                        atURL: imageURL, fromServer: albumData?.user?.server?.uuid) { [weak self] cachedImageURL in
-            // Process image in the background (.userInitiated leads to concurrency issues)
-            // Can be called too many times leading to thread management issues
-            guard let self = self else { return }
-            DispatchQueue.global(qos: .default).async { [self] in
+        Task {
+            let expectedURL = imageURL
+            await ImageDownloader.shared.getImage(withID: albumData?.thumbnailId, ofSize: thumbSize, type: .album,
+                                                  atURL: imageURL, fromServer: albumData?.user?.server?.uuid) { [weak self] cachedImageURL in
+                // Guard against cell reuse
+                guard let self = self, self.imageURL == expectedURL else { return }
+
                 // Downsample image in cache
                 let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .album)
                 
@@ -86,11 +87,12 @@ class AlbumTableViewCell: UITableViewCell {
                 DispatchQueue.main.async { [self] in
                     self.albumThumbnail?.image = cachedImage
                 }
-            }
-        } failure: { [self] _ in
-            // Set backgoround image
-            DispatchQueue.main.async { [self] in
-                self.albumThumbnail?.image = pwgImageType.album.placeHolder
+            } failure: { [weak self] _ in
+                // Set backgoround image
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    self.albumThumbnail?.image = pwgImageType.album.placeHolder
+                }
             }
         }
     }
@@ -171,12 +173,8 @@ class AlbumTableViewCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         
-        // Pause the ongoing image download if needed
-        if let imageURL = self.imageURL {
-            ImageDownloader.shared.pauseDownload(atURL: imageURL)
-        }
-        
         // Reset cell
+        self.imageURL = nil
         self.albumName.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
         self.albumComment.attributedText = NSAttributedString()
         self.albumThumbnail.image = pwgImageType.album.placeHolder

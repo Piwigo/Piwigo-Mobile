@@ -1,2 +1,2 @@
-• Risolto un bug correlato con l'opzione di caricamento automatico
-• Traduzioni migliorate
+• Corregge i bug e migliora l'interfaccia
+• Sospende i caricamenti quando il dispositivo deve raffreddarsi

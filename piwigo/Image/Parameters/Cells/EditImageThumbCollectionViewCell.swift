@@ -122,12 +122,21 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         let scale = max(imageThumbnail.traitCollection.displayScale, 1.0)
         let cellSize = CGSizeMake(imageThumbnail.bounds.size.width * scale, imageThumbnail.bounds.size.height * scale)
         let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-        ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: thumbnailSize, type: .image,
-                                        atURL: ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumbnailSize),
-                                        fromServer: imageData.server?.uuid) { [weak self] cachedImageURL in
-            self?.downsampleImage(atURL: cachedImageURL, to: cellSize)
-        } failure: { [weak self] _ in
-            self?.setThumbnailWithImage(pwgImageType.image.placeHolder)
+        Task {
+            await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: thumbnailSize, type: .image,
+                                                  atURL: ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumbnailSize),
+                                                  fromServer: imageData.server?.uuid) { [weak self] cachedImageURL in
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else { return }
+                    self.downsampleImage(atURL: cachedImageURL, to: cellSize)
+                }
+            }
+            failure: { [weak self] _ in
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else { return }
+                    self.setThumbnailWithImage(pwgImageType.image.placeHolder)
+                }
+            }
         }
     }
     

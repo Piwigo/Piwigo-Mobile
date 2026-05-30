@@ -52,20 +52,19 @@ class ImagePreviewViewController: UIViewController
             
             // Download high-resolution image
             if let imageURL = ImageUtilities.getPiwigoURL(imageData, ofMinSize: previewSize) {
-                ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, type: .image, atURL: imageURL,
-                                                fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] cachedImageURL in
-                    // Downsample image in the background
-                    guard let self = self else { return }
-                    DispatchQueue.global(qos: .userInitiated).async { [self] in
-                        // Downsample image in cache
+                Task {
+                    await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, type: .image, atURL: imageURL,
+                                                          fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] cachedImageURL in
+                        // Downsample image in the background
                         let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: viewSize, for: .image)
-
+                        
                         // Set image
-                        DispatchQueue.main.async { [self] in
+                        DispatchQueue.main.async { [weak self] in
+                            guard let self = self else { return }
                             self.setImageView(with: cachedImage)
                         }
-                    }
-                } failure: { _ in }
+                    } failure: { _ in }
+                }
             }
         }
     }

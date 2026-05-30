@@ -70,7 +70,7 @@ extension UploadManager {
 //            let leftFiles = try fileManager.contentsOfDirectory(at: uploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
 //            debugPrint("\(dbg()) Remaining files in cache: \(leftFiles)")
         } catch {
-            UploadManager.logger.notice("Could not clear the Uploads folder: \(error)")
+            UploadManager.logger.notice("Could not clear the Uploads folder: \(error.localizedDescription, privacy: .public)")
         }
     }
 }

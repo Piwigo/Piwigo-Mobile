@@ -1,2 +1,2 @@
-• Kijavítottuk az automatikus feltöltés opcióval kapcsolatos hibát
-• Javítottuk a fordításokat
+• Hibajavítások és a kezelőfelület javítása
+• Felfüggeszti a feltöltést, ha az eszköznek lehűlnie kell

@@ -135,22 +135,24 @@ class ImageCollectionViewCell: UICollectionViewCell {
         let scale = max(traitCollection.displayScale, 1.0)
         let cellSize = CGSizeMake(self.bounds.size.width * scale, self.bounds.size.height * scale)
         imageURL = ImageUtilities.getPiwigoURL(imageData, ofMinSize: size)
-        ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: size, type: .image, atURL: imageURL,
-                                        fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] cachedImageURL in
-            // Downsample image in the background
-            guard let self = self else { return }
-            DispatchQueue.global(qos: .userInitiated).async { [self] in
-                // Downsample image in cache
-                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .image)
+        Task {
+            let expectedURL = imageURL
+            await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: size, type: .image, atURL: imageURL,
+                                                  fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] cachedImageURL in
+                // Guard against cell reuse
+                guard let self = self, self.imageURL == expectedURL else { return }
 
+                // Downsample image in the background
+                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .image)
+                
                 // Set image
                 DispatchQueue.main.async { [self] in
                     self.configImage(cachedImage, withHiddenLabel: true)
                 }
-            }
-        } failure: { [self] _ in
-            DispatchQueue.main.async { [self] in
-                self.configImage(pwgImageType.image.placeHolder, withHiddenLabel: false)
+            } failure: { [self] _ in
+                DispatchQueue.main.async { [self] in
+                    self.configImage(pwgImageType.image.placeHolder, withHiddenLabel: false)
+                }
             }
         }
     }
@@ -250,11 +252,12 @@ class ImageCollectionViewCell: UICollectionViewCell {
         super.prepareForReuse()
 
         // Pause the ongoing image download if needed
-        if let imageURL = self.imageURL {
-            ImageDownloader.shared.pauseDownload(atURL: imageURL)
-        }
+//        if let imageURL = self.imageURL {
+//            Task { await ImageDownloader.shared.pauseDownload(atURL: imageURL) }
+//        }
 
         // Reset cell
+        self.imageURL = nil
         self.nameLabel?.text = ""
         self.noDataLabel?.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
         self.cellImage?.image = pwgImageType.image.placeHolder

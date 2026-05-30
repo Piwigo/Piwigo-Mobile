@@ -66,19 +66,21 @@ extension ImageViewController
         let scale = max(self.view.traitCollection.displayScale, 1.0)
         let cellSize = CGSizeMake(40.0 * scale, 40.0 * scale)
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-        ImageDownloader.shared.getImage(withID: album.thumbnailId, ofSize: thumbSize, type: .album,
-                                        atURL: album.thumbnailUrl as? URL,
-                                        fromServer: album.user?.server?.uuid) { cachedImageURL in
-            // Downsample image in cache
-            let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .album)
-            // Return cached image
-            DispatchQueue.main.async {
-                completion(cachedImage.crop(width: cellSize.width, height: cellSize.height))
-            }
-        } failure: { _ in
-            // No cached image
-            DispatchQueue.main.async {
-                completion(nil)
+        Task {
+            await ImageDownloader.shared.getImage(withID: album.thumbnailId, ofSize: thumbSize, type: .album,
+                                                  atURL: album.thumbnailUrl as? URL,
+                                                  fromServer: album.user?.server?.uuid) { cachedImageURL in
+                // Downsample image in cache
+                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .album)
+                // Return cached image
+                DispatchQueue.main.async {
+                    completion(cachedImage.crop(width: cellSize.width, height: cellSize.height))
+                }
+            } failure: { _ in
+                // No cached image
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
             }
         }
     }

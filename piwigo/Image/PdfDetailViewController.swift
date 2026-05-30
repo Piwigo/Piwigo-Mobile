@@ -171,29 +171,33 @@ class PdfDetailViewController: UIViewController
         } else {
             // Download PDF document
             if let imageURL = self.imageURL {
-                ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: .fullRes, type: .image, atURL: imageURL,
-                                                fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
-                    // Show download progress
-                    DispatchQueue.main.async { [weak self] in
-                        guard let self = self else { return }
-                        self.progressView.progress = fractionCompleted
-                        self.pdfDetailDelegate?.updateProgressView(with: fractionCompleted)
+                Task {
+                    await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: .fullRes, type: .image, atURL: imageURL,
+                                                          fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
+                        // Show download progress
+                        DispatchQueue.main.async { [weak self] in
+                            guard let self = self else { return }
+                            self.progressView.progress = fractionCompleted
+                            self.pdfDetailDelegate?.updateProgressView(with: fractionCompleted)
+                        }
                     }
-                } completion: { [weak self] cachedFileURL in
-                    DispatchQueue.main.async {
-                        guard let self = self else { return }
-                        // Hide progress view
-                        self.progressView.isHidden = true
-                        
-                        // Show PDF file stored in cache
-                        guard let document = PDFDocument(url: cachedFileURL)
-                        else { return }
-                        self.setPdfView(with: document)
-                        
-                        // Show PDF file on external screen if needed
-                        self.pdfDetailDelegate?.setPdfView(with: document)
+                    completion: { [weak self] cachedFileURL in
+                        DispatchQueue.main.async {
+                            guard let self = self else { return }
+                            // Hide progress view
+                            self.progressView.isHidden = true
+                            
+                            // Show PDF file stored in cache
+                            guard let document = PDFDocument(url: cachedFileURL)
+                            else { return }
+                            self.setPdfView(with: document)
+                            
+                            // Show PDF file on external screen if needed
+                            self.pdfDetailDelegate?.setPdfView(with: document)
+                        }
                     }
-                } failure: { _ in }
+                    failure: { _ in }
+                }
             }
         }
     }
