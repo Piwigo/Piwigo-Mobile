@@ -19,6 +19,7 @@ Piwigo är gratis och opensource.
 Piwigo är också kompatibel med följande tillägg:
 - Community: tillåter icke-administratörsanvändare att lägga till bilder
 - rotateImage: låter dig rotera bilder
+- piwigo-two_factor: lägger till tvåfaktorsautentisering (2FA)
 - piwigo-videos: lägger till stöd för video
 
 Återkoppling eller frågor?

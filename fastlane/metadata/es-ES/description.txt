@@ -19,6 +19,7 @@ Piwigo es gratis y de código abierto.
 Piwigo también es compatible con las siguientes extensiones:
 - Community: permite a los usuarios que no son administradores agregar fotos
 - rotateImage: le permite rotar imágenes
+- piwigo-two_factor: añade la autenticación de dos factores (2FA)
 - piwigo-videojs: agrega soporte de video
 
 Comentarios o preguntas?

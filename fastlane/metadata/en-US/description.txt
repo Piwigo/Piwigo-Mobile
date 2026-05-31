@@ -19,6 +19,7 @@ Piwigo is free and opensource.
 Piwigo is also compatible with the following extensions:
 - Community: allows users to create albums and add photos
 - rotateImage: enables you to rotate images
+- piwigo-two_factor: adds two-factor authentication (2FA)
 - piwigo-videojs: adds video support
 
 Feedback or questions ?

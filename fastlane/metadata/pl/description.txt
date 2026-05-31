@@ -17,6 +17,7 @@ Piwigo jest oprogramowaniem bezpłatnym i otwartym.
 Piwigo jest również kompatybilny z następującymi rozszerzeniami:
 - Community: umożliwia dodawanie zdjęć użytkownikom bez uprawnień administratora
 - rotateImage: umożliwia obracanie obrazów
+- piwigo-two_factor: dodaje uwierzytelnianie dwuskładnikowe (2FA)
 - piwigo-videojs: dodaje obsługę wideo
 
 Opinie lub pytania?
