@@ -19,6 +19,7 @@ Piwigo is gratis en opensource.
 Piwigo is ook compatibel met de volgende extensies:
 - Community: staat toe dat niet-beheerder-gebruikers foto's toevoegen
 - rotateImage: hiermee kunt u afbeeldingen roteren
+- piwigo-two_factor: voegt tweefactorauthenticatie (2FA) toe
 - piwigo-videos: voegt video ondersteuning toe
 
 Feedback of vragen?

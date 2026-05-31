@@ -7,97 +7,97 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo متوافق أيضًا مع الملحقات التالية:\n-Community: السماح للمستخدمين الذين لا يتوفرون على صلاحية الأدمين بإضافة الصور\n- piwigo-videojs: إضافة دعم الفيديو"
+            "value" : "Piwigo متوافق أيضًا مع الملحقات التالية:\n-Community: السماح للمستخدمين الذين لا يتوفرون على صلاحية الأدمين بإضافة الصور\n- piwigo-two_factor: يضيف المصادقة الثنائية (2FA)\n- piwigo-videojs: إضافة دعم الفيديو"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo er også kompatibel med følgende filtypenavne:\n- Community: tillader ikke-admin brugere at tilføje foto\n- rotateImage: giver dig mulighed for at rotere billeder\n- piwigo-videojs: tilføjer support for videofiler"
+            "value" : "Piwigo er også kompatibel med følgende filtypenavne:\n- Community: tillader ikke-admin brugere at tilføje foto\n- rotateImage: giver dig mulighed for at rotere billeder\n- piwigo-two_factor: tilføjer tofaktorautentificering (2FA)\n- piwigo-videojs: tilføjer support for videofiler"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo ist auch mit den folgenden Plugins kompatibel:\n- Community: ermöglicht es Benutzern, Alben zu erstellen und Fotos hinzuzufügen\n- rotateImage: ermöglicht das Drehen von Bildern\n- piwigo-videojs: fügt Videounterstützung hinzu"
+            "value" : "Piwigo ist auch mit den folgenden Plugins kompatibel:\n- Community: ermöglicht es Benutzern, Alben zu erstellen und Fotos hinzuzufügen\n- rotateImage: ermöglicht das Drehen von Bildern\n- piwigo-two_factor: Fügt die Zwei-Faktor-Authentifizierung (2FA) hinzu\n- piwigo-videojs: fügt Videounterstützung hinzu"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo is also compatible with the following plugins:\n- Community: allows users to create albums and add photos\n- rotateImage: enables you to rotate images\n- piwigo-videojs: adds video support"
+            "value" : "Piwigo is also compatible with the following plugins:\n- Community: allows users to create albums and add photos\n- rotateImage: enables you to rotate images\n- piwigo-two_factor: adds two-factor authentication (2FA)\n- piwigo-videojs: adds video support"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo también es compatible con los siguientes plugins:\n- Comunidad: permite a los usuarios crear álbumes y añadir fotos\n- rotateImage: permite rotar imágenes\n- piwigo-videojs: añade soporte de vídeo"
+            "value" : "Piwigo también es compatible con los siguientes plugins:\n- Comunidad: permite a los usuarios crear álbumes y añadir fotos\n- rotateImage: permite rotar imágenes\n- piwigo-two_factor: añade la autenticación de dos factores (2FA)\n- piwigo-videojs: añade soporte de vídeo"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo est également compatible avec les plugins suivants :\n- Community : permet aux utilisateurs de créer des albums et d'ajouter des photos\n- rotateImage : vous permet de faire pivoter des images\n- piwigo-videojs : ajoute le support vidéo"
+            "value" : "Piwigo est également compatible avec les plugins suivants :\n- Community: permet aux utilisateurs de créer des albums et d'ajouter des photos\n- rotateImage: vous permet de faire pivoter les images\n- piwigo-two_factor: ajoute l'authentification à deux facteurs (2FA)\n- piwigo-videojs: ajoute le support vidéo"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A Piwigo a következő bővítményekkel is kompatibilis:\n- Community: nem-admin felhasználók is tölthetnek fel képeket\n- rotateImage: lehetővé teszi a képek elforgatását\n- piwigo-videojs: videófájlok támogatása"
+            "value" : "A Piwigo a következő bővítményekkel is kompatibilis:\n- Community: nem-admin felhasználók is tölthetnek fel képeket\n- rotateImage: lehetővé teszi a képek elforgatását\n- piwigo-two_factor: kétfaktoros hitelesítést (2FA) biztosít\n- piwigo-videojs: videófájlok támogatása"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo juga kompatibel dengan ekstensi berikut ini:\n- Community: mengijinkan pengguna selain admin menambahkan foto\n- piwigo-videojs: menambah dukungan video"
+            "value" : "Piwigo juga kompatibel dengan ekstensi berikut ini:\n- Community: mengijinkan pengguna selain admin menambahkan foto\n- rotateImage: memungkinkan Anda memutar gambar\n- piwigo-two_factor: menambahkan otentikasi dua faktor (2FA)\n- piwigo-videojs: menambah dukungan video"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo è anche compatibile con le seguenti estensioni:\n- Community: consente agli utenti non amministratori di aggiungere foto\n- rotateImage: consente di ruotare le immagini\n- piwigo-videojs: aggiunge il supporto video"
+            "value" : "Piwigo è anche compatibile con le seguenti estensioni:\n- Community: consente agli utenti non amministratori di aggiungere foto\n- rotateImage: consente di ruotare le immagini\n- piwigo-two_factor: aggiunge l'autenticazione a due fattori (2FA)\n- piwigo-videojs: aggiunge il supporto video"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigoは次の拡張とも互換性があります:\n- Community: 管理者以外のユーザに写真の追加を許可します\n- rotateImage: 画像を回転できます\n- piwigo-videojs: ビデオのサポートを追加します"
+            "value" : "Piwigoは次の拡張とも互換性があります:\n- Community: 管理者以外のユーザに写真の追加を許可します\n- rotateImage: 画像を回転できます\n- piwigo-two_factor: 二要素認証（2FA）を追加します\n- piwigo-videojs: ビデオのサポートを追加します"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo is ook compatibel met de volgende extensies:\n- Community: staat toe dat niet-beheerder-gebruikers foto's toevoegen \n- rotateImage: hiermee kunt u afbeeldingen roteren\n- piwigo-videos: voegt video ondersteuning toe"
+            "value" : "Piwigo is ook compatibel met de volgende extensies:\n- Community: staat toe dat niet-beheerder-gebruikers foto's toevoegen \n- rotateImage: hiermee kunt u afbeeldingen roteren\n- piwigo-two_factor: voegt tweefactorauthenticatie (2FA) toe\n- piwigo-videos: voegt video ondersteuning toe"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo jest również kompatybilny z następującymi rozszerzeniami:\n- Community: umożliwia dodawanie zdjęć użytkownikom bez uprawnień administratora\n- rotateImage: umożliwia obracanie obrazów\n- piwigo-videojs: dodaje obsługę wideo"
+            "value" : "Piwigo jest również kompatybilny z następującymi rozszerzeniami:\n- Community: umożliwia dodawanie zdjęć użytkownikom bez uprawnień administratora\n- rotateImage: umożliwia obracanie obrazów\n- piwigo-two_factor: dodaje uwierzytelnianie dwuskładnikowe (2FA)\n- piwigo-videojs: dodaje obsługę wideo"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo также совместим со следующими расширениями:\n- Сообщество: позволяет непривелегирированным пользователям добавлять фотографии\n- rotateImage: позволяет вращать изображения\n- piwigo-videojs: добавляет поддержку видео"
+            "value" : "Piwigo также совместим со следующими расширениями:\n- Сообщество: позволяет непривелегирированным пользователям добавлять фотографии\n- rotateImage: позволяет вращать изображения\n- piwigo-two_factor: добавляет двухфакторную аутентификацию (2FA)\n- piwigo-videojs: добавляет поддержку видео"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo är också kompatibel med följande tillägg:\n- Community: tillåter icke-administratörsanvändare att lägga till bilder\n- rotateImage: låter dig rotera bilder\n- piwigo-videos: lägger till stöd för video"
+            "value" : "Piwigo är också kompatibel med följande tillägg:\n- Community: tillåter icke-administratörsanvändare att lägga till bilder\n- rotateImage: låter dig rotera bilder\n- piwigo-two_factor: lägger till tvåfaktorsautentisering (2FA)\n- piwigo-videos: lägger till stöd för video"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo兼容以下扩展：\n- Community插件：允许非管理员用户添加照片\n- rotateImage插件：可以旋转图像\n- piwigo-videojs插件：使Piwigo支持视频功能"
+            "value" : "Piwigo兼容以下扩展：\n- Community插件：允许非管理员用户添加照片\n- rotateImage插件：可以旋转图像\n- piwigo-two_factor：添加双因素认证（2FA）\n- piwigo-videojs插件：使Piwigo支持视频功能"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo同時支援下列擴充功能:\n- community: 允許非管理員用戶上傳照片\n- rotateImage：使您能夠旋轉影像\n- piwigo-videojs: 新增影片支援"
+            "value" : "Piwigo同時支援下列擴充功能:\n- community: 允許非管理員用戶上傳照片\n- rotateImage：使您能夠旋轉影像\n- piwigo-two_factor：新增雙因素驗證 (2FA)\n- piwigo-videojs: 新增影片支援"
           }
         }
       }

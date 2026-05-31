@@ -18,6 +18,7 @@ Piwigo ist kostenlos und quelloffen.
 Piwigo ist auch mit den folgenden Plugins kompatibel:
 - Community: ermöglicht es Benutzern, Alben zu erstellen und Fotos hinzuzufügen
 - rotateImage: ermöglicht das Drehen von Bildern
+- piwigo-two_factor: Fügt die Zwei-Faktor-Authentifizierung (2FA) hinzu
 - piwigo-videojs: fügt Videounterstützung hinzu
 
 Feedback oder Fragen?

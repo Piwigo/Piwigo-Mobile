@@ -19,6 +19,7 @@ Piwigo est libre et gratuit.
 Piwigo est également compatible avec les plugins suivants :
 - Community : permet aux utilisateurs de créer des albums et d'ajouter des photos
 - rotateImage : vous permet de faire pivoter des images
+- piwigo-two_factor: ajoute l'authentification à deux facteurs (2FA)
 - piwigo-videojs : ajoute le support vidéo
 
 Des suggestions ou des questions ?

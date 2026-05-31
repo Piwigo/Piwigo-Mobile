@@ -19,6 +19,7 @@ Piwigoは無料のオープンソースです。
 Piwigoは次の拡張とも互換性があります:
 - Community: 管理者以外のユーザに写真の追加を許可します
 - rotateImage: 画像を回転できます
+- piwigo-two_factor: 二要素認証（2FA）を追加します
 - piwigo-videojs: ビデオのサポートを追加します
 
 フィードバックや質問はありませんか？
