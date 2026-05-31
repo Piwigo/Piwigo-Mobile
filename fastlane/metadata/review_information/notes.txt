@@ -1,6 +1,6 @@
-This version brings support for Larger Text and fixes the few issues listed in the TestFlight section.
+This version fixes an issue preventing the upload of photos when 2FA is enabled, pauses downloads when the device needs to cool down, and improves the downloading of thumbnails in albums containing a large number of photos. It also fixes a crash that sometimes occurs when downloading thumbnails.
 
-Here is the address of the server requiring the above credentials and allowing to test all functionalities: https://piwigo.lelievre-berna.net/15.x/
+Here is the address of the server requiring the above credentials and allowing to test all functionalities: https://piwigo.lelievre-berna.net/16.x/
 And here are servers you can try without credentials: https://raia.com, https://www.neilfitzgeraldphoto.co.nz/gallery, http://www.dongshawhwei.com/photos.
 
 The privacy policy is provided in the app in Chinese (Simplified), Danish, Dutch,  English, French, German, Hungarian, Indonesian, Italian, Japanese, Polish, Russian, Spanish and Swedish.

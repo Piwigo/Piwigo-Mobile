@@ -55,10 +55,12 @@ extension AlbumViewController: @MainActor NSFetchedResultsControllerDelegate
             collectionView.indexPathsForVisibleItems.forEach { indexPath in
                 if let objectID = diffableDataSource.itemIdentifier(for: indexPath), updatedItems.contains(objectID),
                    let album = try? self.mainContext.existingObject(with: objectID) as? Album {
-                    if let cell = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCell {
+                    if let cell = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCell,
+                       cell.albumData != album {
                         cell.config(withAlbumData: album)
                     }
-                    else if let cell = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCellOld {
+                    else if let cell = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCellOld,
+                            cell.albumData != album {
                         cell.tableView?.reloadData()
                     }
                 }

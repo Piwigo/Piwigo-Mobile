@@ -178,10 +178,16 @@ class ImageDetailViewController: UIViewController
                 Task {
                     await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, type: .image, atURL: imageURL,
                                                           fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
-                        self?.updateProgressView(with: fractionCompleted)
+                        DispatchQueue.main.async { [weak self] in
+                            guard let self else { return }
+                            self.updateProgressView(with: fractionCompleted)
+                        }
                     }
                     completion: { [weak self] cachedImageURL in
-                        self?.downsampleImage(atURL: cachedImageURL)
+                        DispatchQueue.main.async { [weak self] in
+                            guard let self else { return }
+                            self.downsampleImage(atURL: cachedImageURL)
+                        }
                     }
                     failure: { _ in }
                 }

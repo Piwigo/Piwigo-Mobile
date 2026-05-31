@@ -67,20 +67,17 @@ class AlbumCollectionViewCell: UICollectionViewCell {
                 // Guard against cell reuse
                 guard let self = self, self.imageURL == expectedURL else { return }
                 
-                // Process image in the background (.userInitiated leads to concurrency issues)
-                // Can be called too many times leading to thread management issues
-                DispatchQueue.global(qos: .default).async { [self] in
-                    // Downsample image in cache
-                    let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .album)
-                    
-                    // Set album thumbnail
-                    DispatchQueue.main.async { [self] in
-                        self.albumThumbnail.image = cachedImage
-                    }
-                }
-            } failure: { [self] _ in
+                // Downsample image in cache
+                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .album)
+                
                 // Set album thumbnail
                 DispatchQueue.main.async { [self] in
+                    self.albumThumbnail.image = cachedImage
+                }
+            } failure: { [weak self] _ in
+                // Set album thumbnail
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
                     self.albumThumbnail.image = pwgImageType.album.placeHolder
                 }
             }

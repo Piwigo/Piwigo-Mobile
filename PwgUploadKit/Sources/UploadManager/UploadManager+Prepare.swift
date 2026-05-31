@@ -23,7 +23,7 @@ extension UploadManager
         // Retrieve upload request properties
         guard var uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID, inContext: self.uploadBckgContext)
         else {
-            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Could not retrieve upload request for preparation!")
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent, privacy: .public) • Could not retrieve upload request for preparation!")
             // In foreground, process next upload if any
             if taskType.isForeground {
                 await UploadManagerActor.shared.processNextUpload()
@@ -34,7 +34,7 @@ extension UploadManager
         // Check upload status (should never happen)
         guard uploadData.requestState == .waiting
         else {
-            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Upload in wrong state '\(uploadData.stateLabel)' before preparation")
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent, privacy: .public) • Upload in wrong state '\(uploadData.stateLabel, privacy: .public)' before preparation")
             // In foreground, process next upload if any
             if taskType.isForeground {
                 if uploadData.requestState == .prepared {
@@ -51,7 +51,7 @@ extension UploadManager
         // Update upload status
         uploadData.requestState = .preparing
         uploadData.requestError = ""
-        UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Preparing the file…")
+        UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent, privacy: .public) • Preparing the file…")
         try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
         
         // Add category ID to list of recently used albums
