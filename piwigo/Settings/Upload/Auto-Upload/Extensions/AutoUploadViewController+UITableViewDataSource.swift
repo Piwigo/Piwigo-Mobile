@@ -58,6 +58,11 @@ extension AutoUploadViewController: UITableViewDataSource
                         // Disable auto-uploading
                         await UploadManager.shared.disableAutoUpload(inBckgTask: false)
                     }
+                    // Reload cells
+                    DispatchQueue.main.async {
+                        let indexPaths = [IndexPath(row: 0, section: 1), IndexPath(row: 1, section: 1)]
+                        tableView.reloadRows(at: indexPaths, with: .automatic)
+                    }
                 }
             }
             tableViewCell = cell
@@ -83,6 +88,8 @@ extension AutoUploadViewController: UITableViewDataSource
                 }
                 cell.configure(with: title, detail: detail)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.isUserInteractionEnabled = !UploadVars.shared.isAutoUploadActive
+                cell.detailLabel.alpha = UploadVars.shared.isAutoUploadActive ? 0.5 : 1.0
                 tableViewCell = cell
 
             case 1 /* Select Piwigo album*/ :
@@ -97,6 +104,8 @@ extension AutoUploadViewController: UITableViewDataSource
                 }
                 cell.configure(with: title, detail: detail)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.isUserInteractionEnabled = !UploadVars.shared.isAutoUploadActive
+                cell.detailLabel.alpha = UploadVars.shared.isAutoUploadActive ? 0.5 : 1.0
                 tableViewCell = cell
             default:
                 break

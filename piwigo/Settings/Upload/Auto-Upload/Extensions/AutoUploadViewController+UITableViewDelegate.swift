@@ -44,6 +44,8 @@ extension AutoUploadViewController: UITableViewDelegate
         switch indexPath.section {
         case 0:
             return false
+        case 1:
+            return !UploadVars.shared.isAutoUploadActive
         case 2:
             switch indexPath.row {
             case 1:
@@ -97,6 +99,9 @@ extension AutoUploadViewController: UITableViewDelegate
         case 1:
             switch indexPath.row {
             case 0 /* Select Photos Library album */ :
+                // Don't let the user change the album when Auto-Upload is active
+                if UploadVars.shared.isAutoUploadActive { return }
+                
                 // Check autorisation to access Photo Library before uploading
                 PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(for: .readWrite, for: self) {
                     // Open local albums view controller
@@ -110,8 +115,12 @@ extension AutoUploadViewController: UITableViewDelegate
                 } onDeniedAccess: {
                     PhotosFetch.shared.requestPhotoLibraryAccess(in: self)
                 }
-
+                
             case 1 /* Select Piwigo album*/ :
+                // Don't let the user change the album when Auto-Upload is active
+                if UploadVars.shared.isAutoUploadActive { return }
+                
+                // Present Piwigo albums
                 let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
                 categoryVC.user = user
