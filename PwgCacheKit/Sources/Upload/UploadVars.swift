@@ -239,7 +239,7 @@ public class UploadVars: NSObject, @unchecked Sendable {
     @UserDefault("maxNberOfPreparedUploads", defaultValue: 5, userDefaults: UserDefaults.dataSuite)
     public var maxNberOfPreparedUploads: Int16
     
-    /// - Maximum number of simultneous upload transfers
+    /// - Maximum number of simultaneous upload transfers
     @UserDefault("maxNberOfUploadTransfers", defaultValue: 2, userDefaults: UserDefaults.dataSuite)
     public var maxNberOfUploadTransfers: Int16
     
