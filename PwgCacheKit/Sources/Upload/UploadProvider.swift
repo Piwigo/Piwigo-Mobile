@@ -360,7 +360,7 @@ public final class UploadProvider {
             // Fetch objects
             var pendingUploads: [Upload] = (try? taskContext.fetch(fetchRequest) as [Upload]) ?? []
 
-            // Select only those which are deletable or not
+            // Select only those which are deletable?
             if onlyDeletable {
                 pendingUploads.removeAll(where: { $0.deleteImageAfterUpload == false })
             }
