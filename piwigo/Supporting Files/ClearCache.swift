@@ -23,8 +23,14 @@ final class ClearCache
         default:
             title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
         }
-        viewController.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) {
-            closeSession()
+        if message.isEmpty {
+            viewController.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {
+                closeSession()
+            }
+        } else {
+            viewController.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) {
+                closeSession()
+            }
         }
     }
     
