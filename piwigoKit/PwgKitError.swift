@@ -105,6 +105,8 @@ extension PwgKitError {
              .invalidStatusCode(statusCode: 403),
              .invalidURL:
             return true
+        case (let .pwgError(code, _)):
+            return code == 40101 ? true : false
         default:
             return false
         }
