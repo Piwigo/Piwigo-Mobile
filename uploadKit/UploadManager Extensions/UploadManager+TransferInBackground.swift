@@ -52,7 +52,7 @@ extension UploadManager {
         let serverPath = NetworkVars.shared.serverPath
         let password = KeychainUtilities.password(forService: serverPath, account: username)
         guard password.isEmpty == false
-        else { throw .emptyUsername }
+        else { throw .invalidCredentials }
         // Code below to be used when we will be able to determine if the user uses 2FA.
 //        var username, password: String
 //        do {
