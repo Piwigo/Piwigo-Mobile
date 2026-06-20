@@ -39,7 +39,7 @@ public final class UploadSessionsDelegate: NSObject, Sendable {
     /// This method cancels the remaining tasks when the upload is completed.
     func cancelTasksOfUpload(withID uploadIDStr: String, exceptedTaskID: Int) async {
         // Get all remaining tasks related to the upload ID
-        let uploadTasks: [URLSessionTask] = await bckgSession.allTasks
+        let uploadTasks: [URLSessionTask] = await UploadSessionManager.shared.allTasks()
         let tasksToCancel = uploadTasks.filter({ $0.originalRequest?
             .value(forHTTPHeaderField: pwgHTTPuploadID) == uploadIDStr })
             .filter({ $0.taskIdentifier != exceptedTaskID})
@@ -48,7 +48,7 @@ public final class UploadSessionsDelegate: NSObject, Sendable {
         tasksToCancel.forEach { task in
             UploadSessionsDelegate.logger.notice("\(uploadIDStr) • Task \(task.taskIdentifier) cancelled")
             // Remember that this task was cancelled
-            task.taskDescription = uploadBckgSessionIdentifier + " " + pwgHTTPCancelled
+            task.taskDescription = "\(pwgUploadBckgSessionID) \(pwgHTTPCancelled)"
             task.cancel()
         }
     }
@@ -68,6 +68,12 @@ extension UploadSessionsDelegate: URLSessionDelegate {
 
     public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: (any Error)?) {
         UploadSessionsDelegate.logger.notice("Session invalidated.")
+        if let error = error {
+            UploadSessionsDelegate.logger.error("Error: \(error.localizedDescription, privacy: .public)")
+        }
+        Task { @UploadManagerActor in
+            UploadSessionManager.shared.sessionDidBecomeInvalid(session.configuration.identifier ?? "Unknown")
+        }
     }
     
     public func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge,
@@ -126,10 +132,11 @@ extension UploadSessionsDelegate: URLSessionDelegate {
         UploadSessionsDelegate.logger.notice("Session \(session.configuration.identifier ?? "", privacy: .public) finished events.")
         
         // Execute completion handler, i.e. inform iOS that we collect data returned by Piwigo server
-        DispatchQueue.main.async {
-            if let bckgHandler = uploadSessionCompletionHandler {
-                bckgHandler()
-            }
+        Task { @MainActor in
+            guard let id = session.configuration.identifier,
+                  let bckgHandler = uploadSessionCompletionHandlers.removeValue(forKey: id)
+            else { return }
+            bckgHandler()
         }
     }
 }

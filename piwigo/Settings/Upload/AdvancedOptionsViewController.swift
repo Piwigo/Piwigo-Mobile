@@ -111,7 +111,7 @@ extension AdvancedOptionsViewController: UITableViewDataSource
             
         case .maxTransfers:
             // Value
-            let value = Float(UploadVars.shared.maxNberOfUploadTransfers)
+            let value = Float(UploadVars.shared.maxConnectionsPerHost)
             
             // Slider configuration
             cell.configure(with: NSLocalizedString("settings_advancedLimit", comment: "Limit"),
@@ -119,7 +119,7 @@ extension AdvancedOptionsViewController: UITableViewDataSource
                            prefix: "", suffix: "")
             cell.cellSliderBlock = { newValue in
                 // Update settings
-                UploadVars.shared.maxNberOfUploadTransfers = Int16(newValue)
+                UploadVars.shared.maxConnectionsPerHost = Int(newValue)
             }
             cell.accessibilityIdentifier = "maxUploadTransfers"
         
@@ -159,8 +159,8 @@ extension AdvancedOptionsViewController: UITableViewDelegate
             title = NSLocalizedString("settings_advancedPreparedTitle", comment: "Upload Preparation") + "\n"
             text = NSLocalizedString("settings_advancedPreparedText", comment: "Please select the maximum number of uploads to prepare in advance.")
         case .maxTransfers:
-            title = NSLocalizedString("settings_advancedTransfersTitle", comment: "File Transfers") + "\n"
-            text = NSLocalizedString("settings_advancedTransfersText", comment: "Please select the maximum number of files to transfer simultaneously.")
+            title = NSLocalizedString("settings_advancedConnectionsTitle", comment: "Connections") + "\n"
+            text = NSLocalizedString("settings_advancedConnectionsText", comment: "Please select the maximum number of simultaneous connections to the Piwigo server.")
         case .chunkSize:
             title = NSLocalizedString("settings_advancedChunksTitle", comment: "Chunk Size") + "\n"
             text = NSLocalizedString("settings_advancedChunksText", comment: "Please select the size of the chunks that files are split into during upload.")

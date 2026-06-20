@@ -164,7 +164,7 @@ final class ClearCache
             await UploadManagerActor.shared.removeAllUploads()
             
             // Cancel upload tasks, then other tasks
-            let allUploadTasks = await bckgSession.allTasks
+            let allUploadTasks = await UploadSessionManager.shared.allTasks()
             allUploadTasks.forEach({$0.cancel()})
             
             // Update badge and upload queue button

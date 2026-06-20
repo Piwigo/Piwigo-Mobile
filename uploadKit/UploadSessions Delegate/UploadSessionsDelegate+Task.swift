@@ -128,7 +128,7 @@ extension UploadSessionsDelegate: URLSessionTaskDelegate {
         // Handle the response with the Upload Manager
         let sessionIdentifier = (task.taskDescription ?? "").components(separatedBy: " ").first
         switch sessionIdentifier {
-        case uploadBckgSessionIdentifier:
+        case pwgUploadBckgSessionID:
             Task { @UploadManagerActor in
                 await UploadManager.shared.didCompleteBckgUploadTask(task, withError: pwgError)
             }
