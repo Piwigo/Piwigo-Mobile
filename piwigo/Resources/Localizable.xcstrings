@@ -40153,7 +40153,8 @@
             "value" : "請選擇要作為自動上傳目標的遠端相簿或子相簿。"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "settings_autoUploadDisabled" : {
       "comment" : "Off",
@@ -40961,7 +40962,8 @@
             "value" : "請選擇要作為自動上傳來源的本機相簿或子相簿。"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "settings_biometricsFaceID" : {
       "comment" : "Face ID",

@@ -442,7 +442,7 @@
         },
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "The device needs to cool down."
           }
         },
