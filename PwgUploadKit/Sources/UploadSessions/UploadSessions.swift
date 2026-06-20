@@ -16,7 +16,7 @@ public let pwgBackgroundUploadTask = "\(Bundle.main.bundleIdentifier!).uploadMan
 public let pwgBackgroundContinuedUploadTask = "\(Bundle.main.bundleIdentifier!).uploadManagerContinued"
 
 @MainActor
-public var uploadSessionCompletionHandler: (() -> Void)?
+public var uploadSessionCompletionHandlers: [String: () -> Void] = [:]
 
 // Custom HTTP headers
 public let pwgHTTPuploadID  = "X-PWG-UploadID"              // Added to HTTP header
@@ -27,13 +27,15 @@ public let pwgHTTPmd5sum    = "X-PWG-md5sum"                // Added to HTTP hea
 public let pwgHTTPCancelled = "X-PWG-Cancelled"             // Appended to task description
 
 // URLSession delegate
+public let pwgUploadBckgSessionID = "org.piwigo.uploadBckgSession"
 public let pwgUploadDelegate = UploadSessionsDelegate.shared.self
 
 
-// MARK: - Background Upload Session
-public let uploadBckgSessionIdentifier:String! = "org.piwigo.uploadBckgSession"
-public let bckgSession: URLSession = {
-    let config = URLSessionConfiguration.background(withIdentifier: uploadBckgSessionIdentifier)
+// MARK: - Background Upload Sessions
+public func makeBckgSession(maxConnections: Int) -> URLSession {
+    // Make the identifier reflect the config
+    let identifier = "\(pwgUploadBckgSessionID).\(maxConnections)"
+    let config = URLSessionConfiguration.background(withIdentifier: identifier)
     
     /// Background tasks can be scheduled at the discretion of the system for optimal performance
     config.isDiscretionary = false
@@ -54,8 +56,8 @@ public let bckgSession: URLSession = {
     config.timeoutIntervalForResource = 7 * 24 * 60 * 60
     
     /// Determines the maximum number of simultaneous connections made to the host by tasks (4 by default)
-    config.httpMaximumConnectionsPerHost = 4
-    
+    config.httpMaximumConnectionsPerHost = maxConnections
+
     /// Do not return a response from the cache
     config.urlCache = nil
     config.requestCachePolicy = .reloadIgnoringLocalCacheData
@@ -93,4 +95,4 @@ public let bckgSession: URLSession = {
     session.sessionDescription = "Upload Session (bckg)"
     
     return session
-}()
+}

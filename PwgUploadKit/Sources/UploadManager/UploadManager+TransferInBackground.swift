@@ -104,8 +104,8 @@ extension UploadManager {
                                                      for: uploadUrl, uploadData: uploadData, withID: uploadID)
                 
                 // As soon as tasks are created, the timeout counter starts
-                let task = bckgSession.uploadTask(with: request, fromFile: fileURL)
-                task.taskDescription = uploadBckgSessionIdentifier
+                let task = UploadSessionManager.shared.bckgSession.uploadTask(with: request, fromFile: fileURL)
+                task.taskDescription = pwgUploadBckgSessionID
                 
                 // Tell the system how many bytes are expected to be uploaded
                 let bytesToSend = Int64(httpBody.count + (request.allHTTPHeaderFields ?? [:]).count)
@@ -256,7 +256,7 @@ extension UploadManager {
                 UploadManager.logger.notice("\(objectIDstr, privacy: .public) • \(uploadedChunks, privacy: .public) i.e. \(uploadedChunks.count, privacy: .public) chunk(s) uploaded")
                 
                 // Select running tasks of chunks already uploaded, if any
-                let uploadTasks: [URLSessionTask] = await bckgSession.allTasks
+                let uploadTasks: [URLSessionTask] = await UploadSessionManager.shared.allTasks()
                 var tasksToCancel = uploadTasks.filter({ $0.taskIdentifier != task.taskIdentifier})
                     .filter({ $0.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID) == objectURIstr })
                     .filter({ uploadedChunks.contains( Int($0.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk) ?? "") ?? -1) })
@@ -268,7 +268,7 @@ extension UploadManager {
                     tasksToCancel.forEach { task in
                         UploadSessionsDelegate.logger.notice("\(objectIDstr, privacy: .public) • Task \(task.taskIdentifier, privacy: .public) cancelled")
                         // Remember that this task was cancelled
-                        task.taskDescription = uploadBckgSessionIdentifier + " " + pwgHTTPCancelled
+                        task.taskDescription = "\(pwgUploadBckgSessionID) \(pwgHTTPCancelled)"
                         task.cancel()
                     }
                 }

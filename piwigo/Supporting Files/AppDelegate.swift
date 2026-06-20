@@ -265,9 +265,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         debugPrint("    > Handle events for background session with ID: \(identifier)");
         
         // Upload session of the app?
-        if identifier.compare(uploadBckgSessionIdentifier) == .orderedSame {
-            uploadSessionCompletionHandler = completionHandler
-            debugPrint("••> Rejoining session with CompletionHandler.")
+        if identifier.hasPrefix(pwgUploadBckgSessionID) {
+            Task { @UploadManagerActor in
+                // Recreate the matching session so its delegate events flow in.
+                let count = Int(identifier.components(separatedBy: ".").last ?? "") ?? 2
+                UploadSessionManager.shared.reattach(identifier: identifier, maxConnections: count)
+            
+                Task { @MainActor in
+                    // Store the handler under this identifier
+                    uploadSessionCompletionHandlers[identifier] = completionHandler
+                    debugPrint("••> Rejoining session with CompletionHandler.")
+                }
+            }
         }
     }
     

@@ -156,16 +156,20 @@ class TroubleshootingViewController: UIViewController {
                 someLogs = entries.filter({$0.category == String(describing: ImageDownloader.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
                 
-                // PwgUploadKit — Upload Sessions Delegate
-                someLogs = entries.filter({$0.category == String(describing: UploadSessionsDelegate.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                
                 // PwgUploadKit — UploadManager
                 someLogs = entries.filter({$0.category == String(describing: UploadManager.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-
+				
                 // PwgUploadKit — UploadManagerActor
                 someLogs = entries.filter({$0.category == String(describing: UploadManagerActor.self)})
+                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
+                
+                // PwgUploadKit — Upload Session Manager
+                someLogs = entries.filter({$0.category == String(describing: UploadSessionManager.self)})
+                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
+                
+                // PwgUploadKit — Upload Sessions Delegate
+                someLogs = entries.filter({$0.category == String(describing: UploadSessionsDelegate.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
             }
             catch {
