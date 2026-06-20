@@ -52078,7 +52078,8 @@
             "value" : "%@個相簿"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "severalImages" : {
       "comment" : "Images\nPhotos",
@@ -52280,7 +52281,8 @@
             "value" : "%@張照片"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "severalSubAlbumsCount" : {
       "comment" : "%@ sub-albums",
@@ -52381,7 +52383,8 @@
             "value" : "%@個子相簿"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "severalTagsCount" : {
       "comment" : "%@ tags",
@@ -52482,7 +52485,8 @@
             "value" : "%@個標籤"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "severalVideos" : {
       "comment" : "Videos",
@@ -56825,7 +56829,8 @@
             "value" : "%@個相簿"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "singleAudio" : {
       "extractionState" : "manual",
@@ -57128,7 +57133,8 @@
             "value" : "%@張照片"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "singleSubAlbumCount" : {
       "comment" : "%@ sub-album",
@@ -57229,7 +57235,8 @@
             "value" : "%@個子相簿"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "singleTagCount" : {
       "comment" : "%@ tag",
@@ -57330,7 +57337,8 @@
             "value" : "%@個標籤"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "singleVideo" : {
       "comment" : "Video",
