@@ -50,8 +50,8 @@ extension UploadManager {
         else { preconditionFailure("!!! Invalid uploadAsync URL") }
         
         // Get credentials (not appropriate for several accounts)
-        let username = NetworkVars.shared.username
-        let serverPath = NetworkVars.shared.serverPath
+        let username = ServerVars.shared.username
+        let serverPath = ServerVars.shared.serverPath
         let password = KeychainUtilities.password(forService: serverPath, account: username)
         guard password.isEmpty == false
         else { throw .emptyUsername }
@@ -62,10 +62,6 @@ extension UploadManager {
 //        }
 //        catch let error as PwgKitError { throw error }
 //        catch { throw .otherError(innerError: error) }
-        
-        // Get password
-        let password = KeychainUtilities.password(forService: serverPath, account: username)
-        guard password.isEmpty == false else { throw .invalidCredentials }
         
         // Prepare boundary, chunk size, creation date as Piwigo string
         let boundary = createBoundary(from: uploadData.md5Sum)

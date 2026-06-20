@@ -57,7 +57,8 @@
       enableGPUValidationMode = "1"
       allowLocationSimulation = "NO"
       GPUProfilerEnabled = "No"
-      showNonLocalizedStrings = "YES">
+      showNonLocalizedStrings = "YES"
+      queueDebuggingEnabled = "No">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference

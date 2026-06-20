@@ -1,6 +1,6 @@
 //
 //  UploadSessionManager.swift
-//  uploadKit
+//  PwgUploadKit
 //
 //  Created by Eddy Lelièvre-Berna on 19/06/2026.
 //  Copyright © 2026 Piwigo.org. All rights reserved.
@@ -8,7 +8,7 @@
 
 import os
 import Foundation
-import piwigoKit
+import PwgCacheKit
 
 @UploadManagerActor
 public final class UploadSessionManager {
