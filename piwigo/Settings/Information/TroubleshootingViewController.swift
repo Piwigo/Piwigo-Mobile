@@ -181,7 +181,7 @@ class TroubleshootingViewController: UIViewController {
                 }
             }
         }
-
+        
         // Operation for retrieving invalid JSON data
         let getJSONfiles = BlockOperation {
             let tmpURL = self.fm.temporaryDirectory
@@ -270,14 +270,16 @@ extension TroubleshootingViewController: UITableViewDataSource
             if pwgLogs.isEmpty {
                 cell.textLabel?.text = "None"
                 cell.accessoryType = UITableViewCell.AccessoryType.none
-            } else if let entry = pwgLogs[indexPath.row].first {
+            }
+            else if let entry = pwgLogs[indexPath.row].first {
                 cell.textLabel?.text = entry.category
-                cell.detailTextLabel?.text = DateUtilities.pwgDateFormatter.string(from: entry.date)
+                cell.detailTextLabel?.text = DateUtilities.logsDateFormatter.string(from: entry.date)
                 cell.detailTextLabel?.font = .preferredFont(forTextStyle: .footnote)
                 cell.detailTextLabel?.adjustsFontSizeToFitWidth = true
                 cell.detailTextLabel?.textColor = PwgColor.rightLabel
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-            } else {
+            }
+            else {
                 cell.textLabel?.text = "None"
                 cell.accessoryType = UITableViewCell.AccessoryType.none
             }
@@ -285,7 +287,8 @@ extension TroubleshootingViewController: UITableViewDataSource
             if JSONfiles.isEmpty {
                 cell.textLabel?.text = "None"
                 cell.accessoryType = UITableViewCell.AccessoryType.none
-            } else {
+            }
+            else {
                 let fileURL = JSONfiles[indexPath.row]
                 let fileName = String(fileURL.lastPathComponent.dropFirst(JSONprefixCount).dropLast(JSONextensionCount))
                 if let pos = fileName.lastIndex(of: " ") {
@@ -294,7 +297,8 @@ extension TroubleshootingViewController: UITableViewDataSource
                     cell.detailTextLabel?.font = .preferredFont(forTextStyle: .footnote)
                     cell.detailTextLabel?.adjustsFontSizeToFitWidth = true
                     cell.detailTextLabel?.textColor = PwgColor.rightLabel
-                } else {
+                }
+                else {
                     cell.textLabel?.text = fileName
                     cell.detailTextLabel?.text = fileURL.fileSizeString
                     cell.detailTextLabel?.font = .preferredFont(forTextStyle: .footnote)
