@@ -146,7 +146,7 @@ extension pwgImageSize {
             return String(localized: "thumbnailSizeXXXXLarge", bundle: .pwgKit,
                           comment: "Gigantic")
         case .fullRes:
-            return String(localized: "thumbnailSizexFullRes", bundle: .pwgKit,
+            return String(localized: "thumbnailSizeFullRes", bundle: .pwgKit,
                           comment: "Full Resolution")
         }
     }

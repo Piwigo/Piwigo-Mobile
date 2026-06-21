@@ -18516,7 +18516,8 @@
             "value" : "錯誤"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "FullName" : {
       "comment" : "Full Name",
@@ -57643,7 +57644,8 @@
             "value" : "相簿"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "tabBar_preferences" : {
       "comment" : "Settings",
