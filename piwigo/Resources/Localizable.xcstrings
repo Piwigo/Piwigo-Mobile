@@ -38622,10 +38622,100 @@
     "settings_advancedConnectionsText" : {
       "comment" : "Please select the maximum number of simultaneous connections to the Piwigo server.",
       "localizations" : {
-        "en" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "الرجاء تحديد الحد الأقصى لعدد الاتصالات المتزامنة مع خادم Piwigo."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vælg det maksimale antal samtidige forbindelser til Piwigo serveren."
+          }
+        },
+        "de" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "Bitte wählen Sie die maximale Anzahl gleichzeitiger Verbindungen zum Piwigo-Server."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "Please select the maximum number of simultaneous connections to the Piwigo server."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleccione el número máximo de conexiones simultáneas al servidor de Piwigo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Veuillez sélectionner le nombre maximal de connexions simultanées au serveur Piwigo."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kérjük, válassza ki a Piwigo-kiszolgálóhoz egyidejűleg létrehozható kapcsolatok maximális számát."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Silakan pilih jumlah maksimum koneksi simultan ke server Piwigo."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Selezionare il numero massimo di connessioni simultanee al server Piwigo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Piwigoサーバーへの同時接続の最大数を選択してください。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Selecteer het maximale aantal gelijktijdige verbindingen naar de Piwigo-server."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Proszę wybrać maksymalną liczbę jednoczesnych połączeń z serwerem Piwigo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пожалуйста, выберите максимальное количество одновременных подключений к серверу Piwigo."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Välj det maximala antalet samtidiga anslutningar till Piwigo-servern."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "请选择Piwigo服务器允许的最大并发连接数。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "請選擇 Piwigo 伺服器的最大同時連線數。"
           }
         }
       }
