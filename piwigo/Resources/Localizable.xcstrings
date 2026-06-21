@@ -38648,7 +38648,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Selecciona el número máximo de conexiones simultáneas al servidor de Piwigo."
+            "value" : "Seleccione el número máximo de conexiones simultáneas al servidor de Piwigo."
           }
         },
         "fr" : {
