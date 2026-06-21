@@ -46,7 +46,6 @@
 		AD10AF362FB9E31C000F0AB4 /* PwgCacheKit in Frameworks */ = {isa = PBXBuildFile; productRef = AD10AF352FB9E31C000F0AB4 /* PwgCacheKit */; };
 		AD12D6F62AA657080038BBFF /* VideoControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD12D6F52AA657080038BBFF /* VideoControlsView.swift */; };
 		AD13BF5529E9A77B0099DCF5 /* Device+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF3EC0B2516515500379E53 /* Device+Model.swift */; };
-		AD13C04F2FE5AE36000168D8 /* UploadSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD13C04E2FE5AE36000168D8 /* UploadSessionManager.swift */; };
 		AD13CD712B8E5A79001ACBE8 /* ImageViewController+Rotate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD13CD702B8E5A79001ACBE8 /* ImageViewController+Rotate.swift */; };
 		AD1477CD2A3BA3020010BD78 /* WhatsNewViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD1477CC2A3BA3020010BD78 /* WhatsNewViewController.storyboard */; };
 		AD1477D32A3BB23B0010BD78 /* WhatsNewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1477D22A3BB23B0010BD78 /* WhatsNewViewController.swift */; };
@@ -526,7 +525,6 @@
 		AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
 		AD11E45E24A930B000C8876F /* API Testing.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "API Testing.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD12D6F52AA657080038BBFF /* VideoControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoControlsView.swift; sourceTree = "<group>"; };
-		AD13C04E2FE5AE36000168D8 /* UploadSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSessionManager.swift; sourceTree = "<group>"; };
 		AD13CD702B8E5A79001ACBE8 /* ImageViewController+Rotate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Rotate.swift"; sourceTree = "<group>"; };
 		AD1477CC2A3BA3020010BD78 /* WhatsNewViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = WhatsNewViewController.storyboard; sourceTree = "<group>"; };
 		AD1477D22A3BB23B0010BD78 /* WhatsNewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewViewController.swift; sourceTree = "<group>"; };
@@ -2358,75 +2356,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD5172202ED319D00024F172 /* AlbumSmart.swift in Sources */,
-				AD51721F2ED319A80024F172 /* Constants.swift in Sources */,
-				AD51721D2ED319580024F172 /* StringOrTypes.swift in Sources */,
-				AD865773284CFE6D00C06EF4 /* community.categories.getList.swift in Sources */,
-				AD38C04D24AF746000CDC765 /* community.images.uploadCompleted.swift in Sources */,
-				AD211A9427C15827005D5E4F /* community.session.getStatus.swift in Sources */,
-				AD211A8127BADED3005D5E4F /* reflection.getMethodList.swift in Sources */,
-				ADDD2108270A13A100CACFF2 /* pwg.getInfos.swift in Sources */,
-				AD865778284D163800C06EF4 /* pwg.categories.getList.swift in Sources */,
-				AD6759B128D77DC6009C69EC /* pwg.categories.add.swift in Sources */,
-				AD615C132F92D04000C24F47 /* PwgKitError.swift in Sources */,
-				AD6759B228D77DCB009C69EC /* pwg.categories.setInfo.swift in Sources */,
-				AD6759B328D77DCF009C69EC /* pwg.categories.move.swift in Sources */,
-				ADB2C3D6291D9D5C009542FB /* pwg.categories.calculateOrphans.swift in Sources */,
-				AD6759B428D77DD3009C69EC /* pwg.categories.delete.swift in Sources */,
-				AD6759B528D77DD7009C69EC /* pwg.categories.setRepresentative.swift in Sources */,
-				AD6759B628D77DDB009C69EC /* pwg.categories.getImages.swift in Sources */,
-				AD06E3862A423053007CACD7 /* pwg.images.exist.swift in Sources */,
-				ADE216FF250E23B0003AE588 /* pwg.images.getInfo.swift in Sources */,
-				AD38C04524AF724100CDC765 /* pwg.images.setInfo.swift in Sources */,
-				AD79E8A32D63D75500106643 /* pwg.images.setCategory.swift in Sources */,
-				ADD79A3D24A9352500428C58 /* pwg.images.upload.swift in Sources */,
-				AD6A128C24FAB57300E3BBED /* pwg.images.uploadAsync.swift in Sources */,
-				AD6759B728D77DE5009C69EC /* pwg.images.uploadCompleted.swift in Sources */,
-				AD06E3852A423051007CACD7 /* pwg.images.search.swift in Sources */,
-				ADDD2107270A139300CACFF2 /* pwg.images.delete.swift in Sources */,
-				AD7D13092DFDB42E00EEE90D /* pwg.groups.getList.swift in Sources */,
-				AD615C142F92D04600C24F47 /* DataDirectories.swift in Sources */,
-				ADD485C32B13A24500C7E30E /* pwg.history.log.swift in Sources */,
-				AD211A8A27BAFE30005D5E4F /* pwg.session.login.swift in Sources */,
-				AD98DEB527C2375C00FAC983 /* pwg.session.getStatus.swift in Sources */,
-				AD211A8F27C14EE2005D5E4F /* pwg.session.logout.swift in Sources */,
-				AD5F64EA24C6024200660BE3 /* pwg.tags.add.swift in Sources */,
-				AD5F64EE24C607FC00660BE3 /* pwg.tags.getList.swift in Sources */,
-				AD5FB37D2D94784100802895 /* pwg.users.setInfo.swift in Sources */,
-				AD5FB3792D9477EE00802895 /* pwg.users.getList.swift in Sources */,
-				ADDD2106270A0FB900CACFF2 /* pwg.users.favorites.addRemove.swift in Sources */,
-				AD11E46124A930B000C8876F /* piwigoWebAPI.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AD2C62362A4896A600671582 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				AD6F39942EF81CAC00CE56F0 /* UploadSessionsDelegate.swift in Sources */,
-				AD2C624E2A4898A200671582 /* ImageMetadata.swift in Sources */,
-				AD7DE0932A8589A000C1424E /* Notification.Name+AppTools.swift in Sources */,
-				AD2C625E2A48A02800671582 /* UploadSizes.swift in Sources */,
-				AD2C624A2A4898A200671582 /* UploadManager.swift in Sources */,
-				AD2C624B2A4898A200671582 /* UploadManager+Auto.swift in Sources */,
-				AD2C62562A4898A200671582 /* UploadManager+Finisher.swift in Sources */,
-				AD2C62532A4898A200671582 /* UploadManager+PrepareImage.swift in Sources */,
-				AD2C62552A4898A200671582 /* UploadManager+Prepare.swift in Sources */,
-				AD7E064F2EFBE1C5003F8A61 /* UploadSessionsDelegate+Task.swift in Sources */,
-				AD2C62512A4898A200671582 /* UploadManager+Foreground.swift in Sources */,
-				AD2C624F2A4898A200671582 /* UploadManager+TransferOrCopy.swift in Sources */,
-				AD2C62502A4898A200671582 /* UploadManager+Utilities.swift in Sources */,
-				AD13C04F2FE5AE36000168D8 /* UploadSessionManager.swift in Sources */,
-				AD2C62522A4898A200671582 /* UploadManager+PrepareVideo.swift in Sources */,
-				AD2C624C2A4898A200671582 /* UploadSessions.swift in Sources */,
-				AD13C04E2FE5AE36000168D8 /* UploadSessionManager.swift in Sources */,
-				AD7E06512EFBE1FC003F8A61 /* UploadSessionsDelegate+Data.swift in Sources */,
-				AD6F39992EFAEBE400CE56F0 /* UploadManager+TransferCounter.swift in Sources */,
-				AD336BA32F523D290047424E /* UploadManagerActor.swift in Sources */,
-				AD7E06652F032DD1003F8A61 /* UploadManager+TransferInBackground.swift in Sources */,
-				AD2C62542A4898A200671582 /* VideoMetadata.swift in Sources */,
-				AD341D732F7EC9AF00F96F56 /* UploadManager+BackgroundTasks.swift in Sources */,
-				ADC0A1462E55FD5D001E62F5 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3296,9 +3225,10 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 674;
 				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZU5THW8T5W;
 				ENABLE_DEBUG_DYLIB = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				INFOPLIST_FILE = shareExtension/Info.plist;
@@ -3314,6 +3244,8 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo.shareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Piwigo Distribution ShareExtension";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -3556,7 +3488,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "1db8c18e-75fc-4fdf-b2c9-2aa2c895e936";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Piwigo iOS distribution";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Piwigo Distribution";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
