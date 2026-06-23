@@ -9,7 +9,8 @@
 import os
 import Foundation
 import MetricKit
-import piwigoKit
+import PwgKit
+import PwgAPIKit
 
 final class AppMetrics: NSObject, MXMetricManagerSubscriber {
     
