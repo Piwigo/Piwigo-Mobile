@@ -29,6 +29,7 @@
 		AD089D002BC2A5D700CE4A3E /* AlbumCollectionViewCellOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE950F279DB4E100397426 /* AlbumCollectionViewCellOld.swift */; };
 		AD089D042BC2A5F800CE4A3E /* AlbumTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD64ED2B27946C2500687793 /* AlbumTableViewCell.swift */; };
 		AD089D052BC2A5FC00CE4A3E /* AlbumTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD2114592122D3E4004FFC8C /* AlbumTableViewCell.xib */; };
+		AD095BD82FE84F6E00FBBEF3 /* AppMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD095BD72FE84F6E00FBBEF3 /* AppMetrics.swift */; };
 		AD09E2FF2A90D6DD00D8E134 /* VideoDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD09E2FE2A90D6DD00D8E134 /* VideoDetailViewController.swift */; };
 		AD09E3032A92A05C00D8E134 /* SettingsViewController+Privacy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD09E3022A92A05C00D8E134 /* SettingsViewController+Privacy.swift */; };
 		AD09E3052A92A13D00D8E134 /* SettingsViewController+Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD09E3042A92A13D00D8E134 /* SettingsViewController+Upload.swift */; };
@@ -800,6 +801,7 @@
 		AD07CAC326DD701600BEAEFB /* EditImageThumbTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditImageThumbTableViewCell.swift; sourceTree = "<group>"; };
 		AD0822721FA06B090005AA12 /* sv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/About.strings; sourceTree = "<group>"; };
 		AD084E462659A27100159FE1 /* piwigoKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = piwigoKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AD095BD72FE84F6E00FBBEF3 /* AppMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppMetrics.swift; sourceTree = "<group>"; };
 		AD09E2FE2A90D6DD00D8E134 /* VideoDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoDetailViewController.swift; sourceTree = "<group>"; };
 		AD09E3022A92A05C00D8E134 /* SettingsViewController+Privacy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsViewController+Privacy.swift"; sourceTree = "<group>"; };
 		AD09E3042A92A13D00D8E134 /* SettingsViewController+Upload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsViewController+Upload.swift"; sourceTree = "<group>"; };
@@ -3096,6 +3098,7 @@
 				ADD77EEF2A19339800F8C779 /* ExternalDisplaySceneDelegate.swift */,
 				AD91127B28146B6C002FB78F /* SceneConfigurations.swift */,
 				AD074F6523F8498A00D6016A /* ClearCache.swift */,
+				AD095BD72FE84F6E00FBBEF3 /* AppMetrics.swift */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -4139,6 +4142,7 @@
 				ADCA7CF82E928A7F00EFC3C5 /* HelpUtilities.swift in Sources */,
 				ADEA269A285F8D5F00B6C9A0 /* ImageViewController+Share.swift in Sources */,
 				ADA74B0B2C5BC72500162BE0 /* LocalImagesViewController+FlowLayout.swift in Sources */,
+				AD095BD82FE84F6E00FBBEF3 /* AppMetrics.swift in Sources */,
 				ADAF43F12FAE1AE400C8085F /* Help11ViewController.swift in Sources */,
 				AD6BA0F32BA5BDDC00755257 /* LocalImagesViewController+Data.swift in Sources */,
 				AD4AAFB825A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift in Sources */,

@@ -189,7 +189,7 @@ extension Data {
     
     // MARK: - Piwgo Response Checker
     func saveInvalidJSON(for method: String) {
-        // Prepare file name from current date (UTC time)
+        // Prepare file name from current date (local time)
         let fileName = JSONprefix + DateUtilities.logsDateFormatter.string(from: Date()) + " " + method + JSONextension
         
         // Logs are saved in the /tmp directory and will be deleted:
