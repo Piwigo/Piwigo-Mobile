@@ -45,6 +45,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions
                         launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool
     {
+        // Register App Metrics
+        #if DEBUG
+        AppMetrics.shared.start()
+        AppMetrics.shared.saveSettings()
+        #endif
+        
         // Register transformers at the very beginning
         ValueTransformer.setValueTransformer(DescriptionValueTransformer(), forName: .descriptionToDataTransformer)
         ValueTransformer.setValueTransformer(RelativeURLValueTransformer(), forName: .relativeUrlToDataTransformer)

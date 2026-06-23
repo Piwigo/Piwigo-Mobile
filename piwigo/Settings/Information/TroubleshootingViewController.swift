@@ -138,8 +138,14 @@ class TroubleshootingViewController: UIViewController {
                 debugPrint("••> completed in \(duration.rounded()) ms")
                 let entries = allEntries.compactMap({$0 as? OSLogEntryLog})
                 
+                // piwigo — App Metrics
+                #if DEBUG
+                var someLogs = entries.filter({$0.category == String(describing: AppMetrics.self)})
+                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
+                #endif
+                
                 // PwgKit — Core Data
-                var someLogs = entries.filter({$0.category == String(describing: DataMigrator.self)})
+                someLogs = entries.filter({$0.category == String(describing: DataMigrator.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
                 someLogs = entries.filter({$0.category == String(describing: Image.self)})
                 if someLogs.isEmpty ==  false { self.pwgLogs.append(someLogs)}
