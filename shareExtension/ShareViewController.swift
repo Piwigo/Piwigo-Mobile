@@ -332,9 +332,9 @@ final class ShareViewController: UIViewController {
                         return
                     }
                     
-                    // Copy image to the shared container immediately
+                    // Copy movie to the shared container immediately
                     let fileName = url.lastPathComponent
-                    let identifier = kSharedPrefix + sharedDateTime + kImageSuffix + String(index)
+                    let identifier = kSharedPrefix + sharedDateTime + kMovieSuffix + String(index)
                     let fileURL = DataDirectories.appUploadsDirectory
                         .appendingPathComponent(identifier)
                     
@@ -360,7 +360,7 @@ final class ShareViewController: UIViewController {
                         return
                     }
                     
-                    // Copy video to the shared container immediately
+                    // Copy movie to the shared container immediately
                     let fileName = url.lastPathComponent
                     let identifier = kSharedPrefix + sharedDateTime + kMovieSuffix + String(index)
                     let fileURL = DataDirectories.appUploadsDirectory
