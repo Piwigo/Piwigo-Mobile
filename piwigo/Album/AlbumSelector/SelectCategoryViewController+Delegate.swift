@@ -366,7 +366,7 @@ extension SelectCategoryViewController: UITableViewDelegate
                 self.selectedCategoryId = Int32.min
                 continuation.resume(returning: false)
             })
-            let performAction = UIAlertAction(title: String(localized: "alertYesButton", comment: "Yes"), style: .default, handler: { _ in
+            let performAction = UIAlertAction(title: Localized.yes, style: .default, handler: { _ in
                 continuation.resume(returning: true)
             })
             

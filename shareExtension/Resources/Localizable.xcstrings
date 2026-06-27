@@ -1,10 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "alertYesButton" : {
-      "comment" : "Yes",
-      "shouldTranslate" : false
-    },
     "categorySelection_allAlbums" : {
       "comment" : "All Albums",
       "shouldTranslate" : false

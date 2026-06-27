@@ -267,7 +267,7 @@ class SettingsViewController: UIViewController {
             let alert = UIAlertController(title: kHelpUsTitle, message: kHelpUsTranslatePiwigo, preferredStyle: .alert)
             let cancelAction = UIAlertAction(title: String(localized: "alertNoButton", comment: "No"), style: .destructive, handler: { action in
             })
-            let defaultAction = UIAlertAction(title: String(localized: "alertYesButton", comment: "Yes"), style: .default, handler: { action in
+            let defaultAction = UIAlertAction(title: Localized.yes, style: .default, handler: { action in
                 if let url = URL(string: "https://crowdin.com/project/piwigo-mobile") {
                     UIApplication.shared.open(url)
                 }

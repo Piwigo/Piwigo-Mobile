@@ -29,4 +29,5 @@ public let pwgPadSettingsWidth = CGFloat(512.0)
 // Localized strings
 public enum Localized {
     public static let cancel = String(localized: "alertCancelButton", bundle: .pwgUIKit, comment: "Cancel")
+    public static let yes = String(localized: "alertYesButton", bundle: .pwgUIKit, comment: "Yes")
 }
