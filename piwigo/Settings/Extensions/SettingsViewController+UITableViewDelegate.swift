@@ -33,7 +33,7 @@ extension SettingsViewController: UITableViewDelegate
                 text += String(localized: "serverVersionOld_title", comment: "Server Update Available")
             }
         case .albums:
-            title = String(localized: "tabBar_albums", bundle: .pwgKit, comment: "Albums")
+            title = Localized.tabBar_albums
         case .images:
             title = String(localized: "severalImages", comment: "Images")
         case .videos:

@@ -86,9 +86,7 @@ extension CategoryGetInfo {
                 parentId: String = "\(Int32.min)", parentIds: String = "",
                 nberImages: Int64 = Int64.zero, totalNberImages: Int64 = Int64.min) {
         id = albumId
-        name = pwgSmartAlbum(rawValue: albumId)?.name
-            ?? albumName
-            ?? String(localized: "tabBar_albums", bundle: .pwgKit, comment: "Albums")
+        name = pwgSmartAlbum(rawValue: albumId)?.name ?? albumName ?? Localized.tabBar_albums
         comment = albumComment
         commentRaw = albumComment
         globalRank = albumId <= 0 ? "0" : (parentId == "0" ? "0" : albumRank + ".0")

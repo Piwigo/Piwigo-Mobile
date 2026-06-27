@@ -23,7 +23,7 @@ extension SelectCategoryViewController: UITableViewDelegate
             // 1st section —> Albums containing image
             if section == 0 {
                 // Title
-                title = String(format: "%@\n", String(localized: "tabBar_albums", bundle: .pwgKit, comment: "Albums"))
+                title = String(format: "%@\n", Localized.tabBar_albums)
                 text = inputImages.first?.albums?.count ?? 0 > 1
                     ? String(localized: "categorySelection_one", comment:"Select one of the albums containing this image")
                     : String(localized: "categorySelection_current", comment:"Select the current album for this image")
@@ -37,8 +37,7 @@ extension SelectCategoryViewController: UITableViewDelegate
             if section == 0 {
                 // Do we have recent albums to show?
                 title = (recentAlbums.fetchedObjects ?? []).count > 0
-                    ? Localized.recentAlbums
-                    : String(localized: "tabBar_albums", bundle: .pwgKit, comment: "Albums")
+                    ? Localized.recentAlbums : Localized.tabBar_albums
             } else {
                 // 2nd section
                 title = String(localized: "categorySelection_allAlbums", comment: "All Albums")

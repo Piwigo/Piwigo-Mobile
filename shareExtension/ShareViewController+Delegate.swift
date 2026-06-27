@@ -22,8 +22,7 @@ extension ShareViewController: UITableViewDelegate
         if section == 0 {
             // Do we have recent albums to show?
             return (recentAlbums.fetchedObjects ?? []).count > 0
-                ? Localized.recentAlbums
-                : String(localized: "tabBar_albums", bundle: .pwgKit, comment: "Albums")
+                ? Localized.recentAlbums : Localized.tabBar_albums
         } else {
             // 2nd section
             return String(localized: "categorySelection_allAlbums", comment: "All Albums")

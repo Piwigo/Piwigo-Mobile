@@ -32,7 +32,7 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController {
         super.viewDidLoad()
         
         // Title
-        title = String(localized: "tabBar_albums", bundle: .pwgKit, comment: "Albums")
+        title = Localized.tabBar_albums
 
         // Table view
         tableView?.accessibilityIdentifier = "Album Thumbnail Size"

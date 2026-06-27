@@ -15,7 +15,12 @@ public enum PwgKit {
     public static let build = 677
 }
 
-// Bundle for PwgKit localised strings
+// Bundle for PwgKit localized strings
 public extension Bundle {
     static let pwgKit: Bundle = .module
+}
+
+// Shared localized strings
+public enum Localized {
+    public static let tabBar_albums = String(localized: "tabBar_albums", bundle: .pwgKit, comment: "Albums")
 }

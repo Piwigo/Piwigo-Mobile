@@ -5,10 +5,6 @@
       "comment" : "All Albums",
       "shouldTranslate" : false
     },
-    "tabBar_albums" : {
-      "comment" : "Albums",
-      "shouldTranslate" : false
-    },
     "uploadSeveralImages_selectAlbum" : {
       "comment" : "Please, select the album in which you wish to upload the photos.",
       "localizations" : {

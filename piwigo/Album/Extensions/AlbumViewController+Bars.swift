@@ -472,9 +472,7 @@ extension AlbumViewController
             return
         }
         
-        let title: String = categoryId == Int32.zero
-            ? String(localized: "tabBar_albums", bundle: .pwgKit, comment: "Albums")
-            : albumData.name
+        let title: String = categoryId == Int32.zero ? Localized.tabBar_albums : albumData.name
         navigationItem.title = title
         view?.window?.windowScene?.title = title
         
@@ -555,7 +553,7 @@ extension AlbumViewController
     func setTitleViewOld(progress: Float = 0) {
         // Title
         if [0, pwgSmartAlbum.search.rawValue].contains(categoryId) {
-            self.title = String(localized: "tabBar_albums", bundle: .pwgKit, comment: "Albums")
+            self.title = Localized.tabBar_albums
             self.view?.window?.windowScene?.title = self.title
             return
         }

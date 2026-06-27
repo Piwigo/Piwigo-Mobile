@@ -20,7 +20,7 @@ extension AutoUploadViewController: UITableViewDelegate
         case 0:
             title = String(localized: "settings_autoUploadLong", comment: "Auto Upload Photos")
         case 1:
-            title = String(localized: "tabBar_albums", bundle: .pwgKit, comment: "Albums")
+            title = Localized.tabBar_albums
         case 2:
             title = String(localized: "imageDetailsView_title", comment: "Properties")
         default:
