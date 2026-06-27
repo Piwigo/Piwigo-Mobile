@@ -1171,7 +1171,7 @@ final class AlbumViewController: UIViewController
         var rootAlbumViewController: AlbumViewController? = nil
         for viewController in navigationController?.viewControllers ?? []
         {
-            // Look for AlbumImagesViewControllers
+            // Look for AlbumViewControllers
             if let thisViewController = viewController as? AlbumViewController
             {
                 // Is this the view controller of the default album?
