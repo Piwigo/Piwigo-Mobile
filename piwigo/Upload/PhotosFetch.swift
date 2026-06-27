@@ -109,12 +109,13 @@ class PhotosFetch {
         let cancelAction = UIAlertAction(title: Localized.cancel,
                                          style: .destructive, handler: { action in })
 
-        let prefsAction = UIAlertAction(title: String(localized: "alertOkButton", comment: "OK"), style: .default, handler: { action in
-                // Redirect user to Settings app
-                if let url = URL(string: UIApplication.openSettingsURLString) {
-                    UIApplication.shared.open(url)
-                }
-            })
+        let prefsAction = UIAlertAction(title: String(localized: "alertOkButton", comment: "OK"),
+                                        style: .default, handler: { action in
+            // Redirect user to Settings app
+            if let url = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(url)
+            }
+        })
 
         // Present alert
         let title = String(localized: "localAlbums_photosNotAuthorized_title", comment: "No Access")
