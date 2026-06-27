@@ -31,8 +31,8 @@ extension TagsViewController
             textField.delegate = self
         })
 
-        let cancelAction = UIAlertAction(title: String(localized: "alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in
-            })
+        let cancelAction = UIAlertAction(title: Localized.cancel,
+                                         style: .cancel, handler: { action in })
 
         addAction = UIAlertAction(title: String(localized: "alertAddButton", comment: "Add"), style: .default, handler: { action in
             // Rename album if possible

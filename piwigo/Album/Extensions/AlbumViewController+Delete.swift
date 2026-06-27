@@ -62,11 +62,10 @@ extension AlbumViewController
         let alert = UIAlertController(title: nil, message: msg, preferredStyle: .actionSheet)
 
         // Button for cancelling the action
-        let cancelAction = UIAlertAction(
-            title: String(localized: "alertCancelButton", comment: "Cancel"),
-            style: .cancel, handler: { [self] action in
-                updateBarsInSelectMode()
-            })
+        let cancelAction = UIAlertAction(title: Localized.cancel,
+                                         style: .cancel, handler: { [self] action in
+            updateBarsInSelectMode()
+        })
         alert.addAction(cancelAction)
 
         // Button for deleting all images

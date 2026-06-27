@@ -242,8 +242,8 @@ extension AlbumViewController: @preconcurrency ShareImageActivityItemProviderDel
             presentedViewController?.updateHUD(title: title, detail: detail)
         } else {
             presentedViewController?.showHUD(withTitle: title, detail: detail,
-                                             buttonTitle: String(localized: "alertCancelButton", comment: "Cancel"),
-                                             buttonTarget: self, buttonSelector: #selector(cancelShareImages),
+                                             buttonTitle: Localized.cancel, buttonTarget: self,
+                                             buttonSelector: #selector(cancelShareImages),
                                              inMode: .determinate)
         }
     }

@@ -360,7 +360,7 @@ extension SelectCategoryViewController: UITableViewDelegate
                                      forCategory albumData: Album, at indexPath:IndexPath) async -> Bool {
         await withCheckedContinuation { continuation in
             let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
-            let cancelAction = UIAlertAction(title: String(localized: "alertCancelButton", comment: "Cancel"),
+            let cancelAction = UIAlertAction(title: Localized.cancel,
                                              style: .cancel, handler: {_ in
                 // Forget the choice
                 self.selectedCategoryId = Int32.min

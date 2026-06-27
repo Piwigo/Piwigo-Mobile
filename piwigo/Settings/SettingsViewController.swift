@@ -373,8 +373,8 @@ class SettingsViewController: UIViewController {
         // Ask user for confirmation
         let alert = UIAlertController(title: "", message: String(localized: "logoutConfirmation_message", comment: "Are you sure you want to logout?"), preferredStyle: .actionSheet)
         
-        let cancelAction = UIAlertAction(title: String(localized: "alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in
-        })
+        let cancelAction = UIAlertAction(title: Localized.cancel,
+                                         style: .cancel, handler: { action in })
         
         let logoutAction = UIAlertAction(title: String(localized: "logoutConfirmation_title", comment: "Logout"), style: .destructive, handler: { action in
             // Show HUD

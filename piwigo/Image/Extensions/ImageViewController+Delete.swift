@@ -33,12 +33,11 @@ extension ImageViewController
             message: imageData.isVideo ? String(localized: "deleteSingleVideo_message", comment: "Are you sure you want to delete this image? This cannot be undone!") : String(localized: "deleteSingleImage_message", comment: "Are you sure you want to delete this image? This cannot be undone!"),
             preferredStyle: .actionSheet)
 
-        let cancelAction = UIAlertAction(
-            title: String(localized: "alertCancelButton", comment: "Cancel"),
-            style: .cancel, handler: { [self] action in
-                // Re-enable buttons
-                setEnableStateOfButtons(true)
-            })
+        let cancelAction = UIAlertAction(title: Localized.cancel,
+                                         style: .cancel, handler: { [self] action in
+            // Re-enable buttons
+            setEnableStateOfButtons(true)
+        })
 
         let removeAction = UIAlertAction(
             title: String(localized: "removeSingleImage_title", comment: "Remove from Album"),

@@ -276,8 +276,8 @@ extension LocalImagesViewController {
         let title = String(localized: "localImages_deleteTitle", comment: "Remove from Camera Roll")
         let message = String(localized: "localImages_deleteMessage", comment: "Message explaining what will happen")
         let alert = UIAlertController(title: "", message: message, preferredStyle: .alert)
-        let defaultAction = UIAlertAction(title: String(localized: "alertCancelButton", comment: "Cancel"),
-            style: .cancel, handler: { action in })
+        let defaultAction = UIAlertAction(title: Localized.cancel,
+                                          style: .cancel, handler: { action in })
         let deleteAction = UIAlertAction(title: title, style: .destructive, handler: { action in
             // Delete images and upload requests
             let uploadIDs = uploadsToDelete.map(\.objectID)

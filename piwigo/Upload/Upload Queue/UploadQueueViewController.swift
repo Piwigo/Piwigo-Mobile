@@ -276,7 +276,8 @@ class UploadQueueViewController: UIViewController {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
         // Cancel action
-        let cancelAction = UIAlertAction(title: String(localized: "alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in })
+        let cancelAction = UIAlertAction(title: Localized.cancel,
+                                         style: .cancel, handler: { action in })
         alert.addAction(cancelAction)
         
         // Resume upload requests in section 2

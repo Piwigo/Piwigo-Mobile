@@ -14,13 +14,19 @@ public enum PwgUIKit {
     public static let build = 1
 }
 
-// Bundle for PwgUploadKit localised strings
-//public extension Bundle {
-//    static let pwgUIKit: Bundle = .module
-//}
+// Bundle for PwgUIKit localised strings
+public extension Bundle {
+    static let pwgUIKit: Bundle = .module
+}
 
 // Constants
 /// - Preferred popover view width on iPad
 public let pwgPadSubViewWidth = CGFloat(425.0)
 /// - Preferred Settings view width on iPad
 public let pwgPadSettingsWidth = CGFloat(512.0)
+
+
+// Localized strings
+public enum Localized {
+    public static let cancel = String(localized: "alertCancelButton", bundle: .pwgUIKit, comment: "Cancel")
+}

@@ -182,12 +182,11 @@ extension ImageViewController
             textField.delegate = nil
         })
         
-        let cancelAction = UIAlertAction(
-            title: String(localized: "alertCancelButton", comment: "Cancel"),
-            style: .cancel, handler: { [self] action in
-                // Re-enable buttons
-                setEnableStateOfButtons(true)
-            })
+        let cancelAction = UIAlertAction(title: Localized.cancel,
+                                         style: .cancel, handler: { [self] action in
+            // Re-enable buttons
+            setEnableStateOfButtons(true)
+        })
         
         let goToPageAction = UIAlertAction(
             title: String(localized: "alertOkButton", comment: "OK"),

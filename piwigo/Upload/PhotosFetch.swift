@@ -105,7 +105,8 @@ class PhotosFetch {
     @MainActor
     func requestPhotoLibraryAccess(in viewController: UIViewController?) {
         // Invite user to provide access to photos
-        let cancelAction = UIAlertAction(title: String(localized: "alertCancelButton", comment: "Cancel"), style: .destructive, handler: { action in })
+        let cancelAction = UIAlertAction(title: Localized.cancel,
+                                         style: .destructive, handler: { action in })
 
         let prefsAction = UIAlertAction(title: String(localized: "alertOkButton", comment: "OK"), style: .default, handler: { action in
                 // Redirect user to Settings app

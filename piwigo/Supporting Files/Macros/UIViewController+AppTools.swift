@@ -155,7 +155,7 @@ extension UIViewController {
         }
         
         // Prepare actions
-        let cancelAction = UIAlertAction(title: String(localized: "alertCancelButton", comment:"Cancel"),
+        let cancelAction = UIAlertAction(title: Localized.cancel,
                                          style: .cancel) { _ in cancel() }
         return await withCheckedContinuation { continuation in
             let dismissAction = UIAlertAction(title: String(localized: "alertDismissButton", comment:"Dismiss"),
@@ -197,7 +197,7 @@ extension UIViewController {
         }
         
         // Prepare actions
-        let cancelAction = UIAlertAction(title: String(localized: "alertCancelButton", comment:"Cancel"),
+        let cancelAction = UIAlertAction(title: Localized.cancel,
                                          style: .cancel) { _ in cancel() }
         let dismissAction = UIAlertAction(title: String(localized: "alertDismissButton", comment:"Dismiss"),
                                           style: .default) { _ in dismiss() }

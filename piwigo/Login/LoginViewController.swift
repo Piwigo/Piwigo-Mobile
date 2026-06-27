@@ -311,9 +311,8 @@ class LoginViewController: UIViewController {
     func requestCertificateApproval(afterError error: PwgKitError) {
         let title = String(localized: "loginCertFailed_title", comment: "Connection Not Private")
         let message = "\(String(localized: "loginCertFailed_message", comment: "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?"))\r\r\(ServerVars.shared.certificateInformation)"
-        let cancelAction = UIAlertAction(
-            title: String(localized: "alertCancelButton", comment: "Cancel"),
-            style: .cancel, handler: { [self] action in
+        let cancelAction = UIAlertAction(title: Localized.cancel,
+                                         style: .cancel, handler: { [self] action in
                 // Should forget certificate
                 ServerVars.shared.didApproveCertificate = false
                 // Report error
@@ -369,12 +368,11 @@ class LoginViewController: UIViewController {
     func requestNonSecuredAccess(afterError error: PwgKitError) {
         let title = String(localized: "loginHTTPSfailed_title", comment: "Secure Connection Failed")
         let message = String(localized: "loginHTTPSfailed_message", comment: "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?")
-        let cancelAction = UIAlertAction(
-            title: String(localized: "alertCancelButton", comment: "Cancel"),
-            style: .cancel, handler: { [self] action in
-                // Stop logging in action, display error message
-                logging(inConnectionError: error)
-            })
+        let cancelAction = UIAlertAction(title: Localized.cancel,
+                                         style: .cancel, handler: { [self] action in
+            // Stop logging in action, display error message
+            logging(inConnectionError: error)
+        })
         let loginAction = UIAlertAction(
             title: String(localized: "alertOkButton", comment: "OK"),
             style: .default, handler: { [self] action in
@@ -607,9 +605,7 @@ class LoginViewController: UIViewController {
         // Suggest to retrieve password
         let title = String(localized: "loginError_title", comment: "Login Fail")
         let message = String(localized: "loginError_resetPwd", comment: "Would you like to reset your password from the web interface?")
-        let cancelAction = UIAlertAction(
-            title: String(localized: "alertCancelButton", comment: "Cancel"),
-            style: .cancel, handler: { _ in })
+        let cancelAction = UIAlertAction(title: Localized.cancel, style: .cancel, handler: { _ in })
         let retrieveAction = UIAlertAction(
             title: String(localized: "alertOkButton", comment: "OK"),
             style: .default, handler: { _ in

@@ -1,10 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "alertCancelButton" : {
-      "comment" : "Cancel",
-      "shouldTranslate" : false
-    },
     "alertYesButton" : {
       "comment" : "Yes",
       "shouldTranslate" : false

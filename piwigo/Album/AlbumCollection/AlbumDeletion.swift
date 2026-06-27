@@ -39,12 +39,11 @@ final class AlbumDeletion: NSObject
             message: String.localizedStringWithFormat(String(localized: "deleteCategory_message", comment: "ARE YOU SURE YOU WANT TO DELETE THE ALBUM \"%@\" AND ALL %lld IMAGES?"), albumData.name, albumData.totalNbImages),
             preferredStyle: .alert)
         
-        let cancelAction = UIAlertAction(
-            title: String(localized: "alertCancelButton", comment: "Cancel"),
-            style: .cancel, handler: { _ in
-                // Hide swipe buttons
-                completion(true)
-            })
+        let cancelAction = UIAlertAction(title: Localized.cancel,
+                                         style: .cancel, handler: { _ in
+            // Hide swipe buttons
+            completion(true)
+        })
         alert.addAction(cancelAction)
         
         if albumData.totalNbImages == 0 {
@@ -137,12 +136,10 @@ final class AlbumDeletion: NSObject
             textField.delegate = self
         })
         
-        let defaultAction = UIAlertAction(
-            title: String(localized: "alertCancelButton", comment: "Cancel"),
-            style: .cancel,
-            handler: { _ in
-                completion(true)
-            })
+        let defaultAction = UIAlertAction(title: Localized.cancel,
+                                          style: .cancel, handler: { _ in
+            completion(true)
+        })
         
         deleteAction = UIAlertAction(
             title: String(localized: "deleteCategoryConfirm_deleteButton", comment: "DELETE"),

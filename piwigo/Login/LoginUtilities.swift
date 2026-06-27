@@ -113,9 +113,8 @@ struct LoginUtilities
             textField.delegate = textFieldDelegate
         })
         
-        let cancelAction = UIAlertAction(
-            title: String(localized: "alertCancelButton", comment: "Cancel"),
-            style: .cancel, handler: cancelAction)
+        let cancelAction = UIAlertAction(title: Localized.cancel,
+                                         style: .cancel, handler: cancelAction)
         alert.addAction(cancelAction)
         
         let loginAction = UIAlertAction(

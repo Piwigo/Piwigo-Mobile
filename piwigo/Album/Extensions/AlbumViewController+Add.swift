@@ -76,16 +76,15 @@ extension AlbumViewController
             textField.returnKeyType = .continue
             textField.delegate = self
         })
-
-        let cancelAction = UIAlertAction(
-            title: String(localized: "alertCancelButton", comment: "Cancel"),
-            style: .cancel, handler: { [self] action in
-                // Cancel action
-                if homeAlbumButton.isHidden {
-                    didCancelTapAddButton()
-                }
+        
+        let cancelAction = UIAlertAction(title: Localized.cancel,
+                                         style: .cancel, handler: { [self] action in
+            // Cancel action
+            if homeAlbumButton.isHidden {
+                didCancelTapAddButton()
+            }
         })
-
+        
         createAlbumAction = UIAlertAction(
             title: String(localized: "alertAddButton", comment: "Add"),
             style: .default, handler: { [self] action in

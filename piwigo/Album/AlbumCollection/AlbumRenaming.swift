@@ -81,12 +81,11 @@ class AlbumRenaming: NSObject
             textField.tag = textFieldTag.albumDescription.rawValue
         })
 
-        let cancelAction = UIAlertAction(
-            title: String(localized: "alertCancelButton", comment: "Cancel"),
-            style: .cancel, handler: { action in
-                // Hide swipe buttons
-                completion(true)
-            })
+        let cancelAction = UIAlertAction(title: Localized.cancel,
+                                         style: .cancel, handler: { action in
+            // Hide swipe buttons
+            completion(true)
+        })
 
         renameAction = UIAlertAction(
             title: String(localized: "renameCategory_button", comment: "Rename"),

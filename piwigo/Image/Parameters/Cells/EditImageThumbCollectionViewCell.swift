@@ -193,10 +193,8 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
             textField.delegate = self
         })
 
-        let cancelAction = UIAlertAction(
-            title: String(localized: "alertCancelButton", comment: "Cancel"),
-            style: .cancel,
-            handler: { _ in })
+        let cancelAction = UIAlertAction(title: Localized.cancel,
+                                         style: .cancel, handler: { _ in })
 
         renameFileNameAction = UIAlertAction(
             title: String(localized: "renameCategory_button", comment: "Rename"),
