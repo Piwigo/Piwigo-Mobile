@@ -117,7 +117,7 @@ extension CategorySortViewController: UITableViewDelegate {
     
     // MARK: - Header
     private func getContentOfHeader() -> (String, String) {
-        let title = String(format: "%@\n", String(localized: "defaultImageSort>414px", comment: "Default Sort of Images"))
+        let title = String(format: "%@\n", String(localized: "defaultImageSortLong", comment: "Default Sort of Images"))
         let text = String(localized: "imageSortMessage", comment: "Please select how you wish to sort images")
         return (title, text)
     }

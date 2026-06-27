@@ -19,15 +19,15 @@ public extension Bundle {
     static let pwgUIKit: Bundle = .module
 }
 
+// Localized strings
+public enum Localized {
+    public static let yes = String(localized: "alertYesButton", bundle: .pwgUIKit, comment: "Yes")
+    public static let cancel = String(localized: "alertCancelButton", bundle: .pwgUIKit, comment: "Cancel")
+    public static let recentAlbums = String(localized: "recentAlbums", bundle: .pwgUIKit, comment: "Recent Albums")
+}
+
 // Constants
 /// - Preferred popover view width on iPad
 public let pwgPadSubViewWidth = CGFloat(425.0)
 /// - Preferred Settings view width on iPad
 public let pwgPadSettingsWidth = CGFloat(512.0)
-
-
-// Localized strings
-public enum Localized {
-    public static let cancel = String(localized: "alertCancelButton", bundle: .pwgUIKit, comment: "Cancel")
-    public static let yes = String(localized: "alertYesButton", bundle: .pwgUIKit, comment: "Yes")
-}

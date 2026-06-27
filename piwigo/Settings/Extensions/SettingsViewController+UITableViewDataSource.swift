@@ -137,7 +137,7 @@ extension SettingsViewController: UITableViewDataSource
                     : "LabelTableViewCell2"
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
-                let title = String(localized: "defaultThumbnailFile>320px", comment: "Thumbnail File")
+                let title = String(localized: "defaultThumbnailFile", comment: "Thumbnail File")
                 let albumImageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
                 cell.configure(with: title, detail: albumImageSize.name)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
@@ -155,8 +155,7 @@ extension SettingsViewController: UITableViewDataSource
 
                 // Slider configuration
                 // See https://iosref.com/res
-                let title = String(localized: "maxNberOfRecentAlbums>320px", comment: "Recent Albums")
-                cell.configure(with: title, value: value, increment: 1, minValue: 3, maxValue: 10, prefix: "", suffix: "/10")
+                cell.configure(with: Localized.recentAlbums, value: value, increment: 1, minValue: 3, maxValue: 10, prefix: "", suffix: "/10")
                 cell.cellSliderBlock = { newValue in
                     // Update settings
                     CacheVars.shared.maxNberRecentCategories = Int(newValue)
@@ -206,7 +205,7 @@ extension SettingsViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 // See https://iosref.com/res
-                let title = String(localized: "defaultImageSort>320px", comment: "Default Sort")
+                let title = String(localized: "defaultImageSort", comment: "Default Sort")
                 cell.configure(with: title, detail: AlbumVars.shared.defaultSort.name)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "defaultSort"
@@ -219,7 +218,7 @@ extension SettingsViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 // See https://iosref.com/res
-                let title = String(localized: "defaultThumbnailFile>320px", comment: "Thumbnail File")
+                let title = String(localized: "defaultThumbnailFile", comment: "Thumbnail File")
                 let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
                 cell.configure(with: title, detail: thumbnailSize.name)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
@@ -249,7 +248,7 @@ extension SettingsViewController: UITableViewDataSource
                 
                 // Slider configuration
                 // See https://iosref.com/res
-                let title = String(localized: "defaultNberOfThumbnails>320px", comment: "Number/Row")
+                let title = String(localized: "defaultNberOfThumbnails", comment: "Number/Row")
                 cell.configure(with: title, value: value, increment: 1, minValue: minNberOfImages, maxValue: minNberOfImages * 2, prefix: "", suffix: "/\(Int(minNberOfImages * 2))")
                 cell.cellSliderBlock = { newValue in
                     // Update settings
@@ -265,7 +264,7 @@ extension SettingsViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 // See https://iosref.com/res
-                let title = String(localized: "defaultPreviewFile>320px", comment: "Preview File")
+                let title = String(localized: "defaultPreviewFile", comment: "Preview File")
                 let imageSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
                 cell.configure(with: title, detail: imageSize.name)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator

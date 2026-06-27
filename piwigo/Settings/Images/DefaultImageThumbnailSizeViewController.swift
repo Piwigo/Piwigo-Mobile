@@ -155,7 +155,7 @@ extension DefaultImageThumbnailSizeViewController: UITableViewDelegate {
     
     // MARK: - Header
     private func getContentOfHeader() -> (String, String) {
-        let title = String(format: "%@\n", String(localized: "defaultThumbnailFile>414px", comment: "Images Thumbnail File"))
+        let title = String(format: "%@\n", String(localized: "defaultThumbnailFileLong", comment: "Images Thumbnail File"))
         let text = String(localized: "defaultThumbnailSizeHeader", comment: "Please select an image thumbnail size")
         return (title, text)
     }

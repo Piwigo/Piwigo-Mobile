@@ -37,7 +37,7 @@ extension SelectCategoryViewController: UITableViewDelegate
             if section == 0 {
                 // Do we have recent albums to show?
                 title = (recentAlbums.fetchedObjects ?? []).count > 0
-                    ? String(localized: "maxNberOfRecentAlbums>320px", comment: "Recent Albums")
+                    ? Localized.recentAlbums
                     : String(localized: "tabBar_albums", bundle: .pwgKit, comment: "Albums")
             } else {
                 // 2nd section

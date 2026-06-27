@@ -153,7 +153,7 @@ extension DefaultImageSizeViewController: UITableViewDelegate {
     
     // MARK: - Header
     private func getContentOfHeader() -> (String, String) {
-        let title = String(format: "%@\n", String(localized: "defaultPreviewFile>414px", comment: "Preview Image File"))
+        let title = String(format: "%@\n", String(localized: "defaultPreviewFileLong", comment: "Preview Image File"))
         let text = String(localized: "defaultImageSizeHeader", comment: "Please select an image size")
         return (title, text)
     }
