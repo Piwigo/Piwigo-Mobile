@@ -12,6 +12,7 @@ import Foundation
 import Photos
 import UIKit
 import PwgKit
+import PwgUIKit
 
 class PhotosFetch {
     
