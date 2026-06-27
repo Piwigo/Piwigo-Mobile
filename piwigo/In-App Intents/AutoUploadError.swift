@@ -28,11 +28,9 @@ extension AutoUploadError: LocalizedError {
             return String(localized: "AutoUploadError_Disabled",
                                      comment: "Auto-uploading is disabled in the app settings.")
         case .invalidSource:
-            return PwgKitError.autoUploadSourceInvalid.localizedDescription + ": " +
-                   String(localized: "settings_autoUploadSourceInfo", bundle: .pwgUploadKit, comment: "Please select the album…")
+            return PwgKitError.autoUploadSourceInvalid.localizedDescription + ": " + Localized.autoUploadSourceInfo
         case .invalidDestination:
-            return PwgKitError.autoUploadDestinationInvalid.localizedDescription + ": " +
-                   String(localized: "settings_autoUploadDestinationInfo", bundle: .pwgUploadKit, comment: "Please select the album…")
+            return PwgKitError.autoUploadDestinationInvalid.localizedDescription + ": " + Localized.autoUploadDestinationInfo
         case .importFailed:
             return "Could not create upload requests."
         }

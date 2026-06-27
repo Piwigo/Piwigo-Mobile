@@ -15,9 +15,17 @@ public enum PwgUploadKit {
     public static let build = 491
 }
 
-// Bundle for PwgUploadKit localised strings
+// Bundle for PwgUploadKit localized strings
 public extension Bundle {
     static let pwgUploadKit: Bundle = .module
+}
+
+// Localized strings
+public enum Localized {
+    public static let autoUploadSourceInfo = String(localized: "settings_autoUploadSourceInfo", bundle: .pwgUploadKit,
+                                                    comment: "Please select the album…")
+    public static let autoUploadDestinationInfo = String(localized: "settings_autoUploadDestinationInfo", bundle: .pwgUploadKit,
+                                                         comment: "Please select the album…")
 }
 
 // Constants used to manage background tasks

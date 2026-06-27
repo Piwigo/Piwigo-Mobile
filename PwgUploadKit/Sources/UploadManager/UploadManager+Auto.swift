@@ -25,8 +25,7 @@ extension UploadManager {
 
             // Delete remaining upload requests and inform user
             await disableAutoUpload(withTitle: PwgKitError.autoUploadSourceInvalid.localizedDescription,
-                                    message: String(localized: "settings_autoUploadSourceInfo", bundle: .pwgUploadKit,
-                                                    comment: "Please select the album…"), inBckgTask: inBckgTask)
+                                    message: Localized.autoUploadSourceInfo, inBckgTask: inBckgTask)
             return
         }
         
@@ -39,8 +38,7 @@ extension UploadManager {
 
             // Delete remaining upload requests and inform user
             await disableAutoUpload(withTitle: PwgKitError.autoUploadDestinationInvalid.localizedDescription,
-                                    message: String(localized: "settings_autoUploadDestinationInfo", bundle: .pwgUploadKit,
-                                                    comment: "Please select the album…"), inBckgTask: inBckgTask)
+                                    message: Localized.autoUploadDestinationInfo, inBckgTask: inBckgTask)
             return
         }
         

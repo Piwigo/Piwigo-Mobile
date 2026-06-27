@@ -297,8 +297,7 @@ class LocalAlbumsViewController: UIViewController {
         // May be called from the notification center
         DispatchQueue.main.async { [self] in
             let headerView = SelectCategoryHeaderView(frame: .zero)
-            var text = String(localized: "settings_autoUploadSourceInfo", bundle: .pwgUploadKit,
-                              comment: "Please select the album…")
+            var text = Localized.autoUploadSourceInfo
             switch wantedAction {
             case .presentLocalAlbum:
                 if ProcessInfo.processInfo.isLowPowerModeEnabled {
