@@ -321,8 +321,7 @@ extension pwgUploadState {
         case .preparing:
             return String(localized: "imageUploadTableCell_preparing", bundle: .pwgCacheKit, comment: "Preparing...")
         case .preparingError, .preparingFail:
-            return String(localized: "imageUploadTableCell_preparing", bundle: .pwgCacheKit, comment: "Preparing...") + " " +
-            String(localized: "errorHUD_label", bundle: .pwgCacheKit, comment: "Error")
+            return String(localized: "imageUploadTableCell_preparing", bundle: .pwgCacheKit, comment: "Preparing...") + " " + Localized.error
         case .prepared:
             return String(localized: "imageUploadTableCell_prepared", bundle: .pwgCacheKit, comment: "Ready for upload...")
         case .formatError:
@@ -331,16 +330,14 @@ extension pwgUploadState {
         case .uploading:
             return String(localized: "imageUploadTableCell_uploading", bundle: .pwgCacheKit, comment: "Uploading...")
         case .uploadingError, .uploadingFail:
-            return String(localized: "imageUploadTableCell_uploading", bundle: .pwgCacheKit, comment: "Uploading...") + " " +
-            String(localized: "errorHUD_label", bundle: .pwgCacheKit, comment: "Error")
+            return String(localized: "imageUploadTableCell_uploading", bundle: .pwgCacheKit, comment: "Uploading...") + " " + Localized.error
         case .uploaded:
             return String(localized: "imageUploadTableCell_uploaded", bundle: .pwgCacheKit, comment: "Uploaded")
 
         case .finishing:
             return String(localized: "imageUploadTableCell_finishing", bundle: .pwgCacheKit, comment: "Finishing...")
         case .finishingError, .finishingFail:
-            return String(localized: "imageUploadTableCell_finishing", bundle: .pwgCacheKit, comment: "Finishing...") + " " +
-            String(localized: "errorHUD_label", bundle: .pwgCacheKit, comment: "Error")
+            return String(localized: "imageUploadTableCell_finishing", bundle: .pwgCacheKit, comment: "Finishing...") + " " + Localized.error
         case .finished, .moderated:
             return String(localized: "imageUploadProgressBar_completed", bundle: .pwgCacheKit, comment: "Completed")
         }

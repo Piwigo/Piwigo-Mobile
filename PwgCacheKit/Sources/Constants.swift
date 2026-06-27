@@ -20,5 +20,10 @@ public extension Bundle {
     static let pwgCacheKit: Bundle = .module
 }
 
+// Localized strings
+public enum Localized {
+    public static let error = String(localized: "errorHUD_label", bundle: .pwgCacheKit, comment: "Error")
+}
+
 // Name extension of thumbnails optimised for the device
 public let optimisedImageNameExtension = "-opt"
