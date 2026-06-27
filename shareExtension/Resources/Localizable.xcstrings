@@ -5,14 +5,6 @@
       "comment" : "All Albums",
       "shouldTranslate" : false
     },
-    "severalSubAlbumsCount" : {
-      "comment" : "%@ sub-albums",
-      "shouldTranslate" : false
-    },
-    "singleSubAlbumCount" : {
-      "comment" : "%@ sub-album",
-      "shouldTranslate" : false
-    },
     "tabBar_albums" : {
       "comment" : "Albums",
       "shouldTranslate" : false

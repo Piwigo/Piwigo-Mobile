@@ -30,9 +30,9 @@ class LocalImagesFooterReusableView: UICollectionReusableView {
             let numberFormatter = NumberFormatter()
             numberFormatter.numberStyle = .decimal
             let nberPhotos = (numberFormatter.string(from: NSNumber(value: nberOfImages)) ?? "0") as String
-            nberOfImagesLabel.text = nberOfImages > 1 ?
-            String(format: String(localized: "severalImagesCount", bundle: .pwgAPIKit, comment: "%@ photos"), nberPhotos) :
-            String(format: String(localized: "singleImageCount", bundle: .pwgAPIKit, comment: "%@ photo"), nberPhotos)
+            nberOfImagesLabel.text = nberOfImages > 1
+                ? String(format: Localized.severalImagesCount, nberPhotos)
+                : String(format: Localized.singleImageCount, nberPhotos)
         }
     }
 }

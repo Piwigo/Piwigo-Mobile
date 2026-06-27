@@ -28,44 +28,44 @@ public extension JSONManager {
                 switch info.name ?? "" {
                 case "nb_elements":
                     if let nberPhotos = numberFormatter.string(from: NSNumber(value: nber)) {
-                        let nberImages = nber > 1 ?
-                        String(format: String(localized: "severalImagesCount", bundle: .pwgAPIKit, comment: "%@ photos"), nberPhotos) :
-                        String(format: String(localized: "singleImageCount", bundle: .pwgAPIKit, comment: "%@ photo"), nberPhotos)
+                        let nberImages = nber > 1
+                            ? String(format: Localized.severalImagesCount, nberPhotos)
+                            : String(format: Localized.singleImageCount, nberPhotos)
                         if nberImages.isEmpty == false { infos.append(nberImages) }
                     }
                 case "nb_categories":
                     if let nberCats = numberFormatter.string(from: NSNumber(value: nber)) {
-                        let nberCategories = nber > 1 ?
-                        String(format: String(localized: "severalAlbumsCount", bundle: .pwgAPIKit, comment: "%@ albums"), nberCats) :
-                        String(format: String(localized: "singleAlbumCount", bundle: .pwgAPIKit, comment: "%@ album"), nberCats)
+                        let nberCategories = nber > 1
+                            ? String(format: Localized.severalAlbumsCount, nberCats)
+                            : String(format: Localized.singleAlbumCount, nberCats)
                         if nberCategories.isEmpty == false { infos.append(nberCategories) }
                     }
                 case "nb_tags":
                     if let nberTags = numberFormatter.string(from: NSNumber(value: nber)) {
-                        let nberTags = nber > 1 ?
-                        String(format: String(localized: "severalTagsCount", bundle: .pwgAPIKit, comment: "%@ tags"), nberTags) :
-                        String(format: String(localized: "singleTagCount", bundle: .pwgAPIKit, comment: "%@ tag"), nberTags)
+                        let nberTags = nber > 1
+                            ? String(format: Localized.severalTagsCount, nberTags)
+                            : String(format: Localized.singleTagCount, nberTags)
                         if nberTags.isEmpty == false { infos.append(nberTags) }
                     }
                 case "nb_users":
                     if let nberUsers = numberFormatter.string(from: NSNumber(value: nber)) {
-                        let nberUsers = nber > 1 ?
-                        String(format: String(localized: "severalUsersCount", bundle: .pwgAPIKit, comment: "%@ users"), nberUsers) :
-                        String(format: String(localized: "singleUserCount", bundle: .pwgAPIKit, comment: "%@ user"), nberUsers)
+                        let nberUsers = nber > 1
+                            ? String(format: String(localized: "severalUsersCount", bundle: .pwgAPIKit, comment: "%@ users"), nberUsers)
+                            : String(format: String(localized: "singleUserCount", bundle: .pwgAPIKit, comment: "%@ user"), nberUsers)
                         if nberUsers.isEmpty == false { infos.append(nberUsers) }
                     }
                 case "nb_groups":
                     if let nberGroups = numberFormatter.string(from: NSNumber(value: nber)) {
-                        let nberGroups = nber > 1 ?
-                        String(format: String(localized: "severalGroupsCount", bundle: .pwgAPIKit, comment: "%@ groups"), nberGroups) :
-                        String(format: String(localized: "singleGroupCount", bundle: .pwgAPIKit, comment: "%@ group"), nberGroups)
+                        let nberGroups = nber > 1
+                            ? String(format: String(localized: "severalGroupsCount", bundle: .pwgAPIKit, comment: "%@ groups"), nberGroups)
+                            : String(format: String(localized: "singleGroupCount", bundle: .pwgAPIKit, comment: "%@ group"), nberGroups)
                         if nberGroups.isEmpty == false { infos.append(nberGroups) }
                     }
                 case "nb_comments":
                     if let nberComments = numberFormatter.string(from: NSNumber(value: nber)) {
-                        let nberComments = nber > 1 ?
-                        String(format: String(localized: "severalCommentsCount", bundle: .pwgAPIKit, comment: "%@ comments"), nberComments) :
-                        String(format: String(localized: "singleCommentCount", bundle: .pwgAPIKit, comment: "%@ comment"), nberComments)
+                        let nberComments = nber > 1
+                            ? String(format: String(localized: "severalCommentsCount", bundle: .pwgAPIKit, comment: "%@ comments"), nberComments)
+                            : String(format: String(localized: "singleCommentCount", bundle: .pwgAPIKit, comment: "%@ comment"), nberComments)
                         if nberComments.isEmpty == false { infos.append(nberComments) }
                     }
                 default:

@@ -270,9 +270,9 @@ extension TagSelectorViewController: UITableViewDelegate
         numberFormatter.numberStyle = .decimal
         let nberOfTags = (tags.fetchedObjects ?? []).count
         let nberAsStr = numberFormatter.string(from: NSNumber(value: nberOfTags)) ?? "0"
-        let footer = nberOfTags > 1 ?
-        String(format: String(localized: "severalTagsCount", bundle: .pwgAPIKit, comment: "%@ tags"), nberAsStr) :
-        String(format: String(localized: "singleTagCount", bundle: .pwgAPIKit, comment: "%@ tag"), nberAsStr)
+        let footer = nberOfTags > 1
+            ? String(format: Localized.severalTagsCount, nberAsStr)
+            : String(format: Localized.singleTagCount, nberAsStr)
         return footer
     }
     

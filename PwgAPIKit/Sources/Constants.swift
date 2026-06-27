@@ -15,9 +15,21 @@ public enum PwgAPIKit {
     public static let build = 677
 }
 
-// Bundle for PwgAPIKit localised strings
+// Bundle for PwgAPIKit localized strings
 public extension Bundle {
     static let pwgAPIKit: Bundle = .module
+}
+
+// Shared localized strings
+public enum Localized {
+    public static let singleAlbumCount = String(localized: "singleAlbumCount", bundle: .pwgAPIKit, comment: "%@ album")
+    public static let severalAlbumsCount = String(localized: "severalAlbumsCount", bundle: .pwgAPIKit, comment: "%@ albums")
+    public static let singleSubAlbumCount = String(localized: "singleSubAlbumCount", bundle: .pwgAPIKit, comment: "%@ sub-album")
+    public static let severalSubAlbumsCount = String(localized: "severalSubAlbumsCount", bundle: .pwgAPIKit, comment: "%@ sub-albums")
+    public static let singleImageCount = String(localized: "singleImageCount", bundle: .pwgAPIKit, comment: "%@ photo")
+    public static let severalImagesCount = String(localized: "severalImagesCount", bundle: .pwgAPIKit, comment: "%@ photos")
+    public static let singleTagCount = String(localized: "singleTagCount", bundle: .pwgAPIKit, comment: "%@ tag")
+    public static let severalTagsCount = String(localized: "severalTagsCount", bundle: .pwgAPIKit, comment: "%@ tags")
 }
 
 // Disconnects and asks to update the Piwigo server if version is lower than:

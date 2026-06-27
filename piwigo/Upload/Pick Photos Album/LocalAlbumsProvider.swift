@@ -392,9 +392,9 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
             count = otherAlbums.count
         }
         let nberOfAlbums = numberFormatter.string(from: NSNumber(value: count)) ?? ""
-        let footer = count > 1 ?
-        String(format: String(localized: "severalAlbumsCount", bundle: .pwgAPIKit, comment: "%@ albums"), nberOfAlbums) :
-        String(format: String(localized: "singleAlbumCount", bundle: .pwgAPIKit, comment: "%@ album"), nberOfAlbums)
+        let footer = count > 1
+            ? String(format: Localized.severalAlbumsCount, nberOfAlbums)
+            : String(format: Localized.singleAlbumCount, nberOfAlbums)
         return footer
     }
 }

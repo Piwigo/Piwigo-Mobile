@@ -138,37 +138,33 @@ class AlbumTableViewCell: UITableViewCell {
         // Constants
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = NumberFormatter.Style.decimal
-        let singleImage = String(localized: "singleImageCount", bundle: .pwgAPIKit, comment: "%@ photo")
-        let severalImages = String(localized: "severalImagesCount", bundle: .pwgAPIKit, comment: "%@ photos")
-        let singleSubAlbum = String(localized: "singleSubAlbumCount", bundle: .pwgAPIKit, comment: "%@ sub-album")
-        let severalSubAlbums = String(localized: "severalSubAlbumsCount", bundle: .pwgAPIKit, comment: "%@ sub-albums")
         // Determine string
         var text = ""
         if albumData?.nbSubAlbums ?? Int32.zero == Int32.zero {
             // There are no sub-albums
             let nberImages = numberFormatter.string(from: NSNumber(value: albumData?.nbImages ?? 0))
             text = (albumData?.nbImages ?? 0 > 1)
-                ? String.localizedStringWithFormat(severalImages, nberImages ?? "")
-                : String.localizedStringWithFormat(singleImage, nberImages ?? "")
+                ? String.localizedStringWithFormat(Localized.severalImagesCount, nberImages ?? "")
+                : String.localizedStringWithFormat(Localized.singleImageCount, nberImages ?? "")
         }
         else if albumData?.totalNbImages ?? Int64.zero == Int64.zero {
             // There are no images but sub-albums
             let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData?.nbSubAlbums ?? 0))
             text = (albumData?.nbSubAlbums ?? Int32.zero > 1)
-                ? String.localizedStringWithFormat(severalSubAlbums, nberAlbums ?? "")
-                : String.localizedStringWithFormat(singleSubAlbum, nberAlbums ?? "")
+                ? String.localizedStringWithFormat(Localized.severalSubAlbumsCount, nberAlbums ?? "")
+                : String.localizedStringWithFormat(Localized.singleSubAlbumCount, nberAlbums ?? "")
         }
         else {
             // There are images and sub-albums
             let nberImages = numberFormatter.string(from: NSNumber(value: albumData?.totalNbImages ?? 0))
             text = (albumData?.totalNbImages ?? Int64.zero > 1)
-                ? String.localizedStringWithFormat(severalImages, nberImages ?? "")
-                : String.localizedStringWithFormat(singleImage, nberImages ?? "")
+                ? String.localizedStringWithFormat(Localized.severalImagesCount, nberImages ?? "")
+                : String.localizedStringWithFormat(Localized.singleImageCount, nberImages ?? "")
             text += " • "
             let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData?.nbSubAlbums ?? 0))
             text += (albumData?.nbSubAlbums ?? Int32.zero > 1)
-                ? String.localizedStringWithFormat(severalSubAlbums, nberAlbums ?? "")
-                : String.localizedStringWithFormat(singleSubAlbum, nberAlbums ?? "")
+                ? String.localizedStringWithFormat(Localized.severalSubAlbumsCount, nberAlbums ?? "")
+                : String.localizedStringWithFormat(Localized.singleSubAlbumCount, nberAlbums ?? "")
         }
         return text
     }

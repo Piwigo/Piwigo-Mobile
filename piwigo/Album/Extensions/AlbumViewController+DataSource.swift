@@ -270,9 +270,7 @@ extension AlbumViewController
             numberFormatter.numberStyle = .decimal
             if let number = numberFormatter.string(from: NSNumber(value: totalCount)) {
                 // Prepare legend
-                let format:String = totalCount > 1
-                    ? String(localized: "severalImagesCount", bundle: .pwgAPIKit, comment: "%@ photos")
-                    : String(localized: "singleImageCount", bundle: .pwgAPIKit, comment: "%@ photo")
+                let format:String = totalCount > 1 ? Localized.severalImagesCount : Localized.singleImageCount
                 legend = String(format: format, number)
 
                 // Show/hide "No album in your Piwigo"
@@ -280,7 +278,7 @@ extension AlbumViewController
                 noAlbumLabel.isHidden = hasItems
             }
             else {
-                legend = String(format: String(localized: "severalImagesCount", bundle: .pwgAPIKit, comment: "%@ photos"), "?")
+                legend = String(format: Localized.severalImagesCount, "?")
             }
         }
         return legend
