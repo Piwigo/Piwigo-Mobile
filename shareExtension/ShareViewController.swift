@@ -185,6 +185,11 @@ final class ShareViewController: UIViewController {
         categoriesTableView?.reloadData()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     @objc
     func cancelSelect() -> Void {
         extensionContext?.cancelRequest(withError: URLError(.cancelled))
