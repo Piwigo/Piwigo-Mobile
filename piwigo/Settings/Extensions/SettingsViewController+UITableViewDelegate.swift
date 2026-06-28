@@ -386,9 +386,10 @@ extension SettingsViewController: UITableViewDelegate
             switch indexPath.row {
             case 0 /* Clear cache */:
                 // Determine position of cell in table view
-                let rowAtIndexPath = IndexPath(row: 0, section: SettingsSection.clear.rawValue)
+                let section = SettingsSection.clear.rawValue - (userHasUploadRights ? 0 : 1)
+                let rowAtIndexPath = IndexPath(row: 0, section: section)
                 let rectOfCellInTableView = settingsTableView?.rectForRow(at: rowAtIndexPath)
-
+                
                 // Present list of actions
                 let alert = getClearCacheAlert()
                 alert.view.tintColor = PwgColor.tintColor
