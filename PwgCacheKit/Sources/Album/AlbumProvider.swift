@@ -95,15 +95,15 @@ public final class AlbumProvider {
     private let batchSize = 256
     public func importAlbums(_ albumArray: [CategoryGetInfo], recursively: Bool = false,
                              inParent parentId: Int32) throws {
-        // We keep album IDs of albums to delete
+        // We keep album UUIDs of albums to delete
         // Initialised and then updated at each iteration
-        var albumToDeleteIDs: Set<Int32>? = nil
+        var albumToDeleteUUIDs: Set<String>? = nil
         
         // We shall perform at least one import in case where
         // the user did delete all albums
         guard albumArray.isEmpty == false else {
             _ = try importOneBatch([CategoryGetInfo](), recursively: recursively,
-                                   inParent: parentId, albumIDs: albumToDeleteIDs)
+                                   inParent: parentId, albumUUIDs: albumToDeleteUUIDs)
             return
         }
         
@@ -126,9 +126,9 @@ public final class AlbumProvider {
             let albumsBatch = Array(albumArray[range])
             
             // Stop the entire import if any batch is unsuccessful.
-            let albumIDs = try importOneBatch(albumsBatch, recursively: recursively,
-                                              inParent: parentId, albumIDs: albumToDeleteIDs)
-            albumToDeleteIDs = albumIDs
+            let albumUUIDs = try importOneBatch(albumsBatch, recursively: recursively,
+                                              inParent: parentId, albumUUIDs: albumToDeleteUUIDs)
+            albumToDeleteUUIDs = albumUUIDs
         }
     }
     
@@ -142,9 +142,9 @@ public final class AlbumProvider {
      whether the import is successful.
      */
     private func importOneBatch(_ albumsBatch: [CategoryGetInfo], recursively: Bool = false,
-                                inParent parentId: Int32, albumIDs: Set<Int32>?) throws -> Set<Int32> {
+                                inParent parentId: Int32, albumUUIDs: Set<String>?) throws -> Set<String> {
         
-        var albumToDeleteIDs = Set<Int32>()
+        var albumToDeleteUUIDs = Set<String>()
         
         // Get current user object (will create server and user objects if needed)
         let bckgContext = DataController.shared.newTaskContext()
@@ -187,16 +187,16 @@ public final class AlbumProvider {
             // Perform the fetch.
             let cachedAlbums:[Album] = try bckgContext.fetch(fetchRequest)
             
-            // Initialise set of album IDs during the first iteration
-            if albumIDs == nil {
-                // Store IDs of present list of albums, except root which must not be deleted
-                albumToDeleteIDs = Set(cachedAlbums.filter({$0.pwgID != 0}).map({$0.pwgID}))
+            // Initialise set of album UUIDs during the first iteration
+            if albumUUIDs == nil {
+                // Store UUIDs of present list of albums, except root which must not be deleted
+                albumToDeleteUUIDs = Set(cachedAlbums.filter({$0.pwgID != 0}).map({$0.uuid}))
             } else {
-                // Resume IDs of albums to delete
-                albumToDeleteIDs = albumIDs ?? Set<Int32>()
+                // Resume UUIDs of albums to delete
+                albumToDeleteUUIDs = albumUUIDs ?? Set<String>()
             }
             
-            // Loop over new albums
+            // Loop over fetched albums
             for albumData in albumsBatch {
                 
                 // Index of this new album in cache
@@ -217,7 +217,7 @@ public final class AlbumProvider {
                         }
                         
                         // Do not delete this album during the last iteration of the import
-                        albumToDeleteIDs.remove(ID)
+                        albumToDeleteUUIDs.remove(cachedAlbums[index].uuid)
                     }
                     catch PwgKitError.missingAlbumData {
                         // Could not perform the update
@@ -254,33 +254,21 @@ public final class AlbumProvider {
             }
             
             // Delete albums if this is the last iteration
-            if albumsBatch.count < batchSize {
-                // Albums not returned by the fetch are deleted first
-                if albumToDeleteIDs.isEmpty == false {
-                    // Check whether the auto-upload category will be deleted
-                    if albumToDeleteIDs.contains(UploadVars.shared.autoUploadCategoryId) {
-                        NotificationCenter.default.post(name: .pwgDisableAutoUpload, object: nil, userInfo: nil)
-                    }
-                    
-                    // Delete albums not returned by the fetch
-                    let albumsToDelete = cachedAlbums.filter({albumToDeleteIDs.contains($0.pwgID)})
-                    albumsToDelete.forEach { album in
-                        debugPrint("••> delete album with ID:\(album.pwgID) and name:\(album.name)")
-                        bckgContext.delete(album)
-                    }
-                    
-                    // Delete duplicate albums, if any
-                    let otherAlbums = cachedAlbums.filter({albumToDeleteIDs.contains($0.pwgID) == false})
-                    let duplicates = duplicates(inArray: otherAlbums)
-                    duplicates.forEach { album in
-                        bckgContext.delete(album)
-                    }
-                } else {
-                    // Delete duplicates if any
-                    let duplicates = duplicates(inArray: cachedAlbums)
-                    duplicates.forEach { album in
-                        bckgContext.delete(album)
-                    }
+            if albumsBatch.count < batchSize,
+               albumToDeleteUUIDs.isEmpty == false {
+                // Select albums not returned by the fetch, i.e. albums deleted on the server
+                let albumsToDelete = cachedAlbums.filter({albumToDeleteUUIDs.contains($0.uuid)})
+                
+                // Check whether the auto-upload destination album was deleted on the server
+                if cachedAlbums.first(where: { $0.pwgID == UploadVars.shared.autoUploadCategoryId }) == nil,
+                   albumsToDelete.first(where: { $0.pwgID == UploadVars.shared.autoUploadCategoryId }) != nil {
+                    NotificationCenter.default.post(name: .pwgDisableAutoUpload, object: nil)
+                }
+                
+                // Delete from the cache albums deleted on the server
+                albumsToDelete.forEach { album in
+                    debugPrint("••> delete album with ID:\(album.pwgID), name:\(album.name), UUID:\(album.uuid)")
+                    bckgContext.delete(album)
                 }
             }
             
@@ -295,20 +283,7 @@ public final class AlbumProvider {
                 DataController.shared.mainContext.saveIfNeeded()
             }
         }
-        return albumToDeleteIDs
-    }
-    
-    private func duplicates(inArray albums: [Album]) -> [Album] {
-        var seenID = Set<Int32>(), duplicates = [Album]()
-        for album in albums {
-            let catID = album.pwgID
-            if seenID.contains(catID) {
-                duplicates.append(album)
-            } else {
-                seenID.insert(catID)
-            }
-        }
-        return duplicates
+        return albumToDeleteUUIDs
     }
     
     
