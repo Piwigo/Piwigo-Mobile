@@ -106,13 +106,10 @@ extension SelectCategoryViewController: UITableViewDataSource
         
         // No button if the user does not have upload rights
         var buttonState: pwgCategoryCellButtonState = .none
-        let allAlbums: [Album] = albums.fetchedObjects ?? []
-        let filteredCat = allAlbums.filter({ user.hasAdminRights ||
-                                             userUploadRights.contains($0.pwgID) })
-        if filteredCat.count > 0 {
+        if user.hasAdminRights || userUploadRights.contains(albumData.pwgID) {
             buttonState = albumsShowingSubAlbums.contains(albumData.pwgID) ? .hideSubAlbum : .showSubAlbum
         }
-
+        
         // How should we present the category
         cell.delegate = self
         switch wantedAction {
