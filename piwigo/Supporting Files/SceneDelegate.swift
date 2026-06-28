@@ -27,7 +27,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         case showRecentPhotosAction = "ShowRecentPhotosAction"
     }
     var savedShortCutItem: UIApplicationShortcutItem!
-//    var savedUrlContext: UIOpenURLContext?
+    var savedUrlContexts: Set<UIOpenURLContext> = []
     
     // MARK: - Core Data Object Contexts
     private lazy var mainContext: NSManagedObjectContext = {
@@ -55,10 +55,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         // App was launched cold via deep link?
-//        if let urlContext = connectionOptions.urlContexts.first {
-//            // Save URL context for later when app becomes active
-//            savedUrlContext = urlContext
-//        }
+        if connectionOptions.urlContexts.isEmpty == false {
+            // Save URL context for later when app becomes active
+            savedUrlContexts = connectionOptions.urlContexts
+        }
         
         debugPrint("••> \(session.persistentIdentifier): Scene will connect to session.")
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate,
@@ -533,7 +533,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
     
-    private func handleUrlContext(_ url: URL) {
+    func handleUrlContext(_ url: URL) {
         // Get enum from URL
         debugPrint("••> \(window?.windowScene?.session.persistentIdentifier ?? "UNKNOWN"): Scene received URL: \(url)")
         guard let link = DeepLink(url: url) else { return }

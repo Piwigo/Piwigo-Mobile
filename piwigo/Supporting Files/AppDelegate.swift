@@ -713,12 +713,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window.rootViewController = AlbumNavigationController(rootViewController: albumVC)
         UIView.transition(with: window, duration: 0.3,
                           options: .transitionCrossDissolve) { }
-            completion: { [self] success in
-                if success {
-                    self._loginVC = nil                    
+        completion: { [self] success in
+            if success {
+                // Release memory
+                self._loginVC = nil
+                
+                // Present album selected with the share extension?
+                guard let sceneDelegate = window.windowScene?.delegate as? SceneDelegate,
+                      sceneDelegate.savedUrlContexts.isEmpty == false
+                else { return }
+                for context in sceneDelegate.savedUrlContexts {
+                    sceneDelegate.handleUrlContext(context.url)
                 }
             }
-
+        }
+        
         // Resume upload operations in background queue
         // and update badge, upload button of album navigator
         Task(priority: .utility) { @UploadManagerActor in
