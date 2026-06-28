@@ -135,4 +135,27 @@ extension ShareViewController: UITableViewDelegate
             })
         }
     }
+    
+    private func openMainApp(withAlbumIDs upperIds: String) {
+        // Prepare URL
+        var comps = URLComponents()
+        comps.scheme = "piwigo"
+        comps.host = "share-extension"
+        comps.queryItems = [URLQueryItem(name: "albumIDs", value: upperIds)]
+        guard let url = comps.url else { return }
+        
+        // Send album IDs to main app
+        var responder: UIResponder? = self
+        while responder != nil {
+            if let application = responder as? UIApplication {
+                // Open main app
+                application.open(url, options: [:]) { _ in
+                    // Job completed
+                    self.context?.completeRequest(returningItems: nil, completionHandler: nil)
+                }
+                return
+            }
+            responder = responder?.next
+        }
+    }
 }
