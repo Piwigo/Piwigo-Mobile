@@ -14,7 +14,7 @@ let loadingViewTag = 899
 
 extension UIViewController {
 
-    // MARK: - Top Most View Controller
+    // MARK: - View Controllers
     func topMostViewController() -> UIViewController? {
         // Look for the top most UIViewController
         var topViewController: UIViewController? = self
@@ -32,7 +32,22 @@ extension UIViewController {
         }
         return topViewController
     }
-
+    
+    func dismissToAlbumNavigationController(completion: (() -> Void)? = nil) {
+        // Walk up the presenting chain to find the AlbumViewController
+        var presenter: UIViewController? = self
+        while let current = presenter {
+            if current is AlbumNavigationController {
+                // Dismiss everything above it
+                current.presentedViewController?.dismiss(animated: false, completion: completion)
+                return
+            }
+            presenter = current.presentingViewController
+        }
+        // No AlbumViewController found
+        completion?()
+    }
+    
     
     // MARK: - PiwigoHUD
     @MainActor

@@ -451,14 +451,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     private func handleShortCutItem(shortcutItem: UIApplicationShortcutItem) -> Bool {
+        // Get top most view controller
+        guard let topMostVC = window?.windowScene?.topMostViewController()
+        else { return false }
+        
         // NOP in absence of user session
-        if let topMostVC = window?.windowScene?.topMostViewController(),
-           topMostVC is LoginViewController {
-            return true
+        if topMostVC is LoginViewController {
+            return false
         }
         
-        // Dismiss image or settings view controllers if needed
-        dismissNonAlbumViewControllers()
+        // Dismiss non-album views
+        topMostVC.dismissToAlbumNavigationController()
         
         // Load the requested view controller
         if let actionTypeValue = ActionType(rawValue: shortcutItem.type) {
@@ -496,15 +499,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
         }
         return true
-    }
-    
-    private func dismissNonAlbumViewControllers() {
-        if let topMostVC = window?.windowScene?.topMostViewController(),
-           (topMostVC is AlbumViewController) == false {
-            topMostVC.dismiss(animated: false) {
-                self.dismissNonAlbumViewControllers()
-            }
-        }
     }
     
 
