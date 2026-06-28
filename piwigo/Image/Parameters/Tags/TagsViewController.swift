@@ -380,8 +380,6 @@ extension TagsViewController: NSFetchedResultsControllerDelegate
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
         // Initialise update operations
         updateOperations = []
-        // Begin the update
-        tagsTableView?.beginUpdates()
     }
     
     func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
@@ -436,8 +434,5 @@ extension TagsViewController: NSFetchedResultsControllerDelegate
         tagsTableView?.performBatchUpdates { [weak self] in
             self?.updateOperations.forEach { $0.start() }
         }
-        
-        // End updates
-        tagsTableView?.endUpdates()
     }
 }
