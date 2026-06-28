@@ -67,7 +67,7 @@ extension ShareViewController: UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         tableView.deselectRow(at: indexPath, animated: true)
-
+        
         // Get selected category
         let albumData: Album
         let hasRecentAlbums = (recentAlbums.fetchedObjects ?? []).count > 0
@@ -87,7 +87,7 @@ extension ShareViewController: UITableViewDelegate
         
         // Do nothing if this is the root album
         if albumData.pwgID == 0 { return }
-
+        
         // Ask user to confirm
         let title = String(localized: "uploadToAlbum_title", comment:"Upload to Album")
         let strFormat = String(localized: "uploadToAlbum_message", comment:"Are you sure you want to upload the photos to the album \"%@\"?")
@@ -97,11 +97,8 @@ extension ShareViewController: UITableViewDelegate
                                                       forCategory: albumData, at: indexPath)
             if confirmed {
                 // Launch the app to select options
-                
+                openMainApp(withAlbumIDs: albumData.upperIds)
             }
-            
-            // Job done
-            cancelSelect()
         }
     }
     

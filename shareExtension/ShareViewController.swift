@@ -16,8 +16,8 @@ import PwgUploadKit
 
 final class ShareViewController: UIViewController {
     
-    var updateOperations = [BlockOperation]()
-
+    var context: NSExtensionContext?
+    
     // MARK: - Core Data Object Contexts
     lazy var mainContext: NSManagedObjectContext = {
         return DataController.shared.mainContext
@@ -68,7 +68,6 @@ final class ShareViewController: UIViewController {
         let albums = NSFetchedResultsController(fetchRequest: fetchRecentAlbumsRequest,
                                                 managedObjectContext: self.mainContext,
                                                 sectionNameKeyPath: nil, cacheName: nil)
-//        albums.delegate = self
         return albums
     }()
     
@@ -97,12 +96,9 @@ final class ShareViewController: UIViewController {
         let albums = NSFetchedResultsController(fetchRequest: fetchAlbumsRequest,
                                                 managedObjectContext: mainContext,
                                                 sectionNameKeyPath: nil, cacheName: nil)
-//        albums.delegate = self
         return albums
     }()
 
-    
-    
     
     // MARK: - View
     @IBOutlet var categoriesTableView: UITableView!
@@ -144,6 +140,7 @@ final class ShareViewController: UIViewController {
         title = String(localized: "uploadToAlbum_title", comment:"Upload to Album")
         
         // Retrieve shared items
+        self.context = extensionContext
         Task {
             let context = extensionContext
             await copySharedItems(fromContext: context)
@@ -258,8 +255,6 @@ final class ShareViewController: UIViewController {
                 }
             }
         }
-        
-//        context.completeRequest(returningItems: nil, completionHandler: nil)
     }
     
     private nonisolated func getSharedImage(atIndex index: Int, from provider: NSItemProvider, on sharedDateTime: String) async -> (String, String)? {
