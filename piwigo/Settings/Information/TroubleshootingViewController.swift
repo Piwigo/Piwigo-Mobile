@@ -142,6 +142,8 @@ class TroubleshootingViewController: UIViewController {
                 #if DEBUG
                 var someLogs = entries.filter({$0.category == String(describing: AppMetrics.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
+                #else
+                var someLogs = [OSLogEntryLog]()
                 #endif
                 
                 // PwgKit — Core Data
