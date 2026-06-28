@@ -398,7 +398,7 @@ final class SelectCategoryViewController: UIViewController {
                                                                        inParentWithId: pwgSmartAlbum.root.rawValue,
                                                                        recursively: true, thumbnailSize: thumnailSize)
                 // Update cache
-                try AlbumProvider().importAlbums(pwgData, inParent: pwgSmartAlbum.root.rawValue)
+                try AlbumProvider().importAlbums(pwgData, recursively: true, inParent: pwgSmartAlbum.root.rawValue)
                 
                 // Remove current album from list of album being fetched
                 AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.root.rawValue)
