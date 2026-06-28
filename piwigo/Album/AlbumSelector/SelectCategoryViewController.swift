@@ -407,7 +407,9 @@ final class SelectCategoryViewController: UIViewController {
                 AppVars.shared.dateOfLatestRecursiveAlbumDataFetch = Date()
 
                 await MainActor.run { [self] in
-                    self.navigationController?.hideHUD { }
+                    self.navigationController?.hideHUD {
+                        self.categoriesTableView.reloadData()
+                    }
                 }
             } catch let error as PwgKitError {
                 await MainActor.run { [self] in
