@@ -59,9 +59,9 @@
       launchAutomaticallySubstyle = "2"
       queueDebuggingEnableBacktraceRecording = "Yes">
       <RemoteRunnable
-         runnableDebuggingMode = "1"
+         runnableDebuggingMode = "0"
          BundleIdentifier = "com.apple.mobileslideshow"
-         RemotePath = "/Library/Developer/CoreSimulator/Volumes/iOS_23B86/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.1.simruntime/Contents/Resources/RuntimeRoot/Applications/Photos.app">
+         RemotePath = "/var/containers/Bundle/Application/B2A66FC8-4359-4487-BC97-FC29A42821BD/Photos.app">
       </RemoteRunnable>
       <MacroExpansion>
          <BuildableReference

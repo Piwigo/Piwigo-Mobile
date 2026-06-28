@@ -503,22 +503,95 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
 
     // MARK: - Application Deep Link Support
-    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        // App was launched cold via deep link?
-        if let urlContext = URLContexts.first {
-            // Save URL context for later when app becomes active
-            handleUrlContext(urlContext)
+    /// piwigo://shareExtension/albumID=23
+    enum DeepLink: Sendable {
+        case shareExtension(albumIDs: [Int32])
+        
+        init?(url: URL) {
+            // Submitted to the right app?
+            guard let comps = URLComponents(url: url, resolvingAgainstBaseURL: false),
+                  comps.scheme == "piwigo" else { return nil }
+            
+            // What should be done?
+            switch comps.host {
+            case "share-extension":
+                guard let albumIDsList = comps.queryItems?.first(where: { $0.name == "albumIDs" })?.value as? String
+                else { return nil }
+                let albumIDs: [Int32] = albumIDsList.components(separatedBy: ",").compactMap { Int32($0) }
+                self = .shareExtension(albumIDs: albumIDs)
+            
+            default:
+                return nil
+            }
         }
     }
     
-    private func handleUrlContext(_ urlContext: UIOpenURLContext) {
-        // Submitted to the right app?
-        guard urlContext.url.scheme == "piwigo" else { return }
+    // App was launched warm via deep link
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        for context in URLContexts {
+            handleUrlContext(context.url)
+        }
+    }
+    
+    private func handleUrlContext(_ url: URL) {
+        // Get enum from URL
+        debugPrint("••> \(window?.windowScene?.session.persistentIdentifier ?? "UNKNOWN"): Scene received URL: \(url)")
+        guard let link = DeepLink(url: url) else { return }
         
         // What should be done?
-        debugPrint("URL context: \(urlContext.debugDescription)")
-        // let components = URLComponents(url: urlContext.url, resolvingAgainstBaseURL: false)
-        
+        switch link {
+        case .shareExtension(albumIDs: let albumIDs):
+            // Get top most view controller
+            guard let topMostVC = window?.windowScene?.topMostViewController()
+            else { return }
+            
+            // Uploads will start after login
+            if topMostVC is LoginViewController {
+                return
+            }
+            
+            // Dismiss non-album views
+            topMostVC.dismissToAlbumNavigationController() {
+                // Get current top album view controller
+                guard let defaultAlbum = self.window?.windowScene?.topMostViewController() as? AlbumViewController
+                else { return }
+                
+                // Get source and destination albums
+                guard let destinationAlbumID = albumIDs.last,
+                      let sourceAlbum = try? AlbumProvider().getAlbum(ofUser: defaultAlbum.user, withId: defaultAlbum.categoryId),
+                      let destinationAlbum = try? AlbumProvider().getAlbum(ofUser: defaultAlbum.user, withId: destinationAlbumID)
+                else { return }
+                
+                // Get common path (don't use Set() which does not retain the order)
+                let sourcePath = sourceAlbum.upperIds.components(separatedBy: ",").compactMap({ Int32($0) })
+                let destinationPath = destinationAlbum.upperIds.components(separatedBy: ",").compactMap({ Int32($0) })
+                let commonPath = sourcePath.filter({ destinationPath.contains($0) })
+                let lastCommonAlbumId = Array(commonPath).last ?? defaultAlbum.categoryId
+                
+                // Keep album view controllers from which to push the remaining albums
+                /// Note: firstAlbumVCs should at least contain the root album vew controller.
+                var firstAlbumVCs: [AlbumViewController] = []
+                guard let navController = self.window?.rootViewController as? AlbumNavigationController,
+                      let albumVCs = navController.viewControllers as? [AlbumViewController],
+                      let indexOfCommonAlbumVC = albumVCs.firstIndex(where: { $0.categoryId == lastCommonAlbumId })
+                else { return }
+                firstAlbumVCs = Array(albumVCs[...indexOfCommonAlbumVC])
+                
+                // Create missing album view controllers
+                let remainingPath = destinationPath.filter({ sourcePath.contains($0) == false })
+                let newAlbumVCs = remainingPath.map({
+                    // Create album view controller
+                    let albumSB = UIStoryboard(name: "AlbumViewController", bundle: nil)
+                    guard let subAlbumVC = albumSB.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
+                    else { preconditionFailure("Could not load AlbumViewController") }
+                    subAlbumVC.categoryId = $0
+                    return subAlbumVC
+                })
+                
+                // Update the stack of album view controllers
+                navController.setViewControllers(firstAlbumVCs + newAlbumVCs, animated: false)
+            }
+        }
     }
 }
 
