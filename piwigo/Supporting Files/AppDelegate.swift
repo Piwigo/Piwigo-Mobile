@@ -702,7 +702,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     
     // MARK: - Album Navigator
-    func loadNavigation(in window: UIWindow?, keepLoginView: Bool = false) {
+    func loadNavigation(in window: UIWindow?) {
         guard let window = window else { return }
         
         // Display default album
@@ -714,8 +714,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIView.transition(with: window, duration: 0.3,
                           options: .transitionCrossDissolve) { }
             completion: { [self] success in
-                if success, keepLoginView == false {
-                    self._loginVC = nil
+                if success {
+                    self._loginVC = nil                    
                 }
             }
 
