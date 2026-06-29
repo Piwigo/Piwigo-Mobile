@@ -1,6 +1,6 @@
 //
-//  CategoryTableViewCell.swift
-//  piwigo
+//  ShareTableViewCell.swift
+//  shareExtension
 //
 //  Created by Eddy Lelièvre-Berna on 02/04/2021.
 //  Copyright © 2021 Piwigo.org. All rights reserved.
@@ -12,19 +12,19 @@ import PwgAPIKit
 import PwgCacheKit
 import PwgUIKit
 
-enum pwgCategoryCellButtonState : Int {
+enum pwgShareCellButtonState : Int {
     case none
     case showSubAlbum
     case hideSubAlbum
 }
 
-protocol CategoryCellDelegate: NSObjectProtocol {
+protocol ShareCellDelegate: NSObjectProtocol {
     func tappedDisclosure(of categoryTapped: Album)
 }
 
-class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
+final class ShareTableViewCell: UITableViewCell, CAAnimationDelegate {
     
-    weak var delegate: (any CategoryCellDelegate)?
+    weak var delegate: (any ShareCellDelegate)?
     
     @IBOutlet weak var albumLabel: UILabel!
     @IBOutlet weak var leadingConstraint: NSLayoutConstraint!
@@ -35,10 +35,10 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
     @IBOutlet weak var bottomMargin: NSLayoutConstraint!
 
     private var albumData: Album!
-    private var buttonState: pwgCategoryCellButtonState = .none
+    private var buttonState: pwgShareCellButtonState = .none
     
     func configure(with album: Album, atDepth depth:Int,
-                   andButtonState buttonState:pwgCategoryCellButtonState) {
+                   andButtonState buttonState:pwgShareCellButtonState) {
         // General settings
         backgroundColor = PwgColor.cellBackground
         tintColor = PwgColor.tintColor

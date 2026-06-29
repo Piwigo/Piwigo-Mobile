@@ -1,6 +1,6 @@
 //
 //  ShareViewHeaderView.swift
-//  piwigo
+//  shareExtension
 //
 //  Created by Eddy Lelièvre-Berna on 12/05/2026.
 //  Copyright © 2026 Piwigo.org. All rights reserved.

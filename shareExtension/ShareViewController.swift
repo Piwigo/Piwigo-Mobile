@@ -384,7 +384,7 @@ final class ShareViewController: UIViewController {
 
 
 // MARK: - CategoryCellDelegate Methods
-extension ShareViewController: @MainActor CategoryCellDelegate {
+extension ShareViewController: @MainActor ShareCellDelegate {
     // Called when the user taps a sub-category button
     func tappedDisclosure(of parentAlbum: Album) {
         // Update list of albums showing sub-albums

@@ -169,7 +169,7 @@
 		AD439E4425E14C3600333A91 /* PasteboardObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD439E4325E14C3600333A91 /* PasteboardObject.swift */; };
 		AD44D4B32E81BA6400A49474 /* TextViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD44D4B22E81BA6400A49474 /* TextViewTableViewCell.swift */; };
 		AD45D8AB2444D1CD00CBE206 /* LocalImagesHeaderReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD45D8AA2444D1CD00CBE206 /* LocalImagesHeaderReusableView.swift */; };
-		AD46C1DB2FB3C92B00CE3D1C /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD46C1D92FB3C92B00CE3D1C /* CategoryTableViewCell.swift */; };
+		AD46C1DB2FB3C92B00CE3D1C /* ShareTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD46C1D92FB3C92B00CE3D1C /* ShareTableViewCell.swift */; };
 		AD46C1DE2FB3CBFE00CE3D1C /* ShareViewHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD46C1DD2FB3CBFE00CE3D1C /* ShareViewHeaderView.swift */; };
 		AD46C1E02FB3CE2A00CE3D1C /* ShareViewController+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD46C1DF2FB3CE2A00CE3D1C /* ShareViewController+DataSource.swift */; };
 		AD4902E324C2142800A96066 /* TagsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD4902E224C2142800A96066 /* TagsViewController.storyboard */; };
@@ -676,7 +676,7 @@
 		AD44D4B22E81BA6400A49474 /* TextViewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewTableViewCell.swift; sourceTree = "<group>"; };
 		AD45949C1F36765200CF9438 /* pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/About.strings; sourceTree = "<group>"; };
 		AD45D8AA2444D1CD00CBE206 /* LocalImagesHeaderReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalImagesHeaderReusableView.swift; sourceTree = "<group>"; };
-		AD46C1D92FB3C92B00CE3D1C /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
+		AD46C1D92FB3C92B00CE3D1C /* ShareTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareTableViewCell.swift; sourceTree = "<group>"; };
 		AD46C1DD2FB3CBFE00CE3D1C /* ShareViewHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewHeaderView.swift; sourceTree = "<group>"; };
 		AD46C1DF2FB3CE2A00CE3D1C /* ShareViewController+DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShareViewController+DataSource.swift"; sourceTree = "<group>"; };
 		AD4902E224C2142800A96066 /* TagsViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TagsViewController.storyboard; sourceTree = "<group>"; };
@@ -1473,7 +1473,7 @@
 				AD46C1DF2FB3CE2A00CE3D1C /* ShareViewController+DataSource.swift */,
 				ADE920492FBD029A00CAF83A /* ShareViewController+Delegate.swift */,
 				AD46C1DD2FB3CBFE00CE3D1C /* ShareViewHeaderView.swift */,
-				AD46C1D92FB3C92B00CE3D1C /* CategoryTableViewCell.swift */,
+				AD46C1D92FB3C92B00CE3D1C /* ShareTableViewCell.swift */,
 				ADADADE92FB0AA6F003FB43F /* Resources */,
 				ADADADE52FB0AA6F003FB43F /* Info.plist */,
 			);
@@ -2397,7 +2397,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ADADADEC2FB0AA6F003FB43F /* ShareViewController.swift in Sources */,
-				AD46C1DB2FB3C92B00CE3D1C /* CategoryTableViewCell.swift in Sources */,
+				AD46C1DB2FB3C92B00CE3D1C /* ShareTableViewCell.swift in Sources */,
 				AD46C1DE2FB3CBFE00CE3D1C /* ShareViewHeaderView.swift in Sources */,
 				AD46C1E02FB3CE2A00CE3D1C /* ShareViewController+DataSource.swift in Sources */,
 				ADE9204A2FBD029A00CAF83A /* ShareViewController+Delegate.swift in Sources */,

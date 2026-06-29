@@ -1,6 +1,6 @@
 //
 //  ShareViewController+DataSource.swift
-//  piwigo
+//  shareExtension
 //
 //  Created by Eddy Lelièvre-Berna on 12/05/2026.
 //  Copyright © 2026 Piwigo.org. All rights reserved.
@@ -54,8 +54,8 @@ extension ShareViewController: UITableViewDataSource
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryTableViewCell", for: indexPath) as? CategoryTableViewCell
-        else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a CategoryTableViewCell!") }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ShareTableViewCell", for: indexPath) as? ShareTableViewCell
+        else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a ShareTableViewCell!") }
         var depth = 0
         let albumData: Album
         let hasRecentAlbums = (recentAlbums.fetchedObjects ?? []).isEmpty == false
@@ -82,7 +82,7 @@ extension ShareViewController: UITableViewDataSource
         }
         
         // No button if the user does not have upload rights
-        var buttonState: pwgCategoryCellButtonState = .none
+        var buttonState: pwgShareCellButtonState = .none
         if user.hasAdminRights || userUploadRights.contains(albumData.pwgID) {
             buttonState = albumsShowingSubAlbums.contains(albumData.pwgID) ? .hideSubAlbum : .showSubAlbum
         }
