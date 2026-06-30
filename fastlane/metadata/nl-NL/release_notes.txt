@@ -1,2 +1,2 @@
 • Lost bugs op en verbetert de interface
-• Onderbreekt het uploaden wanneer het apparaat moet afkoelen
+• Biedt de mogelijkheid om het maximale aantal gelijktijdige verbindingen met de Piwigo-server aan te passen

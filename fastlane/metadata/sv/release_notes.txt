@@ -1,2 +1,2 @@
 • Fixar buggar och förbättrar gränssnittet
-• Avbryter uppladdningar när enheten behöver svalna
+• Gör det möjligt att ändra det maximala antalet samtidiga anslutningar till Piwigo-servern

@@ -1,2 +1,2 @@
 • Poprawki błędów i usprawnienia interfejsu
-• Wstrzymuje przesyłanie danych, gdy urządzenie musi się ochłodzić
+• Dodano możliwość zmiany maksymalnej liczby jednoczesnych połączeń z serwerem Piwigo
