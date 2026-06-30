@@ -1,2 +1,2 @@
 • Retter fejl og forbedrer brugerfladen
-• Stopper overførsler, når enheden skal køle af
+• Tillader at ændre det maksimale antal samtidige forbindelser til Piwigo-serveren

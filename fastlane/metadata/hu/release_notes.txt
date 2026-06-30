@@ -1,2 +1,2 @@
 • Hibajavítások és a kezelőfelület javítása
-• Felfüggeszti a feltöltést, ha az eszköznek lehűlnie kell
+• Lehetővé teszi a Piwigo-kiszolgálóhoz fennálló egyidejű kapcsolatok maximális számának módosítását
