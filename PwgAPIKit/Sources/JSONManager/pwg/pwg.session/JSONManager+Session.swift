@@ -33,7 +33,6 @@ public extension JSONManager {
     
     @concurrent
     func sessionGetStatus() async throws(PwgKitError) -> String {
-        JSONManager.logger.notice("Session: getting status…")
         // Launch request
         let pwgData = try await postRequest(withMethod: pwgSessionGetStatus, paramDict: [:],
                                             jsonObjectClientExpectsToReceive: SessionGetStatusJSON.self,

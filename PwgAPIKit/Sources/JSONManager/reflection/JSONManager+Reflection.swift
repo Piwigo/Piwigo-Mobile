@@ -23,7 +23,7 @@ public extension JSONManager {
             // Check if the Community extension is installed and active (since Piwigo 2.9a)
             if pwgData.data.contains(kCommunitySessionGetStatus) {
                 ServerVars.shared.usesCommunityPluginV29 = true
-                JSONManager.logger.notice("\(kReflectionGetMethodList): Community plugin installed")
+                JSONManager.logger.notice("Community plugin installed")
             } else {
                 ServerVars.shared.usesCommunityPluginV29 = false
             }
@@ -31,7 +31,7 @@ public extension JSONManager {
             // Check if the pwg.images.setCategory method is available (since Piwigo 14)
             if pwgData.data.contains(pwgImagesSetCategory) {
                 ServerVars.shared.usesSetCategory = true
-                JSONManager.logger.notice("\(kReflectionGetMethodList): setCategory method available: \(ServerVars.shared.usesSetCategory, privacy: .public)")
+                JSONManager.logger.notice("setCategory method available: \(ServerVars.shared.usesSetCategory, privacy: .public)")
             } else {
                 ServerVars.shared.usesSetCategory = false
             }
@@ -39,7 +39,7 @@ public extension JSONManager {
             // Check if the pwg.users.api_key.revoke method is available (since Piwigo 16.0)
             if pwgData.data.contains("pwg.users.api_key.revoke") {
                 NetworkVars.shared.usesAPIkeys = true
-                JSONManager.logger.notice("\(kReflectionGetMethodList): API keys management available: \(NetworkVars.shared.usesAPIkeys, privacy: .public)")
+                JSONManager.logger.notice("API keys management available: \(NetworkVars.shared.usesAPIkeys, privacy: .public)")
             } else {
                 NetworkVars.shared.usesAPIkeys = false
             }

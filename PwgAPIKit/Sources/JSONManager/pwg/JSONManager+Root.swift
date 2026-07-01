@@ -18,7 +18,7 @@ public extension JSONManager {
         do {
             let pwgData = try await postRequest(withMethod: pwgGetInfos, paramDict: [:],
                                                 jsonObjectClientExpectsToReceive: GetInfosJSON.self,
-                                                countOfBytesClientExpectsToReceive: 8448)
+                                                countOfBytesClientExpectsToReceive: 9088)
             // Collect statistics
             var infos = [String]()
             let numberFormatter = NumberFormatter()

@@ -90,9 +90,9 @@ public final class JSONManager: @unchecked Sendable {
 #if DEBUG
                         let dataStr = String(decoding: jsonData.prefix(100), as: UTF8.self) + "…"
                         //                let dataStr = String(decoding: jsonData, as: UTF8.self)
-                        JSONManager.logger.notice("\(method) returned \(countsOfBytes, privacy: .public) bytes: \(dataStr, privacy: .public)")
+                        JSONManager.logger.notice("\(method, privacy: .public) returned \(countsOfBytes, privacy: .public) bytes: \(dataStr, privacy: .public)")
 #else
-                        JSONManager.logger.notice("\(method) returned \(countsOfBytes, privacy: .public) bytes.")
+                        JSONManager.logger.notice("\(method, privacy: .public) returned \(countsOfBytes, privacy: .public) bytes.")
 #endif
                         
                         // Return decoded object
@@ -165,10 +165,10 @@ public final class JSONManager: @unchecked Sendable {
         // Log invalid returned data
 #if DEBUG
         let dataStr = String(decoding: jsonData, as: UTF8.self)
-        JSONManager.logger.notice("\(method) returned the invalid JSON data: \(dataStr, privacy: .public)")
+        JSONManager.logger.notice("\(method, privacy: .public) returned the invalid JSON data: \(dataStr, privacy: .public)")
 #else
         let countsOfBytes = jsonData.count * MemoryLayout<Data>.stride
-        JSONManager.logger.notice("\(method) returned \(countsOfBytes, privacy: .public) bytes of invalid JSON data.")
+        JSONManager.logger.notice("\(method, privacy: .public) returned \(countsOfBytes, privacy: .public) bytes of invalid JSON data.")
 #endif
         
         // Store invalid JSON data for helping user
