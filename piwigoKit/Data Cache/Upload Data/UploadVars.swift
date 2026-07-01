@@ -88,6 +88,10 @@ public class UploadVars: NSObject, @unchecked Sendable {
                 UserDefaults.dataSuite.set(encodedAction + ",", forKey: "prefixFileNameActionList")
             }
         }
+        if let maxNberOfUploadTransfers = UserDefaults.dataSuite.object(forKey: "maxNberOfUploadTransfers") as? Int16 {
+            UserDefaults.dataSuite.removeObject(forKey: "maxNberOfUploadTransfers")
+            UserDefaults.dataSuite.set(maxNberOfUploadTransfers, forKey: "maxConnectionsPerHost")
+        }
     }
     
     // MARK: - Vars in UserDefaults / Standard
@@ -244,9 +248,9 @@ public class UploadVars: NSObject, @unchecked Sendable {
     @UserDefault("maxNberOfPreparedUploads", defaultValue: 5, userDefaults: UserDefaults.dataSuite)
     public var maxNberOfPreparedUploads: Int16
     
-    /// - Maximum number of simultneous upload transfers
-    @UserDefault("maxNberOfUploadTransfers", defaultValue: 2, userDefaults: UserDefaults.dataSuite)
-    public var maxNberOfUploadTransfers: Int16
+    /// - Maximum number of simultaneous connections per host
+    @UserDefault("maxConnectionsPerHost", defaultValue: 2, userDefaults: UserDefaults.dataSuite)
+    public var maxConnectionsPerHost: Int
     
     /// - Chunk size set by the user (uploadChunkSize by default - see above)
     @UserDefault("customUploadChunkSize", defaultValue: 0, userDefaults: UserDefaults.dataSuite)

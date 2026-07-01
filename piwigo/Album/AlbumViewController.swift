@@ -24,7 +24,7 @@ protocol AlbumViewControllerDelegate: NSObjectProtocol {
     func didSelectCurrentCounter(value: Int64)
 }
 
-class AlbumViewController: UIViewController
+final class AlbumViewController: UIViewController
 {
     weak var albumDelegate: (any AlbumViewControllerDelegate)?
 

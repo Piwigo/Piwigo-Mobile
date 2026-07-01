@@ -1,2 +1,2 @@
 • Fixes bugs and improves the interface
-• Pauses uploads when the device needs to cool
+• Allows to change the maximum number of simultaneous connections to the Piwigo server

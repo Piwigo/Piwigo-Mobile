@@ -23,8 +23,14 @@ final class ClearCache
         default:
             title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
         }
-        viewController.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) {
-            closeSession()
+        if message.isEmpty {
+            viewController.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {
+                closeSession()
+            }
+        } else {
+            viewController.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) {
+                closeSession()
+            }
         }
     }
     
@@ -158,7 +164,7 @@ final class ClearCache
             await UploadManagerActor.shared.removeAllUploads()
             
             // Cancel upload tasks, then other tasks
-            let allUploadTasks = await bckgSession.allTasks
+            let allUploadTasks = await UploadSessionManager.shared.allTasks()
             allUploadTasks.forEach({$0.cancel()})
             
             // Update badge and upload queue button

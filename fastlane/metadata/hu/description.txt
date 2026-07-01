@@ -19,6 +19,7 @@ A Piwigo ingyenes és nyílt forráskódú.
 A Piwigo a következő bővítményekkel is kompatibilis:
 - Community: nem-admin felhasználók is tölthetnek fel képeket
 - rotateImage: lehetővé teszi a képek elforgatását
+- piwigo-two_factor: kétfaktoros hitelesítést (2FA) biztosít
 - piwigo-videojs: videófájlok támogatása
 
 Visszajelzés vagy kérdések?

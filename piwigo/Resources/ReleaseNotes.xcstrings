@@ -10221,7 +10221,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.2.1\n\n• Hilfeansichten hinzugefügt\n• Fehlerbehebungen"
+            "value" : "Version 4.2.1\nMai 9, 2026\n\n• Hilfeansichten hinzugefügt\n• Fehlerbehebungen"
           }
         },
         "en" : {
@@ -10411,97 +10411,198 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الإصدار 4.2.3\n\n• إصلاح الأخطاء وتحسين الواجهة\n• إيقاف التحميل عندما يحتاج الجهاز إلى التبريد"
+            "value" : "الإصدار 4.2.3\n29 مايو 2026\n\n• إصلاح الأخطاء وتحسين الواجهة\n• إيقاف التحميل عندما يحتاج الجهاز إلى التبريد"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.2.3\n\n• Retter fejl og forbedrer brugerfladen\n• Stopper overførsler, når enheden skal køle af"
+            "value" : "Version 4.2.3\n29 maj 2026\n\n• Retter fejl og forbedrer brugerfladen\n• Stopper overførsler, når enheden skal køle af"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.2.3\n\n• Behebt Fehler und verbessert die Benutzeroberfläche\n• Unterbricht den Upload, wenn das Gerät abkühlen muss"
+            "value" : "Version 4.2.3\nMai 29, 2026\n\n• Behebt Fehler und verbessert die Benutzeroberfläche\n• Unterbricht den Upload, wenn das Gerät abkühlen muss"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.2.3\n\n• Fixes bugs and improves the interface\n• Pauses uploads when the device needs to cool"
+            "value" : "Version 4.2.3\nMay 29, 2026\n\n• Fixes bugs and improves the interface\n• Pauses uploads when the device needs to cool"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versión 4.2.3\n\n• Corrige errores y mejora la interfaz\n• Detiene las subidas cuando el dispositivo necesita enfriarse"
+            "value" : "Versión 4.2.3\n29 de mayo 2026\n\n• Corrige errores y mejora la interfaz\n• Detiene las subidas cuando el dispositivo necesita enfriarse"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.2.3\n\n• Corrige les bugs et améliore l'interface\n• Met les transferts en pause lorsque l'appareil a besoin de refroidir"
+            "value" : "Version 4.2.3\n29 mai 2026\n\n• Corrige les bugs et améliore l'interface\n• Met les transferts en pause lorsque l'appareil a besoin de refroidir"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4.2.3 verzió\n\n• Hibajavítások és a kezelőfelület javítása\n• Felfüggeszti a feltöltést, ha az eszköznek lehűlnie kell"
+            "value" : "4.2.3 verzió\n2026 Május 29\n\n• Hibajavítások és a kezelőfelület javítása\n• Felfüggeszti a feltöltést, ha az eszköznek lehűlnie kell"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 4.2.3\n\n• Memperbaiki bug dan meningkatkan antarmuka\n• Menunda pengunggahan saat perangkat perlu didinginkan"
+            "value" : "Versi 4.2.3\n29 Mei 2026\n\n• Memperbaiki bug dan meningkatkan antarmuka\n• Menunda pengunggahan saat perangkat perlu didinginkan"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versione 4.2.3\n\n• Corregge i bug e migliora l'interfaccia\n• Sospende i caricamenti quando il dispositivo deve raffreddarsi"
+            "value" : "Versione 4.2.3\n29 maggio 2026\n\n• Corregge i bug e migliora l'interfaccia\n• Sospende i caricamenti quando il dispositivo deve raffreddarsi"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "バージョン4.2.3\n\n• バグの修正とインターフェイスの改善\n• デバイスの冷却が必要な場合、アップロードを一時停止します"
+            "value" : "バージョン4.2.3\n2026年5月29日\n\n• バグの修正とインターフェイスの改善\n• デバイスの冷却が必要な場合、アップロードを一時停止します"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 4.2.3\n\n• Lost bugs op en verbetert de interface\n• Onderbreekt het uploaden wanneer het apparaat moet afkoelen"
+            "value" : "Versie 4.2.3\n29 Mei 2026\n\n• Lost bugs op en verbetert de interface\n• Onderbreekt het uploaden wanneer het apparaat moet afkoelen"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wersja 4.2.3\n\n• Poprawki błędów i usprawnienia interfejsu\n• Wstrzymuje przesyłanie danych, gdy urządzenie musi się ochłodzić"
+            "value" : "Wersja 4.2.3\n29 maja 2026\n\n• Poprawki błędów i usprawnienia interfejsu\n• Wstrzymuje przesyłanie danych, gdy urządzenie musi się ochłodzić"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Версия 4.2.3\n\n• Исправлены ошибки и улучшен интерфейс\n• Приостанавливает загрузку, когда устройству требуется охлаждение"
+            "value" : "Версия 4.2.3\n29 мая 2026\n\n• Исправлены ошибки и улучшен интерфейс\n• Приостанавливает загрузку, когда устройству требуется охлаждение"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.2.3\n\n• Fixar buggar och förbättrar gränssnittet\n• Avbryter uppladdningar när enheten behöver svalna"
+            "value" : "Version 4.2.3\n29 maj 2026\n\n• Fixar buggar och förbättrar gränssnittet\n• Avbryter uppladdningar när enheten behöver svalna"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "版本 4.2.3\n\n• 修正错误并改进界面\n• 当设备需要散热时，暂停上传"
+            "value" : "版本 4.2.3\n2026年5月29日\n\n• 修正错误并改进界面\n• 当设备需要散热时，暂停上传"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "版本 4.2.3\n\n• 修正錯誤並改進介面\n• 當裝置需要散熱時，會暫停上傳"
+            "value" : "版本 4.2.3\n2026年5月29日\n\n• 修正錯誤並改進介面\n• 當裝置需要散熱時，會暫停上傳"
+          }
+        }
+      }
+    },
+    "v4.2.4_text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإصدار 4.2.4\n\n• إصلاح الأخطاء وتحسين الواجهة\n• يسمح بتغيير الحد الأقصى لعدد الاتصالات المتزامنة مع خادم Piwigo"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.2.4\n\n• Retter fejl og forbedrer brugerfladen\n• Tillader at ændre det maksimale antal samtidige forbindelser til Piwigo-serveren"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.2.4\n\n• Behebt Fehler und verbessert die Benutzeroberfläche\n• Erlaubt das Ändern der maximalen Anzahl an gleichzeitigen Verbindungen zum Piwigo-Server"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.2.4\n\n• Fixes bugs and improves the interface\n• Allows to change the maximum number of simultaneous connections to the Piwigo server"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión 4.2.4\n\n• Corrige errores y mejora la interfaz\n• Permite cambiar el número máximo de conexiones simultáneas al servidor de Piwigo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.2.4\n\n• Corrige des bugs et améliore l'interface\n• Permet de modifier le nombre maximal de connexions simultanées au serveur Piwigo"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4.2.4-es verzió\n\n• Hibajavítások és a kezelőfelület javítása\n• Lehetővé teszi a Piwigo-kiszolgálóhoz fennálló egyidejű kapcsolatok maximális számának módosítását"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versi 4.2.4\n\n• Memperbaiki bug dan meningkatkan antarmuka\n• Memungkinkan pengguna untuk mengubah jumlah maksimum koneksi simultan ke server Piwigo"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versione 4.2.4\n\n• Corregge i bug e migliora l'interfaccia\n• Consente di modificare il numero massimo di connessioni simultanee al server Piwigo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バージョン 4.2.4\n\n• バグの修正とインターフェイスの改善\n• Piwigo サーバーへの同時接続数の上限を変更できるようになりました"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versie 4.2.4\n\n• Lost bugs op en verbetert de interface\n• Biedt de mogelijkheid om het maximale aantal gelijktijdige verbindingen met de Piwigo-server aan te passen"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wersja 4.2.4\n\n• Poprawki błędów i usprawnienia interfejsu\n• Dodano możliwość zmiany maksymalnej liczby jednoczesnych połączeń z serwerem Piwigo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версия 4.2.4\n\n• Исправлены ошибки и улучшен интерфейс\n• Добавлена возможность изменять максимальное количество одновременных подключений к серверу Piwigo"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.2.4\n\n• Fixar buggar och förbättrar gränssnittet\n• Gör det möjligt att ändra det maximala antalet samtidiga anslutningar till Piwigo-servern"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 4.2.4\n\n• 修复了错误并改进了界面\n• 允许更改与 Piwigo 服务器同时连接的最大数量"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 4.2.4\n\n• 修復錯誤並改善介面\n• 允許變更同時連線至 Piwigo 伺服器的最大數量"
           }
         }
       }

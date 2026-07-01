@@ -35,7 +35,7 @@ extension UploadSessionsDelegate: URLSessionDataDelegate {
 
         let sessionIdentifier = taskDescription.components(separatedBy: " ").first
         switch sessionIdentifier {
-        case uploadBckgSessionIdentifier:
+        case pwgUploadBckgSessionID:
             Task(priority: .utility) { @UploadManagerActor in
                 await UploadManager.shared.didCompleteBckgUploadTask(dataTask, withData: data)
             }

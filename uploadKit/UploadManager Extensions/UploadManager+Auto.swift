@@ -1,6 +1,6 @@
 //
 //  UploadManager+Auto.swift
-//  piwigoKit
+//  uploadKit
 //
 //  Created by Eddy Lelièvre-Berna on 10/04/2021.
 //  Copyright © 2021 Piwigo.org. All rights reserved.
@@ -143,8 +143,11 @@ extension UploadManager {
         
         // Unqueues auto-upload requests
         do {
-            // Remove non-completed upload requests marked for auto-upload from the upload queue
-            let uploadIDs = UploadProvider().getIDsOfPendingUploads(onlyDeletable: true, markedForAutoUpload: true, inContext: self.uploadBckgContext).0
+            // Remove inactive upload requests marked for auto-upload from the upload queue
+            let states: [pwgUploadState] = [.waiting,
+                .preparingError, .preparingFail, .formatError,
+                .uploadingError,.uploadingFail, .finishingError, .finishingFail]
+            let uploadIDs = UploadProvider().getIDsOfPendingUploads(onlyInStates: states, markedForAutoUpload: true, inContext: self.uploadBckgContext).0
             await UploadManagerActor.shared.removeUploads(withIDs: uploadIDs)
             try UploadProvider().deleteUploads(withID: uploadIDs, inContext: self.uploadBckgContext)
             

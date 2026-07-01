@@ -1,2 +1,2 @@
-• Corrige les bugs et améliore l'interface
-• Met les transferts en pause lorsque l'appareil a besoin de refroidir
+• Corrige des bugs et améliore l'interface
+• Permet de modifier le nombre maximal de connexions simultanées au serveur Piwigo

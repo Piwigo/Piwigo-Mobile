@@ -135,8 +135,16 @@ class TroubleshootingViewController: UIViewController {
                 debugPrint("••> completed in \(duration.rounded()) ms")
                 let entries = allEntries.compactMap({$0 as? OSLogEntryLog})
                 
+                // piwigo — App Metrics
+                #if DEBUG
+                var someLogs = entries.filter({$0.category == String(describing: AppMetrics.self)})
+                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
+                #else
+                var someLogs = [OSLogEntryLog]()
+                #endif
+                
                 // piwigoKit — Core Data
-                var someLogs = entries.filter({$0.category == String(describing: DataMigrator.self)})
+                someLogs = entries.filter({$0.category == String(describing: DataMigrator.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
                 someLogs = entries.filter({$0.category == String(describing: Image.self)})
                 if someLogs.isEmpty ==  false { self.pwgLogs.append(someLogs)}
@@ -153,16 +161,20 @@ class TroubleshootingViewController: UIViewController {
                 someLogs = entries.filter({$0.category == String(describing: ImageDownloader.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
                 
-                // uploadKit — Upload Sessions Delegate
-                someLogs = entries.filter({$0.category == String(describing: UploadSessionsDelegate.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                
                 // uploadKit — UploadManager
                 someLogs = entries.filter({$0.category == String(describing: UploadManager.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
 
                 // uploadKit — UploadManagerActor
                 someLogs = entries.filter({$0.category == String(describing: UploadManagerActor.self)})
+                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
+                
+                // uploadKit — Upload Session Manager
+                someLogs = entries.filter({$0.category == String(describing: UploadSessionManager.self)})
+                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
+                
+                // uploadKit — Upload Sessions Delegate
+                someLogs = entries.filter({$0.category == String(describing: UploadSessionsDelegate.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
             }
             catch {
@@ -177,7 +189,7 @@ class TroubleshootingViewController: UIViewController {
                 }
             }
         }
-
+        
         // Operation for retrieving invalid JSON data
         let getJSONfiles = BlockOperation {
             let tmpURL = self.fm.temporaryDirectory
@@ -266,14 +278,16 @@ extension TroubleshootingViewController: UITableViewDataSource
             if pwgLogs.isEmpty {
                 cell.textLabel?.text = "None"
                 cell.accessoryType = UITableViewCell.AccessoryType.none
-            } else if let entry = pwgLogs[indexPath.row].first {
+            }
+            else if let entry = pwgLogs[indexPath.row].first {
                 cell.textLabel?.text = entry.category
-                cell.detailTextLabel?.text = DateUtilities.pwgDateFormatter.string(from: entry.date)
+                cell.detailTextLabel?.text = DateUtilities.logsDateFormatter.string(from: entry.date)
                 cell.detailTextLabel?.font = .preferredFont(forTextStyle: .footnote)
                 cell.detailTextLabel?.adjustsFontSizeToFitWidth = true
                 cell.detailTextLabel?.textColor = PwgColor.rightLabel
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-            } else {
+            }
+            else {
                 cell.textLabel?.text = "None"
                 cell.accessoryType = UITableViewCell.AccessoryType.none
             }
@@ -281,7 +295,8 @@ extension TroubleshootingViewController: UITableViewDataSource
             if JSONfiles.isEmpty {
                 cell.textLabel?.text = "None"
                 cell.accessoryType = UITableViewCell.AccessoryType.none
-            } else {
+            }
+            else {
                 let fileURL = JSONfiles[indexPath.row]
                 let fileName = String(fileURL.lastPathComponent.dropFirst(JSONprefixCount).dropLast(JSONextensionCount))
                 if let pos = fileName.lastIndex(of: " ") {
@@ -290,7 +305,8 @@ extension TroubleshootingViewController: UITableViewDataSource
                     cell.detailTextLabel?.font = .preferredFont(forTextStyle: .footnote)
                     cell.detailTextLabel?.adjustsFontSizeToFitWidth = true
                     cell.detailTextLabel?.textColor = PwgColor.rightLabel
-                } else {
+                }
+                else {
                     cell.textLabel?.text = fileName
                     cell.detailTextLabel?.text = fileURL.fileSizeString
                     cell.detailTextLabel?.font = .preferredFont(forTextStyle: .footnote)

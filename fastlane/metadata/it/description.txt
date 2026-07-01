@@ -19,6 +19,7 @@ Piwigo è gratuito e opensource.
 Piwigo è anche compatibile con le seguenti estensioni:
 - Community: consente agli utenti non amministratori di aggiungere foto
 - rotateImage: consente di ruotare le immagini
+- piwigo-two_factor: aggiunge l'autenticazione a due fattori (2FA)
 - piwigo-videojs: aggiunge il supporto video
 
 Feedback o domande?

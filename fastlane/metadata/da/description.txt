@@ -20,6 +20,7 @@ Piwigo er gratis og opensource.
 Piwigo er også kompatibel med følgende filtypenavne:
 - Community: tillader ikke-admin brugere at tilføje foto
 - rotateImage: giver dig mulighed for at rotere billeder
+- piwigo-two_factor: tilføjer tofaktorautentificering (2FA)
 - piwigo-videojs: tilføjer support for videofiler
 
 Feedback eller spørgsmål? 

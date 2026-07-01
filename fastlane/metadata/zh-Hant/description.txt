@@ -19,6 +19,7 @@ Piwigo是免費及開放原始碼的軟體。
 Piwigo同時支援下列擴充功能:
 - community: 允許非管理員用戶上傳照片
 - rotateImage：使您能夠旋轉影像
+- piwigo-two_factor：新增雙因素驗證 (2FA)
 - piwigo-videojs: 新增影片支援
 
 任何意見或問題?

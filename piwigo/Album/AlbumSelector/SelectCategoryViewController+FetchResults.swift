@@ -79,8 +79,6 @@ extension SelectCategoryViewController: @MainActor NSFetchedResultsControllerDel
         }
         // Reset operation list
         updateOperations = []
-        // Begin the update
-        categoriesTableView?.beginUpdates()
     }
     
     // Exclusively for iOS 12.x
@@ -146,8 +144,5 @@ extension SelectCategoryViewController: @MainActor NSFetchedResultsControllerDel
         categoriesTableView?.performBatchUpdates { [weak self] in
             self?.updateOperations.forEach { $0.start() }
         }
-        
-        // End updates
-        categoriesTableView?.endUpdates()
     }
 }

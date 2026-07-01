@@ -1,2 +1,2 @@
 • Behebt Fehler und verbessert die Benutzeroberfläche
-• Unterbricht den Upload, wenn das Gerät abkühlen muss
+• Erlaubt das Ändern der maximalen Anzahl an gleichzeitigen Verbindungen zum Piwigo-Server

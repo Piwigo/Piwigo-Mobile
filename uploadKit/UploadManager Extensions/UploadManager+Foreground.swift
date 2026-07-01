@@ -1,6 +1,6 @@
 //
 //  UploadManager+Foreground.swift
-//  piwigoKit
+//  uploadKit
 //
 //  Created by Eddy Lelièvre-Berna on 20/02/2023.
 //  Copyright © 2023 Piwigo.org. All rights reserved.
@@ -83,7 +83,7 @@ extension UploadManager
     public func getUploadURIsOfTransfers() async -> Set<String> {
         // Get active upload tasks
         var activeUploadsURIstr: Set<String> = []
-        let allTasks = await bckgSession.allTasks
+        let allTasks = await UploadSessionManager.shared.allTasks()
         allTasks.filter({ $0.state == .running }).forEach {task in
             // Retrieve upload request properties
             guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),

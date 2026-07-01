@@ -1,2 +1,2 @@
 • Corregge i bug e migliora l'interfaccia
-• Sospende i caricamenti quando il dispositivo deve raffreddarsi
+• Consente di modificare il numero massimo di connessioni simultanee al server Piwigo

@@ -1,6 +1,6 @@
 //
 //  UploadManager+PrepareImage.swift
-//  piwigoKit
+//  uploadKit
 //
 //  Created by Eddy Lelièvre-Berna on 21/05/2020.
 //  Copyright © 2020 Piwigo.org. All rights reserved.

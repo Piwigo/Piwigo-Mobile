@@ -28,21 +28,21 @@ public struct DateUtilities: Sendable
         return formatter
     }()
     
-    // Logs dates are provided with UTC time
+    // Logs dates are provided in the local time
     public static let logsDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.sss"
-        formatter.timeZone = TimeZone(abbreviation: "UTC")!
+        formatter.timeZone = TimeZone.current
         return formatter
     }()
     
-    // Logs times are provided with UTC time
+    // Logs times are provided in the local time
     public static let logsTimeFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "HH:mm:ss.sss"
-        formatter.timeZone = TimeZone(abbreviation: "UTC")!
+        formatter.timeZone = TimeZone.current
         return formatter
     }()
     

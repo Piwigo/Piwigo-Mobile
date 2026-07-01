@@ -32,7 +32,7 @@ class LogsViewController: UIViewController {
         // Initialise content
         guard let firstEntry = logEntries.first else { return }
         category?.text = firstEntry.category
-        dateTime?.text = DateUtilities.pwgDateFormatter.string(from: firstEntry.date)
+        dateTime?.text = DateUtilities.logsDateFormatter.string(from: firstEntry.date)
         var currentLogDate = DateUtilities.logsTimeFormatter.string(from: firstEntry.date)
         var msg = currentLogDate + "\n"
         for logEntry in logEntries {

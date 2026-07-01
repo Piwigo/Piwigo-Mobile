@@ -31,6 +31,9 @@ final class AppVars: @unchecked Sendable {
         if let _ = UserDefaults.standard.object(forKey: "diskCache") {
             UserDefaults.standard.removeObject(forKey: "diskCache")
         }
+        if let _ = UserDefaults.standard.object(forKey: "switchPaletteThreshold") {
+            UserDefaults.standard.removeObject(forKey: "switchPaletteThreshold")
+        }
         //        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
         //            UserDefaults.dataSuite.removeObject(forKey: "test")
         //        }
@@ -43,8 +46,6 @@ final class AppVars: @unchecked Sendable {
     var isDarkPaletteActive: Bool
     @UserDefault("switchPaletteAutomatically", defaultValue: true)
     var switchPaletteAutomatically: Bool
-    @UserDefault("switchPaletteThreshold", defaultValue: 40)
-    var switchPaletteThreshold: Int
     @UserDefault("isDarkPaletteModeActive", defaultValue: false)
     var isDarkPaletteModeActive: Bool
     @UserDefault("isLightPaletteModeActive", defaultValue: false)
