@@ -142,7 +142,7 @@ extension ShareViewController: UITableViewDelegate
                             URLQueryItem(name: "date", value: shareDate)]
         guard let url = comps.url else { return }
         
-        // Send album IDs to main app
+        // Send album IDs and date of share to main app
         var responder: UIResponder? = self
         while responder != nil {
             if let application = responder as? UIApplication {
