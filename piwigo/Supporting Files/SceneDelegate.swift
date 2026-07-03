@@ -505,7 +505,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     // MARK: - Application Deep Link Support
     /// piwigo://shareExtension/albumID=23
     enum DeepLink: Sendable {
-        case shareExtension(albumIDs: [Int32])
+        case shareExtension(albumIDs: [Int32], date: String)
         
         init?(url: URL) {
             // Submitted to the right app?
@@ -515,10 +515,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // What should be done?
             switch comps.host {
             case "share-extension":
-                guard let albumIDsList = comps.queryItems?.first(where: { $0.name == "albumIDs" })?.value as? String
+                guard let albumIDsList = comps.queryItems?.first(where: { $0.name == "albumIDs" })?.value as? String,
+                      let date = comps.queryItems?.first(where: { $0.name == "date" })?.value as? String
                 else { return nil }
                 let albumIDs: [Int32] = albumIDsList.components(separatedBy: ",").compactMap { Int32($0) }
-                self = .shareExtension(albumIDs: albumIDs)
+                self = .shareExtension(albumIDs: albumIDs, date: date)
             
             default:
                 return nil
@@ -540,7 +541,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // What should be done?
         switch link {
-        case .shareExtension(albumIDs: let albumIDs):
+        case .shareExtension(albumIDs: let albumIDs, date: let shareDate):
             // Get top most view controller
             guard let topMostVC = window?.windowScene?.topMostViewController()
             else { return }
@@ -589,7 +590,66 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 })
                 
                 // Update the stack of album view controllers
-                navController.setViewControllers(firstAlbumVCs + newAlbumVCs, animated: false)
+                let allViewControllers = firstAlbumVCs + newAlbumVCs
+                navController.setViewControllers(allViewControllers, animated: true)
+                guard let albumVC = allViewControllers.last else { return }
+                
+                // Get files in the Uploads directory related with the current share
+                var files = [URL]()
+                do {
+                    files = try FileManager.default.contentsOfDirectory(at: DataDirectories.appUploadsDirectory,
+                                                                        includingPropertiesForKeys: nil,
+                                                                        options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+                    files.removeAll(where: { $0.lastPathComponent.contains(shareDate) == false })
+                    files.removeAll(where: { $0.lastPathComponent.hasSuffix(".json") == false })
+                }
+                catch {
+                    debugPrint("••> Could not retrieve files in Uploads directory: \(error.localizedDescription)")
+                }
+                files.forEach({ debugPrint("••> \($0.lastPathComponent)") })
+                
+                // Prepare upload requests
+                var uploadRequests: [UploadProperties] = []
+                for file in files {
+                    do {
+                        // Get data stored in JSON file
+                        let data = try Data(contentsOf: file)
+                        let uploadInfo = try JSONDecoder().decode([String: String].self, from: data)
+                        guard let identifier = uploadInfo["identifier"], identifier.isEmpty == false,
+                              let fileName = uploadInfo["fileName"], fileName.isEmpty == false
+                        else { continue }
+                        
+                        // Create upload request
+                        var uploadRequest = UploadProperties(localIdentifier: identifier, category: destinationAlbumID)
+                        uploadRequest.fileName = fileName
+                        uploadRequests.append(uploadRequest)
+                        
+                        // Delete JSON file
+                        try? FileManager.default.removeItem(at: file)
+                    }
+                    catch {
+                        debugPrint("••> Could not decode upload info: \(error.localizedDescription)")
+                    }
+                }
+                
+                // Show upload options views
+                let uploadSwitchSB = UIStoryboard(name: "UploadSwitchViewController", bundle: nil)
+                guard let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController
+                else { preconditionFailure("Could not load UploadSwitchViewController") }
+                
+                // Prepare upload options selector
+                uploadSwitchVC.delegate = nil
+                uploadSwitchVC.user = albumVC.user
+                uploadSwitchVC.categoryId = albumVC.categoryId
+                uploadSwitchVC.categoryCurrentCounter = destinationAlbum.currentCounter
+                uploadSwitchVC.canDeleteImages = false
+                uploadSwitchVC.uploadRequests = uploadRequests
+                
+                // Push upload options view embedded in navigation controller
+                let uploadNavController = UINavigationController(rootViewController: uploadSwitchVC)
+                uploadNavController.modalTransitionStyle = .coverVertical
+                uploadNavController.modalPresentationStyle = .pageSheet
+                albumVC.navigationController?.present(uploadNavController, animated: true)
             }
         }
     }

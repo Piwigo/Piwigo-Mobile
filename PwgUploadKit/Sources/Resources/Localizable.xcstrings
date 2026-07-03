@@ -1140,6 +1140,9 @@
         }
       }
     },
+    "preparingUploads" : {
+      "comment" : "Preparing uploads…"
+    },
     "settings_autoUploadDestinationInfo" : {
       "comment" : "Please select the album…",
       "localizations" : {

@@ -250,9 +250,10 @@ extension LocalImagesViewController {
         else { preconditionFailure("could not load UploadSwitchViewController") }
         
         uploadSwitchVC.delegate = self
-        uploadSwitchVC.user = user
-        uploadSwitchVC.categoryId = categoryId
-        uploadSwitchVC.categoryCurrentCounter = categoryCurrentCounter
+        uploadSwitchVC.user = self.user
+        uploadSwitchVC.categoryId = self.categoryId
+        uploadSwitchVC.categoryCurrentCounter = self.categoryCurrentCounter
+        uploadSwitchVC.uploadRequests = self.uploadRequests
         
         // Will we propose to delete images after upload?
         if let firstLocalID = uploadRequests.first?.localIdentifier {

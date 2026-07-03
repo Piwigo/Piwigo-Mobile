@@ -267,6 +267,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
             uploadSwitchVC.user = self.user
             uploadSwitchVC.categoryId = self.categoryId
             uploadSwitchVC.categoryCurrentCounter = self.categoryCurrentCounter
+            uploadSwitchVC.uploadRequests = self.uploadRequests
 
             // Will we propose to delete images after upload?
             if let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [cell.localIdentifier],

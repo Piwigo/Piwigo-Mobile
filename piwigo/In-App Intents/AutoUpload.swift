@@ -103,11 +103,35 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { // , PredictableIn
         // Add new images to upload queue
         let nberOfRequests = await Task(priority: .utility) { @UploadManagerActor in
             let uploadRequestsToAppend = UploadManager.shared.getNewRequests(inCollection: collection,
-                                                                         toBeUploadedIn: categoryId)
+                                                                             toBeUploadedIn: categoryId)
             do {
                 // Append auto-upload requests to database
                 let uploadIDs = try await UploadManager.shared.importUploads(from: uploadRequestsToAppend)
                 
+                // Add upload requests to queue
+                UploadVars.shared.isPaused = false
+                #if os(iOS) && !targetEnvironment(macCatalyst)
+                if #available(iOS 26.0, *) {
+                    // Launch new continued upload task if possible
+                    if UploadVars.shared.isContinuedProcessingTaskActive == false {
+                        UploadManager.shared.runContinuedUploadTask()
+                    }
+                }
+                else {
+                    // Queue uploads to prepare
+                    await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
+                    
+                    // Process next uploads if possible
+                    await UploadManagerActor.shared.processNextUpload()
+                }
+                #elseif targetEnvironment(macCatalyst)
+                // Queue uploads to prepare
+                await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
+                
+                // Process next uploads if possible
+                await UploadManagerActor.shared.processNextUpload()
+                #endif
+
                 // Return number of upload requests added to queue
                 return uploadIDs.count
             }

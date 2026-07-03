@@ -14,11 +14,11 @@ import PwgUIKit
 import PwgUploadKit
 
 @objc protocol UploadSwitchDelegate: NSObjectProtocol {
-    func uploadSettingsDidDisappear()
-    func didValidateUploadSettings(with imageParameters:[String:Any], _ uploadParameters:[String:Any])
+    func didSelectCurrentCounter(value: Int64)
+    func uploadOptionsViewDidDisappear(withUploadsQueued: Bool)
 }
 
-class UploadSwitchViewController: UIViewController {
+final class UploadSwitchViewController: UIViewController {
     
     weak var delegate: (any UploadSwitchDelegate)?
 
@@ -37,8 +37,10 @@ class UploadSwitchViewController: UIViewController {
     var categoryId: Int32 = AlbumVars.shared.defaultCategory
     var categoryCurrentCounter: Int64 = UploadVars.shared.categoryCounterInit
     var canDeleteImages = false
+    var uploadRequests = [UploadProperties]()       // Array of upload requests
+    var uploadsQueued = false
     
-
+    
     // MARK: - Core Data Objects
     var user: User!
 
@@ -99,7 +101,7 @@ class UploadSwitchViewController: UIViewController {
     
     override func viewDidDisappear(_ animated: Bool) {
         // Update navigation bar of parent view
-        delegate?.uploadSettingsDidDisappear()
+        delegate?.uploadOptionsViewDidDisappear(withUploadsQueued: uploadsQueued)
     }
     
     deinit {
@@ -109,65 +111,163 @@ class UploadSwitchViewController: UIViewController {
 
     
     // MARK: - Actions
+    @MainActor
     @objc func didTapUploadButton() {
+        // Show HUD during upload preparation
+        self.navigationController?.showHUD(withTitle: Localized.preparingUploads, minWidth: 200)
+        
         // Retrieve custom image parameters and upload settings from child views
-        var imageParameters = [String:Any](minimumCapacity: 5)
-        var uploadParameters = [String:Any](minimumCapacity: 12)
         children.forEach { (child) in
             
             // Image parameters
             if let paramsCtrl = child as? UploadParametersViewController {
-                imageParameters["title"] = paramsCtrl.commonTitle
-                imageParameters["author"] = paramsCtrl.commonAuthor
-                imageParameters["privacy"] = paramsCtrl.commonPrivacyLevel
-                let tagIDs: String = paramsCtrl.commonTags.map({"\($0.tagId),"}).reduce("", +)
-                imageParameters["tagIds"] = String(tagIDs.dropLast(1))
-                imageParameters["comment"] = paramsCtrl.commonComment
+                for index in 0..<uploadRequests.count {
+                    // Initialisation
+                    var updatedRequest = uploadRequests[index]
+                    
+                    // Apply choices
+                    updatedRequest.imageTitle = paramsCtrl.commonTitle
+                    updatedRequest.author = paramsCtrl.commonAuthor
+                    updatedRequest.privacyLevel = paramsCtrl.commonPrivacyLevel
+                    let tagIDs: String = paramsCtrl.commonTags.map({"\($0.tagId),"}).reduce("", +)
+                    updatedRequest.tagIds = String(tagIDs.dropLast(1))
+                    updatedRequest.comment = paramsCtrl.commonComment
+                    
+                    // Store updated upload request
+                    uploadRequests[index] = updatedRequest
+                }
             }
             
             // Upload settings
             if let settingsCtrl = child as? UploadSettingsViewController {
-                uploadParameters["stripGPSdataOnUpload"] = settingsCtrl.stripGPSdataOnUpload
-                uploadParameters["resizeImageOnUpload"] = settingsCtrl.resizeImageOnUpload
-                uploadParameters["photoMaxSize"] = settingsCtrl.photoMaxSize
-                uploadParameters["videoMaxSize"] = settingsCtrl.videoMaxSize
-                uploadParameters["compressImageOnUpload"] = settingsCtrl.compressImageOnUpload
-                uploadParameters["photoQuality"] = settingsCtrl.photoQuality
-                uploadParameters["currentCounter"] = settingsCtrl.currentCounter
-                if settingsCtrl.prefixBeforeUpload {
-                    uploadParameters["prefixActions"] = settingsCtrl.prefixActions
-                } else {
-                    uploadParameters["prefixActions"] = []
+                for index in 0..<uploadRequests.count {
+                    // Initialisation
+                    var updatedRequest = uploadRequests[index]
+                    
+                    // Apply choices: Image file name
+                    delegate?.didSelectCurrentCounter(value: settingsCtrl.currentCounter)
+                    if settingsCtrl.prefixBeforeUpload {
+                        updatedRequest.fileNamePrefixEncodedActions = settingsCtrl.prefixActions.encodedString
+                    } else {
+                        updatedRequest.fileNamePrefixEncodedActions = ""
+                    }
+                    if settingsCtrl.replaceBeforeUpload {
+                        updatedRequest.fileNameReplaceEncodedActions = settingsCtrl.replaceActions.encodedString
+                    } else {
+                        updatedRequest.fileNameReplaceEncodedActions = ""
+                    }
+                    if settingsCtrl.suffixBeforeUpload {
+                        updatedRequest.fileNameSuffixEncodedActions = settingsCtrl.suffixActions.encodedString
+                    } else {
+                        updatedRequest.fileNameSuffixEncodedActions = ""
+                    }
+                    updatedRequest.fileNameExtensionCase = settingsCtrl.caseOfFileExtension.rawValue
+                    
+                    // Upload settings
+                    updatedRequest.stripGPSdataOnUpload = settingsCtrl.stripGPSdataOnUpload
+                    updatedRequest.resizeImageOnUpload = settingsCtrl.resizeImageOnUpload
+                    if settingsCtrl.resizeImageOnUpload {
+                        updatedRequest.photoMaxSize = settingsCtrl.photoMaxSize
+                        updatedRequest.videoMaxSize = settingsCtrl.videoMaxSize
+                    } else {    // No downsizing
+                        updatedRequest.photoMaxSize = 0
+                        updatedRequest.videoMaxSize = 0
+                    }
+                    updatedRequest.compressImageOnUpload = settingsCtrl.compressImageOnUpload
+                    updatedRequest.photoQuality = settingsCtrl.photoQuality
+                    updatedRequest.deleteImageAfterUpload = settingsCtrl.deleteImageAfterUpload
+
+                    // Store updated upload request
+                    uploadRequests[index] = updatedRequest
                 }
-                if settingsCtrl.replaceBeforeUpload {
-                    uploadParameters["replaceActions"] = settingsCtrl.replaceActions
-                } else {
-                    uploadParameters["replaceActions"] = []
-                }
-                if settingsCtrl.suffixBeforeUpload {
-                    uploadParameters["suffixActions"] = settingsCtrl.suffixActions
-                } else {
-                    uploadParameters["suffixActions"] = []
-                }
-                if settingsCtrl.changeCaseBeforeUpload {
-                    uploadParameters["caseOfFileExtension"] = settingsCtrl.caseOfFileExtension
-                } else {
-                    uploadParameters["caseOfFileExtension"] = FileExtCase.keep
-                }
-                uploadParameters["deleteImageAfterUpload"] = settingsCtrl.deleteImageAfterUpload
             }
         }
-
-        // Updload images
-        delegate?.didValidateUploadSettings(with: imageParameters, uploadParameters)
-        dismiss(animated: true)
+        
+        // Queue upload requests and start uploads
+        Task(priority: .utility) { @UploadManagerActor in
+            do {
+                // Create upload requests in cache
+                /// Cells switch to the "waiting" upload state and are "automatically" deselected visually
+                let uploadIDs = try await UploadManager.shared.importUploads(from: self.uploadRequests)
+                
+                // Add upload requests to queue
+                UploadVars.shared.isPaused = false
+                #if os(iOS) && !targetEnvironment(macCatalyst)
+                if #available(iOS 26.0, *) {
+                    // Launch new continued upload task if possible
+                    if UploadVars.shared.isContinuedProcessingTaskActive == false {
+                        UploadManager.shared.runContinuedUploadTask()
+                    }
+                }
+                else {
+                    // Queue uploads to prepare
+                    await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
+                    
+                    // Process next uploads if possible
+                    await UploadManagerActor.shared.processNextUpload()
+                }
+                #elseif targetEnvironment(macCatalyst)
+                // Queue uploads to prepare
+                await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
+                
+                // Process next uploads if possible
+                await UploadManagerActor.shared.processNextUpload()
+                #endif
+                
+                // Close HUD and dismiss view, returning to:
+                /// - the album of local images if called from the main app
+                /// - the destination album if called from the share extension
+                await MainActor.run {
+                    self.navigationController?.hideHUD {
+                        // Dismiss view
+                        self.uploadsQueued = true
+                        self.dismiss(animated: true)
+                    }
+                }
+            }
+            catch {
+                await MainActor.run {
+                    self.navigationController?.hideHUD {
+                        // Inform user
+                        let title = PwgKitError.uploadCreationError.localizedDescription
+                        self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {
+                            // Resume upload operations in background queue
+                            UploadVars.shared.isPaused = false
+                            Task(priority: .utility) { @UploadManagerActor in
+                                #if os(iOS) && !targetEnvironment(macCatalyst)
+                                if #available(iOS 26.0, *) {
+                                    // Launch new continued upload task if possible
+                                    if UploadVars.shared.isContinuedProcessingTaskActive == false {
+                                        UploadManager.shared.runContinuedUploadTask()
+                                    }
+                                }
+                                else {
+                                    // Process next uploads if possible
+                                    await UploadManagerActor.shared.processNextUpload()
+                                }
+                                #elseif targetEnvironment(macCatalyst)
+                                // Process next uploads if possible
+                                await UploadManagerActor.shared.processNextUpload()
+                                #endif
+                            }
+                        }
+                        
+                        // Dismiss view
+                        self.uploadsQueued = false
+                        self.dismiss(animated: true)
+                    }
+                }
+            }
+        }
     }
     
     @objc func cancelUpload() {
-        // Return to local images view
+        // Return to:
+        /// - the album of local images if called from the main app
+        /// - the destination album if called from the share extension
         dismiss(animated: true)
     }
-
+    
     @objc func didSwitchView() {
         switch switchViewSegmentedControl.selectedSegmentIndex {
         case 0:

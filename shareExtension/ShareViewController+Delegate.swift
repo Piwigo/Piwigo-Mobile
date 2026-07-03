@@ -97,7 +97,7 @@ extension ShareViewController: UITableViewDelegate
                                                       forCategory: albumData, at: indexPath)
             if confirmed {
                 // Launch the app to select options
-                openMainApp(withAlbumIDs: albumData.upperIds)
+                openMainApp(withAlbumIDs: albumData.upperIds, forItemsSharedAt: shareDate)
             }
         }
     }
@@ -133,12 +133,13 @@ extension ShareViewController: UITableViewDelegate
         }
     }
     
-    private func openMainApp(withAlbumIDs upperIds: String) {
+    private func openMainApp(withAlbumIDs upperIds: String, forItemsSharedAt shareDate: String) {
         // Prepare URL
         var comps = URLComponents()
         comps.scheme = "piwigo"
         comps.host = "share-extension"
-        comps.queryItems = [URLQueryItem(name: "albumIDs", value: upperIds)]
+        comps.queryItems = [URLQueryItem(name: "albumIDs", value: upperIds),
+                            URLQueryItem(name: "date", value: shareDate)]
         guard let url = comps.url else { return }
         
         // Send album IDs to main app

@@ -26,6 +26,8 @@ public enum Localized {
                                                     comment: "Please select the album…")
     public static let autoUploadDestinationInfo = String(localized: "settings_autoUploadDestinationInfo", bundle: .pwgUploadKit,
                                                          comment: "Please select the album…")
+    public static let preparingUploads = String(localized: "preparingUploads", bundle: .pwgUploadKit,
+                                                comment: "Preparing uploads…")
 }
 
 // Constants used to manage background tasks

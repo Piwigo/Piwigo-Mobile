@@ -82,6 +82,22 @@ final class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                 // Append auto-upload requests to database
                 let uploadIDs = try await UploadManager.shared.importUploads(from: uploadRequestsToAppend)
                 
+                // Add upload requests to queue
+                UploadVars.shared.isPaused = false
+                #if os(iOS) && !targetEnvironment(macCatalyst)
+                // Queue uploads to prepare
+                await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
+                
+                // Process next uploads if possible
+                await UploadManagerActor.shared.processNextUpload()
+                #elseif targetEnvironment(macCatalyst)
+                // Queue uploads to prepare
+                await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
+                
+                // Process next uploads if possible
+                await UploadManagerActor.shared.processNextUpload()
+                #endif
+
                 // Inform user that the shortcut was executed with success
                 completion(AutoUploadIntentResponse.success(photos: NSNumber(value: uploadIDs.count)))
             }

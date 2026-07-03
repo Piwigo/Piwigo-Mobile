@@ -244,6 +244,7 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
             uploadSwitchVC.categoryId = self.categoryId
             uploadSwitchVC.categoryCurrentCounter = self.categoryCurrentCounter
             uploadSwitchVC.canDeleteImages = false
+            uploadSwitchVC.uploadRequests = self.uploadRequests
             
             // Push Edit view embedded in navigation controller
             let navController = UINavigationController(rootViewController: uploadSwitchVC)

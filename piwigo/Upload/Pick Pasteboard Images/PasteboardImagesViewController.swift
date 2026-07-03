@@ -15,7 +15,7 @@ import PwgCacheKit
 import PwgUIKit
 import PwgUploadKit
 
-class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
+final class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
     
     // MARK: - Core Data Objects
     var user: User!
@@ -64,7 +64,7 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
     var selectedImages = [UploadProperties?]()      // Array of images selected for upload
     var sectionState: SelectButtonState = .none     // To remember the state of the section
     var imagesBeingTouched = [IndexPath]()          // Array of indexPaths of touched images
-    var uploadRequests = [UploadProperties]()       // Array of images to upload
+    var uploadRequests = [UploadProperties]()       // Array of upload requests
 
     // Collection of images in the pasteboard
     var pbObjects = [PasteboardObject]()            // Objects in pasteboard
@@ -107,13 +107,13 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
         }
 
         // Retrieve pasteboard object indexes and types, then create identifiers
-        if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes),
-           let types = UIPasteboard.general.types(forItemSet: indexSet) {
+        if let itemSet = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes),
+           let types = UIPasteboard.general.types(forItemSet: itemSet) {
 
             // Initialise cached indexed uploads
             pbObjects = []
-            selectedImages = .init(repeating: nil, count: indexSet.count)
-            indexedUploadsInQueue = .init(repeating: nil, count: indexSet.count)
+            selectedImages = .init(repeating: nil, count: itemSet.count)
+            indexedUploadsInQueue = .init(repeating: nil, count: itemSet.count)
 
             // Get date of retrieve
             let dateFormatter = DateFormatter()
@@ -121,12 +121,12 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
             let pbDateTime = dateFormatter.string(from: Date())
 
             // Loop over all pasteboard objects
-            /// Pasteboard images are identified with identifiers of the type "Clipboard-yyyyMMdd-HHmmssSSSS-typ-#" where:
+            /// Pasteboard images are identified with identifiers of the type "pwgClipboard-yyyyMMdd-HHmmssSSSS-typ-#" where:
             /// - "pwgClipboard" is a header telling that the image/video comes from the pasteboard (see kClipboardPrefix)
             /// - "yyyyMMdd-HHmmssSSSS" is the date at which the objects were retrieved
             /// - "typ" is "-img-" or "-mov-" depending on the nature of the object (see kImageSuffix, kMovieSuffix)
             /// - "#" is the index of the object in the pasteboard
-            for idx in indexSet {
+            for idx in itemSet {
                 let indexSet = IndexSet(integer: idx)
                 var identifier = kClipboardPrefix + pbDateTime
                 // Movies first because movies may contain images
@@ -261,10 +261,11 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
         else { preconditionFailure("Could not load UploadSwitchViewController") }
         
         uploadSwitchVC.delegate = self
-        uploadSwitchVC.user = user
+        uploadSwitchVC.user = self.user
         uploadSwitchVC.canDeleteImages = false
-        uploadSwitchVC.categoryCurrentCounter = categoryCurrentCounter
-
+        uploadSwitchVC.categoryCurrentCounter = self.categoryCurrentCounter
+        uploadSwitchVC.uploadRequests = self.uploadRequests
+        
         // Push Edit view embedded in navigation controller
         let navController = UINavigationController(rootViewController: uploadSwitchVC)
         #if targetEnvironment(macCatalyst)

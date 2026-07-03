@@ -148,6 +148,7 @@ extension UploadSettingsViewController: UploadVideoSizeDelegate {
     }
 }
 
+
 // MARK: - MofifyFilenameDelegate Methods
 extension UploadSettingsViewController: MofifyFilenameDelegate {
     func didChangeRenameFileSettings(prefix: Bool, prefixActions: RenameActionList,

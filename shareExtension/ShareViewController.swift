@@ -16,7 +16,13 @@ import PwgUploadKit
 
 final class ShareViewController: UIViewController {
     
-    var context: NSExtensionContext?
+    var context: NSExtensionContext?        // Context of the extension
+    lazy var shareDate: String = {          // Date of the share included in file names and deep link
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMdd-HHmmssSSSS"
+        return dateFormatter.string(from: Date())
+    }()
+    
     
     // MARK: - Core Data Object Contexts
     lazy var mainContext: NSManagedObjectContext = {
@@ -143,7 +149,8 @@ final class ShareViewController: UIViewController {
         self.context = extensionContext
         Task {
             let context = extensionContext
-            await copySharedItems(fromContext: context)
+            let shareDate = shareDate
+            await copyItems(fromContext: context, sharedAt: shareDate)
         }
     }
     
@@ -220,7 +227,7 @@ final class ShareViewController: UIViewController {
     
     
     // MARK: - Copy Shared Items to Uploads folder
-    private nonisolated func copySharedItems(fromContext context: NSExtensionContext?) async {
+    private nonisolated func copyItems(fromContext context: NSExtensionContext?, sharedAt shareDate: String) async {
         // Retrieve input item
         guard let context,
               let extensionItem = context.inputItems.first as? NSExtensionItem,
@@ -230,40 +237,35 @@ final class ShareViewController: UIViewController {
             return
         }
         
-        // Get date of share
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyyMMdd-HHmmssSSSS"
-        let sharedDateTime = dateFormatter.string(from: Date())
-        
         // Loop over all shared items
         /// Shared items are identified with identifiers of the type "pwgShared-yyyyMMdd-HHmmssSSSS-typ-####" where:
         /// - "pwgShared" is a header telling that the image/video comes from the share extension (see kSharedPrefix)
         /// - "yyyyMMdd-HHmmssSSSS" is the date at which the items were shared
         /// - "typ" is "-img-" or "-mov-" depending on the nature of the object (see kImageSuffix, kMovieSuffix)
         /// - "####" is the index of the object being shared
-        var sharedItems: [(identifier: String, fileName: String)] = []
+        var sharedItemCount = 0
         for (index, provider) in attachments.enumerated() {
             // Movies first because objects may contain both movies and images
             if provider.hasItemConformingToTypeIdentifier(UTType.movie.identifier) {
-                if let (identifier, fileName) = await self.getSharedMovie(atIndex: index + 1, from: provider, on: sharedDateTime) {
-                    sharedItems.append((identifier, fileName))
+                if await self.getSharedMovie(atIndex: index + 1, from: provider, on: shareDate) {
+                    sharedItemCount += 1
                 }
             }
             else if provider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
-                if let (identifier, fileName) = await self.getSharedImage(atIndex: index + 1, from: provider, on: sharedDateTime) {
-                    sharedItems.append((identifier, fileName))
+                if await self.getSharedImage(atIndex: index + 1, from: provider, on: shareDate) {
+                    sharedItemCount += 1
                 }
             }
         }
     }
     
-    private nonisolated func getSharedImage(atIndex index: Int, from provider: NSItemProvider, on sharedDateTime: String) async -> (String, String)? {
+    private nonisolated func getSharedImage(atIndex index: Int, from provider: NSItemProvider, on shareDate: String) async -> Bool {
         return await withCheckedContinuation { continuation in
             // Asynchronously writes a copy of the provided, typed data to a temporary file, returning a progress object.
             if #available(iOS 16.0, *) {
                 _ = provider.loadFileRepresentation(for: .image, openInPlace: false) { url, _, error in
-                    var result: (String, String)? = nil
-                    defer { continuation.resume(returning: result) }
+                    var success = false
+                    defer { continuation.resume(returning: success) }
                     
                     guard let url else {
                         print("Shared item load error: \(error?.localizedDescription ?? "unknown")")
@@ -272,9 +274,10 @@ final class ShareViewController: UIViewController {
                     
                     // Copy image to the shared container immediately
                     let fileName = url.lastPathComponent
-                    let identifier = kSharedPrefix + sharedDateTime + kImageSuffix + String(index)
+                    let fileType = (try? url.resourceValues(forKeys: [.contentTypeKey]).contentType) ?? UTType.data
+                    let identifier = kSharedPrefix + shareDate + kImageSuffix + String(index)
                     let fileURL = DataDirectories.appUploadsDirectory
-                        .appendingPathComponent(identifier)
+                        .appendingPathComponent(identifier).appendingPathExtension(for: fileType)
                     
                     // Remove stale file from a previous incomplete attempt
                     try? FileManager.default.removeItem(at: fileURL)
@@ -282,7 +285,8 @@ final class ShareViewController: UIViewController {
                     // Store our own copy for a future upload
                     do {
                         try FileManager.default.copyItem(at: url, to: fileURL)
-                        result = (identifier, fileName)
+                        self.writeJSONfile(at: fileURL, withIdentifier: identifier, fileName: fileName)
+                        success = true
                     } catch {
                         print("Failed to copy shared item: \(error)")
                     }
@@ -290,8 +294,8 @@ final class ShareViewController: UIViewController {
             } else {
                 // Fallback on older version
                 _ = provider.loadFileRepresentation(forTypeIdentifier: UTType.image.identifier) { url, error in
-                    var result: (String, String)? = nil
-                    defer { continuation.resume(returning: result) }
+                    var success = false
+                    defer { continuation.resume(returning: success) }
                     
                     guard let url else {
                         print("Shared item load error: \(error?.localizedDescription ?? "unknown")")
@@ -300,9 +304,10 @@ final class ShareViewController: UIViewController {
                     
                     // Copy image to the shared container immediately
                     let fileName = url.lastPathComponent
-                    let identifier = kSharedPrefix + sharedDateTime + kImageSuffix + String(index)
+                    let fileType = (try? url.resourceValues(forKeys: [.contentTypeKey]).contentType) ?? UTType.data
+                    let identifier = kSharedPrefix + shareDate + kImageSuffix + String(index)
                     let fileURL = DataDirectories.appUploadsDirectory
-                        .appendingPathComponent(identifier)
+                        .appendingPathComponent(identifier).appendingPathExtension(for: fileType)
                     
                     // Remove stale file from a previous incomplete attempt
                     try? FileManager.default.removeItem(at: fileURL)
@@ -310,7 +315,8 @@ final class ShareViewController: UIViewController {
                     // Store our own copy for a future upload
                     do {
                         try FileManager.default.copyItem(at: url, to: fileURL)
-                        result = (identifier, fileName)
+                        self.writeJSONfile(at: fileURL, withIdentifier: identifier, fileName: fileName)
+                        success = true
                     } catch {
                         print("Failed to copy shared item: \(error)")
                     }
@@ -319,13 +325,13 @@ final class ShareViewController: UIViewController {
         }
     }
     
-    private nonisolated func getSharedMovie(atIndex index: Int, from provider: NSItemProvider, on sharedDateTime: String) async -> (String, String)? {
+    private nonisolated func getSharedMovie(atIndex index: Int, from provider: NSItemProvider, on shareDate: String) async -> Bool {
         return await withCheckedContinuation { continuation in
             // Asynchronously writes a copy of the provided, typed data to a temporary file, returning a progress object.
             if #available(iOS 16.0, *) {
                 _ = provider.loadFileRepresentation(for: .movie, openInPlace: false) { url, _, error in
-                    var result: (String, String)? = nil
-                    defer { continuation.resume(returning: result) }
+                    var success = false
+                    defer { continuation.resume(returning: success) }
                     
                     guard let url else {
                         print("Shared item load error: \(error?.localizedDescription ?? "unknown")")
@@ -334,9 +340,10 @@ final class ShareViewController: UIViewController {
                     
                     // Copy movie to the shared container immediately
                     let fileName = url.lastPathComponent
-                    let identifier = kSharedPrefix + sharedDateTime + kMovieSuffix + String(index)
+                    let fileType = (try? url.resourceValues(forKeys: [.contentTypeKey]).contentType) ?? UTType.data
+                    let identifier = kSharedPrefix + shareDate + kMovieSuffix + String(index)
                     let fileURL = DataDirectories.appUploadsDirectory
-                        .appendingPathComponent(identifier)
+                        .appendingPathComponent(identifier).appendingPathExtension(for: fileType)
                     
                     // Remove stale file from a previous incomplete attempt
                     try? FileManager.default.removeItem(at: fileURL)
@@ -344,7 +351,8 @@ final class ShareViewController: UIViewController {
                     // Store our own copy for a future upload
                     do {
                         try FileManager.default.copyItem(at: url, to: fileURL)
-                        result = (identifier, fileName)
+                        self.writeJSONfile(at: fileURL, withIdentifier: identifier, fileName: fileName)
+                        success = true
                     } catch {
                         print("Failed to copy shared item: \(error)")
                     }
@@ -352,8 +360,8 @@ final class ShareViewController: UIViewController {
             } else {
                 // Fallback on older version
                 _ = provider.loadFileRepresentation(forTypeIdentifier: UTType.movie.identifier) { url, error in
-                    var result: (String, String)? = nil
-                    defer { continuation.resume(returning: result) }
+                    var success = false
+                    defer { continuation.resume(returning: success) }
                     
                     guard let url else {
                         print("Shared item load error: \(error?.localizedDescription ?? "unknown")")
@@ -362,9 +370,10 @@ final class ShareViewController: UIViewController {
                     
                     // Copy movie to the shared container immediately
                     let fileName = url.lastPathComponent
-                    let identifier = kSharedPrefix + sharedDateTime + kMovieSuffix + String(index)
+                    let fileType = (try? url.resourceValues(forKeys: [.contentTypeKey]).contentType) ?? UTType.data
+                    let identifier = kSharedPrefix + shareDate + kMovieSuffix + String(index)
                     let fileURL = DataDirectories.appUploadsDirectory
-                        .appendingPathComponent(identifier)
+                        .appendingPathComponent(identifier).appendingPathExtension(for: fileType)
                     
                     // Remove stale file from a previous incomplete attempt
                     try? FileManager.default.removeItem(at: fileURL)
@@ -372,12 +381,27 @@ final class ShareViewController: UIViewController {
                     // Store our own copy for a future upload
                     do {
                         try FileManager.default.copyItem(at: url, to: fileURL)
-                        result = (identifier, fileName)
+                        self.writeJSONfile(at: fileURL, withIdentifier: identifier, fileName: fileName)
+                        success = true
                     } catch {
                         print("Failed to copy shared item: \(error)")
                     }
                 }
             }
+        }
+    }
+    
+    private nonisolated func writeJSONfile(at fileURL: URL, withIdentifier identifier: String, fileName: String) {
+        do {
+            let uploadInfo: [String: String] = [
+                "identifier"  : identifier,
+                "fileName"    : fileName
+            ]
+            let JSONdata = try JSONEncoder().encode(uploadInfo)
+            try JSONdata.write(to: fileURL.appendingPathExtension("json"))
+        }
+        catch {
+            print("Failed to write shared item JSON file: \(error)")
         }
     }
 }

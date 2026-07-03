@@ -23,7 +23,7 @@ enum SectionType: Int {
     case none
 }
 
-class LocalImagesViewController: UIViewController
+final class LocalImagesViewController: UIViewController
 {
     // MARK: - Core Data Objects
     var user: User!
@@ -71,7 +71,7 @@ class LocalImagesViewController: UIViewController
     var selectedImages = [UploadProperties?]()      // Array of images selected for upload
     var selectedSections = [SelectButtonState]()    // State of Select buttons
     var imagesBeingTouched = [IndexPath]()          // Array of indexPaths of touched images
-    var uploadRequests = [UploadProperties]()       // Array of images to upload
+    var uploadRequests = [UploadProperties]()       // Array of upload requests
     
     lazy var imageCellSize: CGSize = getImageCellSize()
     let defaultImageHeaderHeight: CGFloat = 42.0

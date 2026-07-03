@@ -17,7 +17,7 @@ enum PasteboardObjectState {
     case new, stored, ready, failed
 }
 
-class PasteboardObject {
+final class PasteboardObject {
     let types: [String]
     var md5Sum: String
     var identifier: String
@@ -31,7 +31,7 @@ class PasteboardObject {
     }
 }
 
-class PendingOperations {
+final class PendingOperations {
     lazy var preparationsInProgress: [IndexPath: Operation] = [:]
     lazy var preparationQueue: OperationQueue = {
         var queue = OperationQueue()
@@ -42,7 +42,7 @@ class PendingOperations {
     }()
 }
 
-class ObjectPreparation : Operation, @unchecked Sendable {
+final class ObjectPreparation : Operation, @unchecked Sendable {
     let pbObject: PasteboardObject
     let index: Int
     let scale: CGFloat
@@ -186,10 +186,7 @@ class ObjectPreparation : Operation, @unchecked Sendable {
             .appendingPathComponent(pbObject.identifier)
 
         // Delete file if it already exists (incomplete previous attempt?)
-        do {
-            try FileManager.default.removeItem(at: fileURL)
-        } catch {
-        }
+        try? FileManager.default.removeItem(at: fileURL)
 
         // Store pasteboard image/video data into Piwigo/Uploads directory
         do {

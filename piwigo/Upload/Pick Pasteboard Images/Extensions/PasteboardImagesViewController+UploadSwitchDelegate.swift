@@ -15,148 +15,17 @@ import PwgUploadKit
 // MARK: - UploadSwitchDelegate Methods
 extension PasteboardImagesViewController: UploadSwitchDelegate
 {
-    @objc func didValidateUploadSettings(with imageParameters: [String : Any], _ uploadParameters: [String:Any]) {
-        // Retrieve common image parameters and upload settings
-        for index in 0..<uploadRequests.count {
-            // Initialisation
-            var updatedRequest = uploadRequests[index]
-
-            // Image parameters
-            if let imageTitle = imageParameters["title"] as? String {
-                updatedRequest.imageTitle = imageTitle
-            }
-            if let author = imageParameters["author"] as? String {
-                updatedRequest.author = author
-            }
-            if let privacy = imageParameters["privacy"] as? pwgPrivacy {
-                updatedRequest.privacyLevel = privacy
-            }
-            if let tagIds = imageParameters["tagIds"] as? String {
-                updatedRequest.tagIds = tagIds
-            }
-            if let comment = imageParameters["comment"] as? String {
-                updatedRequest.comment = comment
-            }
-            
-            // Image file name
-            if let currentCounter = uploadParameters["currentCounter"] as? Int64 {
-                albumDelegate?.didSelectCurrentCounter(value: currentCounter)
-            }
-            if let prefixActions = uploadParameters["prefixActions"] as? RenameActionList {
-                updatedRequest.fileNamePrefixEncodedActions = prefixActions.encodedString
-            }
-            if let replaceActions = uploadParameters["replaceActions"] as? RenameActionList {
-                updatedRequest.fileNameReplaceEncodedActions = replaceActions.encodedString
-            }
-            if let suffixActions = uploadParameters["suffixActions"] as? RenameActionList {
-                updatedRequest.fileNameSuffixEncodedActions = suffixActions.encodedString
-            }
-            if let caseOfFileExtension = uploadParameters["caseOfFileExtension"] as? FileExtCase {
-                updatedRequest.fileNameExtensionCase = caseOfFileExtension.rawValue
-            }
-
-            // Upload settings
-            if let stripGPSdataOnUpload = uploadParameters["stripGPSdataOnUpload"] as? Bool {
-                updatedRequest.stripGPSdataOnUpload = stripGPSdataOnUpload
-            }
-            if let resizeImageOnUpload = uploadParameters["resizeImageOnUpload"] as? Bool {
-                updatedRequest.resizeImageOnUpload = resizeImageOnUpload
-                if resizeImageOnUpload {
-                    if let photoMaxSize = uploadParameters["photoMaxSize"] as? Int16 {
-                        updatedRequest.photoMaxSize = photoMaxSize
-                    }
-                    if let videoMaxSize = uploadParameters["videoMaxSize"] as? Int16 {
-                        updatedRequest.videoMaxSize = videoMaxSize
-                    }
-                } else {    // No downsizing
-                    updatedRequest.photoMaxSize = 0
-                    updatedRequest.videoMaxSize = 0
-                }
-            }
-            if let compressImageOnUpload = uploadParameters["compressImageOnUpload"] as? Bool {
-                updatedRequest.compressImageOnUpload = compressImageOnUpload
-            }
-            if let photoQuality = uploadParameters["photoQuality"] as? Int16 {
-                updatedRequest.photoQuality = photoQuality
-            }
-            if let deleteImageAfterUpload = uploadParameters["deleteImageAfterUpload"] as? Bool {
-                updatedRequest.deleteImageAfterUpload = deleteImageAfterUpload
-            }
-
-            uploadRequests[index] = updatedRequest
-        }
-        
-        // Add selected images to upload queue
-        Task(priority: .utility) { @UploadManagerActor in
-            do {
-                // Create upload requests
-                let uploadIDs = try await UploadManager.shared.importUploads(from: self.uploadRequests)
-                
-                // Add upload requests to queue
-                UploadVars.shared.isPaused = false
-                #if os(iOS) && !targetEnvironment(macCatalyst)
-                if #available(iOS 26.0, *) {
-                    // Launch new continued upload task if possible
-                    if UploadVars.shared.isContinuedProcessingTaskActive == false {
-                        UploadManager.shared.runContinuedUploadTask()
-                    }
-                }
-                else {
-                    // Queue uploads to prepare
-                    await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
-                    
-                    // Process next uploads if possible
-                    await UploadManagerActor.shared.processNextUpload()
-                }
-                #elseif targetEnvironment(macCatalyst)
-                // Queue uploads to prepare
-                await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
-                
-                // Process next uploads if possible
-                await UploadManagerActor.shared.processNextUpload()
-                #endif
-                
-                // Deselect cells
-                await MainActor.run {
-                    self.cancelSelect()
-                    self.uploadRequests = []
-                }
-            }
-            catch {
-                await MainActor.run {
-                    // Deselect cells
-                    self.cancelSelect()
-                    self.uploadRequests = []
-                    
-                    // Inform user
-                    let title = PwgKitError.uploadCreationError.localizedDescription
-                    self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {
-                        // Resume upload operations in background queue
-                        UploadVars.shared.isPaused = false
-                        Task(priority: .utility) { @UploadManagerActor in
-                            #if os(iOS) && !targetEnvironment(macCatalyst)
-                            if #available(iOS 26.0, *) {
-                                // Launch new continued upload task if possible
-                                if UploadVars.shared.isContinuedProcessingTaskActive == false {
-                                    UploadManager.shared.runContinuedUploadTask()
-                                }
-                            }
-                            else {
-                                // Process next uploads if possible
-                                await UploadManagerActor.shared.processNextUpload()
-                            }
-                            #elseif targetEnvironment(macCatalyst)
-                            // Process next uploads if possible
-                            await UploadManagerActor.shared.processNextUpload()
-                            #endif
-                        }
-                    }
-                }
-            }
-        }
+    @objc func didSelectCurrentCounter(value: Int64) {
+        albumDelegate?.didSelectCurrentCounter(value: value)
     }
     
-    @objc func uploadSettingsDidDisappear() {
+    @objc func uploadOptionsViewDidDisappear(withUploadsQueued uploadsQueued: Bool) {
+        // Deselect cells when an error was encountered
+        if uploadsQueued == false { self.cancelSelect() }
+        
+        // Release memory
+        self.uploadRequests = []
+        
         // Update the navigation bar
         updateNavBar()
     }
