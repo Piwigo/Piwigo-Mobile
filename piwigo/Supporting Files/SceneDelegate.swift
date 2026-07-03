@@ -567,7 +567,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 let sourcePath = sourceAlbum.upperIds.components(separatedBy: ",").compactMap({ Int32($0) })
                 let destinationPath = destinationAlbum.upperIds.components(separatedBy: ",").compactMap({ Int32($0) })
                 let commonPath = sourcePath.filter({ destinationPath.contains($0) })
-                let lastCommonAlbumId = Array(commonPath).last ?? defaultAlbum.categoryId
+                if commonPath.isEmpty {
+                    AlbumVars.shared.defaultCategory = pwgSmartAlbum.root.rawValue
+                }
+                let lastCommonAlbumId = Array(commonPath).last ?? Int32.zero
                 
                 // Keep album view controllers from which to push the remaining albums
                 /// Note: firstAlbumVCs should at least contain the root album vew controller.
@@ -591,7 +594,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 
                 // Update the stack of album view controllers
                 let allViewControllers = firstAlbumVCs + newAlbumVCs
-                navController.setViewControllers(allViewControllers, animated: true)
+                navController.setViewControllers(allViewControllers, animated: false)
                 guard let albumVC = allViewControllers.last else { return }
                 
                 // Get files in the Uploads directory related with the current share
