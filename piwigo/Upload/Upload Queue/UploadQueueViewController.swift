@@ -66,7 +66,7 @@ class UploadQueueViewController: UIViewController {
     
     
     // MARK: - View
-    @IBOutlet weak var queueTableView: UITableView!
+    @IBOutlet weak var queueTableView: UITableView?
     private var actionBarButton: UIBarButtonItem?
     private var doneBarButton: UIBarButtonItem?
     
@@ -137,15 +137,15 @@ class UploadQueueViewController: UIViewController {
         super.viewWillTransition(to: size, with: coordinator)
         
         // Save position of collection view
-        if queueTableView.visibleCells.count > 0,
-           let cell = queueTableView.visibleCells.first {
-            if let indexPath = queueTableView.indexPath(for: cell) {
+        if queueTableView?.visibleCells.count ?? 0 > 0,
+           let cell = queueTableView?.visibleCells.first {
+            if let indexPath = queueTableView?.indexPath(for: cell) {
                 // Reload the tableview on orientation change, to match the new width of the table.
                 coordinator.animate(alongsideTransition: { [self] _ in
-                    self.queueTableView.reloadData()
+                    self.queueTableView?.reloadData()
                     
                     // Scroll to previous position
-                    self.queueTableView.scrollToRow(at: indexPath, at: .middle, animated: true)
+                    self.queueTableView?.scrollToRow(at: indexPath, at: .middle, animated: true)
                 })
             }
         }
@@ -160,18 +160,19 @@ class UploadQueueViewController: UIViewController {
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
         
         // Table view
-        queueTableView.separatorColor = PwgColor.separator
-        queueTableView.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
+        queueTableView?.separatorColor = PwgColor.separator
+        queueTableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
         
-        // Table view items
-        let visibleCells = queueTableView.visibleCells as? [UploadImageTableViewCell] ?? []
-        visibleCells.forEach { (cell) in
+        // Displayed table view items
+        guard queueTableView?.window != nil else { return }
+        queueTableView?.visibleCells.forEach { cell in
+            guard let cell = cell as? UploadImageTableViewCell else { return }
             cell.backgroundColor = PwgColor.cellBackground
             cell.uploadInfoLabel.textColor = PwgColor.leftLabel
             cell.imageInfoLabel.textColor = PwgColor.rightLabel
         }
-        for section in 0..<queueTableView.numberOfSections {
-            let header = queueTableView.headerView(forSection: section) as? UploadImageHeaderView
+        for section in 0..<(queueTableView?.numberOfSections ?? 0) {
+            let header = queueTableView?.headerView(forSection: section) as? UploadImageHeaderView
             header?.headerLabel.textColor = PwgColor.header
             header?.headerBckg.backgroundColor = PwgColor.background.withAlphaComponent(0.75)
         }
@@ -189,48 +190,46 @@ class UploadQueueViewController: UIViewController {
     
     @MainActor
     @objc func setTableViewMainHeader() {
-        // May be called from the notification center
-        DispatchQueue.main.async { [self] in
-            // Anything to do?
-            if queueTableView?.window == nil { return }
-            // No upload request in the queue?
-            if UploadVars.shared.nberOfUploadsToComplete == 0 {
-                queueTableView.tableHeaderView = nil
-                UIApplication.shared.isIdleTimerDisabled = false
-            }
-            else if !ServerVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading {
-                // No Wi-Fi and user wishes to upload only on Wi-Fi
-                let headerView = TableHeaderView(frame: .zero)
-                headerView.configure(width: self.queueTableView.frame.size.width,
-                                     text: String(localized: "uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
-                self.queueTableView.tableHeaderView = headerView
-                UIApplication.shared.isIdleTimerDisabled = false
-            }
-            else if ProcessInfo.processInfo.isLowPowerModeEnabled {
-                // Low Power mode enabled
-                let headerView = TableHeaderView(frame: .zero)
-                headerView.configure(width: self.queueTableView.frame.size.width,
-                                     text: String(localized: "uploadLowPowerMode", comment: "Low Power Mode enabled"))
-                self.queueTableView.tableHeaderView = headerView
-                UIApplication.shared.isIdleTimerDisabled = false
-            }
-            else if [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) {
-                // Reduce usage of system resources at higher thermal states
-                let headerView = TableHeaderView(frame: .zero)
-                headerView.configure(width: self.queueTableView.frame.size.width,
-                                     text: String(localized: "uploadThermalStateHigh", comment: "Thermal state high"))
-                self.queueTableView.tableHeaderView = headerView
-                UIApplication.shared.isIdleTimerDisabled = false
-            }
-            else {
-                // Uploads in progress
-                queueTableView.tableHeaderView = nil
-                if #unavailable(iOS 26.0) {
-                    UIApplication.shared.isIdleTimerDisabled = true
-                }
-            }
-            self.viewWillLayoutSubviews()
+        // Anything to do?
+        guard let queueTableView, queueTableView.window != nil else { return }
+        
+        // No upload request in the queue?
+        if UploadVars.shared.nberOfUploadsToComplete == 0 {
+            queueTableView.tableHeaderView = nil
+            UIApplication.shared.isIdleTimerDisabled = false
         }
+        else if !ServerVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading {
+            // No Wi-Fi and user wishes to upload only on Wi-Fi
+            let headerView = TableHeaderView(frame: .zero)
+            headerView.configure(width: queueTableView.frame.size.width,
+                                 text: String(localized: "uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
+            queueTableView.tableHeaderView = headerView
+            UIApplication.shared.isIdleTimerDisabled = false
+        }
+        else if ProcessInfo.processInfo.isLowPowerModeEnabled {
+            // Low Power mode enabled
+            let headerView = TableHeaderView(frame: .zero)
+            headerView.configure(width: queueTableView.frame.size.width,
+                                 text: String(localized: "uploadLowPowerMode", comment: "Low Power Mode enabled"))
+            queueTableView.tableHeaderView = headerView
+            UIApplication.shared.isIdleTimerDisabled = false
+        }
+        else if [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) {
+            // Reduce usage of system resources at higher thermal states
+            let headerView = TableHeaderView(frame: .zero)
+            headerView.configure(width: queueTableView.frame.size.width,
+                                 text: String(localized: "uploadThermalStateHigh", comment: "Thermal state high"))
+            queueTableView.tableHeaderView = headerView
+            UIApplication.shared.isIdleTimerDisabled = false
+        }
+        else {
+            // Uploads in progress
+            queueTableView.tableHeaderView = nil
+            if #unavailable(iOS 26.0) {
+                UIApplication.shared.isIdleTimerDisabled = true
+            }
+        }
+        self.viewWillLayoutSubviews()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -349,7 +348,7 @@ class UploadQueueViewController: UIViewController {
             guard let self else { return }
                         
             // Reload visible cells, headers, and footers
-            self.queueTableView.reloadData()
+            self.queueTableView?.reloadData()
             
             // Update navigation bar
             self.navigationController?.navigationBar.configAppearance(withLargeTitles: false)
