@@ -155,7 +155,21 @@ extension UploadManager
         }
 
         // Process next uploads if possible
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        if #available(iOS 26.0, *) {
+            // Launch new continued upload task if possible
+            if UploadVars.shared.isContinuedProcessingTaskActive == false {
+                UploadManager.shared.runContinuedUploadTask()
+            }
+        }
+        else {
+            // Process next uploads if possible
+            await UploadManagerActor.shared.processNextUpload()
+        }
+        #elseif targetEnvironment(macCatalyst)
+        // Process next uploads if possible
         await UploadManagerActor.shared.processNextUpload()
+        #endif
     }
     
     
