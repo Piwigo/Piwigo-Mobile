@@ -305,11 +305,14 @@ class UploadQueueViewController: UIViewController {
                 let titleClear = impossibleUploads > 1 ? String(format: String(localized: "imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber(value: impossibleUploads), number: .decimal)) : String(localized: "imageUploadClearFailedSingle", comment: "Clear 1 Failed")
                 let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { [weak self] action in
                     guard let self else { return }
+                    // Delete uploads
                     let uploadIDs = self.diffableDataSource.snapshot().itemIdentifiers(inSection: SectionKeys.Section1.rawValue)
+                    try? UploadProvider().deleteUploads(withID: uploadIDs, inContext: mainContext)
+                    mainContext.saveIfNeeded()
+                    
                     Task(priority: .utility) { @UploadManagerActor in
-                        // Delete uploads
-                        try? UploadProvider().deleteUploads(withID: uploadIDs, inContext: UploadManager.shared.uploadBckgContext)
-                        UploadManager.shared.uploadBckgContext.saveIfNeeded()
+                        // Remove upload requests from queue
+                        await UploadManagerActor.shared.removeUploads(withIDs: uploadIDs)
                         
                         // Update counter and app badge
                         UploadManager.shared.updateNberOfUploadsToComplete()
