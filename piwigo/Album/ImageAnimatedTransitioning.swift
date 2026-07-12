@@ -280,7 +280,7 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
         var toolbarFadeView: UIView?
         if imageViewController.isToolbarRequired,
            let toolbar = imageViewController.navigationController?.toolbar {
-            toolbarFadeView = toolbar.snapshotView(afterScreenUpdates: false)
+            toolbarFadeView = toolbar.snapshotView(afterScreenUpdates: true)
             toolbarFadeView?.frame = toolbar.convert(toolbar.bounds, to: window)
             toolbarFadeView?.alpha = 1
         }
