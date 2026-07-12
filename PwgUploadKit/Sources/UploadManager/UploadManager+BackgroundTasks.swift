@@ -183,6 +183,14 @@ extension UploadManager
                 UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask, privacy: .public)' stopped: Wi-Fi required, but not connected.")
             }
             else {
+                // Wait up to 5 s (case of a video being converted)
+                var counter = 0
+                while counter < 20, UploadProvider().getIDsOfPendingUploads(onlyInStates: [.preparing, .prepared], inContext: self.uploadBckgContext).0.count > 0 {
+                    UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask, privacy: .public)' waiting 250 ms for uploads to be prepared.")
+                    try? await Task.sleep(nanoseconds: 250_000_000)
+                    counter += 1
+                }
+                
                 // Inform that the task is completed with success
                 success = true
                 UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask, privacy: .public)' completed with success.")
@@ -389,6 +397,14 @@ extension UploadManager
                 task.updateTitle(task.title, subtitle: subtitle)
             }
             else {
+                // Wait up to 5 s (case of a video being converted)
+                var counter = 0
+                while counter < 20, UploadProvider().getIDsOfPendingUploads(onlyInStates: [.preparing, .prepared], inContext: self.uploadBckgContext).0.count > 0 {
+                    UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask, privacy: .public)' waiting 250 ms for uploads to be prepared.")
+                    try? await Task.sleep(nanoseconds: 250_000_000)
+                    counter += 1
+                }
+                
                 // Inform that the task is completed with success
                 success = true
                 UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask, privacy: .public)' completed with success.")
