@@ -200,8 +200,8 @@ extension UploadManager {
                 return
             }
             
-            // Get original fileURL
-            guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
+            // Stop preparing the video if called by a background task now expired
+            if taskType.isBackgroundAndInactive {
                 Task(priority: .utility) { @UploadManagerActor in
                     var uploadData = uploadProperties
                     uploadData.requestState = .preparingError
@@ -211,14 +211,16 @@ extension UploadManager {
                 return
             }
             
-            // Stop preparing the video if called by a background task now expired
-            if taskType.isBackgroundAndInactive { return }
+            // Get original fileURL if any
+            let originalFileURL = (originalVideo as? AVURLAsset)?.url
             
             // Check if the user wants to:
             /// - reduce the frame size
             /// - remove the private metadata
+            // Also follow this route if the AVAsset has no URL.
             if (uploadProperties.resizeImageOnUpload && uploadProperties.videoMaxSize != 0) ||
-                (uploadProperties.stripGPSdataOnUpload && originalVideo.metadata.containsPrivateMetadata()) {
+                (uploadProperties.stripGPSdataOnUpload && originalVideo.metadata.containsPrivateMetadata()) ||
+                (originalFileURL == nil) {
                 Task(priority: .utility) { @UploadManagerActor in
                     do {
                         // Get creation date from metadata if possible
@@ -226,8 +228,12 @@ extension UploadManager {
                         let metadata = originalVideo.metadata
                         if let dateFromMetadata = metadata.creationDate() {
                             uploadData.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
-                        } else {
+                        }
+                        else if let originalFileURL = (originalVideo as? AVURLAsset)?.url {
                             uploadData.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+                        }
+                        else {
+                            uploadData.creationDate = DateUtilities.unknownDate.timeIntervalSinceReferenceDate
                         }
                         
                         // Rename file according to user's demand from date/time/counter/etc.
@@ -277,14 +283,14 @@ extension UploadManager {
                     if let dateFromMetadata = metadata.creationDate() {
                         uploadData.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
                     } else {
-                        uploadData.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+                        uploadData.creationDate = (originalFileURL?.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
                     }
                     
                     // Rename file according to user's demand from date/time/counter/etc.
                     self.renamedFile(for: &uploadData)
                     
                     // Get MD5 checksum and MIME type, change URL
-                    try self.setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: originalFileURL)
+                    try self.setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: originalFileURL!)
                     
                     // Upload video with tags and properties
                     uploadData.requestState = .prepared
@@ -378,7 +384,15 @@ extension UploadManager {
             }
             
             // Stop converting the video if called by a background task now expired
-            if taskType.isBackgroundAndInactive { return }
+            if taskType.isBackgroundAndInactive {
+                Task(priority: .utility) { @UploadManagerActor in
+                    var uploadData = uploadProperties
+                    uploadData.requestState = .preparingError
+                    uploadData.requestError = PwgKitError.missingAsset.localizedDescription
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
+                }
+                return
+            }
             
             // Convert the AVAsset
             Task(priority: .utility) { @UploadManagerActor in
