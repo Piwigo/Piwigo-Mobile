@@ -693,7 +693,9 @@ extension SceneDelegate: AppLockDelegate {
         let audioSession = AVAudioSession.sharedInstance()
         let availableCategories = audioSession.availableCategories
         if availableCategories.contains(AVAudioSession.Category.playback) {
-            try? audioSession.setCategory(.playback)
+            DispatchQueue.global(qos: .background).async {
+                try? audioSession.setCategory(.playback)
+            }
         }
 
         // Should we log in?
