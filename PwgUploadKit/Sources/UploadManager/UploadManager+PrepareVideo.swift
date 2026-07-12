@@ -377,17 +377,6 @@ extension UploadManager {
                 return
             }
             
-            // Get original fileURL
-            guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
-                Task(priority: .utility) { @UploadManagerActor in
-                    var uploadData = uploadProperties
-                    uploadData.requestState = .preparingError
-                    uploadData.requestError = PwgKitError.missingAsset.localizedDescription
-                    await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
-                }
-                return
-            }
-            
             // Stop converting the video if called by a background task now expired
             if taskType.isBackgroundAndInactive { return }
             
@@ -399,8 +388,12 @@ extension UploadManager {
                     let metadata = originalVideo.metadata
                     if let dateFromMetadata = metadata.creationDate() {
                         uploadData.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
-                    } else {
+                    }
+                    else if let originalFileURL = (originalVideo as? AVURLAsset)?.url {
                         uploadData.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+                    }
+                    else {
+                        uploadData.creationDate = DateUtilities.unknownDate.timeIntervalSinceReferenceDate
                     }
                     
                     // Rename file according to user's demand from date/time/counter/etc.
