@@ -63,8 +63,8 @@ struct UploadPhotos: AppIntent {
         else { return .result(dialog: .responseFailure(error: .noPhotos)) }
         
         // Re-validate the album: it may have been configured long before the shortcut ran,
-        // and the user's upload rights may have changed since.
-        guard let refreshedAlbum = try? await AlbumQuery().entities(for: [Int(album.pwgID)]).first
+        // and the server or the user's upload rights may have changed since.
+        guard let refreshedAlbum = try? await AlbumQuery().entities(for: [album.id]).first
         else { return .result(dialog: .responseFailure(error: .invalidAlbum)) }
         
         let shareDate: String = {

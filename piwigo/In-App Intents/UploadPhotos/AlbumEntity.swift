@@ -17,10 +17,14 @@ import PwgCacheKit
 @available(iOS 16.0, *)
 struct AlbumEntity: AppEntity, Sendable {
     let pwgID: Int32
+    let serverPath: String
     let name: String
 
-    // `Int32` doesn't conform to `EntityIdentifierConvertible`, only `Int` does.
-    var id: Int { Int(pwgID) }
+    // The identifier persisted in the shortcut includes the server path so that an album
+    // configured for one server can never resolve to an unrelated album which happens to
+    // have the same category ID on another server the user logs into later.
+    // ("|" cannot appear in a server path and the category ID is numeric.)
+    var id: String { serverPath + "|" + String(pwgID) }
 
     static let typeDisplayRepresentation = TypeDisplayRepresentation(
         name: LocalizedStringResource("Album", table: "In-AppIntents"))
@@ -61,21 +65,30 @@ struct AlbumQuery: EntityStringQuery {
         let albums = (try? DataController.shared.mainContext.fetch(request)) ?? []
         
         // User with admin rights?
+        let serverPath = ServerVars.shared.serverPath
         if user.hasAdminRights {
-            return albums.map { AlbumEntity(pwgID: $0.pwgID, name: $0.name) }
+            return albums.map { AlbumEntity(pwgID: $0.pwgID, serverPath: serverPath, name: $0.name) }
         }
-        
+
         // User with normal rights?
         if ServerVars.shared.userStatus != .normal { return [] }
         let uploadRights = user.uploadRights.components(separatedBy: ",").compactMap { Int32($0) }
         return albums
             .filter { uploadRights.contains($0.pwgID) }
-            .map { AlbumEntity(pwgID: $0.pwgID, name: $0.name) }
+            .map { AlbumEntity(pwgID: $0.pwgID, serverPath: serverPath, name: $0.name) }
     }
 
     @MainActor
-    func entities(for identifiers: [Int]) async throws -> [AlbumEntity] {
-        let pwgIDs = identifiers.map { Int32($0) }
+    func entities(for identifiers: [String]) async throws -> [AlbumEntity] {
+        // Ignore identifiers configured for another server (see AlbumEntity.id).
+        let serverPath = ServerVars.shared.serverPath
+        let pwgIDs: [Int32] = identifiers.compactMap { identifier in
+            guard let sepIndex = identifier.lastIndex(of: "|"),
+                  identifier[..<sepIndex] == serverPath
+            else { return nil }
+            return Int32(identifier[identifier.index(after: sepIndex)...])
+        }
+        guard pwgIDs.isEmpty == false else { return [] }
         return uploadableAlbums(matching: NSPredicate(format: "pwgID IN %@", pwgIDs))
     }
 
