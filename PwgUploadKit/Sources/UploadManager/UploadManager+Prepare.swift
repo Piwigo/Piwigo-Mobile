@@ -147,8 +147,8 @@ extension UploadManager
         }
         
         // Get file URL from identifier
-        guard files.isEmpty == false,
-              let fileURL = files.filter({ $0.lastPathComponent.contains(uploadData.localIdentifier) }).first
+        // NB: Media files are stored under their exact identifier (no extension), so match the name exactly.
+        guard let fileURL = files.first(where: { $0.lastPathComponent == uploadData.localIdentifier })
         else {
             // File not available… deleted?
             throw .missingAsset
