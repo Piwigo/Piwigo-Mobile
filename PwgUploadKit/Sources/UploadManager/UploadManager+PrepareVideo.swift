@@ -17,21 +17,6 @@ import PwgCacheKit
 @UploadManagerActor
 extension UploadManager {
     
-    // MARK: - Retrieve Filename from Video in Pasteboard
-    func getFilenameForVideoInPasteboard(withName fileName: String, extension fileExt: String) throws(PwgKitError) -> String {
-        // Set filename by
-        /// - removing the "Clipboard-" prefix i.e. kClipboardPrefix
-        /// - removing the "SSSS-mov-#" suffix i.e. "SSSS%@-#" where %@ is kMovieSuffix
-        /// - adding the file extension
-        guard let prefixRange = fileName.range(of: kClipboardPrefix),
-              let suffixRange = fileName.range(of: kMovieSuffix)
-        else { throw .missingAsset }
-        
-        let filename = String(fileName[prefixRange.upperBound..<suffixRange.lowerBound].dropLast(4)) + ".\(fileExt)"
-        return filename
-    }
-    
-    
     // MARK: - Prepare Video From File
     // Case of a video which is in a format accepted by the Piwigo server
     func prepareVideo(atURL originalFileURL: URL, for uploadData: inout UploadProperties) async throws(PwgKitError)

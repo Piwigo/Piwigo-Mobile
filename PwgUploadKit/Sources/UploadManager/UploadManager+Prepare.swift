@@ -75,8 +75,8 @@ extension UploadManager
         /// and "#" is the index of the file
         do {
             if uploadData.localIdentifier.hasPrefix(kIntentPrefix) {
-                // Case of an image submitted by a shortcut
-                try await prepareImageFromIntent(for: &uploadData)
+                // Case of an image submitted by the shortcut
+                try await prepareImageFromFile(withPrefix: kIntentPrefix, for: &uploadData)
             }
             else if uploadData.localIdentifier.hasPrefix(kClipboardPrefix) {
                 // Case of an image retrieved from the pasteboard
@@ -132,39 +132,9 @@ extension UploadManager
         }
     }
     
-    fileprivate func prepareImageFromIntent(for uploadData: inout UploadProperties) async throws(PwgKitError)
-    {
-        // Get files from Intent in the Uploads directory
-        var files = [URL]()
-        do {
-            files = try FileManager.default.contentsOfDirectory(at: DataDirectories.appUploadsDirectory,
-                                                                includingPropertiesForKeys: nil,
-                                                                options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
-            files.removeAll(where: { $0.lastPathComponent.hasPrefix(kIntentPrefix) == false })
-        }
-        catch {
-            throw .missingAsset
-        }
-        
-        // Determine non-empty unique file name and extension from identifier
-        guard files.isEmpty == false,
-              let fileURL = files.filter({$0.lastPathComponent.hasPrefix(uploadData.localIdentifier)}).first,
-              fileURL.lastPathComponent.contains("img")
-        else {
-            // File not available… deleted?
-            throw .missingAsset
-        }
-        
-        // Set file name and type
-        uploadData.fileType = pwgImageFileType.image.rawValue
-        
-        // Launch preparation job (limited to stripping metadata)
-        try await prepareImage(atURL: fileURL, for: &uploadData)
-    }
-    
     fileprivate func prepareImageFromFile(withPrefix prefix: String, for uploadData: inout UploadProperties) async throws(PwgKitError)
     {
-        // Get files from pastepboard in the Uploads directory
+        // Get prefixed files in the Uploads directory
         var files = [URL]()
         do {
             files = try FileManager.default.contentsOfDirectory(at: DataDirectories.appUploadsDirectory,
@@ -176,7 +146,7 @@ extension UploadManager
             throw .missingAsset
         }
         
-        // Determine non-empty unique file name and extension from identifier
+        // Get file URL from identifier
         guard files.isEmpty == false,
               let fileURL = files.filter({ $0.lastPathComponent.contains(uploadData.localIdentifier) }).first
         else {
@@ -184,17 +154,14 @@ extension UploadManager
             throw .missingAsset
         }
         
+        // Get file extension from file name already stored in upload data
+        let fileExt = URL(fileURLWithPath: uploadData.fileName).pathExtension.lowercased()
+        
         // Launch preparation job if file format accepted by Piwigo server
-        let fileExt = fileURL.pathExtension.lowercased()
-        let fileName = fileURL.lastPathComponent
-        if fileName.contains(kImageSuffix) {
-            // Set file name and type
-            if prefix == kClipboardPrefix {
-                let filename = try getFilenameForImageInPasteboard(withName: fileName, extension: fileExt)
-                uploadData.fileName = filename
-            }
+        if uploadData.localIdentifier.contains(kImageSuffix) {
+            // Set file type
             uploadData.fileType = pwgImageFileType.image.rawValue
-
+            
             // Chek that the image format is accepted by the Piwigo server
             if ServerVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
@@ -213,12 +180,8 @@ extension UploadManager
             // Image file format cannot be accepted by the Piwigo server
             throw .unacceptedImageFormat
         }
-        else if fileName.contains(kMovieSuffix) {
-            // Set file name and type
-            if prefix == kClipboardPrefix {
-                let filename = try getFilenameForVideoInPasteboard(withName: fileName, extension: fileExt)
-                uploadData.fileName = filename
-            }
+        else if uploadData.localIdentifier.contains(kMovieSuffix) {
+            // Set file type
             uploadData.fileType = pwgImageFileType.video.rawValue
             
             // Chek that the video format is accepted by the Piwigo server
@@ -272,7 +235,7 @@ extension UploadManager
             uploadData.fileName = filename
             
             // Launch preparation job according to file format
-            let fileExt = (URL(fileURLWithPath: uploadData.fileName).pathExtension).lowercased()
+            let fileExt = (URL(fileURLWithPath: filename).pathExtension).lowercased()
             
             // Chek that the image format is accepted by the Piwigo server
             if ServerVars.shared.serverFileTypes.contains(fileExt) {
@@ -301,7 +264,7 @@ extension UploadManager
             uploadData.fileName = filename
             
             // Launch preparation job according to file format
-            let fileExt = (URL(fileURLWithPath: uploadData.fileName).pathExtension).lowercased()
+            let fileExt = (URL(fileURLWithPath: filename).pathExtension).lowercased()
             
             // File name of final video data to be stored into Piwigo/Uploads directory
             let outputURL = getUploadFileURL(from: uploadData.localIdentifier,
