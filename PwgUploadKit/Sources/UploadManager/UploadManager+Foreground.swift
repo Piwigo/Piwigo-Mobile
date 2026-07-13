@@ -41,7 +41,7 @@ extension UploadManager
         }
         
         // Delete upload requests of assets that have become unavailable,
-        // except non-completed requests from intent and clipboard
+        // except non-completed requests from intent, clipboard and share extension
         deleteUploadsOfAssetsThatAreNoLongerAvailable()
         
         // Get Upload URI strings of active transfers
@@ -177,24 +177,29 @@ extension UploadManager
     private func deleteUploadsOfAssetsThatAreNoLongerAvailable() {
         let states: [pwgUploadState] = [.waiting, .preparingError]
         let (objectIDs, localIDs) = UploadProvider().getIDsOfPendingUploads(onlyInStates: states, inContext: self.uploadBckgContext)
-        var toDeleteIDs: [NSManagedObjectID] = objectIDs, assetIDsToDelete: [String] = localIDs
-        for (index, localID) in localIDs.enumerated() {
-            // Remove upload requests from intent and clipboard
-            if localID.hasPrefix(kIntentPrefix) || localID.hasPrefix(kClipboardPrefix) {
-                toDeleteIDs.remove(at: index)
-                assetIDsToDelete.remove(at: index)
-            }
+
+        // Only uploads of Photo Library assets can become unavailable. Requests created by
+        // the intent, the pasteboard or the share extension refer to files stored in the
+        // Uploads directory, not to PHAssets, and must be left untouched.
+        let candidates = zip(objectIDs, localIDs).filter { _, localID in
+            localID.hasPrefix(kIntentPrefix) == false &&
+            localID.hasPrefix(kClipboardPrefix) == false &&
+            localID.hasPrefix(kSharedPrefix) == false
         }
-        let options = PHFetchOptions()  // Fetch assets which are still available
+        if candidates.isEmpty { return }
+
+        // Fetch assets which are still available
+        let options = PHFetchOptions()
         options.includeHiddenAssets = false
-        options.sortDescriptors = [NSSortDescriptor(key: #keyPath(PHAsset.creationDate), ascending: true)]
-        let availableAssets = PHAsset.fetchAssets(withLocalIdentifiers: assetIDsToDelete, options: options)
-        for asset in availableAssets.objects(at: IndexSet(integersIn: 0..<availableAssets.count)) {
-            if let index = assetIDsToDelete.firstIndex(where: { $0 == asset.localIdentifier }) {
-                toDeleteIDs.remove(at: index)
-                assetIDsToDelete.remove(at: index)
-            }
+        let availableAssets = PHAsset.fetchAssets(withLocalIdentifiers: candidates.map(\.1), options: options)
+        var availableIDs = Set<String>()
+        availableAssets.enumerateObjects { asset, _, _ in
+            availableIDs.insert(asset.localIdentifier)
         }
+
+        // Delete upload requests whose asset is not available anymore
+        let toDeleteIDs = candidates.filter { availableIDs.contains($0.1) == false }.map(\.0)
+        if toDeleteIDs.isEmpty { return }
         try? UploadProvider().deleteUploads(withID: toDeleteIDs, inContext: self.uploadBckgContext)
     }
     
