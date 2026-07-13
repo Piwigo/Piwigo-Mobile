@@ -32,7 +32,7 @@ class TroubleshootingViewController: UIViewController {
     private lazy var JSONextensionCount: Int = JSONextension.count
     private var JSONfiles = [URL]()
     private var pwgLogs = [[OSLogEntryLog]]()
-    private let pwgSubSystems = ["org.piwigo", "org.piwigo.piwigoKit", "org.piwigo.uploadKit"]
+    private let pwgSubSystems = ["org.piwigo", "org.piwigo.apiKit", "org.piwigo.cacheKit", "org.piwigo.uploadKit"]
     
     
     // MARK: - View Lifecycle
@@ -145,37 +145,27 @@ class TroubleshootingViewController: UIViewController {
                 var someLogs = [OSLogEntryLog]()
                 #endif
                 
-                // PwgKit — Core Data
+                // PwgAPIKit — Session Delegate
+                someLogs = entries.filter({$0.category == String(describing: PwgSessionDelegate.self)})
+                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
+                someLogs = entries.filter({$0.category == String(describing: JSONManager.self)})
+                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
+                someLogs = entries.filter({$0.category == String(describing: ImageDownloader.self)})
+                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
+                
+                // PwgCacheKit — Core Data
                 someLogs = entries.filter({$0.category == String(describing: DataMigrator.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
                 someLogs = entries.filter({$0.category == String(describing: Image.self)})
                 if someLogs.isEmpty ==  false { self.pwgLogs.append(someLogs)}
                 
-                // PwgKit — Session Delegate
-                someLogs = entries.filter({$0.category == String(describing: PwgSessionDelegate.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                
-                // PwgKit — JSON Manager
-                someLogs = entries.filter({$0.category == String(describing: JSONManager.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                
-                // PwgKit — Image Downloader
-                someLogs = entries.filter({$0.category == String(describing: ImageDownloader.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                
                 // PwgUploadKit — UploadManager
                 someLogs = entries.filter({$0.category == String(describing: UploadManager.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-				
-                // PwgUploadKit — UploadManagerActor
                 someLogs = entries.filter({$0.category == String(describing: UploadManagerActor.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                
-                // PwgUploadKit — Upload Session Manager
                 someLogs = entries.filter({$0.category == String(describing: UploadSessionManager.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                
-                // PwgUploadKit — Upload Sessions Delegate
                 someLogs = entries.filter({$0.category == String(describing: UploadSessionsDelegate.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
             }

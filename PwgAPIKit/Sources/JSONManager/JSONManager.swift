@@ -14,7 +14,7 @@ public final class JSONManager: @unchecked Sendable {
     
     // Logs JSON activities
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
-    static let logger = Logger(subsystem: "org.piwigo.piwigoKit", category: String(describing: JSONManager.self))
+    static let logger = Logger(subsystem: "org.piwigo.apiKit", category: String(describing: JSONManager.self))
 
     // Singleton
     public static let shared = JSONManager()

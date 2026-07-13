@@ -14,7 +14,7 @@ public final class PwgSessionDelegate: NSObject, Sendable {
     
     // Logs networking activities
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
-    static let logger = Logger(subsystem: "org.piwigo.piwigoKit", category: String(describing: PwgSessionDelegate.self))
+    static let logger = Logger(subsystem: "org.piwigo.apiKit", category: String(describing: PwgSessionDelegate.self))
     
     // Singleton
     public static let shared = PwgSessionDelegate()

@@ -14,7 +14,7 @@ public actor ImageDownloader {
     
     // Logs networking activities
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
-    static let logger = Logger(subsystem: "org.piwigo.piwigoKit", category: String(describing: ImageDownloader.self))
+    static let logger = Logger(subsystem: "org.piwigo.apiKit", category: String(describing: ImageDownloader.self))
     
     // Singleton
     public static let shared = ImageDownloader()
