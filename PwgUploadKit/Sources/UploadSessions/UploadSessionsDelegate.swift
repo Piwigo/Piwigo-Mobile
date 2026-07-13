@@ -15,7 +15,7 @@ public final class UploadSessionsDelegate: NSObject, Sendable {
     
     // Logs networking activities
     /// sudo log collect --device --start '2025-01-11 15:00:00' --output piwigo.logarchive
-    static let logger = Logger(subsystem: "org.piwigo.uploadKit", category: String(describing: UploadSessionsDelegate.self))
+    static let logger = PwgLogger(subsystem: "org.piwigo.uploadKit", category: String(describing: UploadSessionsDelegate.self))
     
     // Singleton
     public static let shared = UploadSessionsDelegate()
@@ -70,7 +70,7 @@ extension UploadSessionsDelegate: URLSessionDelegate {
     public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: (any Error)?) {
         UploadSessionsDelegate.logger.notice("Session invalidated.")
         if let error = error {
-            UploadSessionsDelegate.logger.error("Error: \(error.localizedDescription, privacy: .public)")
+            UploadSessionsDelegate.logger.error("Error: \(error.localizedDescription)")
         }
         Task { @UploadManagerActor in
             UploadSessionManager.shared.sessionDidBecomeInvalid(session.configuration.identifier ?? "Unknown")
@@ -130,7 +130,7 @@ extension UploadSessionsDelegate: URLSessionDelegate {
     }
     
     public func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
-        UploadSessionsDelegate.logger.notice("Session \(session.configuration.identifier ?? "", privacy: .public) finished events.")
+        UploadSessionsDelegate.logger.notice("Session \(session.configuration.identifier ?? "") finished events.")
         
         // Execute completion handler, i.e. inform iOS that we collect data returned by Piwigo server
         Task { @MainActor in

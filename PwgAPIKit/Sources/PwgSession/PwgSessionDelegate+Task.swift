@@ -36,12 +36,12 @@ extension PwgSessionDelegate: URLSessionTaskDelegate {
         Task {
             if let pwgError {
                 // Return error with failureHandler
-                PwgSessionDelegate.logger.notice("Did complete task #\(task.taskIdentifier, privacy: .public) with error: \(pwgError.localizedDescription)")
+                PwgSessionDelegate.logger.notice("Did complete task #\(task.taskIdentifier) with error: \(pwgError.localizedDescription)")
                 await ImageDownloader.shared.failDownload(for: imageURL, error: pwgError)
             }
             else {
                 // Return cached image with completionHandler
-                PwgSessionDelegate.logger.notice("Did complete task #\(task.taskIdentifier, privacy: .public)")
+                PwgSessionDelegate.logger.notice("Did complete task #\(task.taskIdentifier)")
                 await ImageDownloader.shared.completeDownloadIfReady(for: imageURL)
             }
         }
@@ -57,7 +57,7 @@ extension PwgSessionDelegate: URLSessionDownloadDelegate {
                            totalBytesExpectedToWrite: Int64) {
         // Retrieve the original URL of this task
 //        #if DEBUG
-//        PwgSessionDelegate.logger.notice("Progress task #\(downloadTask.taskIdentifier, privacy: .public): \(totalBytesWritten, privacy: .public) total bytes downloaded from \(downloadTask.taskDescription ?? "<unknown>")")
+//        PwgSessionDelegate.logger.notice("Progress task #\(downloadTask.taskIdentifier): \(totalBytesWritten) total bytes downloaded from \(downloadTask.taskDescription ?? "<unknown>")")
 //        #endif
         guard let imageURL = imageURL(fromTask: downloadTask)
         else { return }
@@ -71,7 +71,7 @@ extension PwgSessionDelegate: URLSessionDownloadDelegate {
         }
         Task { await ImageDownloader.shared.updateProgress(progress, for: imageURL) }
 //        #if DEBUG
-//        PwgSessionDelegate.logger.notice("Progress task #\(downloadTask.taskIdentifier, privacy: .public) -> written: \(bytesWritten, privacy: .public), totalWritten: \(totalBytesWritten, privacy: .public), expected: \(totalBytesExpectedToWrite, privacy: .public), progress: \(progress, privacy: .public)")
+//        PwgSessionDelegate.logger.notice("Progress task #\(downloadTask.taskIdentifier) -> written: \(bytesWritten), totalWritten: \(totalBytesWritten), expected: \(totalBytesExpectedToWrite), progress: \(progress)")
 //        #endif
     }
     
@@ -79,7 +79,7 @@ extension PwgSessionDelegate: URLSessionDownloadDelegate {
                            didFinishDownloadingTo location: URL) {
         // Retrieve the URL of this task
         #if DEBUG
-        PwgSessionDelegate.logger.notice("Task #\(downloadTask.taskIdentifier, privacy: .public) did finish downloading to \(location, privacy: .public)")
+        PwgSessionDelegate.logger.notice("Task #\(downloadTask.taskIdentifier) did finish downloading to \(location)")
         #endif
         guard let imageURL = imageURL(fromTask: downloadTask)
         else { return }

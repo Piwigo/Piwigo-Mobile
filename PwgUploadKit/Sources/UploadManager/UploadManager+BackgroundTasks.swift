@@ -57,7 +57,7 @@ extension UploadManager
         }
         
         // Logs stats
-        UploadManager.logger.notice("Resuming uploads: \(toTransfer.count, privacy: .public) file(s) to transfer, \(toPrepare.count, privacy: .public) upload(s) to prepare")
+        UploadManager.logger.notice("Resuming uploads: \(toTransfer.count) file(s) to transfer, \(toPrepare.count) upload(s) to prepare")
         
         // Returns object IDs of upload requests to transfer and prepare
         return (toFinish, toTransfer, toPrepare)
@@ -76,9 +76,9 @@ extension UploadManager
         // Submit upload request
         do {
             try BGTaskScheduler.shared.submit(request)
-            UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask, privacy: .public)' submitted with success.")
+            UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' submitted with success.")
         } catch {
-            UploadManager.logger.notice("Failed to submit background task '\(pwgBackgroundUploadTask, privacy: .public)': \(error.localizedDescription)")
+            UploadManager.logger.notice("Failed to submit background task '\(pwgBackgroundUploadTask)': \(error.localizedDescription)")
         }
     }
     
@@ -88,7 +88,7 @@ extension UploadManager
         
         // Schedule the next uploads if needed
         if UploadVars.shared.nberOfUploadsToComplete != 0 {
-            UploadManager.logger.notice("Schedule next background task '\(pwgBackgroundUploadTask, privacy: .public)'.")
+            UploadManager.logger.notice("Schedule next background task '\(pwgBackgroundUploadTask)'.")
             scheduleNextUpload()
         }
         
@@ -97,7 +97,7 @@ extension UploadManager
         task.expirationHandler = {
             // Flags the task as cancelled.
             uploadTask?.cancel()
-            UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask, privacy: .public)' expiration handler fired.")
+            UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' expiration handler fired.")
         }
         
         // Launch upload task
@@ -161,39 +161,39 @@ extension UploadManager
                 // Add upload requests without queuing more than 25
                 if uploadIDsToAdd.isEmpty == false {
                     toPrepare.append(contentsOf: uploadIDsToAdd)
-                    UploadManager.logger.notice("Added \(uploadIDsToAdd.count, privacy: .public) upload requests to '\(pwgBackgroundContinuedUploadTask, privacy: .public)'.")
+                    UploadManager.logger.notice("Added \(uploadIDsToAdd.count) upload requests to '\(pwgBackgroundContinuedUploadTask)'.")
                 }
             }
             
             // Task cancelled? Low-Power mode enabled? Wi-Fi required?
             if Task.isCancelled {
                 // Inform that the task is stopped
-                UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask, privacy: .public)' cancelled by iOS.")
+                UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' cancelled by iOS.")
             }
             else if ProcessInfo.processInfo.isLowPowerModeEnabled {
                 // Inform that the task is stopped
-                UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask, privacy: .public)' stopped: Low-Power mode is enabled.")
+                UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' stopped: Low-Power mode is enabled.")
             }
             else if [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) {
                 // Inform that the task is stopped
-                UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask, privacy: .public)' stopped: Device in high thermal state.")
+                UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' stopped: Device in high thermal state.")
             }
             else if UploadVars.shared.wifiOnlyUploading && !ServerVars.shared.isConnectedToWiFi {
                 // Inform that the task is stopped
-                UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask, privacy: .public)' stopped: Wi-Fi required, but not connected.")
+                UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' stopped: Wi-Fi required, but not connected.")
             }
             else {
                 // Wait up to 5 s (case of a video being converted)
                 var counter = 0
                 while counter < 20, UploadProvider().getIDsOfPendingUploads(onlyInStates: [.preparing, .prepared], inContext: self.uploadBckgContext).0.count > 0 {
-                    UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask, privacy: .public)' waiting 250 ms for uploads to be prepared.")
+                    UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' waiting 250 ms for uploads to be prepared.")
                     try? await Task.sleep(nanoseconds: 250_000_000)
                     counter += 1
                 }
                 
                 // Inform that the task is completed with success
                 success = true
-                UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask, privacy: .public)' completed with success.")
+                UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' completed with success.")
              }
         }
     }
@@ -249,9 +249,9 @@ extension UploadManager
         // Submit upload request
         do {
             try BGTaskScheduler.shared.submit(request)
-            UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask, privacy: .public)' submitted with success.")
+            UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' submitted with success.")
         } catch {
-            UploadManager.logger.notice("Failed to submit background task '\(pwgBackgroundContinuedUploadTask, privacy: .public)': \(error.localizedDescription, privacy: .public)")
+            UploadManager.logger.notice("Failed to submit background task '\(pwgBackgroundContinuedUploadTask)': \(error.localizedDescription)")
         }
     }
     
@@ -265,7 +265,7 @@ extension UploadManager
         task.expirationHandler = {
             // Flags the task as cancelled.
             uploadTask?.cancel()
-            UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask, privacy: .public)' expiration handler fired.")
+            UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' expiration handler fired.")
         }
         
         // Launch upload task
@@ -346,7 +346,7 @@ extension UploadManager
                     // User submitted additional upload requests ► Update total count
                     toPrepareCount += nberOfNewUploads
                     task.progress.totalUnitCount += Int64(nberOfNewUploads)
-                    UploadManager.logger.notice("User submitted \(nberOfNewUploads) additional upload requests to '\(pwgBackgroundContinuedUploadTask, privacy: .public)'.")
+                    UploadManager.logger.notice("User submitted \(nberOfNewUploads) additional upload requests to '\(pwgBackgroundContinuedUploadTask)'.")
                 }
                 
                 // Remove IDs of uploads already in the queue
@@ -363,35 +363,35 @@ extension UploadManager
                 // Add upload requests without queuing more than 25
                 if uploadIDsToAdd.isEmpty == false {
                     toPrepare.append(contentsOf: uploadIDsToAdd)
-                    UploadManager.logger.notice("Added \(uploadIDsToAdd.count, privacy: .public) upload requests to '\(pwgBackgroundContinuedUploadTask, privacy: .public)'.")
+                    UploadManager.logger.notice("Added \(uploadIDsToAdd.count) upload requests to '\(pwgBackgroundContinuedUploadTask)'.")
                 }
             }
             
             // Task cancelled? Low-Power mode enabled? Wi-Fi required? Device in high thermal state?
             if Task.isCancelled {
                 // Inform that the task is stopped
-                UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask, privacy: .public)' cancelled by iOS.")
+                UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' cancelled by iOS.")
                 let subtitle = String(localized: "backgroundTask_cancelled", bundle: .pwgUploadKit,
                                       comment: "Uploads interrupted. Please restart the app.")
                 task.updateTitle(task.title, subtitle: subtitle)
             }
             else if ProcessInfo.processInfo.isLowPowerModeEnabled {
                 // Inform that the task is stopped
-                UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask, privacy: .public)' stopped: Low-Power mode is enabled.")
+                UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' stopped: Low-Power mode is enabled.")
                 let subtitle = String(localized: "backgroundTask_lowPowerMode", bundle: .pwgUploadKit,
                                       comment: "Low power mode enabled. Please turn it off.")
                 task.updateTitle(task.title, subtitle: subtitle)
             }
             else if [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) {
                 // Inform that the task is stopped
-                UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask, privacy: .public)' stopped: Device in high thermal state.")
+                UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' stopped: Device in high thermal state.")
                 let subtitle = String(localized: "backgroundTask_highThermalState", bundle: .pwgUploadKit,
                                       comment: "The device needs to cool down.")
                 task.updateTitle(task.title, subtitle: subtitle)
             }
             else if UploadVars.shared.wifiOnlyUploading && !ServerVars.shared.isConnectedToWiFi {
                 // Inform that the task is stopped
-                UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask, privacy: .public)' stopped: Wi-Fi required, but not connected.")
+                UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' stopped: Wi-Fi required, but not connected.")
                 let subtitle = String(localized: "backgroundTask_noWifi", bundle: .pwgUploadKit,
                                       comment: "Wi-Fi only uploading. Please connect to Wi-Fi.")
                 task.updateTitle(task.title, subtitle: subtitle)
@@ -400,14 +400,14 @@ extension UploadManager
                 // Wait up to 5 s (case of a video being converted)
                 var counter = 0
                 while counter < 20, UploadProvider().getIDsOfPendingUploads(onlyInStates: [.preparing, .prepared], inContext: self.uploadBckgContext).0.count > 0 {
-                    UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask, privacy: .public)' waiting 250 ms for uploads to be prepared.")
+                    UploadManager.logger.notice("Background task '\(pwgBackgroundUploadTask)' waiting 250 ms for uploads to be prepared.")
                     try? await Task.sleep(nanoseconds: 250_000_000)
                     counter += 1
                 }
                 
                 // Inform that the task is completed with success
                 success = true
-                UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask, privacy: .public)' completed with success.")
+                UploadManager.logger.notice("Background task '\(pwgBackgroundContinuedUploadTask)' completed with success.")
                 let subtitle = String(localized: "backgroundTask_completed \(task.progress.completedUnitCount)", bundle: .pwgUploadKit,
                                       comment: "%lld uploads completed")
                 task.updateTitle(task.title, subtitle: subtitle)

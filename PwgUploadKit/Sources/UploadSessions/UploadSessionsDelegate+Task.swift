@@ -19,7 +19,7 @@ extension UploadSessionsDelegate: URLSessionTaskDelegate {
         guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID)
         else { preconditionFailure("Could not extract HTTP header field.") }
         let objectIDstr = URL(string: objectURIstr)?.lastPathComponent ?? objectURIstr
-        UploadSessionsDelegate.logger.notice("\(objectIDstr, privacy: .public) • Task-level authentication requested by server.")
+        UploadSessionsDelegate.logger.notice("\(objectIDstr) • Task-level authentication requested by server.")
         
         // Check authentication method
         let authMethod = challenge.protectionSpace.authenticationMethod
@@ -65,7 +65,7 @@ extension UploadSessionsDelegate: URLSessionTaskDelegate {
             // Log upload
             let bytes = UploadSessionsDelegate.bytesFormatter.string(from: NSNumber(value: bytesSent)) ?? ""
             let progressPercent = UploadSessionsDelegate.bytesFormatter.string(from: NSNumber(value: progress * 100)) ?? ""
-            UploadSessionsDelegate.logger.notice("\(objectIDstr, privacy: .public) • Task \(task.taskIdentifier) did send \(bytes, privacy: .public) bytes | counter: \(progressPercent, privacy: .public) %")
+            UploadSessionsDelegate.logger.notice("\(objectIDstr) • Task \(task.taskIdentifier) did send \(bytes) bytes | counter: \(progressPercent) %")
         }
     }
     
@@ -121,9 +121,9 @@ extension UploadSessionsDelegate: URLSessionTaskDelegate {
         
         // Log task completion
         if let pwgError, taskDescription.contains(pwgHTTPCancelled) == false {
-            UploadSessionsDelegate.logger.notice("\(objectIDstr, privacy: .public) • Task \(task.taskIdentifier, privacy: .public) of chunk \(chunk, privacy: .public)/\(chunks, privacy: .public) failed with error \(String(describing: pwgError.localizedDescription), privacy: .public).")
+            UploadSessionsDelegate.logger.notice("\(objectIDstr) • Task \(task.taskIdentifier) of chunk \(chunk)/\(chunks) failed with error \(String(describing: pwgError.localizedDescription)).")
         } else {
-            UploadSessionsDelegate.logger.notice("\(objectIDstr, privacy: .public) • Task \(task.taskIdentifier, privacy: .public) of chunk \(chunk, privacy: .public)/\(chunks, privacy: .public) completed.")
+            UploadSessionsDelegate.logger.notice("\(objectIDstr) • Task \(task.taskIdentifier) of chunk \(chunk)/\(chunks) completed.")
         }
         
         // Handle the response with the Upload Manager

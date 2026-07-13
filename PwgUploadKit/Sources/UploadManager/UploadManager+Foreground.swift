@@ -24,7 +24,7 @@ extension UploadManager
               UploadVars.shared.isProcessingTaskActive == false,
               UploadVars.shared.isContinuedProcessingTaskActive == false
         else {
-            UploadManager.logger.notice("Will not resume uploads (\(UploadVars.shared.didResumeUploads, privacy: .public), \(UploadVars.shared.isProcessingTaskActive, privacy: .public), \(UploadVars.shared.isContinuedProcessingTaskActive))")
+            UploadManager.logger.notice("Will not resume uploads (\(UploadVars.shared.didResumeUploads), \(UploadVars.shared.isProcessingTaskActive), \(UploadVars.shared.isContinuedProcessingTaskActive))")
             return
         }
         
@@ -37,7 +37,7 @@ extension UploadManager
         
         // Logs
         if #available(iOS 17.0, *) {
-            UploadManager.logger.notice("Resuming uploads: with priority \(Task.currentPriority, privacy: .public)")
+            UploadManager.logger.notice("Resuming uploads: with priority \(Task.currentPriority)")
         }
         
         // Delete upload requests of assets that have become unavailable,
@@ -71,7 +71,7 @@ extension UploadManager
         // Append uploads to prepare
         let toPrepare = UploadProvider().getIDsOfPendingUploads(onlyInStates: [.waiting], inContext: self.uploadBckgContext).0
         await UploadManagerActor.shared.addUploadsToPrepare(withIDs: toPrepare)
-        UploadManager.logger.notice("Resuming uploads: \(toFinish.count, privacy: .public) transfer(s) to finish, \(toTransfer.count, privacy: .public) file(s) to transfer, \(toPrepare.count, privacy: .public) upload(s) to prepare")
+        UploadManager.logger.notice("Resuming uploads: \(toFinish.count) transfer(s) to finish, \(toTransfer.count) file(s) to transfer, \(toPrepare.count) upload(s) to prepare")
         
         // Propose to delete uploaded images of the photo Library once a day
         // or immediately if there is no pending upload request, if any
@@ -91,14 +91,14 @@ extension UploadManager
                   let chunkStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk), let chunk = Int(chunkStr),
                   let chunksStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks), let chunks = Int(chunksStr)
             else {
-                UploadManager.logger.notice("Found task \(task.taskIdentifier, privacy: .public) not associated to an upload!")
+                UploadManager.logger.notice("Found task \(task.taskIdentifier) not associated to an upload!")
                 return
             }
             
             // Task associated to an upload
             activeUploadsURIstr.insert(objectURIstr)
             let objectIDstr = URL(string: objectURIstr)?.lastPathComponent ?? objectURIstr
-            UploadManager.logger.notice("\(objectIDstr) • Detected task \(task.taskIdentifier, privacy: .public) uploading chunk \(chunk, privacy: .public)/\(chunks, privacy: .public)")
+            UploadManager.logger.notice("\(objectIDstr) • Detected task \(task.taskIdentifier) uploading chunk \(chunk)/\(chunks)")
             self.initIfNeededCounter(withID: objectIDstr, chunk: chunk, chunks: chunks)
         }
         return activeUploadsURIstr
@@ -108,7 +108,7 @@ extension UploadManager
     // MARK: - Clear Failed Uploads
     func suggestToDeleteUploadedImages(withPendingUploads nberOfPendingUploads: Int) {
         let (uploadIDs, localIdentifiers) = UploadProvider().getIDsOfCompletedUploads(onlyDeletable: true, inContext: self.uploadBckgContext)
-        UploadManager.logger.notice("Resuming uploads: \(uploadIDs.count, privacy: .public) assets for deletion in the Photo Library")
+        UploadManager.logger.notice("Resuming uploads: \(uploadIDs.count) assets for deletion in the Photo Library")
         let deadline = DateUtilities.nextDayAt4AM(after: UploadVars.shared.dateOfLastPhotoLibraryDeletion)
         if uploadIDs.isEmpty == false && (nberOfPendingUploads == 0 || Date.now > deadline) {
             // Store date of proposed deletion
@@ -145,13 +145,13 @@ extension UploadManager
         // First retry transfers
         if toTransfer.isEmpty == false {
             await UploadManagerActor.shared.addUploadsToTransfer(withIDs: toTransfer, beforeOthers: true)
-            UploadManager.logger.notice("Resuming uploads: \(toTransfer.count, privacy: .public) failed uploads to retry")
+            UploadManager.logger.notice("Resuming uploads: \(toTransfer.count) failed uploads to retry")
         }
 
         // Next retry preparations
         if toPrepare.isEmpty == false {
             await UploadManagerActor.shared.addUploadsToPrepare(withIDs: toPrepare, beforeOthers: true)
-            UploadManager.logger.notice("Resuming uploads: \(toPrepare.count, privacy: .public) failed uploads to retry")
+            UploadManager.logger.notice("Resuming uploads: \(toPrepare.count) failed uploads to retry")
         }
 
         // Process next uploads if possible

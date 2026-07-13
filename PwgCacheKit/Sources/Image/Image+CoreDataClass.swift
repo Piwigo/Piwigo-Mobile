@@ -24,7 +24,7 @@ public final nonisolated class Image: NSManagedObject, Identifiable {
     
     // Logs Image updates
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
-    static let logger = Logger(subsystem: "org.piwigo.cacheKit", category: String(describing: Image.self))
+    static let logger = PwgLogger(subsystem: "org.piwigo.cacheKit", category: String(describing: Image.self))
     
     /**
      Updates an Image instance with the values from a ImageGetInfo struct.
@@ -136,7 +136,7 @@ public final nonisolated class Image: NSManagedObject, Identifiable {
             }
         } else {
             datePosted = DateUtilities.unknownDateInterval
-            Image.logger.notice("Could not update datePosted attribute of Image \(newPwgID, privacy: .public) from '\(imageData.datePosted ?? "nil", privacy: .public)'")
+            Image.logger.notice("Could not update datePosted attribute of Image \(newPwgID) from '\(imageData.datePosted ?? "nil")'")
         }
         if let newCreatedInterval = DateUtilities.timeInterval(from: imageData.dateCreated) {
             if newCreatedInterval != dateCreated {
@@ -144,7 +144,7 @@ public final nonisolated class Image: NSManagedObject, Identifiable {
             }
         } else {
             dateCreated = DateUtilities.unknownDateInterval
-            Image.logger.notice("Could not update dateCreated attribute of Image \(newPwgID, privacy: .public) from '\(imageData.dateCreated ?? "nil", privacy: .public)'")
+            Image.logger.notice("Could not update dateCreated attribute of Image \(newPwgID) from '\(imageData.dateCreated ?? "nil")'")
         }
         
         // Author

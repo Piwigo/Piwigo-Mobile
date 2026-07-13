@@ -43,7 +43,7 @@ extension UploadManager {
     func initIfNeededCounter(withID objectIDstr: String, chunk: Int? = nil, chunks: Int? = nil) {
         if transferCounters.contains(where: {$0.uid == objectIDstr}) {
 #if DEBUG
-            UploadManager.logger.notice("\(objectIDstr, privacy: .public) • Counter already exists")
+            UploadManager.logger.notice("\(objectIDstr) • Counter already exists")
 #endif
         }
         else {
@@ -56,7 +56,7 @@ extension UploadManager {
             }
             transferCounters.append(newCounter)
 #if DEBUG
-            UploadManager.logger.notice("\(objectIDstr, privacy: .public) • Initialise counter")
+            UploadManager.logger.notice("\(objectIDstr) • Initialise counter")
 #endif
         }
     }
@@ -68,7 +68,7 @@ extension UploadManager {
             transferCounters[index].totalBytes = totalBytes
 #if DEBUG
             let value = UploadSessionsDelegate.bytesFormatter.string(from: NSNumber(value: totalBytes)) ?? ""
-            UploadManager.logger.notice("\(objectIDstr, privacy: .public) • Set counter to \(chunks) chunks totalising \(value) bytes")
+            UploadManager.logger.notice("\(objectIDstr) • Set counter to \(chunks) chunks totalising \(value) bytes")
 #endif
         }
         else {  // Situation where the app was relauched
@@ -78,7 +78,7 @@ extension UploadManager {
             transferCounters.append(newCounter)
 #if DEBUG
             let value = UploadSessionsDelegate.bytesFormatter.string(from: NSNumber(value: totalBytes)) ?? ""
-            UploadManager.logger.notice("\(objectIDstr, privacy: .public) • Reset counter to \(chunks) chunks totalising \(value) bytes")
+            UploadManager.logger.notice("\(objectIDstr) • Reset counter to \(chunks) chunks totalising \(value) bytes")
 #endif
         }
     }
@@ -88,7 +88,7 @@ extension UploadManager {
         if let index = transferCounters.firstIndex(where: {$0.uid == objectIDstr}) {
             transferCounters[index].chunksToSend.remove(chunk)
 #if DEBUG
-//            UploadManager.logger.notice("\(objectIDstr, privacy: .public) • Remove chunk \(chunk) from counter")
+//            UploadManager.logger.notice("\(objectIDstr) • Remove chunk \(chunk) from counter")
 #endif
         }
     }
@@ -99,7 +99,7 @@ extension UploadManager {
             transferCounters[index].bytesSent += bytes
 #if DEBUG
 //            let value = UploadSessionsDelegate.bytesFormatter.string(from: NSNumber(value: bytes)) ?? ""
-//            UploadManager.logger.notice("\(objectIDstr, privacy: .public) • Added \(value, privacy: .public) bytes to counter")
+//            UploadManager.logger.notice("\(objectIDstr) • Added \(value) bytes to counter")
 #endif
             return transferCounters[index].progress
         }
@@ -109,7 +109,7 @@ extension UploadManager {
             transferCounters.append(newCounter)
 #if DEBUG
             let value = UploadSessionsDelegate.bytesFormatter.string(from: NSNumber(value: bytes)) ?? ""
-            UploadManager.logger.notice("\(objectIDstr, privacy: .public) • Reinitialise counter with \(value, privacy: .public) bytes uploaded")
+            UploadManager.logger.notice("\(objectIDstr) • Reinitialise counter with \(value) bytes uploaded")
 #endif
             return 0.1
         }
@@ -120,7 +120,7 @@ extension UploadManager {
         if let index = transferCounters.firstIndex(where: {$0.uid == objectIDstr}) {
             transferCounters.remove(at: index)
 #if DEBUG
-            UploadManager.logger.notice("\(objectIDstr, privacy: .public) • Removed counter")
+            UploadManager.logger.notice("\(objectIDstr) • Removed counter")
 #endif
         }
     }

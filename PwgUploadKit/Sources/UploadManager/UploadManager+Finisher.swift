@@ -24,7 +24,7 @@ extension UploadManager {
         for uploadID in uploadIDs {
             guard let uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID, inContext: self.uploadBckgContext)
             else {
-                UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent, privacy: .public) • Could not retrieve upload request for finsihing!")
+                UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Could not retrieve upload request for finsihing!")
                 continue
             }
             // Check upload status (should never happen)
@@ -45,7 +45,7 @@ extension UploadManager {
             guard var uploadData = uploadDataArray[uploadID] else { return }
             uploadData.requestState = .finishing
             uploadData.requestError = ""
-            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent, privacy: .public) • The transfer is now being finalised…")
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • The transfer is now being finalised…")
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
         }
         

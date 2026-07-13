@@ -18,7 +18,7 @@ class LogsViewController: UIViewController {
     @IBOutlet weak var dateTime: UILabel!
     @IBOutlet weak var messages: UITextView!
     
-    var logEntries = [OSLogEntryLog]()
+    var logEntries = [PwgLogEntry]()
     private var fixTextPositionAfterLoadingViewOnPad: Bool!
     private var shareBarButton: UIBarButtonItem?
     
@@ -43,7 +43,7 @@ class LogsViewController: UIViewController {
                 currentLogDate = DateUtilities.logsTimeFormatter.string(from: logEntry.date)
                 msg += "\n" + currentLogDate + "\n"
             }
-            msg += "➜ " + logEntry.composedMessage + "\n"
+            msg += "➜ " + logEntry.message + "\n"
         }
         let attributedMsg = NSMutableAttributedString(string: msg)
         let wholeRange = NSRange(location: 0, length: msg.count)

@@ -18,7 +18,7 @@ final class AppMetrics: NSObject, MXMetricManagerSubscriber {
     
     // Logs migration activity
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
-    private let logger = Logger(subsystem: "org.piwigo", category: String(describing: AppMetrics.self))
+    private let logger = PwgLogger(subsystem: "org.piwigo", category: String(describing: AppMetrics.self))
     
     func start() {
         MXMetricManager.shared.add(self)
@@ -31,7 +31,7 @@ final class AppMetrics: NSObject, MXMetricManagerSubscriber {
     // Receive daily metrics
     func didReceive(_ payloads: [MXMetricPayload]) {
         for payload in payloads {
-            logger.notice("Metrics received: \(payload.debugDescription, privacy: .public)")
+            logger.notice("Metrics received: \(payload.debugDescription)")
             saveMetrics(withName: "Metrics", jsonData: payload.jsonRepresentation())
         }
     }
@@ -39,7 +39,7 @@ final class AppMetrics: NSObject, MXMetricManagerSubscriber {
     // Receive diagnostics immediately when available
     func didReceive(_ payloads: [MXDiagnosticPayload]) {
         for payload in payloads {
-            logger.notice("Metrics received: \(payload.debugDescription, privacy: .public)")
+            logger.notice("Metrics received: \(payload.debugDescription)")
             saveMetrics(withName: "Diagnostics", jsonData: payload.jsonRepresentation())
         }
     }

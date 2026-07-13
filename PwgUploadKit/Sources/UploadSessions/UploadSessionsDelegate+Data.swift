@@ -27,10 +27,10 @@ extension UploadSessionsDelegate: URLSessionDataDelegate {
         let objectIDstr = URL(string: objectURIstr)?.lastPathComponent ?? objectURIstr
 #if DEBUG
         let dataStr = String(decoding: data.prefix(100), as: UTF8.self) + (data.count > 100 ? "…" : "")
-        UploadSessionsDelegate.logger.notice("\(objectIDstr, privacy: .public) • Task \(dataTask.taskIdentifier, privacy: .public) of chunk \(chunk, privacy: .public)/\(chunks, privacy: .public) did receive: \(dataStr, privacy: .public).")
+        UploadSessionsDelegate.logger.notice("\(objectIDstr) • Task \(dataTask.taskIdentifier) of chunk \(chunk)/\(chunks) did receive: \(dataStr).")
 #else
         let countsOfBytes = data.count * MemoryLayout<Data>.stride
-        UploadSessionsDelegate.logger.notice("\(objectIDstr, privacy: .public) • Task \(dataTask.taskIdentifier, privacy: .public) of chunk \(chunk, privacy: .public)/\(chunks, privacy: .public) did receive \(countsOfBytes, privacy: .public) bytes.")
+        UploadSessionsDelegate.logger.notice("\(objectIDstr) • Task \(dataTask.taskIdentifier) of chunk \(chunk)/\(chunks) did receive \(countsOfBytes) bytes.")
 #endif
 
         let sessionIdentifier = taskDescription.components(separatedBy: " ").first

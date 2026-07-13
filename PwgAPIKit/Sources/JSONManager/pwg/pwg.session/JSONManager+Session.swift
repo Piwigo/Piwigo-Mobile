@@ -15,9 +15,10 @@ public extension JSONManager {
     @concurrent
     func sessionLogin(withUsername username:String, password:String) async throws(PwgKitError) {
 #if DEBUG
-        JSONManager.logger.notice("Session: logging in with username: \(username, privacy: .public)…")
+        JSONManager.logger.notice("Session: logging in with username: \(username)…")
 #else
-        JSONManager.logger.notice("Session: logging in with username: \(username, privacy: .private(mask: .hash))…")
+        // Don't log the username in release builds (logs are now also stored in files)
+        JSONManager.logger.notice("Session: logging in…")
 #endif
         // Prepare parameters for retrieving image/video infos
         let paramsDict: [String : Any] = ["username" : username,

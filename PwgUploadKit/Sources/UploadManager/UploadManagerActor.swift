@@ -19,7 +19,7 @@ public actor UploadManagerActor {
     
     // Logs networking activities
     /// sudo log collect --device --start '2025-01-11 15:00:00' --output piwigo.logarchive
-    private static let logger = Logger(subsystem: "org.piwigo.uploadKit", category: String(describing: UploadManagerActor.self))
+    private static let logger = PwgLogger(subsystem: "org.piwigo.uploadKit", category: String(describing: UploadManagerActor.self))
     
     // The serial executor drives all actor-isolated work on this queue
     private static let queue = DispatchQueue(

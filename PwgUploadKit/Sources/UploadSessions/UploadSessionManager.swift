@@ -8,6 +8,7 @@
 
 import os
 import Foundation
+import PwgKit
 import PwgCacheKit
 
 @UploadManagerActor
@@ -15,7 +16,7 @@ public final class UploadSessionManager {
     
     // Logs networking activities
     /// sudo log collect --device --start '2025-01-11 15:00:00' --output piwigo.logarchive
-    static let logger = Logger(subsystem: "org.piwigo.uploadKit", category: String(describing: UploadSessionManager.self))
+    static let logger = PwgLogger(subsystem: "org.piwigo.uploadKit", category: String(describing: UploadSessionManager.self))
     
     // Singleton
     static public let shared = UploadSessionManager()
@@ -34,7 +35,7 @@ public final class UploadSessionManager {
     
     // Functions called within the framework
     func updateMaxConnectionsPerHost(to count: Int) {
-        UploadSessionManager.logger.debug("Update max connections per host to \(count, privacy: .public)")
+        UploadSessionManager.logger.debug("Update max connections per host to \(count)")
         let old = bckgSession
         drainingSessions.append(old)
         old.finishTasksAndInvalidate()
@@ -42,7 +43,7 @@ public final class UploadSessionManager {
     }
     
     func sessionDidBecomeInvalid(_ identifier: String) {
-        UploadSessionManager.logger.debug("Session \(identifier, privacy: .public) became invalid")
+        UploadSessionManager.logger.debug("Session \(identifier) became invalid")
         drainingSessions.removeAll { $0.configuration.identifier ?? "" == identifier }
     }
     
@@ -60,7 +61,7 @@ public final class UploadSessionManager {
         }
         
         // Recreate the session
-        UploadSessionManager.logger.debug("Re-attach session \(identifier, privacy: .public)")
+        UploadSessionManager.logger.debug("Re-attach session \(identifier)")
         let session = makeBckgSession(maxConnections: maxConnections)
         drainingSessions.append(session)
     }

@@ -75,6 +75,23 @@ public enum DataDirectories
         return uploadURL
     }()
     
+    // "Library/Application Support/Piwigo/Logs" in the AppGroup container.
+    /// - The Logs directory into which the app and the extensions store their log files.
+    public static let appLogsDirectory: URL = {
+        // Get path of Logs directory
+        let logsURL = appGroupDirectory.appendingPathComponent("Logs")
+
+        // Create the Piwigo/Logs directory if needed
+        /// Contrary to the other directories, a failure does not stop the app: logs would only be lost.
+        let fm = FileManager.default
+        if fm.fileExists(atPath: logsURL.path) == false {
+            try? fm.createDirectory(at: logsURL, withIntermediateDirectories: true, attributes: nil)
+        }
+        
+        debugPrint("••> logsDirectory: \(logsURL)")
+        return logsURL
+    }()
+    
     // "Library/Caches/Piwigo" in the AppGroup container.
     /// - Folder in which we store the images referenced in the Core Data store
     public static let cacheDirectory: URL = {

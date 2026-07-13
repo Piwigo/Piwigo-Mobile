@@ -18,7 +18,7 @@ public final class UploadManager {
     
     // Logs networking activities
     /// sudo log collect --device --start '2025-01-11 15:00:00' --output piwigo.logarchive
-    static let logger = Logger(subsystem: "org.piwigo.uploadKit", category: String(describing: UploadManager.self))
+    static let logger = PwgLogger(subsystem: "org.piwigo.uploadKit", category: String(describing: UploadManager.self))
     
     // Singleton
     public static let shared = UploadManager()

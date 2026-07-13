@@ -135,6 +135,7 @@ extension ShareViewController: UITableViewDelegate
     
     @MainActor
     private func presentShareFailAlert() {
+        self.logger.notice("Share failed because no item could be copied")
         let alert = UIAlertController(title: String(localized: "shareFailError_title", comment: "Share Failed"),
                                       message: String(localized: "shareFailError_message", comment: "Failed to retrieve the shared photos and videos."),
                                       preferredStyle: .alert)

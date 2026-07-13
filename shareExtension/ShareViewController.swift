@@ -6,6 +6,7 @@
 //  Copyright © 2026 Piwigo.org. All rights reserved.
 //
 
+import os
 import CoreData
 import UIKit
 import UniformTypeIdentifiers
@@ -16,6 +17,10 @@ import PwgUploadKit
 
 final class ShareViewController: UIViewController {
     
+    // Logs migration activity
+    /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
+    let logger = PwgLogger(subsystem: "org.piwigo.shareExtension", category: String(describing: ShareViewController.self))
+
     var context: NSExtensionContext?        // Context of the extension
     lazy var shareDate: String = {          // Date of the share included in file names and deep link
         let dateFormatter = DateFormatter()
@@ -131,6 +136,7 @@ final class ShareViewController: UIViewController {
         guard let user = try? userProvider.getUserAccount(inContext: mainContext),
               let _ = try? AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.root.rawValue)
         else {
+            logger.notice("Could not retrieve user or root album")
             extensionContext?.cancelRequest(withError: URLError(.cancelled))
             return
         }
@@ -141,7 +147,7 @@ final class ShareViewController: UIViewController {
             try recentAlbums.performFetch()
             try albums.performFetch()
         } catch {
-            debugPrint("Error: \(error)")
+            logger.notice("Perform fetch error: \(error)")
         }
         
         // Button for returning to albums/images collections
@@ -220,6 +226,7 @@ final class ShareViewController: UIViewController {
 
     // MARK: - PiwigoHUD
     func showHUD() {
+        logger.notice("HUD shown while copying items")
         // Remove an existing HUD if needed
         if let hud = view.viewWithTag(pwgTagHUD) as? PiwigoHUD {
             hud.removeFromSuperview()
@@ -293,6 +300,7 @@ final class ShareViewController: UIViewController {
                 }
             }
         }
+        self.logger.notice("Copied \(sharedItemCount) shared items to Uploads folder")
         return sharedItemCount
     }
     
@@ -306,7 +314,7 @@ final class ShareViewController: UIViewController {
                 defer { continuation.resume(returning: success) }
 
                 guard let url else {
-                    debugPrint("Shared item load error: \(error?.localizedDescription ?? "unknown")")
+                    self.logger.notice("Shared item load error: \(error?.localizedDescription ?? "unknown")")
                     return
                 }
 
@@ -327,7 +335,7 @@ final class ShareViewController: UIViewController {
                     self.writeJSONfile(at: fileURL, withIdentifier: identifier, fileName: fileName)
                     success = true
                 } catch {
-                    debugPrint("Failed to copy shared item: \(error)")
+                    self.logger.notice("Failed to copy shared item: \(error.localizedDescription)")
                 }
             }
 
@@ -368,7 +376,7 @@ final class ShareViewController: UIViewController {
             try JSONdata.write(to: fileURL.appendingPathExtension("json"))
         }
         catch {
-            print("Failed to write shared item JSON file: \(error)")
+            self.logger.notice("Failed to write shared item JSON file: \(error.localizedDescription)")
         }
     }
 }

@@ -31,8 +31,7 @@ class TroubleshootingViewController: UIViewController {
     private lazy var JSONprefixCount: Int = JSONprefix.count
     private lazy var JSONextensionCount: Int = JSONextension.count
     private var JSONfiles = [URL]()
-    private var pwgLogs = [[OSLogEntryLog]]()
-    private let pwgSubSystems = ["org.piwigo", "org.piwigo.apiKit", "org.piwigo.cacheKit", "org.piwigo.uploadKit"]
+    private var pwgLogs = [[PwgLogEntry]]()
     
     
     // MARK: - View Lifecycle
@@ -127,52 +126,47 @@ class TroubleshootingViewController: UIViewController {
     private func getLogsAndJSONData() {
         // Operation for retrieving logs
         let getLogs = BlockOperation {
-            do {
-                let timeCounter = CFAbsoluteTimeGetCurrent()
-                let logStore = try OSLogStore(scope: .currentProcessIdentifier)
-                let oneHourAgo = logStore.position(date: Date().addingTimeInterval(-3600))
-                let predicate = NSPredicate(format: "subsystem IN %@", self.pwgSubSystems)
-                let allEntries = try logStore.getEntries(at: oneHourAgo, matching: predicate)
-                let duration = (CFAbsoluteTimeGetCurrent() - timeCounter) * CFAbsoluteTime(1000)
-                debugPrint("••> completed in \(duration.rounded()) ms")
-                let entries = allEntries.compactMap({$0 as? OSLogEntryLog})
-                
-                // piwigo — App Metrics
+            #if DEBUG
+            let timeCounter = CFAbsoluteTimeGetCurrent()
+            #endif
+            // Collect the entries stored in log files by the app and the extensions
+            // during the last 24 hours (shares may have been performed hours ago)
+            let logsByCategory = PwgLogger.logEntries(since: Date().addingTimeInterval(-86_400))
+            #if DEBUG
+            let duration = (CFAbsoluteTimeGetCurrent() - timeCounter) * CFAbsoluteTime(1000)
+            debugPrint("••> Logs retrieved in \(duration.rounded()) ms")
+            #endif
+
+            // Present known categories in the expected order,
+            // with entries in chronological order in each category
+            let orderedCategories: [String] = {
+                var categories = [
+                    // PwgAPIKit — Session Delegate
+                    String(describing: PwgSessionDelegate.self),
+                    String(describing: JSONManager.self),
+                    String(describing: ImageDownloader.self),
+                    // PwgCacheKit — Core Data
+                    String(describing: DataMigrator.self),
+                    String(describing: Image.self),
+                    // PwgUploadKit — UploadManager
+                    String(describing: UploadManager.self),
+                    String(describing: UploadManagerActor.self),
+                    String(describing: UploadSessionManager.self),
+                    String(describing: UploadSessionsDelegate.self)
+                ]
                 #if DEBUG
-                var someLogs = entries.filter({$0.category == String(describing: AppMetrics.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                #else
-                var someLogs = [OSLogEntryLog]()
+                // piwigo — App Metrics
+                categories.insert(String(describing: AppMetrics.self), at: 0)
                 #endif
-                
-                // PwgAPIKit — Session Delegate
-                someLogs = entries.filter({$0.category == String(describing: PwgSessionDelegate.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                someLogs = entries.filter({$0.category == String(describing: JSONManager.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                someLogs = entries.filter({$0.category == String(describing: ImageDownloader.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                
-                // PwgCacheKit — Core Data
-                someLogs = entries.filter({$0.category == String(describing: DataMigrator.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                someLogs = entries.filter({$0.category == String(describing: Image.self)})
-                if someLogs.isEmpty ==  false { self.pwgLogs.append(someLogs)}
-                
-                // PwgUploadKit — UploadManager
-                someLogs = entries.filter({$0.category == String(describing: UploadManager.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                someLogs = entries.filter({$0.category == String(describing: UploadManagerActor.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                someLogs = entries.filter({$0.category == String(describing: UploadSessionManager.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                someLogs = entries.filter({$0.category == String(describing: UploadSessionsDelegate.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-            }
-            catch {
-                debugPrint("••> Could not retrieve logs.")
-                self.pwgLogs = []
-            }
+                return categories
+            }()
+            var pwgLogs = orderedCategories.compactMap { logsByCategory[$0] }
+
+            // Followed by the other categories, e.g. those of the extensions
+            let otherCategories = logsByCategory.keys
+                .filter({ orderedCategories.contains($0) == false }).sorted()
+            pwgLogs.append(contentsOf: otherCategories.compactMap { logsByCategory[$0] })
+            self.pwgLogs = pwgLogs
         }
         getLogs.completionBlock = {
             DispatchQueue.main.async {

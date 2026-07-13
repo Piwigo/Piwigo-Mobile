@@ -43,7 +43,7 @@ public final class DataMigrator: NSObject {
     
     // Logs migration activity
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
-    static let logger = Logger(subsystem: "org.piwigo.cacheKit", category: String(describing: DataMigrator.self))
+    static let logger = PwgLogger(subsystem: "org.piwigo.cacheKit", category: String(describing: DataMigrator.self))
     
     // MARK: - Migration Required?
     public func requiresMigration() -> Bool {
