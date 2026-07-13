@@ -133,6 +133,26 @@ extension ShareViewController: UITableViewDelegate
         }
     }
     
+    @MainActor
+    private func presentShareFailAlert() {
+        let alert = UIAlertController(title: String(localized: "shareFailError_title", comment: "Share Failed"),
+                                      message: String(localized: "shareFailError_message", comment: "Failed to retrieve the shared photos and videos."),
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: Localized.dismiss,
+                                      style: .cancel, handler: { [weak self] _ in
+            // Nothing to upload —> close the share sheet
+            self?.extensionContext?.cancelRequest(withError: URLError(.cancelled))
+        }))
+        
+        // Present alert
+        alert.view.tintColor = PwgColor.tintColor
+        alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
+        present(alert, animated: true, completion: {
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+            alert.view.tintColor = PwgColor.tintColor
+        })
+    }
+    
     private func openMainApp(withAlbumIDs upperIds: String, forItemsSharedAt shareDate: String) {
         // Prepare URL
         var comps = URLComponents()

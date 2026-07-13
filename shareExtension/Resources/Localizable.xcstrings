@@ -8,6 +8,28 @@
     "loadingHUD_label" : {
       "comment" : "Loading…"
     },
+    "shareFailError_message" : {
+      "comment" : "Failed to retrieve the shared photos and videos.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to retrieve the shared photos and videos."
+          }
+        }
+      }
+    },
+    "shareFailError_title" : {
+      "comment" : "Share Failed",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share Failed"
+          }
+        }
+      }
+    },
     "uploadSeveralImages_selectAlbum" : {
       "comment" : "Please, select the album in which you wish to upload the photos.",
       "localizations" : {

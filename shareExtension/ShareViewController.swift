@@ -254,15 +254,12 @@ final class ShareViewController: UIViewController {
     
     
     // MARK: - Copy Shared Items to Uploads folder
-    private nonisolated func copyItems(fromContext context: NSExtensionContext?, sharedAt shareDate: String) async {
+    private nonisolated func copyItems(fromContext context: NSExtensionContext?, sharedAt shareDate: String) async -> Int {
         // Retrieve input item
         guard let context,
               let extensionItem = context.inputItems.first as? NSExtensionItem,
               let attachments = extensionItem.attachments
-        else {
-            context?.cancelRequest(withError: URLError(.cancelled))
-            return
-        }
+        else { return 0 }
         
         // Loop over all shared items
         /// Shared items are identified with identifiers of the type "pwgShared-yyyyMMdd-HHmmssSSSS-typ-####" where:
