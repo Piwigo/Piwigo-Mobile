@@ -175,7 +175,9 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate
             if let index = selectedImages.firstIndex(where: {$0?.localIdentifier == upload.localIdentifier}) {
                 // Deselect image
                 selectedImages[index] = nil
-                // Add upload request to cache
+            }
+            // Add upload request to cache
+            if let index = indexedUploadsInQueue.firstIndex(where: {$0?.0 == upload.localIdentifier}) {
                 indexedUploadsInQueue[index] = (upload.localIdentifier, upload.md5Sum, upload.state)
             }
             
