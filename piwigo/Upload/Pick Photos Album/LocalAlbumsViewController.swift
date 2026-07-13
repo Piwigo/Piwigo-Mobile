@@ -196,8 +196,7 @@ class LocalAlbumsViewController: UIViewController {
         
         // Show HUD while fetching local albums
         if self.localAlbumsProvider.didFetchAssetCollections == false {
-            self.navigationController?.showHUD(
-                withTitle: String(localized: "loadingHUD_label", comment: "Loading…"),
+            self.navigationController?.showHUD(withTitle: Localized.loading,
                 detail: Localized.tabBar_albums, minWidth: 200)
         }
         

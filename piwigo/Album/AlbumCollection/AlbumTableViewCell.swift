@@ -174,7 +174,7 @@ class AlbumTableViewCell: UITableViewCell {
         
         // Reset cell
         self.imageURL = nil
-        self.albumName.text = String(localized: "loadingHUD_label", comment: "Loading…")
+        self.albumName.text = Localized.loading
         self.albumComment.attributedText = NSAttributedString()
         self.albumThumbnail.image = pwgImageType.album.placeHolder
         self.numberOfImages.text = ""

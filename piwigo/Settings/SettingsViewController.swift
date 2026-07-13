@@ -67,35 +67,35 @@ class SettingsViewController: UIViewController {
         .compare("14.0", options: .numeric) == .orderedAscending
     
     // For displaying cache sizes
-    var dataCacheSize: String = String(localized: "loadingHUD_label", comment: "Loading…") {
+    var dataCacheSize: String = Localized.loading {
         didSet {
             DispatchQueue.main.async {
                 self.updateDataCacheCell()
             }
         }
     }
-    var thumbCacheSize: String = String(localized: "loadingHUD_label", comment: "Loading…") {
+    var thumbCacheSize: String = Localized.loading {
         didSet {
             DispatchQueue.main.async {
                 self.updateThumbCacheCell()
             }
         }
     }
-    var photoCacheSize: String = String(localized: "loadingHUD_label", comment: "Loading…") {
+    var photoCacheSize: String = Localized.loading {
         didSet {
             DispatchQueue.main.async {
                 self.updatePhotoCacheCell()
             }
         }
     }
-    var videoCacheSize: String = String(localized: "loadingHUD_label", comment: "Loading…") {
+    var videoCacheSize: String = Localized.loading {
         didSet {
             DispatchQueue.main.async {
                 self.updateVideoCacheCell()
             }
         }
     }
-    var uploadCacheSize: String = String(localized: "loadingHUD_label", comment: "Loading…") {
+    var uploadCacheSize: String = Localized.loading {
         didSet {
             DispatchQueue.main.async {
                 self.updateUploadCacheCell()

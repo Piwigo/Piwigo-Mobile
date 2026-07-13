@@ -5,9 +5,6 @@
       "comment" : "All Albums",
       "shouldTranslate" : false
     },
-    "loadingHUD_label" : {
-      "comment" : "Loading…"
-    },
     "shareFailError_message" : {
       "comment" : "Failed to retrieve the shared photos and videos.",
       "localizations" : {

@@ -376,7 +376,7 @@ final class SelectCategoryViewController: UIViewController {
         
         // Display HUD during fetch after the app launch or if data was fetched more than an hour ago
         if AppVars.shared.dateOfLatestRecursiveAlbumDataFetch.timeIntervalSinceNow < -3600 {
-            navigationController?.showHUD(withTitle: String(localized: "loadingHUD_label", comment: "Loading…"))
+            navigationController?.showHUD(withTitle: Localized.loading)
             AppVars.shared.dateOfLatestRecursiveAlbumDataFetch = Date()
         }
         

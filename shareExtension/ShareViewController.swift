@@ -210,7 +210,7 @@ final class ShareViewController: UIViewController {
 
 
     // MARK: - PiwigoHUD
-    func showHUD(withTitle title: String) {
+    func showHUD() {
         // Remove an existing HUD if needed
         if let hud = view.viewWithTag(pwgTagHUD) as? PiwigoHUD {
             hud.removeFromSuperview()
@@ -218,7 +218,7 @@ final class ShareViewController: UIViewController {
         // Create and show the HUD
         guard let hud = UINib(nibName: "PiwigoHUD", bundle: nil).instantiate(withOwner: nil)[0] as? PiwigoHUD
         else { preconditionFailure("PiwigoHUD not found/instantiated") }
-        hud.show(withTitle: title, detail: nil, minWidth: 200, view: view)
+        hud.show(withTitle: "", detail: nil, minWidth: 200, view: view)
     }
 
     func hideHUD() {

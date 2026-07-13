@@ -782,8 +782,7 @@ final class AlbumViewController: UIViewController
         
         // Display HUD while downloading album data
         if withHUD {
-            self.navigationController?.showHUD(
-                withTitle: String(localized: "loadingHUD_label", comment: "Loading…"),
+            self.navigationController?.showHUD(withTitle: Localized.loading,
                 detail: String(localized: "severalImages", comment: "Photos"), minWidth: 200)
         }
         

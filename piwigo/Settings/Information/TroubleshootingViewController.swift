@@ -92,8 +92,7 @@ class TroubleshootingViewController: UIViewController {
         
         // Display HUD while retrieving logs and invalid JSON data
         if queue.operations.count != 0 {
-            navigationController?.showHUD(
-                withTitle: String(localized: "loadingHUD_label", comment: "Loading…"),
+            navigationController?.showHUD(withTitle: Localized.loading,
                 detail: String(localized: "settings_logs", comment: "Logs"), minWidth: 200)
         }
     }

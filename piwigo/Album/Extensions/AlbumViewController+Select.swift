@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import PwgKit
 import PwgAPIKit
+import PwgUIKit
 import PwgCacheKit
 
 // MARK: Buttons
@@ -305,11 +306,9 @@ extension AlbumViewController
         case .share         /* Check Photo Library access rights */:
             // Display or update HUD
             if navigationController?.isShowingHUD() ?? false {
-                navigationController?.updateHUD(title: String(localized: "loadingHUD_label", comment: "Loading…"),
-                                                inMode: .indeterminate)
+                navigationController?.updateHUD(title: Localized.loading, inMode: .indeterminate)
             } else if selectedImageIDs.count > 200 {
-                navigationController?.showHUD(withTitle: String(localized: "loadingHUD_label", comment: "Loading…"),
-                                              inMode: .indeterminate)
+                navigationController?.showHUD(withTitle: Localized.loading, inMode: .indeterminate)
             }
             // Prepare items to share in background queue
             DispatchQueue(label: "org.piwigo.share", qos: .userInitiated).async { [self] in
@@ -349,7 +348,7 @@ extension AlbumViewController
             performAction(action, withImageIDs: imageIDs, contextually: contextually)
         } else {
             // Display HUD
-            navigationController?.showHUD(withTitle: String(localized: "loadingHUD_label", comment: "Loading…"),
+            navigationController?.showHUD(withTitle: Localized.loading,
                           inMode: imageIDsToRetrieve.count > 1 ? .determinate : .indeterminate)
             
             // Retrieve image data if needed

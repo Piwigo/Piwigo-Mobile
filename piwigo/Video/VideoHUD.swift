@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PwgUIKit
 
 class VideoHUD: UIView {
     
@@ -23,7 +24,7 @@ class VideoHUD: UIView {
     private lazy var label: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = String(localized: "loadingHUD_label", comment: "Loading…")
+        label.text = Localized.loading
         label.textColor = .white
         label.textAlignment = .center
         label.adjustsFontSizeToFitWidth = true
@@ -40,7 +41,7 @@ class VideoHUD: UIView {
 //    private lazy var button: UIButton = {
 //        var button: UIButton
 //        var filled = UIButton.Configuration.filled()
-//        filled.title = String(localized: "loadingHUD_label", comment: "Loading…")
+//        filled.title = Localized.loading
 //        filled.titleAlignment = .center
 //        filled.buttonSize = .medium
 //        filled.baseBackgroundColor = UIColor(white: 0.0, alpha: 0.35)

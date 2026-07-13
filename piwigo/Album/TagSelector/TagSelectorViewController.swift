@@ -155,8 +155,7 @@ class TagSelectorViewController: UIViewController {
         super.viewDidAppear(animated)
         
         // Show HUD during the fetch
-        self.navigationController?.showHUD(
-            withTitle: String(localized: "loadingHUD_label", comment: "Loading…"),
+        self.navigationController?.showHUD(withTitle: Localized.loading,
             detail: String(localized: "tags", comment: "Tags"), minWidth: 200)
         
         // Use the TagsProvider to fetch tag data. On completion,

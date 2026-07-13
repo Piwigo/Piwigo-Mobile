@@ -254,7 +254,7 @@ extension AlbumViewController
         var legend = " "
         if totalCount == Int64.min {
             // Is loading…
-            legend = String(localized: "loadingHUD_label", comment:"Loading…")
+            legend = Localized.loading
         }
         else if totalCount == Int64.zero {
             // Not loading and no images

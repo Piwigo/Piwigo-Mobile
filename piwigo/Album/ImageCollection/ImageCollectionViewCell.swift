@@ -262,7 +262,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         // Reset cell
         self.imageURL = nil
         self.nameLabel?.text = ""
-        self.noDataLabel?.text = String(localized: "loadingHUD_label", comment: "Loading…")
+        self.noDataLabel?.text = Localized.loading
         self.cellImage?.image = pwgImageType.image.placeHolder
         self.isFavorite = false
         self.isSelection = false
