@@ -10,6 +10,7 @@ import Foundation
 import PwgKit
 import PwgAPIKit
 import PwgCacheKit
+import PwgUIKit
 import PwgUploadKit
 
 extension AlbumViewController
@@ -340,7 +341,7 @@ extension AlbumViewController
         }
         navigationController?.showHUD(
             withTitle: title, detail: detail, minWidth: 240,
-            buttonTitle: String(localized: "alertDismissButton", comment: "Dismiss"),
+            buttonTitle: Localized.dismiss,
             buttonTarget: self, buttonSelector: buttonSelector,
             inMode: pwgHudMode.none)
     }

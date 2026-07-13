@@ -87,9 +87,16 @@ extension ShareViewController: UITableViewDelegate
                 // Wait until all shared items have been copied to the Uploads folder
                 if itemsAreReady == false {
                     showHUD(withTitle: String(localized: "loadingHUD_label", comment: "Loading…"))
-                    await copyItemsTask?.value
-                    hideHUD()
                 }
+                let nbCopiedItems = await copyItemsTask?.value ?? 0
+                hideHUD()
+
+                // Tell the user when no item could be copied
+                if nbCopiedItems == 0 {
+                    presentShareFailAlert()
+                    return
+                }
+                
                 // Launch the app to select options
                 openMainApp(withAlbumIDs: albumData.upperIds, forItemsSharedAt: shareDate)
             }

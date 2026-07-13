@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgUIKit
 import PwgUploadKit
 
 extension SettingsViewController
@@ -233,7 +234,7 @@ extension SettingsViewController
         })
         alert.addAction(clearAction)
         
-        let dismissAction = UIAlertAction(title: String(localized: "alertDismissButton", comment: "Dismiss"), style: .cancel, handler: nil)
+        let dismissAction = UIAlertAction(title: Localized.dismiss, style: .cancel, handler: nil)
         alert.addAction(dismissAction)
         
         return alert

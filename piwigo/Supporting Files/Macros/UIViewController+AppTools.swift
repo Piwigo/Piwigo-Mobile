@@ -142,7 +142,7 @@ extension UIViewController {
         }
         
         // Prepare actions
-        let dismissAction = UIAlertAction(title: String(localized: "alertDismissButton", comment:"Dismiss"),
+        let dismissAction = UIAlertAction(title: Localized.dismiss,
                                           style: .cancel) { _ in completion() }
 
         // Present alert
@@ -173,7 +173,7 @@ extension UIViewController {
         let cancelAction = UIAlertAction(title: Localized.cancel,
                                          style: .cancel) { _ in cancel() }
         return await withCheckedContinuation { continuation in
-            let dismissAction = UIAlertAction(title: String(localized: "alertDismissButton", comment:"Dismiss"),
+            let dismissAction = UIAlertAction(title: Localized.dismiss,
                                               style: .default) { _ in continuation.resume(returning: ()) }
             
             // Present alert
@@ -192,7 +192,7 @@ extension UIViewController {
         }
         
         // Prepare actions
-        let dismissAction = UIAlertAction(title: String(localized: "alertDismissButton", comment:"Dismiss"),
+        let dismissAction = UIAlertAction(title: Localized.dismiss,
                                           style: .cancel) { _ in dismiss() }
         let retryAction = UIAlertAction(title: String(localized: "alertRetryButton", comment:"Retry"),
                                         style: .default) { _ in retry() }
@@ -214,7 +214,7 @@ extension UIViewController {
         // Prepare actions
         let cancelAction = UIAlertAction(title: Localized.cancel,
                                          style: .cancel) { _ in cancel() }
-        let dismissAction = UIAlertAction(title: String(localized: "alertDismissButton", comment:"Dismiss"),
+        let dismissAction = UIAlertAction(title: Localized.dismiss,
                                           style: .default) { _ in dismiss() }
         let retryAction = UIAlertAction(title: String(localized: "alertRetryButton", comment:"Retry"),
                                         style: .default) { _ in retry() }

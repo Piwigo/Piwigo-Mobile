@@ -592,7 +592,7 @@ class LoginViewController: UIViewController {
                 detail = String(format: "%ld", (error as NSError?)?.code ?? 0)
         }
         updateHUD(title: title, detail: detail,
-                  buttonTitle: String(localized: "alertDismissButton", comment: "Dismiss"),
+                  buttonTitle: Localized.dismiss,
                   buttonTarget: self, buttonSelector: buttonSelector,
                   inMode: pwgHudMode.none)
     }

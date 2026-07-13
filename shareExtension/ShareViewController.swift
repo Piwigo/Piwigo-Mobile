@@ -113,7 +113,8 @@ final class ShareViewController: UIViewController {
 
 
     // MARK: - Shared Items Copy
-    var copyItemsTask: Task<Void, Never>?   // Task copying the shared items to the Uploads folder
+    var copyItemsTask: Task<Int, Never>?    // Task copying the shared items to the Uploads folder,
+                                            // returning the number of copied items
     var itemsAreReady = false               // True once all shared items have been copied
 
     
@@ -153,11 +154,12 @@ final class ShareViewController: UIViewController {
         // Retrieve shared items
         self.context = extensionContext
         copyItemsTask = Task { @MainActor [weak self] in
-            guard let self else { return }
+            guard let self else { return 0 }
             let context = self.extensionContext
             let shareDate = self.shareDate
-            await self.copyItems(fromContext: context, sharedAt: shareDate)
+            let nbCopiedItems = await self.copyItems(fromContext: context, sharedAt: shareDate)
             self.itemsAreReady = true
+            return nbCopiedItems
         }
     }
     
@@ -282,6 +284,7 @@ final class ShareViewController: UIViewController {
                 }
             }
         }
+        return sharedItemCount
     }
     
     private nonisolated func getSharedItem(atIndex index: Int, ofType type: UTType, from provider: NSItemProvider,

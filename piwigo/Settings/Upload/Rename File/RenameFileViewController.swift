@@ -328,7 +328,7 @@ class RenameFileViewController: UIViewController {
         }
         
         // Add Cancel option
-        alert.addAction(UIAlertAction(title: String(localized: "alertDismissButton", comment: "Dismiss"), style: .cancel, handler: { [weak self] _ in
+        alert.addAction(UIAlertAction(title: Localized.dismiss, style: .cancel, handler: { [weak self] _ in
             guard let self = self else { return }
             self.updatePrefixSettingsAndSection()
         }))
@@ -420,7 +420,7 @@ class RenameFileViewController: UIViewController {
         }
         
         // Add Cancel option
-        alert.addAction(UIAlertAction(title: String(localized: "alertDismissButton", comment: "Dismiss"), style: .cancel, handler: { [weak self] _ in
+        alert.addAction(UIAlertAction(title: Localized.dismiss, style: .cancel, handler: { [weak self] _ in
             guard let self = self else { return }
             self.updateReplaceSettingsAndSection()
         }))
@@ -511,7 +511,7 @@ class RenameFileViewController: UIViewController {
         }
         
         // Add Cancel option
-        alert.addAction(UIAlertAction(title: String(localized: "alertDismissButton", comment: "Dismiss"), style: .cancel, handler: { [weak self] _ in
+        alert.addAction(UIAlertAction(title: Localized.dismiss, style: .cancel, handler: { [weak self] _ in
             guard let self = self else { return }
             self.updateSuffixSettingsAndSection()
         }))
