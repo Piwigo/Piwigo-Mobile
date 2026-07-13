@@ -59,6 +59,24 @@ extension UploadProperties {
             fileNameExtensionCase = UploadVars.shared.caseOfFileExtension
         }
         
+        // Prefix file name?
+        var prefixFileNameActionList: String = ""
+        if UploadVars.shared.prefixFileNameBeforeUpload {
+            prefixFileNameActionList = UploadVars.shared.prefixFileNameActionList
+        }
+        
+        // Replace file name?
+        var replaceFileNameActionList: String = ""
+        if UploadVars.shared.replaceFileNameBeforeUpload {
+            replaceFileNameActionList = UploadVars.shared.replaceFileNameActionList
+        }
+        
+        // Suffix file name?
+        var suffixFileNameActionList: String = ""
+        if UploadVars.shared.suffixFileNameBeforeUpload {
+            suffixFileNameActionList = UploadVars.shared.suffixFileNameActionList
+        }
+        
         // Initialisation
         self.init(localIdentifier: localIdentifier,
             // Category ID of the album to upload to
@@ -76,9 +94,9 @@ extension UploadProperties {
             creationDate: Date().timeIntervalSinceReferenceDate,
             fileName: "",
             fileNameExtensionCase: fileNameExtensionCase,
-            fileNamePrefixEncodedActions: UploadVars.shared.prefixFileNameActionList,
-            fileNameReplaceEncodedActions: UploadVars.shared.replaceFileNameActionList,
-            fileNameSuffixEncodedActions: UploadVars.shared.suffixFileNameActionList,
+            fileNamePrefixEncodedActions: prefixFileNameActionList,
+            fileNameReplaceEncodedActions: replaceFileNameActionList,
+            fileNameSuffixEncodedActions: suffixFileNameActionList,
             fileType: Int16.zero, mimeType: "", md5Sum: "",
             
             // Photo author name defaults to name entered in Settings
