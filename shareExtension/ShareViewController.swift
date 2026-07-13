@@ -205,7 +205,16 @@ final class ShareViewController: UIViewController {
     
     @objc
     func cancelSelect() -> Void {
-        extensionContext?.cancelRequest(withError: URLError(.cancelled))
+        // Stop copying shared items, if not already done
+        copyItemsTask?.cancel()
+        Task { @MainActor in
+            // Wait for the in-flight item copy to complete
+            _ = await copyItemsTask?.value
+
+            // Delete the files of this share before closing the share sheet
+            deleteSharedItems(sharedAt: shareDate)
+            extensionContext?.cancelRequest(withError: URLError(.cancelled))
+        }
     }
 
 
@@ -269,6 +278,9 @@ final class ShareViewController: UIViewController {
         /// - "####" is the index of the object being shared
         var sharedItemCount = 0
         for (index, provider) in attachments.enumerated() {
+            // Stop when the user cancelled the share
+            if Task.isCancelled { break }
+
             // Movies first because objects may contain both movies and images
             if provider.hasItemConformingToTypeIdentifier(UTType.movie.identifier) {
                 if await self.getSharedItem(atIndex: index, ofType: .movie, from: provider, on: shareDate) {
@@ -334,6 +346,18 @@ final class ShareViewController: UIViewController {
         }
     }
     
+    // Deletes the media files and JSON sidecars of the share performed at the given date
+    nonisolated func deleteSharedItems(sharedAt shareDate: String) {
+        let fileManager = FileManager.default
+        guard let files = try? fileManager.contentsOfDirectory(at: DataDirectories.appUploadsDirectory,
+                                                               includingPropertiesForKeys: nil,
+                                                               options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+        else { return }
+        for file in files where file.lastPathComponent.hasPrefix(kSharedPrefix + shareDate) {
+            try? fileManager.removeItem(at: file)
+        }
+    }
+
     private nonisolated func writeJSONfile(at fileURL: URL, withIdentifier identifier: String, fileName: String) {
         do {
             let uploadInfo: [String: String] = [

@@ -140,8 +140,8 @@ extension ShareViewController: UITableViewDelegate
                                       preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: Localized.dismiss,
                                       style: .cancel, handler: { [weak self] _ in
-            // Nothing to upload —> close the share sheet
-            self?.extensionContext?.cancelRequest(withError: URLError(.cancelled))
+            // Nothing to upload —> delete stray files and close the share sheet
+            self?.cancelSelect()
         }))
         
         // Present alert

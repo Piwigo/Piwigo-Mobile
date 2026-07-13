@@ -100,8 +100,27 @@ final class UploadSwitchViewController: UIViewController {
     }
     
     override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
         // Update navigation bar of parent view
         delegate?.uploadOptionsViewDidDisappear(withUploadsQueued: uploadsQueued)
+
+        // Delete files copied by the share extension when their upload was not queued,
+        // i.e. when the view was dismissed with the Cancel button or a swipe down
+        // (the check on isBeingDismissed excludes disappearances due to pushed views)
+        if uploadsQueued { return }
+        if isBeingDismissed || navigationController?.isBeingDismissed == true {
+            let sharedIDs = uploadRequests.map(\.localIdentifier).filter({ $0.hasPrefix(kSharedPrefix) })
+            if sharedIDs.isEmpty { return }
+            Task(priority: .utility) {
+                let fileManager = FileManager.default
+                for identifier in sharedIDs {
+                    let fileURL = DataDirectories.appUploadsDirectory.appendingPathComponent(identifier)
+                    try? fileManager.removeItem(at: fileURL)
+                    try? fileManager.removeItem(at: fileURL.appendingPathExtension("json"))
+                }
+            }
+        }
     }
     
     deinit {
