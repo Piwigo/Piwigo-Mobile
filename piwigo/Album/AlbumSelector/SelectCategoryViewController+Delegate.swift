@@ -40,7 +40,7 @@ extension SelectCategoryViewController: UITableViewDelegate
                     ? Localized.recentAlbums : Localized.tabBar_albums
             } else {
                 // 2nd section
-                title = String(localized: "categorySelection_allAlbums", comment: "All Albums")
+                title = Localized.allAlbums
             }
         }
         return (title, text)

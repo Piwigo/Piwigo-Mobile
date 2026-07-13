@@ -1,10 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "categorySelection_allAlbums" : {
-      "comment" : "All Albums",
-      "shouldTranslate" : false
-    },
     "shareFailError_message" : {
       "comment" : "Failed to retrieve the shared photos and videos.",
       "localizations" : {

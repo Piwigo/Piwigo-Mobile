@@ -25,7 +25,7 @@ extension ShareViewController: UITableViewDelegate
                 ? Localized.recentAlbums : Localized.tabBar_albums
         } else {
             // 2nd section
-            return String(localized: "categorySelection_allAlbums", comment: "All Albums")
+            return Localized.allAlbums
         }
     }
     
