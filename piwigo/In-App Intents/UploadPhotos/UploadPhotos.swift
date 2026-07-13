@@ -109,9 +109,18 @@ struct UploadPhotos: AppIntent {
                     continue    // Skip this attachment, keep processing the rest.
                 }
                 
+                // Files produced by other Shortcuts actions may lack a filename extension,
+                // yet the upload preparation relies on it to determine the file format
+                // (see prepareImageFromFile() and the share extension which does the same).
+                var fileName = file.filename
+                if URL(fileURLWithPath: fileName).pathExtension.isEmpty {
+                    let defaultExt = fileType.conforms(to: .movie) ? "mov" : "jpeg"
+                    fileName += "." + (fileType.preferredFilenameExtension ?? defaultExt)
+                }
+
                 // Create upload request
                 uploadRequests.append(UploadProperties(localIdentifier: identifier,
-                                                       fileName: file.filename,
+                                                       fileName: fileName,
                                                        category: refreshedAlbum.pwgID))
             }
         }
