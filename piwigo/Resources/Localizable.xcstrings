@@ -56286,6 +56286,9 @@
         }
       }
     },
+    "Upload ${photos} to ${album}" : {
+
+    },
     "uploadCancelled_title" : {
       "extractionState" : "manual",
       "localizations" : {

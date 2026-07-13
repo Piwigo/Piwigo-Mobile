@@ -317,6 +317,16 @@
         }
       }
     },
+    "Album" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Album"
+          }
+        }
+      }
+    },
     "Auto-Upload" : {
       "localizations" : {
         "ar" : {
@@ -801,6 +811,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "沒有照片加入上傳佇列。"
+          }
+        }
+      }
+    },
+    "Photos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photos"
+          }
+        }
+      }
+    },
+    "Upload" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upload"
+          }
+        }
+      }
+    },
+    "Upload Photos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upload Photos"
+          }
+        }
+      }
+    },
+    "UploadPhotosDescription" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upload photos and videos handed to Piwigo by a Shortcut to the album you choose."
+          }
+        }
+      }
+    },
+    "UploadPhotosError_InvalidAlbum" : {
+      "comment" : "You do not have permission to upload to this album.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You do not have permission to upload to this album."
+          }
+        }
+      }
+    },
+    "UploadPhotosError_NoPhotos" : {
+      "comment" : "No photo or video was provided to the shortcut.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No photo or video was provided to the shortcut."
+          }
+        }
+      }
+    },
+    "UploadPhotosTitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upload Photos"
           }
         }
       }

@@ -13,7 +13,7 @@ import PwgKit
 import PwgCacheKit
 import PwgUploadKit
 
-// Only used on iOS 15.x
+// Only used on iOS 15.x - 16.3.x
 final class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
     
     // MARK: - Core Data Object Contexts

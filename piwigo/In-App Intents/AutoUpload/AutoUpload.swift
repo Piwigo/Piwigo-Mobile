@@ -14,8 +14,8 @@ import PwgKit
 import PwgCacheKit
 import PwgUploadKit
 
-@available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
-struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { // , PredictableIntent {
+@available(iOS 16.4, *)
+struct AutoUpload: AppIntent, ForegroundContinuableIntent { // , PredictableIntent {
     static let intentClassName = "AutoUploadIntent"
     
     /// Each intent needs to include metadata, such as a localized title. The title of the intent displays throughout the system.
@@ -28,7 +28,7 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { // , PredictableIn
                                                     LocalizedStringResource("Auto-Upload", table: "In-AppIntents"),
                                                     LocalizedStringResource("severalImages"), "Piwigo"])
     
-    /// Tell the system to not bring the app to the foreground when the intent runs.
+    /// Tell the system to not bring the app to the foreground when the intent starts.
     static let openAppWhenRun: Bool = false
     
     /// Tell the system to apply a specific task priority
@@ -49,7 +49,6 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { // , PredictableIn
     
     /**
      When the system runs the intent, it calls `perform()`.
-     
      Intents run on an arbitrary queue. Intents that manipulate UI need to annotate `perform()` with `@MainActor`
      so that the UI operations run on the main actor.
      */
@@ -101,7 +100,7 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { // , PredictableIn
         }
         
         // Add new images to upload queue
-        let nberOfRequests = await Task(priority: .utility) { @UploadManagerActor in
+        var uploadIDs: [NSManagedObjectID]? = await Task(priority: .utility) { @UploadManagerActor in
             let uploadRequestsToAppend = UploadManager.shared.getNewRequests(inCollection: collection,
                                                                              toBeUploadedIn: categoryId)
             do {
@@ -110,6 +109,29 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { // , PredictableIn
                 
                 // Add upload requests to queue
                 UploadVars.shared.isPaused = false
+
+                // Return upload request IDs added to queue
+                return uploadIDs
+            }
+            catch {
+                // Return no upload request ID
+                return nil
+            }
+        }.value
+        
+        // Inform user if the import failed
+        guard let uploadIDs
+        else { return .result(dialog: .responseFailure(error: .importFailed)) }
+        
+        // Inform user if there is no photo to upload
+        if uploadIDs.isEmpty {
+            // Inform user that the shortcut was executed with error
+            return .result(dialog: .responseSuccess(photos: 0))
+        }
+        
+        // Inform user that there are photos to upload and launch the uploads from the main app
+        throw needsToContinueInForegroundError(.responseSuccess(photos: uploadIDs.count)) {
+            Task(priority: .utility) { @UploadManagerActor in
                 #if os(iOS) && !targetEnvironment(macCatalyst)
                 if #available(iOS 26.0, *) {
                     // Launch new continued upload task if possible
@@ -131,29 +153,12 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { // , PredictableIn
                 // Process next uploads if possible
                 await UploadManagerActor.shared.processNextUpload()
                 #endif
-
-                // Return number of upload requests added to queue
-                return uploadIDs.count
             }
-            catch {
-                // Return unknown number of upload requests added to queue
-                return Int.min
-            }
-        }.value
-        
-        // Inform user
-        if nberOfRequests == Int.min {
-            // Inform user that the shortcut was executed with error
-            return .result(dialog: .responseFailure(error: .importFailed))
-        }
-        else {
-            // Inform user that the shortcut was executed with success
-            return .result(dialog: .responseSuccess(photos: nberOfRequests))
         }
     }
 }
 
-@available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
+@available(iOS 16.4, *)
 fileprivate extension IntentDialog
 {
     static func responseSuccess(photos: Int) -> Self {
@@ -168,4 +173,3 @@ fileprivate extension IntentDialog
         "\(error.localizedDescription)"
     }
 }
-
