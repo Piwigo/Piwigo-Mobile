@@ -133,11 +133,12 @@ final class ShareViewController: UIViewController {
         categoriesTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
 
         // Retrieve user and check that a root album exists in cache (create it if necessary)
+        // When this fails, the user is asked to log in first when the view appears.
         guard let user = try? userProvider.getUserAccount(inContext: mainContext),
-              let _ = try? AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.root.rawValue)
+              let _ = try? AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.root.rawValue),
+              AlbumProvider().getObjectCount(inContext: mainContext) > 0
         else {
-            logger.notice("Could not retrieve user or root album")
-            extensionContext?.cancelRequest(withError: URLError(.cancelled))
+            logger.notice("Cannot upload photos or videos")
             return
         }
         self.user = user
@@ -204,11 +205,39 @@ final class ShareViewController: UIViewController {
         categoriesTableView?.reloadData()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        // Ask the user to log in first when no account is available
+        if user == nil {
+            presentNotLoggedInAlert()
+        }
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         NotificationCenter.default.removeObserver(self)
     }
-    
+
+    private func presentNotLoggedInAlert() {
+        let alert = UIAlertController(title: String(localized: "shareFailError_title", comment: "Share Failed"),
+                                      message: String(localized: "shareFailError_noAlbum", comment: "Please open the Piwigo app and create an album before sharing photos or videos."),
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: Localized.dismiss,
+                                      style: .cancel, handler: { [weak self] _ in
+            // Nothing can be uploaded —> close the share sheet
+            self?.cancelSelect()
+        }))
+        
+        // Present alert
+        alert.view.tintColor = PwgColor.tintColor
+        alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
+        present(alert, animated: true, completion: {
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+            alert.view.tintColor = PwgColor.tintColor
+        })
+    }
+
     @objc
     func cancelSelect() -> Void {
         // Stop copying shared items, if not already done

@@ -12,6 +12,17 @@
         }
       }
     },
+    "shareFailError_noAlbum" : {
+      "comment" : "Please open the Piwigo app and create an album before sharing photos or videos.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please open the Piwigo app and create an album before sharing photos or videos."
+          }
+        }
+      }
+    },
     "shareFailError_title" : {
       "comment" : "Share Failed",
       "localizations" : {
