@@ -36,7 +36,17 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
 
     private var albumData: Album!
     private var buttonState: pwgCategoryCellButtonState = .none
-    
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        // awakeFromNib() of view objects is always called on the main thread
+        MainActor.assumeIsolated {
+            // Execute tappedLoadView whenever the disclosure area is tapped
+            showHideSubCategoriesGestureArea.addGestureRecognizer(
+                UITapGestureRecognizer(target: self, action: #selector(tappedLoadView)))
+        }
+    }
+
     func configure(with album: Album, atDepth depth:Int,
                    andButtonState buttonState:pwgCategoryCellButtonState) {
         // General settings
@@ -61,6 +71,7 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
         
         // Show open/close button (# sub-albums) if there are sub-categories
         if (albumData.nbSubAlbums <= 0) || buttonState == .none {
+            self.buttonState = .none
             subCategoriesLabel.text = ""
             showHideSubCategoriesImage.isHidden = true
         } else {
@@ -84,24 +95,23 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
             } else {
                 self.showHideSubCategoriesImage.transform = CGAffineTransform.identity
             }
-
-            // Execute tappedLoadView whenever tapped
-            showHideSubCategoriesGestureArea.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tappedLoadView)))
         }
     }
-    
+
     @objc func tappedLoadView() {
-        // Rotate icon
+        // Ignore taps when the open/close button is not presented
+        if buttonState == .none { return }
+
+        // Remember the new button state
         let sign = buttonState == .showSubAlbum ? +1.0 : -1.0
+        buttonState = buttonState == .showSubAlbum ? .hideSubAlbum : .showSubAlbum
+
+        // Rotate the chevron before adding/removing sub-categories
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveLinear) { [self] in
             // Rotate the chevron
             self.showHideSubCategoriesImage.transform = self.showHideSubCategoriesImage.transform.rotated(by: CGFloat(sign * .pi/2.0))
-            if self.buttonState == .hideSubAlbum {
-                self.buttonState = .showSubAlbum
-            } else {
-                self.buttonState = .hideSubAlbum
-            }
-            
+        }
+        completion: { [self] _ in
             // Add/remove sub-categories
             self.delegate?.tappedDisclosure(of: self.albumData)
         }
