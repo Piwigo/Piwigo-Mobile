@@ -42,26 +42,6 @@ public let kImageSuffix = "-img-"
 public let kMovieSuffix = "-mov-"
 let kOriginalSuffix = "-original"
 
-// Constants returning the list of:
-/// - image formats which can be converted with iOS
-/// - movie formats which can be converted with iOS
-/// See: https://developer.apple.com/documentation/uniformtypeidentifiers/system-declared_uniform_type_identifiers
-let acceptedImageExtensions: [String] = {
-    var utiTypes: [UTType] = [.ico, .icns,
-                              .png, .gif, .jpeg, .webP, .tiff, .bmp, .svg, .rawImage,
-                              .heic, .heif]
-    if #available(iOS 18.2, *) {
-        utiTypes += [.jpegxl]
-    }
-    return utiTypes.flatMap({$0.tags[.filenameExtension] ?? []})
-}()
-let acceptedMovieExtensions: [String] = {
-    let utiTypes: [UTType] = [.quickTimeMovie,
-                              .mpeg, .mpeg2Video, .mpeg2TransportStream,
-                              .mpeg4Movie, .appleProtectedMPEG4Video, .avi]
-    return utiTypes.flatMap({$0.tags[.filenameExtension] ?? []})
-}()
-
 // Constant for producing filename suffixes
 let chunkFormatter: NumberFormatter = {
     let numberFormatter = NumberFormatter()

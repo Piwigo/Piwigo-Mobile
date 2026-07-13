@@ -19,7 +19,17 @@ public actor ImageDownloader {
     // Singleton
     public static let shared = ImageDownloader()
     
-    // Maximum number of simultaneous downloads.
+    // Accepted image
+    let acceptedTypes: String = {
+        // Image types
+        let imageTypes = acceptedImageTypes.compactMap {$0.tags[.mimeType]}.flatMap({$0})
+        var acceptedTypes = imageTypes.map({$0 + " ,"}).reduce("", +)
+        
+        // Add text types for handling Piwigo errors and redirects
+        acceptedTypes += "text/plain, text/html"
+        return acceptedTypes
+    }()
+    // Maximum number of simultaneous downloads
     let maxConcurrentDownloads = 4
     // Enqueued and running downloads
     var downloads: [URL : ImageDownload] = [ : ]

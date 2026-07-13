@@ -23,6 +23,16 @@ public final class UploadManager {
     // Singleton
     public static let shared = UploadManager()
         
+    // Extensions of image files which can be converted
+    let acceptedImageExtensions: [String] = {
+        return acceptedImageTypes.flatMap({$0.tags[.filenameExtension] ?? []})
+    }()
+    
+    // Extensions of movie files which can be converted
+    let acceptedMovieExtensions: [String] = {
+        return acceptedMovieTypes.flatMap({$0.tags[.filenameExtension] ?? []})
+    }()
+    
     // Upload counters kept in memory during upload
     // for updating progress bars and managing tasks
     var transferCounters = [TransferCounter]()

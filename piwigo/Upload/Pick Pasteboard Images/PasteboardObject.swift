@@ -92,91 +92,30 @@ final class ObjectPreparation : Operation, @unchecked Sendable {
             storePasteboardObject(imageData)
         }
     }
-
-
-    /// https://developer.apple.com/documentation/uniformtypeidentifiers/uttype/system_declared_types
+    
     private func getDataOfPasteboardMovie(at index:Int) -> (movieData: Data, fileExt: String)? {
-        // IndexSet of current image
         let indexSet = IndexSet(integer: index)
-        // Movie type?
-        if pbObject.types.contains("com.apple.quicktime-movie"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "com.apple.quicktime-movie", inItemSet: indexSet)?.first {
-            return (imageData, "mov")
+        for movieType in acceptedMovieTypes {
+            if pbObject.types.contains(movieType.identifier),
+               let imageData = UIPasteboard.general.data(forPasteboardType: movieType.identifier, inItemSet: indexSet)?.first {
+                return (imageData, movieType.preferredFilenameExtension!)
+            }
         }
-        else if pbObject.types.contains("public.mpeg"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "public.mpeg", inItemSet: indexSet)?.first {
-            return (imageData, "mpeg")
-        }
-        else if pbObject.types.contains("public.mpeg-2-video"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "public.mpeg-2-video", inItemSet: indexSet)?.first {
-            return (imageData, "mpeg2")
-        }
-        else if pbObject.types.contains("public.mpeg-4"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "public.mpeg-4", inItemSet: indexSet)?.first {
-            return (imageData, "mp4")
-        }
-        else if pbObject.types.contains("public.avi"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "public.avi", inItemSet: indexSet)?.first {
-            return (imageData, "avi")
-        }
-        else {
-            // Unknown movie format
-            return nil
-        }
+        return nil  // Unknown movie format
     }
-
+    
     private func getDataOfPasteboardImage(at index:Int) -> (imageData: Data, fileExt: String)? {
-        // IndexSet of current image
-        let indexSet = IndexSet(integer: index)
-
-        // Image type?
         // PNG format in priority in case where JPEG is also available
-        if pbObject.types.contains("public.png"),
-           let imageData = UIPasteboard.general.data(forPasteboardType: "public.png", inItemSet: indexSet)?.first {
-            return (imageData, "png")
+        let indexSet = IndexSet(integer: index)
+        for imageType in acceptedImageTypes {
+            if pbObject.types.contains(imageType.identifier),
+               let imageData = UIPasteboard.general.data(forPasteboardType: imageType.identifier, inItemSet: indexSet)?.first {
+                return (imageData, imageType.preferredFilenameExtension!)
+            }
         }
-        else if pbObject.types.contains("public.heic"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "public.heic", inItemSet: indexSet)?.first {
-            return (imageData, "heic")
-        }
-        else if pbObject.types.contains("public.heif"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "public.heif", inItemSet: indexSet)?.first {
-            return (imageData, "heif")
-        }
-        else if pbObject.types.contains("public.tiff"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "public.tiff", inItemSet: indexSet)?.first {
-            return (imageData, "tiff")
-        }
-        else if pbObject.types.contains("public.jpeg"),
-            let imageData = UIPasteboard.general.data(forPasteboardType: "public.jpeg", inItemSet: indexSet)?.first {
-            return (imageData, "jpg")
-        }
-        else if pbObject.types.contains("public.camera-raw-image"),
-            let imageData = UIPasteboard.general.data(forPasteboardType: "public.camera-raw-image", inItemSet: indexSet)?.first {
-            return (imageData, "raw")
-        }
-        else if pbObject.types.contains("com.google.webp"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "com.google.webp", inItemSet: indexSet)?.first {
-            return (imageData, "webp")
-        }
-        else if pbObject.types.contains("com.compuserve.gif"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "com.compuserve.gif", inItemSet: indexSet)?.first {
-            return (imageData, "gif")
-        }
-        else if pbObject.types.contains("com.microsoft.bmp"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "com.microsoft.bmp", inItemSet: indexSet)?.first {
-            return (imageData, "bmp")
-        }
-        else if pbObject.types.contains("com.microsoft.ico"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "com.microsoft.ico", inItemSet: indexSet)?.first {
-            return (imageData, "ico")
-        }
-        else {
-            // Unknown image format
-            return nil
-        }
+        return nil  // Unknown image format
     }
-
+    
     private func storePasteboardObject(_ data: Data) -> Void {
         // For debugging purposes
 //        let start = CFAbsoluteTimeGetCurrent()
