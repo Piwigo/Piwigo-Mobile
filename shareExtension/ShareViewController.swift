@@ -221,7 +221,7 @@ final class ShareViewController: UIViewController {
             self.categoriesTableView?.endUpdates()
 
             // Update navigation bar
-            self.navigationController?.navigationBar.configAppearance(withLargeTitles: true)
+            self.navigationController?.navigationBar.configAppearance(withLargeTitles: false)
         }
     }
     
