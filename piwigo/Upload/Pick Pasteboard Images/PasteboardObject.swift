@@ -21,12 +21,14 @@ final class PasteboardObject {
     let types: [String]
     var md5Sum: String
     var identifier: String
+    var fileName: String
     var state = PasteboardObjectState.new
     var image: UIImage = pwgImageType.image.placeHolder
     
-    init(identifier: String, types: [String]) {
+    init(identifier: String, fileName: String, types: [String]) {
         self.md5Sum = ""
         self.identifier = identifier
+        self.fileName = fileName
         self.types = types
     }
 }
@@ -72,7 +74,7 @@ final class ObjectPreparation : Operation, @unchecked Sendable {
             
             // Update object
             pbObject.md5Sum = movieData.MD5checksum
-            pbObject.identifier.append(".\(fileExt)")
+            pbObject.fileName.append(".\(fileExt)")
 
             // Store movie data
             storePasteboardObject(movieData)
@@ -86,7 +88,7 @@ final class ObjectPreparation : Operation, @unchecked Sendable {
 
             // Update object
             pbObject.md5Sum = imageData.MD5checksum
-            pbObject.identifier.append(".\(fileExt)")
+            pbObject.fileName.append(".\(fileExt)")
 
             // Store image data
             storePasteboardObject(imageData)

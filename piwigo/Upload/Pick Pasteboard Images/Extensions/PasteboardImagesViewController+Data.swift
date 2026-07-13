@@ -18,14 +18,14 @@ extension PasteboardImagesViewController {
     // MARK: - Check Pasteboard Content
     /// Called by the notification center when the pasteboard content is updated
     @objc func checkPasteboard() {
-        // Do nothing if the clipboard was emptied assuming that pasteboard objects are already stored
-        if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes),
-           let types = UIPasteboard.general.types(forItemSet: indexSet) {
+        // Retrieve pasteboard object indexes and types, then create identifiers
+        if let itemSet = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes),
+           let types = UIPasteboard.general.types(forItemSet: itemSet) {
 
-            // Reinitialise cached indexed uploads, deselect images
+            // Initialise cached indexed uploads
             pbObjects = []
-            indexedUploadsInQueue = .init(repeating: nil, count: indexSet.count)
-            selectedImages = .init(repeating: nil, count: indexSet.count)
+            selectedImages = .init(repeating: nil, count: itemSet.count)
+            indexedUploadsInQueue = .init(repeating: nil, count: itemSet.count)
 
             // Get date of retrieve
             let dateFormatter = DateFormatter()
@@ -34,25 +34,32 @@ extension PasteboardImagesViewController {
 
             // Loop over all pasteboard objects
             /// Pasteboard images are identified with identifiers of the type "pwgClipboard-yyyyMMdd-HHmmssSSSS-typ-#" where:
-            /// - "pwgClipboard" is a header telling that the object comes from the pasteboard (see kClipboardPrefix)
+            /// - "pwgClipboard" is a header telling that the image/video comes from the pasteboard (see kClipboardPrefix)
             /// - "yyyyMMdd-HHmmssSSSS" is the date at which the objects were retrieved
             /// - "typ" is "-img-" or "-mov-" depending on the nature of the object (see kImageSuffix, kMovieSuffix)
             /// - "#" is the index of the object in the pasteboard
-            for idx in indexSet {
+            for idx in itemSet {
                 let indexSet = IndexSet(integer: idx)
                 var identifier = kClipboardPrefix + pbDateTime
-                // Movies first because objects may contain both movies and images
+                // Movies first because movies may contain images
                 if UIPasteboard.general.contains(pasteboardTypes: [UTType.movie.identifier], inItemSet: indexSet) {
-                    identifier += kMovieSuffix + String(idx)
+                    identifier += kMovieSuffix + String(idx + 1)
                 } else {
-                    identifier += kImageSuffix + String(idx)
+                    identifier += kImageSuffix + String(idx + 1)
                 }
-                let newObject = PasteboardObject(identifier: identifier, types: types[idx])
+                let fileName = pbDateTime.dropLast(4) + "-" + String(idx + 1)
+                let newObject = PasteboardObject(identifier: identifier, fileName: fileName, types: types[idx])
                 pbObjects.append(newObject)
                 
                 // Retrieve data, store in Upload folder and update cache
                 startOperations(for: newObject, at: IndexPath(item: idx, section: 0))
             }
+        }
+        else {
+            // Initialise cached indexed uploads
+            pbObjects = []
+            selectedImages = .init(repeating: nil, count: 0)
+            indexedUploadsInQueue = .init(repeating: nil, count: 0)
         }
     }
     

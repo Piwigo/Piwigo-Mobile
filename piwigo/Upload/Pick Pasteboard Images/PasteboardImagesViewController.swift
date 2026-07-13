@@ -131,11 +131,12 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
                 var identifier = kClipboardPrefix + pbDateTime
                 // Movies first because movies may contain images
                 if UIPasteboard.general.contains(pasteboardTypes: [UTType.movie.identifier], inItemSet: indexSet) {
-                    identifier += kMovieSuffix + String(idx)
+                    identifier += kMovieSuffix + String(idx + 1)
                 } else {
-                    identifier += kImageSuffix + String(idx)
+                    identifier += kImageSuffix + String(idx + 1)
                 }
-                let newObject = PasteboardObject(identifier: identifier, types: types[idx])
+                let fileName = pbDateTime.dropLast(4) + "-" + String(idx + 1)
+                let newObject = PasteboardObject(identifier: identifier, fileName: fileName, types: types[idx])
                 pbObjects.append(newObject)
                 
                 // Retrieve data, store in Upload folder and update cache

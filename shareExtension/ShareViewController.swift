@@ -247,145 +247,63 @@ final class ShareViewController: UIViewController {
         for (index, provider) in attachments.enumerated() {
             // Movies first because objects may contain both movies and images
             if provider.hasItemConformingToTypeIdentifier(UTType.movie.identifier) {
-                if await self.getSharedMovie(atIndex: index + 1, from: provider, on: shareDate) {
+                if await self.getSharedItem(atIndex: index, ofType: .movie, from: provider, on: shareDate) {
                     sharedItemCount += 1
                 }
             }
             else if provider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
-                if await self.getSharedImage(atIndex: index + 1, from: provider, on: shareDate) {
+                if await self.getSharedItem(atIndex: index, ofType: .image, from: provider, on: shareDate) {
                     sharedItemCount += 1
                 }
             }
         }
     }
     
-    private nonisolated func getSharedImage(atIndex index: Int, from provider: NSItemProvider, on shareDate: String) async -> Bool {
+    private nonisolated func getSharedItem(atIndex index: Int, ofType type: UTType, from provider: NSItemProvider,
+                                           on shareDate: String) async -> Bool {
         return await withCheckedContinuation { continuation in
-            // Asynchronously writes a copy of the provided, typed data to a temporary file, returning a progress object.
-            if #available(iOS 16.0, *) {
-                _ = provider.loadFileRepresentation(for: .image, openInPlace: false) { url, _, error in
-                    var success = false
-                    defer { continuation.resume(returning: success) }
-                    
-                    guard let url else {
-                        print("Shared item load error: \(error?.localizedDescription ?? "unknown")")
-                        return
-                    }
-                    
-                    // Copy image to the shared container immediately
-                    let fileName = url.lastPathComponent
-                    let fileType = (try? url.resourceValues(forKeys: [.contentTypeKey]).contentType) ?? UTType.data
-                    let identifier = kSharedPrefix + shareDate + kImageSuffix + String(index)
-                    let fileURL = DataDirectories.appUploadsDirectory
-                        .appendingPathComponent(identifier).appendingPathExtension(for: fileType)
-                    
-                    // Remove stale file from a previous incomplete attempt
-                    try? FileManager.default.removeItem(at: fileURL)
-                    
-                    // Store our own copy for a future upload
-                    do {
-                        try FileManager.default.copyItem(at: url, to: fileURL)
-                        self.writeJSONfile(at: fileURL, withIdentifier: identifier, fileName: fileName)
-                        success = true
-                    } catch {
-                        print("Failed to copy shared item: \(error)")
-                    }
+            // Called with the URL of the temporary copy created by the provider,
+            // which is deleted when this handler returns.
+            let handleLoadedFile: @Sendable (URL?, (any Error)?) -> Void = { url, error in
+                var success = false
+                defer { continuation.resume(returning: success) }
+
+                guard let url else {
+                    debugPrint("Shared item load error: \(error?.localizedDescription ?? "unknown")")
+                    return
                 }
-            } else {
-                // Fallback on older version
-                _ = provider.loadFileRepresentation(forTypeIdentifier: UTType.image.identifier) { url, error in
-                    var success = false
-                    defer { continuation.resume(returning: success) }
-                    
-                    guard let url else {
-                        print("Shared item load error: \(error?.localizedDescription ?? "unknown")")
-                        return
-                    }
-                    
-                    // Copy image to the shared container immediately
-                    let fileName = url.lastPathComponent
+
+                // Prepare file name
+                var fileName = url.lastPathComponent
+                let fileExt = type == .image ? "jpeg" : "mov"
+                if url.pathExtension.isEmpty {
                     let fileType = (try? url.resourceValues(forKeys: [.contentTypeKey]).contentType) ?? UTType.data
-                    let identifier = kSharedPrefix + shareDate + kImageSuffix + String(index)
-                    let fileURL = DataDirectories.appUploadsDirectory
-                        .appendingPathComponent(identifier).appendingPathExtension(for: fileType)
-                    
-                    // Remove stale file from a previous incomplete attempt
-                    try? FileManager.default.removeItem(at: fileURL)
-                    
-                    // Store our own copy for a future upload
-                    do {
-                        try FileManager.default.copyItem(at: url, to: fileURL)
-                        self.writeJSONfile(at: fileURL, withIdentifier: identifier, fileName: fileName)
-                        success = true
-                    } catch {
-                        print("Failed to copy shared item: \(error)")
-                    }
+                    fileName = fileName.appending("." + (fileType.preferredFilenameExtension ?? fileExt))
+                }
+
+                // Store our own copy for a future upload
+                let suffix = type == .image ? kImageSuffix : kMovieSuffix
+                let identifier = kSharedPrefix + shareDate + suffix + String(index + 1)
+                let fileURL = DataDirectories.appUploadsDirectory.appendingPathComponent(identifier)
+                do {
+                    try FileManager.default.copyItem(at: url, to: fileURL)
+                    self.writeJSONfile(at: fileURL, withIdentifier: identifier, fileName: fileName)
+                    success = true
+                } catch {
+                    debugPrint("Failed to copy shared item: \(error)")
                 }
             }
-        }
-    }
-    
-    private nonisolated func getSharedMovie(atIndex index: Int, from provider: NSItemProvider, on shareDate: String) async -> Bool {
-        return await withCheckedContinuation { continuation in
-            // Asynchronously writes a copy of the provided, typed data to a temporary file, returning a progress object.
+
+            // Asynchronously writes a copy of the provided,
+            // typed data to a temporary file, returning a progress object.
             if #available(iOS 16.0, *) {
-                _ = provider.loadFileRepresentation(for: .movie, openInPlace: false) { url, _, error in
-                    var success = false
-                    defer { continuation.resume(returning: success) }
-                    
-                    guard let url else {
-                        print("Shared item load error: \(error?.localizedDescription ?? "unknown")")
-                        return
-                    }
-                    
-                    // Copy movie to the shared container immediately
-                    let fileName = url.lastPathComponent
-                    let fileType = (try? url.resourceValues(forKeys: [.contentTypeKey]).contentType) ?? UTType.data
-                    let identifier = kSharedPrefix + shareDate + kMovieSuffix + String(index)
-                    let fileURL = DataDirectories.appUploadsDirectory
-                        .appendingPathComponent(identifier).appendingPathExtension(for: fileType)
-                    
-                    // Remove stale file from a previous incomplete attempt
-                    try? FileManager.default.removeItem(at: fileURL)
-                    
-                    // Store our own copy for a future upload
-                    do {
-                        try FileManager.default.copyItem(at: url, to: fileURL)
-                        self.writeJSONfile(at: fileURL, withIdentifier: identifier, fileName: fileName)
-                        success = true
-                    } catch {
-                        print("Failed to copy shared item: \(error)")
-                    }
+                _ = provider.loadFileRepresentation(for: type, openInPlace: false) { url, _, error in
+                    handleLoadedFile(url, error)
                 }
             } else {
                 // Fallback on older version
-                _ = provider.loadFileRepresentation(forTypeIdentifier: UTType.movie.identifier) { url, error in
-                    var success = false
-                    defer { continuation.resume(returning: success) }
-                    
-                    guard let url else {
-                        print("Shared item load error: \(error?.localizedDescription ?? "unknown")")
-                        return
-                    }
-                    
-                    // Copy movie to the shared container immediately
-                    let fileName = url.lastPathComponent
-                    let fileType = (try? url.resourceValues(forKeys: [.contentTypeKey]).contentType) ?? UTType.data
-                    let identifier = kSharedPrefix + shareDate + kMovieSuffix + String(index)
-                    let fileURL = DataDirectories.appUploadsDirectory
-                        .appendingPathComponent(identifier).appendingPathExtension(for: fileType)
-                    
-                    // Remove stale file from a previous incomplete attempt
-                    try? FileManager.default.removeItem(at: fileURL)
-                    
-                    // Store our own copy for a future upload
-                    do {
-                        try FileManager.default.copyItem(at: url, to: fileURL)
-                        self.writeJSONfile(at: fileURL, withIdentifier: identifier, fileName: fileName)
-                        success = true
-                    } catch {
-                        print("Failed to copy shared item: \(error)")
-                    }
+                _ = provider.loadFileRepresentation(forTypeIdentifier: type.identifier) { url, error in
+                    handleLoadedFile(url, error)
                 }
             }
         }

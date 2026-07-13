@@ -623,9 +623,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         else { continue }
                         
                         // Create upload request
-                        var uploadRequest = UploadProperties(localIdentifier: identifier, category: destinationAlbumID)
-                        uploadRequest.fileName = fileName
-                        uploadRequests.append(uploadRequest)
+                        uploadRequests.append(UploadProperties(localIdentifier: identifier,
+                                                               fileName: fileName,
+                                                               category: destinationAlbumID))
                         
                         // Delete JSON file
                         try? FileManager.default.removeItem(at: file)

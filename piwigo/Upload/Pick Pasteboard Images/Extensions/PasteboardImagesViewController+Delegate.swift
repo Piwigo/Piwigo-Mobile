@@ -30,12 +30,14 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
             // Can we upload or re-upload this image?
             if (uploadState == nil) || reUploadAllowed {
                 // Select the image
+                let fileName = pbObjects.first(where: { $0.identifier == cell.localIdentifier })?.fileName
                 selectedImages[indexPath.item] = UploadProperties(localIdentifier: cell.localIdentifier,
+                                                                  fileName: fileName ?? cell.localIdentifier,
                                                                   category: categoryId)
                 cell.update(selected: true, state: uploadState)
             }
         }
-
+        
         // Update navigation bar
         updateNavBar()
 
@@ -167,7 +169,9 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
         return UIAction(title: String(localized: "categoryImageList_selectButton", comment: "Select"),
                         image: UIImage(systemName: "checkmark.circle")) { _ in
             // Select the cell
+            let fileName = self.pbObjects.first(where: { $0.identifier == cell.localIdentifier })?.fileName
             self.selectedImages[indexPath.item] = UploadProperties(localIdentifier: cell.localIdentifier,
+                                                                   fileName: fileName ?? cell.localIdentifier,
                                                                    category: self.categoryId)
             cell.update(selected: true, state: uploadState)
             
@@ -226,7 +230,8 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
             }
             
             // Create an upload request for that image and add it to the upload queue
-            let upload = UploadProperties(localIdentifier: cell.localIdentifier, category: self.categoryId)
+            let filename = pbObjects.first(where: { $0.identifier == cell.localIdentifier })?.fileName ?? cell.localIdentifier
+            let upload = UploadProperties(localIdentifier: cell.localIdentifier, fileName: filename, category: self.categoryId)
             self.uploadRequests.append(upload)
 
             // Disable buttons

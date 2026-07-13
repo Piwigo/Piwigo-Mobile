@@ -52,7 +52,7 @@ public struct UploadProperties: Sendable
 
 extension UploadProperties {
     // Create new upload from localIdentifier and category
-    public init(localIdentifier: String, category: Int32) {
+    public init(localIdentifier: String, fileName: String? = nil, category: Int32) {
         // Change case of file name extension?
         var fileNameExtensionCase: Int16 = 0
         if UploadVars.shared.changeCaseOfFileExtension {
@@ -92,7 +92,7 @@ extension UploadProperties {
             
             // Photo creation date and filename
             creationDate: Date().timeIntervalSinceReferenceDate,
-            fileName: "",
+            fileName: fileName ?? "",
             fileNameExtensionCase: fileNameExtensionCase,
             fileNamePrefixEncodedActions: prefixFileNameActionList,
             fileNameReplaceEncodedActions: replaceFileNameActionList,

@@ -93,12 +93,14 @@ extension PasteboardImagesViewController: UIGestureRecognizerDelegate
                     // Can we upload or re-upload this image?
                     if (uploadState == nil) || reUploadAllowed {
                         // Select the cell
+                        let fileName = pbObjects.first(where: { $0.identifier == cell.localIdentifier })?.fileName
                         selectedImages[indexPath.item] = UploadProperties(localIdentifier: cell.localIdentifier,
+                                                                          fileName: fileName ?? cell.localIdentifier,
                                                                           category: categoryId)
                         cell.update(selected: true, state: uploadState)
                     }
                 }
-
+                
                 // Update navigation bar
                 updateNavBar()
 
