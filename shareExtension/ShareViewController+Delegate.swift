@@ -84,6 +84,12 @@ extension ShareViewController: UITableViewDelegate
         Task { @MainActor in
             if await requestConfirmation(withTitle: title, message: message,
                                          forCategory: albumData, at: indexPath) {
+                // Wait until all shared items have been copied to the Uploads folder
+                if itemsAreReady == false {
+                    showHUD(withTitle: String(localized: "loadingHUD_label", comment: "Loading…"))
+                    await copyItemsTask?.value
+                    hideHUD()
+                }
                 // Launch the app to select options
                 openMainApp(withAlbumIDs: albumData.upperIds, forItemsSharedAt: shareDate)
             }

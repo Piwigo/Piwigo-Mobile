@@ -5,6 +5,9 @@
       "comment" : "All Albums",
       "shouldTranslate" : false
     },
+    "loadingHUD_label" : {
+      "comment" : "Loading…"
+    },
     "uploadSeveralImages_selectAlbum" : {
       "comment" : "Please, select the album in which you wish to upload the photos.",
       "localizations" : {

@@ -111,6 +111,11 @@ final class ShareViewController: UIViewController {
     private var cancelBarButton: UIBarButtonItem?
     var albumsShowingSubAlbums = Set<Int32>()
 
+
+    // MARK: - Shared Items Copy
+    var copyItemsTask: Task<Void, Never>?   // Task copying the shared items to the Uploads folder
+    var itemsAreReady = false               // True once all shared items have been copied
+
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -147,10 +152,12 @@ final class ShareViewController: UIViewController {
         
         // Retrieve shared items
         self.context = extensionContext
-        Task {
-            let context = extensionContext
-            let shareDate = shareDate
-            await copyItems(fromContext: context, sharedAt: shareDate)
+        copyItemsTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            let context = self.extensionContext
+            let shareDate = self.shareDate
+            await self.copyItems(fromContext: context, sharedAt: shareDate)
+            self.itemsAreReady = true
         }
     }
     
@@ -197,6 +204,24 @@ final class ShareViewController: UIViewController {
     @objc
     func cancelSelect() -> Void {
         extensionContext?.cancelRequest(withError: URLError(.cancelled))
+    }
+
+
+    // MARK: - PiwigoHUD
+    func showHUD(withTitle title: String) {
+        // Remove an existing HUD if needed
+        if let hud = view.viewWithTag(pwgTagHUD) as? PiwigoHUD {
+            hud.removeFromSuperview()
+        }
+        // Create and show the HUD
+        guard let hud = UINib(nibName: "PiwigoHUD", bundle: nil).instantiate(withOwner: nil)[0] as? PiwigoHUD
+        else { preconditionFailure("PiwigoHUD not found/instantiated") }
+        hud.show(withTitle: title, detail: nil, minWidth: 200, view: view)
+    }
+
+    func hideHUD() {
+        // Hide and remove the HUD
+        (view.viewWithTag(pwgTagHUD) as? PiwigoHUD)?.hide()
     }
     
         
