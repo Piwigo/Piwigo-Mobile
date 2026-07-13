@@ -93,9 +93,8 @@ extension ShareViewController: UITableViewDelegate
         let strFormat = String(localized: "uploadToAlbum_message", comment:"Are you sure you want to upload the photos to the album \"%@\"?")
         let message = unsafe String(format: strFormat, albumData.name)
         Task { @MainActor in
-            let confirmed = await requestConfirmation(withTitle: title, message: message,
-                                                      forCategory: albumData, at: indexPath)
-            if confirmed {
+            if await requestConfirmation(withTitle: title, message: message,
+                                         forCategory: albumData, at: indexPath) {
                 // Launch the app to select options
                 openMainApp(withAlbumIDs: albumData.upperIds, forItemsSharedAt: shareDate)
             }
@@ -109,7 +108,6 @@ extension ShareViewController: UITableViewDelegate
             let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
             let cancelAction = UIAlertAction(title: Localized.cancel,
                                              style: .cancel, handler: {_ in
-                // Forget the choice
                 continuation.resume(returning: false)
             })
             let performAction = UIAlertAction(title: Localized.yes, style: .default, handler: { _ in
