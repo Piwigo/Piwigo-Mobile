@@ -481,7 +481,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     
-    // MARK: - Intents (before iOS 16)
+    // MARK: - Intents (before iOS 16.4)
     func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
         switch intent {
         case is AutoUploadIntent:
