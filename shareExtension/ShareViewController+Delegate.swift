@@ -42,48 +42,37 @@ extension ShareViewController: UITableViewDelegate
     
     
     // MARK: - UITableView - Rows
-    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-        // Retrieve album data
-        let albumData: Album
+    private func album(at indexPath: IndexPath) -> Album {
         let hasRecentAlbums = (recentAlbums.fetchedObjects ?? []).count > 0
         switch indexPath.section {
         case 0:
             if hasRecentAlbums {
                 // Recent albums
-                albumData = recentAlbums.object(at: indexPath)
+                return recentAlbums.object(at: indexPath)
             } else {
                 // All albums
-                albumData = albums.object(at: indexPath)
+                return albums.object(at: indexPath)
             }
         default:
             let albumIndexPath = IndexPath(item: indexPath.item, section: 0)
-            albumData = albums.object(at: albumIndexPath)
+            return albums.object(at: albumIndexPath)
         }
+    }
+    
+    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        // Retrieve album data
+        let albumData: Album = album(at: indexPath)
         
         // The root album is not selectable (should not be presented but in case…)
         return albumData.pwgID == 0 ? false : true
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        // Deselect album
         tableView.deselectRow(at: indexPath, animated: true)
         
         // Get selected category
-        let albumData: Album
-        let hasRecentAlbums = (recentAlbums.fetchedObjects ?? []).count > 0
-        switch indexPath.section {
-        case 0:
-            if hasRecentAlbums {
-                // Recent albums
-                albumData = recentAlbums.object(at: indexPath)
-            } else {
-                // All albums
-                albumData = albums.object(at: indexPath)
-            }
-        default:
-            let albumIndexPath = IndexPath(item: indexPath.item, section: 0)
-            albumData = albums.object(at: albumIndexPath)
-        }
+        let albumData: Album = album(at: indexPath)
         
         // Do nothing if this is the root album
         if albumData.pwgID == 0 { return }
