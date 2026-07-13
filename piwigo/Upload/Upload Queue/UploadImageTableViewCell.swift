@@ -88,10 +88,13 @@ class UploadImageTableViewCell: UITableViewCell {
         
         // Determine from where the file comes from:
         // => Photo Library: use PHAsset local identifier
-        // => UIPasteborad: use identifier of type "Clipboard-yyyyMMdd-HHmmssSSSS-typ-#"
-        //    where "typ" is "img" (photo) or "mov" (video).
-        if upload.localIdentifier.contains(kClipboardPrefix) {
-            // Case of an image retrieved from the pasteboard
+        // => UIPasteboard, share extension, in-app intent: use identifier of type
+        //    "prefix-yyyyMMdd-HHmmssSSSS-typ-#" where "typ" is "img" (photo) or "mov" (video)
+        //    (see kClipboardPrefix, kSharedPrefix, kIntentPrefix).
+        if upload.localIdentifier.hasPrefix(kClipboardPrefix) ||
+           upload.localIdentifier.hasPrefix(kSharedPrefix) ||
+           upload.localIdentifier.hasPrefix(kIntentPrefix) {
+            // Case of an image stored in the Uploads directory
             prepareThumbnailFromFile(for: upload, availableWidth: availableWidth)
         } else {
             // Case of an image from the local Photo Library
