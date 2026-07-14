@@ -17,7 +17,7 @@ import PwgUploadKit
 
 final class ShareViewController: UIViewController {
     
-    // Logs migration activity
+    // Logs share activity
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
     let logger = PwgLogger(subsystem: "org.piwigo.shareExtension", category: String(describing: ShareViewController.self))
 

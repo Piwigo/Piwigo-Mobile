@@ -16,7 +16,7 @@ final class AppMetrics: NSObject, MXMetricManagerSubscriber {
     
     static let shared = AppMetrics()
     
-    // Logs migration activity
+    // Logs app metrics
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
     private let logger = PwgLogger(subsystem: "org.piwigo", category: String(describing: AppMetrics.self))
     
