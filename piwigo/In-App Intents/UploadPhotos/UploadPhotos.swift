@@ -39,7 +39,7 @@ struct UploadPhotos: AppIntent {
     // `supportedTypeIdentifiers` must be a compile-time constant, hence the raw UTI strings
     // instead of `UTType.image.identifier` / `UTType.movie.identifier`.
     @Parameter(title: LocalizedStringResource("severalImages"),
-               supportedTypeIdentifiers: ["public.image", "public.movie"])
+               supportedTypeIdentifiers: ["public.image", "public.movie", "com.adobe.pdf"])
     var photos: [IntentFile]
 
     @Parameter(title: LocalizedStringResource("categorySelection_title"))
@@ -89,10 +89,28 @@ struct UploadPhotos: AppIntent {
         // extension does — but skip its JSON sidecar / deep-link round trip since this
         // intent already runs in-process and can build the upload requests directly.
         var uploadRequests: [UploadProperties] = []
+        var skippedPdfCount = 0
         autoreleasepool {
             for (index, file) in photos.enumerated() {
                 let fileType = file.type ?? .data
-                let suffix = fileType.conforms(to: .movie) ? kMovieSuffix : kImageSuffix
+
+                // Suffix and fallback file extension depending on the nature of the file
+                let suffix: String, defaultExt: String
+                if fileType.conforms(to: .movie) {
+                    (suffix, defaultExt) = (kMovieSuffix, "mov")
+                }
+                else if fileType.conforms(to: .pdf) {
+                    // Accept PDF files only when the Piwigo server accepts them
+                    if ServerVars.shared.serverFileTypes.contains("pdf") == false {
+                        UploadPhotos.logger.notice("PDF files not accepted by the server —> file skipped")
+                        skippedPdfCount += 1
+                        continue    // Skip this attachment, keep processing the rest.
+                    }
+                    (suffix, defaultExt) = (kPdfSuffix, "pdf")
+                }
+                else {
+                    (suffix, defaultExt) = (kImageSuffix, "jpeg")
+                }
                 let identifier = kIntentPrefix + shareDate + suffix + String(index + 1)
                 let fileURL = DataDirectories.appUploadsDirectory
                     .appendingPathComponent(identifier)
@@ -101,7 +119,6 @@ struct UploadPhotos: AppIntent {
                 try? FileManager.default.removeItem(at: fileURL)
                 
                 // Store our own copy for a future upload
-                debugPrint("file URL: \(String(describing: file.fileURL)), type: \(String(describing: file.type)), filename: \(file.filename)")
                 do {
                     // Try to preserve data without loading it all in memory
                     if let srcURL = file.fileURL {
@@ -126,7 +143,6 @@ struct UploadPhotos: AppIntent {
                 // (see prepareImageFromFile() and the share extension which does the same).
                 var fileName = file.filename
                 if URL(fileURLWithPath: fileName).pathExtension.isEmpty {
-                    let defaultExt = fileType.conforms(to: .movie) ? "mov" : "jpeg"
                     fileName += "." + (fileType.preferredFilenameExtension ?? defaultExt)
                     UploadPhotos.logger.notice("Filename extension added: \(fileName)")
                 }
@@ -142,6 +158,10 @@ struct UploadPhotos: AppIntent {
         guard uploadRequests.isEmpty == false
         else {
             UploadPhotos.logger.notice("No upload requests to process")
+            // Tell the user why when all files were PDFs refused by the server
+            if skippedPdfCount == photos.count {
+                return .result(dialog: .responseFailure(error: .pdfNotAccepted))
+            }
             return .result(dialog: .responseFailure(error: .importFailed))
         }
 
@@ -174,8 +194,8 @@ struct UploadPhotos: AppIntent {
             #endif
 
             // Inform user that the shortcut was executed with success
-            UploadPhotos.logger.notice("\(uploadIDs.count) upload requests added")
-            return .result(dialog: .responseSuccess(photos: uploadIDs.count))
+            UploadPhotos.logger.notice("\(uploadIDs.count) upload requests added, \(skippedPdfCount) PDF files skipped")
+            return .result(dialog: .responseSuccess(photos: uploadIDs.count, skippedPdfCount: skippedPdfCount))
         }
         catch {
             // Inform user that the shortcut was executed with error
@@ -187,10 +207,15 @@ struct UploadPhotos: AppIntent {
 
 @available(iOS 16.0, *)
 fileprivate extension IntentDialog {
-    static func responseSuccess(photos: Int) -> Self {
+    static func responseSuccess(photos: Int, skippedPdfCount: Int) -> Self {
         if photos == 0 {
             .init(LocalizedStringResource("No photo added", table: "In-AppIntents"))
-        } else {
+        }
+        else if skippedPdfCount > 0 {
+            // Tell the user that the server refused the PDF files
+            .init(LocalizedStringResource("\(photos) photos added, PDFs skipped", table: "In-AppIntents"))
+        }
+        else {
             .init(LocalizedStringResource("\(photos) photos added", table: "In-AppIntents"))
         }
     }

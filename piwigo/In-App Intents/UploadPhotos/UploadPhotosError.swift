@@ -13,6 +13,7 @@ public enum UploadPhotosError: Error, Sendable {
     case migrationRequired
     case noPhotos
     case invalidAlbum
+    case pdfNotAccepted
     case importFailed
 }
 
@@ -27,6 +28,9 @@ extension UploadPhotosError: LocalizedError {
         case .invalidAlbum:
             return String(localized: "UploadPhotosError_InvalidAlbum", table: "In-AppIntents",
                           comment: "You do not have permission to upload to this album.")
+        case .pdfNotAccepted:
+            return String(localized: "UploadPhotosError_PdfNotAccepted", table: "In-AppIntents",
+                          comment: "This Piwigo server does not accept PDF files.")
         case .importFailed:
             return "Could not create upload requests."
         }

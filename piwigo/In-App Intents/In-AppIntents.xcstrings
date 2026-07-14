@@ -317,6 +317,323 @@
         }
       }
     },
+    "%lld photos added, PDFs skipped" : {
+      "comment" : "Same as '%lld photos added' but telling that PDF files were refused",
+      "localizations" : {
+        "ar" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "أضيفت صورة %lld إلى قائمة انتظار التحميل (خادم Piwigo هذا لا يقبل ملفات PD)."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "أضيفت صورة %lld إلى قائمة انتظار التحميل (خادم Piwigo هذا لا يقبل ملفات PD)."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "أضيفت صورة %lld إلى قائمة انتظار التحميل (خادم Piwigo هذا لا يقبل ملفات PD)."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "أضيفت صور %lld إلى قائمة انتظار التحميل (خادم Piwigo هذا لا يقبل ملفات PD)."
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "أضيفت صورة %lld إلى قائمة انتظار التحميل (خادم Piwigo هذا لا يقبل ملفات PD)."
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "أضيفت صورة %lld إلى قائمة انتظار التحميل (خادم Piwigo هذا لا يقبل ملفات PD)."
+                }
+              }
+            }
+          }
+        },
+        "da" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld billede er føjet til uploadkøen (denne Piwigo-server accepterer ikke PDF-filer)."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld billeder er føjet til uploadkøen (denne Piwigo-server accepterer ikke PDF-filer)."
+                }
+              }
+            }
+          }
+        },
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Foto wurde zur Upload-Warteschlange hinzugefügt (dieser Piwigo-Server akzeptiert keine PDF-Dateien)."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Fotos wurden zur Upload-Warteschlange hinzugefügt (dieser Piwigo-Server akzeptiert keine PDF-Dateien)."
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld photo added to the upload queue (this Piwigo server does not accept PDF files)."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld photos added to the upload queue (this Piwigo server does not accept PDF files)."
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Se ha añadido %lld foto a la cola de subida (este servidor de Piwigo no admite archivos PDF)."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Se han añadido %lld fotos a la cola de subida (este servidor de Piwigo no admite archivos PDF)."
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld photo ajoutée à la file d'attente de téléchargement (ce serveur Piwigo n'accepte pas les fichiers PDF)."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld photos ajoutées à la file d'attente de téléchargement (ce serveur Piwigo n'accepte pas les fichiers PDF)."
+                }
+              }
+            }
+          }
+        },
+        "hu" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fénykép került a feltöltési sorba (ez a Piwigo-kiszolgáló nem fogadja el a PDF-fájlokat)."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fénykép került a feltöltési sorba (ez a Piwigo-kiszolgáló nem fogadja el a PDF-fájlokat)."
+                }
+              }
+            }
+          }
+        },
+        "id" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld foto telah ditambahkan ke antrian unggahan (server Piwigo ini tidak menerima berkas PDF)."
+                }
+              }
+            }
+          }
+        },
+        "it" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld foto aggiunta alla coda di caricamento (questo server Piwigo non accetta file PDF)."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld foto aggiunte alla coda di caricamento (questo server Piwigo non accetta file PDF)."
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld 枚の写真がアップロードキューに追加されました（この Piwigo サーバーは PDF ファイルを受け付けません）。"
+                }
+              }
+            }
+          }
+        },
+        "nl" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld foto toegevoegd aan de uploadwachtrij (deze Piwigo-server accepteert geen PDF-bestanden)."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld foto's toegevoegd aan de uploadwachtrij (deze Piwigo-server accepteert geen PDF-bestanden)."
+                }
+              }
+            }
+          }
+        },
+        "pl" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld zdjęć dodano do kolejki przesyłania (ten serwer Piwigo nie akceptuje plików PDF)."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld zdjęć dodano do kolejki przesyłania (ten serwer Piwigo nie akceptuje plików PDF)."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld zdjęcie dodano do kolejki przesyłania (ten serwer Piwigo nie akceptuje plików PDF)."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld zdjęć dodano do kolejki przesyłania (ten serwer Piwigo nie akceptuje plików PDF)."
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld фотографии добавлены в очередь загрузки (этот сервер Piwigo не принимает файлы в формате PDF)."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld фотографии добавлены в очередь загрузки (этот сервер Piwigo не принимает файлы в формате PDF)."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld фотография добавлена в очередь загрузки (этот сервер Piwigo не принимает файлы в формате PDF)."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld фотографии добавлены в очередь загрузки (этот сервер Piwigo не принимает файлы в формате PDF)."
+                }
+              }
+            }
+          }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld bild har lagts till i uppladdningskön (denna Piwigo-server accepterar inte PDF-filer)."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld bilder har lagts till i uppladdningskön (denna Piwigo-server accepterar inte PDF-filer)."
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld 张照片已添加到上传队列中（此 Piwigo 服务器不接受 PDF 文件）。"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hant" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "已將 %lld 張照片加入上傳佇列（此 Piwigo 伺服器不接受 PDF 檔案）。"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "AutoUploadDescription" : {
       "localizations" : {
         "ar" : {
@@ -917,6 +1234,107 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "未向此捷徑提供任何照片或影片。"
+          }
+        }
+      }
+    },
+    "UploadPhotosError_PdfNotAccepted" : {
+      "comment" : "This Piwigo server does not accept PDF files.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خادم Piwigo هذا لا يقبل ملفات PDF."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denne Piwigo-server accepterer ikke PDF-filer."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieser Piwigo-Server akzeptiert keine PDF-Dateien."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This Piwigo server does not accept PDF files."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este servidor de Piwigo no admite archivos PDF."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce serveur Piwigo n'accepte pas les fichiers PDF."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ez a Piwigo-kiszolgáló nem fogadja el a PDF-fájlokat."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Server Piwigo ini tidak menerima berkas PDF."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questo server Piwigo non accetta file PDF."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この Piwigo サーバーは PDF ファイルを受け付けません。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deze Piwigo-server accepteert geen PDF-bestanden."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ten serwer Piwigo nie akceptuje plików PDF."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Этот сервер Piwigo не принимает файлы в формате PDF."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denna Piwigo-server accepterar inte PDF-filer."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 Piwigo 服务器不接受 PDF 文件。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 Piwigo 伺服器不接受 PDF 檔案。"
           }
         }
       }
