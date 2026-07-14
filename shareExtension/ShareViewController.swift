@@ -119,8 +119,9 @@ final class ShareViewController: UIViewController {
 
 
     // MARK: - Shared Items Copy
-    var copyItemsTask: Task<Int, Never>?    // Task copying the shared items to the Uploads folder,
-                                            // returning the number of copied items
+    // Task copying the shared items to the Uploads folder, returning the number of copied items
+    // and the number of PDF files skipped because the Piwigo server does not accept them
+    var copyItemsTask: Task<(copied: Int, skippedPdfs: Int), Never>?
     var itemsAreReady = false               // True once all shared items have been copied
 
     
@@ -171,12 +172,12 @@ final class ShareViewController: UIViewController {
         // Retrieve shared items
         self.context = extensionContext
         copyItemsTask = Task { @MainActor [weak self] in
-            guard let self else { return 0 }
+            guard let self else { return (0, 0) }
             let context = self.extensionContext
             let shareDate = self.shareDate
-            let nbCopiedItems = await self.copyItems(fromContext: context, sharedAt: shareDate)
+            let result = await self.copyItems(fromContext: context, sharedAt: shareDate)
             self.itemsAreReady = true
-            return nbCopiedItems
+            return result
         }
     }
     
@@ -220,7 +221,7 @@ final class ShareViewController: UIViewController {
 
         // Ask the user to open the app and perform the migration
         if migrationRequired {
-            presentAlert(withMessage: Localized.migrationRequired)
+            presentShareFailAlert(withMessage: Localized.migrationRequired)
             return
         }
         
@@ -228,7 +229,7 @@ final class ShareViewController: UIViewController {
         if user == nil {
             let message = String(localized: "shareFailError_noAlbum",
                                  comment: "Please open the Piwigo app and create an album before sharing photos or videos.")
-            presentAlert(withMessage: message)
+            presentShareFailAlert(withMessage: message)
         }
     }
     
@@ -236,25 +237,7 @@ final class ShareViewController: UIViewController {
         super.viewWillDisappear(animated)
         NotificationCenter.default.removeObserver(self)
     }
-
-    private func presentAlert(withMessage message: String) {
-        let alert = UIAlertController(title: String(localized: "shareFailError_title", comment: "Share Failed"),
-                                      message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: Localized.dismiss,
-                                      style: .cancel, handler: { [weak self] _ in
-            // Nothing can be uploaded —> close the share sheet
-            self?.cancelSelect()
-        }))
-        
-        // Present alert
-        alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
-        present(alert, animated: true, completion: {
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = PwgColor.tintColor
-        })
-    }
-
+    
     @objc
     func cancelSelect() -> Void {
         // Stop copying shared items, if not already done
@@ -297,12 +280,13 @@ final class ShareViewController: UIViewController {
     
     
     // MARK: - Copy Shared Items to Uploads folder
-    private nonisolated func copyItems(fromContext context: NSExtensionContext?, sharedAt shareDate: String) async -> Int {
+    private nonisolated func copyItems(fromContext context: NSExtensionContext?,
+                                       sharedAt shareDate: String) async -> (copied: Int, skippedPdfs: Int) {
         // Retrieve input item
         guard let context,
               let extensionItem = context.inputItems.first as? NSExtensionItem,
               let attachments = extensionItem.attachments
-        else { return 0 }
+        else { return (0, 0) }
         
         // Loop over all shared items
         /// Shared items are identified with identifiers of the type "pwgShared-yyyyMMdd-HHmmssSSSS-typ-####" where:
@@ -312,6 +296,7 @@ final class ShareViewController: UIViewController {
         ///   (see kImageSuffix, kMovieSuffix, kPdfSuffix)
         /// - "####" is the index of the object being shared
         var sharedItemCount = 0
+        var skippedPdfCount = 0
         for (index, provider) in attachments.enumerated() {
             // Stop when the user cancelled the share
             if Task.isCancelled { break }
@@ -325,8 +310,11 @@ final class ShareViewController: UIViewController {
             // PDF before image so that the original file is preferred to a possible image rendition
             else if provider.hasItemConformingToTypeIdentifier(UTType.pdf.identifier) {
                 // Accept PDF files only when the Piwigo server accepts them
-                if ServerVars.shared.serverFileTypes.contains("pdf"),
-                   await self.getSharedItem(atIndex: index, ofType: .pdf, from: provider, on: shareDate) {
+                if ServerVars.shared.serverFileTypes.contains("pdf") == false {
+                    self.logger.notice("PDF files not accepted by the server —> file skipped")
+                    skippedPdfCount += 1
+                }
+                else if await self.getSharedItem(atIndex: index, ofType: .pdf, from: provider, on: shareDate) {
                     sharedItemCount += 1
                 }
             }
@@ -336,8 +324,8 @@ final class ShareViewController: UIViewController {
                 }
             }
         }
-        self.logger.notice("Copied \(sharedItemCount) shared items to Uploads folder")
-        return sharedItemCount
+        self.logger.notice("Copied \(sharedItemCount) shared items to Uploads folder, skipped \(skippedPdfCount) PDF files")
+        return (sharedItemCount, skippedPdfCount)
     }
     
     private nonisolated func getSharedItem(atIndex index: Int, ofType type: UTType, from provider: NSItemProvider,

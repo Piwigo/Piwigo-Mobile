@@ -23,6 +23,8 @@ public extension Bundle {
 // Shared localized strings
 public enum Localized {
     public static let tabBar_albums = String(localized: "tabBar_albums", bundle: .pwgKit, comment: "Albums")
+    public static let pdfNotAccepted = String(localized: "pdfNotAccepted", bundle: .pwgKit,
+                                              comment: "This Piwigo server does not accept PDF files.")
 }
 
 // Image types which can be converted with iOS

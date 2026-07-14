@@ -89,13 +89,21 @@ extension ShareViewController: UITableViewDelegate
                 if itemsAreReady == false {
                     showHUD()
                 }
-                let nbCopiedItems = await copyItemsTask?.value ?? 0
+                let (nbCopiedItems, nbSkippedPdfs) = await copyItemsTask?.value ?? (0, 0)
                 hideHUD()
-
-                // Tell the user when no item could be copied
+                
+                // Tell the user when no item could be copied,
+                // and when the server refused the PDF files
                 if nbCopiedItems == 0 {
-                    presentShareFailAlert()
+                    presentShareFailAlert(withMessage: nbSkippedPdfs > 0
+                        ? Localized.pdfNotAccepted
+                        : String(localized: "shareFailError_message", comment: "Failed to retrieve the shared photos and videos."))
                     return
+                }
+                
+                // Tell the user when the server refused some of the PDF files
+                if nbSkippedPdfs > 0 {
+                    await presentPdfSkippedAlert()
                 }
                 
                 // Launch the app to select options
@@ -136,15 +144,13 @@ extension ShareViewController: UITableViewDelegate
         }
     }
     
-    @MainActor
-    private func presentShareFailAlert() {
-        self.logger.notice("Share failed because no item could be copied")
+    // Informs the user that the share failed
+    func presentShareFailAlert(withMessage message: String) {
         let alert = UIAlertController(title: String(localized: "shareFailError_title", comment: "Share Failed"),
-                                      message: String(localized: "shareFailError_message", comment: "Failed to retrieve the shared photos and videos."),
-                                      preferredStyle: .alert)
+                                      message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: Localized.dismiss,
                                       style: .cancel, handler: { [weak self] _ in
-            // Nothing to upload —> delete stray files and close the share sheet
+            // Nothing can be uploaded —> close the share sheet
             self?.cancelSelect()
         }))
         
@@ -155,6 +161,29 @@ extension ShareViewController: UITableViewDelegate
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = PwgColor.tintColor
         })
+    }
+    
+    // Informs the user that the PDF files were skipped, then lets the share proceed
+    @MainActor
+    private func presentPdfSkippedAlert() async {
+        self.logger.notice("PDF files skipped because the server does not accept them")
+        await withCheckedContinuation { continuation in
+            let alert = UIAlertController(title: nil,
+                                          message: Localized.pdfNotAccepted,
+                                          preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: Localized.dismiss,
+                                          style: .cancel, handler: { _ in
+                continuation.resume(returning: ())
+            }))
+            
+            // Present alert
+            alert.view.tintColor = PwgColor.tintColor
+            alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
+            present(alert, animated: true, completion: {
+                // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                alert.view.tintColor = PwgColor.tintColor
+            })
+        }
     }
     
     

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import PwgKit
 import PwgCacheKit
 
 public enum UploadPhotosError: Error, Sendable {
@@ -29,8 +30,7 @@ extension UploadPhotosError: LocalizedError {
             return String(localized: "UploadPhotosError_InvalidAlbum", table: "In-AppIntents",
                           comment: "You do not have permission to upload to this album.")
         case .pdfNotAccepted:
-            return String(localized: "UploadPhotosError_PdfNotAccepted", table: "In-AppIntents",
-                          comment: "This Piwigo server does not accept PDF files.")
+            return Localized.pdfNotAccepted
         case .importFailed:
             return "Could not create upload requests."
         }
