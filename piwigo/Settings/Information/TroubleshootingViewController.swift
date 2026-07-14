@@ -192,7 +192,7 @@ class TroubleshootingViewController: UIViewController {
         }
         getJSONfiles.completionBlock = {
             DispatchQueue.main.async {
-                self.tableView?.reloadSections(IndexSet(integer: 1), with: .automatic)
+                self.tableView?.reloadData()
                 self.clearBarButton?.isEnabled = !self.JSONfiles.isEmpty
             }
         }
