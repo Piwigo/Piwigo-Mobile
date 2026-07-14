@@ -22,6 +22,7 @@ extension PasteboardImagesViewController: PasteboardImagesHeaderDelegate
                 // Images in the upload queue cannot be selected
                 if indexedUploadsInQueue[index] == nil {
                     selectedImages[index] = UploadProperties(localIdentifier: pbObjects[index].identifier,
+                                                             fileName: pbObjects[index].fileName,
                                                              category: self.categoryId)
                 }
             }
