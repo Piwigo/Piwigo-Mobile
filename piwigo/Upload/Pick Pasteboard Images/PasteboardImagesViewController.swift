@@ -264,19 +264,3 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
         present(navController, animated: true)
     }
 }
-
-
-// MARK: - Video Poster
-extension AVURLAsset {
-    func extractedImage() -> UIImage! {
-        var image: UIImage = pwgImageType.image.placeHolder
-        let imageGenerator = AVAssetImageGenerator(asset: self)
-        imageGenerator.appliesPreferredTrackTransform = true
-        do {
-            image = UIImage(cgImage: try imageGenerator.copyCGImage(at: CMTimeMake(value: 0, timescale: 1), actualTime: nil))
-        } catch {
-            // Could not extract frame => placeholder
-        }
-        return image
-    }
-}

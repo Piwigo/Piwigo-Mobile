@@ -10,6 +10,7 @@ import Photos
 import Foundation
 import UIKit
 import PwgKit
+import PwgCacheKit
 import PwgUploadKit
 
 // This enum contains all the possible states of a pasteboard object
@@ -137,7 +138,7 @@ final class ObjectPreparation : Operation, @unchecked Sendable {
             pbObject.state = .stored
             if pbObject.identifier.contains(kMovieSuffix) {
                 pbObject.image = (AVURLAsset(url: fileURL)
-                    .extractedImage()
+                    .extractedImage()?
                     .crop(width: 1.0, height: 1.0) ?? pwgImageType.image.placeHolder)
                     .resize(to: AlbumVars.shared.kThumbnailFileSize, opaque: true, scale: scale)
             } else {
