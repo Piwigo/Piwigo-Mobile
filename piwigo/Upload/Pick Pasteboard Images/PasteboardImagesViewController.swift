@@ -215,11 +215,18 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
         // Avoid potential crash (should never happen, but…)
         uploadRequests = selectedImages.compactMap({ $0 })
         if uploadRequests.isEmpty { return }
-        
-        // Disable button
+
+        // Show upload parameter views
+        presentUploadOptions()
+    }
+
+    /// Presents the upload parameter views for the requests stored in "uploadRequests"
+    func presentUploadOptions() {
+        // Disable buttons
         cancelBarButton?.isEnabled = false
         uploadBarButton?.isEnabled = false
-        
+        actionBarButton?.isEnabled = false
+
         // Show upload parameter views
         let uploadSwitchSB = UIStoryboard(name: "UploadSwitchViewController", bundle: nil)
         guard let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController
@@ -227,8 +234,9 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
         
         uploadSwitchVC.delegate = self
         uploadSwitchVC.user = self.user
-        uploadSwitchVC.canDeleteImages = false
+        uploadSwitchVC.categoryId = self.categoryId
         uploadSwitchVC.categoryCurrentCounter = self.categoryCurrentCounter
+        uploadSwitchVC.canDeleteImages = false
         uploadSwitchVC.uploadRequests = self.uploadRequests
         
         // Push Edit view embedded in navigation controller
