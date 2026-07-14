@@ -98,9 +98,6 @@ extension LocalImagesViewController: UIGestureRecognizerDelegate
 
                 // Update navigation bar
                 updateNavBar()
-
-                // Refresh cell
-                cell.reloadInputViews()
             }
         }
 

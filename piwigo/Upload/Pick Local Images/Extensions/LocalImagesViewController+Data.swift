@@ -599,7 +599,6 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
                 // Update cell
 //                debugPrint("••> LocalImagesViewController updating cell \(upload.localIdentifier) in state '\(upload.state)'")
                 cell.update(selected: false, state: upload.state)
-                cell.reloadInputViews()
 
                 // The section will be refreshed only if the button content needs to be changed
                 if let indexPath = self.localImagesCollection.indexPath(for: cell) {

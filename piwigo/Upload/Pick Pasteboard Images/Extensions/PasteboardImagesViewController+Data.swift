@@ -123,7 +123,6 @@ extension PasteboardImagesViewController {
                         let uploadState = self.getUploadStateOfImage(at: indexPath.item, for: cell)
                         cell.update(selected: self.selectedImages[indexPath.item] != nil, state: uploadState)
                         cell.cellImage.image = pbObject.image
-                        self.reloadInputViews()
                     }
                 }
 
@@ -259,7 +258,6 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate
                let cell = visibleCells.first(where: {$0.localIdentifier == upload.localIdentifier}) {
                 // Update cell
                 cell.update(selected: false, state: upload.state)
-                cell.reloadInputViews()
 
                 // The section will be refreshed only if the button content needs to be changed
                 self.updateSelectButton()

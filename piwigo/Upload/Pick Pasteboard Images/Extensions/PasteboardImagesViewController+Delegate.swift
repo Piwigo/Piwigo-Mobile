@@ -41,9 +41,6 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
         // Update navigation bar
         updateNavBar()
 
-        // Refresh cell
-        cell.reloadInputViews()
-
         // Update state of Select button if needed
         updateSelectButton()
         if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: IndexPath(item: 0, section: 0)) as? PasteboardImagesHeaderReusableView {

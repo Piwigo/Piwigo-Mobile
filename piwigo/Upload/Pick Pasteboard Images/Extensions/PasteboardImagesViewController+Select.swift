@@ -103,9 +103,6 @@ extension PasteboardImagesViewController: UIGestureRecognizerDelegate
                 
                 // Update navigation bar
                 updateNavBar()
-
-                // Refresh cell
-                cell.reloadInputViews()
             }
         }
 

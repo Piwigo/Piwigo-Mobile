@@ -42,9 +42,6 @@ extension LocalImagesViewController: UICollectionViewDelegate
         // Update navigation bar
         updateNavBar()
 
-        // Refresh cell
-        cell.reloadInputViews()
-
         // Update state of Select button if needed
         let selectState = updateSelectButton(ofSection: indexPath.section)
         let indexPathOfHeader = IndexPath(item: 0, section: indexPath.section)
