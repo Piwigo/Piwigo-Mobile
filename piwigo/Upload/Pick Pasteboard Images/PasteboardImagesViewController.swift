@@ -68,6 +68,7 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
 
     // Collection of images in the pasteboard
     var pbObjects = [PasteboardObject]()            // Objects in pasteboard
+    var pbChangeCount = -1                          // Pasteboard change count at last retrieve
     lazy var pasteboardTypes : [String] = {
         return [UTType.image.identifier, UTType.movie.identifier]
     }()
@@ -107,6 +108,7 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
         }
 
         // Retrieve pasteboard object indexes and types, then create identifiers
+        pbChangeCount = UIPasteboard.general.changeCount
         if let itemSet = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes),
            let types = UIPasteboard.general.types(forItemSet: itemSet) {
 

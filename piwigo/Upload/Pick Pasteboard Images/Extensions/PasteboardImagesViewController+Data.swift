@@ -18,6 +18,12 @@ extension PasteboardImagesViewController {
     // MARK: - Check Pasteboard Content
     /// Called by the notification center when the pasteboard content is updated
     @objc func checkPasteboard() {
+        // Job done if the pasteboard content did not change
+        // (this preserves the current selection when e.g. switching apps)
+        let changeCount = UIPasteboard.general.changeCount
+        if changeCount == pbChangeCount { return }
+        pbChangeCount = changeCount
+
         // Retrieve pasteboard object indexes and types, then create identifiers
         if let itemSet = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes),
            let types = UIPasteboard.general.types(forItemSet: itemSet) {
@@ -61,6 +67,10 @@ extension PasteboardImagesViewController {
             selectedImages = .init(repeating: nil, count: 0)
             indexedUploadsInQueue = .init(repeating: nil, count: 0)
         }
+
+        // Refresh the collection view and navigation bar
+        localImagesCollection.reloadData()
+        updateNavBar()
     }
     
     
