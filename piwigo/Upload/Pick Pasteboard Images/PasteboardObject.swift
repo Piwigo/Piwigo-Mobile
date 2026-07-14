@@ -134,14 +134,14 @@ final class ObjectPreparation : Operation, @unchecked Sendable {
             try data.write(to: fileURL, options: .atomic)
             pbObject.state = .stored
             if pbObject.identifier.contains("mov") {
-                pbObject.image = AVURLAsset(url: fileURL)
+                pbObject.image = (AVURLAsset(url: fileURL)
                     .extractedImage()
-                    .crop(width: 1.0, height: 1.0) ?? pwgImageType.image.placeHolder
+                    .crop(width: 1.0, height: 1.0) ?? pwgImageType.image.placeHolder)
                     .resize(to: AlbumVars.shared.kThumbnailFileSize, opaque: true, scale: scale)
             } else {
-                pbObject.image = (UIImage(data: data) ?? pwgImageType.image.placeHolder)
+                pbObject.image = ((UIImage(data: data) ?? pwgImageType.image.placeHolder)
                     .fixOrientation()
-                    .crop(width: 1.0, height: 1.0) ?? pwgImageType.image.placeHolder
+                    .crop(width: 1.0, height: 1.0) ?? pwgImageType.image.placeHolder)
                     .resize(to: AlbumVars.shared.kThumbnailFileSize, opaque: true, scale: scale)
             }
         }
