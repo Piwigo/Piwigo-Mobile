@@ -16,6 +16,10 @@ import PwgUploadKit
 // Only used on iOS 15.x - 16.3.x
 final class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
     
+    // Logs shortcut activity
+    /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
+    static let logger = PwgLogger(subsystem: "org.piwigo", category: String(describing: AutoUploadIntentHandler.self))
+    
     // MARK: - Core Data Object Contexts
     @MainActor
     private lazy var mainContext: NSManagedObjectContext = {
@@ -25,18 +29,19 @@ final class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
     
     // MARK: - Handle Intent
     func handle(intent: AutoUploadIntent, completion: @escaping (AutoUploadIntentResponse) -> Void) {
-        debugPrint("••> !!!!!!!!!!!!!!!!!!!!!!!!!")
-        debugPrint("••> Auto-upload in-app intent starting...")
-        
+        AutoUploadIntentHandler.logger.notice("In-app intent starting...")
+
         // If a migration is planned, invite the user to perform the migration.
         let migrator = DataMigrator()
         if migrator.requiresMigration() {
+            AutoUploadIntentHandler.logger.notice("Core Data migration required")
             completion(AutoUploadIntentResponse.failure(error: AutoUploadError.migrationRequired.localizedDescription))
             return
         }
         
         // Is auto-uploading enabled?
         if !UploadVars.shared.isAutoUploadActive {
+            AutoUploadIntentHandler.logger.notice("Auto-Upload option disabled")
             completion(AutoUploadIntentResponse.failure(error: AutoUploadError.autoUploadDisabled.localizedDescription))
             return
         }
@@ -54,6 +59,7 @@ final class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
             }
             
             // Inform user
+            AutoUploadIntentHandler.logger.notice("Invalid source album")
             completion(AutoUploadIntentResponse.failure(error: AutoUploadError.invalidSource.localizedDescription))
             return
         }
@@ -70,6 +76,7 @@ final class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
             }
             
             // Inform user
+            AutoUploadIntentHandler.logger.notice("Invalid destination album")
             completion(AutoUploadIntentResponse.failure(error: AutoUploadError.invalidDestination.localizedDescription))
             return
         }
@@ -81,6 +88,14 @@ final class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
             do {
                 // Append auto-upload requests to database
                 let uploadIDs = try await UploadManager.shared.importUploads(from: uploadRequestsToAppend)
+                
+                // Inform the user if there is no photo to upload
+                if uploadIDs.isEmpty {
+                    // Inform user that the shortcut was executed with error
+                    AutoUploadIntentHandler.logger.notice("No upload requests to process")
+                    completion(AutoUploadIntentResponse.success(photos: NSNumber(value: 0)))
+                    return
+                }
                 
                 // Add upload requests to queue
                 UploadVars.shared.isPaused = false
@@ -99,10 +114,12 @@ final class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                 #endif
 
                 // Inform user that the shortcut was executed with success
+                AutoUploadIntentHandler.logger.notice("\(uploadIDs.count) upload requests added")
                 completion(AutoUploadIntentResponse.success(photos: NSNumber(value: uploadIDs.count)))
             }
             catch {
                 // Inform user that the shortcut was executed with error
+                AutoUploadIntentHandler.logger.notice("Import of upload requests failed: \(error.localizedDescription)")
                 let msg = PwgKitError.uploadCreationError.localizedDescription
                 let errorMsg = String(format: "%@: %@", msg, error.localizedDescription)
                 completion(AutoUploadIntentResponse.failure(error: errorMsg))

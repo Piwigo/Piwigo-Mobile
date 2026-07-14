@@ -18,6 +18,10 @@ import PwgUploadKit
 struct AutoUpload: AppIntent, ForegroundContinuableIntent { // , PredictableIntent {
     static let intentClassName = "AutoUploadIntent"
     
+    // Logs shortcut activity
+    /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
+    static let logger = PwgLogger(subsystem: "org.piwigo", category: String(describing: AutoUpload.self))
+    
     /// Each intent needs to include metadata, such as a localized title. The title of the intent displays throughout the system.
     static let title = LocalizedStringResource("settings_autoUploadLong")
     
@@ -54,17 +58,18 @@ struct AutoUpload: AppIntent, ForegroundContinuableIntent { // , PredictableInte
      */
     @UploadManagerActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
-        debugPrint("••> !!!!!!!!!!!!!!!!!!!!!!!!!")
-        debugPrint("••> Auto-upload in-app intent starting...")
+        AutoUpload.logger.notice("In-app intent starting...")
         
         // If a migration is planned, invite the user to perform the migration.
         let migrator = DataMigrator()
         if migrator.requiresMigration() {
+            AutoUpload.logger.notice("Core Data migration required")
             return .result(dialog: .responseFailure(error: .migrationRequired))
         }
         
         // Is auto-uploading enabled?
         if !UploadVars.shared.isAutoUploadActive {
+            AutoUpload.logger.notice("Auto-Upload option disabled")
             return .result(dialog: .responseFailure(error: .autoUploadDisabled))
         }
         
@@ -81,6 +86,7 @@ struct AutoUpload: AppIntent, ForegroundContinuableIntent { // , PredictableInte
             }
             
             // Inform user
+            AutoUpload.logger.notice("Invalid source album")
             return .result(dialog: .responseFailure(error: .invalidSource))
         }
         
@@ -96,6 +102,7 @@ struct AutoUpload: AppIntent, ForegroundContinuableIntent { // , PredictableInte
             }
             
             // Inform user
+            AutoUpload.logger.notice("Invalid destination album")
             return .result(dialog: .responseFailure(error: .invalidDestination))
         }
         
@@ -111,10 +118,12 @@ struct AutoUpload: AppIntent, ForegroundContinuableIntent { // , PredictableInte
                 UploadVars.shared.isPaused = false
 
                 // Return upload request IDs added to queue
+                AutoUpload.logger.notice("\(uploadIDs.count) upload requests added")
                 return uploadIDs
             }
             catch {
                 // Return no upload request ID
+                AutoUpload.logger.notice("Import of upload requests failed: \(error.localizedDescription)")
                 return nil
             }
         }.value
@@ -123,13 +132,14 @@ struct AutoUpload: AppIntent, ForegroundContinuableIntent { // , PredictableInte
         guard let uploadIDs
         else { return .result(dialog: .responseFailure(error: .importFailed)) }
         
-        // Inform user if there is no photo to upload
+        // Inform the user if there is no photo to upload
         if uploadIDs.isEmpty {
             // Inform user that the shortcut was executed with error
+            AutoUpload.logger.notice("No upload requests to process")
             return .result(dialog: .responseSuccess(photos: 0))
         }
         
-        // Inform user that there are photos to upload and launch the uploads from the main app
+        // Inform the user that there are photos to upload and launch the uploads from the main app
         throw needsToContinueInForegroundError(.responseSuccess(photos: uploadIDs.count)) {
             Task(priority: .utility) { @UploadManagerActor in
                 #if os(iOS) && !targetEnvironment(macCatalyst)

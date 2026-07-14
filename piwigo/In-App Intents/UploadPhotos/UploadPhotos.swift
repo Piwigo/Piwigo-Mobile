@@ -19,7 +19,7 @@ struct UploadPhotos: AppIntent {
     
     // Logs shortcut activity
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
-    let logger = PwgLogger(subsystem: "org.piwigo", category: String(describing: UploadPhotos.self))
+    static let logger = PwgLogger(subsystem: "org.piwigo", category: String(describing: UploadPhotos.self))
     
     static let title = LocalizedStringResource("uploadPhotos", table: "In-AppIntents",
                                                comment: "Upload Photos")
@@ -56,18 +56,18 @@ struct UploadPhotos: AppIntent {
      */
     @UploadManagerActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
-        logger.notice("In-app intent starting...")
+        UploadPhotos.logger.notice("In-app intent starting...")
         
         // If a migration is planned, invite the user to perform the migration.
         let migrator = DataMigrator()
         if migrator.requiresMigration() {
-            logger.notice("In-app intent stopped: migration required...")
+            UploadPhotos.logger.notice("Core Data migration required")
             return .result(dialog: .responseFailure(error: .migrationRequired))
         }
         
         guard photos.isEmpty == false
         else {
-            logger.notice("No photos to upload")
+            UploadPhotos.logger.notice("No photos to upload")
             return .result(dialog: .responseFailure(error: .noPhotos))
         }
         
@@ -75,7 +75,7 @@ struct UploadPhotos: AppIntent {
         // and the server or the user's upload rights may have changed since.
         guard let refreshedAlbum = try? await AlbumQuery().entities(for: [album.id]).first
         else {
-            logger.notice("Invalid album")
+            UploadPhotos.logger.notice("Invalid destination album")
             return .result(dialog: .responseFailure(error: .invalidAlbum))
         }
         
@@ -117,7 +117,7 @@ struct UploadPhotos: AppIntent {
                     }
                 }
                 catch {
-                    logger.notice("Could not save file: \(error.localizedDescription)")
+                    UploadPhotos.logger.notice("Could not save file: \(error.localizedDescription)")
                     continue    // Skip this attachment, keep processing the rest.
                 }
                 
@@ -128,7 +128,7 @@ struct UploadPhotos: AppIntent {
                 if URL(fileURLWithPath: fileName).pathExtension.isEmpty {
                     let defaultExt = fileType.conforms(to: .movie) ? "mov" : "jpeg"
                     fileName += "." + (fileType.preferredFilenameExtension ?? defaultExt)
-                    logger.notice("Filename extension added: \(fileName)")
+                    UploadPhotos.logger.notice("Filename extension added: \(fileName)")
                 }
                 
                 // Create upload request
@@ -138,11 +138,14 @@ struct UploadPhotos: AppIntent {
             }
         }
         
+        // Inform user if the import failed
         guard uploadRequests.isEmpty == false
         else {
-            logger.notice("No upload requests to process")
+            UploadPhotos.logger.notice("No upload requests to process")
             return .result(dialog: .responseFailure(error: .importFailed))
         }
+
+        // Queue and process upload requests
         do {
             // Append upload requests to database
             let uploadIDs = try await UploadManager.shared.importUploads(from: uploadRequests)
@@ -171,12 +174,12 @@ struct UploadPhotos: AppIntent {
             #endif
 
             // Inform user that the shortcut was executed with success
-            logger.notice("\(uploadIDs.count) upload requests added")
+            UploadPhotos.logger.notice("\(uploadIDs.count) upload requests added")
             return .result(dialog: .responseSuccess(photos: uploadIDs.count))
         }
         catch {
             // Inform user that the shortcut was executed with error
-            logger.notice("Import of upload requests failed: \(error.localizedDescription)")
+            UploadPhotos.logger.notice("Import of upload requests failed: \(error.localizedDescription)")
             return .result(dialog: .responseFailure(error: .importFailed))
         }
     }
