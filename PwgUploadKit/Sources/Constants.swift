@@ -40,6 +40,7 @@ public let kSharedPrefix = "pwgShared-"         // File shared by another app
 public let kIntentPrefix = "pwgIntent-"         // File selected by the shortcut app
 public let kImageSuffix = "-img-"
 public let kMovieSuffix = "-mov-"
+public let kPdfSuffix = "-pdf-"
 let kOriginalSuffix = "-original"
 
 // Constant for producing filename suffixes

@@ -308,7 +308,8 @@ final class ShareViewController: UIViewController {
         /// Shared items are identified with identifiers of the type "pwgShared-yyyyMMdd-HHmmssSSSS-typ-####" where:
         /// - "pwgShared" is a header telling that the image/video comes from the share extension (see kSharedPrefix)
         /// - "yyyyMMdd-HHmmssSSSS" is the date at which the items were shared
-        /// - "typ" is "-img-" or "-mov-" depending on the nature of the object (see kImageSuffix, kMovieSuffix)
+        /// - "typ" is "-img-", "-mov-" or "-pdf-" depending on the nature of the object
+        ///   (see kImageSuffix, kMovieSuffix, kPdfSuffix)
         /// - "####" is the index of the object being shared
         var sharedItemCount = 0
         for (index, provider) in attachments.enumerated() {
@@ -318,6 +319,14 @@ final class ShareViewController: UIViewController {
             // Movies first because objects may contain both movies and images
             if provider.hasItemConformingToTypeIdentifier(UTType.movie.identifier) {
                 if await self.getSharedItem(atIndex: index, ofType: .movie, from: provider, on: shareDate) {
+                    sharedItemCount += 1
+                }
+            }
+            // PDF before image so that the original file is preferred to a possible image rendition
+            else if provider.hasItemConformingToTypeIdentifier(UTType.pdf.identifier) {
+                // Accept PDF files only when the Piwigo server accepts them
+                if ServerVars.shared.serverFileTypes.contains("pdf"),
+                   await self.getSharedItem(atIndex: index, ofType: .pdf, from: provider, on: shareDate) {
                     sharedItemCount += 1
                 }
             }
@@ -345,16 +354,25 @@ final class ShareViewController: UIViewController {
                     return
                 }
 
+                // Suffix and fallback file extension depending on the nature of the item
+                let suffix: String, fileExt: String
+                switch type {
+                case .movie:
+                    (suffix, fileExt) = (kMovieSuffix, "mov")
+                case .pdf:
+                    (suffix, fileExt) = (kPdfSuffix, "pdf")
+                default:
+                    (suffix, fileExt) = (kImageSuffix, "jpeg")
+                }
+
                 // Prepare file name
                 var fileName = url.lastPathComponent
-                let fileExt = type == .image ? "jpeg" : "mov"
                 if url.pathExtension.isEmpty {
                     let fileType = (try? url.resourceValues(forKeys: [.contentTypeKey]).contentType) ?? UTType.data
                     fileName = fileName.appending("." + (fileType.preferredFilenameExtension ?? fileExt))
                 }
 
                 // Store our own copy for a future upload
-                let suffix = type == .image ? kImageSuffix : kMovieSuffix
                 let identifier = kSharedPrefix + shareDate + suffix + String(index + 1)
                 let fileURL = DataDirectories.appUploadsDirectory.appendingPathComponent(identifier)
                 do {

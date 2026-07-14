@@ -202,6 +202,26 @@ extension UploadManager
             // Video file format cannot be accepted by the Piwigo server
             throw .unacceptedVideoFormat
         }
+        else if uploadData.localIdentifier.contains(kPdfSuffix) {
+            // Set file type
+            uploadData.fileType = pwgImageFileType.pdf.rawValue
+
+            // Check that the PDF format is accepted by the Piwigo server
+            if ServerVars.shared.serverFileTypes.contains("pdf") {
+                // Upload the PDF file as is (image modifications do not apply)
+                uploadData.creationDate = (fileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+
+                // Rename file according to user's demand from date/time/counter/etc.
+                renamedFile(for: &uploadData)
+
+                // Get MD5 checksum and MIME type, update counter
+                try setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: fileURL)
+                return
+            }
+
+            // PDF file format cannot be accepted by the Piwigo server
+            throw .unacceptedDataFormat
+        }
         else {
             // Unknown type
             throw .unacceptedDataFormat
