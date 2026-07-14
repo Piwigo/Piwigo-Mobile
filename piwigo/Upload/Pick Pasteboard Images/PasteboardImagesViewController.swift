@@ -170,6 +170,18 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
         
         // Title
         title = String(localized: "categoryUpload_pasteboard", comment: "Clipboard")
+
+        // Register palette changes
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
+
+        // Register upload progress
+        NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress),
+                                               name: Notification.Name.pwgUploadProgress, object: nil)
+
+        // Register app becoming active for updating the pasteboard
+        NotificationCenter.default.addObserver(self, selector: #selector(checkPasteboard),
+                                               name: UIApplication.didBecomeActiveNotification, object: nil)
     }
 
     @MainActor
@@ -193,18 +205,6 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
 
         // Update navigation bar and title
         updateNavBar()
-
-        // Register palette changes
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: Notification.Name.pwgPaletteChanged, object: nil)
-        
-        // Register upload progress
-        NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress),
-                                               name: Notification.Name.pwgUploadProgress, object: nil)
-        
-        // Register app becoming active for updating the pasteboard
-        NotificationCenter.default.addObserver(self, selector: #selector(checkPasteboard),
-                                               name: UIApplication.didBecomeActiveNotification, object: nil)
 
         // Prevent device from sleeping if uploads are in progress before iOS 26
         if #unavailable(iOS 26.0) {
