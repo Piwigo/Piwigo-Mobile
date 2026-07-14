@@ -117,17 +117,25 @@ extension PasteboardImagesViewController {
                 // Some objects may not be available anymore
                 var newSetOfObjects = [PasteboardObject]()
                 var newSetOfUploads = [(String?,String?,pwgUploadState?)?]()
+                var newSetOfSelections = [UploadProperties?]()
                 for index in 0..<self.pbObjects.count {
                     if [.stored, .ready].contains(self.pbObjects[index].state) {
                         newSetOfObjects.append(self.pbObjects[index])
                         newSetOfUploads.append(self.indexedUploadsInQueue[index])
+                        newSetOfSelections.append(self.selectedImages[index])
                     }
                 }
+                let didRemoveObjects = newSetOfObjects.count != self.pbObjects.count
                 self.pbObjects = newSetOfObjects
                 self.indexedUploadsInQueue = newSetOfUploads
-                
+                self.selectedImages = newSetOfSelections
+
                 // Update section header and action buttonn
                 DispatchQueue.main.async {
+                    // Reload collection view if some objects were removed
+                    if didRemoveObjects {
+                        self.localImagesCollection.reloadData()
+                    }
                     self.updateNavBar()
                     self.updateSelectButton()
                     if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: IndexPath(item: 0, section: 0)) as? PasteboardImagesHeaderReusableView {
