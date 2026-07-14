@@ -27,9 +27,9 @@ struct AlbumEntity: AppEntity, Sendable {
     var id: String { serverPath + "|" + String(pwgID) }
 
     static let typeDisplayRepresentation = TypeDisplayRepresentation(
-        name: LocalizedStringResource("Album", table: "In-AppIntents"))
+        name: LocalizedStringResource("categorySelection_title"))
     static let defaultQuery = AlbumQuery()
-
+    
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(title: "\(name)")
     }

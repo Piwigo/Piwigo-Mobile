@@ -21,14 +21,16 @@ struct UploadPhotos: AppIntent {
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
     let logger = PwgLogger(subsystem: "org.piwigo", category: String(describing: UploadPhotos.self))
     
-    static let title = LocalizedStringResource("UploadPhotosTitle", table: "In-AppIntents")
+    static let title = LocalizedStringResource("uploadPhotos", table: "In-AppIntents",
+                                               comment: "Upload Photos")
     
     static let description = IntentDescription(
-        LocalizedStringResource("UploadPhotosDescription", table: "In-AppIntents"),
+        LocalizedStringResource("UploadPhotosDescription", table: "In-AppIntents",
+                                comment: "Appends photos to the upload queue."),
         categoryName: LocalizedStringResource("severalImages"),
-        searchKeywords: [LocalizedStringResource("Upload", table: "In-AppIntents"),
+        searchKeywords: [LocalizedStringResource("tabBar_upload"),
                          LocalizedStringResource("severalImages"), "Piwigo"])
-
+    
     /// Tell the system to bring the app to the foreground when the intent runs.
     static let openAppWhenRun: Bool = true
     
@@ -36,13 +38,13 @@ struct UploadPhotos: AppIntent {
     // initializer available since iOS 16 rather than `supportedContentTypes`, which requires iOS 18.
     // `supportedTypeIdentifiers` must be a compile-time constant, hence the raw UTI strings
     // instead of `UTType.image.identifier` / `UTType.movie.identifier`.
-    @Parameter(title: LocalizedStringResource("Photos", table: "In-AppIntents"),
+    @Parameter(title: LocalizedStringResource("severalImages"),
                supportedTypeIdentifiers: ["public.image", "public.movie"])
     var photos: [IntentFile]
 
-    @Parameter(title: LocalizedStringResource("Album", table: "In-AppIntents"))
+    @Parameter(title: LocalizedStringResource("categorySelection_title"))
     var album: AlbumEntity
-
+    
     static var parameterSummary: some ParameterSummary {
         Summary("Upload \(\.$photos) to \(\.$album)")
     }

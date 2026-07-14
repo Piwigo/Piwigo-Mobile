@@ -36,7 +36,7 @@ struct PiwigoShortcutsProvider: AppShortcutsProvider {
                 "Auto-upload photos with \(.applicationName)",
                 "Auto-upload my photos with \(.applicationName)"
             ],
-            shortTitle: LocalizedStringResource("Auto-Upload Photos", table: "In-AppIntents"),
+            shortTitle: LocalizedStringResource("settings_autoUploadLong"),
             systemImageName: "photo.stack"
         )
         AppShortcut(
@@ -46,7 +46,7 @@ struct PiwigoShortcutsProvider: AppShortcutsProvider {
                 "Upload photos to \(.applicationName)",
                 "Send photos to \(.applicationName)"
             ],
-            shortTitle: LocalizedStringResource("Upload Photos", table: "In-AppIntents"),
+            shortTitle: LocalizedStringResource("uploadPhotos", table: "In-AppIntents", comment: "Upload Photos"),
             systemImageName: "photo.stack"
         )
     }

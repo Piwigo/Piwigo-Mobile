@@ -1004,6 +1004,106 @@
         }
       }
     },
+    "autoUpload" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التحميل التلقائي للصور"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto upload af billeder"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotos automatisch hochladen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Auto-Upload Photos"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autocargar fotos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transférer automatiquement des photos"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automata feltöltés"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unggah Foto Otomatis"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caricamento Automatico Foto"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真を自動アップロード"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto's automatisch uploaden"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatyczne przesyłanie zdjęć"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автозагрузка изображений"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladda upp foton automatiskt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动上传照片"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動上傳照片"
+          }
+        }
+      }
+    },
     "AutoUploadError_Disabled" : {
       "comment" : "Auto-uploading is disabled in the app settings.",
       "localizations" : {
@@ -3525,6 +3625,107 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "請選擇要將照片\"%@\"作為封面的相簿。"
+          }
+        }
+      }
+    },
+    "categorySelection_title" : {
+      "comment" : "Album",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ألبوم"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Album"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Album"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Album"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Álbum"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Album"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Album"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Album"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Album"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アルバム"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Album"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Album"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Альбом"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Album"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相册"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相簿"
           }
         }
       }
@@ -10101,7 +10302,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "النوع الافتراضي"
+            "value" : "التصنيف"
           }
         },
         "da" : {
@@ -10113,19 +10314,19 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Standardsortierung"
+            "value" : "Sortierung"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Default Sort"
+            "value" : "Sort"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Orden por defecto"
+            "value" : "Ordenar"
           }
         },
         "fr" : {
@@ -10143,25 +10344,25 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sortir Standar"
+            "value" : "Sortir"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ordinamento predefinito"
+            "value" : "Ordinamento"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "既定の並び順"
+            "value" : "並び順"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Standaard sorteervolgorde"
+            "value" : "Sorteren"
           }
         },
         "pl" : {
@@ -10173,7 +10374,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сортировка по умолчанию"
+            "value" : "Сортировка"
           }
         },
         "sv" : {
@@ -10185,13 +10386,13 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "默认排序"
+            "value" : "排序"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "預設排序"
+            "value" : "排序"
           }
         }
       }
@@ -10303,97 +10504,97 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الرقم/الصف"
+            "value" : "العدد"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antal / Række"
+            "value" : "Antal"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anzahl/Zeile"
+            "value" : "Anzahl"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Number/Row"
+            "value" : "Number"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Número/Fila"
+            "value" : "Número"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nombre/ligne"
+            "value" : "Nombre"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Elem/Sor"
+            "value" : "Darab"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Number/Row"
+            "value" : "Number"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Numero/linea"
+            "value" : "Numero"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1行あたりの個数"
+            "value" : "個数"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aantal/rij"
+            "value" : "Aantal"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Liczba / wierszy"
+            "value" : "Liczba"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Количество/строк"
+            "value" : "Количество"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antal/rad"
+            "value" : "Antal"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "每行数量"
+            "value" : "数量"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "每行數量"
+            "value" : "數量"
           }
         }
       }
@@ -10404,97 +10605,97 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "معاينة الملف"
+            "value" : "عرض مسبق"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Forhåndsvisning fil"
+            "value" : "Forhåndsvisning"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vorschau Datei"
+            "value" : "Vorschau"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Preview File"
+            "value" : "Preview"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Previsualizar archivo"
+            "value" : "Previsualizar"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fichier de prévisualisation"
+            "value" : "Aperçu"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Előnézet mérete"
+            "value" : "Előnézet"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Berkas Pratilik"
+            "value" : "Tinjauan"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anteprima del file"
+            "value" : "Anteprima"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ファイルのプレビュー"
+            "value" : "プレビュー"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voorbeeldafbeelding"
+            "value" : "Voorbeeld"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Podgląd Pliku"
+            "value" : "Podgląd"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Предпросмотр файла"
+            "value" : "Предпросмотр"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Förhandsgranska fil"
+            "value" : "Förhandsgranska"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "预览文件"
+            "value" : "预览"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "預覽檔案"
+            "value" : "預覽"
           }
         }
       }
@@ -10707,97 +10908,97 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ملف الصورة المصغرة"
+            "value" : "الصورة المصغرة"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Miniature fil"
+            "value" : "Miniaturebillede"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Miniaturfotogröße"
+            "value" : "Vorschaubild"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thumbnail File"
+            "value" : "Thumbnail"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Archivo de miniatura"
+            "value" : "Miniatura"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fichier de vignette"
+            "value" : "Vignette"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bélyegkép"
+            "value" : "Miniatűr"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "File Gambar Kecil"
+            "value" : "Thumbnail"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anteprima File"
+            "value" : "Miniatura"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "サムネイルファイル"
+            "value" : "サムネイル"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Miniatuur bestand"
+            "value" : "Miniatuur"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Plik miniatury"
+            "value" : "Miniaturka"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Файл миниатюры"
+            "value" : "Эскиз"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Miniatyr-fil"
+            "value" : "Miniatyrbild"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "缩略图文件"
+            "value" : "缩略图"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "縮圖檔案"
+            "value" : "縮圖"
           }
         }
       }
@@ -36455,7 +36656,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Proszę wybrać maksymalną liczbę jednoczesnych połączeń z serwerem Piwigo."
+            "value" : "Wybierz maksymalną liczbę jednoczesnych połączeń z serwerem Piwigo."
           }
         },
         "ru" : {
@@ -55782,7 +55983,104 @@
       }
     },
     "Upload ${photos} to ${album}" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحميل ${photos} إلى ${album}"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upload ${photos} til ${album}"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${photos} in ${album} hochladen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upload ${photos} to ${album}"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subir ${photos} a ${album}"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Télécharger ${photos} vers ${album}"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Töltsd fel a ${photos} képeket a ${album} albumba"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unggah ${photos} ke ${album}"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carica ${photos} su ${album}"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${photos} を ${album} にアップロード"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${photos} uploaden naar ${album}"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prześlij ${photos} do ${album}"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загрузить ${photos} в ${album}"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladda upp ${photos} till ${album}"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将 ${photos} 上传到 ${album}"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將 ${photos} 上傳至 ${album}"
+          }
+        }
+      }
     },
     "uploadCancelled_title" : {
       "extractionState" : "manual",

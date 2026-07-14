@@ -19,13 +19,13 @@ struct AutoUpload: AppIntent, ForegroundContinuableIntent { // , PredictableInte
     static let intentClassName = "AutoUploadIntent"
     
     /// Each intent needs to include metadata, such as a localized title. The title of the intent displays throughout the system.
-    static let title = LocalizedStringResource("AutoUploadTitle", table: "In-AppIntents")
+    static let title = LocalizedStringResource("settings_autoUploadLong")
     
     /// An intent can optionally provide a localized description that the Shortcuts app displays.
     static let description = IntentDescription(LocalizedStringResource("AutoUploadDescription", table: "In-AppIntents"),
                                                categoryName:
                                                 LocalizedStringResource("severalImages"), searchKeywords: [
-                                                    LocalizedStringResource("Auto-Upload", table: "In-AppIntents"),
+                                                    LocalizedStringResource("settings_autoUpload"),
                                                     LocalizedStringResource("severalImages"), "Piwigo"])
     
     /// Tell the system to not bring the app to the foreground when the intent starts.
