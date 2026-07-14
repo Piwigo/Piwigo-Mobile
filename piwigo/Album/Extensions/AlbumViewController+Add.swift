@@ -89,7 +89,7 @@ extension AlbumViewController
             title: String(localized: "alertAddButton", comment: "Add"),
             style: .default, handler: { [self] action in
                 // Create album
-                let albumName = alert.textFields?.first?.text ?? String(localized: "categorySelection_title", comment: "Album")
+                let albumName = alert.textFields?.first?.text ?? Localized.album
                 addCategory(withName: albumName, andComment: alert.textFields?.last?.text ?? "",
                             inParent: albumData)
         })

@@ -92,7 +92,7 @@ extension SettingsViewController: SelectCategoryDelegate {
            album.name.isEmpty == false {
             return album.name
         } else {
-            return String(localized: "categorySelection_title", comment: "Album")
+            return Localized.album
         }
     }
 }
