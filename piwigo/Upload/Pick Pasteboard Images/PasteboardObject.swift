@@ -18,14 +18,16 @@ enum PasteboardObjectState {
 }
 
 final class PasteboardObject {
+    let itemIndex: Int          // Index of the item in the pasteboard
     let types: [String]
     var md5Sum: String
     var identifier: String
     var fileName: String
     var state = PasteboardObjectState.new
     var image: UIImage = pwgImageType.image.placeHolder
-    
-    init(identifier: String, fileName: String, types: [String]) {
+
+    init(identifier: String, fileName: String, types: [String], itemIndex: Int) {
+        self.itemIndex = itemIndex
         self.md5Sum = ""
         self.identifier = identifier
         self.fileName = fileName
@@ -46,12 +48,10 @@ final class PendingOperations {
 
 final class ObjectPreparation : Operation, @unchecked Sendable {
     let pbObject: PasteboardObject
-    let index: Int
     let scale: CGFloat
 
-    init(_ pbObject: PasteboardObject, at index:Int, scale: CGFloat) {
+    init(_ pbObject: PasteboardObject, scale: CGFloat) {
         self.pbObject = pbObject
-        self.index = index
         self.scale = scale
     }
     
@@ -67,7 +67,7 @@ final class ObjectPreparation : Operation, @unchecked Sendable {
         // Task depends on data type
         if pbObject.identifier.contains("mov") {
             // Get movie data and file extension
-            guard let (movieData, fileExt) = self.getDataOfPasteboardMovie(at: index) else {
+            guard let (movieData, fileExt) = self.getDataOfPasteboardMovie(at: pbObject.itemIndex) else {
                 pbObject.state = .failed
                 return
             }
@@ -81,7 +81,7 @@ final class ObjectPreparation : Operation, @unchecked Sendable {
         }
         else {
             // Get image data and file extension
-            guard let (imageData, fileExt) = self.getDataOfPasteboardImage(at: index) else {
+            guard let (imageData, fileExt) = self.getDataOfPasteboardImage(at: pbObject.itemIndex) else {
                 pbObject.state = .failed
                 return
             }

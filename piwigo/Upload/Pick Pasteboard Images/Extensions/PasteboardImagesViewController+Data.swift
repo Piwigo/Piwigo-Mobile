@@ -44,7 +44,11 @@ extension PasteboardImagesViewController {
             /// - "yyyyMMdd-HHmmssSSSS" is the date at which the objects were retrieved
             /// - "typ" is "-img-" or "-mov-" depending on the nature of the object (see kImageSuffix, kMovieSuffix)
             /// - "#" is the index of the object in the pasteboard
-            for idx in itemSet {
+            /// The item set may not start at 0 nor be contiguous (e.g. when the pasteboard
+            /// also contains text items), so the matching items are enumerated:
+            /// - "idx" is the index of the item in the pasteboard,
+            /// - "offset" is the index of the object in the local arrays and collection view.
+            for (offset, idx) in itemSet.enumerated() {
                 let indexSet = IndexSet(integer: idx)
                 var identifier = kClipboardPrefix + pbDateTime
                 // Movies first because movies may contain images
@@ -54,11 +58,12 @@ extension PasteboardImagesViewController {
                     identifier += kImageSuffix + String(idx + 1)
                 }
                 let fileName = pbDateTime.dropLast(4) + "-" + String(idx + 1)
-                let newObject = PasteboardObject(identifier: identifier, fileName: fileName, types: types[idx])
+                let newObject = PasteboardObject(identifier: identifier, fileName: fileName,
+                                                 types: types[offset], itemIndex: idx)
                 pbObjects.append(newObject)
-                
+
                 // Retrieve data, store in Upload folder and update cache
-                startOperations(for: newObject, at: IndexPath(item: idx, section: 0))
+                startOperations(for: newObject, at: IndexPath(item: offset, section: 0))
             }
         }
         else {
@@ -93,7 +98,7 @@ extension PasteboardImagesViewController {
         // Create an instance of the preparation method
         // Expansive work realised on a background queue
         let scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))
-        let preparer = ObjectPreparation(pbObject, at: indexPath.item, scale: scale)
+        let preparer = ObjectPreparation(pbObject, scale: scale)
       
         // Refresh the thumbnail of the cell and update upload cache
         // The whole completion work is performed on the main queue so that
