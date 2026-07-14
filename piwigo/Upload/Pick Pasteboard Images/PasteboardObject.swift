@@ -131,7 +131,7 @@ final class ObjectPreparation : Operation, @unchecked Sendable {
 
         // Store pasteboard image/video data into Piwigo/Uploads directory
         do {
-            try data.write(to: fileURL)
+            try data.write(to: fileURL, options: .atomic)
             pbObject.state = .stored
             if pbObject.identifier.contains("mov") {
                 pbObject.image = AVURLAsset(url: fileURL)
