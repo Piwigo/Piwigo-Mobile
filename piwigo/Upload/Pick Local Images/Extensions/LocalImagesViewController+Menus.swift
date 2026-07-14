@@ -193,7 +193,8 @@ extension LocalImagesViewController {
             let visibleCells = localImagesCollection.visibleCells as? [LocalImageCollectionViewCell]
 
             // Deselect already uploaded photos if needed
-            if (queue.operationCount == 0) && (selectedImages.count < indexedUploadsInQueue.count) {
+            if queue.operationCount == 0,
+               selectedImages.count <= indexedUploadsInQueue.count {
                 // Indexed uploads available
                 for index in 0..<selectedImages.count {
                     if let upload = indexedUploadsInQueue[index],

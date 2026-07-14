@@ -43,7 +43,7 @@ extension PasteboardImagesViewController {
         // Deselect already uploaded photos if needed
         var didChangeSelection = false
         if pendingOperations.preparationsInProgress.isEmpty,
-           selectedImages.count < indexedUploadsInQueue.count {
+           selectedImages.count <= indexedUploadsInQueue.count {
             for index in 0..<selectedImages.count {
                 // Indexed uploads available
                 if let upload = indexedUploadsInQueue[index],
