@@ -107,53 +107,6 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
             debugPrint("Error: \(error.localizedDescription)")
         }
 
-        // Retrieve pasteboard object indexes and types, then create identifiers
-        pbChangeCount = UIPasteboard.general.changeCount
-        if let itemSet = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes),
-           let types = UIPasteboard.general.types(forItemSet: itemSet) {
-
-            // Initialise cached indexed uploads
-            pbObjects = []
-            selectedImages = .init(repeating: nil, count: itemSet.count)
-            indexedUploadsInQueue = .init(repeating: nil, count: itemSet.count)
-
-            // Get date of retrieve
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyyMMdd-HHmmssSSSS"
-            let pbDateTime = dateFormatter.string(from: Date())
-
-            // Loop over all pasteboard objects
-            /// Pasteboard images are identified with identifiers of the type "pwgClipboard-yyyyMMdd-HHmmssSSSS-typ-#" where:
-            /// - "pwgClipboard" is a header telling that the image/video comes from the pasteboard (see kClipboardPrefix)
-            /// - "yyyyMMdd-HHmmssSSSS" is the date at which the objects were retrieved
-            /// - "typ" is "-img-" or "-mov-" depending on the nature of the object (see kImageSuffix, kMovieSuffix)
-            /// - "#" is the index of the object in the pasteboard
-            /// The item set may not start at 0 nor be contiguous (e.g. when the pasteboard
-            /// also contains text items), so the matching items are enumerated:
-            /// - "idx" is the index of the item in the pasteboard,
-            /// - "offset" is the index of the object in the local arrays and collection view.
-            for (offset, idx) in itemSet.enumerated() {
-                let indexSet = IndexSet(integer: idx)
-                var identifier = kClipboardPrefix + pbDateTime
-                // Movies first because movies may contain images
-                if UIPasteboard.general.contains(pasteboardTypes: [UTType.movie.identifier], inItemSet: indexSet) {
-                    identifier += kMovieSuffix + String(idx + 1)
-                } else {
-                    identifier += kImageSuffix + String(idx + 1)
-                }
-                let fileName = pbDateTime.dropLast(4) + "-" + String(idx + 1)
-                let newObject = PasteboardObject(identifier: identifier, fileName: fileName,
-                                                 types: types[offset], itemIndex: idx)
-                pbObjects.append(newObject)
-                
-                // Retrieve data, store in Upload folder and update cache
-                startOperations(for: newObject, at: IndexPath(item: offset, section: 0))
-            }
-        }
-        
-        // At start, there is no image selected
-        selectedImages = .init(repeating: nil, count: pbObjects.count)
-        
         // Navigation bar
         navigationController?.navigationBar.accessibilityIdentifier = "PasteboardImagesNav"
 
@@ -175,6 +128,10 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
         
         // Title
         title = String(localized: "categoryUpload_pasteboard", comment: "Clipboard")
+
+        // Retrieve pasteboard objects, store them in the Uploads directory
+        // and refresh the collection view (must be called after the creation of the bar buttons)
+        checkPasteboard()
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
