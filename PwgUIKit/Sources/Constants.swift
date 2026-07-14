@@ -23,6 +23,7 @@ public extension Bundle {
 public enum Localized {
     public static let loading = String(localized: "loadingHUD_label", bundle: .pwgUIKit, comment:"Loading…")
     public static let yes = String(localized: "alertYesButton", bundle: .pwgUIKit, comment: "Yes")
+    public static let ok = String(localized: "alertOkButton", bundle: .pwgUIKit, comment: "OK")
     public static let cancel = String(localized: "alertCancelButton", bundle: .pwgUIKit, comment: "Cancel")
     public static let dismiss = String(localized: "alertDismissButton", bundle: .pwgUIKit, comment: "Dismiss")
     public static let allAlbums = String(localized: "categorySelection_allAlbums", bundle: .pwgUIKit, comment: "All Albums")

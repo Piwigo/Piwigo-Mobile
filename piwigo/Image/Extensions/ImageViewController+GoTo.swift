@@ -191,8 +191,7 @@ extension ImageViewController
             setEnableStateOfButtons(true)
         })
         
-        let goToPageAction = UIAlertAction(
-            title: String(localized: "alertOkButton", comment: "OK"),
+        let goToPageAction = UIAlertAction(title: Localized.ok,
             style: .default, handler: { [self] action in
                 // Display requested page
                 if let pdfDVC = pageViewController?.viewControllers?.first as? PdfDetailViewController {

@@ -117,9 +117,8 @@ struct LoginUtilities
                                          style: .cancel, handler: cancelAction)
         alert.addAction(cancelAction)
         
-        let loginAction = UIAlertAction(
-            title: String(localized: "alertOkButton", comment: "OK"),
-            style: .default, handler: loginAction)
+        let loginAction = UIAlertAction(title: Localized.ok,
+                                        style: .default, handler: loginAction)
         alert.addAction(loginAction)
         
         alert.view.tintColor = PwgColor.tintColor

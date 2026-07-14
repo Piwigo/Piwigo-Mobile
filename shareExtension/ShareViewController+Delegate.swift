@@ -171,7 +171,7 @@ extension ShareViewController: UITableViewDelegate
             let alert = UIAlertController(title: nil,
                                           message: Localized.pdfNotAccepted,
                                           preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: Localized.dismiss,
+            alert.addAction(UIAlertAction(title: Localized.ok,
                                           style: .cancel, handler: { _ in
                 continuation.resume(returning: ())
             }))

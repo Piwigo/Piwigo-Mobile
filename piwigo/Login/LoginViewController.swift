@@ -318,8 +318,7 @@ class LoginViewController: UIViewController {
                 // Report error
                 logging(inConnectionError: error)
             })
-        let acceptAction = UIAlertAction(
-            title: String(localized: "alertOkButton", comment: "OK"),
+        let acceptAction = UIAlertAction(title: Localized.ok,
             style: .default, handler: { [self] action in
                 // Cancel task and relaunch login
                 dataSession.getAllTasks { tasks in
@@ -373,8 +372,7 @@ class LoginViewController: UIViewController {
             // Stop logging in action, display error message
             logging(inConnectionError: error)
         })
-        let loginAction = UIAlertAction(
-            title: String(localized: "alertOkButton", comment: "OK"),
+        let loginAction = UIAlertAction(title: Localized.ok,
             style: .default, handler: { [self] action in
                 // Try logging in with HTTP scheme
                 tryNonSecuredAccess(afterError: error)
@@ -606,8 +604,7 @@ class LoginViewController: UIViewController {
         let title = String(localized: "loginError_title", comment: "Login Fail")
         let message = String(localized: "loginError_resetPwd", comment: "Would you like to reset your password from the web interface?")
         let cancelAction = UIAlertAction(title: Localized.cancel, style: .cancel, handler: { _ in })
-        let retrieveAction = UIAlertAction(
-            title: String(localized: "alertOkButton", comment: "OK"),
+        let retrieveAction = UIAlertAction(title: Localized.ok,
             style: .default, handler: { _ in
                 if let url = URL(string: ServerVars.shared.service + "/password.php") {
                     UIApplication.shared.open(url)
@@ -708,8 +705,7 @@ class LoginViewController: UIViewController {
     @MainActor
     func showIncorrectWebAddressAlert() {
         // The URL is not correct —> inform user
-        let defaultAction = UIAlertAction(
-            title: String(localized: "alertOkButton", comment: "OK"),
+        let defaultAction = UIAlertAction(title: Localized.ok,
             style: .cancel, handler: { action in })
         presentPiwigoAlert(withTitle: PwgKitError.wrongServerURL.localizedDescription,
                            message: PwgKitError.invalidURL.localizedDescription, actions: [defaultAction])
