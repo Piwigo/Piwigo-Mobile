@@ -43,6 +43,7 @@ final class ShareViewController: UIViewController {
     
     // MARK: - Core Data Source
     var user: User!
+    var migrationRequired: Bool = false
     lazy var userUploadRights: [Int32] = {
         // Case of Community user?
         if ServerVars.shared.userStatus != .normal { return [] }
@@ -126,19 +127,31 @@ final class ShareViewController: UIViewController {
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        logger.notice("Share extension starting...")
         
         // Table view identifier
         categoriesTableView?.accessibilityIdentifier = "album selector"
         categoriesTableView?.rowHeight = UITableView.automaticDimension
         categoriesTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
-
+        
+        // Title
+        title = String(localized: "uploadToAlbum_title", comment:"Upload to Album")
+        
+        // If a migration is planned, invite the user to perform the migration.
+        let migrator = DataMigrator()
+        if migrator.requiresMigration() {
+            migrationRequired = true
+            logger.notice("Migration required...")
+            return
+        }
+        
         // Retrieve user and check that a root album exists in cache (create it if necessary)
-        // When this fails, the user is asked to log in first when the view appears.
+        // When this fails, the user is asked to log in and create a first album when the view appears.
         guard let user = try? userProvider.getUserAccount(inContext: mainContext),
               let _ = try? AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.root.rawValue),
               AlbumProvider().getObjectCount(inContext: mainContext) > 0
         else {
-            logger.notice("Cannot upload photos or videos")
+            logger.notice("No albums in cache")
             return
         }
         self.user = user
@@ -154,9 +167,6 @@ final class ShareViewController: UIViewController {
         // Button for returning to albums/images collections
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(cancelSelect))
         cancelBarButton?.accessibilityIdentifier = "CancelSelect"
-        
-        // Title
-        title = String(localized: "uploadToAlbum_title", comment:"Upload to Album")
         
         // Retrieve shared items
         self.context = extensionContext
@@ -208,9 +218,17 @@ final class ShareViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        // Ask the user to log in first when no account is available
+        // Ask the user to open the app and perform the migration
+        if migrationRequired {
+            presentAlert(withMessage: Localized.migrationRequired)
+            return
+        }
+        
+        // Ask the user to log in and create an album
         if user == nil {
-            presentNotLoggedInAlert()
+            let message = String(localized: "shareFailError_noAlbum",
+                                 comment: "Please open the Piwigo app and create an album before sharing photos or videos.")
+            presentAlert(withMessage: message)
         }
     }
     
@@ -219,10 +237,9 @@ final class ShareViewController: UIViewController {
         NotificationCenter.default.removeObserver(self)
     }
 
-    private func presentNotLoggedInAlert() {
+    private func presentAlert(withMessage message: String) {
         let alert = UIAlertController(title: String(localized: "shareFailError_title", comment: "Share Failed"),
-                                      message: String(localized: "shareFailError_noAlbum", comment: "Please open the Piwigo app and create an album before sharing photos or videos."),
-                                      preferredStyle: .alert)
+                                      message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: Localized.dismiss,
                                       style: .cancel, handler: { [weak self] _ in
             // Nothing can be uploaded —> close the share sheet

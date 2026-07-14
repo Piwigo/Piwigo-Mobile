@@ -8,6 +8,7 @@
 
 import Foundation
 import PwgKit
+import PwgCacheKit
 import PwgUploadKit
 
 public enum AutoUploadError: Error, Sendable {
@@ -22,8 +23,7 @@ extension AutoUploadError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .migrationRequired:
-            return String(localized: "CoreData_MigrationRequired",
-                          comment: "The persistent database of your Piwigo data requires migration. Please launch the application.")
+            return Localized.migrationRequired
         case .autoUploadDisabled:
             return String(localized: "AutoUploadError_Disabled",
                           comment: "Auto-uploading is disabled in the app settings.")
