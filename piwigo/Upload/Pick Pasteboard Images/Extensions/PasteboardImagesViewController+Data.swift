@@ -91,7 +91,7 @@ extension PasteboardImagesViewController {
         }
 
         // Create an instance of the preparation method
-        // Expansive work performed in a background queue
+        // Expansive work realised on a background queue
         let scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))
         let preparer = ObjectPreparation(pbObject, at: indexPath.item, scale: scale)
       
