@@ -60,15 +60,18 @@ class LocalAlbumsViewController: UIViewController {
         return provider
     }()
     lazy var pasteboardTypes : [String] = {
-        return [UTType.image.identifier, UTType.movie.identifier]
+        if ServerVars.shared.serverFileTypes.contains("pdf") {
+            return [UTType.image.identifier, UTType.movie.identifier, UTType.pdf.identifier]
+        } else {
+            return [UTType.image.identifier, UTType.movie.identifier]
+        }
     }()
     
     // MARK: - Core Data Objects
     var user: User!
     lazy var mainContext: NSManagedObjectContext = {
-        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
-            fatalError("!!! Missing Managed Object Context !!!")
-        }
+        guard let context: NSManagedObjectContext = user?.managedObjectContext
+        else { preconditionFailure("!!! Missing Managed Object Context !!!") }
         return context
     }()
     

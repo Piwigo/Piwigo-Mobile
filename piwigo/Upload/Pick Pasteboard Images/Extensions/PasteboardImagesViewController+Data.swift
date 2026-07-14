@@ -54,6 +54,13 @@ extension PasteboardImagesViewController {
                 // Movies first because movies may contain images
                 if UIPasteboard.general.contains(pasteboardTypes: [UTType.movie.identifier], inItemSet: indexSet) {
                     identifier += kMovieSuffix + String(idx + 1)
+                }
+                // PDFs next because PDF documents may also provide a preview image
+                // (only when the server accepts PDF files, i.e. when pasteboardTypes contains
+                //  the PDF type; otherwise mixed items fall back to their image representation)
+                else if pasteboardTypes.contains(UTType.pdf.identifier),
+                        UIPasteboard.general.contains(pasteboardTypes: [UTType.pdf.identifier], inItemSet: indexSet) {
+                    identifier += kPdfSuffix + String(idx + 1)
                 } else {
                     identifier += kImageSuffix + String(idx + 1)
                 }

@@ -8,7 +8,9 @@
 
 import Photos
 import Foundation
+import PDFKit
 import UIKit
+import UniformTypeIdentifiers
 import PwgKit
 import PwgCacheKit
 import PwgUploadKit
@@ -82,6 +84,20 @@ final class ObjectPreparation : Operation, @unchecked Sendable {
             // Store movie data
             storePasteboardObject(movieData)
         }
+        else if pbObject.identifier.contains(kPdfSuffix) {
+            // Get PDF data
+            guard let pdfData = self.getDataOfPasteboardPdf(at: pbObject.itemIndex) else {
+                pbObject.state = .failed
+                return
+            }
+
+            // Update object
+            pbObject.md5Sum = pdfData.MD5checksum
+            pbObject.fileName.append(".pdf")
+
+            // Store PDF data
+            storePasteboardObject(pdfData)
+        }
         else {
             // Get image data and file extension
             guard let (imageData, fileExt) = self.getDataOfPasteboardImage(at: pbObject.itemIndex) else {
@@ -108,6 +124,15 @@ final class ObjectPreparation : Operation, @unchecked Sendable {
             }
         }
         return nil  // Unknown movie format
+    }
+
+    private func getDataOfPasteboardPdf(at index:Int) -> Data? {
+        let indexSet = IndexSet(integer: index)
+        if pbObject.types.contains(UTType.pdf.identifier),
+           let pdfData = UIPasteboard.general.data(forPasteboardType: UTType.pdf.identifier, inItemSet: indexSet)?.first {
+            return pdfData
+        }
+        return nil  // Not a PDF document
     }
     
     private func getDataOfPasteboardImage(at index:Int) -> (imageData: Data, fileExt: String)? {
@@ -143,7 +168,14 @@ final class ObjectPreparation : Operation, @unchecked Sendable {
                     .extractedImage()?
                     .crop(width: 1.0, height: 1.0) ?? pwgImageType.image.placeHolder)
                     .resize(to: AlbumVars.shared.kThumbnailFileSize, opaque: true, scale: scale)
-            } else {
+            }
+            else if pbObject.identifier.contains(kPdfSuffix) {
+                pbObject.image = (PDFDocument(data: data)?
+                    .extractedImage()?
+                    .crop(width: 1.0, height: 1.0) ?? pwgImageType.image.placeHolder)
+                    .resize(to: AlbumVars.shared.kThumbnailFileSize, opaque: true, scale: scale)
+            }
+            else {
                 pbObject.image = ((UIImage(data: data) ?? pwgImageType.image.placeHolder)
                     .fixOrientation()
                     .crop(width: 1.0, height: 1.0) ?? pwgImageType.image.placeHolder)
