@@ -42,7 +42,7 @@ extension PasteboardImagesViewController {
             /// Pasteboard images are identified with identifiers of the type "pwgClipboard-yyyyMMdd-HHmmssSSSS-typ-#" where:
             /// - "pwgClipboard" is a header telling that the image/video comes from the pasteboard (see kClipboardPrefix)
             /// - "yyyyMMdd-HHmmssSSSS" is the date at which the objects were retrieved
-            /// - "typ" is "-img-" or "-mov-" depending on the nature of the object (see kImageSuffix, kMovieSuffix)
+            /// - "typ" is "-img-", "-mov-" or "-pdf-" depending on the nature of the object (see kImageSuffix, kMovieSuffix, kPdfSuffix)
             /// - "#" is the index of the object in the pasteboard
             /// The item set may not start at 0 nor be contiguous (e.g. when the pasteboard
             /// also contains text items), so the matching items are enumerated:

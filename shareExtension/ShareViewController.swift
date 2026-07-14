@@ -292,8 +292,7 @@ final class ShareViewController: UIViewController {
         /// Shared items are identified with identifiers of the type "pwgShared-yyyyMMdd-HHmmssSSSS-typ-####" where:
         /// - "pwgShared" is a header telling that the image/video comes from the share extension (see kSharedPrefix)
         /// - "yyyyMMdd-HHmmssSSSS" is the date at which the items were shared
-        /// - "typ" is "-img-", "-mov-" or "-pdf-" depending on the nature of the object
-        ///   (see kImageSuffix, kMovieSuffix, kPdfSuffix)
+        /// - "typ" is "-img-", "-mov-" or "-pdf-" depending on the nature of the object (see kImageSuffix, kMovieSuffix, kPdfSuffix)
         /// - "####" is the index of the object being shared
         var sharedItemCount = 0
         var skippedPdfCount = 0

@@ -65,7 +65,7 @@ final class ObjectPreparation : Operation, @unchecked Sendable {
         }
         
         // Task depends on data type
-        if pbObject.identifier.contains("mov") {
+        if pbObject.identifier.contains(kMovieSuffix) {
             // Get movie data and file extension
             guard let (movieData, fileExt) = self.getDataOfPasteboardMovie(at: pbObject.itemIndex) else {
                 pbObject.state = .failed
@@ -133,7 +133,7 @@ final class ObjectPreparation : Operation, @unchecked Sendable {
         do {
             try data.write(to: fileURL, options: .atomic)
             pbObject.state = .stored
-            if pbObject.identifier.contains("mov") {
+            if pbObject.identifier.contains(kMovieSuffix) {
                 pbObject.image = (AVURLAsset(url: fileURL)
                     .extractedImage()
                     .crop(width: 1.0, height: 1.0) ?? pwgImageType.image.placeHolder)

@@ -89,8 +89,10 @@ class UploadImageTableViewCell: UITableViewCell {
         // Determine from where the file comes from:
         // => Photo Library: use PHAsset local identifier
         // => UIPasteboard, share extension, in-app intent: use identifier of type
-        //    "prefix-yyyyMMdd-HHmmssSSSS-typ-#" where "typ" is "img" (photo) or "mov" (video)
-        //    (see kClipboardPrefix, kSharedPrefix, kIntentPrefix).
+        /// - "pwgClipboard" is a header telling that the image/video comes from the pasteboard (see kClipboardPrefix)
+        /// - "yyyyMMdd-HHmmssSSSS" is the date at which the objects were retrieved
+        /// - "typ" is "-img-", "-mov-" or "-pdf-" depending on the nature of the object (see kImageSuffix, kMovieSuffix, kPdfSuffix)
+        /// - "#" is the index of the object in the pasteboard
         if upload.localIdentifier.hasPrefix(kClipboardPrefix) ||
            upload.localIdentifier.hasPrefix(kSharedPrefix) ||
            upload.localIdentifier.hasPrefix(kIntentPrefix) {
@@ -123,7 +125,7 @@ class UploadImageTableViewCell: UITableViewCell {
         
         // Task depends on file type
         var image: UIImage!
-        if fileURL.lastPathComponent.contains("img") {
+        if upload.localIdentifier.contains(kImageSuffix) {
             // Case of a photo
             playIcon.isHidden = true
 
@@ -144,7 +146,7 @@ class UploadImageTableViewCell: UITableViewCell {
                 image = pwgImageType.image.placeHolder
             }
         }
-        else if fileURL.lastPathComponent.contains("mov") {
+        else if upload.localIdentifier.contains(kMovieSuffix) {
             // Case of a movie
             let asset = AVURLAsset(url: fileURL, options: nil)
             let imageGenerator = AVAssetImageGenerator(asset: asset)
