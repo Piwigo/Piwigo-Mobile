@@ -12,8 +12,9 @@ import UIKit
 import PwgKit
 import PwgCacheKit
 import PwgUIKit
+import PwgUploadKit
 
-// MARK: - UITableViewDelegate Methods
+// MARK: UITableViewDelegate Methods
 extension ShareViewController: UITableViewDelegate
 {
     // MARK: - UITableView - Headers
@@ -102,7 +103,9 @@ extension ShareViewController: UITableViewDelegate
             }
         }
     }
-    
+
+
+    // MARK: - Alerts
     @MainActor
     private func requestConfirmation(withTitle title:String, message:String,
                                      forCategory albumData: Album, at indexPath:IndexPath) async -> Bool {
@@ -154,6 +157,8 @@ extension ShareViewController: UITableViewDelegate
         })
     }
     
+    
+    // MARK: - Open Main App
     private func openMainApp(withAlbumIDs upperIds: String, forItemsSharedAt shareDate: String) {
         // Prepare URL
         var comps = URLComponents()
@@ -176,5 +181,26 @@ extension ShareViewController: UITableViewDelegate
             }
             responder = responder?.next
         }
+    }
+
+
+    // MARK: - PiwigoHUD
+    @MainActor
+    private func showHUD() {
+        logger.notice("HUD shown while copying items")
+        // Remove an existing HUD if needed
+        if let hud = view.viewWithTag(pwgTagHUD) as? PiwigoHUD {
+            hud.removeFromSuperview()
+        }
+        // Create and show the HUD
+        guard let hud = UINib(nibName: "PiwigoHUD", bundle: nil).instantiate(withOwner: nil)[0] as? PiwigoHUD
+        else { preconditionFailure("PiwigoHUD not found/instantiated") }
+        hud.show(withTitle: Localized.preparingUploads, detail: nil, minWidth: 200, view: view)
+    }
+    
+    @MainActor
+    private func hideHUD() {
+        // Hide and remove the HUD
+        (view.viewWithTag(pwgTagHUD) as? PiwigoHUD)?.hide()
     }
 }
