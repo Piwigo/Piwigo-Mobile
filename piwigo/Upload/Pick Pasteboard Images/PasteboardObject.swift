@@ -99,8 +99,9 @@ final class ObjectPreparation : Operation, @unchecked Sendable {
         let indexSet = IndexSet(integer: index)
         for movieType in acceptedMovieTypes {
             if pbObject.types.contains(movieType.identifier),
-               let imageData = UIPasteboard.general.data(forPasteboardType: movieType.identifier, inItemSet: indexSet)?.first {
-                return (imageData, movieType.preferredFilenameExtension!)
+               let fileExt = movieType.preferredFilenameExtension,
+               let movieData = UIPasteboard.general.data(forPasteboardType: movieType.identifier, inItemSet: indexSet)?.first {
+                return (movieData, fileExt)
             }
         }
         return nil  // Unknown movie format
@@ -111,8 +112,9 @@ final class ObjectPreparation : Operation, @unchecked Sendable {
         let indexSet = IndexSet(integer: index)
         for imageType in acceptedImageTypes {
             if pbObject.types.contains(imageType.identifier),
+               let fileExt = imageType.preferredFilenameExtension,
                let imageData = UIPasteboard.general.data(forPasteboardType: imageType.identifier, inItemSet: indexSet)?.first {
-                return (imageData, imageType.preferredFilenameExtension!)
+                return (imageData, fileExt)
             }
         }
         return nil  // Unknown image format
