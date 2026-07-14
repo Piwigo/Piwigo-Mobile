@@ -64,8 +64,8 @@ extension PasteboardImagesViewController: UICollectionViewDataSource
             return LocalImageCollectionViewCell()
         }
         
-        // Configure cell with image in pasteboard or stored in Uploads directory
-        // (the content of the pasteboard may not last forever)
+        // Configure cell with the thumbnail prepared in the background
+        // from the pasteboard data stored in the Uploads directory
         let identifier = pbObjects[indexPath.item].identifier
 
         // Configure cell
@@ -81,20 +81,14 @@ extension PasteboardImagesViewController: UICollectionViewDataSource
     }
 
     func getImageAndMd5sumOfPbObject(atIndex index: Int) -> (UIImage, String) {
-        var image: UIImage = pwgImageType.image.placeHolder
-        var md5sum = ""
-        if [.stored, .ready].contains(pbObjects[index].state) {
-            image = pbObjects[index].image
-            md5sum = pbObjects[index].md5Sum
+        // Returns the thumbnail and MD5 checksum prepared in the background.
+        // Objects not stored yet get a placeholder and an empty checksum:
+        // the cell is refreshed as soon as the preparation completes.
+        let pbObject = pbObjects[index]
+        if [.stored, .ready].contains(pbObject.state) {
+            return (pbObject.image, pbObject.md5Sum)
         }
-        else {
-            if let data = UIPasteboard.general.data(forPasteboardType: UTType.image.identifier,
-                                                    inItemSet: IndexSet(integer: pbObjects[index].itemIndex))?.first {
-                image = UIImage(data: data) ?? pwgImageType.image.placeHolder
-                md5sum = data.MD5checksum
-            }
-        }
-        return (image, md5sum)
+        return (pwgImageType.image.placeHolder, "")
     }
     
     @objc func applyUploadProgress(_ notification: Notification) {
