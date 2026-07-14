@@ -41,8 +41,10 @@ final class PendingOperations {
     lazy var preparationQueue: OperationQueue = {
         var queue = OperationQueue()
         queue.name = "Preparation queue"
-        queue.maxConcurrentOperationCount = .max
-        queue.qualityOfService = .userInteractive
+        // Bounded concurrency: each operation decodes an image or video in memory,
+        // so unbounded parallelism could exhaust memory with a full pasteboard
+        queue.maxConcurrentOperationCount = 4
+        queue.qualityOfService = .userInitiated
         return queue
     }()
 }
