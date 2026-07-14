@@ -91,25 +91,29 @@ extension PasteboardImagesViewController {
         }
 
         // Create an instance of the preparation method
+        // Expansive work performed in a background queue
         let scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))
         let preparer = ObjectPreparation(pbObject, at: indexPath.item, scale: scale)
       
         // Refresh the thumbnail of the cell and update upload cache
+        // The whole completion work is performed on the main queue so that
+        // the caches are only mutated on the main thread (no data race with
+        // the collection view data source and other completion blocks).
         preparer.completionBlock = {
             // Job done if operation was cancelled
             if preparer.isCancelled { return }
 
-            // Operation completed
-            self.pendingOperations.preparationsInProgress.removeValue(forKey: indexPath)
+            DispatchQueue.main.async {
+                // Operation completed
+                self.pendingOperations.preparationsInProgress.removeValue(forKey: indexPath)
 
-            // Update cell image if operation was successful
-            if pbObject.state == .stored {
-                // Set upload cache
-                if let upload = (self.uploads.fetchedObjects ?? []).first(where: {$0.md5Sum == pbObject.md5Sum}) {
-                    self.indexedUploadsInQueue[indexPath.item] = (upload.localIdentifier, upload.md5Sum, upload.state)
-                }
-                // Refresh the thumbnail of the cell
-                DispatchQueue.main.async {
+                // Update cell image if operation was successful
+                if pbObject.state == .stored {
+                    // Set upload cache
+                    if let upload = (self.uploads.fetchedObjects ?? []).first(where: {$0.md5Sum == pbObject.md5Sum}) {
+                        self.indexedUploadsInQueue[indexPath.item] = (upload.localIdentifier, upload.md5Sum, upload.state)
+                    }
+                    // Refresh the thumbnail of the cell
                     if let cell = self.localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
                         let uploadState = self.getUploadStateOfImage(at: indexPath.item, for: cell)
                         cell.update(selected: self.selectedImages[indexPath.item] != nil, state: uploadState)
@@ -117,31 +121,29 @@ extension PasteboardImagesViewController {
                         self.reloadInputViews()
                     }
                 }
-            }
-                
-            // When all images/videos are ready:
-            /// - keep only stored objects
-            /// - refresh section to display the select button
-            /// - restart UploadManager activity
-            if self.pendingOperations.preparationsInProgress.isEmpty {
-                // Some objects may not be available anymore
-                var newSetOfObjects = [PasteboardObject]()
-                var newSetOfUploads = [(String?,String?,pwgUploadState?)?]()
-                var newSetOfSelections = [UploadProperties?]()
-                for index in 0..<self.pbObjects.count {
-                    if [.stored, .ready].contains(self.pbObjects[index].state) {
-                        newSetOfObjects.append(self.pbObjects[index])
-                        newSetOfUploads.append(self.indexedUploadsInQueue[index])
-                        newSetOfSelections.append(self.selectedImages[index])
-                    }
-                }
-                let didRemoveObjects = newSetOfObjects.count != self.pbObjects.count
-                self.pbObjects = newSetOfObjects
-                self.indexedUploadsInQueue = newSetOfUploads
-                self.selectedImages = newSetOfSelections
 
-                // Update section header and action buttonn
-                DispatchQueue.main.async {
+                // When all images/videos are ready:
+                /// - keep only stored objects
+                /// - refresh section to display the select button
+                /// - restart UploadManager activity
+                if self.pendingOperations.preparationsInProgress.isEmpty {
+                    // Some objects may not be available anymore
+                    var newSetOfObjects = [PasteboardObject]()
+                    var newSetOfUploads = [(String?,String?,pwgUploadState?)?]()
+                    var newSetOfSelections = [UploadProperties?]()
+                    for index in 0..<self.pbObjects.count {
+                        if [.stored, .ready].contains(self.pbObjects[index].state) {
+                            newSetOfObjects.append(self.pbObjects[index])
+                            newSetOfUploads.append(self.indexedUploadsInQueue[index])
+                            newSetOfSelections.append(self.selectedImages[index])
+                        }
+                    }
+                    let didRemoveObjects = newSetOfObjects.count != self.pbObjects.count
+                    self.pbObjects = newSetOfObjects
+                    self.indexedUploadsInQueue = newSetOfUploads
+                    self.selectedImages = newSetOfSelections
+
+                    // Update section header and action buttonn
                     // Reload collection view if some objects were removed
                     if didRemoveObjects {
                         self.localImagesCollection.reloadData()
@@ -158,7 +160,7 @@ extension PasteboardImagesViewController {
         // Add the operation to help keep track of things
         pendingOperations.preparationsInProgress[indexPath] = preparer
         
-        // Add the operation to the download queue
+        // Add the operation to the queue
         pendingOperations.preparationQueue.addOperation(preparer)
     }
 
