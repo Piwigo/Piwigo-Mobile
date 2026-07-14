@@ -139,15 +139,6 @@ extension LocalImagesViewController: UICollectionViewDataSource
         let uploadState = getUploadStateOfImage(at: index, for: cell)
         cell.update(selected: selectedImages[index] != nil, state: uploadState)
 
-        // Add pan gesture recognition
-        let imageSeriesRocognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))
-        imageSeriesRocognizer.minimumNumberOfTouches = 1
-        imageSeriesRocognizer.maximumNumberOfTouches = 1
-        imageSeriesRocognizer.cancelsTouchesInView = false
-        imageSeriesRocognizer.delegate = self
-        cell.addGestureRecognizer(imageSeriesRocognizer)
-        cell.isUserInteractionEnabled = true
-
         return cell
     }
 

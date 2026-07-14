@@ -122,11 +122,20 @@ final class LocalImagesViewController: UIViewController
             collectionFlowLayout?.sectionHeadersPinToVisibleBounds = true
         }
         
+        // Pan gesture for selecting a series of images by swiping over the cells
+        // (gestureRecognizerShouldBegin restricts it to horizontal pans,
+        // so it does not interfere with the vertical scrolling)
+        let imageSeriesRecognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))
+        imageSeriesRecognizer.minimumNumberOfTouches = 1
+        imageSeriesRecognizer.maximumNumberOfTouches = 1
+        imageSeriesRecognizer.cancelsTouchesInView = false
+        imageSeriesRecognizer.delegate = self
+        localImagesCollection?.addGestureRecognizer(imageSeriesRecognizer)
+        
         // Check collection Id
         if imageCollectionId.count == 0 {
             PhotosFetch.shared.showPhotosLibraryAccessRestricted(in: self)
         }
-        
         
         // Fetch a specific path of the Photo Library to reduce the workload
         // and store the fetched assets for future use

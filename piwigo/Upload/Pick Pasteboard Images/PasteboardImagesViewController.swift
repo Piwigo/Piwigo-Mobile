@@ -87,7 +87,7 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Collection view — Register the cell before using it
         collectionFlowLayout?.scrollDirection = .vertical
         localImagesCollection?.register(UINib(nibName: "LocalImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "LocalImageCollectionViewCell")
@@ -97,7 +97,17 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
         } else {
             collectionFlowLayout?.sectionHeadersPinToVisibleBounds = true
         }
-
+        
+        // Pan gesture for selecting a series of images by swiping over the cells
+        // (gestureRecognizerShouldBegin restricts it to horizontal pans,
+        // so it does not interfere with the vertical scrolling)
+        let imageSeriesRecognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))
+        imageSeriesRecognizer.minimumNumberOfTouches = 1
+        imageSeriesRecognizer.maximumNumberOfTouches = 1
+        imageSeriesRecognizer.cancelsTouchesInView = false
+        imageSeriesRecognizer.delegate = self
+        localImagesCollection?.addGestureRecognizer(imageSeriesRecognizer)
+        
         // We provide a non-indexed list of images in the upload queue
         // so that we can at least show images in upload queue at start
         // and prevent their selection
@@ -106,10 +116,10 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
         } catch {
             debugPrint("Error: \(error.localizedDescription)")
         }
-
+        
         // Navigation bar
         navigationController?.navigationBar.accessibilityIdentifier = "PasteboardImagesNav"
-
+        
         // The cancel button is used to cancel the selection of images to upload (left side of navigation bar)
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
         cancelBarButton.accessibilityIdentifier = "Cancel"

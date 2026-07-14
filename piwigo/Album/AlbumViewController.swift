@@ -293,13 +293,23 @@ final class AlbumViewController: UIViewController
         collectionView?.register(UINib(nibName: "ImageHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView")
         collectionView?.register(ImageFooterReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView")
         
+        // Pan gesture for selecting a series of images by swiping over the cells
+        // (only received in selection mode, and gestureRecognizerShouldBegin restricts it
+        // to horizontal pans, so it does not interfere with the vertical scrolling)
+        let imageSeriesRecognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))
+        imageSeriesRecognizer.minimumNumberOfTouches = 1
+        imageSeriesRecognizer.maximumNumberOfTouches = 1
+        imageSeriesRecognizer.cancelsTouchesInView = false
+        imageSeriesRecognizer.delegate = self
+        collectionView?.addGestureRecognizer(imageSeriesRecognizer)
+        
         // Initialise "no album / no photo" label
         if albumData.pwgID == Int64.zero {
             noAlbumLabel.text = String(localized: "categoryMainEmtpy", comment: "No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.")
         } else {
             noAlbumLabel.text = String(localized: "noImages", comment:"No Images")
         }
-
+        
         // Add buttons above table view and other buttons
         if #unavailable(iOS 26.0) {
             view.insertSubview(addButton, aboveSubview: collectionView)

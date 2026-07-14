@@ -73,15 +73,6 @@ extension PasteboardImagesViewController: UICollectionViewDataSource
         cell.configure(with: image, identifier: identifier)
         cell.md5sum = md5sum
         
-        // Add pan gesture recognition
-        let imageSeriesRocognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))
-        imageSeriesRocognizer.minimumNumberOfTouches = 1
-        imageSeriesRocognizer.maximumNumberOfTouches = 1
-        imageSeriesRocognizer.cancelsTouchesInView = false
-        imageSeriesRocognizer.delegate = self
-        cell.addGestureRecognizer(imageSeriesRocognizer)
-        cell.isUserInteractionEnabled = true
-
         // Cell state
         let uploadState = getUploadStateOfImage(at: indexPath.item, for: cell)
         cell.update(selected: selectedImages[indexPath.item] != nil, state: uploadState)

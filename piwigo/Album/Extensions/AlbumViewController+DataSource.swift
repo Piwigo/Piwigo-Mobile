@@ -55,17 +55,6 @@ extension AlbumViewController
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCollectionViewCell", for: indexPath) as? ImageCollectionViewCell
                 else { preconditionFailure("Could not load ImageCollectionViewCell") }
                 
-                // Add pan gesture recognition if needed
-                if cell.gestureRecognizers == nil {
-                    let imageSeriesRocognizer = UIPanGestureRecognizer(target: self, action: #selector(self.touchedImages(_:)))
-                    imageSeriesRocognizer.minimumNumberOfTouches = 1
-                    imageSeriesRocognizer.maximumNumberOfTouches = 1
-                    imageSeriesRocognizer.cancelsTouchesInView = false
-                    imageSeriesRocognizer.delegate = self
-                    cell.addGestureRecognizer(imageSeriesRocognizer)
-                    cell.isUserInteractionEnabled = true
-                }
-                
                 // Is this cell selected?
                 cell.isSelection = self.selectedImageIDs.contains(image.pwgID)
                 
