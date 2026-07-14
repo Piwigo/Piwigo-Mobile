@@ -22,7 +22,6 @@ public extension Bundle {
 
 // Localized strings
 public enum Localized {
-    public static let album = String(localized: "album", bundle: .pwgCacheKit, comment: "Album")
     public static let error = String(localized: "errorHUD_label", bundle: .pwgCacheKit, comment: "Error")
     public static let migrationRequired = String(localized: "CoreData_MigrationRequired", bundle: .pwgCacheKit,
                                                  comment: "The persistent database of your Piwigo data requires migration. Please launch the application.")
