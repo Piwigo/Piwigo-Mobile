@@ -147,7 +147,7 @@ extension PasteboardImagesViewController {
                     self.indexedUploadsInQueue = newSetOfUploads
                     self.selectedImages = newSetOfSelections
 
-                    // Update section header and action buttonn
+                    // Update section header and action button
                     // Reload collection view if some objects were removed
                     if didRemoveObjects {
                         self.localImagesCollection.reloadData()

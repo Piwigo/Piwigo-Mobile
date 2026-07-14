@@ -90,17 +90,17 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
                     if self.selectedImages[indexPath.item] != nil {
                         // Image selected ► Propose to deselect it
                         children.append(self.deselectAction(forCell: cell, at: indexPath,
-                                                            inUploadSate: uploadState))
+                                                            inUploadState: uploadState))
                     } else if (uploadState == nil) || self.reUploadAllowed {
                         // Image deselected ► Propose to select it
                         children.append(self.selectAction(forCell: cell, at: indexPath,
-                                                          inUploadSate: uploadState))
+                                                          inUploadState: uploadState))
                     }
-                    children.append(self.uploaAction(forCell: cell, at: indexPath))
+                    children.append(self.uploadAction(forCell: cell, at: indexPath))
                 } else {
                     children.append(self.statusAction(upload.first))
                     if self.reUploadAllowed {
-                        children.append(self.uploaAction(forCell: cell, at: indexPath))
+                        children.append(self.uploadAction(forCell: cell, at: indexPath))
                     }
                 }
                 return UIMenu(title: "", children: children)
@@ -130,7 +130,7 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
     }
     
     private func selectAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath,
-                              inUploadSate uploadState: pwgUploadState?) -> UIAction
+                              inUploadState uploadState: pwgUploadState?) -> UIAction
     {
         // Image not selected and selectable ► Propose to select it
         return UIAction(title: String(localized: "categoryImageList_selectButton", comment: "Select"),
@@ -155,7 +155,7 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
     }
     
     private func deselectAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath,
-                                inUploadSate uploadState: pwgUploadState?) -> UIAction
+                                inUploadState uploadState: pwgUploadState?) -> UIAction
     {
         var image: UIImage?
         if #available(iOS 16, *) {
@@ -181,7 +181,7 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
         }
     }
 
-    private func uploaAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
+    private func uploadAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
         let imageUpload: UIImage?
         if #available(iOS 17.0, *) {
             let imageConfig = UIImage.SymbolConfiguration(pointSize: 15, weight: .semibold)

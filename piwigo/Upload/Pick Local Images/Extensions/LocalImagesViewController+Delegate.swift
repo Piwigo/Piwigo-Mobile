@@ -81,18 +81,18 @@ extension LocalImagesViewController: UICollectionViewDelegate
                         if self.selectedImages[index] != nil {
                             // Image selected ► Propose to deselect it
                             children.append(self.deselectAction(forCell: cell, at: indexPath,
-                                                                index: index, inUploadSate: uploadState))
+                                                                index: index, inUploadState: uploadState))
                         } else if (uploadState == nil) || self.reUploadAllowed {
                             // Image deselected ► Propose to select it
                             children.append(self.selectAction(forCell: cell, at: indexPath,
-                                                              index: index, inUploadSate: uploadState))
+                                                              index: index, inUploadState: uploadState))
                         }
-                        children.append(self.uploaAction(forCell: cell, at: indexPath))
+                        children.append(self.uploadAction(forCell: cell, at: indexPath))
                     } else {
                         children.append(self.statusAction(upload.first))
                     }
                     if self.reUploadAllowed {
-                        children.append(self.uploaAction(forCell: cell, at: indexPath))
+                        children.append(self.uploadAction(forCell: cell, at: indexPath))
                     }
                     if canDelete {
                         children.append(self.deleteMenu(forCell: cell, at: indexPath))
@@ -135,18 +135,18 @@ extension LocalImagesViewController: UICollectionViewDelegate
                         if self.selectedImages[index] != nil {
                             // Image selected ► Propose to deselect it
                             children.append(self.deselectAction(forCell: cell, at: indexPath,
-                                                                index: index, inUploadSate: uploadState))
+                                                                index: index, inUploadState: uploadState))
                         } else if (uploadState == nil) || self.reUploadAllowed {
                             // Image deselected ► Propose to select it
                             children.append(self.selectAction(forCell: cell, at: indexPath,
-                                                              index: index, inUploadSate: uploadState))
+                                                              index: index, inUploadState: uploadState))
                         }
-                        children.append(self.uploaAction(forCell: cell, at: indexPath))
+                        children.append(self.uploadAction(forCell: cell, at: indexPath))
                     } else {
                         children.append(self.statusAction(upload.first))
                     }
                     if self.reUploadAllowed {
-                        children.append(self.uploaAction(forCell: cell, at: indexPath))
+                        children.append(self.uploadAction(forCell: cell, at: indexPath))
                     }
                     if canDelete {
                         children.append(self.deleteMenu(forCell: cell, at: indexPath))
@@ -180,7 +180,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
     }
     
     private func selectAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath,
-                              index: Int, inUploadSate uploadState: pwgUploadState?) -> UIAction
+                              index: Int, inUploadState uploadState: pwgUploadState?) -> UIAction
     {
         // Image not selected and selectable ► Propose to select it
         return UIAction(title: String(localized: "categoryImageList_selectButton", comment: "Select"),
@@ -203,7 +203,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
     }
     
     private func deselectAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath,
-                                index: Int, inUploadSate uploadState: pwgUploadState?) -> UIAction
+                                index: Int, inUploadState uploadState: pwgUploadState?) -> UIAction
     {
         var image: UIImage?
         if #available(iOS 16, *) {
@@ -229,7 +229,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
         }
     }
 
-    private func uploaAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
+    private func uploadAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
         let imageUpload: UIImage?
         if #available(iOS 17.0, *) {
             let imageConfig = UIImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
