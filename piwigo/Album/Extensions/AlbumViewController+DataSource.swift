@@ -60,8 +60,7 @@ extension AlbumViewController
                 
                 // pwg.users.favorites… methods available from Piwigo version 2.10
                 if self.hasFavorites {
-                    cell.isFavorite = (image.albums ?? Set<Album>())
-                        .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
+                    cell.isFavorite = self.favAlbum?.images?.contains(image) ?? false
                 }
                 
                 // The image being retrieved in a background task,

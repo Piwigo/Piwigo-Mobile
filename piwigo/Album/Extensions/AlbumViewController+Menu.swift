@@ -583,12 +583,7 @@ extension AlbumViewController: @MainActor ImageHeaderDelegate
                     cell.isSelection = true
                 } else {
                     // pwg.users.favorites… methods available from Piwigo version 2.10
-                    if hasFavorites {
-                        selectImage(image, isFavorite: (image.albums ?? Set<Album>())
-                            .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue}))
-                    } else {
-                        selectImage(image, isFavorite: false)
-                    }
+                    selectImage(image, isFavorite: favAlbum?.images?.contains(image) ?? false)
                 }
             }
             // Change section button state

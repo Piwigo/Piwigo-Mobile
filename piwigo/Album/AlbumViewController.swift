@@ -140,6 +140,13 @@ final class AlbumViewController: UIViewController
         // pwg.users.favorites… methods available from Piwigo version 2.10
         return user.canManageFavorites()
     }()
+    /// Album of favorites, used to determine whether images are favorites.
+    /// Checking Image.albums fires a Core Data fault per image, whereas
+    /// the images of the favorites album are fetched in a single request.
+    lazy var favAlbum: Album? = {
+        guard hasFavorites else { return nil }
+        return try? albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue)
+    }()
     
     lazy var prefersLargeTitles: Bool = {
         // Adopts large title only when showing the default album
