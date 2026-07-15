@@ -60,25 +60,56 @@ struct ImageUtilities
             }
         }
         
-        // Retrieve image
-        guard let image = UIImage(contentsOfFile: imageURL.path)
+        // Create an image source without loading the image in memory
+        let sourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
+        guard let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, sourceOptions),
+              let properties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, sourceOptions) as? [CFString: Any],
+              let pixelWidth = properties[kCGImagePropertyPixelWidth] as? Double,
+              let pixelHeight = properties[kCGImagePropertyPixelHeight] as? Double
         else {
             // Delete corrupted cached image file if any
             try? FileManager.default.removeItem(at: imageURL)
             return type.placeHolder
         }
-        
-        // Downsample image if needed
-        guard let optSize = optimumSize(ofImage: image, forPointSize: pointSize),
-              let downsampledImage = image.preparingThumbnail(of: optSize)
-        else {
-            // Decode the image now so that UIKit does not decode it at render time
-            return image.preparingForDisplay() ?? image
+
+        // Take the EXIF orientation into account (values 5…8 swap width and height)
+        var imageSize = CGSize(width: pixelWidth, height: pixelHeight)
+        if let orientation = properties[kCGImagePropertyOrientation] as? UInt32,
+           (5...8).contains(orientation) {
+            imageSize = CGSize(width: pixelHeight, height: pixelWidth)
         }
 
-        // Save the downsampled image in cache if it does not belong to the app
-        if [.album, .image].contains(type) {
-            downsampledImage.saveInOptimumFormat(atPath: filePath)
+        // Determine the maximum dimension of the downsampled image
+        var shouldBeSavedInCache = false
+        let maxPixelSize: CGFloat
+        if let optSize = reducedSize(from: imageSize, to: pointSize) {
+            maxPixelSize = max(optSize.width, optSize.height).rounded(.up)
+            shouldBeSavedInCache = true
+        } else {
+            // Image size smaller than pointSize ► No downsampling
+            maxPixelSize = max(imageSize.width, imageSize.height)
+        }
+
+        // Downsample and decode the image in a single pass,
+        // without materialising the full-size image in memory
+        let downsampleOptions = [kCGImageSourceCreateThumbnailFromImageAlways: true,
+                                 kCGImageSourceShouldCacheImmediately: true,
+                                 kCGImageSourceCreateThumbnailWithTransform: true,
+                                 kCGImageSourceThumbnailMaxPixelSize: maxPixelSize] as CFDictionary
+        guard let cgImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, downsampleOptions)
+        else {
+            // Delete corrupted cached image file if any
+            try? FileManager.default.removeItem(at: imageURL)
+            return type.placeHolder
+        }
+        let downsampledImage = UIImage(cgImage: cgImage)
+
+        // Save the downsampled image in cache if it does not belong to the app,
+        // without delaying the display of the image (only benefits future displays)
+        if shouldBeSavedInCache, [.album, .image].contains(type) {
+            DispatchQueue.global(qos: .utility).async {
+                downsampledImage.saveInOptimumFormat(atPath: filePath)
+            }
         }
         return downsampledImage
     }
