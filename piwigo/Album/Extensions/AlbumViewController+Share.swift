@@ -160,9 +160,10 @@ extension AlbumViewController
                 
                 // Delete image/video files and remove observers after dismissing activity view controller
                 activityViewController.completionWithItemsHandler = { [self] activityType, completed, returnedItems, activityError in
-                    //        NSLog(@"Activity Type selected: %@", activityType);
+                    // If needed, sets items so that they will be deleted after a delay
+                    ShareUtilities.setClipboardExpiration(forActivityType: activityType)
+
                     if completed {
-                        //            NSLog(@"Selected activity was performed and returned error:%ld", (long)activityError.code);
                         // Delete shared files & remove observers
                         NotificationCenter.default.post(name: .pwgDidShare, object: nil)
 

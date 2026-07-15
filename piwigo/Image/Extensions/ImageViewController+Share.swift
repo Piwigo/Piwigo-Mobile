@@ -130,14 +130,8 @@ extension ImageViewController
 //            debugPrint("Activity Type selected: \(activityType)")
 
             // If needed, sets items so that they will be deleted after a delay
-            let delay = pwgClearClipboard(rawValue: AppVars.shared.clearClipboardDelay)?.seconds ?? 0.0
-            if delay > 0, activityType == .copyToPasteboard {
-                let items = UIPasteboard.general.items
-                let expirationDate: NSDate = NSDate.init(timeIntervalSinceNow: delay)
-                let options: [UIPasteboard.OptionsKey : Any] = [.expirationDate : expirationDate]
-                UIPasteboard.general.setItems(items, options: options)
-            }
-            
+            ShareUtilities.setClipboardExpiration(forActivityType: activityType)
+
             // Enable buttons after action
             setEnableStateOfButtons(true)
 
