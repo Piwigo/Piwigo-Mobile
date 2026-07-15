@@ -213,26 +213,29 @@ extension AlbumViewController
             selectedSections[section] = SelectButtonState.none
             return .none
         }
-
-        // Number of selected images
-        var nberOfSelectedImagesInSection = 0
-        snapshot.itemIdentifiers(inSection: sectionID).forEach { objectID in
-            if let image = try? self.mainContext.existingObject(with: objectID) as? Image,
-               selectedImageIDs.contains(image.pwgID) {
-                nberOfSelectedImagesInSection += 1
-            }
-        }
         
-        // Update state of Select button only if needed
-        if nberOfImagesInSection == nberOfSelectedImagesInSection {
-            // All images are selected
-            selectedSections[section] = SelectButtonState.deselect
-            return .deselect
-        } else {
-            // Not all images are selected
+        // All images in the section cannot be selected if fewer images are selected overall
+        // (this avoids faulting every image of the section while the user is scrolling)
+        if selectedImageIDs.count < nberOfImagesInSection {
             selectedSections[section] = SelectButtonState.select
             return .select
         }
+        
+        // Check whether all images in the section are selected,
+        // stopping at the first one which is not selected
+        for objectID in snapshot.itemIdentifiers(inSection: sectionID) {
+            guard let image = try? self.mainContext.existingObject(with: objectID) as? Image,
+                  selectedImageIDs.contains(image.pwgID)
+            else {
+                // Not all images are selected
+                selectedSections[section] = SelectButtonState.select
+                return .select
+            }
+        }
+
+        // All images are selected
+        selectedSections[section] = SelectButtonState.deselect
+        return .deselect
     }
 
     
