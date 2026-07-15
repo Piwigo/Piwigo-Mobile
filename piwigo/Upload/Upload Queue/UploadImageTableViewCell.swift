@@ -7,6 +7,7 @@
 //
 
 import CoreData
+import PDFKit
 import Photos
 import UIKit
 import PwgKit
@@ -160,6 +161,11 @@ class UploadImageTableViewCell: UITableViewCell {
             // Add movie icon
             playIcon.isHidden = false
         }
+        else if upload.localIdentifier.contains(kPdfSuffix) {
+            // Case of a PDF file
+            playIcon.isHidden = true
+            image = PDFDocument(url: fileURL)?.extractedImage() ?? pwgImageType.image.placeHolder
+        }
         else {
             // Unknown type
             playIcon.isHidden = true
@@ -168,9 +174,7 @@ class UploadImageTableViewCell: UITableViewCell {
 
         // Scale/crop image
         let finalImage = image.crop(width: 1.0, height: 1.0)?.resize(to: 58.0, opaque: true, scale: scale)
-        if let currentImage = cellImage.image, !currentImage.isEqual(finalImage) {
-            cellImage.image = finalImage
-        }
+        changeCellImageIfNeeded(withImage: finalImage ?? pwgImageType.image.placeHolder)
 
         // Image available
         var text = ""
