@@ -141,12 +141,18 @@ final class AlbumViewController: UIViewController
         return user.canManageFavorites()
     }()
     /// Album of favorites, used to determine whether images are favorites.
-    /// Checking Image.albums fires a Core Data fault per image, whereas
-    /// the images of the favorites album are fetched in a single request.
-    lazy var favAlbum: Album? = {
+    /// Checking Image.albums fires a Core Data fault per image, whereas the images of the favorites album are fetched in a single request.
+    /// NB: This property is accessed by the cell provider, i.e. while a snapshot may be being applied, so the album is fetched without being created when
+    /// it is missing — creating it would save the context and trigger a nested snapshot apply, i.e. a deadlock (case of a cleared cache).
+    var _favAlbum: Album? = nil
+    var favAlbum: Album? {
         guard hasFavorites else { return nil }
-        return try? albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue)
-    }()
+        // Fetch or re-fetch the album if needed (e.g. after clearing the cache)
+        if _favAlbum == nil || _favAlbum?.isDeleted == true || _favAlbum?.managedObjectContext == nil {
+            _favAlbum = albumProvider.fetchAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue)
+        }
+        return _favAlbum
+    }
     
     lazy var prefersLargeTitles: Bool = {
         // Adopts large title only when showing the default album

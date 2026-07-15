@@ -85,6 +85,22 @@ public final class AlbumProvider {
             return nil
         }
     }
+
+    /// Returns the requested album if it exists in the persistent store.
+    /// Unlike getAlbum(ofUser:withId:name:), this method never creates smart albums
+    /// and never saves the context, so it can be called while a snapshot is being
+    /// applied to a diffable data source without triggering a nested apply.
+    public func fetchAlbum(ofUser user: User, withId albumId: Int32) -> Album? {
+        // Initialisation
+        guard let taskContext = user.managedObjectContext
+        else { return nil }
+
+        // Synchronous execution
+        return taskContext.performAndWait { () -> Album? in
+            let fetchRequest = fetchRequestOfAlbum(withId: albumId, forUser: user)
+            return try? taskContext.fetch(fetchRequest).first
+        }
+    }
     
     
     // MARK: - Import Album Data
