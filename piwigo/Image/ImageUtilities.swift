@@ -55,7 +55,8 @@ struct ImageUtilities
             }
             if let fileCreationDate = fileURL?.creationDate,
                (fileCreationDate < ImageVars.shared.dateCommit18e4273 || fileCreationDate > ImageVars.shared.dateOfFirstOptImageV323) {
-                return optImage
+                // Decode the image now so that UIKit does not decode it at render time
+                return optImage.preparingForDisplay() ?? optImage
             }
         }
         
@@ -71,9 +72,10 @@ struct ImageUtilities
         guard let optSize = optimumSize(ofImage: image, forPointSize: pointSize),
               let downsampledImage = image.preparingThumbnail(of: optSize)
         else {
-            return image
+            // Decode the image now so that UIKit does not decode it at render time
+            return image.preparingForDisplay() ?? image
         }
-        
+
         // Save the downsampled image in cache if it does not belong to the app
         if [.album, .image].contains(type) {
             downsampledImage.saveInOptimumFormat(atPath: filePath)
