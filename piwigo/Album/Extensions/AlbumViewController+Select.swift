@@ -199,14 +199,14 @@ extension AlbumViewController
         }
 
         // Album section?
-        if let index = diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey),
+        let snapshot = currentSnapshot
+        if let index = snapshot.indexOfSection(pwgAlbumGroup.none.sectionKey),
            index == section {
             return .none
         }
-        
+
         // Number of images in section
         var nberOfImagesInSection = Int.zero
-        let snapshot = diffableDataSource.snapshot() as Snapshot
         let sectionID = snapshot.sectionIdentifiers[section]
         nberOfImagesInSection = snapshot.numberOfItems(inSection: sectionID)
         if nberOfImagesInSection == 0 {
@@ -529,7 +529,7 @@ extension AlbumViewController: ImageDetailDelegate
     func didSelectImage(atIndexPath indexPath: IndexPath) {
         // Album section presented?
         var imageIndexPath = indexPath
-        if let firstSectionID = diffableDataSource.snapshot().sectionIdentifiers.first,
+        if let firstSectionID = currentSnapshot.sectionIdentifiers.first,
            firstSectionID == pwgAlbumGroup.none.sectionKey {
             imageIndexPath.section += 1
         }

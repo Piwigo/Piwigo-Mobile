@@ -40,7 +40,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize
     {
         // Album or image?
-        if let index = diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey),
+        if let index = currentSnapshot.indexOfSection(pwgAlbumGroup.none.sectionKey),
            index == section {       /* Album collection */
             // Header height?
             let descriptionSize = self.getAlbumDescriptionSize()
@@ -71,7 +71,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
             }
             
             // Images are sorted by date ► Presents menu
-            let hasAlbumSection = self.diffableDataSource.snapshot().sectionIdentifiers.contains(pwgAlbumGroup.none.sectionKey)
+            let hasAlbumSection = self.currentSnapshot.sectionIdentifiers.contains(pwgAlbumGroup.none.sectionKey)
             if section == 0, hasAlbumSection == false {
                 return CGSize(width: collectionView.frame.size.width,
                               height: imageHeaderHeight + self.getAlbumDescriptionSize().height)
@@ -129,7 +129,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
     {
         let nberOfSections = diffableDataSource.numberOfSections(in: collectionView)
         // Album or image?
-        if let index = diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey),
+        if let index = currentSnapshot.indexOfSection(pwgAlbumGroup.none.sectionKey),
            index == section {
             // Album collection
             // Show number of images shown in footer of root album and albums not containing photos
@@ -161,7 +161,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
     {
         // Album or image?
-        if let index = diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey),
+        if let index = currentSnapshot.indexOfSection(pwgAlbumGroup.none.sectionKey),
            index == section {
             // Album collection
             let margin = AlbumVars.shared.kAlbumMarginsSpacing
@@ -176,7 +176,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         // Album or image?
-        if let index = diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey),
+        if let index = currentSnapshot.indexOfSection(pwgAlbumGroup.none.sectionKey),
            index == section {
             // Album collection
             return AlbumVars.shared.kAlbumCellVertSpacing
@@ -189,7 +189,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         // Album or image?
-        if let index = diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey),
+        if let index = currentSnapshot.indexOfSection(pwgAlbumGroup.none.sectionKey),
            index == section {
             // Album collection
             return AlbumVars.shared.kAlbumCellSpacing

@@ -567,7 +567,7 @@ extension AlbumViewController: @MainActor ImageHeaderDelegate
 //        let start = CFAbsoluteTimeGetCurrent()
         if selectedSections[section] == .select {
             // Loop over all images in section to select them
-            let snapshot = self.diffableDataSource.snapshot()
+            let snapshot = self.currentSnapshot
             let sectionID = snapshot.sectionIdentifiers[section]
             let sectionItems = snapshot.itemIdentifiers(inSection: sectionID)
             sectionItems.forEach { objectID in
@@ -596,7 +596,7 @@ extension AlbumViewController: @MainActor ImageHeaderDelegate
         } 
         else {
             // Loop over all images in section to deselect them
-            let snapshot = self.diffableDataSource.snapshot()
+            let snapshot = self.currentSnapshot
             let sectionID = snapshot.sectionIdentifiers[section]
             let sectionItems = snapshot.itemIdentifiers(inSection: sectionID)
             sectionItems.forEach { objectID in

@@ -196,6 +196,10 @@ final class AlbumViewController: UIViewController
         }
         return _diffableDataSource as! DataSource
     }
+    /// Copy of the snapshot applied to the diffable data source.
+    /// diffableDataSource.snapshot() copies all identifiers at each call,
+    /// which is too costly for methods called repeatedly during scrolling and layout.
+    var currentSnapshot = Snapshot()
     
     lazy var user: User = {
         do {
@@ -1030,16 +1034,16 @@ final class AlbumViewController: UIViewController
     // MARK: - Utilities
     func nberOfAlbums() -> Int {
         var nberOfAlbums = Int.zero
-        let snapshot = diffableDataSource.snapshot() as Snapshot
+        let snapshot = currentSnapshot
         if let _ = snapshot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
             nberOfAlbums = snapshot.numberOfItems(inSection: pwgAlbumGroup.none.sectionKey)
         }
         return nberOfAlbums
     }
-    
+
     func nberOfImages() -> Int {
-        let snapshot = diffableDataSource.snapshot() as Snapshot
-        var nberOfImages = diffableDataSource.snapshot().numberOfItems
+        let snapshot = currentSnapshot
+        var nberOfImages = snapshot.numberOfItems
         if let _ = snapshot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
             nberOfImages -= snapshot.numberOfItems(inSection: pwgAlbumGroup.none.sectionKey)
         }

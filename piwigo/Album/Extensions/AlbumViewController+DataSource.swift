@@ -78,7 +78,7 @@ extension AlbumViewController
         dataSource.supplementaryViewProvider = { collectionView, kind, indexPath in
             let emptyView = UICollectionReusableView(frame: CGRect.zero)
             // Album or image?
-            if let index = self.diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey),
+            if let index = self.currentSnapshot.indexOfSection(pwgAlbumGroup.none.sectionKey),
                index == indexPath.section {       /* Album collection */
                 switch kind {
                 case UICollectionView.elementKindSectionHeader:
@@ -108,7 +108,7 @@ extension AlbumViewController
                     let selectState = self.updateSelectButton(ofSection: indexPath.section)
                     
                     // Images are grouped by day, week or month ► Only display date and location
-                    let hasAlbumSection = self.diffableDataSource.snapshot().sectionIdentifiers.contains(pwgAlbumGroup.none.sectionKey)
+                    let hasAlbumSection = self.currentSnapshot.sectionIdentifiers.contains(pwgAlbumGroup.none.sectionKey)
                     guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView", for: indexPath) as? ImageHeaderReusableView,
                           let sortKey = self.images.fetchRequest.sortDescriptors?.first?.key
                     else { preconditionFailure("Could not load ImageHeaderReusableView") }
@@ -171,7 +171,7 @@ extension AlbumViewController
             
             // Retrieve the appropriate section header
             let selectState = updateSelectButton(ofSection: indexPath.section)
-            let hasAlbumSection = self.diffableDataSource.snapshot().sectionIdentifiers.contains(pwgAlbumGroup.none.sectionKey)
+            let hasAlbumSection = self.currentSnapshot.sectionIdentifiers.contains(pwgAlbumGroup.none.sectionKey)
             if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
                 if indexPath.section == 0, hasAlbumSection == false {
                     header.config(with: imagesInSection, sortKey: sortKey, section: indexPath.section, selectState: selectState,
@@ -187,7 +187,7 @@ extension AlbumViewController
     // MARK: - Footers
     private func getImagesInSection(at indexPath: IndexPath) -> [Image] {
         var imagesInSection = [Image]()
-        let snapshot = self.diffableDataSource.snapshot()
+        let snapshot = self.currentSnapshot
         let sectionID = snapshot.sectionIdentifiers[indexPath.section]
         let sectionItems = snapshot.itemIdentifiers(inSection: sectionID)
         let nberOfImageInSection = sectionItems.count
@@ -226,7 +226,7 @@ extension AlbumViewController
         var totalCount = Int64.zero
         if albumData.pwgID == 0 {
             // Root Album only contains albums  => calculate total number of images
-            let snapshot = diffableDataSource.snapshot() as Snapshot
+            let snapshot = currentSnapshot
             if let albumSection = snapshot.sectionIdentifiers.first {
                 snapshot.itemIdentifiers(inSection: albumSection).forEach { objectID in
                     guard let album = try? self.mainContext.existingObject(with: objectID) as? Album
@@ -279,14 +279,14 @@ extension AlbumViewController
         var indexPath: IndexPath?
         if categoryId == Int32.zero {
             // Number of images in footer of album collection
-            let snapShot = self.diffableDataSource.snapshot()
+            let snapShot = self.currentSnapshot
             if let section = snapShot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
                 indexPath = IndexPath(item: 0, section: section)
             }
         }
         else {
             // Number of images in footer of image collection
-            let snapShot = self.diffableDataSource.snapshot()
+            let snapShot = self.currentSnapshot
             if let sectionID = snapShot.sectionIdentifiers.last,
                let section = snapShot.indexOfSection(sectionID) {
                 indexPath = IndexPath(item: 0, section: section)

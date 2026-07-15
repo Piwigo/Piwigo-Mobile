@@ -93,6 +93,10 @@ extension AlbumViewController: @MainActor NSFetchedResultsControllerDelegate
             }
         }
         
+        // Update the cached snapshot before applying it so that the layout
+        // and data source methods called during the update use the new one
+        self.currentSnapshot = currentSnapshot
+
         // Animate only a non-empty UI
         let shouldAnimate = (collectionView?.numberOfSections ?? 0) != 0
         dataSource.apply(currentSnapshot as Snapshot, animatingDifferences: shouldAnimate)
