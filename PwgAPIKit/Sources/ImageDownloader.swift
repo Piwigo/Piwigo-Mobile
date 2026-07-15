@@ -69,13 +69,13 @@ public actor ImageDownloader {
 //                debugPrint("••> Image \(fileURL.lastPathComponent): \((diff * 1000).rounded(.awayFromZero)/10)%) retrieved from cache.")
                 if diff < 0.1 {     // i.e. 10%
                     downloads.removeValue(forKey: imageURL)
-                    completion(fileURL)
+                    complete(with: completion, fileURL: fileURL)
                     return
                 }
             } else {
 //                debugPrint("••> return cached image \(String(describing: download.fileURL.lastPathComponent)) i.e., downloaded from \(imageURL)")
                 downloads.removeValue(forKey: imageURL)
-                completion(fileURL)
+                complete(with: completion, fileURL: fileURL)
                 return
             }
         }
@@ -280,9 +280,9 @@ public actor ImageDownloader {
         guard let download = downloads[imageURL],
               let fileURL = download.fileURL
         else { return }
-        download.completionHandler?(fileURL)
+        complete(with: download.completionHandler, fileURL: fileURL)
         downloads.removeValue(forKey: imageURL)
-        
+
         // Next downloads?
         launchDownloadsIfAnyAndPossible()
     }
@@ -301,6 +301,16 @@ public actor ImageDownloader {
     
     
     // MARK: - Private helpers
+    // Completion handlers may perform heavy work such as image decoding,
+    // so they are called outside the actor to avoid serialising all cache checks,
+    // downloads and completions behind each decode.
+    private nonisolated func complete(with completionHandler: ((URL) -> Void)?, fileURL: URL) {
+        guard let completionHandler else { return }
+        Task.detached(priority: .userInitiated) {
+            completionHandler(fileURL)
+        }
+    }
+
     private func storeDownloadedFile(from location: URL, to fileURL: URL, forImageURL imageURL: URL) {
         do {
             let fm = FileManager.default
