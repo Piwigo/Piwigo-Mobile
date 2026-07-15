@@ -43,6 +43,8 @@ class LocalAlbumsViewController: UIViewController {
     private var selectPhotoLibraryItemsButton: UIBarButtonItem?
     private var cancelBarButton: UIBarButtonItem?
     var hasImagesInPasteboard: Bool = false
+    private var pasteboardChangeCount: Int = .min
+    private var pasteboardTimer: Timer?
     
     let maxNberOfAlbumsInSection = 23
     var hasLimitedNberOfAlbums: [LocalAlbumType : Bool] = [.pasteboard   : false,
@@ -150,6 +152,7 @@ class LocalAlbumsViewController: UIViewController {
             let testTypes = UIPasteboard.general.contains(pasteboardTypes: pasteboardTypes) ? true : false
             let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes)?.count ?? 0
             hasImagesInPasteboard = testTypes && (nberPhotos > 0)
+            pasteboardChangeCount = UIPasteboard.general.changeCount
         }
         
         // Set colors, fonts, etc.
@@ -196,6 +199,11 @@ class LocalAlbumsViewController: UIViewController {
         
         // Update title of current scene (iPad only)
         view.window?.windowScene?.title = String(localized: "tabBar_upload", comment: "Upload")
+        
+        // Watch the pasteboard while the view is visible
+        if wantedAction != .setAutoUploadAlbum {
+            startPasteboardTimer()
+        }
         
         // Show HUD while fetching local albums
         if self.localAlbumsProvider.didFetchAssetCollections == false {
@@ -251,12 +259,37 @@ class LocalAlbumsViewController: UIViewController {
             // Are there images in the pasteboard?
             let testTypes = UIPasteboard.general.contains(pasteboardTypes: pasteboardTypes) ? true : false
             let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes)?.count ?? 0
-            hasImagesInPasteboard = testTypes && (nberPhotos > 0)
+            let hasImages = testTypes && (nberPhotos > 0)
             
-            // Reload tableView
-            self.setTableViewMainHeader()
-            localAlbumsTableView.reloadData()
+            // Reload tableView only if the pasteboard content changed.
+            // Both tests are needed: the changeCount detects changes which don't flip
+            // the boolean (e.g. 3 photos replaced by 1 photo, whose number is displayed
+            // in the Clipboard row), while the boolean detects items removed at their
+            // expirationDate, for which iOS is not documented to bump the changeCount.
+            let changeCount = UIPasteboard.general.changeCount
+            if hasImages != hasImagesInPasteboard || changeCount != pasteboardChangeCount {
+                hasImagesInPasteboard = hasImages
+                pasteboardChangeCount = changeCount
+                self.setTableViewMainHeader()
+                localAlbumsTableView.reloadData()
+            }
         }
+    }
+    
+    // iOS empties the pasteboard silently when its items expire (see the Clear Clipboard
+    // privacy setting) and posts no notification for changes made by other apps while
+    // this app remains active (e.g. in Split View). So the pasteboard is polled while
+    // the view is visible.
+    private func startPasteboardTimer() {
+        pasteboardTimer?.invalidate()
+        pasteboardTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { [weak self] _ in
+            self?.checkPasteboard()
+        }
+    }
+    
+    private func stopPasteboardTimer() {
+        pasteboardTimer?.invalidate()
+        pasteboardTimer = nil
     }
     
     @objc func quitUpload() {
@@ -272,7 +305,10 @@ class LocalAlbumsViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
+
+        // Stop watching the pasteboard
+        stopPasteboardTimer()
+
         // If user disallowed access to Photos, there is no album left for selection.
         // So in this case, we return an empty collection name as source for auto-uploading.
         if wantedAction == .setAutoUploadAlbum,
