@@ -480,9 +480,6 @@ final class AlbumViewController: UIViewController
         super.viewWillAppear(animated)
         debugPrint("••> viewWillAppear — Album #\(categoryId): \(albumData.name)")
         
-        // For testing…
-//        timeCounter = CFAbsoluteTimeGetCurrent()
-        
         // Always open this view with a navigation bar
         // (might have been hidden during Image Previewing)
         navigationController?.setNavigationBarHidden(false, animated: true)
@@ -531,13 +528,6 @@ final class AlbumViewController: UIViewController
         super.viewDidAppear(animated)
         debugPrint("••> viewDidAppear — Album #\(categoryId): \(albumData.name)")
         
-        // Speed and memory measurements with iPad Pro 11" in debug mode
-        /// Old method —> 0 photo: 527 ms, 24 photos: 583 ms, 3020 photos: 15 226 ms (memory crash after repeating tests)
-        /// hasFavorites  cached —> a very little quicker but less memory impacting (-195 MB transcient allocations for 3020 photos)
-        /// placeHolder & size cached —> 0 photo: 526 ms, 24 photos: 585 ms, 3020 photos: 14 586 ms i.e. -6% (memory crash after repeating tests)
-//        let duration = (CFAbsoluteTimeGetCurrent() - timeCounter)*1000
-//        debugPrint("••> completed in \(duration.rounded()) ms")
-
         // The user may have cleared the cached data
         // Display an empty root album in that case
         if categoryId == Int32.zero, albumData.isFault {
