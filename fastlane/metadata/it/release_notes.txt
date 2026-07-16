@@ -1,2 +1,2 @@
-• Corregge i bug e migliora l'interfaccia
-• Consente di modificare il numero massimo di connessioni simultanee al server Piwigo
+• Risolve alcuni bug e migliora l'interfaccia
+• Aggiunge un'estensione “Condividi” e un collegamento che consentono di scaricare foto, video e file PDF da altre app

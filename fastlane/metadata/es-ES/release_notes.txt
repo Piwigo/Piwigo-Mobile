@@ -1,2 +1,2 @@
 • Corrige errores y mejora la interfaz
-• Permite cambiar el número máximo de conexiones simultáneas al servidor de Piwigo
+• Incorpora una extensión para compartir y un acceso directo que permite descargar fotos, vídeos y archivos PDF desde otras aplicaciones

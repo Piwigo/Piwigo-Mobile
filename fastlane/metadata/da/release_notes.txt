@@ -1,2 +1,2 @@
-• Retter fejl og forbedrer brugerfladen
-• Tillader at ændre det maksimale antal samtidige forbindelser til Piwigo-serveren
+• Rette fejl og forbedrer brugergrænsefladen
+• Tilføjer en »Del«-udvidelse og en genvej, der gør det muligt at downloade fotos, videoer og PDF-filer fra andre apps

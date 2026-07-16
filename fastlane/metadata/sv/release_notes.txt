@@ -1,2 +1,2 @@
-• Fixar buggar och förbättrar gränssnittet
-• Gör det möjligt att ändra det maximala antalet samtidiga anslutningar till Piwigo-servern
+• Åtgärdar fel och förbättrar användargränssnittet
+• Lägger till en delningsfunktion och en genväg som gör det möjligt att ladda ner foton, videor och PDF-filer från andra appar

@@ -1,2 +1,2 @@
 • Behebt Fehler und verbessert die Benutzeroberfläche
-• Erlaubt das Ändern der maximalen Anzahl an gleichzeitigen Verbindungen zum Piwigo-Server
+• Fügt eine „Teilen“-Erweiterung und eine Verknüpfung hinzu, mit der Fotos, Videos und PDF-Dateien aus anderen Apps heruntergeladen werden können

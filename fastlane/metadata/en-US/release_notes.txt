@@ -1,2 +1,2 @@
 • Fixes bugs and improves the interface
-• Allows to change the maximum number of simultaneous connections to the Piwigo server
+• Adds a Share extension allowing to download photos, videos and PDF files from other apps

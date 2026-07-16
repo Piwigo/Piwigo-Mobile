@@ -1,2 +1,2 @@
-• Lost bugs op en verbetert de interface
-• Biedt de mogelijkheid om het maximale aantal gelijktijdige verbindingen met de Piwigo-server aan te passen
+• Verhelpt fouten en verbetert de gebruikersinterface
+• Voegt een ‘Delen’-extensie en een snelkoppeling toe waarmee foto’s, video’s en PDF-bestanden uit andere apps kunnen worden gedownload

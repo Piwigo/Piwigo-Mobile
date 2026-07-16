@@ -1,2 +1,2 @@
-• Hibajavítások és a kezelőfelület javítása
-• Lehetővé teszi a Piwigo-kiszolgálóhoz fennálló egyidejű kapcsolatok maximális számának módosítását
+• Hibajavítások és a felület fejlesztése
+• Új „Megosztás” kiterjesztés és gyorsbillentyű hozzáadása, amely lehetővé teszi fényképek, videók és PDF-fájlok letöltését más alkalmazásokból

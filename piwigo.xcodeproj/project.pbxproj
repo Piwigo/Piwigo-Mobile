@@ -256,9 +256,6 @@
 		AD9697D52BDE4B8900520614 /* PiwigoHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB5B7B02BDD4195001DE2C7 /* PiwigoHUD.swift */; };
 		AD9697D62BDE4B8D00520614 /* PiwigoHUD.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADB5B7B22BDD46C6001DE2C7 /* PiwigoHUD.xib */; };
 		AD9697D82BE0301000520614 /* RingProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9697D72BE0301000520614 /* RingProgressView.swift */; };
-		ADE920502FBD100000CAF83A /* PiwigoHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB5B7B02BDD4195001DE2C7 /* PiwigoHUD.swift */; };
-		ADE920512FBD100000CAF83A /* RingProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9697D72BE0301000520614 /* RingProgressView.swift */; };
-		ADE920522FBD100000CAF83A /* PiwigoHUD.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADB5B7B22BDD46C6001DE2C7 /* PiwigoHUD.xib */; };
 		AD9697DA2BE2536300520614 /* LocalImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD9697D92BE2536300520614 /* LocalImageCollectionViewCell.xib */; };
 		AD96981E2BE6408600520614 /* AlbumViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD96981D2BE6408600520614 /* AlbumViewController.storyboard */; };
 		AD9698202BE6420800520614 /* AlbumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD96981F2BE6420800520614 /* AlbumViewController.swift */; };
@@ -400,6 +397,9 @@
 		ADE920462FBCD4D600CAF83A /* PwgUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = ADE920452FBCD4D600CAF83A /* PwgUIKit */; };
 		ADE920482FBCF85300CAF83A /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADE920472FBCF85300CAF83A /* Localizable.xcstrings */; };
 		ADE9204A2FBD029A00CAF83A /* ShareViewController+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE920492FBD029A00CAF83A /* ShareViewController+Delegate.swift */; };
+		ADE920502FBD100000CAF83A /* PiwigoHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB5B7B02BDD4195001DE2C7 /* PiwigoHUD.swift */; };
+		ADE920512FBD100000CAF83A /* RingProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9697D72BE0301000520614 /* RingProgressView.swift */; };
+		ADE920522FBD100000CAF83A /* PiwigoHUD.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADB5B7B22BDD46C6001DE2C7 /* PiwigoHUD.xib */; };
 		ADE986312A7277740087F031 /* VideoHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE986302A7277740087F031 /* VideoHUD.swift */; };
 		ADEA269A285F8D5F00B6C9A0 /* ImageViewController+Share.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEA2699285F8D5F00B6C9A0 /* ImageViewController+Share.swift */; };
 		ADEA269C285F8F2E00B6C9A0 /* ImageViewController+Favorites.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEA269B285F8F2E00B6C9A0 /* ImageViewController+Favorites.swift */; };
@@ -1512,10 +1512,10 @@
 			isa = PBXGroup;
 			children = (
 				AD7D132D2DFF120A00EEE90D /* AppShortcuts.swift */,
+				AD1AD61C2DFF195700D25EF9 /* AppShortcuts.strings */,
 				AD27CE7A2FF91C6D00553B8E /* AutoUpload */,
 				AD27CE7B2FF91C7A00553B8E /* UploadPhotos */,
 				AD7D132B2DFF00FA00EEE90D /* In-AppIntents.xcstrings */,
-				AD1AD61C2DFF195700D25EF9 /* AppShortcuts.strings */,
 			);
 			path = "In-App Intents";
 			sourceTree = "<group>";
@@ -3011,7 +3011,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 677;
+				CURRENT_PROJECT_VERSION = 680;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZEC3W885H6;
@@ -3067,7 +3067,7 @@
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 677;
+				CURRENT_PROJECT_VERSION = 680;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZU5THW8T5W;
 				ENABLE_DEBUG_DYLIB = NO;
@@ -3138,7 +3138,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 677;
+				CURRENT_PROJECT_VERSION = 680;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = ZU5THW8T5W;
@@ -3214,7 +3214,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
-				CURRENT_PROJECT_VERSION = 677;
+				CURRENT_PROJECT_VERSION = 680;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = ZU5THW8T5W;
@@ -3260,7 +3260,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 677;
+				CURRENT_PROJECT_VERSION = 680;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZEC3W885H6;
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = ZEC3W885H6;
@@ -3309,7 +3309,7 @@
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 677;
+				CURRENT_PROJECT_VERSION = 680;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZU5THW8T5W;
 				ENABLE_DEBUG_DYLIB = NO;
