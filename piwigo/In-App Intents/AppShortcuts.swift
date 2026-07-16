@@ -42,9 +42,9 @@ struct PiwigoShortcutsProvider: AppShortcutsProvider {
         AppShortcut(
             intent: UploadPhotos(),
             phrases: [
-                "Upload these photos with \(.applicationName)",
-                "Upload photos to \(.applicationName)",
-                "Send photos to \(.applicationName)"
+                "Upload photos with \(.applicationName)",
+                "Upload my photos with \(.applicationName)",
+                "Upload my latest photos with \(.applicationName)"
             ],
             shortTitle: LocalizedStringResource("uploadPhotos", table: "In-AppIntents", comment: "Upload Photos"),
             systemImageName: "photo.stack"
