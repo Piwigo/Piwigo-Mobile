@@ -379,7 +379,7 @@ class ImageViewController: UIViewController {
         
         // Report error
         let title = String(localized: "imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
-        let message = String(localized: "imageDetailsFetchError_message", comment: "Fetching the image data failed.")
+        let message = String(localized: "imageDetailsFetchError_message", comment: "Fetching the photo data failed.")
         dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { }
     }
     

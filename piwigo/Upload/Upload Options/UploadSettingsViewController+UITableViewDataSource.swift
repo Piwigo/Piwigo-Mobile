@@ -37,7 +37,7 @@ extension UploadSettingsViewController {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
             else { preconditionFailure("Could not load a SwitchTableViewCell!") }
             // See https://iosref.com/res
-            cell.configure(with: String(localized: "settings_stripGPSdata", comment: "Strip Private Metadata"))
+            cell.configure(with: String(localized: "settings_stripGPSdataLong", comment: "Strip Private Metadata"))
             cell.cellSwitch.setOn(stripGPSdataOnUpload, animated: true)
             cell.cellSwitchBlock = { switchState in
                 self.stripGPSdataOnUpload = switchState

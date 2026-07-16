@@ -322,7 +322,7 @@ final class AlbumViewController: UIViewController
         
         // Initialise "no album / no photo" label
         if albumData.pwgID == Int64.zero {
-            noAlbumLabel.text = String(localized: "categoryMainEmtpy", comment: "No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.")
+            noAlbumLabel.text = String(localized: "categoryMainEmtpy", comment: "No albums in your Piwigo yet. You may pull down to refresh or re-login.")
         } else {
             noAlbumLabel.text = String(localized: "noImages", comment:"No Images")
         }

@@ -55,9 +55,9 @@ extension AlbumViewController
         if totalNberToDelete > 1 {
             msg = String.localizedStringWithFormat(String(localized: "deleteSeveralImages_message", comment: "Are you sure you want to delete the selected %@ photos/videos?"), NSNumber(value: totalNberToDelete))
         } else if let imageData = toDelete.first, imageData.isVideo {
-            msg = String(localized: "deleteSingleVideo_message", comment: "Are you sure you want to delete this video?")
+            msg = String(localized: "deleteSingleVideo_message", comment: "Are you sure you want to delete this video? This cannot be undone!")
         } else {
-            msg = String(localized: "deleteSingleImage_message", comment: "Are you sure you want to delete this photo?")
+            msg = String(localized: "deleteSingleImage_message", comment: "Are you sure you want to delete this image? This cannot be undone!")
         }
         let alert = UIAlertController(title: nil, message: msg, preferredStyle: .actionSheet)
 
@@ -226,7 +226,7 @@ extension AlbumViewController
         
         // Report error
         var imagesToRemove = toRemove
-        let title = String(localized: "moveImageError_title", comment: "Delete Failed")
+        let title = String(localized: "moveImageError_title", comment: "Move Failed")
         let message = String(localized: "deleteImageFail_message", comment: "Image could not be deleted.")
         if imagesToRemove.count > 1 {
             cancelDismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in

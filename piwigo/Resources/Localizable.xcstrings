@@ -2822,7 +2822,7 @@
       }
     },
     "categoryMainEmtpy" : {
-      "comment" : "No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.\nNo albums in your Piwigo yet. You may pull down to refresh or re-login.",
+      "comment" : "No albums in your Piwigo yet. You may pull down to refresh or re-login.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -7166,7 +7166,7 @@
       }
     },
     "copyImageError_title" : {
-      "comment" : "Copy Fail",
+      "comment" : "Copy Failed",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -13254,7 +13254,7 @@
       }
     },
     "deleteImageFail_message" : {
-      "comment" : "Image could not be deleted\nImage could not be deleted.",
+      "comment" : "Image could not be deleted.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -13759,7 +13759,7 @@
       }
     },
     "deleteSingleImage_message" : {
-      "comment" : "Are you sure you want to delete this image? This cannot be undone!\nAre you sure you want to delete this photo?",
+      "comment" : "Are you sure you want to delete this image? This cannot be undone!",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -13860,7 +13860,7 @@
       }
     },
     "deleteSingleImage_title" : {
-      "comment" : "Delete Image\nDelete Photo",
+      "comment" : "Delete Photo",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -14062,7 +14062,7 @@
       }
     },
     "deleteSingleVideo_message" : {
-      "comment" : "Are you sure you want to delete this image? This cannot be undone!\nAre you sure you want to delete this video?",
+      "comment" : "Are you sure you want to delete this video? This cannot be undone!",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -19922,7 +19922,7 @@
       }
     },
     "imageDetailsFetchError_message" : {
-      "comment" : "Fetching the image data failed.\nFetching the photo data failed.",
+      "comment" : "Fetching the photo data failed.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -20831,7 +20831,7 @@
       }
     },
     "imageOptions_properties" : {
-      "comment" : "Modify Information\nModify Properties",
+      "comment" : "Modify Properties",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -29721,7 +29721,7 @@
       }
     },
     "moveImageError_title" : {
-      "comment" : "Delete Failed\nMove Fail",
+      "comment" : "Move Failed",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -44163,7 +44163,7 @@
       }
     },
     "settings_privacy" : {
-      "comment" : "Policy Privacy\nPrivacy Policy",
+      "comment" : "Privacy Policy",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -46183,7 +46183,7 @@
       }
     },
     "settings_renameFileLong" : {
-      "comment" : "Rename File\nRename File Before Upload",
+      "comment" : "Rename File",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -46688,7 +46688,7 @@
       }
     },
     "settings_renameReplace" : {
-      "comment" : "Replace File Name\nReplace Name",
+      "comment" : "Replace Name",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -47395,7 +47395,7 @@
       }
     },
     "settings_stripGPSdata" : {
-      "comment" : "Strip Metadata\nStrip Private Metadata",
+      "comment" : "Strip Metadata",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -49719,7 +49719,7 @@
       }
     },
     "severalImages" : {
-      "comment" : "Images\nPhotos",
+      "comment" : "Photos",
       "localizations" : {
         "ar" : {
           "stringUnit" : {

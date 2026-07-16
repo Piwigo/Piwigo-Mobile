@@ -27,9 +27,9 @@ struct UploadPhotos: AppIntent {
     static let description = IntentDescription(
         LocalizedStringResource("UploadPhotosDescription", table: "In-AppIntents",
                                 comment: "Appends photos to the upload queue."),
-        categoryName: LocalizedStringResource("severalImages"),
+        categoryName: LocalizedStringResource("severalImages", comment: "Photos"),
         searchKeywords: [LocalizedStringResource("tabBar_upload"),
-                         LocalizedStringResource("severalImages"), "Piwigo"])
+                         LocalizedStringResource("severalImages", comment: "Photos"), "Piwigo"])
     
     /// Tell the system to bring the app to the foreground when the intent runs.
     static let openAppWhenRun: Bool = true
@@ -38,7 +38,7 @@ struct UploadPhotos: AppIntent {
     // initializer available since iOS 16 rather than `supportedContentTypes`, which requires iOS 18.
     // `supportedTypeIdentifiers` must be a compile-time constant, hence the raw UTI strings
     // instead of `UTType.image.identifier` / `UTType.movie.identifier`.
-    @Parameter(title: LocalizedStringResource("severalImages"),
+    @Parameter(title: LocalizedStringResource("severalImages", comment: "Photos"),
                supportedTypeIdentifiers: ["public.image", "public.movie", "com.adobe.pdf"])
     var photos: [IntentFile]
 

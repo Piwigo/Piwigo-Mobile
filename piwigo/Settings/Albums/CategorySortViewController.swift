@@ -29,7 +29,7 @@ class CategorySortViewController: UIViewController {
         super.viewDidLoad()
         
         // Apply attributes to title
-        title = String(localized: "severalImages", comment: "Images")
+        title = String(localized: "severalImages", comment: "Photos")
         
         // Table view
         sortSelectTableView?.accessibilityIdentifier = "sortSelect"

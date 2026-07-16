@@ -197,7 +197,7 @@ extension RenameFileViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
 
-                cell.configure(with: String(localized: "settings_renameReplace", comment: "Replace File Name"))
+                cell.configure(with: String(localized: "settings_renameReplace", comment: "Replace Name"))
                 cell.cellSwitch.setOn(replaceBeforeUpload, animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Enable/disable replace actions

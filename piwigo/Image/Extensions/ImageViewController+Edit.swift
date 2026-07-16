@@ -16,8 +16,7 @@ extension ImageViewController
 {
     func editParamsAction() -> UIAction {
         // Edit image parameters
-        let action = UIAction(title: String(localized: "imageOptions_properties",
-                                                       comment: "Modify Information"),
+        let action = UIAction(title: String(localized: "imageOptions_properties", comment: "Modify Properties"),
                               image: UIImage(systemName: "pencil"),
                               handler: { [self] _ in
             // Edit image properties

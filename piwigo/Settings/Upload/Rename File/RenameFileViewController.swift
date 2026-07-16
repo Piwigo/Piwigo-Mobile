@@ -257,7 +257,7 @@ class RenameFileViewController: UIViewController {
     @MainActor
     private func setTableViewMainHeader() {
         let headerView = RenameFileTableHeaderView(frame: CGRect.zero)
-        let title = String(localized: "settings_renameFileLong", comment: "Rename File Before Upload")
+        let title = String(localized: "settings_renameFileLong", comment: "Rename File")
         let text = String(localized: "settings_renameFile_info", comment: "Please define how file names should be modified before uploading.")
         headerView.config(with: title, text: text, forWidth: view.bounds.width)
         headerView.updateExample(prefix: prefixBeforeUpload, prefixActions: prefixActions,

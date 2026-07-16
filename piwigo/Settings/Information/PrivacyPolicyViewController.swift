@@ -24,7 +24,7 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
         super.viewDidLoad()
 
         // Title
-        title = String(localized: "settings_privacy", comment: "Policy Privacy")
+        title = String(localized: "settings_privacy", comment: "Privacy Policy")
     }
     
     @MainActor
@@ -298,7 +298,7 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
         let contactString3 = NSLocalizedString("contact_email", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "Contact email")
         let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
         let appBuildString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
-        let subject = "\(NSLocalizedString("settings_appName", comment: "Piwigo Mobile")) \(appVersionString ?? "") (\(appBuildString ?? "")) — \(NSLocalizedString("settings_privacy", comment: "Policy Privacy"))".addingPercentEncoding(withAllowedCharacters: CharacterSet.urlPathAllowed)
+        let subject = "\(NSLocalizedString("settings_appName", comment: "Piwigo Mobile")) \(appVersionString ?? "") (\(appBuildString ?? "")) — \(NSLocalizedString("settings_privacy", comment: "Privacy Policy"))".addingPercentEncoding(withAllowedCharacters: CharacterSet.urlPathAllowed)
         let mailTo = "mailto:\(contactString3)?subject=\(subject ?? "")"
         var contactAttributedString3: NSMutableAttributedString? = nil
         if let url = URL(string: mailTo) {

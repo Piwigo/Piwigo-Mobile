@@ -35,7 +35,7 @@ extension SettingsViewController: UITableViewDelegate
         case .albums:
             title = Localized.tabBar_albums
         case .images:
-            title = String(localized: "severalImages", comment: "Images")
+            title = String(localized: "severalImages", comment: "Photos")
         case .videos:
             title = String(localized: "severalVideos", comment: "Videos")
         case .uploads:

@@ -26,7 +26,7 @@ class ImageFooterReusableView: UICollectionReusableView {
         nberImagesLabel?.textAlignment = .center
         nberImagesLabel?.font = .preferredFont(forTextStyle: .subheadline)
         nberImagesLabel?.adjustsFontForContentSizeCategory = true
-        nberImagesLabel?.text = String(localized: "categoryMainEmtpy", comment: "No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.")
+        nberImagesLabel?.text = String(localized: "categoryMainEmtpy", comment: "No albums in your Piwigo yet. You may pull down to refresh or re-login.")
 
         if let nberImagesLabel = nberImagesLabel {
             addSubview(nberImagesLabel)
@@ -43,6 +43,6 @@ class ImageFooterReusableView: UICollectionReusableView {
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        nberImagesLabel?.text = String(localized: "categoryMainEmtpy", comment: "No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.")
+        nberImagesLabel?.text = String(localized: "categoryMainEmtpy", comment: "No albums in your Piwigo yet. You may pull down to refresh or re-login.")
     }
 }

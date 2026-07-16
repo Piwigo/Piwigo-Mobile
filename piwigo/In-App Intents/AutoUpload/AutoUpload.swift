@@ -28,9 +28,9 @@ struct AutoUpload: AppIntent, ForegroundContinuableIntent { // , PredictableInte
     /// An intent can optionally provide a localized description that the Shortcuts app displays.
     static let description = IntentDescription(LocalizedStringResource("AutoUploadDescription", table: "In-AppIntents"),
                                                categoryName:
-                                                LocalizedStringResource("severalImages"), searchKeywords: [
+                                                LocalizedStringResource("severalImages", comment: "Photos"), searchKeywords: [
                                                     LocalizedStringResource("settings_autoUpload"),
-                                                    LocalizedStringResource("severalImages"), "Piwigo"])
+                                                    LocalizedStringResource("severalImages", comment: "Photos"), "Piwigo"])
     
     /// Tell the system to not bring the app to the foreground when the intent starts.
     static let openAppWhenRun: Bool = false

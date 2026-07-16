@@ -32,7 +32,7 @@ class DefaultImageThumbnailSizeViewController: UIViewController {
         super.viewDidLoad()
         
         // Title
-        title = String(localized: "severalImages", comment: "Images")
+        title = String(localized: "severalImages", comment: "Photos")
 
         // Table view
         tableView?.accessibilityIdentifier = "Image Thumbnail Size"

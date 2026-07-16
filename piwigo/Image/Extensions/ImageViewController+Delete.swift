@@ -30,7 +30,7 @@ extension ImageViewController
         setEnableStateOfButtons(false)
 
         let alert = UIAlertController(title: "",
-            message: imageData.isVideo ? String(localized: "deleteSingleVideo_message", comment: "Are you sure you want to delete this image? This cannot be undone!") : String(localized: "deleteSingleImage_message", comment: "Are you sure you want to delete this image? This cannot be undone!"),
+            message: imageData.isVideo ? String(localized: "deleteSingleVideo_message", comment: "Are you sure you want to delete this video? This cannot be undone!") : String(localized: "deleteSingleImage_message", comment: "Are you sure you want to delete this image? This cannot be undone!"),
             preferredStyle: .actionSheet)
 
         let cancelAction = UIAlertAction(title: Localized.cancel,
@@ -46,7 +46,7 @@ extension ImageViewController
             })
 
         let deleteAction = UIAlertAction(
-            title: imageData.isVideo ? String(localized: "deleteSingleVideo_title", comment: "Delete Video") : String(localized: "deleteSingleImage_title", comment: "Delete Image"),
+            title: imageData.isVideo ? String(localized: "deleteSingleVideo_title", comment: "Delete Video") : String(localized: "deleteSingleImage_title", comment: "Delete Photo"),
             style: .destructive, handler: { [self] action in
                 deleteImageFromDatabase()
             })
@@ -146,7 +146,7 @@ extension ImageViewController
 
         // Report error
         let title = String(localized: "deleteImageFail_title", comment: "Delete Failed")
-        let message = String(localized: "deleteImageFail_message", comment: "Image could not be deleted")
+        let message = String(localized: "deleteImageFail_message", comment: "Image could not be deleted.")
         self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
             // Hide HUD
             hideHUD { [self] in
@@ -231,7 +231,7 @@ extension ImageViewController
 
         // Report error
         let title = String(localized: "deleteImageFail_title", comment: "Delete Failed")
-        let message = String(localized: "deleteImageFail_message", comment: "Image could not be deleted")
+        let message = String(localized: "deleteImageFail_message", comment: "Image could not be deleted.")
         self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
             // Hide HUD
             hideHUD { [self] in

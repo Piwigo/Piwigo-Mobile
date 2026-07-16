@@ -557,16 +557,16 @@ final class SelectCategoryViewController: UIViewController {
             title = String(localized: "categoryImageSetError_title", comment:"Image Set Error")
             message = String(localized: "categoryImageSetError_message", comment:"Failed to set the album image")
         case .copyImage:
-            title = String(localized: "copyImageError_title", comment:"Copy Fail")
+            title = String(localized: "copyImageError_title", comment:"Copy Failed")
             message = String(localized: "copySingleImageError_message", comment:"Failed to copy your photo")
         case .copyImages:
-            title = String(localized: "copyImageError_title", comment:"Copy Fail")
+            title = String(localized: "copyImageError_title", comment:"Copy Failed")
             message = String(localized: "copySeveralImagesError_message", comment:"Failed to copy some photos")
         case .moveImage:
-            title = String(localized: "moveImageError_title", comment:"Move Fail")
+            title = String(localized: "moveImageError_title", comment:"Move Failed")
             message = String(localized: "moveSingleImageError_message", comment:"Failed to copy your photo")
         case .moveImages:
-            title = String(localized: "moveImageError_title", comment:"Move Fail")
+            title = String(localized: "moveImageError_title", comment:"Move Failed")
             message = String(localized: "moveSeveralImagesError_message", comment:"Failed to move some photos")
         default:
             return
