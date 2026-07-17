@@ -16,17 +16,15 @@ public final class InterfaceManager {
         
     // MARK: - Light and Dark Modes
     // Called:
+    /// - when the app is launched
     /// - when the user changes settings (PhoneTableViewCell and PadTableViewCell classes)
     /// - by traitCollectionDidChange() in the app when the system switches between Light and Dark modes
     /// NB: Extensions never call traitCollectionDidChange() because trait changes are driven by UIWindowScene.
     public func applyColorPalette(for userInterfaceStyle: UIUserInterfaceStyle) {
         // Color palette depends on system settings
-        let isSystemDarkModeActive = (userInterfaceStyle == .dark)
-        guard InterfaceVars.shared.isSystemDarkModeActive != isSystemDarkModeActive
-        else { return }
+        InterfaceVars.shared.isSystemDarkModeActive = (userInterfaceStyle == .dark)
         
         // Apply color palette change if needed
-        InterfaceVars.shared.isSystemDarkModeActive = (userInterfaceStyle == .dark)
         if InterfaceVars.shared.isLightPaletteModeActive
         {
             if !InterfaceVars.shared.isDarkPaletteActive {
@@ -104,6 +102,6 @@ public final class InterfaceManager {
 
         // Notify palette change to views
         NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
-//        debugPrint("••> App changed to \(InterfaceVars.shared.isDarkPaletteActive ? "dark" : "light") mode");
+        debugPrint("••> App changed to \(InterfaceVars.shared.isDarkPaletteActive ? "dark" : "light") mode");
     }
 }
