@@ -2,7 +2,6 @@
   "sourceLanguage" : "en",
   "strings" : {
     "v1.0.0_text" : {
-      "comment" : "v1.0.0 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -104,7 +103,6 @@
       }
     },
     "v2.0.0_text" : {
-      "comment" : "v20.0 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -206,7 +204,6 @@
       }
     },
     "v2.0.1_text" : {
-      "comment" : "v2.0.1 Release Notes text",
       "extractionState" : "manual",
       "generatesSymbol" : false,
       "localizations" : {
@@ -309,7 +306,6 @@
       }
     },
     "v2.0.2_text" : {
-      "comment" : "v2.0.2 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -411,7 +407,6 @@
       }
     },
     "v2.0.3_text" : {
-      "comment" : "v2.0.3 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -513,7 +508,6 @@
       }
     },
     "v2.0.4_text" : {
-      "comment" : "v2.0.4 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -615,7 +609,6 @@
       }
     },
     "v2.1.0_text" : {
-      "comment" : "v2.1.0 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -717,7 +710,6 @@
       }
     },
     "v2.1.1_text" : {
-      "comment" : "v2.1.1 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -819,7 +811,6 @@
       }
     },
     "v2.1.2_text" : {
-      "comment" : "v2.1.2 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -921,7 +912,6 @@
       }
     },
     "v2.1.3_text" : {
-      "comment" : "v2.1.3 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -1023,7 +1013,6 @@
       }
     },
     "v2.1.4_text" : {
-      "comment" : "v2.1.4 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -1125,7 +1114,6 @@
       }
     },
     "v2.1.5_text" : {
-      "comment" : "v2.1.5 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -1227,7 +1215,6 @@
       }
     },
     "v2.1.6_text" : {
-      "comment" : "v2.1.6 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -1329,7 +1316,6 @@
       }
     },
     "v2.1.7_text" : {
-      "comment" : "v2.1.7 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -1431,7 +1417,6 @@
       }
     },
     "v2.1.8_text" : {
-      "comment" : "v2.1.8 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -1533,7 +1518,6 @@
       }
     },
     "v2.1.9_text" : {
-      "comment" : "v2.1.9 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -1635,7 +1619,6 @@
       }
     },
     "v2.2.0_text" : {
-      "comment" : "v2.2.0 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -1737,7 +1720,6 @@
       }
     },
     "v2.2.1_text" : {
-      "comment" : "v2.2.1 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -1839,7 +1821,6 @@
       }
     },
     "v2.2.2_text" : {
-      "comment" : "v2.2.2 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -1941,7 +1922,6 @@
       }
     },
     "v2.2.3_text" : {
-      "comment" : "v2.2.3 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -2043,7 +2023,6 @@
       }
     },
     "v2.2.4_text" : {
-      "comment" : "v2.2.4 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -2145,7 +2124,6 @@
       }
     },
     "v2.2.5_text" : {
-      "comment" : "v2.2.5 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -2247,7 +2225,6 @@
       }
     },
     "v2.2.6_text" : {
-      "comment" : "v2.2.6 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -2349,7 +2326,6 @@
       }
     },
     "v2.2.7_text" : {
-      "comment" : "v2.2.7 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -2451,7 +2427,6 @@
       }
     },
     "v2.3.0_text" : {
-      "comment" : "v2.3.0 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -2553,7 +2528,6 @@
       }
     },
     "v2.3.1_text" : {
-      "comment" : "v2.3.1 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -2655,7 +2629,6 @@
       }
     },
     "v2.3.2_text" : {
-      "comment" : "v2.3.2 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -2757,7 +2730,6 @@
       }
     },
     "v2.3.3_text" : {
-      "comment" : "v2.3.3 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -2859,7 +2831,6 @@
       }
     },
     "v2.3.4_text" : {
-      "comment" : "v2.3.4 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -2961,7 +2932,6 @@
       }
     },
     "v2.3.5_text" : {
-      "comment" : "v2.3.5 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -3063,7 +3033,6 @@
       }
     },
     "v2.4.0_text" : {
-      "comment" : "v2.4.0 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -3165,7 +3134,6 @@
       }
     },
     "v2.4.1_text" : {
-      "comment" : "v2.4.1 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -3267,7 +3235,6 @@
       }
     },
     "v2.4.2_text" : {
-      "comment" : "v2.4.2 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -3369,7 +3336,6 @@
       }
     },
     "v2.4.3_text" : {
-      "comment" : "v2.4.3 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -3471,7 +3437,6 @@
       }
     },
     "v2.4.4_text" : {
-      "comment" : "v2.4.4 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -3573,7 +3538,6 @@
       }
     },
     "v2.4.5_text" : {
-      "comment" : "v2.4.5 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -3675,7 +3639,6 @@
       }
     },
     "v2.4.6_text" : {
-      "comment" : "v2.4.6 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -3777,7 +3740,6 @@
       }
     },
     "v2.4.7_text" : {
-      "comment" : "v2.4.7 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -3879,7 +3841,6 @@
       }
     },
     "v2.4.8_text" : {
-      "comment" : "v2.4.8 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -3981,7 +3942,6 @@
       }
     },
     "v2.5.0_text" : {
-      "comment" : "v2.5.0 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -4083,7 +4043,6 @@
       }
     },
     "v2.5.1_text" : {
-      "comment" : "v2.5.1 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -4185,7 +4144,6 @@
       }
     },
     "v2.5.2_text" : {
-      "comment" : "v2.5.2 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -4287,7 +4245,6 @@
       }
     },
     "v2.5.3_text" : {
-      "comment" : "v2.5.3 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -4389,7 +4346,6 @@
       }
     },
     "v2.5.4_text" : {
-      "comment" : "v2.5.4 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -4491,7 +4447,6 @@
       }
     },
     "v2.6.0_text" : {
-      "comment" : "v2.6.0 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -4593,7 +4548,6 @@
       }
     },
     "v2.6.1_text" : {
-      "comment" : "v2.6.1 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -4695,7 +4649,6 @@
       }
     },
     "v2.6.2_text" : {
-      "comment" : "v2.6.2 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -4797,7 +4750,6 @@
       }
     },
     "v2.6.3_text" : {
-      "comment" : "v2.6.3 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -4899,7 +4851,6 @@
       }
     },
     "v2.6.4_text" : {
-      "comment" : "v2.6.4 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -5001,7 +4952,6 @@
       }
     },
     "v2.7.0_text" : {
-      "comment" : "v2.7.0 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -5103,7 +5053,6 @@
       }
     },
     "v2.7.1_text" : {
-      "comment" : "v2.7.1 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -5205,7 +5154,6 @@
       }
     },
     "v2.7.2_text" : {
-      "comment" : "v2.7.2 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -5307,7 +5255,6 @@
       }
     },
     "v2.8.0_text" : {
-      "comment" : "v2.8.0 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -5409,7 +5356,6 @@
       }
     },
     "v2.8.1_text" : {
-      "comment" : "v2.8.1 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -5511,7 +5457,6 @@
       }
     },
     "v2.8.2_text" : {
-      "comment" : "v2.8.2 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -5613,7 +5558,6 @@
       }
     },
     "v2.9.0_text" : {
-      "comment" : "v2.9.0 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -5715,7 +5659,6 @@
       }
     },
     "v2.9.1_text" : {
-      "comment" : "v2.9.1 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -5817,7 +5760,6 @@
       }
     },
     "v2.9.2_text" : {
-      "comment" : "v2.9.2 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -5919,7 +5861,6 @@
       }
     },
     "v2.9.3_text" : {
-      "comment" : "v2.9.3 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -6021,7 +5962,6 @@
       }
     },
     "v2.9.4_text" : {
-      "comment" : "v2.9.4 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -6123,7 +6063,6 @@
       }
     },
     "v2.9.5_text" : {
-      "comment" : "v2.9.5 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -6225,7 +6164,6 @@
       }
     },
     "v2.10.0_text" : {
-      "comment" : "v2.10.0 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -6327,7 +6265,6 @@
       }
     },
     "v2.11.0_text" : {
-      "comment" : "v2.11.0 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -6429,7 +6366,6 @@
       }
     },
     "v2.11.1_text" : {
-      "comment" : "v2.11.1 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -6531,7 +6467,6 @@
       }
     },
     "v2.11.2_text" : {
-      "comment" : "v2.11.2 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -6633,7 +6568,6 @@
       }
     },
     "v2.12.0_text" : {
-      "comment" : "v2.12.0 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -6735,7 +6669,6 @@
       }
     },
     "v2.12.1_text" : {
-      "comment" : "v2.12.1 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -6837,7 +6770,6 @@
       }
     },
     "v2.12.2_text" : {
-      "comment" : "v2.12.2 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -6939,7 +6871,6 @@
       }
     },
     "v2.12.3_text" : {
-      "comment" : "v2.12.3 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -7041,7 +6972,6 @@
       }
     },
     "v2.12.4_text" : {
-      "comment" : "v2.12.4 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -7143,7 +7073,6 @@
       }
     },
     "v2.12.5_text" : {
-      "comment" : "v2.12.5 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -7245,7 +7174,6 @@
       }
     },
     "v2.12.6_text" : {
-      "comment" : "v2.12.6 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -7347,7 +7275,6 @@
       }
     },
     "v2.12.7_text" : {
-      "comment" : "v2.12.7 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -7449,7 +7376,6 @@
       }
     },
     "v3.0.0_text" : {
-      "comment" : "v3.0.0 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -7551,7 +7477,6 @@
       }
     },
     "v3.0.1_text" : {
-      "comment" : "v3.0.1 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -7653,7 +7578,6 @@
       }
     },
     "v3.0.2_text" : {
-      "comment" : "v3.0.2 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -7755,7 +7679,6 @@
       }
     },
     "v3.1.0_text" : {
-      "comment" : "v3.1.0 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -7857,7 +7780,6 @@
       }
     },
     "v3.1.1_text" : {
-      "comment" : "v3.1.1 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -7959,7 +7881,6 @@
       }
     },
     "v3.1.2_text" : {
-      "comment" : "v3.1.2 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -8061,7 +7982,6 @@
       }
     },
     "v3.1.3_text" : {
-      "comment" : "v3.1.3 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -8163,7 +8083,6 @@
       }
     },
     "v3.1.4_text" : {
-      "comment" : "v3.1.4 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -8265,7 +8184,6 @@
       }
     },
     "v3.2.0_text" : {
-      "comment" : "v3.2.0 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -8367,7 +8285,6 @@
       }
     },
     "v3.2.1_text" : {
-      "comment" : "v3.2.1 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -8469,7 +8386,6 @@
       }
     },
     "v3.2.2_text" : {
-      "comment" : "v3.2.2 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -8571,7 +8487,6 @@
       }
     },
     "v3.2.3_text" : {
-      "comment" : "v3.2.3 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -8673,7 +8588,6 @@
       }
     },
     "v3.2.4_text" : {
-      "comment" : "v3.2.4 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -8775,7 +8689,6 @@
       }
     },
     "v3.2.5_text" : {
-      "comment" : "v3.2.5 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -8877,7 +8790,6 @@
       }
     },
     "v3.3.0_text" : {
-      "comment" : "v3.3.0 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -8979,7 +8891,6 @@
       }
     },
     "v3.3.1_text" : {
-      "comment" : "v3.3.1 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -9081,7 +8992,6 @@
       }
     },
     "v3.3.2_text" : {
-      "comment" : "v3.3.2 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -9183,7 +9093,6 @@
       }
     },
     "v3.4.0_text" : {
-      "comment" : "v3.4.0 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -9285,7 +9194,6 @@
       }
     },
     "v3.4.1_text" : {
-      "comment" : "v3.4.1 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -9387,7 +9295,6 @@
       }
     },
     "v3.5.0_text" : {
-      "comment" : "v3.5.0 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -9489,7 +9396,6 @@
       }
     },
     "v3.5.1_text" : {
-      "comment" : "v3.5.1 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -9591,7 +9497,6 @@
       }
     },
     "v4.0.0_text" : {
-      "comment" : "v4.0.0 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -9693,7 +9598,6 @@
       }
     },
     "v4.1.0_text" : {
-      "comment" : "v4.1.0 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -9795,7 +9699,6 @@
       }
     },
     "v4.1.1_text" : {
-      "comment" : "v4.1.1 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -9897,7 +9800,6 @@
       }
     },
     "v4.1.2_text" : {
-      "comment" : "v4.1.2 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -9999,7 +9901,6 @@
       }
     },
     "v4.1.3_text" : {
-      "comment" : "v4.1.3 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -10101,7 +10002,6 @@
       }
     },
     "v4.1.4_text" : {
-      "comment" : "v4.1.4 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -10203,7 +10103,6 @@
       }
     },
     "v4.2.0_text" : {
-      "comment" : "v4.2.0 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -10305,7 +10204,6 @@
       }
     },
     "v4.2.1_text" : {
-      "comment" : "v4.2.1 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -10407,7 +10305,6 @@
       }
     },
     "v4.2.2_text" : {
-      "comment" : "v4.2.2 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -10509,7 +10406,6 @@
       }
     },
     "v4.2.3_text" : {
-      "comment" : "v4.2.3 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -10611,7 +10507,6 @@
       }
     },
     "v4.2.4_text" : {
-      "comment" : "v4.2.4 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -10713,7 +10608,6 @@
       }
     },
     "v4.3.0_text" : {
-      "comment" : "v4.3.0 Release Notes text",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -10785,7 +10679,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wersja 4.3\n\n• Poprawki błędów i usprawnienia interfejsu\n• Dodano rozszerzenie „Udostępnij” oraz skrót umożliwiający pobieranie zdjęć, filmów i plików PDF z innych aplikacji"
+            "value" : "Wersja 4.3\n\n• Poprawki błędów i usprawnienia interfejsu\n• Dodano rozszerzenie „Udostępnij” umożliwiające pobieranie zdjęć, filmów i plików PDF z innych aplikacji"
           }
         },
         "ru" : {
