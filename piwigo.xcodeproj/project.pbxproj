@@ -208,6 +208,7 @@
 		AD6BA1002BA5D2FA00755257 /* PasteboardImagesViewController+HeaderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA0FF2BA5D2FA00755257 /* PasteboardImagesViewController+HeaderDelegate.swift */; };
 		AD6BA1042BA5ED1A00755257 /* LocalImagePreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA1032BA5ED1A00755257 /* LocalImagePreviewViewController.swift */; };
 		AD6E6C4E2E2C001F00600E5A /* PdfDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6E6C4D2E2C001F00600E5A /* PdfDetailViewController.swift */; };
+		F0F9267E1FD04E25802D6386 /* GifDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12695FF2A60F479AA0A5105C /* GifDetailViewController.swift */; };
 		AD6FD1FA24BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */; };
 		AD6FD1FC24BF0321009AA3B7 /* UploadSwitchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6FD1FB24BF0321009AA3B7 /* UploadSwitchViewController.swift */; };
 		AD7000CA2E425159007B2791 /* AlbumHeaderReusableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD7000C92E425159007B2791 /* AlbumHeaderReusableView.xib */; };
@@ -720,6 +721,7 @@
 		AD6BA0FF2BA5D2FA00755257 /* PasteboardImagesViewController+HeaderDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PasteboardImagesViewController+HeaderDelegate.swift"; sourceTree = "<group>"; };
 		AD6BA1032BA5ED1A00755257 /* LocalImagePreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalImagePreviewViewController.swift; sourceTree = "<group>"; };
 		AD6E6C4D2E2C001F00600E5A /* PdfDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PdfDetailViewController.swift; sourceTree = "<group>"; };
+		12695FF2A60F479AA0A5105C /* GifDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifDetailViewController.swift; sourceTree = "<group>"; };
 		AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UploadSwitchViewController.storyboard; sourceTree = "<group>"; };
 		AD6FD1FB24BF0321009AA3B7 /* UploadSwitchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSwitchViewController.swift; sourceTree = "<group>"; };
 		AD7000C92E425159007B2791 /* AlbumHeaderReusableView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AlbumHeaderReusableView.xib; sourceTree = "<group>"; };
@@ -1666,6 +1668,7 @@
 				AD3DB4102773957A00017542 /* ImageViewController.storyboard */,
 				AD3DB4142773958A00017542 /* ImageDescriptionView.swift */,
 				AD3DB4122773958200017542 /* ImageDetailViewController.swift */,
+				12695FF2A60F479AA0A5105C /* GifDetailViewController.swift */,
 				AD09E2FE2A90D6DD00D8E134 /* VideoDetailViewController.swift */,
 				AD6E6C4D2E2C001F00600E5A /* PdfDetailViewController.swift */,
 				ADC1FD9E29E3202500D8ADDC /* PieProgressView.swift */,
@@ -2392,6 +2395,7 @@
 				AD09E3032A92A05C00D8E134 /* SettingsViewController+Privacy.swift in Sources */,
 				ADBE0C2B2BE9635800F16A50 /* AlbumViewController+Share.swift in Sources */,
 				AD3DB4132773958200017542 /* ImageDetailViewController.swift in Sources */,
+				F0F9267E1FD04E25802D6386 /* GifDetailViewController.swift in Sources */,
 				AD21EB7F2E54D349004458D7 /* UISearchBar+AppTools.swift in Sources */,
 				ADC3280B2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift in Sources */,
 				ADC328072480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift in Sources */,

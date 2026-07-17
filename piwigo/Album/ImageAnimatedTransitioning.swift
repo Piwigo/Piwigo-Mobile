@@ -90,6 +90,13 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
                                      window: window)
                 return
             }
+            else if let gifDVC = detailVC as? GifDetailViewController,
+                    let imageViewSnapshot = gifDVC.imageView.snapshotView(afterScreenUpdates: true) {
+                presentOrDismissView(using: transitionContext, imageViewController: imageViewController,
+                                     detailViewController: gifDVC, imageViewSnapshot: imageViewSnapshot,
+                                     window: window)
+                return
+            }
             else if let videoDVC = detailVC as? VideoDetailViewController,
                     let imageViewSnapshot = videoDVC.placeHolderView.snapshotView(afterScreenUpdates: true) {
                 presentOrDismissView(using: transitionContext, imageViewController: imageViewController,
@@ -104,7 +111,6 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
                                      window: window)
                 return
             }
-                    
             
             transitionContext.completeTransition(false)
         }
@@ -188,12 +194,17 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
         var imageViewRect = CGRect.zero
         if let imageDVC = detailViewController as? ImageDetailViewController {
             imageViewRect = imageDVC.imageView.convert(imageDVC.imageView.bounds, to: window)
-        } else if let videoDVC = detailViewController as? VideoDetailViewController {
+        }
+        else if let gifDVC = detailViewController as? GifDetailViewController {
+            imageViewRect = gifDVC.imageView.convert(gifDVC.imageView.bounds, to: window)
+        }
+        else if let videoDVC = detailViewController as? VideoDetailViewController {
             imageViewRect = videoDVC.placeHolderView.convert(videoDVC.placeHolderView.bounds, to: window)
-        } else if let pdfDVC = detailViewController as? PdfDetailViewController {
+        }
+        else if let pdfDVC = detailViewController as? PdfDetailViewController {
             imageViewRect = pdfDVC.placeHolderView.convert(pdfDVC.placeHolderView.bounds, to: window)
         }
-
+        
         // Perform the animation
         UIView.animateKeyframes(withDuration: Self.duration, delay: 0, options: .calculationModeCubic, animations: {
             // Change frames and opacities
@@ -245,9 +256,14 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
         var imageViewRect = CGRect.zero
         if let imageDVC = detailViewController as? ImageDetailViewController {
             imageViewRect = imageDVC.imageView.convert(imageDVC.imageView.bounds, to: window)
-        } else if let videoDVC = detailViewController as? VideoDetailViewController {
+        }
+        else if let gifDVC = detailViewController as? GifDetailViewController {
+            imageViewRect = gifDVC.imageView.convert(gifDVC.imageView.bounds, to: window)
+        }
+        else if let videoDVC = detailViewController as? VideoDetailViewController {
             imageViewRect = videoDVC.placeHolderView.convert(videoDVC.placeHolderView.bounds, to: window)
-        } else if let pdfDVC = detailViewController as? PdfDetailViewController {
+        }
+        else if let pdfDVC = detailViewController as? PdfDetailViewController {
             imageViewRect = pdfDVC.placeHolderView.convert(pdfDVC.placeHolderView.bounds, to: window)
         }
 

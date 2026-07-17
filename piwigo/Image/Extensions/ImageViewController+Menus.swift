@@ -43,11 +43,11 @@ extension ImageViewController
 
 
     // MARK: - Image Edition
-    /// - for rotating image (not video)
+    /// - for rotating image (not video, nor GIF whose animation would be lost)
     /// - for editing image parameters
     func editMenu() -> UIMenu {
         var children = [UIMenuElement]()
-        if imageData.isImage {
+        if imageData.isImage, imageData.isGIF == false {
             children.append(rotateMenu())
         }
         children.append(editParamsAction())

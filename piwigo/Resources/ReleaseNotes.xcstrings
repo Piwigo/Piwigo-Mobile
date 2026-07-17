@@ -10612,97 +10612,97 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "الإصدار 4.3\n\n• إصلاح الأخطاء وتحسين الواجهة\n• إضافة ملحق «مشاركة» واختصار يتيح تنزيل الصور ومقاطع الفيديو وملفات PDF من التطبيقات الأخرى"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Version 4.3\n\n• Rette fejl og forbedrer brugergrænsefladen\n• Tilføjer en »Del«-udvidelse og en genvej, der gør det muligt at downloade fotos, videoer og PDF-filer fra andre apps"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Version 4.3\n\n• Behebt Fehler und verbessert die Benutzeroberfläche\n• Fügt eine „Teilen“-Erweiterung und eine Verknüpfung hinzu, mit der Fotos, Videos und PDF-Dateien aus anderen Apps heruntergeladen werden können"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.3\n\n• Fixes bugs and improves the interface\n• Adds a Share extension allowing to download photos, videos and PDF files from other apps"
+            "value" : "Version 4.3\n\n• Adds a Share extension allowing to download photos, videos and PDF files from other apps\n• Plays animated Gif images\n• Fixes bugs and improves the interface"
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Versión 4.3\n\n• Corrige errores y mejora la interfaz\n• Incorpora una extensión para compartir y un acceso directo que permite descargar fotos, vídeos y archivos PDF desde otras aplicaciones"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Version 4.3\n\n• Corrige des bugs et améliore l'interface\n• Ajoute une extension « Partager » et un raccourci permettant de transférer des photos, des vidéos et des fichiers PDF depuis d'autres applications"
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "4.3-as verzió\n\n• Hibajavítások és a felület fejlesztése\n• Új „Megosztás” kiterjesztés és gyorsbillentyű hozzáadása, amely lehetővé teszi fényképek, videók és PDF-fájlok letöltését más alkalmazásokból"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Versi 4.3\n\n• Memperbaiki bug dan meningkatkan antarmuka\n• Menambahkan ekstensi Bagikan dan pintasan yang memungkinkan pengguna mengunduh foto, video, dan berkas PDF dari aplikasi lain"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Versione 4.3\n\n• Risolve alcuni bug e migliora l'interfaccia\n• Aggiunge un'estensione “Condividi” e un collegamento che consentono di scaricare foto, video e file PDF da altre app"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "バージョン 4.3\n\n• バグの修正とインターフェースの改善\n• 他のアプリから写真、動画、PDFファイルをダウンロードできる「共有」拡張機能とショートカットを追加"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Versie 4.3\n\n• Verhelpt fouten en verbetert de gebruikersinterface\n• Voegt een ‘Delen’-extensie en een snelkoppeling toe waarmee foto’s, video’s en PDF-bestanden uit andere apps kunnen worden gedownload"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Wersja 4.3\n\n• Poprawki błędów i usprawnienia interfejsu\n• Dodano rozszerzenie „Udostępnij” umożliwiające pobieranie zdjęć, filmów i plików PDF z innych aplikacji"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Версия 4.3\n\n• Исправлены ошибки и улучшен интерфейс\n• Добавлено расширение «Поделиться» и ярлык, позволяющий скачивать фотографии, видео и PDF-файлы из других приложений"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Version 4.3\n\n• Åtgärdar fel och förbättrar användargränssnittet\n• Lägger till en delningsfunktion och en genväg som gör det möjligt att ladda ner foton, videor och PDF-filer från andra appar"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "版本 4.3\n\n• 修复了错误并优化了界面\n• 新增了“分享”扩展和快捷方式，支持从其他应用下载照片、视频和 PDF 文件"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "版本 4.3\n\n• 修復錯誤並優化介面\n• 新增「分享」擴充功能及快捷方式，可從其他應用程式下載照片、影片和 PDF 檔案"
           }
         }

@@ -37,8 +37,8 @@ final class ShareUtilities {
         // ATTENTION: Some sizes and/or URLs may not be available!
         // So we go through the whole list of URLs...
 
-        // If this is a video or a PDF file, always select the full resolution file.
-        if imageData.isNotImage {
+        // If this is a video, a PDF file or a Gif, always select the full resolution file.
+        if imageData.isNotImage || imageData.isGIF {
             if let pwgURL = imageData.downloadUrl {
                 return (.fullRes, pwgURL as URL)
             } else {

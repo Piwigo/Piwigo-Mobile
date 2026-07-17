@@ -76,7 +76,12 @@ class ImageViewController: UIViewController {
         let fileType = pwgImageFileType(rawValue: imageData.fileType) ?? .image
         switch fileType {
         case .image:
-            if let imageDVC = imageDetailViewController(ofImage: imageData, atIndexPath: indexPath) {
+            if imageData.isGIF {
+                if let gifDVC = gifDetailViewController(ofImage: imageData, atIndexPath: indexPath) {
+                    pageViewController?.setViewControllers([gifDVC], direction: .forward, animated: false)
+                }
+            }
+            else if let imageDVC = imageDetailViewController(ofImage: imageData, atIndexPath: indexPath) {
                 pageViewController?.setViewControllers([imageDVC], direction: .forward, animated: false)
             }
         case .video:
@@ -329,6 +334,19 @@ class ImageViewController: UIViewController {
                             self.updateNavBar()
                             self.setEnableStateOfButtons(true)
                             break
+                        } else if let pvc = vc as? GifDetailViewController, pvc.imageData.pwgID == imageID,
+                                  let updatedImage = self.images.fetchedObjects?.first(where: { $0.pwgID == imageID }) {
+                            // Update image data
+                            if updatedImage.isFault {
+                                // The image is not fired yet.
+                                updatedImage.willAccessValue(forKey: nil)
+                                updatedImage.didAccessValue(forKey: nil)
+                            }
+                            pvc.imageData = updatedImage
+                            // Update navigation bar and enable buttons
+                            self.updateNavBar()
+                            self.setEnableStateOfButtons(true)
+                            break
                         } else if let pvc = vc as? VideoDetailViewController, pvc.imageData.pwgID == imageID,
                                   let updatedImage = self.images.fetchedObjects?.first(where: { $0.pwgID == imageID }){
                             // Update image data
@@ -431,6 +449,7 @@ class ImageViewController: UIViewController {
         // Display/hide the description if any
         if let imagePVC = pageViewController?.viewControllers?.first {
             (imagePVC as? ImageDetailViewController)?.updateDescriptionVisibility()
+            (imagePVC as? GifDetailViewController)?.updateDescriptionVisibility()
             (imagePVC as? VideoDetailViewController)?.updateDescriptionControlsVisibility()
             (imagePVC as? PdfDetailViewController)?.updateDescriptionVisibility()
         }
@@ -447,6 +466,7 @@ class ImageViewController: UIViewController {
         // Zoom in/out the image if necessary
         if let imagePVC = pageViewController?.viewControllers?.first {
             (imagePVC as? ImageDetailViewController)?.didTapTwice(gestureRecognizer)
+            (imagePVC as? GifDetailViewController)?.didTapTwice(gestureRecognizer)
             (imagePVC as? VideoDetailViewController)?.didTapTwice(gestureRecognizer)
         }
     }
@@ -577,6 +597,11 @@ extension ImageViewController: UIPageViewControllerDelegate
             // Pause download
             Task { await ImageDownloader.shared.pauseDownload(atURL: imageURL) }
         }
+        else if let gifDVC = pageViewController.viewControllers?.first as? GifDetailViewController,
+                let imageURL = gifDVC.imageURL {
+            // Pause download
+            Task { await ImageDownloader.shared.pauseDownload(atURL: imageURL) }
+        }
         else if let pdfDVC = pageViewController.viewControllers?.first as? PdfDetailViewController,
                 let imageURL = pdfDVC.imageURL {
             // Pause download
@@ -598,6 +623,16 @@ extension ImageViewController: UIPageViewControllerDelegate
             indexPath = imageDVC.indexPath
             imageData = imageDVC.imageData
             
+            // Reset video player and PDF goToPage buttons
+            playBarButton = nil
+            muteBarButton = nil
+            goToPageButton = nil
+        }
+        else if let gifDVC = pageViewController.viewControllers?.first as? GifDetailViewController {
+            // Store index and image data of presented page
+            indexPath = gifDVC.indexPath
+            imageData = gifDVC.imageData
+
             // Reset video player and PDF goToPage buttons
             playBarButton = nil
             muteBarButton = nil
@@ -641,6 +676,9 @@ extension ImageViewController: UIPageViewControllerDelegate
         if let imageDVC = previousViewControllers.first as? ImageDetailViewController {
             didPresentNextPage = indexPath > imageDVC.indexPath
         }
+        else if let gifDVC = previousViewControllers.first as? GifDetailViewController {
+            didPresentNextPage = indexPath > gifDVC.indexPath
+        }
         else if let videoDVC = previousViewControllers.first as? VideoDetailViewController {
             didPresentNextPage = indexPath > videoDVC.indexPath
         }
@@ -672,6 +710,18 @@ extension ImageViewController: UIPageViewControllerDataSource
         return imageDVC
     }
     
+    // Create view controller for presenting the animated GIF at the provided index
+    func gifDetailViewController(ofImage imageData: Image, atIndexPath indexPath: IndexPath) -> GifDetailViewController? {
+//        debugPrint("••> Create page view controller for GIF #\(imageData.pwgID) at index \(indexPath)")
+        guard let gifDVC = storyboard?.instantiateViewController(withIdentifier: "GifDetailViewController") as? GifDetailViewController
+        else { return nil }
+
+        // Create GIF detail view
+        gifDVC.indexPath = indexPath
+        gifDVC.imageData = imageData
+        return gifDVC
+    }
+
     // Create view controller for presenting the video at the provided index
     func videoDetailViewController(ofImage imageData: Image, atIndexPath indexPath: IndexPath) -> VideoDetailViewController? {
 //        debugPrint("••> Create page view controller for video #\(imageData.pwgID) at index \(indexPath)")
@@ -716,6 +766,9 @@ extension ImageViewController: UIPageViewControllerDataSource
         let fileType = pwgImageFileType(rawValue: imageData.fileType) ?? .image
         switch fileType {
         case .image:
+            if imageData.isGIF {
+                return gifDetailViewController(ofImage: imageData, atIndexPath: nextIndexPath)
+            }
             return imageDetailViewController(ofImage: imageData, atIndexPath: nextIndexPath)
         case .video:
             return videoDetailViewController(ofImage: imageData, atIndexPath: nextIndexPath)
@@ -739,6 +792,9 @@ extension ImageViewController: UIPageViewControllerDataSource
         let fileType = pwgImageFileType(rawValue: imageData.fileType) ?? .image
         switch fileType {
         case .image:
+            if imageData.isGIF {
+                return gifDetailViewController(ofImage: imageData, atIndexPath: previousIndexPath)
+            }
             return imageDetailViewController(ofImage: imageData, atIndexPath: previousIndexPath)
         case .video:
             return videoDetailViewController(ofImage: imageData, atIndexPath: previousIndexPath)

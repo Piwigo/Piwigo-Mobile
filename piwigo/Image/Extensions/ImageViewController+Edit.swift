@@ -57,6 +57,7 @@ extension ImageViewController: EditImageParamsDelegate
         // Update image metadata
         if let imagePVC = pageViewController?.viewControllers?.first {
             (imagePVC as? ImageDetailViewController)?.updateImageMetadata(with: params)
+            (imagePVC as? GifDetailViewController)?.updateImageMetadata(with: params)
             (imagePVC as? VideoDetailViewController)?.updateImageMetadata(with: params)
             (imagePVC as? PdfDetailViewController)?.updateImageMetadata(with: params)
         }

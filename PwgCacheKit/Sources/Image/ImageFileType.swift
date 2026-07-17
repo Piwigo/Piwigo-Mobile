@@ -27,6 +27,12 @@ extension Image
     public var isPDF: Bool {
         return pwgImageFileType(rawValue: self.fileType) == .pdf
     }
+
+    /// GIF files are stored with the 'image' file type,
+    /// but only the full resolution file contains the animation.
+    public var isGIF: Bool {
+        return isImage && URL(fileURLWithPath: self.fileName).pathExtension.lowercased() == "gif"
+    }
     
     public var isNotImage: Bool {
         return isVideo || isPDF

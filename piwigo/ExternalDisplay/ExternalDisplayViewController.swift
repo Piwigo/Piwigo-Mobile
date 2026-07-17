@@ -6,6 +6,7 @@
 //  Copyright © 2023 Piwigo.org. All rights reserved.
 //
 
+import ImageIO
 import PDFKit
 import UIKit
 import PwgKit
@@ -51,6 +52,10 @@ class ExternalDisplayViewController: UIViewController {
     private var privacyView: UIView?
     private var scrollView: UIScrollView?
 
+    // Variable used to stop the GIF animation performed by ImageIO
+    // when another image, video or PDF file is presented
+    private var animationGeneration = 0
+
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var videoContainerView: UIView!
     @IBOutlet weak var pdfView: PDFView!
@@ -86,6 +91,12 @@ class ExternalDisplayViewController: UIViewController {
         let fileType = pwgImageFileType(rawValue: imageData.fileType) ?? .image
         switch fileType {
         case .image:
+            // Case of an animated GIF image
+            if imageData.isGIF {
+                configGifImage(imageData)
+                return
+            }
+
             // Determine the optimum image size for that display
             let displaySize = AlbumUtilities.sizeOfPage(forView: view)
             let maxPixels = Int(max(displaySize.width, displaySize.height))
@@ -244,6 +255,98 @@ class ExternalDisplayViewController: UIViewController {
         })
     }
     
+
+    // MARK: - GIF Image
+    /// Piwigo servers only produce static derivatives of GIF images.
+    /// So the animation can only be obtained from the full resolution image file,
+    /// and this file must be decoded by ImageIO i.e. w/o downsampling.
+    @MainActor
+    private func configGifImage(_ imageData: Image) {
+        // Check if we already have the full-resolution image file in cache
+        if let cacheURL = imageData.cacheURL(ofSize: .fullRes),
+           FileManager.default.fileExists(atPath: cacheURL.path) {
+            // Animate full-resolution image file in cache
+            startAnimation(withFileAt: cacheURL)
+            return
+        }
+
+        // Display low-resolution image which should be in cache
+        let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+        let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
+        if let previewImage = imageData.cachedThumbnail(ofSize: previewSize) {
+            presentLowResPhoto(previewImage)
+        } else {
+            presentLowResPhoto(imageData.cachedThumbnail(ofSize: thumbSize) ?? pwgImageType.image.placeHolder)
+        }
+
+        // Download the full-resolution image file containing the animation
+        guard let serverID = imageData.server?.uuid,
+              let imageURL = ImageUtilities.getPiwigoURL(imageData, ofMinSize: .fullRes)
+        else { return }
+
+        // Store image URL for being able to pause the download
+        self.imageURL = imageURL
+
+        Task {
+            await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: .fullRes, type: .image, atURL: imageURL,
+                                                  fromServer: serverID, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    self.updateProgressView(with: fractionCompleted)
+                }
+            } completion: { [weak self] cachedImageURL in
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    self.updateProgressView(with: 1.0)
+                    self.startAnimation(withFileAt: cachedImageURL)
+                }
+            } failure: { [weak self] _ in
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    let cachedImage = imageData.cachedThumbnail(ofSize: thumbSize) ?? pwgImageType.image.placeHolder
+                    self.presentHighResPhoto(cachedImage)
+                }
+            }
+        }
+    }
+
+    /// ImageIO delivers the decoded frames on the main queue and honours the frame delays
+    /// and loop count stored in the GIF file. Setting 'stop' ends the animation.
+    @MainActor
+    private func startAnimation(withFileAt fileURL: URL) {
+        // Invalidate the previous animation and start a new one
+        animationGeneration += 1
+        let generation = animationGeneration
+        let gifID = imageData?.pwgID
+        var isFirstFrame = true
+        let status = CGAnimateImageAtURLWithBlock(fileURL as CFURL, nil) { [weak self] _, cgImage, stop in
+            // Stop the animation when another image, video or PDF file is presented
+            guard let self = self, self.animationGeneration == generation,
+                  self.imageData?.pwgID == gifID
+            else {
+                stop.pointee = true
+                return
+            }
+
+            // The first frame is presented with a cross-dissolve transition
+            // which also hides the progress, video and PDF views
+            let frame = UIImage(cgImage: cgImage)
+            if isFirstFrame {
+                isFirstFrame = false
+                self.presentHighResPhoto(frame)
+            } else {
+                self.imageView?.image = frame
+            }
+        }
+
+        // Display the static image if the file could not be animated
+        // (e.g. single-frame GIF or corrupted file)
+        if status != noErr,
+           let staticImage = UIImage(contentsOfFile: fileURL.path) {
+            presentHighResPhoto(staticImage)
+        }
+    }
+
 
     // MARK: - Video
     @MainActor
