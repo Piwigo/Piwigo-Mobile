@@ -146,12 +146,12 @@
    <ArchiveAction
       buildConfiguration = "Release"
       revealArchiveInOrganizer = "YES">
-      <PreActions>
+      <PostActions>
          <ExecutionAction
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
-               title = "Run Script"
-               scriptText = "# Type a script or drag a script file from your workspace to insert its path.&#10;">
+               title = "Auto-Increment Build Version"
+               scriptText = "# Bump the build number after the archive has been packaged.&#10;# The bump must not run during the build: agvtool rewrites project.pbxproj,&#10;# which makes Xcode reload the project and silently drop the archive.&#10;# To reset the counter: xcrun agvtool new-version &lt;value&gt;&#10;cd &quot;${PROJECT_DIR}&quot;&#10;xcrun agvtool next-version -all&#10;">
                <EnvironmentBuildable>
                   <BuildableReference
                      BuildableIdentifier = "primary"
@@ -163,6 +163,6 @@
                </EnvironmentBuildable>
             </ActionContent>
          </ExecutionAction>
-      </PreActions>
+      </PostActions>
    </ArchiveAction>
 </Scheme>

@@ -2036,7 +2036,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D82B8CDE1A67820A000E47CA /* Build configuration list for PBXNativeTarget "piwigo" */;
 			buildPhases = (
-				AD982C001EDD56FB0065BE3B /* Auto-Increment Build Version of Release */,
 				D82B8CB71A67820A000E47CA /* Sources */,
 				D82B8CB81A67820A000E47CA /* Frameworks */,
 				D82B8CB91A67820A000E47CA /* Resources */,
@@ -2284,24 +2283,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		AD982C001EDD56FB0065BE3B /* Auto-Increment Build Version of Release */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 8;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Auto-Increment Build Version of Release";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-			shellPath = /bin/sh;
-			shellScript = "# xcrun agvtool new-version 672 (to reset the value)\nxcrun agvtool next-version -all\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		AD11E45A24A930B000C8876F /* Sources */ = {
@@ -3009,7 +2990,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 688;
+				CURRENT_PROJECT_VERSION = 691;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZEC3W885H6;
@@ -3066,7 +3047,7 @@
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 688;
+				CURRENT_PROJECT_VERSION = 691;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZU5THW8T5W;
 				ENABLE_DEBUG_DYLIB = NO;
@@ -3138,7 +3119,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 688;
+				CURRENT_PROJECT_VERSION = 691;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = ZU5THW8T5W;
@@ -3214,7 +3195,8 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
-				CURRENT_PROJECT_VERSION = 688;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 691;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = ZU5THW8T5W;
@@ -3260,7 +3242,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 688;
+				CURRENT_PROJECT_VERSION = 691;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZEC3W885H6;
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = ZEC3W885H6;
@@ -3309,7 +3291,7 @@
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 688;
+				CURRENT_PROJECT_VERSION = 691;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZU5THW8T5W;
 				ENABLE_DEBUG_DYLIB = NO;
