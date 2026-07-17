@@ -54,16 +54,18 @@ final class PiwigoHUD: UIView
     
     override func awakeFromNib() {
         super.awakeFromNib()
-
-        // Aspect
-        view?.layer.cornerCurve = .continuous
-        view?.layer.cornerRadius = TableViewUtilities.rowCornerRadius
-        view?.layer.borderWidth = 0.8
-        applyColorPalette()
-
-        // Register palette changes
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: Notification.Name.pwgPaletteChanged, object: nil)
+        
+        // Nibs are loaded on the main thread
+        MainActor.assumeIsolated {        // Aspect
+            view?.layer.cornerCurve = .continuous
+            view?.layer.cornerRadius = TableViewUtilities.rowCornerRadius
+            view?.layer.borderWidth = 0.8
+            applyColorPalette()
+            
+            // Register palette changes
+            NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                                   name: Notification.Name.pwgPaletteChanged, object: nil)
+        }
     }
     
     // MARK: - Create/Update HUD

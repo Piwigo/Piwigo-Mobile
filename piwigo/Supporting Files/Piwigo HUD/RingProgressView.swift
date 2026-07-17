@@ -38,33 +38,35 @@ final class RingProgressView: UIView {
         // Initialization code
         super.awakeFromNib()
         
-        // Initialisation
-        let radius = frame.size.width / 2
-        let rect = CGRect(x: 0, y: 0, width: 2 * radius, height: 2 * radius)
-        let progressPath = UIBezierPath(arcCenter: CGPoint(x: radius, y: radius), radius: radius - 2,
-                                        startAngle: CGFloat(-0.5 * .pi), endAngle: CGFloat(1.5 * .pi),
-                                        clockwise: true)
-        self.backgroundColor = .clear
-        self.layer.cornerRadius = radius
-
-        // Layers
-        backgroundLayer.frame = rect
-        backgroundLayer.path = progressPath.cgPath
-        backgroundLayer.fillColor = UIColor.clear.cgColor
-        backgroundLayer.strokeColor = PwgColor.cellBackground.cgColor
-        backgroundLayer.lineCap = .round
-        backgroundLayer.lineWidth = 2
-        backgroundLayer.strokeEnd = 1
-        layer.addSublayer(backgroundLayer)
-
-        progressLayer.frame = rect
-        progressLayer.path = progressPath.cgPath
-        progressLayer.fillColor = UIColor.clear.cgColor
-        progressLayer.strokeColor = PwgColor.rightLabel.cgColor
-        progressLayer.lineCap = .round
-        progressLayer.lineWidth = 2
-        progressLayer.strokeEnd = 0
-        layer.addSublayer(progressLayer)
+        // Nibs are loaded on the main thread
+        MainActor.assumeIsolated {// Initialisation
+            let radius = frame.size.width / 2
+            let rect = CGRect(x: 0, y: 0, width: 2 * radius, height: 2 * radius)
+            let progressPath = UIBezierPath(arcCenter: CGPoint(x: radius, y: radius), radius: radius - 2,
+                                            startAngle: CGFloat(-0.5 * .pi), endAngle: CGFloat(1.5 * .pi),
+                                            clockwise: true)
+            self.backgroundColor = .clear
+            self.layer.cornerRadius = radius
+            
+            // Layers
+            backgroundLayer.frame = rect
+            backgroundLayer.path = progressPath.cgPath
+            backgroundLayer.fillColor = UIColor.clear.cgColor
+            backgroundLayer.strokeColor = PwgColor.cellBackground.cgColor
+            backgroundLayer.lineCap = .round
+            backgroundLayer.lineWidth = 2
+            backgroundLayer.strokeEnd = 1
+            layer.addSublayer(backgroundLayer)
+            
+            progressLayer.frame = rect
+            progressLayer.path = progressPath.cgPath
+            progressLayer.fillColor = UIColor.clear.cgColor
+            progressLayer.strokeColor = PwgColor.rightLabel.cgColor
+            progressLayer.lineCap = .round
+            progressLayer.lineWidth = 2
+            progressLayer.strokeEnd = 0
+            layer.addSublayer(progressLayer)
+        }
     }
     
     private func adaptiveDuration() -> TimeInterval {
