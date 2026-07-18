@@ -518,4 +518,9 @@ extension ShareViewController: @MainActor AppLockDelegate {
         isUnlocked = true
         checkContentIsAccessible()
     }
+
+    func cancelShare() {
+        // Close the share sheet without uploading
+        cancelSelect()
+    }
 }

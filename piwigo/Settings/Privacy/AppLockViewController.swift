@@ -20,6 +20,9 @@ enum AppLockAction {
 
 protocol AppLockDelegate: NSObjectProtocol {
     func loginOrReloginAndResumeUploads()
+    #if EXTENSION
+    func cancelShare()
+    #endif
 }
 
 final class AppLockViewController: UIViewController {
@@ -119,7 +122,34 @@ final class AppLockViewController: UIViewController {
 
         // Title
         title = Localized.privacy
+
+        #if EXTENSION
+        // Add a Cancel button so that the user can leave the extension
+        view.addSubview(cancelButton)
+        NSLayoutConstraint.activate([
+            cancelButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            cancelButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
+        ])
+        #endif
     }
+
+    #if EXTENSION
+    // MARK: - Cancel Button (share extension only)
+    /// Allows the user to close the share sheet when the passcode is unknown
+    private lazy var cancelButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle(Localized.cancel, for: .normal)
+        button.titleLabel?.font = .preferredFont(forTextStyle: .body)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(didTapCancel), for: .touchUpInside)
+        return button
+    }()
+
+    @objc private func didTapCancel() {
+        // Cancel the share and close the share sheet
+        delegate?.cancelShare()
+    }
+    #endif
 
     @MainActor
     @objc func applyColorPalette() {
@@ -171,6 +201,11 @@ final class AppLockViewController: UIViewController {
         titleLabel.tintColor = labelsColor
         infoLabel.textColor = labelsColor
         infoLabel.tintColor = labelsColor
+
+        #if EXTENSION
+        // Cancel button for leaving the extension
+        cancelButton.setTitleColor(buttonTitleColor, for: .normal)
+        #endif
 
         // App Lock digits
         digit1.layer.borderColor = digitBorderColor
