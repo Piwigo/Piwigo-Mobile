@@ -297,6 +297,7 @@
 		ADADADEC2FB0AA6F003FB43F /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADADADEA2FB0AA6F003FB43F /* ShareViewController.swift */; };
 		ADAE3C342E19215200E1D634 /* ReleaseNotes.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADAE3C332E19215200E1D634 /* ReleaseNotes.xcstrings */; };
 		ADAE3C362E1932F200E1D634 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADAE3C352E1932F200E1D634 /* InfoPlist.xcstrings */; };
+		ADB3E04C300BD00000049CFA /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADB3E04B300BD00000049CFA /* InfoPlist.xcstrings */; };
 		ADAE3C382E19497100E1D634 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADAE3C372E19497000E1D634 /* Localizable.xcstrings */; };
 		ADAF43ED2FAE198800C8085F /* help11-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = ADAF43EC2FAE198800C8085F /* help11-iOS18.png */; };
 		ADAF43EF2FAE199700C8085F /* help11.png in Resources */ = {isa = PBXBuildFile; fileRef = ADAF43EE2FAE199700C8085F /* help11.png */; };
@@ -837,6 +838,7 @@
 		ADAE3C312E191F8B00E1D634 /* AppStore.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = AppStore.xcstrings; sourceTree = "<group>"; };
 		ADAE3C332E19215200E1D634 /* ReleaseNotes.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = ReleaseNotes.xcstrings; sourceTree = "<group>"; };
 		ADAE3C352E1932F200E1D634 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
+		ADB3E04B300BD00000049CFA /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		ADAE3C372E19497000E1D634 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		ADAF3B7123DDAC2F007B0ABA /* es */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/About.strings; sourceTree = "<group>"; };
 		ADAF3B7523DDAC2F007B0ABA /* es */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
@@ -1451,6 +1453,7 @@
 				ADADADE82FB0AA6F003FB43F /* debug.entitlements */,
 				ADE51942300B6C1900BBBD02 /* release.entitlements */,
 				ADE920472FBCF85300CAF83A /* Localizable.xcstrings */,
+				ADB3E04B300BD00000049CFA /* InfoPlist.xcstrings */,
 				ADB3E042300B920200049CFA /* Images.xcassets */,
 			);
 			path = Resources;
@@ -2181,6 +2184,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ADE920482FBCF85300CAF83A /* Localizable.xcstrings in Resources */,
+				ADB3E04C300BD00000049CFA /* InfoPlist.xcstrings in Resources */,
 				ADB3E043300B920200049CFA /* Images.xcassets in Resources */,
 				ADF3FD942FB7BD0900C817FB /* ShareViewController.storyboard in Resources */,
 				ADB3E047300BC50E00049CFA /* AppLockViewController.storyboard in Resources */,

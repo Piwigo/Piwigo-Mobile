@@ -25,6 +25,7 @@ public enum Localized {
     public static let enterPasscode = String(localized: "settings_appLockEnter", bundle: .pwgUIKit, comment: "Enter Passcode")
     public static let modifyPasscode = String(localized: "settings_appLockModify", bundle: .pwgUIKit, comment: "Modify Passcode")
     public static let verifyPasscode = String(localized: "settings_appLockVerify", bundle: .pwgUIKit, comment: "Verify Passcode")
+    public static let biometricsReason = String(localized: "settings_biometricsReason", bundle: .pwgUIKit, comment: "Access your Piwigo albums")
 
     public static let loading = String(localized: "loadingHUD_label", bundle: .pwgUIKit, comment:"Loading…")
     public static let yes = String(localized: "alertYesButton", bundle: .pwgUIKit, comment: "Yes")

@@ -8,6 +8,7 @@
 
 import os
 import CoreData
+import LocalAuthentication
 import UIKit
 import UniformTypeIdentifiers
 import PwgKit
@@ -253,7 +254,40 @@ final class ShareViewController: UIViewController {
         appLockVC.delegate = self
         appLockVC.modalPresentationStyle = .overFullScreen
         appLockVC.modalTransitionStyle = .crossDissolve
-        present(appLockVC, animated: false)
+        present(appLockVC, animated: false) { [weak self] in
+            // Did the user enable biometrics?
+            guard let self, UIVars.shared.isBiometricsEnabled else { return }
+            // Yes, perform biometrics authentication
+            Task { @MainActor in
+                // Authentication successful?
+                guard await self.performBiometricAuthentication() else { return }
+                // Dismiss passcode view controller and reveal the album selector
+                appLockVC.dismiss(animated: true) {
+                    self.loginOrReloginAndResumeUploads()
+                }
+            }
+        }
+    }
+
+    private func performBiometricAuthentication() async -> Bool {
+        // Get a fresh context
+        let context = LAContext()
+        context.localizedFallbackTitle = ""
+        context.localizedReason = Localized.enterPasscode
+
+        // First check if we have the needed hardware support
+        var error: NSError?
+        let policy = LAPolicy.deviceOwnerAuthenticationWithBiometrics
+        guard unsafe context.canEvaluatePolicy(policy, error: &error) else { return false }
+
+        // Exploit TouchID or FaceID
+        do {
+            return try await context.evaluatePolicy(policy, localizedReason: Localized.biometricsReason)
+        } catch {
+            // Fall back to asking for passcode when the authentication failed or was cancelled
+            logger.notice("Biometric authentication failed: \(error.localizedDescription)")
+            return false
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {

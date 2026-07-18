@@ -34,5 +34,7 @@
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.share-services</string>
 	</dict>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Use Face ID instead of a passcode to access your albums.</string>
 </dict>
 </plist>

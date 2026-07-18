@@ -583,8 +583,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if context.canEvaluatePolicy(policy, error: &error) {
             // Exploit TouchID or FaceID
             self.isAuthenticatingWithBiometrics = true
-            let reason = String(localized: "settings_biometricsReason", comment: "Access your Piwigo albums")
-            context.evaluatePolicy(policy, localizedReason: reason ) { success, error in
+            context.evaluatePolicy(policy, localizedReason: Localized.biometricsReason) { success, error in
                 // Biometric authentication completed
                 self.isAuthenticatingWithBiometrics = false
                 // Did user authenticate successfully?
