@@ -305,6 +305,7 @@
 		ADB2E93A2DCBF737000F3F7C /* SeparatorSelectorTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB2E9392DCBF737000F3F7C /* SeparatorSelectorTableViewCell.swift */; };
 		ADB2E9422DD5A864000F3F7C /* TimeFormatSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB2E9412DD5A864000F3F7C /* TimeFormatSelectorViewController.swift */; };
 		ADB2E9442DD5A8DC000F3F7C /* TimeFormatSelectorViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADB2E9432DD5A8DC000F3F7C /* TimeFormatSelectorViewController.storyboard */; };
+		ADB3E043300B920200049CFA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ADB3E042300B920200049CFA /* Images.xcassets */; };
 		ADB49D8A295B90C700EE377A /* SelectCategoryViewController+Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB49D89295B90C700EE377A /* SelectCategoryViewController+Images.swift */; };
 		ADB49D8C295B96C400EE377A /* SelectCategoryViewController+Albums.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB49D8B295B96C400EE377A /* SelectCategoryViewController+Albums.swift */; };
 		ADB65D5126FBC4650094DAF1 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB65D4E26FBAE0F0094DAF1 /* ImageViewController.swift */; };
@@ -848,6 +849,7 @@
 		ADB2E9392DCBF737000F3F7C /* SeparatorSelectorTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeparatorSelectorTableViewCell.swift; sourceTree = "<group>"; };
 		ADB2E9412DD5A864000F3F7C /* TimeFormatSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeFormatSelectorViewController.swift; sourceTree = "<group>"; };
 		ADB2E9432DD5A8DC000F3F7C /* TimeFormatSelectorViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = TimeFormatSelectorViewController.storyboard; path = "piwigo/Settings/Upload/Rename File/TimeFormatSelector/TimeFormatSelectorViewController.storyboard"; sourceTree = SOURCE_ROOT; };
+		ADB3E042300B920200049CFA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		ADB49D89295B90C700EE377A /* SelectCategoryViewController+Images.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SelectCategoryViewController+Images.swift"; sourceTree = "<group>"; };
 		ADB49D8B295B96C400EE377A /* SelectCategoryViewController+Albums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SelectCategoryViewController+Albums.swift"; sourceTree = "<group>"; };
 		ADB5B7B02BDD4195001DE2C7 /* PiwigoHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiwigoHUD.swift; sourceTree = "<group>"; };
@@ -1446,6 +1448,7 @@
 				ADADADE82FB0AA6F003FB43F /* debug.entitlements */,
 				ADE51942300B6C1900BBBD02 /* release.entitlements */,
 				ADE920472FBCF85300CAF83A /* Localizable.xcstrings */,
+				ADB3E042300B920200049CFA /* Images.xcassets */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -2176,6 +2179,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ADE920482FBCF85300CAF83A /* Localizable.xcstrings in Resources */,
+				ADB3E043300B920200049CFA /* Images.xcassets in Resources */,
 				ADF3FD942FB7BD0900C817FB /* ShareViewController.storyboard in Resources */,
 				ADE920522FBD100000CAF83A /* PiwigoHUD.xib in Resources */,
 			);
