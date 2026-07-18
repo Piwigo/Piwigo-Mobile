@@ -27,6 +27,16 @@ public enum Localized {
                                               comment: "This Piwigo server does not accept PDF files.")
 }
 
+// URL scheme for deep links from the share extension to the app
+/// The debug and release versions use different schemes so that
+/// the share extension always opens the app it was embedded in.
+/// Must match CFBundleURLSchemes in Info-debug.plist and Info.plist.
+#if DEBUG
+public let pwgURLScheme = "piwigo-debug"
+#else
+public let pwgURLScheme = "piwigo"
+#endif
+
 // Image types which can be converted with iOS
 /// PNG format in priority in case where JPEG is also available
 /// See: https://developer.apple.com/documentation/uniformtypeidentifiers/system-declared_uniform_type_identifiers

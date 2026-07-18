@@ -610,6 +610,7 @@
 		AD30FD3421316DA7009AA30E /* Screenshots.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Screenshots.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD30FD3621316DA8009AA30E /* PwgScreenshots.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PwgScreenshots.swift; sourceTree = "<group>"; };
 		AD30FD3821316DA8009AA30E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		ADB3E04D300BD00000049CFA /* Info-debug.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-debug.plist"; path = "piwigo/Info-debug.plist"; sourceTree = SOURCE_ROOT; };
 		AD311FF927CB7B730044AC5A /* LoginViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LoginViewController.storyboard; sourceTree = "<group>"; };
 		AD31A73E2C736A9800B37B19 /* ImagePreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePreviewViewController.swift; sourceTree = "<group>"; };
 		AD31E72F2EB106C100584ECB /* help01-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help01-iOS18.png"; sourceTree = "<group>"; };
@@ -1826,6 +1827,7 @@
 				D82B8CBE1A67820A000E47CA /* Supporting Files */,
 				ADA6DA4621B2AD9900F941F1 /* Settings.bundle */,
 				ADA6F19321CA99F7006C9DD5 /* Info.plist */,
+				ADB3E04D300BD00000049CFA /* Info-debug.plist */,
 			);
 			path = piwigo;
 			sourceTree = SOURCE_ROOT;
@@ -3270,7 +3272,7 @@
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = ZEC3W885H6;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
-				INFOPLIST_FILE = piwigo/Info.plist;
+				INFOPLIST_FILE = "piwigo/Info-debug.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Piwigo;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Piwigo.org. All rights reserved.";

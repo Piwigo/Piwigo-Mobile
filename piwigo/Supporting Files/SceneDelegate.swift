@@ -514,14 +514,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
 
     // MARK: - Application Deep Link Support
-    /// piwigo://shareExtension/albumID=23
+    /// piwigo://shareExtension/albumID=23 (piwigo-debug:// for the debug version)
     enum DeepLink: Sendable {
         case shareExtension(albumIDs: [Int32], date: String)
         
         init?(url: URL) {
             // Submitted to the right app?
             guard let comps = URLComponents(url: url, resolvingAgainstBaseURL: false),
-                  comps.scheme == "piwigo" else { return nil }
+                  comps.scheme == pwgURLScheme else { return nil }
             
             // What should be done?
             switch comps.host {

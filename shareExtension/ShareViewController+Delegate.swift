@@ -191,7 +191,7 @@ extension ShareViewController: UITableViewDelegate
     private func openMainApp(withAlbumIDs upperIds: String, forItemsSharedAt shareDate: String) {
         // Prepare URL
         var comps = URLComponents()
-        comps.scheme = "piwigo"
+        comps.scheme = pwgURLScheme
         comps.host = "share-extension"
         comps.queryItems = [URLQueryItem(name: "albumIDs", value: upperIds),
                             URLQueryItem(name: "date", value: shareDate)]
