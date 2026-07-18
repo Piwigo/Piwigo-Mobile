@@ -212,7 +212,7 @@ final class AlbumDeletion: NSObject
                     // Remember that the app is fetching album data
                     AlbumVars.shared.isFetchingAlbumData.insert(parentID)
 
-                    // Fetch album data recursively
+                    // Fetch album data
                     let pwgData = try await JSONManager.shared.fetchAlbums(forUserWithAdminRights: hasAdminRights,
                                                                            inParentWithId: parentID,
                                                                            thumbnailSize: thumnailSize)
