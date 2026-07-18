@@ -208,7 +208,6 @@
 		AD6BA1002BA5D2FA00755257 /* PasteboardImagesViewController+HeaderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA0FF2BA5D2FA00755257 /* PasteboardImagesViewController+HeaderDelegate.swift */; };
 		AD6BA1042BA5ED1A00755257 /* LocalImagePreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA1032BA5ED1A00755257 /* LocalImagePreviewViewController.swift */; };
 		AD6E6C4E2E2C001F00600E5A /* PdfDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6E6C4D2E2C001F00600E5A /* PdfDetailViewController.swift */; };
-		F0F9267E1FD04E25802D6386 /* GifDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12695FF2A60F479AA0A5105C /* GifDetailViewController.swift */; };
 		AD6FD1FA24BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */; };
 		AD6FD1FC24BF0321009AA3B7 /* UploadSwitchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6FD1FB24BF0321009AA3B7 /* UploadSwitchViewController.swift */; };
 		AD7000CA2E425159007B2791 /* AlbumHeaderReusableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD7000C92E425159007B2791 /* AlbumHeaderReusableView.xib */; };
@@ -431,6 +430,7 @@
 		ADFA89052438CFD800F73F0F /* ShareMetadataCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5A90782438C60500F8DAE6 /* ShareMetadataCell.swift */; };
 		ADFC3A4C2401D704004CD337 /* PrivacyPolicyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFC3A4B2401D704004CD337 /* PrivacyPolicyViewController.swift */; };
 		BF7EDD0C92425F2CD94FC559 /* AlbumEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B153098313E8E45CAC445B4 /* AlbumEntity.swift */; };
+		F0F9267E1FD04E25802D6386 /* GifDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12695FF2A60F479AA0A5105C /* GifDetailViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -490,6 +490,7 @@
 
 /* Begin PBXFileReference section */
 		0B153098313E8E45CAC445B4 /* AlbumEntity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AlbumEntity.swift; sourceTree = "<group>"; };
+		12695FF2A60F479AA0A5105C /* GifDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifDetailViewController.swift; sourceTree = "<group>"; };
 		70317AF024E5B739F1E7A6C1 /* UploadPhotos.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = UploadPhotos.swift; sourceTree = "<group>"; };
 		AD02D2F32E9A446D0073335F /* EditImageTimePickerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditImageTimePickerTableViewCell.swift; sourceTree = "<group>"; };
 		AD02D2F52E9A665A0073335F /* EditImageParamsViewController+TimePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+TimePicker.swift"; sourceTree = "<group>"; };
@@ -721,7 +722,6 @@
 		AD6BA0FF2BA5D2FA00755257 /* PasteboardImagesViewController+HeaderDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PasteboardImagesViewController+HeaderDelegate.swift"; sourceTree = "<group>"; };
 		AD6BA1032BA5ED1A00755257 /* LocalImagePreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalImagePreviewViewController.swift; sourceTree = "<group>"; };
 		AD6E6C4D2E2C001F00600E5A /* PdfDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PdfDetailViewController.swift; sourceTree = "<group>"; };
-		12695FF2A60F479AA0A5105C /* GifDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifDetailViewController.swift; sourceTree = "<group>"; };
 		AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UploadSwitchViewController.storyboard; sourceTree = "<group>"; };
 		AD6FD1FB24BF0321009AA3B7 /* UploadSwitchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSwitchViewController.swift; sourceTree = "<group>"; };
 		AD7000C92E425159007B2791 /* AlbumHeaderReusableView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AlbumHeaderReusableView.xib; sourceTree = "<group>"; };
@@ -933,6 +933,7 @@
 		ADE4C22525754B420060A203 /* Help03ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Help03ViewController.swift; sourceTree = "<group>"; };
 		ADE4C23325755E660060A203 /* Help01ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help01ViewController.swift; sourceTree = "<group>"; };
 		ADE4C23D25756BC80060A203 /* Help02ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help02ViewController.swift; sourceTree = "<group>"; };
+		ADE51942300B6C1900BBBD02 /* release.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = release.entitlements; sourceTree = "<group>"; };
 		ADE6ADB22DC5196500EAE9C8 /* AddActionTableViewFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddActionTableViewFooterView.swift; sourceTree = "<group>"; };
 		ADE920472FBCF85300CAF83A /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		ADE920492FBD029A00CAF83A /* ShareViewController+Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShareViewController+Delegate.swift"; sourceTree = "<group>"; };
@@ -1443,6 +1444,7 @@
 			isa = PBXGroup;
 			children = (
 				ADADADE82FB0AA6F003FB43F /* debug.entitlements */,
+				ADE51942300B6C1900BBBD02 /* release.entitlements */,
 				ADE920472FBCF85300CAF83A /* Localizable.xcstrings */,
 			);
 			path = Resources;
@@ -3048,6 +3050,7 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = shareExtension/Resources/release.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				CODE_SIGN_STYLE = Manual;
