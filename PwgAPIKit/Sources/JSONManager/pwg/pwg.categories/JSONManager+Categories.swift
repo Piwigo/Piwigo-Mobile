@@ -44,27 +44,6 @@ public extension JSONManager {
         
         return pwgData
     }
-//        // Import album data into Core Data.
-//        do {
-//            // Update albums if Community installed (not needed for admins)
-//            if hasAdminRights == false,
-//               ServerVars.shared.usesCommunityPluginV29 {
-//                // Non-admin user and Community installed —> collect Community albums
-//                try await fetchCommunityAlbums(inParentWithId: parentId, recursively: recursively,
-//                                               albums: pwgData)
-//                return []
-//            }
-//
-////            // Import the albumJSON into Core Data.
-////            try albumProvider.importAlbums(pwgData, recursively: recursively, inParent: parentId)
-//        }
-//        catch let error as PwgKitError {
-//            throw error
-//        }
-//        catch {
-//            throw .otherError(innerError: error)
-//        }
-//    }
     
     @concurrent
     func getAlbums(inParentWithId parentId: Int32, recursively: Bool,
