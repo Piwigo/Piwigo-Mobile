@@ -10,6 +10,8 @@ import Foundation
 import MessageUI
 import UIKit
 import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 import PwgUIKit
 
 struct SettingsUtilities
@@ -55,10 +57,6 @@ struct SettingsUtilities
             NSLocalizedString("contact_email", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "Contact email")
         ])
         
-        // Collect version and build numbers
-        let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-        let appBuildString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
-        
         // Compile ticket number from current date
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyyMMddHHmm"
@@ -67,16 +65,48 @@ struct SettingsUtilities
         let ticketDate = dateFormatter.string(from: date)
         
         // Set subject
-        composeVC.setSubject("[Ticket#\(ticketDate)]: \(NSLocalizedString("settings_appName", comment: "Piwigo Mobile")) \(NSLocalizedString("settings_feedback", comment: "Feedback"))")
+        composeVC.setSubject("[Ticket#\(ticketDate)]: \(String(localized: "settings_appName", comment: "Piwigo Mobile")) \(String(localized: "settings_feedback", comment: "Feedback"))")
         
-        // Collect system and device data
-        let deviceModel = UIDevice.current.modelName
-        let deviceOS = UIDevice.current.systemName
-        let deviceOSversion = UIDevice.current.systemVersion
+        // Initialise message body
+        var msg = "\n\n\n__________________\n"
+
+        // Version and build numbers
+        let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
+        let appBuild = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "?"
+        msg += "\(String(localized: "settings_appName", comment: "Piwigo Mobile")) \(appVersion) (\(appBuild))\n"
         
-        // Set message body
-        composeVC.setMessageBody("\(NSLocalizedString("settings_appName", comment: "Piwigo Mobile")) \(appVersionString ?? "") (\(appBuildString ?? ""))\n\(deviceModel ) — \(deviceOS) \(deviceOSversion)\n==============>>\n\n", isHTML: false)
+        // Device and system info
+        msg += "\(UIDevice.current.modelName) — \(UIDevice.current.systemName) \(UIDevice.current.systemVersion)\n"
         
+        // App settings
+        msg += "\n— Piwigo App —\n"
+        msg += "• switchPaletteAutomatically: \(InterfaceVars.shared.switchPaletteAutomatically ? "Yes" : "No")\n"
+        msg += "• isAppLockActive: \(AppVars.shared.isAppLockActive ? "Yes" : "No")\n"
+        msg += "• isBiometricsEnabled: \(AppVars.shared.isBiometricsEnabled ? "Yes" : "No")\n"
+        msg += "• userStatusRaw: \(ServerVars.shared.userStatus)\n"
+        msg += "• displayAlbumDescriptions: \(AlbumVars.shared.displayAlbumDescriptions ? "Yes" : "No")\n"
+        msg += "• displayImageTitles: \(AlbumVars.shared.displayImageTitles ? "Yes" : "No")\n"
+        msg += "• clearClipboardDelay: \((pwgClearClipboard(rawValue: AppVars.shared.clearClipboardDelay) ?? .never).delayText)\n"
+        msg += "• isAutoUploadActive: \(UploadVars.shared.isAutoUploadActive ? "Yes" : "No")\n"
+        msg += "• maxNberOfPreparedUploads: \(UploadVars.shared.maxNberOfPreparedUploads)\n"
+        msg += "• maxConnectionsPerHost: \(UploadVars.shared.maxConnectionsPerHost)\n"
+        msg += "• customUploadChunkSize: \(ServerVars.shared.customUploadChunkSize) KB\n"
+
+        // Piwigo server settings
+        msg += "\n— Piwigo Server —\n"
+        msg += "• pwgVersion: \(ServerVars.shared.pwgVersion)\n"
+        msg += "• stringEncoding: \(ServerVars.shared.stringEncoding)\n"
+        if #available(iOS 16.0, *) {
+            msg += "• serverFileTypes: \(ServerVars.shared.serverFileTypes.replacing(",", with: ", "))\n"
+        } else {
+            // Fallback on earlier versions
+            msg += "• serverFileTypes: \(ServerVars.shared.serverFileTypes.replacingOccurrences(of: ",", with: ", "))\n"
+        }
+        msg += "• usesCommunityPluginV29: \(ServerVars.shared.usesCommunityPluginV29 ? "Yes" : "No")\n"
+        msg += "• usesAPIkeys: \(NetworkVars.shared.usesAPIkeys ? "Yes" : "No")\n"
+        msg += "• usesSetCategory: \(ServerVars.shared.usesSetCategory ? "Yes" : "No")\n"
+        
+        composeVC.setMessageBody(msg, isHTML: false)
         return composeVC
     }
 }
