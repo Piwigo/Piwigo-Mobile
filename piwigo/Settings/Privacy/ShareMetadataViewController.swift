@@ -59,7 +59,7 @@ class ShareMetadataViewController: UIViewController {
 
         // Table view
         shareMetadataTableView?.separatorColor = PwgColor.separator
-        shareMetadataTableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
+        shareMetadataTableView?.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         shareMetadataTableView?.reloadData()
     }
     

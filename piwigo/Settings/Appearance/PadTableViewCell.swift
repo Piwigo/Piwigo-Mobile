@@ -49,7 +49,7 @@ class PadTableViewCell: UITableViewCell {
 
         // Buttons
         let config = UIImage.SymbolConfiguration(pointSize: labelHeight / 2.0, weight: .semibold)
-        if InterfaceVars.shared.isDarkPaletteActive {
+        if UIVars.shared.isDarkPaletteActive {
             lightButton.setImage(UIImage(systemName: "circle", withConfiguration: config), for: .normal)
             lightButton.imageView?.tintColor = PwgColor.rightLabel
             darkButton.setImage(UIImage(systemName: "checkmark.circle.fill", withConfiguration: config), for: .normal)
@@ -64,12 +64,12 @@ class PadTableViewCell: UITableViewCell {
         
     @IBAction func didTapLightMode(_ sender: Any) {
         // Select static light mode
-        InterfaceVars.shared.isLightPaletteModeActive = true
-        InterfaceVars.shared.isDarkPaletteModeActive = false
-        InterfaceVars.shared.switchPaletteAutomatically = false
+        UIVars.shared.isLightPaletteModeActive = true
+        UIVars.shared.isDarkPaletteModeActive = false
+        UIVars.shared.switchPaletteAutomatically = false
 
         // Apply light color palette
-        InterfaceManager.shared.applyColorPalette(for: traitCollection.userInterfaceStyle)
+        UITools.shared.applyColorPalette(for: traitCollection.userInterfaceStyle)
         
         // Update button
         lightButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
@@ -78,12 +78,12 @@ class PadTableViewCell: UITableViewCell {
     
     @IBAction func didTapDarkMode(_ sender: Any) {
         // Select static dark mode
-        InterfaceVars.shared.isLightPaletteModeActive = false
-        InterfaceVars.shared.isDarkPaletteModeActive = true
-        InterfaceVars.shared.switchPaletteAutomatically = false
+        UIVars.shared.isLightPaletteModeActive = false
+        UIVars.shared.isDarkPaletteModeActive = true
+        UIVars.shared.switchPaletteAutomatically = false
 
         // Apply dark color palette
-        InterfaceManager.shared.applyColorPalette(for: traitCollection.userInterfaceStyle)
+        UITools.shared.applyColorPalette(for: traitCollection.userInterfaceStyle)
         
         // Update button
         lightButton.setImage(UIImage(systemName: "circle"), for: .normal)

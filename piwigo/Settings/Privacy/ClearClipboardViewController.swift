@@ -96,7 +96,7 @@ class ClearClipboardViewController: UIViewController {
         super.viewDidLoad()
         
         // Title
-        title = String(localized: "settingsHeader_privacy", comment: "Privacy")
+        title = Localized.privacy
 
         // Table view
         delayTableView?.accessibilityIdentifier = "Clear Clipboard After Delay"
@@ -117,7 +117,7 @@ class ClearClipboardViewController: UIViewController {
 
         // Table view
         delayTableView?.separatorColor = PwgColor.separator
-        delayTableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
+        delayTableView?.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         delayTableView?.reloadData()
     }
     

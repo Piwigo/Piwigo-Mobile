@@ -24,7 +24,7 @@ extension TagsViewController
             textField.placeholder = String(localized: "tagsAdd_placeholder", comment: "New tag")
             textField.clearButtonMode = .always
             textField.keyboardType = .default
-            textField.keyboardAppearance = InterfaceVars.shared.isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = UIVars.shared.isDarkPaletteActive ? .dark : .default
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes
             textField.returnKeyType = .continue
@@ -46,7 +46,7 @@ extension TagsViewController
             alert.addAction(addAction)
         }
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = PwgColor.tintColor

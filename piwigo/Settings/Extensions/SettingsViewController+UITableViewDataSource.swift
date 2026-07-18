@@ -594,7 +594,7 @@ extension SettingsViewController: UITableViewDataSource
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 let title = String(localized: "settings_appLock", comment: "App Lock")
                 let detail: String
-                if AppVars.shared.isAppLockActive == true {
+                if UIVars.shared.isAppLockActive == true {
                     detail = String(localized: "settings_autoUploadEnabled", comment: "On")
                 } else {
                     detail = String(localized: "settings_autoUploadDisabled", comment: "Off")
@@ -642,9 +642,9 @@ extension SettingsViewController: UITableViewDataSource
             else { preconditionFailure("Could not load LabelTableViewCell") }
             let title = String(localized: "settingsHeader_colorPalette", comment: "Color Palette")
             let detail: String
-            if InterfaceVars.shared.isLightPaletteModeActive == true {
+            if UIVars.shared.isLightPaletteModeActive == true {
                 detail = String(localized: "settings_lightColor", comment: "Light")
-            } else if InterfaceVars.shared.isDarkPaletteModeActive == true {
+            } else if UIVars.shared.isDarkPaletteModeActive == true {
                 detail = String(localized: "settings_darkColor", comment: "Dark")
             } else {
                 detail = String(localized: "settings_switchPalette", comment: "Automatic")

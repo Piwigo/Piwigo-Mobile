@@ -133,7 +133,7 @@ extension ShareViewController: UITableViewDelegate
             
             // Present popover view
             alert.view.tintColor = PwgColor.tintColor
-            alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
             alert.popoverPresentationController?.sourceView = categoriesTableView
             alert.popoverPresentationController?.sourceRect = categoriesTableView.rectForRow(at: indexPath)
             alert.popoverPresentationController?.permittedArrowDirections = [.down, .up]
@@ -156,7 +156,7 @@ extension ShareViewController: UITableViewDelegate
         
         // Present alert
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
         present(alert, animated: true, completion: {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = PwgColor.tintColor
@@ -178,7 +178,7 @@ extension ShareViewController: UITableViewDelegate
             
             // Present alert
             alert.view.tintColor = PwgColor.tintColor
-            alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
             present(alert, animated: true, completion: {
                 // Bugfix: iOS9 - Tint not fully Applied without Reapplying
                 alert.view.tintColor = PwgColor.tintColor
@@ -197,6 +197,11 @@ extension ShareViewController: UITableViewDelegate
                             URLQueryItem(name: "date", value: shareDate)]
         guard let url = comps.url else { return }
         
+        // The user just unlocked the extension —> don't ask again in the main app
+        if UIVars.shared.isAppLockActive {
+            UIVars.shared.dateOfLastUnlock = Date().timeIntervalSinceReferenceDate
+        }
+        
         // Send album IDs and date of share to main app
         var responder: UIResponder? = self
         while responder != nil {
@@ -211,8 +216,8 @@ extension ShareViewController: UITableViewDelegate
             responder = responder?.next
         }
     }
-
-
+    
+    
     // MARK: - PiwigoHUD
     @MainActor
     private func showHUD() {

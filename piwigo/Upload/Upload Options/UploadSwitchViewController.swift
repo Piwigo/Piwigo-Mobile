@@ -85,7 +85,7 @@ final class UploadSwitchViewController: UIViewController {
         // Segmented control
         switchViewSegmentedControl.selectedSegmentTintColor = PwgColor.tintColor
         switchViewSegmentedControl.superview?.backgroundColor = PwgColor.background.withAlphaComponent(0.8)
-        switchViewSegmentedControl.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
+        switchViewSegmentedControl.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
     }
 
     override func viewWillAppear(_ animated: Bool) {

@@ -48,7 +48,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Register App Metrics
         #if DEBUG
         AppMetrics.shared.start()
-        AppMetrics.shared.saveSettings()
         #endif
         
         // Register transformers at the very beginning
@@ -68,12 +67,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         AppVars.shared.currentDeviceScale = UIScreen.main.scale
         
         // Color palette depends on system settings
-        InterfaceManager.shared.applyColorPalette(for: UIScreen.main.traitCollection.userInterfaceStyle)
-        
-        // Check if the device supports haptics.
-        let hapticCapability = CHHapticEngine.capabilitiesForHardware()
-        AppVars.shared.supportsHaptics = hapticCapability.supportsHaptics
-        
+        UITools.shared.applyColorPalette(for: UIScreen.main.traitCollection.userInterfaceStyle)
+                
         // "0 day" option added in v3.1.2 for allowing user to disable "recent" icon
         ServerVars.shared.correctRecentPeriodIndex()
         
@@ -84,8 +79,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setSettingsBundleData()
         
         // In absence of passcode, albums are always accessible
-        if AppVars.shared.appLockKey.isEmpty {
-            AppVars.shared.isAppLockActive = false
+        if UIVars.shared.appLockKey.isEmpty {
+            UIVars.shared.isAppLockActive = false
             AppVars.shared.isAppUnlocked = true
         }
 
@@ -137,10 +132,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         var keys: [String] = []
         keys.append("recentCategories")                 // List of albums recently visited / used (AlbumVars -> CacheVars)
         keys.append("maxNberRecentCategories")          // Maximum number of recent abums  presented to the user (AlbumVars -> CacheVars)
-        keys.append("isDarkPaletteActive")              // App and extensions adopt a permanent light/dark mode or switch automatically with system
+        keys.append("isDarkPaletteActive")              // Colour palette settings shared by main app and extensions
         keys.append("switchPaletteAutomatically")
         keys.append("isDarkPaletteModeActive")
         keys.append("isLightPaletteModeActive")
+        keys.append("isAppLockActive")                  // App lock settings shared by main app and extensions
+        keys.append("appLockKey")
+        keys.append("isBiometricsEnabled")
         
         // Only migrate values that have not been moved yet
         for key in keys {
@@ -577,7 +575,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Get a fresh context
         let context = LAContext()
         context.localizedFallbackTitle = ""
-        context.localizedReason = String(localized: "settings_appLockEnter", comment: "Enter Passcode")
+        context.localizedReason = Localized.enterPasscode
 
         // First check if we have the needed hardware support
         var error: NSError?

@@ -59,7 +59,7 @@ extension AlbumViewController
             textField.placeholder = String(localized: "createNewAlbum_placeholder", comment: "Album Name")
             textField.clearButtonMode = .always
             textField.keyboardType = .default
-            textField.keyboardAppearance = InterfaceVars.shared.isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = UIVars.shared.isDarkPaletteActive ? .dark : .default
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes
             textField.returnKeyType = .continue
@@ -70,7 +70,7 @@ extension AlbumViewController
             textField.placeholder = String(localized: "createNewAlbumDescription_placeholder", comment: "Description")
             textField.clearButtonMode = .always
             textField.keyboardType = .default
-            textField.keyboardAppearance = InterfaceVars.shared.isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = UIVars.shared.isDarkPaletteActive ? .dark : .default
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes
             textField.returnKeyType = .continue
@@ -100,7 +100,7 @@ extension AlbumViewController
         }
         alert.view.tintColor = PwgColor.tintColor
         alert.view.accessibilityIdentifier = "CreateAlbum"
-        alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = PwgColor.tintColor

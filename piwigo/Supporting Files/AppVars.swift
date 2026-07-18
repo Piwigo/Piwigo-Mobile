@@ -36,14 +36,6 @@ final class AppVars: @unchecked Sendable {
     
     // MARK: - Vars in UserDefaults / Standard
     // Application variables stored in UserDefaults / Standard
-    /// - App Lock option
-    @UserDefault("isAppLockActive", defaultValue: false)
-    var isAppLockActive: Bool
-    @UserDefault("appLockKey", defaultValue: "")
-    var appLockKey: String
-    @UserDefault("isBiometricsEnabled", defaultValue: true)
-    var isBiometricsEnabled: Bool
-    
     /// — Clear clipboard after delay option (never by default)
     @UserDefault("clearClipboardDelay", defaultValue: pwgClearClipboard.never.rawValue)
     var clearClipboardDelay: Int
@@ -77,12 +69,6 @@ final class AppVars: @unchecked Sendable {
     
     // MARK: - Vars in Memory
     // Application variables kept in memory
-    /// - Is system dark palette active?
-    var isSystemDarkModeActive = false
-    
-    /// - Check for haptics compatibility at the app’s launch
-    var supportsHaptics: Bool = false
-    
     /// - App Lock status
     var isAppUnlocked: Bool = false
     

@@ -58,7 +58,7 @@ class SelectPrivacyViewController: UIViewController {
 
         // Table view
         privacyTableView.separatorColor = PwgColor.separator
-        privacyTableView.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
+        privacyTableView.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         privacyTableView.reloadData()
     }
 

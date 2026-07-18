@@ -14,6 +14,9 @@ import Foundation
 
 final class HapticUtilities {
     
+    // Boolean telling if the device supports haptics.
+    static let supportsHaptics = CHHapticEngine.capabilitiesForHardware().supportsHaptics
+    
     // A haptic engine manages the connection to the haptic server.
     @MainActor
     static var engine: CHHapticEngine? = {
@@ -69,7 +72,7 @@ final class HapticUtilities {
     static func playHapticsFile(named filename: String) {
         
         // If the device doesn't support Core Haptics, abort.
-        if !AppVars.shared.supportsHaptics { return }
+        if !supportsHaptics { return }
         
         // Express the path to the AHAP file before attempting to load it.
         guard let path = Bundle.main.path(forResource: filename, ofType: "ahap")

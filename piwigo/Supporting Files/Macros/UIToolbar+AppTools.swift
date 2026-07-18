@@ -15,7 +15,7 @@ extension UIToolbar {
     @MainActor
     func configAppearance() {
         // Style
-        barStyle = InterfaceVars.shared.isDarkPaletteActive ? .black : .default
+        barStyle = UIVars.shared.isDarkPaletteActive ? .black : .default
         
         // Buttons
         tintColor = PwgColor.tintColor

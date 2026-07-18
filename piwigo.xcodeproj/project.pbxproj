@@ -306,6 +306,10 @@
 		ADB2E9422DD5A864000F3F7C /* TimeFormatSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB2E9412DD5A864000F3F7C /* TimeFormatSelectorViewController.swift */; };
 		ADB2E9442DD5A8DC000F3F7C /* TimeFormatSelectorViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADB2E9432DD5A8DC000F3F7C /* TimeFormatSelectorViewController.storyboard */; };
 		ADB3E043300B920200049CFA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ADB3E042300B920200049CFA /* Images.xcassets */; };
+		ADB3E046300BC4FF00049CFA /* AppLockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADCCFC3427D532AA00E42A6E /* AppLockViewController.swift */; };
+		ADB3E047300BC50E00049CFA /* AppLockViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2D959927D7F14900AC1FD8 /* AppLockViewController.storyboard */; };
+		ADB3E048300BC52600049CFA /* HapticUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9D684927DFE9E600517261 /* HapticUtilities.swift */; };
+		ADB3E049300BC53E00049CFA /* VerificationFailed.ahap in Resources */ = {isa = PBXBuildFile; fileRef = AD9D684727DFE6DF00517261 /* VerificationFailed.ahap */; };
 		ADB49D8A295B90C700EE377A /* SelectCategoryViewController+Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB49D89295B90C700EE377A /* SelectCategoryViewController+Images.swift */; };
 		ADB49D8C295B96C400EE377A /* SelectCategoryViewController+Albums.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB49D8B295B96C400EE377A /* SelectCategoryViewController+Albums.swift */; };
 		ADB65D5126FBC4650094DAF1 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB65D4E26FBAE0F0094DAF1 /* ImageViewController.swift */; };
@@ -383,8 +387,8 @@
 		ADDB2A6A2B416E2100FDC1B1 /* EditImageParamsViewController+ThumbnailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDB2A692B416E2100FDC1B1 /* EditImageParamsViewController+ThumbnailCell.swift */; };
 		ADDB2A6D2B416F5800FDC1B1 /* EditImageParamsViewController+UITableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDB2A6C2B416F5800FDC1B1 /* EditImageParamsViewController+UITableViewDelegate.swift */; };
 		ADDB2A6F2B416FF500FDC1B1 /* EditImageParamsViewController+UITableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDB2A6E2B416FF500FDC1B1 /* EditImageParamsViewController+UITableViewDataSource.swift */; };
-		ADDFD45027EF4C8900DB5081 /* String+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDFD44F27EF4C8900DB5081 /* String+AppTools.swift */; };
 		ADDFD45227EF4E7C00DB5081 /* UIView+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDFD45127EF4E7C00DB5081 /* UIView+AppTools.swift */; };
+		ADDFD45327EF4E7C00DB5082 /* UIView+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDFD45127EF4E7C00DB5081 /* UIView+AppTools.swift */; };
 		ADDFFB932EEDD720003DCCFF /* NSAttributedString+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDFFB8E2EEDCD71003DCCFF /* NSAttributedString+AppTools.swift */; };
 		ADE1AB90267F45B8001C1EEB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE1AB8F267F45B8001C1EEB /* AppDelegate.swift */; };
 		ADE2A7462FAF89F600E5E12A /* shareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = ADE2A73C2FAF89F600E5E12A /* shareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -926,7 +930,6 @@
 		ADDB2A692B416E2100FDC1B1 /* EditImageParamsViewController+ThumbnailCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+ThumbnailCell.swift"; sourceTree = "<group>"; };
 		ADDB2A6C2B416F5800FDC1B1 /* EditImageParamsViewController+UITableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+UITableViewDelegate.swift"; sourceTree = "<group>"; };
 		ADDB2A6E2B416FF500FDC1B1 /* EditImageParamsViewController+UITableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+UITableViewDataSource.swift"; sourceTree = "<group>"; };
-		ADDFD44F27EF4C8900DB5081 /* String+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+AppTools.swift"; sourceTree = "<group>"; };
 		ADDFD45127EF4E7C00DB5081 /* UIView+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+AppTools.swift"; sourceTree = "<group>"; };
 		ADDFFB8E2EEDCD71003DCCFF /* NSAttributedString+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+AppTools.swift"; sourceTree = "<group>"; };
 		ADE1AB8F267F45B8001C1EEB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -1849,7 +1852,6 @@
 				AD9A1BE724E04F0000D22C86 /* TableHeaderView.swift */,
 				AD7DE08F2A8587E600C1424E /* Notification.Name+AppTools.swift */,
 				ADDFFB8E2EEDCD71003DCCFF /* NSAttributedString+AppTools.swift */,
-				ADDFD44F27EF4C8900DB5081 /* String+AppTools.swift */,
 				AD7A0CC12C10FF4A008AB50F /* UIButton+AppTools.swift */,
 				AD69739A271885D10015303E /* UIBarButtonItem+AppTools.swift */,
 				ADBF55702736E1990014E74A /* UIImage+AppTools.swift */,
@@ -2181,7 +2183,9 @@
 				ADE920482FBCF85300CAF83A /* Localizable.xcstrings in Resources */,
 				ADB3E043300B920200049CFA /* Images.xcassets in Resources */,
 				ADF3FD942FB7BD0900C817FB /* ShareViewController.storyboard in Resources */,
+				ADB3E047300BC50E00049CFA /* AppLockViewController.storyboard in Resources */,
 				ADE920522FBD100000CAF83A /* PiwigoHUD.xib in Resources */,
+				ADB3E049300BC53E00049CFA /* VerificationFailed.ahap in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2332,6 +2336,9 @@
 				ADE9204A2FBD029A00CAF83A /* ShareViewController+Delegate.swift in Sources */,
 				ADE920502FBD100000CAF83A /* PiwigoHUD.swift in Sources */,
 				ADE920512FBD100000CAF83A /* RingProgressView.swift in Sources */,
+				ADB3E046300BC4FF00049CFA /* AppLockViewController.swift in Sources */,
+				ADB3E048300BC52600049CFA /* HapticUtilities.swift in Sources */,
+				ADDFD45327EF4E7C00DB5082 /* UIView+AppTools.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2459,7 +2466,6 @@
 				ADF29DC62BCE8E4B0012FF66 /* AlbumHeaderReusableView.swift in Sources */,
 				ADC8167B244B5EDE00650223 /* LocalImagesViewController.swift in Sources */,
 				ADB65D5126FBC4650094DAF1 /* ImageViewController.swift in Sources */,
-				ADDFD45027EF4C8900DB5081 /* String+AppTools.swift in Sources */,
 				AD43733D2B4326ED009BC454 /* SettingsViewController+UITextField.swift in Sources */,
 				ADCA7CF82E928A7F00EFC3C5 /* HelpUtilities.swift in Sources */,
 				ADEA269A285F8D5F00B6C9A0 /* ImageViewController+Share.swift in Sources */,
@@ -3031,7 +3037,7 @@
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG EXTENSION $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "";
@@ -3085,6 +3091,7 @@
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "EXTENSION $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "";

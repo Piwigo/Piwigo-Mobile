@@ -14,9 +14,9 @@ extension UISearchBar {
     
     @MainActor
     func configAppearance() {
-        barStyle = InterfaceVars.shared.isDarkPaletteActive ? .black : .default
+        barStyle = UIVars.shared.isDarkPaletteActive ? .black : .default
         searchTextField.textColor = PwgColor.leftLabel
-        searchTextField.keyboardAppearance = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
+        searchTextField.keyboardAppearance = UIVars.shared.isDarkPaletteActive ? .dark : .light
         tintColor = PwgColor.tintColor
     }
 }

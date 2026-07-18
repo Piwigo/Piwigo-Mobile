@@ -43,7 +43,7 @@ extension SettingsViewController: UITableViewDelegate
         case .appearance:
             title = String(localized: "settingsHeader_appearance", comment: "Appearance")
         case .privacy:
-            title = String(localized: "settingsHeader_privacy", comment: "Privacy")
+            title = Localized.privacy
         case .cache:
             title = String(localized: "settingsHeader_cache", comment: "Cache Settings")
         case .about:
@@ -393,7 +393,7 @@ extension SettingsViewController: UITableViewDelegate
                 // Present list of actions
                 let alert = getClearCacheAlert()
                 alert.view.tintColor = PwgColor.tintColor
-                alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
+                alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
                 alert.popoverPresentationController?.sourceView = settingsTableView
                 alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
                 alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero

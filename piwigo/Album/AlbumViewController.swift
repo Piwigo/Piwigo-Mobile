@@ -412,7 +412,7 @@ final class AlbumViewController: UIViewController
             homeAlbumButton.configuration = getHomeAlbumConfiguration()
             homeAlbumButton.layer.shadowColor = PwgColor.shadow.cgColor
             
-            if InterfaceVars.shared.isDarkPaletteActive {
+            if UIVars.shared.isDarkPaletteActive {
                 addButton.layer.shadowRadius = 1.0
                 addButton.layer.shadowOffset = CGSize.zero
                 createAlbumButton.layer.shadowRadius = 1.0
@@ -439,7 +439,7 @@ final class AlbumViewController: UIViewController
         
         // Collection view
         collectionView?.backgroundColor = PwgColor.background
-        collectionView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
+        collectionView?.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         (collectionView?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader) ?? []).forEach { header in
             if let header = header as? AlbumHeaderReusableView {
                 header.applyColorPalette(withDescription: self.attributedComment())
@@ -704,7 +704,7 @@ final class AlbumViewController: UIViewController
         super.traitCollectionDidChange(previousTraitCollection)
         
         // Should we update the user interface based on the appearance?
-        InterfaceManager.shared.applyColorPalette(for: traitCollection.userInterfaceStyle)
+        UITools.shared.applyColorPalette(for: traitCollection.userInterfaceStyle)
     }
     
     override func viewWillDisappear(_ animated: Bool) {

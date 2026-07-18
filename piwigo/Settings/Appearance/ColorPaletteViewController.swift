@@ -42,7 +42,7 @@ class ColorPaletteViewController: UIViewController {
         
         // Table view
         tableView?.separatorColor = PwgColor.separator
-        tableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
+        tableView?.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         tableView?.reloadData()
     }
     
@@ -101,21 +101,21 @@ extension ColorPaletteViewController: UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
             else { preconditionFailure("Could not load SwitchTableViewCell") }
             cell.configure(with: String(localized: "settings_switchPalette", comment: "Automatic"))
-            cell.cellSwitch.setOn(InterfaceVars.shared.switchPaletteAutomatically, animated: true)
+            cell.cellSwitch.setOn(UIVars.shared.switchPaletteAutomatically, animated: true)
             cell.cellSwitchBlock = { [self] switchState in
                 
                 // Number of rows will change accordingly
-                InterfaceVars.shared.switchPaletteAutomatically = switchState
+                UIVars.shared.switchPaletteAutomatically = switchState
                 
                 // What should we do?
                 if switchState {
                     // Switch off light/dark modes
-                    InterfaceVars.shared.isLightPaletteModeActive = false
-                    InterfaceVars.shared.isDarkPaletteModeActive = false
+                    UIVars.shared.isLightPaletteModeActive = false
+                    UIVars.shared.isDarkPaletteModeActive = false
                 }
                 
                 // Notify palette change
-                InterfaceManager.shared.applyColorPalette(for: self.traitCollection.userInterfaceStyle)
+                UITools.shared.applyColorPalette(for: self.traitCollection.userInterfaceStyle)
             }
             cell.accessibilityIdentifier = "switchColourAuto"
             tableViewCell = cell

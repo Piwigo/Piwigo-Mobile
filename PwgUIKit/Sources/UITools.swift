@@ -1,5 +1,5 @@
 //
-//  InterfaceManager.swift
+//  UITools.swift
 //  PwgUIKit
 //
 //  Created by Eddy Lelièvre-Berna on 20/05/2026.
@@ -9,11 +9,11 @@ import Foundation
 import UIKit
 
 @MainActor
-public final class InterfaceManager {
+public final class UITools {
     
     // Singleton
-    public static let shared = InterfaceManager()
-        
+    public static let shared = UITools()
+    
     // MARK: - Light and Dark Modes
     // Called:
     /// - when the app is launched
@@ -22,49 +22,49 @@ public final class InterfaceManager {
     /// NB: Extensions never call traitCollectionDidChange() because trait changes are driven by UIWindowScene.
     public func applyColorPalette(for userInterfaceStyle: UIUserInterfaceStyle) {
         // Color palette depends on system settings
-        InterfaceVars.shared.isSystemDarkModeActive = (userInterfaceStyle == .dark)
+        UIVars.shared.isSystemDarkModeActive = (userInterfaceStyle == .dark)
         
         // Apply color palette change if needed
-        if InterfaceVars.shared.isLightPaletteModeActive
+        if UIVars.shared.isLightPaletteModeActive
         {
-            if !InterfaceVars.shared.isDarkPaletteActive {
+            if !UIVars.shared.isDarkPaletteActive {
                 // Already in light mode but make sure that images stays in appropriate mode
                 NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
                 return;
             } else {
                 // "Always Light Mode" selected
-                InterfaceVars.shared.isDarkPaletteActive = false
+                UIVars.shared.isDarkPaletteActive = false
             }
         }
-        else if InterfaceVars.shared.isDarkPaletteModeActive
+        else if UIVars.shared.isDarkPaletteModeActive
         {
-            if InterfaceVars.shared.isDarkPaletteActive {
+            if UIVars.shared.isDarkPaletteActive {
                 // Already showing dark palette but make sure that images stays in appropriate mode
                 NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
                 return;
             } else {
                 // "Always Dark Mode" selected or iOS Dark Mode active => Dark palette
-                InterfaceVars.shared.isDarkPaletteActive = true
+                UIVars.shared.isDarkPaletteActive = true
             }
         }
-        else if InterfaceVars.shared.switchPaletteAutomatically
+        else if UIVars.shared.switchPaletteAutomatically
         {
             // Dynamic palette mode chosen
-            if InterfaceVars.shared.isSystemDarkModeActive {
+            if UIVars.shared.isSystemDarkModeActive {
                 // System-wide dark mode active
-                if InterfaceVars.shared.isDarkPaletteActive {
+                if UIVars.shared.isDarkPaletteActive {
                     // Keep dark palette but make sure that images stays in appropriate mode
                     NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
                     return;
                 } else {
                     // Switch to dark mode
-                    InterfaceVars.shared.isDarkPaletteActive = true
+                    UIVars.shared.isDarkPaletteActive = true
                 }
             } else {
                 // System-wide light mode active
-                if InterfaceVars.shared.isDarkPaletteActive {
+                if UIVars.shared.isDarkPaletteActive {
                     // Switch to light mode
-                    InterfaceVars.shared.isDarkPaletteActive = false
+                    UIVars.shared.isDarkPaletteActive = false
                 } else {
                     // Keep light palette but make sure that images stays in appropriate mode
                     NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
@@ -73,9 +73,9 @@ public final class InterfaceManager {
             }
         } else {
             // Return to either static Light or Dark mode
-            InterfaceVars.shared.isLightPaletteModeActive = !InterfaceVars.shared.isSystemDarkModeActive;
-            InterfaceVars.shared.isDarkPaletteModeActive = InterfaceVars.shared.isSystemDarkModeActive;
-            InterfaceVars.shared.isDarkPaletteActive = InterfaceVars.shared.isSystemDarkModeActive;
+            UIVars.shared.isLightPaletteModeActive = !UIVars.shared.isSystemDarkModeActive;
+            UIVars.shared.isDarkPaletteModeActive = UIVars.shared.isSystemDarkModeActive;
+            UIVars.shared.isDarkPaletteActive = UIVars.shared.isSystemDarkModeActive;
         }
         
         // Tint colour
@@ -86,9 +86,9 @@ public final class InterfaceManager {
         
         // Tab bars
         UITabBar.appearance().barTintColor = PwgColor.background
-
+        
         // Styles
-        if InterfaceVars.shared.isDarkPaletteActive
+        if UIVars.shared.isDarkPaletteActive
         {
             UITabBar.appearance().barStyle = .black
             UIToolbar.appearance().barStyle = .black
@@ -99,9 +99,12 @@ public final class InterfaceManager {
             UIToolbar.appearance().barStyle = .default
             UINavigationBar.appearance().barStyle = .default
         }
-
+        
         // Notify palette change to views
         NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
-        debugPrint("••> App changed to \(InterfaceVars.shared.isDarkPaletteActive ? "dark" : "light") mode");
+        debugPrint("••> App changed to \(UIVars.shared.isDarkPaletteActive ? "dark" : "light") mode");
     }
+    
+    
+    // - App Lock 
 }

@@ -212,7 +212,7 @@ class SettingsViewController: UIViewController {
         
         // Table view
         settingsTableView?.separatorColor = PwgColor.separator
-        settingsTableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
+        settingsTableView?.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         settingsTableView?.reloadData()
     }
     
@@ -276,7 +276,7 @@ class SettingsViewController: UIViewController {
             alert.addAction(cancelAction)
             alert.addAction(defaultAction)
             alert.view.tintColor = PwgColor.tintColor
-            alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
             present(alert, animated: true, completion: {
                 // Bugfix: iOS9 - Tint not fully Applied without Reapplying
                 alert.view.tintColor = PwgColor.tintColor
@@ -419,7 +419,7 @@ class SettingsViewController: UIViewController {
         
         // Present list of actions
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.sourceView = settingsTableView
         alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
         alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero

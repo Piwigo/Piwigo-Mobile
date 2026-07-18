@@ -12,13 +12,13 @@ import UIKit
 extension String {
 
     // MARK: - Passcode Encryption
-    var encrypted: String {
+    public var encrypted: String {
         let encoded = (Int64(self)! + Int64(2323)) * Int64(7777) + Int64(3141592657)
         let key = String(encoded, radix: 23, uppercase: true)
         return String(repeating: "0", count: max(0, 8 - key.count)) + key
     }
 
-    var decrypted: String {
+    public var decrypted: String {
         guard let key = Int64(self, radix: 23) else {
             // No known passscode -> empty string
             return ""

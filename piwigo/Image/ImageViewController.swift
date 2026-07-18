@@ -204,7 +204,7 @@ class ImageViewController: UIViewController {
         super.traitCollectionDidChange(previousTraitCollection)
         
         // Should we update the user interface based on the appearance?
-        InterfaceManager.shared.applyColorPalette(for: traitCollection.userInterfaceStyle)
+        UITools.shared.applyColorPalette(for: traitCollection.userInterfaceStyle)
     }
     
     override func viewDidDisappear(_ animated: Bool) {

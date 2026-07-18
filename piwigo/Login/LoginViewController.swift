@@ -38,7 +38,7 @@ class LoginViewController: UIViewController {
     var httpLoginAction: UIAlertAction?
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return InterfaceVars.shared.isDarkPaletteActive ? .lightContent : .darkContent
+        return UIVars.shared.isDarkPaletteActive ? .lightContent : .darkContent
     }
 
     
@@ -122,7 +122,7 @@ class LoginViewController: UIViewController {
         setNeedsStatusBarAppearanceUpdate()
 
         // Change text colour according to palette color
-        piwigoLogo.imageView?.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
+        piwigoLogo.imageView?.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
 
         // Text color depdending on background color
         serverTextField.textColor = PwgColor.text
@@ -159,7 +159,7 @@ class LoginViewController: UIViewController {
         super.traitCollectionDidChange(previousTraitCollection)
 
         // Should we update the user interface based on the appearance?
-        InterfaceManager.shared.applyColorPalette(for: traitCollection.userInterfaceStyle)
+        UITools.shared.applyColorPalette(for: traitCollection.userInterfaceStyle)
     }
     
     deinit {

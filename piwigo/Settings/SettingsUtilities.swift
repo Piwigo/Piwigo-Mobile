@@ -80,9 +80,9 @@ struct SettingsUtilities
         
         // App settings
         msg += "\n— Piwigo App —\n"
-        msg += "• switchPaletteAutomatically: \(InterfaceVars.shared.switchPaletteAutomatically ? "Yes" : "No")\n"
-        msg += "• isAppLockActive: \(AppVars.shared.isAppLockActive ? "Yes" : "No")\n"
-        msg += "• isBiometricsEnabled: \(AppVars.shared.isBiometricsEnabled ? "Yes" : "No")\n"
+        msg += "• switchPaletteAutomatically: \(UIVars.shared.switchPaletteAutomatically ? "Yes" : "No")\n"
+        msg += "• isAppLockActive: \(UIVars.shared.isAppLockActive ? "Yes" : "No")\n"
+        msg += "• isBiometricsEnabled: \(UIVars.shared.isBiometricsEnabled ? "Yes" : "No")\n"
         msg += "• userStatusRaw: \(ServerVars.shared.userStatus)\n"
         msg += "• displayAlbumDescriptions: \(AlbumVars.shared.displayAlbumDescriptions ? "Yes" : "No")\n"
         msg += "• displayImageTitles: \(AlbumVars.shared.displayImageTitles ? "Yes" : "No")\n"

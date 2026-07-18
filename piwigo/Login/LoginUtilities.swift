@@ -94,7 +94,7 @@ struct LoginUtilities
             textField.text = (username.count > 0) ? username : ""
             textField.clearButtonMode = .always
             textField.keyboardType = .default
-            textField.keyboardAppearance = InterfaceVars.shared.isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = UIVars.shared.isDarkPaletteActive ? .dark : .default
             textField.returnKeyType = .continue
             textField.autocapitalizationType = .none
             textField.autocorrectionType = .no
@@ -106,7 +106,7 @@ struct LoginUtilities
             textField.clearButtonMode = .always
             textField.keyboardType = .default
             textField.isSecureTextEntry = true
-            textField.keyboardAppearance = InterfaceVars.shared.isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = UIVars.shared.isDarkPaletteActive ? .dark : .default
             textField.autocapitalizationType = .none
             textField.autocorrectionType = .no
             textField.returnKeyType = .continue
@@ -122,7 +122,7 @@ struct LoginUtilities
         alert.addAction(loginAction)
         
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
         return alert
     }
     

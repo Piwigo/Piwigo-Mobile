@@ -73,7 +73,7 @@ class AutoUploadViewController: UIViewController {
 
         // Table view
         autoUploadTableView?.separatorColor = PwgColor.separator
-        autoUploadTableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
+        autoUploadTableView?.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         autoUploadTableView?.reloadData()
     }
 

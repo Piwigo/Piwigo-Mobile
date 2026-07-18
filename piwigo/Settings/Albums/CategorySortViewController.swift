@@ -55,7 +55,7 @@ class CategorySortViewController: UIViewController {
 
         // Table view
         sortSelectTableView.separatorColor = PwgColor.separator
-        sortSelectTableView.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
+        sortSelectTableView.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         sortSelectTableView.reloadData()
     }
     

@@ -178,7 +178,7 @@ extension ImageViewController
             textField.placeholder = "1"
             textField.clearButtonMode = .always
             textField.keyboardType = .numberPad
-            textField.keyboardAppearance = InterfaceVars.shared.isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = UIVars.shared.isDarkPaletteActive ? .dark : .default
             textField.autocapitalizationType = .none
             textField.autocorrectionType = .no
             textField.returnKeyType = .continue
@@ -207,7 +207,7 @@ extension ImageViewController
         
         // Present list of actions
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.barButtonItem = actionBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying

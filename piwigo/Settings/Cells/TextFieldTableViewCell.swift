@@ -32,7 +32,7 @@ class TextFieldTableViewCell: UITableViewCell {
         // Text field
         rightTextField.textColor = PwgColor.rightLabel
         rightTextField.text = input
-        rightTextField.keyboardAppearance = InterfaceVars.shared.isDarkPaletteActive ? .dark : .default
+        rightTextField.keyboardAppearance = UIVars.shared.isDarkPaletteActive ? .dark : .default
         rightTextField.attributedPlaceholder = NSAttributedString(string: placeHolder, attributes: [
             NSAttributedString.Key.foregroundColor: PwgColor.placeHolder
         ])

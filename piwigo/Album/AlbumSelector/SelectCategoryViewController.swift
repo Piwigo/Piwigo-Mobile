@@ -348,7 +348,7 @@ final class SelectCategoryViewController: UIViewController {
         // Table view
         setTableViewMainHeader()
         categoriesTableView?.separatorColor = PwgColor.separator
-        categoriesTableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
+        categoriesTableView?.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
     }
     
     override func viewWillAppear(_ animated: Bool) {

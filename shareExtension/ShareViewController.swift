@@ -22,6 +22,7 @@ final class ShareViewController: UIViewController {
     let logger = PwgLogger(subsystem: "org.piwigo.shareExtension", category: String(describing: ShareViewController.self))
 
     var context: NSExtensionContext?        // Context of the extension
+    var isUnlocked = false                  // In-memory: valid for this share session only
     lazy var shareDate: String = {          // Date of the share included in file names and deep link
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyyMMdd-HHmmssSSSS"
@@ -193,14 +194,14 @@ final class ShareViewController: UIViewController {
         setTableViewMainHeader()
         categoriesTableView?.backgroundColor = PwgColor.background
         categoriesTableView?.separatorColor = PwgColor.separator
-        categoriesTableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
+        categoriesTableView?.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         // Did the user change system settings?
-        InterfaceManager.shared.applyColorPalette(for: traitCollection.userInterfaceStyle)
+        UITools.shared.applyColorPalette(for: traitCollection.userInterfaceStyle)
         
         // Set colors, fonts, etc.
         applyColorPalette()
@@ -219,6 +220,16 @@ final class ShareViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
+        // Request passcode if the App Lock is enabled
+        if UIVars.shared.isAppLockActive, isUnlocked == false {
+            requestPasscode()
+            return
+        }
+        checkContentIsAccessible()
+    }
+    
+    // The migrationRequired and user == nil alerts, moved out of viewDidAppear
+    private func checkContentIsAccessible() {
         // Ask the user to open the app and perform the migration
         if migrationRequired {
             presentShareFailAlert(withMessage: Localized.migrationRequired)
@@ -231,6 +242,18 @@ final class ShareViewController: UIViewController {
                                  comment: "Please open the Piwigo app and create an album before sharing photos or videos.")
             presentShareFailAlert(withMessage: message)
         }
+    }
+
+    private func requestPasscode() {
+        if presentedViewController is AppLockViewController { return }
+        let appLockSB = UIStoryboard(name: "AppLockViewController", bundle: nil)
+        guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "AppLockViewController") as? AppLockViewController
+        else { return }
+        appLockVC.config(forAction: .unlockApp)
+        appLockVC.delegate = self
+        appLockVC.modalPresentationStyle = .overFullScreen
+        appLockVC.modalTransitionStyle = .crossDissolve
+        present(appLockVC, animated: false)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -450,5 +473,15 @@ extension ShareViewController: @MainActor ShareCellDelegate {
         
         // Shows albums and sub-albums
         categoriesTableView?.reloadData()
+    }
+}
+
+
+// MARK: - AppLockDelegate Methods
+extension ShareViewController: @MainActor AppLockDelegate {
+    func loginOrReloginAndResumeUploads() {
+        // Passcode verified —> reveal the album selector
+        isUnlocked = true
+        checkContentIsAccessible()
     }
 }

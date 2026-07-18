@@ -89,7 +89,7 @@ class RenameFileViewController: UIViewController {
         
         // Table view
         tableView?.separatorColor = PwgColor.separator
-        tableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
+        tableView?.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         tableView?.reloadData()
     }
     
@@ -335,7 +335,7 @@ class RenameFileViewController: UIViewController {
         
         // Present list of actions
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.sourceView = tableView
         alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
         alert.popoverPresentationController?.sourceRect = tableView?.rectForFooter(inSection: section) ?? CGRect.zero
@@ -427,7 +427,7 @@ class RenameFileViewController: UIViewController {
         
         // Present list of actions
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.sourceView = tableView
         alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
         alert.popoverPresentationController?.sourceRect = tableView?.rectForFooter(inSection: section) ?? CGRect.zero
@@ -518,7 +518,7 @@ class RenameFileViewController: UIViewController {
         
         // Present list of actions
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.sourceView = tableView
         alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
         alert.popoverPresentationController?.sourceRect = tableView?.rectForFooter(inSection: section) ?? CGRect.zero

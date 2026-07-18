@@ -140,7 +140,7 @@ extension AlbumViewController
 
         // Present list of actions
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
         if inSelectionMode, contextually == false {
             alert.popoverPresentationController?.barButtonItem = deleteBarButton
         } else if let imageID = imageIDs.first,

@@ -67,7 +67,7 @@ class UploadSettingsViewController: UITableViewController {
 
         // Table view
         settingsTableView.separatorColor = PwgColor.separator
-        settingsTableView.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
+        settingsTableView.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         settingsTableView.reloadData()
     }
 

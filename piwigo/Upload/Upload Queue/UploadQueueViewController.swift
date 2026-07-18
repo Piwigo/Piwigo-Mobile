@@ -161,7 +161,7 @@ class UploadQueueViewController: UIViewController {
         
         // Table view
         queueTableView?.separatorColor = PwgColor.separator
-        queueTableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
+        queueTableView?.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         
         // Displayed table view items
         guard queueTableView?.window != nil else { return }
@@ -330,7 +330,7 @@ class UploadQueueViewController: UIViewController {
         
         // Present list of actions
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.barButtonItem = actionBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying

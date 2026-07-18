@@ -14,6 +14,7 @@ import UIKit
 
 import PwgKit
 import PwgCacheKit
+import PwgUIKit
 import PwgUploadKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -170,7 +171,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // First created/restored scene ► Blur views if the App Lock is enabled
             /// The passcode window is not presented so that the app
             /// does not request the passcode until it is put into the background.
-            if AppVars.shared.isAppLockActive {
+            if UIVars.shared.isAppLockActive {
                 // Protect presented login view
                 addPrivacyProtection()
             }
@@ -254,6 +255,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let isMigratingData = (scene as? UIWindowScene)?.topMostViewController() is DataMigrationViewController
         if appDelegate.isAuthenticatingWithBiometrics || isMigratingData || CacheVars.shared.isMigrationRunning { return }
         
+        // Was the app unlocked from the share extension moments ago?
+        if AppVars.shared.isAppUnlocked == false {
+            let lastUnlock = Date(timeIntervalSinceReferenceDate: UIVars.shared.dateOfLastUnlock)
+            if Date().timeIntervalSince(lastUnlock) < 60 {
+                // Consume the unlock so it cannot be reused
+                UIVars.shared.dateOfLastUnlock = Date.distantPast.timeIntervalSinceReferenceDate
+                AppVars.shared.isAppUnlocked = true
+            }
+        }
+        
         // Request passcode if necessary
         if AppVars.shared.isAppUnlocked == false {
             // Loop over all scenes
@@ -270,7 +281,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 // Remove privacy view
                 self.privacyView?.removeFromSuperview()
                 // Did user enable biometrics?
-                if AppVars.shared.isBiometricsEnabled,
+                if UIVars.shared.isBiometricsEnabled,
                    appDelegate.didCancelBiometricsAuthentication == false {
                     // Yes, perform biometrics authentication
                     appDelegate.performBiometricAuthentication() { success in
@@ -305,7 +316,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Blur views if the App Lock is enabled
         /// The passcode window is not presented so that the app
         /// does not request the passcode until it is put into the background.
-        if AppVars.shared.isAppLockActive {
+        if UIVars.shared.isAppLockActive {
             // Loop over all scenes
             let connectedScenes = UIApplication.shared.connectedScenes
             for scene in connectedScenes {
@@ -374,7 +385,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if connectedScenes.filter({$0.activationState == .foregroundActive}).count > 0 { return }
         
         // Remember to ask for passcode or not
-        AppVars.shared.isAppUnlocked = !AppVars.shared.isAppLockActive
+        AppVars.shared.isAppUnlocked = !UIVars.shared.isAppLockActive
         
         // Remember to resume all upload activities at restart
         UploadVars.shared.didResumeUploads = false

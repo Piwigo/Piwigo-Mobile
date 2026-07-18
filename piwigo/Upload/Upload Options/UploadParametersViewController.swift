@@ -55,7 +55,7 @@ class UploadParametersViewController: UITableViewController {
 
         // Table view
         paramsTableView.separatorColor = PwgColor.separator
-        paramsTableView.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
+        paramsTableView.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         paramsTableView.reloadData()
     }
 

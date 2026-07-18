@@ -375,7 +375,7 @@ extension SelectCategoryViewController: UITableViewDelegate
             
             // Present popover view
             alert.view.tintColor = PwgColor.tintColor
-            alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
             alert.popoverPresentationController?.sourceView = categoriesTableView
             alert.popoverPresentationController?.sourceRect = categoriesTableView.rectForRow(at: indexPath)
             alert.popoverPresentationController?.permittedArrowDirections = [.down, .up]

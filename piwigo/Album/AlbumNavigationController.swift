@@ -65,6 +65,6 @@ class AlbumNavigationController: UINavigationController
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return InterfaceVars.shared.isDarkPaletteActive ? .lightContent : .darkContent
+        return UIVars.shared.isDarkPaletteActive ? .lightContent : .darkContent
     }
 }

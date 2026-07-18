@@ -63,7 +63,7 @@ class UploadVideoSizeViewController: UIViewController {
 
         // Table view
         tableView.separatorColor = PwgColor.separator
-        tableView.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
+        tableView.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         tableView.reloadData()
     }
 

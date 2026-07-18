@@ -15,7 +15,7 @@ public enum PwgCacheKit {
     public static let build = 677
 }
 
-// Bundle for PwgCacheKit localised strings
+// Bundle for PwgCacheKit localized strings
 public extension Bundle {
     static let pwgCacheKit: Bundle = .module
 }

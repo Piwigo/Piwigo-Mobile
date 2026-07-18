@@ -126,7 +126,7 @@ class LocalAlbumsViewController: UIViewController {
         // Table view
         setTableViewMainHeader()
         localAlbumsTableView?.separatorColor = PwgColor.separator
-        localAlbumsTableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
+        localAlbumsTableView?.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         localAlbumsTableView?.reloadData()
     }
     

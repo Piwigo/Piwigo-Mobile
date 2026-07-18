@@ -111,7 +111,7 @@ final class AlbumDeletion: NSObject
         // Present list of actions
         alert.view.tintColor = PwgColor.tintColor
         alert.view.accessibilityIdentifier = "DeleteAlbum"
-        alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? UIUserInterfaceStyle.dark : UIUserInterfaceStyle.light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? UIUserInterfaceStyle.dark : UIUserInterfaceStyle.light
         topViewController.present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = PwgColor.tintColor
@@ -130,7 +130,7 @@ final class AlbumDeletion: NSObject
         
         alert.addTextField(configurationHandler: { [self] textField in
             textField.placeholder = "\(NSNumber(value: albumData.nbImages))"
-            textField.keyboardAppearance = InterfaceVars.shared.isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = UIVars.shared.isDarkPaletteActive ? .dark : .default
             textField.clearButtonMode = .always
             textField.keyboardType = .numberPad
             textField.delegate = self
@@ -157,7 +157,7 @@ final class AlbumDeletion: NSObject
             alert.addAction(deleteAction)
         }
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = InterfaceVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
         topViewController.present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = PwgColor.tintColor

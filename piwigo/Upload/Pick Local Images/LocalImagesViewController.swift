@@ -214,7 +214,7 @@ final class LocalImagesViewController: UIViewController
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
         
         // Collection view
-        localImagesCollection.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
+        localImagesCollection.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         localImagesCollection.reloadData()
     }
         

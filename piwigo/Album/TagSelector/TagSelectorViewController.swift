@@ -140,7 +140,7 @@ class TagSelectorViewController: UIViewController {
         
         // Table view
         tagsTableView?.separatorColor = PwgColor.separator
-        tagsTableView?.indicatorStyle = InterfaceVars.shared.isDarkPaletteActive ? .white : .black
+        tagsTableView?.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         tagsTableView?.reloadData()
     }
     
