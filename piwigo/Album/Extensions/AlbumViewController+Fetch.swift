@@ -43,13 +43,16 @@ extension AlbumViewController
             await self.fetchImages(withInitialImageIds: oldImageIDs, query: query,
                                    fromPage: 0, toPage: 0)
         } else {
-            await self.fetchAlbums(forUserWithAdminRights: user.hasAdminRights,
+            // Fetch the root album recursively after a successful login
+            // so that the share extension can present the whole album tree
+            let recursively = (categoryId == pwgSmartAlbum.root.rawValue) && AlbumVars.shared.fetchAlbumDataRecursively
+            await self.fetchAlbums(forUserWithAdminRights: user.hasAdminRights, recursively: recursively,
                                    withInitialImageIds: oldImageIDs, query: query)
         }
     }
     
     @concurrent
-    private func fetchAlbums(forUserWithAdminRights hasAdminRights: Bool,
+    private func fetchAlbums(forUserWithAdminRights hasAdminRights: Bool, recursively: Bool,
                              withInitialImageIds oldImageIDs: Set<Int64>, query: String) async {
         // Use the AlbumProvider to fetch album data. On completion,
         // handle general UI updates and error alerts on the main queue.
@@ -59,10 +62,17 @@ extension AlbumViewController
                 // Fetch albums
                 let pwgData = try await JSONManager.shared.fetchAlbums(forUserWithAdminRights: hasAdminRights,
                                                                        inParentWithId: categoryId,
+                                                                       recursively: recursively,
                                                                        thumbnailSize: thumnailSize)
                 // Update labum data in cache
                 if pwgData.isEmpty == false {
-                    try await albumProvider.importAlbums(pwgData, inParent: categoryId)
+                    try await albumProvider.importAlbums(pwgData, recursively: recursively, inParent: categoryId)
+                }
+
+                // All album data fetched ► Remember when and disable the recursive mode
+                if recursively {
+                    AlbumVars.shared.fetchAlbumDataRecursively = false
+                    CacheVars.shared.dateOfLastAlbumRefresh = Date().timeIntervalSinceReferenceDate
                 }
                 
                 // Fetch image data?

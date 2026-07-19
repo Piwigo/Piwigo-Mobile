@@ -112,4 +112,8 @@ final class AlbumVars: @unchecked Sendable {
     // Album variables kept in memory
     /// - To remember which album data is being fetched
     var isFetchingAlbumData = Set<Int32>()
+
+    /// - To fetch all album data recursively when fetching the root album after a successful login
+    ///   (keeps the album cache complete for e.g. the share extension)
+    var fetchAlbumDataRecursively = false
 }
