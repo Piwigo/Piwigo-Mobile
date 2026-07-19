@@ -41,6 +41,11 @@ public class CacheVars: @unchecked Sendable {
     @UserDefault("maxNberRecentCategories", defaultValue: 5, userDefaults: UserDefaults.dataSuite)
     public var maxNberRecentCategories: Int
     
+    /// - Date of the last recursive fetch of all album data, in seconds since reference date
+    ///   (exploited to keep album data available to the share extension by refreshing them once a day)
+    @UserDefault("dateOfLastAlbumRefresh", defaultValue: TimeInterval.zero, userDefaults: UserDefaults.dataSuite)
+    public var dateOfLastAlbumRefresh: TimeInterval
+    
     
     // MARK: - Vars in Memory
     // Variables kept in memory

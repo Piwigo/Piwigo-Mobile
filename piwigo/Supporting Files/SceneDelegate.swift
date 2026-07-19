@@ -406,8 +406,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             UploadManager.shared.scheduleNextUpload()
         }
         
-        // Clean up /tmp directory
+        // Schedule the daily refresh of the album data exploited by the share extension
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        appDelegate?.scheduleAlbumRefresh()
+        
+        // Clean up /tmp directory
         appDelegate?.cleanUpTemporaryDirectory(immediately: false)
         
         // Flag used to:

@@ -73,6 +73,8 @@
 		<string>org.piwigo.uploadManagerContinued</string>
 		<string>net.lelievre-berna.piwigo.uploadManager</string>
 		<string>net.lelievre-berna.piwigo.uploadManagerContinued</string>
+		<string>org.piwigo.albumRefresh</string>
+		<string>net.lelievre-berna.piwigo.albumRefresh</string>
 	</array>
 	<key>PHPhotoLibraryPreventAutomaticLimitedAccessAlert</key>
 	<true/>

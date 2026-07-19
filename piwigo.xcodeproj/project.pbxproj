@@ -272,6 +272,7 @@
 		AD9F9C2F2B4AF2D700943A96 /* EditImageParamsViewController+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9F9C2E2B4AF2D700943A96 /* EditImageParamsViewController+Keyboard.swift */; };
 		AD9F9C312B4B211900943A96 /* SettingsViewController+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9F9C302B4B211900943A96 /* SettingsViewController+Keyboard.swift */; };
 		AD9F9C332B4B230600943A96 /* LoginViewController+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9F9C322B4B230600943A96 /* LoginViewController+Keyboard.swift */; };
+		ADA1B0022E2A000000000002 /* AppDelegate+AlbumRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA1B0012E2A000000000001 /* AppDelegate+AlbumRefresh.swift */; };
 		ADA24DAF243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADA24DAE243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard */; };
 		ADA24DB1243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA24DB0243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift */; };
 		ADA24DB6243A74C200864D1F /* DefaultImageSizeViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADA24DB5243A74C200864D1F /* DefaultImageSizeViewController.storyboard */; };
@@ -297,7 +298,6 @@
 		ADADADEC2FB0AA6F003FB43F /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADADADEA2FB0AA6F003FB43F /* ShareViewController.swift */; };
 		ADAE3C342E19215200E1D634 /* ReleaseNotes.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADAE3C332E19215200E1D634 /* ReleaseNotes.xcstrings */; };
 		ADAE3C362E1932F200E1D634 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADAE3C352E1932F200E1D634 /* InfoPlist.xcstrings */; };
-		ADB3E04C300BD00000049CFA /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADB3E04B300BD00000049CFA /* InfoPlist.xcstrings */; };
 		ADAE3C382E19497100E1D634 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADAE3C372E19497000E1D634 /* Localizable.xcstrings */; };
 		ADAF43ED2FAE198800C8085F /* help11-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = ADAF43EC2FAE198800C8085F /* help11-iOS18.png */; };
 		ADAF43EF2FAE199700C8085F /* help11.png in Resources */ = {isa = PBXBuildFile; fileRef = ADAF43EE2FAE199700C8085F /* help11.png */; };
@@ -311,6 +311,8 @@
 		ADB3E047300BC50E00049CFA /* AppLockViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2D959927D7F14900AC1FD8 /* AppLockViewController.storyboard */; };
 		ADB3E048300BC52600049CFA /* HapticUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9D684927DFE9E600517261 /* HapticUtilities.swift */; };
 		ADB3E049300BC53E00049CFA /* VerificationFailed.ahap in Resources */ = {isa = PBXBuildFile; fileRef = AD9D684727DFE6DF00517261 /* VerificationFailed.ahap */; };
+		ADB3E04B300CC4F100049CFA /* AppDelegate+UploadImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB3E04A300CC4F100049CFA /* AppDelegate+UploadImages.swift */; };
+		ADB3E04C300BD00000049CFA /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADB3E04B300BD00000049CFA /* InfoPlist.xcstrings */; };
 		ADB49D8A295B90C700EE377A /* SelectCategoryViewController+Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB49D89295B90C700EE377A /* SelectCategoryViewController+Images.swift */; };
 		ADB49D8C295B96C400EE377A /* SelectCategoryViewController+Albums.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB49D8B295B96C400EE377A /* SelectCategoryViewController+Albums.swift */; };
 		ADB65D5126FBC4650094DAF1 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB65D4E26FBAE0F0094DAF1 /* ImageViewController.swift */; };
@@ -610,7 +612,6 @@
 		AD30FD3421316DA7009AA30E /* Screenshots.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Screenshots.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD30FD3621316DA8009AA30E /* PwgScreenshots.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PwgScreenshots.swift; sourceTree = "<group>"; };
 		AD30FD3821316DA8009AA30E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		ADB3E04D300BD00000049CFA /* Info-debug.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-debug.plist"; path = "piwigo/Info-debug.plist"; sourceTree = SOURCE_ROOT; };
 		AD311FF927CB7B730044AC5A /* LoginViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LoginViewController.storyboard; sourceTree = "<group>"; };
 		AD31A73E2C736A9800B37B19 /* ImagePreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePreviewViewController.swift; sourceTree = "<group>"; };
 		AD31E72F2EB106C100584ECB /* help01-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help01-iOS18.png"; sourceTree = "<group>"; };
@@ -809,6 +810,7 @@
 		AD9F9C2E2B4AF2D700943A96 /* EditImageParamsViewController+Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+Keyboard.swift"; sourceTree = "<group>"; };
 		AD9F9C302B4B211900943A96 /* SettingsViewController+Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsViewController+Keyboard.swift"; sourceTree = "<group>"; };
 		AD9F9C322B4B230600943A96 /* LoginViewController+Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginViewController+Keyboard.swift"; sourceTree = "<group>"; };
+		ADA1B0012E2A000000000001 /* AppDelegate+AlbumRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDelegate+AlbumRefresh.swift"; sourceTree = "<group>"; };
 		ADA24DAE243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DefaultImageThumbnailSizeViewController.storyboard; sourceTree = "<group>"; };
 		ADA24DB0243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultImageThumbnailSizeViewController.swift; sourceTree = "<group>"; };
 		ADA24DB5243A74C200864D1F /* DefaultImageSizeViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DefaultImageSizeViewController.storyboard; sourceTree = "<group>"; };
@@ -839,7 +841,6 @@
 		ADAE3C312E191F8B00E1D634 /* AppStore.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = AppStore.xcstrings; sourceTree = "<group>"; };
 		ADAE3C332E19215200E1D634 /* ReleaseNotes.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = ReleaseNotes.xcstrings; sourceTree = "<group>"; };
 		ADAE3C352E1932F200E1D634 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
-		ADB3E04B300BD00000049CFA /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		ADAE3C372E19497000E1D634 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		ADAF3B7123DDAC2F007B0ABA /* es */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/About.strings; sourceTree = "<group>"; };
 		ADAF3B7523DDAC2F007B0ABA /* es */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
@@ -857,6 +858,9 @@
 		ADB2E9412DD5A864000F3F7C /* TimeFormatSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeFormatSelectorViewController.swift; sourceTree = "<group>"; };
 		ADB2E9432DD5A8DC000F3F7C /* TimeFormatSelectorViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = TimeFormatSelectorViewController.storyboard; path = "piwigo/Settings/Upload/Rename File/TimeFormatSelector/TimeFormatSelectorViewController.storyboard"; sourceTree = SOURCE_ROOT; };
 		ADB3E042300B920200049CFA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		ADB3E04A300CC4F100049CFA /* AppDelegate+UploadImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDelegate+UploadImages.swift"; sourceTree = "<group>"; };
+		ADB3E04B300BD00000049CFA /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
+		ADB3E04D300BD00000049CFA /* Info-debug.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-debug.plist"; path = "piwigo/Info-debug.plist"; sourceTree = SOURCE_ROOT; };
 		ADB49D89295B90C700EE377A /* SelectCategoryViewController+Images.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SelectCategoryViewController+Images.swift"; sourceTree = "<group>"; };
 		ADB49D8B295B96C400EE377A /* SelectCategoryViewController+Albums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SelectCategoryViewController+Albums.swift"; sourceTree = "<group>"; };
 		ADB5B7B02BDD4195001DE2C7 /* PiwigoHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiwigoHUD.swift; sourceTree = "<group>"; };
@@ -1839,6 +1843,8 @@
 				D82B8CED1A6790A3000E47CA /* Macros */,
 				AD3335422666B6D4000A1487 /* AppVars.swift */,
 				ADE1AB8F267F45B8001C1EEB /* AppDelegate.swift */,
+				ADA1B0012E2A000000000001 /* AppDelegate+AlbumRefresh.swift */,
+				ADB3E04A300CC4F100049CFA /* AppDelegate+UploadImages.swift */,
 				ADC709C425115943009CA711 /* SceneDelegate.swift */,
 				AD91127D28154CC2002FB78F /* SceneDelegate+StateRestoration.swift */,
 				ADD77EEF2A19339800F8C779 /* ExternalDisplaySceneDelegate.swift */,
@@ -2502,6 +2508,7 @@
 				AD68317B2F66CCCD00518E87 /* AdvancedOptionsViewController.swift in Sources */,
 				AD6BA0FC2BA5D01800755257 /* PasteboardImagesViewController+UploadSwitchDelegate.swift in Sources */,
 				ADC709C525115943009CA711 /* SceneDelegate.swift in Sources */,
+				ADA1B0022E2A000000000002 /* AppDelegate+AlbumRefresh.swift in Sources */,
 				AD82C04C2433DB0E00F774BA /* SelectPrivacyViewController.swift in Sources */,
 				ADA5FA4429A0D9B0004A8A59 /* SettingsViewController+Cache.swift in Sources */,
 				ADB49D8C295B96C400EE377A /* SelectCategoryViewController+Albums.swift in Sources */,
@@ -2537,6 +2544,7 @@
 				AD6BA0FA2BA5C1D600755257 /* PasteboardImagesViewController+DataSource.swift in Sources */,
 				ADACD29D2C34852800F8790B /* LogsViewController.swift in Sources */,
 				ADBE0C272BE962D200F16A50 /* AlbumViewController+Favorite.swift in Sources */,
+				ADB3E04B300CC4F100049CFA /* AppDelegate+UploadImages.swift in Sources */,
 				AD43733F2B432862009BC454 /* SettingsViewController+UITableViewDelegate.swift in Sources */,
 				AD0ED1022441CEC200C69178 /* SwitchTableViewCell.swift in Sources */,
 				AD7E9AE92A6D7B330079BE8F /* Video.swift in Sources */,
