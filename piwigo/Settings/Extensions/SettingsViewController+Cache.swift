@@ -98,6 +98,11 @@ extension SettingsViewController
                     // Refresh Settings cell related with data
                     self.dataCacheSize = server.getAlbumImageCount(inContext: self.mainContext)
                     
+                    // Will fetch all album data recursively when fetching the root album
+                    // so that the share extension can present the whole album tree
+                    // if user launches a refresh
+                    AlbumVars.shared.fetchAlbumDataRecursively = true
+                    
                     // Hide HUD on completion
                     self.navigationController?.hideHUD { [self] in
                         self.removeExtraScenesAndReloadRootAlbum()
@@ -224,6 +229,11 @@ extension SettingsViewController
                     self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
                     self.videoCacheSize = server.getCacheSizeOfVideos()
                     self.uploadCacheSize = server.getUploadCount(inContext: self.mainContext)
+                    
+                    // Will fetch all album data recursively when fetching the root album
+                    // so that the share extension can present the whole album tree
+                    // if the user refreshes the empty root album
+                    AlbumVars.shared.fetchAlbumDataRecursively = true
                     
                     // Hide HUD on completion
                     self.navigationController?.hideHUD { [self] in
