@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import PwgUIKit
 
 // MARK: App Colors
 public struct PwgColor {
