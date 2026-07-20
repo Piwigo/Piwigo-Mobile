@@ -234,6 +234,10 @@ extension UploadManager
             ProcessInfo.processInfo.isLowPowerModeEnabled ||
             [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) ||
             (UploadVars.shared.wifiOnlyUploading && !ServerVars.shared.isConnectedToWiFi) {
+
+            // Propose to delete uploaded images of the photo Library once a day
+            // or immediately if there is no pending upload request, if any
+            suggestToDeleteUploadedImages(withPendingUploads: UploadVars.shared.nberOfUploadsToComplete)
             return
         }
         

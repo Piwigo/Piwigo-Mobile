@@ -380,26 +380,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Function moved to AppDelegate and called by notification center on main thread
     // because calling it on the main thread in the UploadManager crashes.
     func deleteAssets(associatedToUploads uploadURIs: [String], _ uploadLocalIDs: [String]) {
-        // Remember which uploads are concerned to avoid duplicate deletions
-        var uploadIDs = [NSManagedObjectID]()
-        Task { @UploadManagerActor in
-            uploadURIs.forEach { uploadURIstr in
-                if let objectURI = URL(string: uploadURIstr),
-                   let uploadID = UploadManager.shared.uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) {
-                    uploadIDs.append(uploadID)
-                }
-            }
-        }
-        
         // Retrieve assets
         let assetsToDelete = PHAsset.fetchAssets(withLocalIdentifiers: uploadLocalIDs, options: nil)
         
         // Do not suggest to delete assets when there is none but delete upload requests if any left
         if assetsToDelete.count == 0 {
-            let myUploadIDs = uploadIDs
             Task { @UploadManagerActor in
-                // Delete upload requests w/o reporting potential error
-                try? UploadProvider().deleteUploads(withID: myUploadIDs, inContext: UploadManager.shared.uploadBckgContext)
+                // Resolve upload object IDs on the UploadManager actor and delete requests
+                // w/o reporting potential error
+                let uploadIDs = UploadManager.shared.uploadIDs(fromURIs: uploadURIs)
+                try? UploadProvider().deleteUploads(withID: uploadIDs, inContext: UploadManager.shared.uploadBckgContext)
             }
             return
         }
@@ -409,13 +399,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             PHAssetChangeRequest.deleteAssets(assetsToDelete as (any NSFastEnumeration))
         }
         completionHandler: { success, error in
-            let myUploadIDs = uploadIDs
             Task { @UploadManagerActor in
+                // Resolve upload object IDs on the UploadManager actor
+                let uploadIDs = UploadManager.shared.uploadIDs(fromURIs: uploadURIs)
                 if success {
                     // Delete upload requests w/o reporting potential error
-                    try? UploadProvider().deleteUploads(withID: myUploadIDs, inContext: UploadManager.shared.uploadBckgContext)
-                } else {
-                    UploadManager.shared.disableDeleteAfterUpload(myUploadIDs)
+                    try? UploadProvider().deleteUploads(withID: uploadIDs, inContext: UploadManager.shared.uploadBckgContext)
+                }
+                else {
+                    UploadManager.shared.disableDeleteAfterUpload(uploadIDs)
                 }
             }
         }

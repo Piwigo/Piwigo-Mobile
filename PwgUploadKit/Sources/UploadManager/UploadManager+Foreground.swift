@@ -217,6 +217,16 @@ extension UploadManager
     
     
     // MARK: - Clean Photo Library
+    // Resolve the object IDs of upload requests from their URI representations.
+    public func uploadIDs(fromURIs uploadURIs: [String]) -> [NSManagedObjectID] {
+        guard let coordinator = self.uploadBckgContext.persistentStoreCoordinator
+        else { return [] }
+        return uploadURIs.compactMap { uploadURIstr in
+            guard let objectURI = URL(string: uploadURIstr) else { return nil }
+            return coordinator.managedObjectID(forURIRepresentation: objectURI)
+        }
+    }
+
 //    @MainActor
 //    func deleteAssets(associatedToUploads uploadIDs: [NSManagedObjectID], _ uploadLocalIDs: [String]) async -> Void {
 //        // Remember which uploads are concerned to avoid duplicate deletions
