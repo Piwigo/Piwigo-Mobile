@@ -214,9 +214,7 @@ final class UploadSwitchViewController: UIViewController {
                 #if os(iOS) && !targetEnvironment(macCatalyst)
                 if #available(iOS 26.0, *) {
                     // Launch new continued upload task if possible
-                    if UploadVars.shared.isContinuedProcessingTaskActive == false {
-                        UploadManager.shared.runContinuedUploadTask()
-                    }
+                    UploadManager.shared.runContinuedUploadTask()
                 }
                 else {
                     // Queue uploads to prepare
@@ -256,9 +254,7 @@ final class UploadSwitchViewController: UIViewController {
                                 #if os(iOS) && !targetEnvironment(macCatalyst)
                                 if #available(iOS 26.0, *) {
                                     // Launch new continued upload task if possible
-                                    if UploadVars.shared.isContinuedProcessingTaskActive == false {
-                                        UploadManager.shared.runContinuedUploadTask()
-                                    }
+                                    UploadManager.shared.runContinuedUploadTask()
                                 }
                                 else {
                                     // Process next uploads if possible
