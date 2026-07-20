@@ -107,7 +107,12 @@ extension UploadManager
     
     // MARK: - Clear Failed Uploads
     func suggestToDeleteUploadedImages(withPendingUploads nberOfPendingUploads: Int) {
-        let (uploadIDs, localIdentifiers) = UploadProvider().getIDsOfCompletedUploads(onlyDeletable: true, inContext: self.uploadBckgContext)
+        // Skip if a deletion is already in flight (several entry points — foreground resume,
+        // upload finisher, background tasks — may reach this around launch). Avoids a redundant
+        // fetch and a duplicate prompt for the same assets. The deletion completes on the actor,
+        // so a later trigger will pick up any assets left to delete.
+        guard isDeletingAssets == false else { return }
+        let (uploadIDs, localIdentifiers): ([NSManagedObjectID], [String]) = UploadProvider().getIDsOfCompletedUploads(onlyDeletable: true, inContext: self.uploadBckgContext)
         UploadManager.logger.notice("Resuming uploads: \(uploadIDs.count) assets for deletion in the Photo Library")
         let deadline = DateUtilities.nextDayAt4AM(after: UploadVars.shared.dateOfLastPhotoLibraryDeletion)
         if uploadIDs.isEmpty == false && (nberOfPendingUploads == 0 || Date.now > deadline) {
@@ -115,16 +120,7 @@ extension UploadManager
             UploadVars.shared.dateOfLastPhotoLibraryDeletion = Date().timeIntervalSinceReferenceDate
             
             // Suggest to delete assets from the Photo Library
-            let objectURIs = uploadIDs.map({ $0.uriRepresentation().absoluteString + "," }).reduce("",+)
-            let localIDs = localIdentifiers.map({ $0 + "," }).reduce ("",+)
-            let userInfo: [String : Any] = ["objectURIs" : objectURIs,
-                                            "localIDs"   : localIDs];
-            NotificationCenter.default.post(name: .pwgDeleteUploadRequestsAndAssets,
-                                            object: nil, userInfo: userInfo)
-            // Code below crashes with Xcode 26.2 (17C52)
-//            Task { @MainActor in
-//                await self.deleteAssets(associatedToUploads: uploadIDs, localIdentifiers)
-//            }
+            deleteAssets(associatedToUploads: uploadIDs, localIdentifiers)
         }
     }
         
@@ -217,42 +213,52 @@ extension UploadManager
     
     
     // MARK: - Clean Photo Library
-    // Resolve the object IDs of upload requests from their URI representations.
-    public func uploadIDs(fromURIs uploadURIs: [String]) -> [NSManagedObjectID] {
-        guard let coordinator = self.uploadBckgContext.persistentStoreCoordinator
-        else { return [] }
-        return uploadURIs.compactMap { uploadURIstr in
-            guard let objectURI = URL(string: uploadURIstr) else { return nil }
-            return coordinator.managedObjectID(forURIRepresentation: objectURI)
+    func deleteAssets(associatedToUploads uploadIDs: [NSManagedObjectID], _ uploadLocalIDs: [String]) {
+        // Skip if a deletion is already in flight: several entry points (foreground resume,
+        // upload finisher, background tasks) may reach this while the previous system prompt
+        // is still on screen, which would present it a second time for the same assets.
+        // The check-and-set is atomic: deleteAssets runs synchronously on the actor.
+        guard isDeletingAssets == false else { return }
+        isDeletingAssets = true
+
+        // Delete the assets from the Photo Library off the actor (see deleteAssetsFromLibrary),
+        // then delete the associated upload requests on the UploadManager actor.
+        Task { @UploadManagerActor in
+            defer { self.isDeletingAssets = false }
+            if await self.deleteAssetsFromLibrary(withLocalIdentifiers: uploadLocalIDs) {
+                // Delete upload requests w/o reporting potential error
+                try? UploadProvider().deleteUploads(withID: uploadIDs, inContext: self.uploadBckgContext)
+            } else {
+                self.disableDeleteAfterUpload(uploadIDs)
+            }
         }
     }
 
-//    @MainActor
-//    func deleteAssets(associatedToUploads uploadIDs: [NSManagedObjectID], _ uploadLocalIDs: [String]) async -> Void {
-//        // Remember which uploads are concerned to avoid duplicate deletions
-//        Task { @UploadManagerActor in
-//            willDeleteAsssets(associatedToUploads: uploadIDs)
-//        }
-//        
-//        // Delete assets in the main thread
-//        do {
-//            // Delete image from Photo Library
-//            let assetsToDelete = PHAsset.fetchAssets(withLocalIdentifiers: Array(uploadLocalIDs), options: nil)
-//            try await PHPhotoLibrary.shared().performChanges {
-//                PHAssetChangeRequest.deleteAssets(assetsToDelete as (any NSFastEnumeration))
-//            }
-//            
-//            // Delete associated upload request if any
-//            Task { @UploadManagerActor in
-//                deleteUploads(uploadIDs)
-//            }
-//        }
-//        catch {
-//            Task { @UploadManagerActor in
-//                disableDeleteAfterUpload(uploadIDs)
-//            }
-//        }
-//    }
+    // Deletes the given assets from the Photo Library and reports whether the associated
+    // upload requests should be removed (true) or kept with delete-after-upload disabled (false).
+    //
+    // This method is `nonisolated` on purpose: PhotoKit runs the performChanges change block
+    // (and completion) on its own private queue. If the block inherited the UploadManager actor
+    // isolation, the runtime executor check would trap ("Incorrect actor executor assumption").
+    // Running off the actor keeps every PhotoKit closure non-isolated. The PHFetchResult never
+    // crosses back to the actor — only the Sendable Bool result does.
+    nonisolated private func deleteAssetsFromLibrary(withLocalIdentifiers localIDs: [String]) async -> Bool {
+        // Retrieve assets
+        let assetsToDelete = PHAsset.fetchAssets(withLocalIdentifiers: localIDs, options: nil)
+
+        // Nothing to delete: still remove any leftover upload requests
+        guard assetsToDelete.count > 0 else { return true }
+
+        // Delete images from the library
+        do {
+            try await PHPhotoLibrary.shared().performChanges {
+                PHAssetChangeRequest.deleteAssets(assetsToDelete as (any NSFastEnumeration))
+            }
+            return true
+        } catch {
+            return false
+        }
+    }
     
     public func disableDeleteAfterUpload(_ uploadIDs: [NSManagedObjectID]) {
         // Empty array?

@@ -111,18 +111,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Register auto-upload appender failures
         NotificationCenter.default.addObserver(self, selector: #selector(displayAutoUploadErrorAndResume),
                                                name: Notification.Name.pwgAppendAutoUploadRequestsFailed, object: nil)
-        
-        // Register deletion of upload requests and assets (requires execution on the main thread)
-        NotificationCenter.default.addObserver(forName: Notification.Name.pwgDeleteUploadRequestsAndAssets, object: nil, queue: .main) { notification in
-            guard let objectURIs = notification.userInfo?["objectURIs"] as? String,
-                  let localIDs = notification.userInfo?["localIDs"] as? String
-            else { return }
-            let uploadURIs: [String] = objectURIs.components(separatedBy: ",").dropLast()
-            let uploadLocalIDs: [String] = localIDs.components(separatedBy: ",").dropLast()
-            self.deleteAssets(associatedToUploads: uploadURIs, uploadLocalIDs)
-        }
-//        NotificationCenter.default.addObserver(self, selector: #selector(deleteAssetsAssociatedToUploads),
-//                                               name: Notification.Name.pwgDeleteUploadRequestsAndAssets, object: nil)
         return true
     }
         
@@ -376,43 +364,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
-    
-    // Function moved to AppDelegate and called by notification center on main thread
-    // because calling it on the main thread in the UploadManager crashes.
-    func deleteAssets(associatedToUploads uploadURIs: [String], _ uploadLocalIDs: [String]) {
-        // Retrieve assets
-        let assetsToDelete = PHAsset.fetchAssets(withLocalIdentifiers: uploadLocalIDs, options: nil)
-        
-        // Do not suggest to delete assets when there is none but delete upload requests if any left
-        if assetsToDelete.count == 0 {
-            Task { @UploadManagerActor in
-                // Resolve upload object IDs on the UploadManager actor and delete requests
-                // w/o reporting potential error
-                let uploadIDs = UploadManager.shared.uploadIDs(fromURIs: uploadURIs)
-                try? UploadProvider().deleteUploads(withID: uploadIDs, inContext: UploadManager.shared.uploadBckgContext)
-            }
-            return
-        }
-        
-        // Delete images from the library (can't use an async function here)
-        PHPhotoLibrary.shared().performChanges {
-            PHAssetChangeRequest.deleteAssets(assetsToDelete as (any NSFastEnumeration))
-        }
-        completionHandler: { success, error in
-            Task { @UploadManagerActor in
-                // Resolve upload object IDs on the UploadManager actor
-                let uploadIDs = UploadManager.shared.uploadIDs(fromURIs: uploadURIs)
-                if success {
-                    // Delete upload requests w/o reporting potential error
-                    try? UploadProvider().deleteUploads(withID: uploadIDs, inContext: UploadManager.shared.uploadBckgContext)
-                }
-                else {
-                    UploadManager.shared.disableDeleteAfterUpload(uploadIDs)
-                }
-            }
-        }
-    }
-    
     
     // MARK: - Intents (before iOS 16.4)
     func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {

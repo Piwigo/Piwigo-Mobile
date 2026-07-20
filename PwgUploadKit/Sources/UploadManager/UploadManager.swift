@@ -36,6 +36,12 @@ public final class UploadManager {
     // Upload counters kept in memory during upload
     // for updating progress bars and managing tasks
     var transferCounters = [TransferCounter]()
+
+    // Guards against presenting the system Photo Library deletion prompt more than
+    // once at a time: the deletion flow is asynchronous and waits for the user to
+    // confirm, while the upload requests marking the assets as deletable are only
+    // removed once it completes (see deleteAssets(associatedToUploads:_:)).
+    var isDeletingAssets = false
     
     private init() {
         // Disable auto-upload option

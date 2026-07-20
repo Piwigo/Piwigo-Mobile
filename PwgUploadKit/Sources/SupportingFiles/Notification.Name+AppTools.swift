@@ -30,7 +30,4 @@ public extension Notification.Name {
     
     /// - Displays error when appendAutoUploadRequests() fails and resume upload manager operations
     static let pwgAppendAutoUploadRequestsFailed = Notification.Name("pwgNotificationAppendAutoUploadRequestsFail")
-    
-    /// - Delete upload requests and associated assets
-    static let pwgDeleteUploadRequestsAndAssets: Notification.Name = Notification.Name("pwgDeleteUploadRequestsAndAssets")
 }
