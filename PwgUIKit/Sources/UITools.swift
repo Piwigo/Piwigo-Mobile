@@ -28,8 +28,8 @@ public final class UITools {
         if UIVars.shared.isLightPaletteModeActive
         {
             if !UIVars.shared.isDarkPaletteActive {
-                // Already in light mode but make sure that images stays in appropriate mode
-                NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
+                // Already in light mode but make sure that images stay in appropriate mode
+//                NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
                 return;
             } else {
                 // "Always Light Mode" selected
@@ -39,8 +39,8 @@ public final class UITools {
         else if UIVars.shared.isDarkPaletteModeActive
         {
             if UIVars.shared.isDarkPaletteActive {
-                // Already showing dark palette but make sure that images stays in appropriate mode
-                NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
+                // Already showing dark palette but make sure that images stay in appropriate mode
+//                NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
                 return;
             } else {
                 // "Always Dark Mode" selected or iOS Dark Mode active => Dark palette
@@ -53,8 +53,8 @@ public final class UITools {
             if UIVars.shared.isSystemDarkModeActive {
                 // System-wide dark mode active
                 if UIVars.shared.isDarkPaletteActive {
-                    // Keep dark palette but make sure that images stays in appropriate mode
-                    NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
+                    // Keep dark palette but make sure that images stay in appropriate mode
+//                    NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
                     return;
                 } else {
                     // Switch to dark mode
@@ -66,8 +66,8 @@ public final class UITools {
                     // Switch to light mode
                     UIVars.shared.isDarkPaletteActive = false
                 } else {
-                    // Keep light palette but make sure that images stays in appropriate mode
-                    NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
+                    // Keep light palette but make sure that images stay in appropriate mode
+//                    NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
                     return;
                 }
             }
