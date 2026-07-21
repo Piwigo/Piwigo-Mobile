@@ -15,7 +15,7 @@ import PwgUIKit
 class LogsViewController: UIViewController {
     
     @IBOutlet weak var category: UILabel!
-    @IBOutlet weak var dateTime: UILabel!
+    @IBOutlet weak var versionLabel: UILabel!
     @IBOutlet weak var messages: UITextView!
     
     var logEntries = [PwgLogEntry]()
@@ -33,14 +33,14 @@ class LogsViewController: UIViewController {
         // Initialise content
         guard let firstEntry = logEntries.first else { return }
         category?.text = firstEntry.category
-        dateTime?.text = DateUtilities.logsDateFormatter.string(from: firstEntry.date)
-        var currentLogDate = DateUtilities.logsTimeFormatter.string(from: firstEntry.date)
+        versionLabel?.text = SettingsUtilities.getAppVersion()
+        var currentLogDate = DateUtilities.logsDateFormatter.string(from: firstEntry.date)
         var msg = currentLogDate + "\n"
         for logEntry in logEntries {
-            let logDate = DateUtilities.logsTimeFormatter.string(from: logEntry.date)
+            let logDate = DateUtilities.logsDateFormatter.string(from: logEntry.date)
             if logDate != currentLogDate {
                 // Not in the same minute
-                currentLogDate = DateUtilities.logsTimeFormatter.string(from: logEntry.date)
+                currentLogDate = DateUtilities.logsDateFormatter.string(from: logEntry.date)
                 msg += "\n" + currentLogDate + "\n"
             }
             msg += "➜ " + logEntry.message + "\n"
@@ -69,7 +69,7 @@ class LogsViewController: UIViewController {
 
         // Text color depdending on background color
         category?.textColor = PwgColor.text
-        dateTime?.textColor = PwgColor.text
+        versionLabel?.textColor = PwgColor.text
         messages?.textColor = PwgColor.text
         messages?.backgroundColor = PwgColor.background
     }
@@ -140,7 +140,7 @@ extension LogsViewController: UIActivityItemSource
                                 itemForActivityType activityType: UIActivity.ActivityType?) -> Any? {
         switch activityType {
         case .airDrop:
-            let fileName = (category?.text ?? "logs") + " " + (dateTime?.text ?? Date().ISO8601Format())  + ".log"
+            let fileName = (category?.text ?? "logs") + " " + (versionLabel?.text ?? Date().ISO8601Format())  + ".log"
             let tempDir = FileManager.default.temporaryDirectory
             let fileURL = tempDir.appendingPathComponent(fileName)
             do {
@@ -168,8 +168,8 @@ extension LogsViewController: UIActivityItemSource
             content += " " + (appVersionString ?? "") + " (" + (appBuildString ?? "") + ")\n"
             content += deviceModel + " — " + deviceOS + " " + deviceOSversion + "\n"
             content += "\n"
-            content += (category.text ?? "?") + " — " + (dateTime.text ?? "?") + "\n"
-            content += "—\n"
+            content += (category.text ?? "?") + "\n"
+            content += "——————————————\n"
             content += messages?.text ?? ""
             return content
         }

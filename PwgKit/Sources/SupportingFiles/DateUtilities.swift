@@ -32,20 +32,11 @@ public struct DateUtilities: Sendable
     public static let logsDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.sss"
+        formatter.dateFormat = "yyyy-MM-dd • HH:mm:ss.sss"
         formatter.timeZone = TimeZone.current
         return formatter
     }()
-    
-    // Logs times are provided in the local time
-    public static let logsTimeFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.dateFormat = "HH:mm:ss.sss"
-        formatter.timeZone = TimeZone.current
-        return formatter
-    }()
-    
+        
     // Return the date of the next day at 4 AM
     public static func nextDayAt4AM(after timeInterval: TimeInterval) -> Date {
         // Get the next day by adding 1 day
