@@ -316,8 +316,18 @@ extension UploadManager {
                let userID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: userURI),
                let user = try? uploadBckgContext.existingObject(with: userID) as? User,
                user.hasAdminRights {
-                getInfos.fixingUnknowns()
-                ImageProvider().didUploadImage(getInfos, inAlbumId: uploadData.category)
+                // Retrieve complete image data from the server now that the lounge is emptied.
+                // The pwg.images.uploadAsync response may carry derivatives whose files are not
+                // yet generated (empty/invalid thumbnail URLs), which would make the album show
+                // the placeholder image instead of the thumbnail (see foreground copy path).
+                if var imageData = try? await JSONManager.shared.getInfos(forID: imageId) {
+                    imageData.fixingUnknowns()
+                    ImageProvider().didUploadImage(imageData, inAlbumId: uploadData.category)
+                } else {
+                    // Fall back on the data returned by the upload request
+                    getInfos.fixingUnknowns()
+                    ImageProvider().didUploadImage(getInfos, inAlbumId: uploadData.category)
+                }
             }
             
             // Delete remaining uploaded file
