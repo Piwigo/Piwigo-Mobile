@@ -10612,20 +10612,20 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "الإصدار 4.3\n\n• إصلاح الأخطاء وتحسين الواجهة\n• إضافة ملحق «مشاركة» واختصار يتيح تنزيل الصور ومقاطع الفيديو وملفات PDF من التطبيقات الأخرى"
+            "state" : "translated",
+            "value" : "الإصدار 4.3\n\n• تمت إضافة ملحق «مشاركة» يتيح تحميل الصور ومقاطع الفيديو وملفات PDF من التطبيقات الأخرى\n• تشغيل صور GIF المتحركة\n• إصلاح الأخطاء وتحسين الواجهة"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Version 4.3\n\n• Rette fejl og forbedrer brugergrænsefladen\n• Tilføjer en »Del«-udvidelse og en genvej, der gør det muligt at downloade fotos, videoer og PDF-filer fra andre apps"
+            "state" : "translated",
+            "value" : "Version 4.3\n\n• Tilføjer en delingsudvidelse, der gør det muligt at uploade fotos, videoer og PDF-filer fra andre apps\n• Afspiller animerede GIF-billeder\n• Rette fejl og forbedrer brugergrænsefladen"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Version 4.3\n\n• Behebt Fehler und verbessert die Benutzeroberfläche\n• Fügt eine „Teilen“-Erweiterung und eine Verknüpfung hinzu, mit der Fotos, Videos und PDF-Dateien aus anderen Apps heruntergeladen werden können"
+            "state" : "translated",
+            "value" : "Version 4.3\n\n• Fügt eine „Teilen“-Erweiterung hinzu, mit der Fotos, Videos und PDF-Dateien aus anderen Apps hochgeladen werden können\n• Spielt animierte GIF-Bilder ab\n• Behebt Fehler und verbessert die Benutzeroberfläche"
           }
         },
         "en" : {
@@ -10636,74 +10636,74 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Versión 4.3\n\n• Corrige errores y mejora la interfaz\n• Incorpora una extensión para compartir y un acceso directo que permite descargar fotos, vídeos y archivos PDF desde otras aplicaciones"
+            "state" : "translated",
+            "value" : "Versión 4.3\n\n• Se ha añadido una extensión para compartir que permite subir fotos, vídeos y archivos PDF desde otras aplicaciones\n• Reproduce imágenes GIF animadas\n• Se han corregido errores y se ha mejorado la interfaz"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Version 4.3\n\n• Corrige des bugs et améliore l'interface\n• Ajoute une extension « Partager » et un raccourci permettant de transférer des photos, des vidéos et des fichiers PDF depuis d'autres applications"
+            "state" : "translated",
+            "value" : "Version 4.3\n\n• Ajout d'une extension « Partager » permettant de transférer des photos, des vidéos et des fichiers PDF depuis d'autres applications\n• Lecture d'images GIF animées\n• Correction de bugs et amélioration de l'interface"
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "4.3-as verzió\n\n• Hibajavítások és a felület fejlesztése\n• Új „Megosztás” kiterjesztés és gyorsbillentyű hozzáadása, amely lehetővé teszi fényképek, videók és PDF-fájlok letöltését más alkalmazásokból"
+            "state" : "translated",
+            "value" : "4.3-as verzió\n\n• Új „Megosztás” kiterjesztés, amely lehetővé teszi fényképek, videók és PDF-fájlok feltöltését más alkalmazásokból\n• Animált GIF-képek lejátszása\n• Hibajavítások és a felület fejlesztése"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Versi 4.3\n\n• Memperbaiki bug dan meningkatkan antarmuka\n• Menambahkan ekstensi Bagikan dan pintasan yang memungkinkan pengguna mengunduh foto, video, dan berkas PDF dari aplikasi lain"
+            "state" : "translated",
+            "value" : "Versi 4.3\n\n• Menambahkan ekstensi Bagikan yang memungkinkan pengguna mengunggah foto, video, dan berkas PDF dari aplikasi lain\n• Memutar gambar GIF animasi\n• Memperbaiki bug dan meningkatkan antarmuka"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Versione 4.3\n\n• Risolve alcuni bug e migliora l'interfaccia\n• Aggiunge un'estensione “Condividi” e un collegamento che consentono di scaricare foto, video e file PDF da altre app"
+            "state" : "translated",
+            "value" : "Versione 4.3\n\n• Aggiunge un'estensione “Condividi” che consente di caricare foto, video e file PDF da altre app\n• Riproduce immagini GIF animate\n• Risolve alcuni bug e migliora l'interfaccia"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "バージョン 4.3\n\n• バグの修正とインターフェースの改善\n• 他のアプリから写真、動画、PDFファイルをダウンロードできる「共有」拡張機能とショートカットを追加"
+            "state" : "translated",
+            "value" : "バージョン 4.3\n\n• 他のアプリから写真、動画、PDF ファイルをアップロードできる「共有」拡張機能を追加\n• アニメーション GIF 画像の再生に対応\n• バグの修正とインターフェースの改善"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Versie 4.3\n\n• Verhelpt fouten en verbetert de gebruikersinterface\n• Voegt een ‘Delen’-extensie en een snelkoppeling toe waarmee foto’s, video’s en PDF-bestanden uit andere apps kunnen worden gedownload"
+            "state" : "translated",
+            "value" : "Versie 4.3\n\n• Er is een ‘Delen’-extensie toegevoegd waarmee je foto’s, video’s en PDF-bestanden vanuit andere apps kunt uploaden\n• Speelt geanimeerde GIF-afbeeldingen af\n• Verhelpt bugs en verbetert de interface"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Wersja 4.3\n\n• Poprawki błędów i usprawnienia interfejsu\n• Dodano rozszerzenie „Udostępnij” umożliwiające pobieranie zdjęć, filmów i plików PDF z innych aplikacji"
+            "state" : "translated",
+            "value" : "Wersja 4.3\n\n• Dodano rozszerzenie „Udostępnij”, umożliwiające przesyłanie zdjęć, filmów i plików PDF z innych aplikacji\n• Odtwarza animowane pliki GIF\n• Naprawiono błędy i ulepszono interfejs"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Версия 4.3\n\n• Исправлены ошибки и улучшен интерфейс\n• Добавлено расширение «Поделиться» и ярлык, позволяющий скачивать фотографии, видео и PDF-файлы из других приложений"
+            "state" : "translated",
+            "value" : "Версия 4.3\n\n• Добавлено расширение «Поделиться», позволяющее загружать фотографии, видео и файлы PDF из других приложений\n• Поддержка воспроизведения анимированных GIF-изображений\n• Исправлены ошибки и улучшен интерфейс"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Version 4.3\n\n• Åtgärdar fel och förbättrar användargränssnittet\n• Lägger till en delningsfunktion och en genväg som gör det möjligt att ladda ner foton, videor och PDF-filer från andra appar"
+            "state" : "translated",
+            "value" : "Version 4.3\n\n• Lägger till en delningsfunktion som gör det möjligt att ladda upp foton, videor och PDF-filer från andra appar\n• Spelar upp animerade GIF-bilder\n• Åtgärdar buggar och förbättrar gränssnittet"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "版本 4.3\n\n• 修复了错误并优化了界面\n• 新增了“分享”扩展和快捷方式，支持从其他应用下载照片、视频和 PDF 文件"
+            "state" : "translated",
+            "value" : "版本4.3\n\n• 新增“分享”扩展功能，支持从其他应用上传照片、视频和 PDF 文件\n• 支持播放动画 GIF 图片\n• 修复了部分 bug 并优化了界面"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "版本 4.3\n\n• 修復錯誤並優化介面\n• 新增「分享」擴充功能及快捷方式，可從其他應用程式下載照片、影片和 PDF 檔案"
+            "state" : "translated",
+            "value" : "版本 4.3\n\n• 新增「分享」擴充功能，可從其他應用程式上傳照片、影片和 PDF 檔案\n• 支援播放動畫 GIF 圖片\n• 修正錯誤並優化介面"
           }
         }
       }

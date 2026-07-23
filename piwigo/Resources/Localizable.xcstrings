@@ -57398,10 +57398,206 @@
       }
     },
     "whatsNew_gif" : {
-      "comment" : "GIF Images"
+      "comment" : "GIF Images",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صور GIF"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GIF-billeder"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GIF-Bilder"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GIF Images"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imágenes GIF"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GIF Images"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GIF-képek"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gambar GIF"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Immagini GIF"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GIF画像"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GIF-afbeeldingen"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obrazy GIF"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GIF-изображения"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GIF-bilder"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GIF 图片"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GIF 圖片"
+          }
+        }
+      }
     },
     "whatsNew_gifDescription" : {
-      "comment" : "Plays animated GIF images."
+      "comment" : "Plays animated GIF images.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تشغيل صور GIF المتحركة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afspiller animerede GIF-billeder."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spielt animierte GIF-Bilder ab."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plays animated GIF images."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproduce imágenes GIF animadas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Joue des images GIF animées."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animált GIF-képeket játszik le."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memutar gambar GIF animasi."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riproduce immagini GIF animate."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アニメーションGIF画像を再生します。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speelt geanimeerde GIF-afbeeldingen af."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odtwarza animowane obrazy GIF."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Воспроизводит анимированные GIF-изображения."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spelar upp animerade GIF-bilder."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "播放动画 GIF 图片。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "播放動態 GIF 圖片。"
+          }
+        }
+      }
     },
     "whatsNew_improvements" : {
       "comment" : "Improvements",
@@ -57504,6 +57700,107 @@
         }
       }
     },
+    "whatsNew_shareExtension" : {
+      "comment" : "Adds a Share extension allowing to upload photos, videos and PDF files from other apps.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يضيف ملحق «مشاركة» يتيح تحميل الصور ومقاطع الفيديو وملفات PDF من التطبيقات الأخرى."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilføjer en »Del«-udvidelse, der gør det muligt at uploade fotos, videoer og PDF-filer fra andre apps."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fügt eine „Teilen“-Erweiterung hinzu, mit der Fotos, Videos und PDF-Dateien aus anderen Apps hochgeladen werden können."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adds a Share extension allowing to upload photos, videos and PDF files from other apps."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añade una extensión de «Compartir» que permite subir fotos, vídeos y archivos PDF desde otras aplicaciones."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajoute une extension Partage permettant de transférer des photos, des vidéos et des fichiers PDF depuis d'autres applications."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hozzáad egy „Megosztás” kiterjesztést, amely lehetővé teszi fényképek, videók és PDF-fájlok feltöltését más alkalmazásokból."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menambahkan ekstensi Bagikan yang memungkinkan pengguna mengunggah foto, video, dan berkas PDF dari aplikasi lain."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiunge un'estensione “Condividi” che consente di caricare foto, video e file PDF da altre app."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "他のアプリから写真、動画、PDFファイルをアップロードできる「共有」拡張機能を追加します。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voegt een Share-extensie toe waarmee je foto’s, video’s en PDF-bestanden vanuit andere apps kunt uploaden."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dodaje rozszerzenie „Udostępnij”, które umożliwia przesyłanie zdjęć, filmów i plików PDF z innych aplikacji."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавляет расширение «Поделиться», позволяющее загружать фотографии, видео и файлы PDF из других приложений."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lägger till ett delningstillägg som gör det möjligt att ladda upp foton, videor och PDF-filer från andra appar."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加了一个“分享”扩展，允许从其他应用上传照片、视频和PDF文件。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新增一個「分享」擴充功能，可從其他應用程式上傳照片、影片和 PDF 檔案。"
+          }
+        }
+      }
+    },
     "whatsNew_title" : {
       "comment" : "What's New in Piwigo",
       "localizations" : {
@@ -57601,107 +57898,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Piwigo的新功能"
-          }
-        }
-      }
-    },
-    "whatsNew_uploads" : {
-      "comment" : "Faster uploads, new advanced options, and the ability to continue uploads in the background on iOS 26.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تحميل أسرع، خيارات متقدمة جديدة، والقدرة على مواصلة التحميل في الخلفية على نظام التشغيل iOS 26."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hurtigere uploads, nye avancerede muligheder, og evnen til at fortsætte uploads i baggrunden på iOS 26."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Schnellere Uploads, neue erweiterte Optionen und die Möglichkeit, das Hochladen im Hintergrund auf iOS 26 fortzusetzen."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Faster uploads, new advanced options, and the ability to continue uploads in the background on iOS 26."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Subidas más rápidas, nuevas opciones avanzadas y la capacidad de continuar subidas en segundo plano en iOS 26."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Transferts plus rapides, de nouvelles options avancées et la possibilité de poursuivre les transferts en arrière-plan sur iOS 26."
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gyorsabb feltöltés, új speciális beállítások, valamint a feltöltés háttérben történő folytatásának lehetősége az iOS 26-ban."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pengunggahan yang lebih cepat, opsi lanjutan baru, dan kemampuan untuk melanjutkan pengunggahan di latar belakang pada iOS 26."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Caricamenti più veloci, nuove opzioni avanzate e la possibilità di continuare i caricamenti in background su iOS 26."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "高速アップロード、新しい高度なオプション、iOS 26 のバックグラウンドでのアップロードを継続する機能。"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Snellere uploads, nieuwe geavanceerde opties en de mogelijkheid om door te gaan met uploaden op de achtergrond op iOS 26."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Szybsze przesyłanie plików, nowe zaawansowane opcje oraz możliwość kontynuowania przesyłania w tle w systemie iOS 26."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Быстрая загрузка, новые расширенные опции и возможность продолжать выгрузку в фоновом режиме на iOS 26."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Snabbare uppladdningar, nya avancerade alternativ och möjlighet att fortsätta uppladdningar i bakgrunden på iOS 26."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "更快的上传，新的高级选项，以及在iOS 26后台继续上传的能力。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "更快的上传，新的高级选项，以及在iOS 26后台继续上传的能力。"
           }
         }
       }
