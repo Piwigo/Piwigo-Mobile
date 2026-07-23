@@ -556,12 +556,12 @@ final class AlbumViewController: UIViewController
         // Display What's New in Piwigo if needed
         /// Next line to be used for dispalying What's New in Piwigo:
 #if DEBUG
-//if categoryId == Int32.zero {
-//    AppVars.shared.didShowWhatsNewAppVersion = "3.2"
-//}
+if categoryId == Int32.zero {
+    AppVars.shared.didShowWhatsNewAppVersion = "4.2"
+}
 #endif
         if let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
-            if AppVars.shared.didShowWhatsNewAppVersion.compare("4.2", options: .numeric) == .orderedAscending,
+            if AppVars.shared.didShowWhatsNewAppVersion.compare("4.3", options: .numeric) == .orderedAscending,
                appVersionString.compare(AppVars.shared.didShowWhatsNewAppVersion, options: .numeric) == .orderedDescending {
                 // Display What's New in Piwigo
                 let whatsNewSB = UIStoryboard(name: "WhatsNewViewController", bundle: nil)

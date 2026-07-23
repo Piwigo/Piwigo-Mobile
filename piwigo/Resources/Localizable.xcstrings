@@ -57397,6 +57397,12 @@
         }
       }
     },
+    "whatsNew_gif" : {
+      "comment" : "GIF Images"
+    },
+    "whatsNew_gifDescription" : {
+      "comment" : "Plays animated GIF images."
+    },
     "whatsNew_improvements" : {
       "comment" : "Improvements",
       "localizations" : {

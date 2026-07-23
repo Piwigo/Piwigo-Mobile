@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24765" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="iPad13_0rounded" orientation="portrait" layout="fullscreen" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="25087" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_9" orientation="portrait" appearance="light"/>
     <accessibilityOverrides boldText="YES"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24743"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="25063.1"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -16,11 +16,11 @@
             <objects>
                 <viewController storyboardIdentifier="WhatsNewViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Y6W-OH-hqX" customClass="WhatsNewViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5EZ-qb-Rvc">
-                        <rect key="frame" x="0.0" y="0.0" width="1032" height="1376"/>
+                        <rect key="frame" x="0.0" y="0.0" width="440" height="956"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="What's New in Piwigo" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ULD-Bw-142">
-                                <rect key="frame" x="266" y="112" width="500" height="50.5"/>
+                                <rect key="frame" x="60" y="154" width="320" height="76.666666666666686"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="180" id="nqv-aO-SQq">
                                         <variation key="heightClass=compact-widthClass=regular" constant="400"/>
@@ -45,28 +45,28 @@
                                 </variation>
                             </label>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3CO-Ho-KKY">
-                                <rect key="frame" x="40" y="192.5" width="952" height="976.5"/>
+                                <rect key="frame" x="40" y="260.66666666666669" width="360" height="515.33333333333326"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="Lbm-xL-FQe">
-                                        <rect key="frame" x="0.0" y="0.0" width="952" height="228.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="360" height="269"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="waY-KD-pQs">
-                                                <rect key="frame" x="0.0" y="0.0" width="952" height="88.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="360" height="83.333333333333329"/>
                                                 <subviews>
                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ofx-vJ-Gvf">
-                                                        <rect key="frame" x="0.0" y="0.0" width="40" height="88.5"/>
+                                                        <rect key="frame" x="0.0" y="-6.6666666666666643" width="40" height="93.333333333333314"/>
                                                         <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="40" id="t7h-dM-o5J"/>
                                                         </constraints>
-                                                        <imageReference key="image" image="photo.badge.plus" symbolScale="large"/>
+                                                        <imageReference key="image" image="square.and.arrow.up" catalog="system" symbolScale="large"/>
                                                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large" weight="semibold"/>
                                                     </imageView>
                                                     <stackView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="jUo-i2-eB3">
-                                                        <rect key="frame" x="60" y="0.0" width="892" height="88.5"/>
+                                                        <rect key="frame" x="60" y="0.0" width="300" height="83.333333333333329"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Uploads" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6CT-Fq-rLJ">
-                                                                <rect key="frame" x="0.0" y="0.0" width="892" height="29"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="300" height="20.333333333333332"/>
                                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                                 <nil key="textColor"/>
                                                                 <nil key="highlightedColor"/>
@@ -77,8 +77,8 @@
                                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
                                                                 </variation>
                                                             </label>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Faster uploads, new advanced options, and continues uploads in the background on iOS 26." textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cm5-U7-rmr">
-                                                                <rect key="frame" x="0.0" y="31" width="892" height="57.5"/>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Adds a Share extension allowing to upload photos, videos and PDF files from other apps." textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cm5-U7-rmr">
+                                                                <rect key="frame" x="0.0" y="22.333333333333314" width="300" height="61"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                 <nil key="textColor"/>
                                                                 <nil key="highlightedColor"/>
@@ -94,22 +94,22 @@
                                                 </subviews>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="qAs-yp-B32">
-                                                <rect key="frame" x="0.0" y="168.5" width="952" height="60"/>
+                                                <rect key="frame" x="0.0" y="123.33333333333333" width="360" height="42.666666666666671"/>
                                                 <subviews>
                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kFA-Xb-eXV">
-                                                        <rect key="frame" x="0.0" y="0.0" width="40" height="60"/>
+                                                        <rect key="frame" x="0.0" y="-5.6666666666666679" width="40.666666666666671" height="54"/>
                                                         <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="40" id="rK1-QG-eNb"/>
                                                         </constraints>
-                                                        <imageReference key="image" image="ladybug.slash" symbolScale="large"/>
+                                                        <imageReference key="image" image="square.stack.3d.forward.dottedline" catalog="system" symbolScale="large"/>
                                                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large" weight="semibold"/>
                                                     </imageView>
                                                     <stackView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="yMr-f9-CrM">
-                                                        <rect key="frame" x="60" y="0.0" width="892" height="60"/>
+                                                        <rect key="frame" x="60" y="0.0" width="300" height="42.666666666666664"/>
                                                         <subviews>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Improvements" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LAd-hT-eGE">
-                                                                <rect key="frame" x="0.0" y="0.0" width="892" height="29"/>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="GIF Images" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LAd-hT-eGE">
+                                                                <rect key="frame" x="0.0" y="0.0" width="300" height="20.333333333333332"/>
                                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                                 <nil key="textColor"/>
                                                                 <nil key="highlightedColor"/>
@@ -120,8 +120,51 @@
                                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
                                                                 </variation>
                                                             </label>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Bug fixes and improvement of the interface." textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xrZ-50-HHl">
-                                                                <rect key="frame" x="0.0" y="31" width="892" height="29"/>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Plays animated GIF images." textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xrZ-50-HHl">
+                                                                <rect key="frame" x="0.0" y="22.333333333333314" width="300" height="20.333333333333329"/>
+                                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                                <nil key="textColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                                <variation key="heightClass=compact-widthClass=regular">
+                                                                    <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                                                                </variation>
+                                                                <variation key="heightClass=regular-widthClass=regular">
+                                                                    <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                                                </variation>
+                                                            </label>
+                                                        </subviews>
+                                                    </stackView>
+                                                </subviews>
+                                            </stackView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="AaK-rh-8vR">
+                                                <rect key="frame" x="0.0" y="206" width="360" height="63"/>
+                                                <subviews>
+                                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="esZ-He-gpd">
+                                                        <rect key="frame" x="0.0" y="0.0" width="40" height="63"/>
+                                                        <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" constant="40" id="np6-El-RDU"/>
+                                                        </constraints>
+                                                        <imageReference key="image" image="ladybug.slash" symbolScale="large"/>
+                                                        <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large" weight="semibold"/>
+                                                    </imageView>
+                                                    <stackView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="Ze7-oa-vln">
+                                                        <rect key="frame" x="60" y="0.0" width="300" height="63"/>
+                                                        <subviews>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Improvements" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bXR-OV-b1G">
+                                                                <rect key="frame" x="0.0" y="0.0" width="300" height="20.333333333333332"/>
+                                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                                                <nil key="textColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                                <variation key="heightClass=compact-widthClass=regular">
+                                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="19"/>
+                                                                </variation>
+                                                                <variation key="heightClass=regular-widthClass=regular">
+                                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
+                                                                </variation>
+                                                            </label>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Bug fixes and improvement of the interface." textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jik-Br-swA">
+                                                                <rect key="frame" x="0.0" y="22.333333333333311" width="300" height="40.666666666666657"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                 <nil key="textColor"/>
                                                                 <nil key="highlightedColor"/>
@@ -154,7 +197,7 @@
                                 <viewLayoutGuide key="frameLayoutGuide" id="OjD-Kw-CL4"/>
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GMb-yE-rVt">
-                                <rect key="frame" x="366" y="1199" width="300" height="52"/>
+                                <rect key="frame" x="40" y="806" width="360" height="52"/>
                                 <color key="backgroundColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="250" id="NBm-PU-q4o">
@@ -259,6 +302,9 @@
                         <outlet property="secondNewsImage" destination="kFA-Xb-eXV" id="SXa-pQ-6IS"/>
                         <outlet property="secondNewsTitle" destination="LAd-hT-eGE" id="KfV-x2-dDg"/>
                         <outlet property="stackView" destination="Lbm-xL-FQe" id="3Zk-S6-8pZ"/>
+                        <outlet property="thirdNewsDescription" destination="jik-Br-swA" id="YSj-rI-l6T"/>
+                        <outlet property="thirdNewsImage" destination="esZ-He-gpd" id="r7T-a0-3yA"/>
+                        <outlet property="thirdNewsTitle" destination="bXR-OV-b1G" id="7VD-B5-61i"/>
                         <outlet property="titleLabel" destination="ULD-Bw-142" id="WvY-og-ftf"/>
                     </connections>
                 </viewController>
@@ -269,8 +315,9 @@
     </scenes>
     <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
     <resources>
-        <image name="ladybug.slash" width="40" height="42.5"/>
-        <image name="photo.badge.plus" width="32" height="22.5"/>
+        <image name="ladybug.slash" width="40" height="42.333332061767578"/>
+        <image name="square.and.arrow.up" catalog="system" width="107" height="128"/>
+        <image name="square.stack.3d.forward.dottedline" catalog="system" width="119" height="128"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

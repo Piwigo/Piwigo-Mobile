@@ -10631,7 +10631,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.3\n\n• Adds a Share extension allowing to download photos, videos and PDF files from other apps\n• Plays animated Gif images\n• Fixes bugs and improves the interface"
+            "value" : "Version 4.3\n\n• Adds a Share extension allowing to upload photos, videos and PDF files from other apps\n• Plays animated GIF images\n• Fixes bugs and improves the interface"
           }
         },
         "es" : {
