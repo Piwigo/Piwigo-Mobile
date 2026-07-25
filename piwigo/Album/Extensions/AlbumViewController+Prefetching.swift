@@ -33,7 +33,7 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
                     // Download image if needed
                     Task {
                         await ImageDownloader.shared.getImage(withID: image.pwgID, ofSize: imageSize, type: .image,
-                                                              atURL: ImageUtilities.getPiwigoURL(image, ofMinSize: imageSize),
+                                                              atURL: image.url(forMaxSize: imageSize),
                                                               fromServer: image.server?.uuid, fileSize: image.fileSize) { _ in
                         } failure: { _ in }
                     }
@@ -53,7 +53,7 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
                     Task { await ImageDownloader.shared.pauseDownload(atURL: imageURL) }
                 }
                 else if let image = try? self.mainContext.existingObject(with: objectID) as? Image,
-                        let imageURL = ImageUtilities.getPiwigoURL(image, ofMinSize: imageSize) {
+                        let imageURL = image.url(forMaxSize: imageSize) {
                     // Pause download if needed
                     Task { await ImageDownloader.shared.pauseDownload(atURL: imageURL) }
                 }

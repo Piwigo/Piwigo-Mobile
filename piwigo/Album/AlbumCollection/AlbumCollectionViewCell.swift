@@ -51,7 +51,7 @@ class AlbumCollectionViewCell: UICollectionViewCell {
             // Set representative (case where images were uploaded recently)
             albumData?.thumbnailId = firstImage.pwgID
             let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-            albumData?.thumbnailUrl = ImageUtilities.getPiwigoURL(firstImage, ofMinSize: thumnailSize) as NSURL?
+            albumData?.thumbnailUrl = firstImage.url(forMaxSize: thumnailSize) as NSURL?
         }
         
         // Retrieve image from cache or download it

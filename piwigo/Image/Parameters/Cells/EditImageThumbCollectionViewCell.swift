@@ -127,7 +127,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
         Task {
             await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: thumbnailSize, type: .image,
-                                                  atURL: ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumbnailSize),
+                                                  atURL: imageData.url(forMaxSize: thumbnailSize),
                                                   fromServer: imageData.server?.uuid) { [weak self] cachedImageURL in
                 DispatchQueue.main.async { [weak self] in
                     guard let self else { return }

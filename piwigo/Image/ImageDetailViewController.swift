@@ -13,7 +13,7 @@ import PwgKit
 import PwgAPIKit
 import PwgCacheKit
 
-class ImageDetailViewController: UIViewController
+final class ImageDetailViewController: UIViewController
 {
     var indexPath = IndexPath(item: 0, section: 0)
     var imageData: Image!
@@ -51,7 +51,10 @@ class ImageDetailViewController: UIViewController
     // Cached variables
     private lazy var scale = CGFloat.zero
     private lazy var imageSize = CGSize.zero
-    private lazy var previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
+    private lazy var previewSize: pwgImageSize = {
+        let defaultSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
+        return imageData.thumbnailSize(ofMaxSize: defaultSize)
+    }()
     
     
     // MARK: - View Lifecycle
@@ -128,21 +131,8 @@ class ImageDetailViewController: UIViewController
         self.setImageView(with: self.imageData.cachedThumbnail(ofSize: thumbSize) ?? pwgImageType.image.placeHolder)
         
         // Look for the first available image of lower resolution
-        if previewSize == .fullRes {
-            if pwgImageSize.xxxxLarge.isAvailable {
-                previewSize = .xxxxLarge
-            } else if pwgImageSize.xxxLarge.isAvailable {
-                previewSize = .xxxLarge
-            } else if pwgImageSize.xxLarge.isAvailable {
-                previewSize = .xxLarge
-            } else if pwgImageSize.xLarge.isAvailable {
-                previewSize = .xLarge
-            } else if pwgImageSize.large.isAvailable {
-                previewSize = .large
-            } else {
-                previewSize = .medium
-            }
-        }
+        let smallerSize = pwgImageSize(rawValue: max(pwgImageSize.medium.rawValue, previewSize.rawValue - 1)) ?? .medium
+        previewSize = imageData.thumbnailSize(ofMaxSize: smallerSize)
         
         // Store for future use
         ImageVars.shared.defaultImagePreviewSize = previewSize.rawValue
@@ -173,7 +163,7 @@ class ImageDetailViewController: UIViewController
             self.setImageView(with: self.imageData.cachedThumbnail(ofSize: thumbSize) ?? pwgImageType.image.placeHolder)
             
             // Download high-resolution image
-            imageURL = ImageUtilities.getPiwigoURL(self.imageData, ofMinSize: previewSize)
+            self.imageURL = self.imageData.url(for: previewSize)
             if let imageURL = self.imageURL {
                 Task {
                     await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, type: .image, atURL: imageURL,

@@ -151,7 +151,7 @@ class GifDetailViewController: UIViewController
             self.setImageView(with: self.imageData.cachedThumbnail(ofSize: thumbSize) ?? pwgImageType.image.placeHolder)
 
             // Download full-resolution image
-            imageURL = ImageUtilities.getPiwigoURL(self.imageData, ofMinSize: .fullRes)
+            self.imageURL = self.imageData.url(for: .fullRes)
             if let imageURL = self.imageURL {
                 Task {
                     await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: .fullRes, type: .image, atURL: imageURL,

@@ -281,7 +281,7 @@ class ExternalDisplayViewController: UIViewController {
 
         // Download the full-resolution image file containing the animation
         guard let serverID = imageData.server?.uuid,
-              let imageURL = ImageUtilities.getPiwigoURL(imageData, ofMinSize: .fullRes)
+              let imageURL = imageData.url(for: .fullRes)
         else { return }
 
         // Store image URL for being able to pause the download

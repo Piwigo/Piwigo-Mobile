@@ -92,7 +92,7 @@ extension SelectCategoryViewController
                     // Album thumbnail successfully changed ▶ Update catagory in cache
                     albumData.thumbnailId = imageData.pwgID
                     let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                    albumData.thumbnailUrl = ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumnailSize) as NSURL?
+                    albumData.thumbnailUrl = imageData.url(forMaxSize: thumnailSize) as NSURL?
                     
                     // Save changes
                     self.mainContext.saveIfNeeded()

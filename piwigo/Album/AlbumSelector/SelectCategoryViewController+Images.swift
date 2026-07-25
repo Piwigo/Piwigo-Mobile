@@ -55,7 +55,7 @@ extension SelectCategoryViewController
                     if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
                         albumData.thumbnailId = imageData.pwgID
                         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                        albumData.thumbnailUrl = ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumnailSize) as NSURL?
+                        albumData.thumbnailUrl = imageData.url(for: thumnailSize) as NSURL?
                     }
                     
                     // Next image
@@ -97,9 +97,9 @@ extension SelectCategoryViewController
                        let imageData = inputImages.first {
                         albumData.thumbnailId = imageData.pwgID
                         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                        albumData.thumbnailUrl = ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumnailSize) as NSURL?
+                        albumData.thumbnailUrl = imageData.url(for: thumnailSize) as NSURL?
                     }
-
+                    
                     // Should we also dissociate the images?
                     if dissociate {
                         // Dissociate images from the current album
@@ -191,7 +191,7 @@ extension SelectCategoryViewController
                     if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
                         albumData.thumbnailId = imageData.pwgID
                         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                        albumData.thumbnailUrl = ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumnailSize) as NSURL?
+                        albumData.thumbnailUrl = imageData.url(forMaxSize: thumnailSize) as NSURL?
                     }
 
                     // Remove image from source album
