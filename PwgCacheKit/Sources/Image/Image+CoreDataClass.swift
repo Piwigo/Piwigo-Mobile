@@ -338,6 +338,173 @@ public final nonisolated class Image: NSManagedObject, Identifiable {
         }
     }
     
+    
+    // MARK: - Thumbnail URLs
+    public func url(for size: pwgImageSize) -> URL? {
+        switch size {
+        case .square, .thumb, .medium,
+             .xxSmall, .xSmall, .small,
+             .large, .xLarge, .xxLarge, .xxxLarge, .xxxxLarge:
+            return sizes.url(for: size)
+        case .fullRes:
+            return self.fullRes?.url as URL?
+        }
+    }
+    
+    public func url(forMaxSize size: pwgImageSize) -> URL? {
+        let thumbnailSize = self.thumbnailSize(ofMaxSize: size)
+        return self.url(for: thumbnailSize)
+    }
+    
+    public func thumbnailSize(ofMaxSize size: pwgImageSize) -> pwgImageSize {
+        // ATTENTION: Some URLs may not be available!
+        /// - Check available image sizes from the smallest to the highest resolution
+        /// - assuming that there exists a thumbnail of the smallest size
+        /// - The max size of a video, GIF, EPS or PDF thumbnail is xxxxLarge
+        var availableSize: pwgImageSize = .square
+        
+        // Square Size (should always be available)
+        if pwgImageSize.square.isAvailable,
+           let imageURL = self.sizes.square?.url, (imageURL.absoluteString ?? "").isEmpty == false {
+            // Ensure that at least an URL will be returned
+            availableSize = .square
+        }
+        
+        // Done if wanted size reached
+        if size == .square {
+            return availableSize
+        }
+        
+        // Thumbnail Size (should always be available)
+        if pwgImageSize.thumb.isAvailable,
+           let imageURL = self.sizes.thumb?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Ensure that at least an URL will be returned
+            availableSize = .thumb
+        }
+        
+        // Done if wanted size reached
+        if size <= .thumb {
+            return availableSize
+        }
+        
+        // XX Small Size
+        if pwgImageSize.xxSmall.isAvailable,
+           let imageURL = self.sizes.xxsmall?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Ensure that at least an URL will be returned
+            availableSize = .xxSmall
+        }
+        
+        // Done if wanted size reached
+        if size <= .xxSmall {
+            return availableSize
+        }
+        
+        // X Small Size
+        if pwgImageSize.xSmall.isAvailable,
+           let imageURL = self.sizes.xsmall?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Ensure that at least an URL will be returned
+            availableSize = .xSmall
+        }
+        
+        // Done if wanted size reached
+        if size <= .xSmall {
+            return availableSize
+        }
+        
+        // Small Size
+        if pwgImageSize.small.isAvailable,
+           let imageURL = self.sizes.small?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Ensure that at least an URL will be returned
+            availableSize = .small
+        }
+        
+        // Done if wanted size reached
+        if size <= .small {
+            return availableSize
+        }
+        
+        // Medium Size (should always be available)
+        if pwgImageSize.medium.isAvailable,
+           let imageURL = self.sizes.medium?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Ensure that at least an URL will be returned
+            availableSize = .medium
+        }
+        
+        // Done if wanted size reached
+        if size <= .medium {
+            return availableSize
+        }
+        
+        // Large Size
+        if pwgImageSize.large.isAvailable,
+           let imageURL = self.sizes.large?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Ensure that at least an URL will be returned
+            availableSize = .large
+        }
+        
+        // Done if wanted size reached
+        if size <= .large {
+            return availableSize
+        }
+        
+        // X Large Size
+        if pwgImageSize.xLarge.isAvailable,
+           let imageURL = sizes.xlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Ensure that at least an URL will be returned
+            availableSize = .xLarge
+        }
+        
+        // Done if wanted size reached
+        if size <= .xLarge {
+            return availableSize
+        }
+        
+        // XX Large Size
+        if pwgImageSize.xxLarge.isAvailable,
+           let imageURL = self.sizes.xxlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Ensure that at least an URL will be returned
+            availableSize = .xxLarge
+        }
+        
+        // Done if wanted size reached or not an image
+        if size <= .xxLarge {
+            return availableSize
+        }
+        
+        // XXX Large Size
+        if pwgImageSize.xxxLarge.isAvailable,
+           let imageURL = self.sizes.xxxlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Ensure that at least an URL will be returned
+            availableSize = .xxxLarge
+        }
+        
+        // Done if wanted size reached or not an image
+        if size <= .xxxLarge {
+            return availableSize
+        }
+        
+        // XXXX Large Size
+        if pwgImageSize.xxxxLarge.isAvailable,
+           let imageURL = self.sizes.xxxxlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Ensure that at least an URL will be returned
+            availableSize = .xxxxLarge
+        }
+        
+        // Done if wanted size reached or if a movie, a GIF, an EPS or a PDF file
+        if (size <= .xxxxLarge) || !self.hasFullResThumbnail {
+            return availableSize
+        }
+        
+        // Full Resolution
+        if let imageURL = self.fullRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Ensure that at least an URL will be returned
+            availableSize = .fullRes
+        }
+        return availableSize
+    }
+
+
+    // MARK: - Cached Files
     // Delete image files in cache before deleting object
     public override func prepareForDeletion() {
         super.prepareForDeletion()
@@ -387,7 +554,8 @@ public final nonisolated class Image: NSManagedObject, Identifiable {
             return image
         }
     }
-
+    
+    
     // MARK: - Rotates Thumbnails
     public func rotateThumbnails(by angle: CGFloat) {
         // Initialisation
