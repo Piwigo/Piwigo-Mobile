@@ -6,8 +6,9 @@
 //  Copyright © 2021 Piwigo.org. All rights reserved.
 //
 
-import Foundation
 import CryptoKit
+import Foundation
+import UIKit
 
 extension Data {
     
@@ -19,6 +20,42 @@ extension Data {
     }
     
     
+    // MARK: - TIFF Preview Extraction from EPS file
+    /// Returns a raster preview of an Encapsulated PostScript (EPS) file, or nil.
+    ///
+    /// iOS ships no PostScript interpreter, so a full render is not possible. However
+    /// EPS files saved by design tools (Illustrator, Photoshop, …) use the DOS EPS
+    /// Binary format (EPSF), which embeds a low-resolution TIFF preview described by a
+    /// 30-byte header. That TIFF is decoded here (iOS reads TIFF natively). Plain-text
+    /// `%!PS` EPS files without an embedded raster preview return nil, and the caller
+    /// falls back to a placeholder thumbnail.
+    public func epsPreviewImage() -> UIImage? {
+        // The DOS EPS Binary header is 30 bytes and starts with the magic C5 D0 D3 C6.
+        guard count >= 30 else { return nil }
+        let base = startIndex
+        guard self[base] == 0xC5, self[base + 1] == 0xD0,
+              self[base + 2] == 0xD3, self[base + 3] == 0xC6
+        else { return nil }
+
+        // Little-endian UInt32 at a byte offset from the start of the file.
+        func uint32(at offset: Int) -> Int {
+            let i = base + offset
+            return Int(self[i])        | Int(self[i + 1]) << 8
+                 | Int(self[i + 2]) << 16 | Int(self[i + 3]) << 24
+        }
+
+        // Prefer the TIFF preview (offset/length at bytes 20…27).
+        // The alternative WMF preview (bytes 12…19) cannot be decoded on iOS.
+        let tiffOffset = uint32(at: 20)
+        let tiffLength = uint32(at: 24)
+        guard tiffOffset > 0, tiffLength > 0, tiffOffset + tiffLength <= count
+        else { return nil }
+
+        let tiffData = subdata(in: (base + tiffOffset) ..< (base + tiffOffset + tiffLength))
+        return UIImage(data: tiffData)
+    }
+
+
     // MARK: - MIME type and file extension sniffing
     // Return contentType of image data
 //    var contentType: String? {
