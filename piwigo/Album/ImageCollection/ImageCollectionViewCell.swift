@@ -137,7 +137,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         // Retrieve image from cache or download it
         let scale = max(traitCollection.displayScale, 1.0)
         let cellSize = CGSizeMake(self.bounds.size.width * scale, self.bounds.size.height * scale)
-        imageURL = ImageUtilities.getPiwigoURL(imageData, ofMinSize: size)
+        imageURL = imageData.url(forMaxSize: size)
         Task {
             let expectedURL = imageURL
             await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: size, type: .image, atURL: imageURL,
