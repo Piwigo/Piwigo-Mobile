@@ -42,7 +42,7 @@ extension PasteboardImagesViewController {
             /// Pasteboard images are identified with identifiers of the type "pwgClipboard-yyyyMMdd-HHmmssSSSS-typ-#" where:
             /// - "pwgClipboard" is a header telling that the image/video comes from the pasteboard (see kClipboardPrefix)
             /// - "yyyyMMdd-HHmmssSSSS" is the date at which the objects were retrieved
-            /// - "typ" is "-img-", "-mov-" or "-pdf-" depending on the nature of the object (see kImageSuffix, kMovieSuffix, kPdfSuffix)
+            /// - "typ" is "-img-", "-mov-", "-pdf-" or "-eps-" depending on the nature of the object (see kImageSuffix, kMovieSuffix, kPdfSuffix, kEpsSuffix)
             /// - "#" is the index of the object in the pasteboard
             /// The item set may not start at 0 nor be contiguous (e.g. when the pasteboard
             /// also contains text items), so the matching items are enumerated:
@@ -61,7 +61,13 @@ extension PasteboardImagesViewController {
                 else if pasteboardTypes.contains(UTType.pdf.identifier),
                         UIPasteboard.general.contains(pasteboardTypes: [UTType.pdf.identifier], inItemSet: indexSet) {
                     identifier += kPdfSuffix + String(idx + 1)
-                } else {
+                }
+                // EPS next, for the same reason as PDF (only when the server accepts EPS files)
+                else if pasteboardTypes.contains(UTType.eps.identifier),
+                        UIPasteboard.general.contains(pasteboardTypes: [UTType.eps.identifier], inItemSet: indexSet) {
+                    identifier += kEpsSuffix + String(idx + 1)
+                }
+                else {
                     identifier += kImageSuffix + String(idx + 1)
                 }
                 let fileName = pbDateTime.dropLast(4) + "-" + String(idx + 1)

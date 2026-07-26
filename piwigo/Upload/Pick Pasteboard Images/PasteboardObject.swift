@@ -98,6 +98,20 @@ final class ObjectPreparation : Operation, @unchecked Sendable {
             // Store PDF data
             storePasteboardObject(pdfData)
         }
+        else if pbObject.identifier.contains(kEpsSuffix) {
+            // Get EPS data
+            guard let epsData = self.getDataOfPasteboardEps(at: pbObject.itemIndex) else {
+                pbObject.state = .failed
+                return
+            }
+
+            // Update object
+            pbObject.md5Sum = epsData.MD5checksum
+            pbObject.fileName.append(".eps")
+
+            // Store EPS data
+            storePasteboardObject(epsData)
+        }
         else {
             // Get image data and file extension
             guard let (imageData, fileExt) = self.getDataOfPasteboardImage(at: pbObject.itemIndex) else {
@@ -133,6 +147,15 @@ final class ObjectPreparation : Operation, @unchecked Sendable {
             return pdfData
         }
         return nil  // Not a PDF document
+    }
+
+    private func getDataOfPasteboardEps(at index:Int) -> Data? {
+        let indexSet = IndexSet(integer: index)
+        if pbObject.types.contains(UTType.eps.identifier),
+           let epsData = UIPasteboard.general.data(forPasteboardType: UTType.eps.identifier, inItemSet: indexSet)?.first {
+            return epsData
+        }
+        return nil  // Not an EPS document
     }
     
     private func getDataOfPasteboardImage(at index:Int) -> (imageData: Data, fileExt: String)? {
@@ -172,6 +195,12 @@ final class ObjectPreparation : Operation, @unchecked Sendable {
             else if pbObject.identifier.contains(kPdfSuffix) {
                 pbObject.image = (PDFDocument(data: data)?
                     .extractedImage()?
+                    .crop(width: 1.0, height: 1.0) ?? pwgImageType.image.placeHolder)
+                    .resize(to: AlbumVars.shared.kThumbnailFileSize, opaque: true, scale: scale)
+            }
+            else if pbObject.identifier.contains(kEpsSuffix) {
+                // Render the EPS embedded preview if present, else fall back to a placeholder
+                pbObject.image = ((data.epsPreviewImage() ?? pwgImageType.image.placeHolder)
                     .crop(width: 1.0, height: 1.0) ?? pwgImageType.image.placeHolder)
                     .resize(to: AlbumVars.shared.kThumbnailFileSize, opaque: true, scale: scale)
             }

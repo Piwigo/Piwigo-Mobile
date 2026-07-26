@@ -8,6 +8,7 @@
 
 import Foundation
 import Photos
+import UniformTypeIdentifiers
 
 // Swift Package Version
 public enum PwgUploadKit {
@@ -41,7 +42,15 @@ public let kIntentPrefix = "pwgIntent-"         // File selected by the shortcut
 public let kImageSuffix = "-img-"
 public let kMovieSuffix = "-mov-"
 public let kPdfSuffix = "-pdf-"
+public let kEpsSuffix = "-eps-"
 let kOriginalSuffix = "-original"
+
+// System UTI for Encapsulated PostScript files (no static UTType.eps is provided by the SDK).
+// EPS is uploaded as-is like PDF; there is no in-app renderer, so it is displayed through
+// the server-generated JPEG derivatives (i.e. categorised as an image on the display side).
+public extension UTType {
+    static let eps = UTType(importedAs: "com.adobe.encapsulated-postscript")
+}
 
 // Constant for producing filename suffixes
 let chunkFormatter: NumberFormatter = {

@@ -6364,6 +6364,107 @@
         }
       }
     },
+    "epsNotAccepted" : {
+      "comment" : "This Piwigo server does not accept EPS files.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خادم Piwigo هذا لا يقبل ملفات EPS."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denne Piwigo-server accepterer ikke EPS-filer."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieser Piwigo-Server akzeptiert keine EPS-Dateien."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This Piwigo server does not accept EPS files."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este servidor de Piwigo no admite archivos EPS."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce serveur Piwigo n'accepte pas les fichiers EPS."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ez a Piwigo-kiszolgáló nem fogadja el a EPS-fájlokat."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Server Piwigo ini tidak menerima berkas EPS."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questo server Piwigo non accetta file EPS."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この Piwigo サーバーは EPS ファイルを受け付けません。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deze Piwigo-server accepteert geen EPS-bestanden."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ten serwer Piwigo nie akceptuje plików EPS."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Этот сервер Piwigo не принимает файлы в формате EPS."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denna Piwigo-server accepterar inte EPS-filer."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 Piwigo 服务器不接受 EPS 文件。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 Piwigo 伺服器不接受 EPS 檔案。"
+          }
+        }
+      }
+    },
     "PiwigoServer_emptyJSONobject" : {
       "comment" : "Piwigo server did return an empty JSON object.",
       "localizations" : {

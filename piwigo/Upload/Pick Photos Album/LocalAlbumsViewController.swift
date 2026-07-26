@@ -62,11 +62,14 @@ class LocalAlbumsViewController: UIViewController {
         return provider
     }()
     lazy var pasteboardTypes : [String] = {
+        var types = [UTType.image.identifier, UTType.movie.identifier]
         if ServerVars.shared.serverFileTypes.contains("pdf") {
-            return [UTType.image.identifier, UTType.movie.identifier, UTType.pdf.identifier]
-        } else {
-            return [UTType.image.identifier, UTType.movie.identifier]
+            types.append(UTType.pdf.identifier)
         }
+        if ServerVars.shared.serverFileTypes.contains("eps") {
+            types.append(UTType.eps.identifier)
+        }
+        return types
     }()
     
     // MARK: - Core Data Objects

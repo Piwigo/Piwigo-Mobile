@@ -173,20 +173,21 @@ struct ExternalDisplayUtilities {
             let size = sizes.xxxxlarge?.maxSize ?? 1
             // Ensure that at least an URL will be returned
             // and check if this size is more appropriate
-            if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) || imageData.isNotImage {
+            if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
                 pwgSize = .xxxxLarge
                 pwgURL = imageURL
                 selectedSize = size
             }
         }
         
-        // Full Resolution (not always available)
-        if let imageURL = imageData.fullRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+        // Full Resolution (not always available and EPS case bypassed)
+        if imageData.hasFullResThumbnail,
+           let imageURL = imageData.fullRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = imageData.fullRes?.maxSize ?? 1
             // Ensure that at least an URL will be returned
             // and check if this size is more appropriate for an image exclusively
-            if imageData.isImage, (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
+            if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
                 pwgSize = .fullRes
                 pwgURL = imageURL
                 selectedSize = size

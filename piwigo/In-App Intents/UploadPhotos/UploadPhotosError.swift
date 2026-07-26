@@ -15,6 +15,7 @@ public enum UploadPhotosError: Error, Sendable {
     case noPhotos
     case invalidAlbum
     case pdfNotAccepted
+    case epsNotAccepted
     case importFailed
 }
 
@@ -31,6 +32,8 @@ extension UploadPhotosError: LocalizedError {
                           comment: "You do not have permission to upload to this album.")
         case .pdfNotAccepted:
             return Localized.pdfNotAccepted
+        case .epsNotAccepted:
+            return Localized.epsNotAccepted
         case .importFailed:
             return "Could not create upload requests."
         }

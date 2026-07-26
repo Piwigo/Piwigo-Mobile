@@ -25,6 +25,8 @@ public enum Localized {
     public static let tabBar_albums = String(localized: "tabBar_albums", bundle: .pwgKit, comment: "Albums")
     public static let pdfNotAccepted = String(localized: "pdfNotAccepted", bundle: .pwgKit,
                                               comment: "This Piwigo server does not accept PDF files.")
+    public static let epsNotAccepted = String(localized: "epsNotAccepted", bundle: .pwgKit,
+                                              comment: "This Piwigo server does not accept EPS files.")
 }
 
 // URL scheme for deep links from the share extension to the app

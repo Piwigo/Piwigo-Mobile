@@ -70,11 +70,14 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
     var pbObjects = [PasteboardObject]()            // Objects in pasteboard
     var pbChangeCount = -1                          // Pasteboard change count at last retrieve
     lazy var pasteboardTypes : [String] = {
+        var types = [UTType.image.identifier, UTType.movie.identifier]
         if ServerVars.shared.serverFileTypes.contains("pdf") {
-            return [UTType.image.identifier, UTType.movie.identifier, UTType.pdf.identifier]
-        } else {
-            return [UTType.image.identifier, UTType.movie.identifier]
+            types.append(UTType.pdf.identifier)
         }
+        if ServerVars.shared.serverFileTypes.contains("eps") {
+            types.append(UTType.eps.identifier)
+        }
+        return types
     }()
     
     

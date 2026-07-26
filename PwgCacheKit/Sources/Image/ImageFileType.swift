@@ -31,10 +31,20 @@ extension Image
     /// GIF files are stored with the 'image' file type,
     /// but only the full resolution file contains the animation.
     public var isGIF: Bool {
-        return isImage && URL(fileURLWithPath: self.fileName).pathExtension.lowercased() == "gif"
+        return pwgImageFileType(rawValue: self.fileType) == .image
+            && URL(fileURLWithPath: self.fileName).pathExtension.lowercased() == "gif"
     }
     
-    public var isNotImage: Bool {
-        return isVideo || isPDF
+    /// EPS files are stored with the 'image' file type because they are displayed
+    /// through the server-generated derivatives. However they have no full-resolution
+    /// raster the app can request, so — like video and PDF — they are 'not an image'
+    /// when selecting the optimum image size/URL (never .fullRes).
+    public var isEPS: Bool {
+        return pwgImageFileType(rawValue: self.fileType) == .image
+            && ["eps", "epsf", "epsi"].contains(URL(fileURLWithPath: self.fileName).pathExtension.lowercased())
+    }
+    
+    public var hasFullResThumbnail: Bool {
+        return !(isVideo || isGIF || isPDF || isEPS)
     }
 }

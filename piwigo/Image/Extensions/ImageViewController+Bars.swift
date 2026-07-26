@@ -161,7 +161,7 @@ extension ImageViewController {
             }
             else {
                 // We present the toolbar only if it contains player controls or a PDF viewer
-                if imageData.isNotImage {
+                if imageData.isVideo || imageData.isPDF {
                     // Show toolbar with player controls
                     isToolbarRequired = true
                     setToolbarItems(finalToolbarItems, animated: false)

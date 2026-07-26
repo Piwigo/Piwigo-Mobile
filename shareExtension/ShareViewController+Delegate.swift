@@ -89,21 +89,30 @@ extension ShareViewController: UITableViewDelegate
                 if itemsAreReady == false {
                     showHUD()
                 }
-                let (nbCopiedItems, nbSkippedPdfs) = await copyItemsTask?.value ?? (0, 0)
+                let (nbCopiedItems, nbSkippedPdfs, nbSkippedEps) = await copyItemsTask?.value ?? (0, 0, 0)
                 hideHUD()
-                
+
                 // Tell the user when no item could be copied,
-                // and when the server refused the PDF files
+                // and when the server refused the PDF or EPS files
                 if nbCopiedItems == 0 {
-                    presentShareFailAlert(withMessage: nbSkippedPdfs > 0
-                        ? Localized.pdfNotAccepted
-                        : String(localized: "shareFailError_message", comment: "Failed to retrieve the shared photos and videos."))
+                    let failMessage: String
+                    if nbSkippedPdfs > 0 {
+                        failMessage = Localized.pdfNotAccepted
+                    } else if nbSkippedEps > 0 {
+                        failMessage = Localized.epsNotAccepted
+                    } else {
+                        failMessage = String(localized: "shareFailError_message", comment: "Failed to retrieve the shared photos and videos.")
+                    }
+                    presentShareFailAlert(withMessage: failMessage)
                     return
                 }
-                
-                // Tell the user when the server refused some of the PDF files
+
+                // Tell the user when the server refused some of the PDF or EPS files
                 if nbSkippedPdfs > 0 {
                     await presentPdfSkippedAlert()
+                }
+                if nbSkippedEps > 0 {
+                    await presentEpsSkippedAlert()
                 }
                 
                 // Launch the app to select options
@@ -185,8 +194,31 @@ extension ShareViewController: UITableViewDelegate
             })
         }
     }
-    
-    
+
+    // Informs the user that the EPS files were skipped, then lets the share proceed
+    @MainActor
+    private func presentEpsSkippedAlert() async {
+        self.logger.notice("EPS files skipped because the server does not accept them")
+        await withCheckedContinuation { continuation in
+            let alert = UIAlertController(title: nil,
+                                          message: Localized.epsNotAccepted,
+                                          preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: Localized.ok,
+                                          style: .cancel, handler: { _ in
+                continuation.resume(returning: ())
+            }))
+
+            // Present alert
+            alert.view.tintColor = PwgColor.tintColor
+            alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
+            present(alert, animated: true, completion: {
+                // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                alert.view.tintColor = PwgColor.tintColor
+            })
+        }
+    }
+
+
     // MARK: - Open Main App
     private func openMainApp(withAlbumIDs upperIds: String, forItemsSharedAt shareDate: String) {
         // Prepare URL

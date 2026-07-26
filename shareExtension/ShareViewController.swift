@@ -122,8 +122,8 @@ final class ShareViewController: UIViewController {
 
     // MARK: - Shared Items Copy
     // Task copying the shared items to the Uploads folder, returning the number of copied items
-    // and the number of PDF files skipped because the Piwigo server does not accept them
-    var copyItemsTask: Task<(copied: Int, skippedPdfs: Int), Never>?
+    // and the number of PDF/EPS files skipped because the Piwigo server does not accept them
+    var copyItemsTask: Task<(copied: Int, skippedPdfs: Int, skippedEps: Int), Never>?
     var itemsAreReady = false               // True once all shared items have been copied
 
     
@@ -174,7 +174,7 @@ final class ShareViewController: UIViewController {
         // Retrieve shared items
         self.context = extensionContext
         copyItemsTask = Task { @MainActor [weak self] in
-            guard let self else { return (0, 0) }
+            guard let self else { return (0, 0, 0) }
             let context = self.extensionContext
             let shareDate = self.shareDate
             let result = await self.copyItems(fromContext: context, sharedAt: shareDate)
@@ -338,21 +338,22 @@ final class ShareViewController: UIViewController {
     
     // MARK: - Copy Shared Items to Uploads folder
     private nonisolated func copyItems(fromContext context: NSExtensionContext?,
-                                       sharedAt shareDate: String) async -> (copied: Int, skippedPdfs: Int) {
+                                       sharedAt shareDate: String) async -> (copied: Int, skippedPdfs: Int, skippedEps: Int) {
         // Retrieve input item
         guard let context,
               let extensionItem = context.inputItems.first as? NSExtensionItem,
               let attachments = extensionItem.attachments
-        else { return (0, 0) }
+        else { return (0, 0, 0) }
         
         // Loop over all shared items
         /// Shared items are identified with identifiers of the type "pwgShared-yyyyMMdd-HHmmssSSSS-typ-####" where:
         /// - "pwgShared" is a header telling that the image/video comes from the share extension (see kSharedPrefix)
         /// - "yyyyMMdd-HHmmssSSSS" is the date at which the items were shared
-        /// - "typ" is "-img-", "-mov-" or "-pdf-" depending on the nature of the object (see kImageSuffix, kMovieSuffix, kPdfSuffix)
+        /// - "typ" is "-img-", "-mov-", "-pdf-" or "-eps-" depending on the nature of the object (see kImageSuffix, kMovieSuffix, kPdfSuffix, kEpsSuffix)
         /// - "####" is the index of the object being shared
         var sharedItemCount = 0
         var skippedPdfCount = 0
+        var skippedEpsCount = 0
         for (index, provider) in attachments.enumerated() {
             // Stop when the user cancelled the share
             if Task.isCancelled { break }
@@ -374,14 +375,25 @@ final class ShareViewController: UIViewController {
                     sharedItemCount += 1
                 }
             }
+            // EPS before image so that the original file is preferred to a possible image rendition
+            else if provider.hasItemConformingToTypeIdentifier(UTType.eps.identifier) {
+                // Accept EPS files only when the Piwigo server accepts them
+                if ServerVars.shared.serverFileTypes.contains("eps") == false {
+                    self.logger.notice("EPS files not accepted by the server —> file skipped")
+                    skippedEpsCount += 1
+                }
+                else if await self.getSharedItem(atIndex: index, ofType: .eps, from: provider, on: shareDate) {
+                    sharedItemCount += 1
+                }
+            }
             else if provider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
                 if await self.getSharedItem(atIndex: index, ofType: .image, from: provider, on: shareDate) {
                     sharedItemCount += 1
                 }
             }
         }
-        self.logger.notice("Copied \(sharedItemCount) shared items to Uploads folder, skipped \(skippedPdfCount) PDF files")
-        return (sharedItemCount, skippedPdfCount)
+        self.logger.notice("Copied \(sharedItemCount) shared items to Uploads folder, skipped \(skippedPdfCount) PDF files and \(skippedEpsCount) EPS files")
+        return (sharedItemCount, skippedPdfCount, skippedEpsCount)
     }
     
     private nonisolated func getSharedItem(atIndex index: Int, ofType type: UTType, from provider: NSItemProvider,
@@ -405,6 +417,8 @@ final class ShareViewController: UIViewController {
                     (suffix, fileExt) = (kMovieSuffix, "mov")
                 case .pdf:
                     (suffix, fileExt) = (kPdfSuffix, "pdf")
+                case .eps:
+                    (suffix, fileExt) = (kEpsSuffix, "eps")
                 default:
                     (suffix, fileExt) = (kImageSuffix, "jpeg")
                 }

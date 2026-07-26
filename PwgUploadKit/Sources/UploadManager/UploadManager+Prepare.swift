@@ -222,6 +222,26 @@ extension UploadManager
             // PDF file format cannot be accepted by the Piwigo server
             throw .unacceptedDataFormat
         }
+        else if uploadData.localIdentifier.contains(kEpsSuffix) {
+            // Set file type
+            uploadData.fileType = pwgImageFileType.image.rawValue
+            
+            // Check that the EPS format is accepted by the Piwigo server
+            if ServerVars.shared.serverFileTypes.contains("eps") {
+                // Upload the EPS file as is (image modifications do not apply)
+                uploadData.creationDate = (fileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+
+                // Rename file according to user's demand from date/time/counter/etc.
+                renamedFile(for: &uploadData)
+
+                // Get MD5 checksum and MIME type, update counter
+                try setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: fileURL)
+                return
+            }
+            
+            // EPS file format cannot be accepted by the Piwigo server
+            throw .unacceptedDataFormat
+        }
         else {
             // Unknown type
             throw .unacceptedDataFormat
@@ -454,11 +474,15 @@ extension UploadManager
         
         // Get MIME type from file extension
         let fileExt = (URL(fileURLWithPath: uploadData.fileName).pathExtension).lowercased()
-        guard let uti = UTType(filenameExtension: fileExt),
-              let mimeType = uti.preferredMIMEType
+        if let mimeType = UTType(filenameExtension: fileExt)?.preferredMIMEType {
+            uploadData.mimeType = mimeType
+        }
+        else if ["eps", "epsf", "epsi"].contains(fileExt) {
+            // iOS does not reliably expose a preferred MIME type for EPS —> use the PostScript one
+            uploadData.mimeType = "application/postscript"
+        }
         else {
             throw .missingAsset
         }
-        uploadData.mimeType = mimeType
     }
 }

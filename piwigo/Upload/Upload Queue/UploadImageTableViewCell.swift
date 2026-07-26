@@ -166,6 +166,11 @@ class UploadImageTableViewCell: UITableViewCell {
             playIcon.isHidden = true
             image = PDFDocument(url: fileURL)?.extractedImage() ?? pwgImageType.image.placeHolder
         }
+        else if upload.localIdentifier.contains(kEpsSuffix) {
+            // Case of an EPS file — render its embedded preview if present, else a placeholder
+            playIcon.isHidden = true
+            image = (try? Data(contentsOf: fileURL))?.epsPreviewImage() ?? pwgImageType.image.placeHolder
+        }
         else {
             // Unknown type
             playIcon.isHidden = true

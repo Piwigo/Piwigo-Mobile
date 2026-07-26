@@ -39,7 +39,7 @@ struct UploadPhotos: AppIntent {
     // `supportedTypeIdentifiers` must be a compile-time constant, hence the raw UTI strings
     // instead of `UTType.image.identifier` / `UTType.movie.identifier`.
     @Parameter(title: LocalizedStringResource("severalImages", comment: "Photos"),
-               supportedTypeIdentifiers: ["public.image", "public.movie", "com.adobe.pdf"])
+               supportedTypeIdentifiers: ["public.image", "public.movie", "com.adobe.pdf", "com.adobe.encapsulated-postscript"])
     var photos: [IntentFile]
 
     @Parameter(title: LocalizedStringResource("categorySelection_title"))
@@ -90,6 +90,7 @@ struct UploadPhotos: AppIntent {
         // intent already runs in-process and can build the upload requests directly.
         var uploadRequests: [UploadProperties] = []
         var skippedPdfCount = 0
+        var skippedEpsCount = 0
         autoreleasepool {
             for (index, file) in photos.enumerated() {
                 let fileType = file.type ?? .data
@@ -107,6 +108,15 @@ struct UploadPhotos: AppIntent {
                         continue    // Skip this attachment, keep processing the rest.
                     }
                     (suffix, defaultExt) = (kPdfSuffix, "pdf")
+                }
+                else if fileType.conforms(to: .eps) {
+                    // Accept EPS files only when the Piwigo server accepts them
+                    if ServerVars.shared.serverFileTypes.contains("eps") == false {
+                        UploadPhotos.logger.notice("EPS files not accepted by the server —> file skipped")
+                        skippedEpsCount += 1
+                        continue    // Skip this attachment, keep processing the rest.
+                    }
+                    (suffix, defaultExt) = (kEpsSuffix, "eps")
                 }
                 else {
                     (suffix, defaultExt) = (kImageSuffix, "jpeg")
@@ -158,9 +168,12 @@ struct UploadPhotos: AppIntent {
         guard uploadRequests.isEmpty == false
         else {
             UploadPhotos.logger.notice("No upload requests to process")
-            // Tell the user why when all files were PDFs refused by the server
-            if skippedPdfCount == photos.count {
+            // Tell the user why when all files were documents refused by the server
+            if skippedPdfCount > 0, skippedPdfCount == photos.count {
                 return .result(dialog: .responseFailure(error: .pdfNotAccepted))
+            }
+            if skippedEpsCount > 0, skippedEpsCount == photos.count {
+                return .result(dialog: .responseFailure(error: .epsNotAccepted))
             }
             return .result(dialog: .responseFailure(error: .importFailed))
         }
