@@ -101,7 +101,8 @@
             "value" : "Piwigo"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "CFBundleName" : {
       "comment" : "Bundle name",
