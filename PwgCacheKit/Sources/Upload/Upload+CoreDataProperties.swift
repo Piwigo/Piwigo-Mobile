@@ -20,6 +20,7 @@ extension Upload {
     @NSManaged public var comment: String
     @NSManaged public var compressImageOnUpload: Bool
     @NSManaged public var creationDate: TimeInterval
+    @NSManaged public var deleteAssetIdentifier: String?
     @NSManaged public var deleteImageAfterUpload: Bool
     @NSManaged public var fileName: String
     @NSManaged public var fileNameExtensionCase: Int16

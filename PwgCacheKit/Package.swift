@@ -48,7 +48,8 @@ let package = Package(
                 .process("MigrationTools/MappingModel_0J_to_0L/MappingModel_0J_to_0L.xcmappingmodel"),
                 .process("MigrationTools/MappingModel_0L_to_0M/Mapping_Model_0L_to_0M.xcmappingmodel"),
                 .process("MigrationTools/MappingModel_0M_to_0N/Mapping_Model_0M_to_0N.xcmappingmodel"),
-                .process("MigrationTools/MappingModel_0L_to_0N/Mapping_Model_0L_to_0N.xcmappingmodel")
+                .process("MigrationTools/MappingModel_0L_to_0N/Mapping_Model_0L_to_0N.xcmappingmodel"),
+                .process("MigrationTools/MappingModel_0N_to_0O/Mapping_Model_0N_to_0O.xcmappingmodel")
             ]
         ),
     ],

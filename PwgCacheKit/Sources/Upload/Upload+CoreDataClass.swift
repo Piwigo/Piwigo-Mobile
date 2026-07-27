@@ -149,6 +149,9 @@ public final nonisolated class Upload: NSManagedObject, Identifiable {
         if deleteImageAfterUpload != uploadProperties.deleteImageAfterUpload {
             deleteImageAfterUpload = uploadProperties.deleteImageAfterUpload
         }
+        if deleteAssetIdentifier != uploadProperties.deleteAssetIdentifier {
+            deleteAssetIdentifier = uploadProperties.deleteAssetIdentifier
+        }
         if markedForAutoUpload != uploadProperties.markedForAutoUpload {
             markedForAutoUpload = uploadProperties.markedForAutoUpload
         }
@@ -245,7 +248,8 @@ extension Upload {
             photoMaxSize: self.photoMaxSize, videoMaxSize:self.videoMaxSize,
             compressImageOnUpload: self.compressImageOnUpload, photoQuality: self.photoQuality,
             deleteImageAfterUpload: self.deleteImageAfterUpload,
-            markedForAutoUpload: self.markedForAutoUpload)
+            markedForAutoUpload: self.markedForAutoUpload,
+            deleteAssetIdentifier: self.deleteAssetIdentifier)
     }
     
     @objc(addUploadsObject:)

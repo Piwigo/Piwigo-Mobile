@@ -48,6 +48,11 @@ public struct UploadProperties: Sendable
     public var photoQuality: Int16
     public var deleteImageAfterUpload: Bool
     public var markedForAutoUpload: Bool
+
+    // PHAsset localIdentifier resolved (in the main app) for a photo shared via the
+    // share extension, so that the original can be deleted after a successful upload.
+    // nil when the shared item could not be matched to a Photo Library asset.
+    public var deleteAssetIdentifier: String? = nil
 }
 
 extension UploadProperties {
