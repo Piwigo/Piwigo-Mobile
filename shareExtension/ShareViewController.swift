@@ -387,7 +387,17 @@ final class ShareViewController: UIViewController {
                 }
             }
             else if provider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
-                if await self.getSharedItem(atIndex: index, ofType: .image, from: provider, on: shareDate) {
+                // Request the original HEIC when the server accepts that format (and the provider
+                // offers it), otherwise the system's JPEG compatibility rendition. This delivers
+                // exactly the format the server wants without a redundant transcode — and, with
+                // delete-after-upload, avoids discarding the original for a lossy re-encode.
+                let serverExts = ServerVars.shared.serverFileTypes
+                    .components(separatedBy: ",")
+                    .map({ $0.trimmingCharacters(in: .whitespaces).lowercased() })
+                let serverAcceptsHeic = serverExts.contains("heic") || serverExts.contains("heif")
+                let imageType: UTType = (serverAcceptsHeic &&
+                    provider.hasItemConformingToTypeIdentifier(UTType.heic.identifier)) ? .heic : .image
+                if await self.getSharedItem(atIndex: index, ofType: imageType, from: provider, on: shareDate) {
                     sharedItemCount += 1
                 }
             }
@@ -420,7 +430,7 @@ final class ShareViewController: UIViewController {
                 case .eps:
                     (suffix, fileExt) = (kEpsSuffix, "eps")
                 default:
-                    (suffix, fileExt) = (kImageSuffix, "jpeg")
+                    (suffix, fileExt) = (kImageSuffix, type.preferredFilenameExtension ?? "jpeg")
                 }
 
                 // Prepare file name
