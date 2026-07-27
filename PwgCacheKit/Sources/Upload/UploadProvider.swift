@@ -381,7 +381,8 @@ public final class UploadProvider {
             }
             
             // Return objectIDs and localIdentifiers
-            return (pendingUploads.map(\.objectID), pendingUploads.map({ $0.localIdentifier }))
+            return (pendingUploads.map(\.objectID),
+                    pendingUploads.map({ $0.localIdentifier }))
         }
     }
     
@@ -429,7 +430,38 @@ public final class UploadProvider {
             }
             
             // Return objectIDs and localIdentifiers
-            return (completedUploads.map(\.objectID), completedUploads.map({ $0.localIdentifier }))
+            return (completedUploads.map(\.objectID),
+                    completedUploads.map({ $0.localIdentifier }))
+        }
+    }
+    
+    /**
+        Retrieve IDs and Photo Library asset identifiers of completed upload requests marked for deletion.
+        The asset identifier is `deleteAssetIdentifier` when set (i.e. a photo shared via the share
+        extension that the app resolved to a Photo Library asset), otherwise `localIdentifier`
+        (i.e. a photo picked inside the app, whose localIdentifier already is a PHAsset identifier).
+     */
+    public func getIDsOfUploadsToDeleteFromLibrary(inContext taskContext: NSManagedObjectContext) -> ([NSManagedObjectID], [String])
+    {
+        taskContext.performAndWait { () -> ([NSManagedObjectID], [String]) in
+            // Create a fetch request for completed Upload requests sorted by date (oldest first)
+            let fetchRequest = Upload.fetchRequest()
+            fetchRequest.sortDescriptors = sortDescriptors
+            let variables = ["serverPath" : ServerVars.shared.serverPath,
+                             "userName"   : ServerVars.shared.user]
+            fetchRequest.predicate = completedPredicate.withSubstitutionVariables(variables)
+            fetchRequest.returnsObjectsAsFaults = false
+            fetchRequest.shouldRefreshRefetchedObjects = true
+
+            // Fetch objects
+            var completedUploads: [Upload] = (try? taskContext.fetch(fetchRequest) as [Upload]) ?? []
+
+            // Keep only requests whose original should be deleted from the Photo Library
+            completedUploads.removeAll(where: { $0.deleteImageAfterUpload == false })
+
+            // Return objectIDs and the asset identifiers to delete
+            return (completedUploads.map(\.objectID),
+                    completedUploads.map({ $0.deleteAssetIdentifier ?? $0.localIdentifier }))
         }
     }
     

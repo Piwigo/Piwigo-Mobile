@@ -112,7 +112,7 @@ extension UploadManager
         // fetch and a duplicate prompt for the same assets. The deletion completes on the actor,
         // so a later trigger will pick up any assets left to delete.
         guard isDeletingAssets == false else { return }
-        let (uploadIDs, localIdentifiers): ([NSManagedObjectID], [String]) = UploadProvider().getIDsOfCompletedUploads(onlyDeletable: true, inContext: self.uploadBckgContext)
+        let (uploadIDs, localIdentifiers): ([NSManagedObjectID], [String]) = UploadProvider().getIDsOfUploadsToDeleteFromLibrary(inContext: self.uploadBckgContext)
         UploadManager.logger.notice("Resuming uploads: \(uploadIDs.count) assets for deletion in the Photo Library")
         let deadline = DateUtilities.nextDayAt4AM(after: UploadVars.shared.dateOfLastPhotoLibraryDeletion)
         if uploadIDs.isEmpty == false && (nberOfPendingUploads == 0 || Date.now > deadline) {

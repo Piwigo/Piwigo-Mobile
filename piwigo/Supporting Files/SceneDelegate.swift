@@ -9,7 +9,9 @@
 import AVFoundation
 import BackgroundTasks
 import CoreData
+import ImageIO
 import LocalAuthentication
+import Photos
 import UIKit
 
 import PwgKit
@@ -626,6 +628,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 files.forEach({ debugPrint("••> \($0.lastPathComponent)") })
                 
                 // Prepare upload requests
+                // When Piwigo has full access to the Photo Library, try to resolve each shared file
+                // back to the asset it originates from, so the original can be offered for deletion
+                // after a successful upload (see ShareExtensionAssetMatcher).
+                let canAccessLibrary = PHPhotoLibrary.authorizationStatus(for: .readWrite) == .authorized
                 var uploadRequests: [UploadProperties] = []
                 for file in files {
                     do {
@@ -637,10 +643,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         else { continue }
                         
                         // Create upload request
-                        uploadRequests.append(UploadProperties(localIdentifier: identifier,
-                                                               fileName: fileName,
-                                                               category: destinationAlbumID))
-                        
+                        var uploadRequest = UploadProperties(localIdentifier: identifier,
+                                                             fileName: fileName,
+                                                             category: destinationAlbumID)
+
+                        // Resolve the source Photo Library asset (unambiguous match only), so its
+                        // original can be deleted after upload. Left nil when it cannot be matched.
+                        if canAccessLibrary {
+                            let mediaURL = DataDirectories.appUploadsDirectory.appendingPathComponent(identifier)
+                            uploadRequest.deleteAssetIdentifier = ShareExtensionAssetMatcher
+                                .localIdentifier(forFileAt: mediaURL, originalFileName: fileName)
+                        }
+                        uploadRequests.append(uploadRequest)
+
                         // Delete JSON file
                         try? FileManager.default.removeItem(at: file)
                     }
@@ -659,7 +674,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 uploadSwitchVC.user = albumVC.user
                 uploadSwitchVC.categoryId = albumVC.categoryId
                 uploadSwitchVC.categoryCurrentCounter = destinationAlbum.currentCounter
-                uploadSwitchVC.canDeleteImages = false
+                // Offer to delete originals only for photos matched to a Photo Library asset
+                uploadSwitchVC.canDeleteImages = uploadRequests.contains(where: { $0.deleteAssetIdentifier != nil })
                 uploadSwitchVC.uploadRequests = uploadRequests
                 
                 // Push upload options view embedded in navigation controller
@@ -732,5 +748,107 @@ extension SceneDelegate: AppLockDelegate {
             await UploadManager.shared.resumeInForeground()
             #endif
         }
+    }
+}
+
+
+// MARK: - Share Extension Asset Matching
+/// Resolves the Photo Library asset a file shared via the share extension originates from, so that
+/// the original can be deleted after a successful upload.
+///
+/// The share extension only ever hands the app a file copy (there is no PHAsset in an
+/// `NSItemProvider`), so the match is a best-effort heuristic based on the file's capture date,
+/// pixel dimensions and original file name. Because the result drives a **destructive** deletion,
+/// a match is returned only when exactly one asset qualifies; any ambiguity (no candidate, or more
+/// than one) yields nil and the original is left untouched.
+///
+/// Only still images are matched. Videos (and any file without readable capture metadata) return
+/// nil, so the "Delete after upload" option simply does not appear for them.
+fileprivate enum ShareExtensionAssetMatcher {
+
+    private struct Signature {
+        let captureDate: Date
+        let pixelWidth: Int
+        let pixelHeight: Int
+    }
+
+    static func localIdentifier(forFileAt fileURL: URL, originalFileName: String) -> String? {
+        // Read a signature (capture date + pixel size) from the shared file
+        guard let signature = imageSignature(forFileAt: fileURL) else { return nil }
+
+        // Narrow the search to still images captured around the same time. A wide (±1 day) window
+        // absorbs any time-zone ambiguity in the file's EXIF date; the original file name and pixel
+        // size below make the final decision.
+        let window: TimeInterval = 24 * 60 * 60
+        var predicates: [NSPredicate] = [
+            NSPredicate(format: "mediaType == %d", PHAssetMediaType.image.rawValue),
+            NSPredicate(format: "creationDate >= %@", signature.captureDate.addingTimeInterval(-window) as NSDate),
+            NSPredicate(format: "creationDate <= %@", signature.captureDate.addingTimeInterval(window) as NSDate)
+        ]
+        // Pixel size is compared unordered: the file's stored dimensions are un-oriented whereas
+        // PHAsset reports oriented dimensions, so a portrait photo has them swapped.
+        if signature.pixelWidth > 0, signature.pixelHeight > 0 {
+            predicates.append(NSPredicate(format: "(pixelWidth == %d AND pixelHeight == %d) OR (pixelWidth == %d AND pixelHeight == %d)",
+                                          signature.pixelWidth, signature.pixelHeight,
+                                          signature.pixelHeight, signature.pixelWidth))
+        }
+        let options = PHFetchOptions()
+        options.includeHiddenAssets = true
+        options.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+
+        // Keep assets whose original file name matches; bail as soon as it is ambiguous
+        let assets = PHAsset.fetchAssets(with: options)
+        var matchedIdentifier: String?
+        var isAmbiguous = false
+        // Compare file names WITHOUT extension: the share extension transcodes the original
+        // (e.g. HEIC) to JPEG, so only the base name is preserved ("IMG_1234.heic" → "IMG_1234.jpeg").
+        let sharedBaseName = (originalFileName as NSString).deletingPathExtension
+        assets.enumerateObjects { asset, _, stop in
+            guard let name = PHAssetResource.assetResources(for: asset).first?.originalFilename else { return }
+            let assetBaseName = (name as NSString).deletingPathExtension
+            guard assetBaseName.caseInsensitiveCompare(sharedBaseName) == .orderedSame else { return }
+            if matchedIdentifier == nil {
+                matchedIdentifier = asset.localIdentifier
+            } else {
+                isAmbiguous = true
+                stop.pointee = true
+            }
+        }
+        return isAmbiguous ? nil : matchedIdentifier
+    }
+
+    private static func imageSignature(forFileAt fileURL: URL) -> Signature? {
+        // Access the ImageIO property dictionary as an NSDictionary (toll-free bridged, no deep
+        // copy) and read only the scalar keys we need — bridging the whole tree to a Swift
+        // dictionary can trip over private CF value types ("unknown class" runtime traps).
+        let sourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
+        guard let source = CGImageSourceCreateWithURL(fileURL as CFURL, sourceOptions),
+              CGImageSourceGetCount(source) > 0,
+              let cfProperties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil)
+        else { return nil }
+        let properties = cfProperties as NSDictionary
+
+        let width = (properties[kCGImagePropertyPixelWidth] as? NSNumber)?.intValue ?? 0
+        let height = (properties[kCGImagePropertyPixelHeight] as? NSNumber)?.intValue ?? 0
+
+        // Capture date from EXIF (falls back to TIFF) — "yyyy:MM:dd HH:mm:ss", without time zone
+        var dateString: String?
+        if let exif = properties[kCGImagePropertyExifDictionary] as? NSDictionary {
+            dateString = (exif[kCGImagePropertyExifDateTimeOriginal] as? String)
+                ?? (exif[kCGImagePropertyExifDateTimeDigitized] as? String)
+        }
+        if dateString == nil, let tiff = properties[kCGImagePropertyTIFFDictionary] as? NSDictionary {
+            dateString = tiff[kCGImagePropertyTIFFDateTime] as? String
+        }
+        guard let captureDate = exifDate(from: dateString) else { return nil }
+        return Signature(captureDate: captureDate, pixelWidth: width, pixelHeight: height)
+    }
+
+    private static func exifDate(from string: String?) -> Date? {
+        guard let string = string else { return nil }
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy:MM:dd HH:mm:ss"
+        return formatter.date(from: string)
     }
 }
