@@ -86,6 +86,11 @@ public final class DataMigrator: NSObject {
     public func migrateStore() throws {
         // Initialise time counter
         timeCounter = CFAbsoluteTimeGetCurrent()
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = 3
+        formatter.minimumFractionDigits = 3
+        formatter.roundingMode = .halfUp
         DataMigrator.logger.notice("Migration started…")
         
         // URL of the store in the App Group directory
@@ -105,11 +110,13 @@ public final class DataMigrator: NSObject {
 
                 // Log time needed to perform the migration
                 let duration = CFAbsoluteTimeGetCurrent() - timeCounter
-                DataMigrator.logger.notice("Migration completed in \(duration) s")
+                let durationString = formatter.string(from: NSNumber(value: duration))
+                DataMigrator.logger.notice("Migration completed in \(durationString) s")
                 return
             } catch {
                 let duration = CFAbsoluteTimeGetCurrent() - timeCounter
-                DataMigrator.logger.notice("Migration failed after \(duration) s")
+                let durationString = formatter.string(from: NSNumber(value: duration))
+                DataMigrator.logger.notice("Migration failed after \(durationString) s")
                 throw error
             }
         }
@@ -131,11 +138,13 @@ public final class DataMigrator: NSObject {
 
                 // Log time needed to perform the migration
                 let duration = CFAbsoluteTimeGetCurrent() - timeCounter
-                DataMigrator.logger.notice("Migration completed in \(duration) s")
+                let durationString = formatter.string(from: NSNumber(value: duration))
+                DataMigrator.logger.notice("Migration completed in \(durationString) s")
                 return
             } catch {
                 let duration = CFAbsoluteTimeGetCurrent() - timeCounter
-                DataMigrator.logger.notice("Migration failed after \(duration) s")
+                let durationString = formatter.string(from: NSNumber(value: duration))
+                DataMigrator.logger.notice("Migration failed after \(durationString) s")
                 throw error
             }
         }
@@ -151,11 +160,13 @@ public final class DataMigrator: NSObject {
 
                 // Log time needed to perform the migration
                 let duration = CFAbsoluteTimeGetCurrent() - timeCounter
-                DataMigrator.logger.notice("Migration completed in \(duration) s")
+                let durationString = formatter.string(from: NSNumber(value: duration))
+                DataMigrator.logger.notice("Migration completed in \(durationString) s")
                 return
             } catch {
                 let duration = CFAbsoluteTimeGetCurrent() - timeCounter
-                DataMigrator.logger.notice("Migration failed after \(duration) s")
+                let durationString = formatter.string(from: NSNumber(value: duration))
+                DataMigrator.logger.notice("Migration failed after \(durationString) s")
                 throw error
             }
         }
