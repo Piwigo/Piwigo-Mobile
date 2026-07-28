@@ -124,6 +124,7 @@ struct UploadPhotos: AppIntent {
                 let identifier = kIntentPrefix + shareDate + suffix + String(index + 1)
                 let fileURL = DataDirectories.appUploadsDirectory
                     .appendingPathComponent(identifier)
+                    .appendingPathExtension(kOriginalSuffix)
                 
                 // Remove stale file from a previous incomplete attempt.
                 try? FileManager.default.removeItem(at: fileURL)

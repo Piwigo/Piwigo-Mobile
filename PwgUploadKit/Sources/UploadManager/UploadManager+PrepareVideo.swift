@@ -13,6 +13,7 @@ import Photos
 import CoreData
 import PwgKit
 import PwgCacheKit
+import UniformTypeIdentifiers
 
 @UploadManagerActor
 extension UploadManager {
@@ -21,8 +22,9 @@ extension UploadManager {
     // Case of a video which is in a format accepted by the Piwigo server
     func prepareVideo(atURL originalFileURL: URL, for uploadData: inout UploadProperties) async throws(PwgKitError)
     {
-        // Retrieve video data
-        let originalVideo = AVAsset(url: originalFileURL)
+        // Retrieve video data (via a typed URL so AVFoundation can parse the extensionless shared file)
+        let (originalVideo, tempVideoURL) = self.readableVideoAsset(at: originalFileURL, fileName: uploadData.fileName)
+        defer { if let tempVideoURL { try? FileManager.default.removeItem(at: tempVideoURL) } }
         
         // Get creation date from metadata if possible
         let metadata = originalVideo.metadata
@@ -61,8 +63,9 @@ extension UploadManager {
     // Case of a video which is in a format not accepted by the Piwigo server
     func convertVideo(atURL originalFileURL: URL, for uploadData: inout UploadProperties) async throws(PwgKitError)
     {
-        // Retrieve video data
-        let originalVideo = AVAsset(url: originalFileURL)
+        // Retrieve video data (via a typed URL so AVFoundation can parse the extensionless shared file)
+        let (originalVideo, tempVideoURL) = self.readableVideoAsset(at: originalFileURL, fileName: uploadData.fileName)
+        defer { if let tempVideoURL { try? FileManager.default.removeItem(at: tempVideoURL) } }
         
         // Get creation date from metadata if possible
         let metadata = originalVideo.metadata
@@ -102,7 +105,29 @@ extension UploadManager {
             throw .otherError(innerError: error)
         }
     }
-    
+
+    // Returns an AVAsset the system can parse for a shared file stored WITHOUT an extension (the
+    // share/intent/clipboard media files are named by their identifier only). AVFoundation needs the
+    // container type: on iOS 17+ override the MIME type; on older systems hard-link a typed alias in
+    // the same directory (same filesystem, no data copy). Also returns the temporary link to remove.
+    private func readableVideoAsset(at fileURL: URL, fileName: String) -> (asset: AVAsset, tempURL: URL?) {
+        let ext = URL(fileURLWithPath: fileName).pathExtension
+        if #available(iOS 17, *) {
+            var options: [String: Any] = [:]
+            if let utType = UTType(filenameExtension: ext), let mimeType = utType.preferredMIMEType {
+                options[AVURLAssetOverrideMIMETypeKey] = mimeType
+            }
+            return (AVURLAsset(url: fileURL, options: options), nil)
+        } else if ext.isEmpty == false {
+            let linkURL = fileURL.deletingLastPathComponent()
+                .appendingPathComponent("pwgVid-" + UUID().uuidString).appendingPathExtension(ext)
+            if (try? FileManager.default.linkItem(at: fileURL, to: linkURL)) != nil {
+                return (AVURLAsset(url: linkURL), linkURL)
+            }
+        }
+        return (AVURLAsset(url: fileURL), nil)
+    }
+
     
     // MARK: - Prepare Video From Photo Library Asset
     // Case of a video from the Photo Library which is in a format accepted by the Piwigo server

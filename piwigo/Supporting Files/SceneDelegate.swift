@@ -13,6 +13,7 @@ import ImageIO
 import LocalAuthentication
 import Photos
 import UIKit
+import UniformTypeIdentifiers
 
 import PwgKit
 import PwgCacheKit
@@ -631,58 +632,62 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 // When Piwigo has full access to the Photo Library, try to resolve each shared file
                 // back to the asset it originates from, so the original can be offered for deletion
                 // after a successful upload (see ShareExtensionAssetMatcher).
+                // Resolving each shared file to its Photo Library asset reads image/video metadata
+                // asynchronously, so build the requests and present the options on the main actor.
                 let canAccessLibrary = PHPhotoLibrary.authorizationStatus(for: .readWrite) == .authorized
-                var uploadRequests: [UploadProperties] = []
-                for file in files {
-                    do {
-                        // Get data stored in JSON file
-                        let data = try Data(contentsOf: file)
-                        let uploadInfo = try JSONDecoder().decode([String: String].self, from: data)
-                        guard let identifier = uploadInfo["identifier"], identifier.isEmpty == false,
-                              let fileName = uploadInfo["fileName"], fileName.isEmpty == false
-                        else { continue }
-                        
-                        // Create upload request
-                        var uploadRequest = UploadProperties(localIdentifier: identifier,
-                                                             fileName: fileName,
-                                                             category: destinationAlbumID)
+                Task { @MainActor in
+                    var uploadRequests: [UploadProperties] = []
+                    for file in files {
+                        do {
+                            // Get data stored in JSON file
+                            let data = try Data(contentsOf: file)
+                            let uploadInfo = try JSONDecoder().decode([String: String].self, from: data)
+                            guard let identifier = uploadInfo["identifier"], identifier.isEmpty == false,
+                                  let fileName = uploadInfo["fileName"], fileName.isEmpty == false
+                            else { continue }
 
-                        // Resolve the source Photo Library asset (unambiguous match only), so its
-                        // original can be deleted after upload. Left nil when it cannot be matched.
-                        if canAccessLibrary {
-                            let mediaURL = DataDirectories.appUploadsDirectory.appendingPathComponent(identifier)
-                            uploadRequest.deleteAssetIdentifier = ShareExtensionAssetMatcher
-                                .localIdentifier(forFileAt: mediaURL, originalFileName: fileName)
+                            // Create upload request
+                            var uploadRequest = UploadProperties(localIdentifier: identifier,
+                                                                 fileName: fileName,
+                                                                 category: destinationAlbumID)
+
+                            // Resolve the source Photo Library asset (unambiguous match only), so its
+                            // original can be deleted after upload. Left nil when it cannot be matched.
+                            if canAccessLibrary {
+                                let mediaURL = DataDirectories.appUploadsDirectory.appendingPathComponent(identifier + kOriginalSuffix)
+                                uploadRequest.deleteAssetIdentifier = await ShareExtensionAssetMatcher
+                                    .localIdentifier(forFileAt: mediaURL, originalFileName: fileName)
+                            }
+                            uploadRequests.append(uploadRequest)
+
+                            // Delete JSON file
+                            try? FileManager.default.removeItem(at: file)
                         }
-                        uploadRequests.append(uploadRequest)
+                        catch {
+                            debugPrint("••> Could not decode upload info: \(error.localizedDescription)")
+                        }
+                    }
 
-                        // Delete JSON file
-                        try? FileManager.default.removeItem(at: file)
-                    }
-                    catch {
-                        debugPrint("••> Could not decode upload info: \(error.localizedDescription)")
-                    }
+                    // Show upload options views
+                    let uploadSwitchSB = UIStoryboard(name: "UploadSwitchViewController", bundle: nil)
+                    guard let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController
+                    else { preconditionFailure("Could not load UploadSwitchViewController") }
+
+                    // Prepare upload options selector
+                    uploadSwitchVC.delegate = nil
+                    uploadSwitchVC.user = albumVC.user
+                    uploadSwitchVC.categoryId = albumVC.categoryId
+                    uploadSwitchVC.categoryCurrentCounter = destinationAlbum.currentCounter
+                    // Offer to delete originals only for photos matched to a Photo Library asset
+                    uploadSwitchVC.canDeleteImages = uploadRequests.contains(where: { $0.deleteAssetIdentifier != nil })
+                    uploadSwitchVC.uploadRequests = uploadRequests
+
+                    // Push upload options view embedded in navigation controller
+                    let uploadNavController = UINavigationController(rootViewController: uploadSwitchVC)
+                    uploadNavController.modalTransitionStyle = .coverVertical
+                    uploadNavController.modalPresentationStyle = .pageSheet
+                    albumVC.navigationController?.present(uploadNavController, animated: true)
                 }
-                
-                // Show upload options views
-                let uploadSwitchSB = UIStoryboard(name: "UploadSwitchViewController", bundle: nil)
-                guard let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController
-                else { preconditionFailure("Could not load UploadSwitchViewController") }
-                
-                // Prepare upload options selector
-                uploadSwitchVC.delegate = nil
-                uploadSwitchVC.user = albumVC.user
-                uploadSwitchVC.categoryId = albumVC.categoryId
-                uploadSwitchVC.categoryCurrentCounter = destinationAlbum.currentCounter
-                // Offer to delete originals only for photos matched to a Photo Library asset
-                uploadSwitchVC.canDeleteImages = uploadRequests.contains(where: { $0.deleteAssetIdentifier != nil })
-                uploadSwitchVC.uploadRequests = uploadRequests
-                
-                // Push upload options view embedded in navigation controller
-                let uploadNavController = UINavigationController(rootViewController: uploadSwitchVC)
-                uploadNavController.modalTransitionStyle = .coverVertical
-                uploadNavController.modalPresentationStyle = .pageSheet
-                albumVC.navigationController?.present(uploadNavController, animated: true)
             }
         }
     }
@@ -762,29 +767,43 @@ extension SceneDelegate: AppLockDelegate {
 /// a match is returned only when exactly one asset qualifies; any ambiguity (no candidate, or more
 /// than one) yields nil and the original is left untouched.
 ///
-/// Only still images are matched. Videos (and any file without readable capture metadata) return
-/// nil, so the "Delete after upload" option simply does not appear for them.
+/// Both still images (ImageIO) and videos (AVFoundation) are matched — photos by EXIF capture date,
+/// videos by duration — plus pixel size and base file name. A file with no readable structural
+/// signal returns nil, so the "Delete after upload" option simply does not appear for it.
 fileprivate enum ShareExtensionAssetMatcher {
 
     private struct Signature {
-        let captureDate: Date
+        let captureDate: Date?      // nil for videos without creation-date metadata
         let pixelWidth: Int
         let pixelHeight: Int
+        let duration: Double        // seconds; 0 for still images
+        let mediaType: PHAssetMediaType
     }
 
-    static func localIdentifier(forFileAt fileURL: URL, originalFileName: String) -> String? {
+    static func localIdentifier(forFileAt fileURL: URL, originalFileName: String) async -> String? {
         // Read a signature (capture date + pixel size) from the shared file
-        guard let signature = imageSignature(forFileAt: fileURL) else { return nil }
+        guard let signature = await readSignature(forFileAt: fileURL, originalFileName: originalFileName) else { return nil }
 
-        // Narrow the search to still images captured around the same time. A wide (±1 day) window
-        // absorbs any time-zone ambiguity in the file's EXIF date; the original file name and pixel
-        // size below make the final decision.
-        let window: TimeInterval = 24 * 60 * 60
+        // Narrow the search with whatever structural signals the file yields, then let the original
+        // base name make the final decision. Photos carry an EXIF capture date; videos may lack a
+        // creation date (e.g. non-camera MP4s) but always expose a duration and track size.
         var predicates: [NSPredicate] = [
-            NSPredicate(format: "mediaType == %d", PHAssetMediaType.image.rawValue),
-            NSPredicate(format: "creationDate >= %@", signature.captureDate.addingTimeInterval(-window) as NSDate),
-            NSPredicate(format: "creationDate <= %@", signature.captureDate.addingTimeInterval(window) as NSDate)
+            NSPredicate(format: "mediaType == %d", signature.mediaType.rawValue)
         ]
+        // Capture date, when available — a wide (±1 day) window absorbs time-zone ambiguity.
+        if let captureDate = signature.captureDate {
+            let window: TimeInterval = 24 * 60 * 60
+            predicates.append(NSPredicate(format: "creationDate >= %@", captureDate.addingTimeInterval(-window) as NSDate))
+            predicates.append(NSPredicate(format: "creationDate <= %@", captureDate.addingTimeInterval(window) as NSDate))
+        }
+        // Video duration — only as a fallback discriminator when there is no capture date. It is a
+        // poor key for slow-motion clips, whose PHAsset presentation duration differs from the
+        // shared file's real-time duration; dated videos are already pinned by date + size + name.
+        if signature.captureDate == nil, signature.duration > 0 {
+            let tolerance = 1.0
+            predicates.append(NSPredicate(format: "duration >= %f AND duration <= %f",
+                                          signature.duration - tolerance, signature.duration + tolerance))
+        }
         // Pixel size is compared unordered: the file's stored dimensions are un-oriented whereas
         // PHAsset reports oriented dimensions, so a portrait photo has them swapped.
         if signature.pixelWidth > 0, signature.pixelHeight > 0 {
@@ -792,6 +811,10 @@ fileprivate enum ShareExtensionAssetMatcher {
                                           signature.pixelWidth, signature.pixelHeight,
                                           signature.pixelHeight, signature.pixelWidth))
         }
+        // Never match on media type + base name alone — require at least one structural signal,
+        // otherwise a destructive deletion could target the wrong asset.
+        guard predicates.count > 1 else { return nil }
+
         let options = PHFetchOptions()
         options.includeHiddenAssets = true
         options.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
@@ -800,8 +823,8 @@ fileprivate enum ShareExtensionAssetMatcher {
         let assets = PHAsset.fetchAssets(with: options)
         var matchedIdentifier: String?
         var isAmbiguous = false
-        // Compare file names WITHOUT extension: the share extension transcodes the original
-        // (e.g. HEIC) to JPEG, so only the base name is preserved ("IMG_1234.heic" → "IMG_1234.jpeg").
+        // Compare file names WITHOUT extension because
+        // only the base name is preserved ("IMG_1234.heic" → "IMG_1234.jpeg").
         let sharedBaseName = (originalFileName as NSString).deletingPathExtension
         assets.enumerateObjects { asset, _, stop in
             guard let name = PHAssetResource.assetResources(for: asset).first?.originalFilename else { return }
@@ -841,7 +864,114 @@ fileprivate enum ShareExtensionAssetMatcher {
             dateString = tiff[kCGImagePropertyTIFFDateTime] as? String
         }
         guard let captureDate = exifDate(from: dateString) else { return nil }
-        return Signature(captureDate: captureDate, pixelWidth: width, pixelHeight: height)
+        return Signature(captureDate: captureDate, pixelWidth: width, pixelHeight: height, duration: 0, mediaType: .image)
+    }
+
+    // Reads a signature from a video's container metadata (creation date + first track size).
+    private static func videoSignature(forFileAt fileURL: URL, originalFileName: String) async -> Signature? {
+        // AVURLAsset infers the container type from the path extension, but the shared file has none
+        // on disk. On iOS 17+ override the MIME type directly; on older systems create a hard link in
+        // the SAME directory (same filesystem, no data copy) carrying the original extension. A symlink
+        // into the app's tmp does NOT work — AVFoundation resolves it to the extensionless real path.
+        let ext = (originalFileName as NSString).pathExtension
+        let asset: AVURLAsset
+        var tempLinkURL: URL?
+        if #available(iOS 17, *) {
+            var options: [String: Any] = [:]
+            if let utType = UTType(filenameExtension: ext), let mimeType = utType.preferredMIMEType {
+                options[AVURLAssetOverrideMIMETypeKey] = mimeType
+            }
+            asset = AVURLAsset(url: fileURL, options: options)
+        } else {
+            var assetURL = fileURL
+            if ext.isEmpty == false {
+                let linkURL = fileURL.deletingLastPathComponent()
+                    .appendingPathComponent("pwgMatch-" + UUID().uuidString).appendingPathExtension(ext)
+                if (try? FileManager.default.linkItem(at: fileURL, to: linkURL)) != nil {
+                    assetURL = linkURL
+                    tempLinkURL = linkURL
+                }
+            }
+            asset = AVURLAsset(url: assetURL)
+        }
+        defer { if let tempLinkURL { try? FileManager.default.removeItem(at: tempLinkURL) } }
+
+        // Capture date: the common `creationDate` convenience is often nil for camera MOVs, so load
+        // and search the QuickTime/common metadata across container formats.
+        let captureDate = await creationDate(of: asset)
+        
+        // Natural (un-oriented) size of the first video track — compared unordered below
+        var width = 0, height = 0
+        if let tracks = try? await asset.loadTracks(withMediaType: .video), let track = tracks.first {
+            let size: CGSize
+            if #available(iOS 16, *) {
+                size = (try? await track.load(.naturalSize)) ?? .zero
+            } else {
+                size = track.naturalSize
+            }
+            width = abs(Int(size.width.rounded()))
+            height = abs(Int(size.height.rounded()))
+        }
+        // Duration — a structural signal that survives Photos' re-export even when the creation
+        // date does not (e.g. non-camera MP4s). Lets us match videos that carry no capture date.
+        var duration = 0.0
+        if #available(iOS 16, *) {
+            duration = (try? await asset.load(.duration)).map(CMTimeGetSeconds) ?? 0
+        } else {
+            duration = CMTimeGetSeconds(asset.duration)
+        }
+        if !duration.isFinite || duration < 0 { duration = 0 }
+
+        // Give up only if the file was unreadable (no date, no duration, no size)
+        guard captureDate != nil || duration > 0 || (width > 0 && height > 0) else { return nil }
+        return Signature(captureDate: captureDate, pixelWidth: width, pixelHeight: height, duration: duration, mediaType: .video)
+    }
+
+    // Loads and searches a video's metadata (across container formats and key spaces) for a
+    // creation date, since the common `creationDate` convenience is frequently absent.
+    private static func creationDate(of asset: AVURLAsset) async -> Date? {
+        let formats: [AVMetadataFormat] = [.quickTimeMetadata, .quickTimeUserData, .isoUserData, .iTunesMetadata]
+        var items: [AVMetadataItem] = []
+        for format in formats {
+            if let loaded = try? await asset.loadMetadata(for: format) {
+                items.append(contentsOf: loaded)
+            }
+        }
+        let creationIDs: [AVMetadataIdentifier] = [
+            .quickTimeMetadataCreationDate, .quickTimeUserDataCreationDate, .commonIdentifierCreationDate
+        ]
+        for identifier in creationIDs {
+            for item in AVMetadataItem.metadataItems(from: items, filteredByIdentifier: identifier) {
+                if let date = date(from: item) { return date }
+            }
+        }
+        // Fallback: any item flagged as a creation date via its common key
+        for item in items where item.commonKey == .commonKeyCreationDate {
+            if let date = date(from: item) { return date }
+        }
+        return nil
+    }
+
+    // Extracts a Date from a (loaded) metadata item, tolerating common QuickTime/ISO string forms.
+    private static func date(from item: AVMetadataItem) -> Date? {
+        if let date = item.dateValue { return date }
+        guard let string = item.stringValue else { return nil }
+        let iso = ISO8601DateFormatter()
+        iso.formatOptions = [.withInternetDateTime]
+        if let date = iso.date(from: string) { return date }
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        for format in ["yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ssZZZZZ", "yyyy:MM:dd HH:mm:ss"] {
+            formatter.dateFormat = format
+            if let date = formatter.date(from: string) { return date }
+        }
+        return nil
+    }
+
+    // Reads a matching signature: still image via ImageIO, else video via AVFoundation.
+    private static func readSignature(forFileAt fileURL: URL, originalFileName: String) async -> Signature? {
+        if let image = imageSignature(forFileAt: fileURL) { return image }
+        return await videoSignature(forFileAt: fileURL, originalFileName: originalFileName)
     }
 
     private static func exifDate(from string: String?) -> Date? {

@@ -442,7 +442,8 @@ final class ShareViewController: UIViewController {
 
                 // Store our own copy for a future upload
                 let identifier = kSharedPrefix + shareDate + suffix + String(index + 1)
-                let fileURL = DataDirectories.appUploadsDirectory.appendingPathComponent(identifier)
+                let fileURL = DataDirectories.appUploadsDirectory
+                    .appendingPathComponent(identifier + kOriginalSuffix)
                 do {
                     try FileManager.default.copyItem(at: url, to: fileURL)
                     self.writeJSONfile(at: fileURL, withIdentifier: identifier, fileName: fileName)

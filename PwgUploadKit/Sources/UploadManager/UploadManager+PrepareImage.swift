@@ -18,21 +18,6 @@ extension UploadManager {
     // See https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/ImageIOGuide/imageio_intro/ikpg_intro.html#//apple_ref/doc/uid/TP40005462-CH201-TPXREF101
     // See https://developer.apple.com/documentation/uniformtypeidentifiers
     
-    // MARK: - Image in Pasteboard
-    func getFilenameForImageInPasteboard(withName fileName: String, extension fileExt: String) throws(PwgKitError) -> String {
-        // Set filename by
-        /// - removing the "Clipboard-" prefix i.e. kClipboardPrefix
-        /// - removing the "SSSS-img-#" suffix i.e. "SSSS%@-#" where %@ is kImageSuffix
-        /// - adding the file extension
-        guard let prefixRange = fileName.range(of: kClipboardPrefix),
-              let suffixRange = fileName.range(of: kImageSuffix)
-        else { throw .missingAsset }
-
-        let filename = String(fileName[prefixRange.upperBound..<suffixRange.lowerBound].dropLast(4)) + ".\(fileExt)"
-        return filename
-    }
-    
-    
     // MARK: - Image in Photo Library
     func writePhotoFromAsset(_ originalAsset: PHAsset, toFile fileURL: URL) async throws(PwgKitError) -> String {
         // Retrieve asset resources

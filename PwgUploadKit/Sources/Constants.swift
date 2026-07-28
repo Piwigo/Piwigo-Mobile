@@ -43,7 +43,7 @@ public let kImageSuffix = "-img-"
 public let kMovieSuffix = "-mov-"
 public let kPdfSuffix = "-pdf-"
 public let kEpsSuffix = "-eps-"
-let kOriginalSuffix = "-original"
+public let kOriginalSuffix = "-original"
 
 // System UTI for Encapsulated PostScript files (no static UTType.eps is provided by the SDK).
 // EPS is uploaded as-is like PDF; there is no in-app renderer, so it is displayed through
