@@ -174,11 +174,11 @@ final class ObjectPreparation : Operation, @unchecked Sendable {
     private func storePasteboardObject(_ data: Data) -> Void {
         // For debugging purposes
 //        let start = CFAbsoluteTimeGetCurrent()
-
+        
         // Set file URL
         let fileURL = DataDirectories.appUploadsDirectory
-            .appendingPathComponent(pbObject.identifier)
-
+            .appendingPathComponent(pbObject.identifier + kOriginalSuffix)
+        
         // Delete file if it already exists (incomplete previous attempt?)
         try? FileManager.default.removeItem(at: fileURL)
 
