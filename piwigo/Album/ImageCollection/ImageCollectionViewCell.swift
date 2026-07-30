@@ -141,19 +141,19 @@ class ImageCollectionViewCell: UICollectionViewCell {
         Task {
             let expectedURL = imageURL
             await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: size, type: .image, atURL: imageURL,
-                                                  fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] cachedImageURL in
-                // Guard against cell reuse
-                guard let self = self, self.imageURL == expectedURL else { return }
-
+                                                  fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self = self] cachedImageURL in
                 // Downsample image in the background
                 let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .image)
                 
-                // Set image
-                DispatchQueue.main.async { [self] in
+                // Set image, guarding against cell reuse on the main actor
+                Task { @MainActor in
+                    guard let self, self.imageURL == expectedURL else { return }
                     self.configImage(cachedImage, withHiddenLabel: true)
                 }
-            } failure: { [self] _ in
-                DispatchQueue.main.async { [self] in
+            } failure: { [weak self = self] _ in
+                Task { @MainActor in
+                    // Guard against cell reuse
+                    guard let self, self.imageURL == expectedURL else { return }
                     self.configImage(pwgImageType.image.placeHolder, withHiddenLabel: false)
                 }
             }

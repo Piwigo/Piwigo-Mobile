@@ -139,20 +139,20 @@ class ExternalDisplayViewController: UIViewController {
             // Download the image of right size for that display
             Task {
                 await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: optimumSize, type: .image, atURL: imageURL,
-                                                      fromServer: serverID, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
-                    DispatchQueue.main.async { [weak self] in
-                        guard let self = self else { return }
+                                                      fromServer: serverID, fileSize: imageData.fileSize) { [weak self = self] fractionCompleted in
+                    Task { @MainActor in
+                        guard let self else { return }
                         self.updateProgressView(with: fractionCompleted)
                     }
-                } completion: { [weak self] cachedImageURL in
-                    DispatchQueue.main.async { [weak self] in
-                        guard let self = self else { return }
+                } completion: { [weak self = self] cachedImageURL in
+                    Task { @MainActor in
+                        guard let self else { return }
                         self.updateProgressView(with: 1.0)
                         self.downsampleHighResPhoto(atURL: cachedImageURL, to: screenSize)
                     }
-                } failure: { [weak self] _ in
-                    DispatchQueue.main.async { [weak self] in
-                        guard let self = self else { return }
+                } failure: { [weak self = self] _ in
+                    Task { @MainActor in
+                        guard let self else { return }
                         let cachedImage = imageData.cachedThumbnail(ofSize: thumbSize) ?? pwgImageType.image.placeHolder
                         self.presentHighResPhoto(cachedImage)
                     }
@@ -289,20 +289,20 @@ class ExternalDisplayViewController: UIViewController {
 
         Task {
             await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: .fullRes, type: .image, atURL: imageURL,
-                                                  fromServer: serverID, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self else { return }
+                                                  fromServer: serverID, fileSize: imageData.fileSize) { [weak self = self] fractionCompleted in
+                Task { @MainActor in
+                    guard let self else { return }
                     self.updateProgressView(with: fractionCompleted)
                 }
-            } completion: { [weak self] cachedImageURL in
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self else { return }
+            } completion: { [weak self = self] cachedImageURL in
+                Task { @MainActor in
+                    guard let self else { return }
                     self.updateProgressView(with: 1.0)
                     self.startAnimation(withFileAt: cachedImageURL)
                 }
-            } failure: { [weak self] _ in
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self else { return }
+            } failure: { [weak self = self] _ in
+                Task { @MainActor in
+                    guard let self else { return }
                     let cachedImage = imageData.cachedThumbnail(ofSize: thumbSize) ?? pwgImageType.image.placeHolder
                     self.presentHighResPhoto(cachedImage)
                 }
@@ -321,7 +321,7 @@ class ExternalDisplayViewController: UIViewController {
         var isFirstFrame = true
         let status = CGAnimateImageAtURLWithBlock(fileURL as CFURL, nil) { [weak self] _, cgImage, stop in
             // Stop the animation when another image, video or PDF file is presented
-            guard let self = self, self.animationGeneration == generation,
+            guard let self, self.animationGeneration == generation,
                   self.imageData?.pwgID == gifID
             else {
                 stop.pointee = true

@@ -128,14 +128,14 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         Task {
             await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: thumbnailSize, type: .image,
                                                   atURL: imageData.url(forMaxSize: thumbnailSize),
-                                                  fromServer: imageData.server?.uuid) { [weak self] cachedImageURL in
-                DispatchQueue.main.async { [weak self] in
+                                                  fromServer: imageData.server?.uuid) { [weak self = self] cachedImageURL in
+                Task { @MainActor in
                     guard let self else { return }
                     self.downsampleImage(atURL: cachedImageURL, to: cellSize)
                 }
             }
-            failure: { [weak self] _ in
-                DispatchQueue.main.async { [weak self] in
+            failure: { [weak self = self] _ in
+                Task { @MainActor in
                     guard let self else { return }
                     self.setThumbnailWithImage(pwgImageType.image.placeHolder)
                 }

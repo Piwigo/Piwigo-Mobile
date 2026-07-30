@@ -175,17 +175,17 @@ class PdfDetailViewController: UIViewController
             if let imageURL = self.imageURL {
                 Task {
                     await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: .fullRes, type: .image, atURL: imageURL,
-                                                          fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
+                                                          fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self = self] fractionCompleted in
                         // Show download progress
-                        DispatchQueue.main.async { [weak self] in
-                            guard let self = self else { return }
+                        Task { @MainActor in
+                            guard let self else { return }
                             self.progressView.progress = fractionCompleted
                             self.pdfDetailDelegate?.updateProgressView(with: fractionCompleted)
                         }
                     }
-                    completion: { [weak self] cachedFileURL in
-                        DispatchQueue.main.async {
-                            guard let self = self else { return }
+                    completion: { [weak self = self] cachedFileURL in
+                        Task { @MainActor in
+                            guard let self else { return }
                             // Hide progress view
                             self.progressView.isHidden = true
                             

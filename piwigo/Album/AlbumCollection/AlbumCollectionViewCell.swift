@@ -63,21 +63,19 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         Task {
             let expectedURL = imageURL
             await ImageDownloader.shared.getImage(withID: albumData?.thumbnailId, ofSize: thumbSize, type: .album,
-                                            atURL: imageURL, fromServer: albumData?.user?.server?.uuid) { [weak self] cachedImageURL in
-                // Guard against cell reuse
-                guard let self = self, self.imageURL == expectedURL else { return }
-                
+                                            atURL: imageURL, fromServer: albumData?.user?.server?.uuid) { [weak self = self] cachedImageURL in
                 // Downsample image in cache
                 let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .album)
                 
-                // Set album thumbnail
-                DispatchQueue.main.async { [self] in
+                // Guard against cell reuse and set album thumbnail
+                Task { @MainActor in
+                    guard let self, self.imageURL == expectedURL else { return }
                     self.albumThumbnail.image = cachedImage
                 }
-            } failure: { [weak self] _ in
+            } failure: { [weak self = self] _ in
                 // Set album thumbnail
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self else { return }
+                Task { @MainActor in
+                    guard let self else { return }
                     self.albumThumbnail.image = pwgImageType.album.placeHolder
                 }
             }

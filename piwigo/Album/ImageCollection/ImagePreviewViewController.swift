@@ -42,13 +42,13 @@ final class ImagePreviewViewController: UIViewController
             if let imageURL = imageData.url(for: previewSize) {
                 Task {
                     await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, type: .image, atURL: imageURL,
-                                                          fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] cachedImageURL in
+                                                          fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self = self] cachedImageURL in
                         // Downsample image in the background
                         let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: viewSize, for: .image)
                         
                         // Set image
-                        DispatchQueue.main.async { [weak self] in
-                            guard let self = self else { return }
+                        Task { @MainActor in
+                            guard let self else { return }
                             self.setImageView(with: cachedImage)
                         }
                     } failure: { _ in }

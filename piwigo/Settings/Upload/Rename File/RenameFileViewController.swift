@@ -315,7 +315,7 @@ class RenameFileViewController: UIViewController {
         // Loop over all unused actions
         for actionType in availableActionTypes {
             alert.addAction(UIAlertAction(title: actionType.name, style: .default, handler: { [weak self] _ in
-                guard let self = self else { return }
+                guard let self else { return }
                 // Add action and corresponding row
                 self.prefixActions.append(RenameAction(type: actionType))
                 let indexPath = IndexPath(row: self.prefixActions.count, section: section)
@@ -329,7 +329,7 @@ class RenameFileViewController: UIViewController {
         
         // Add Cancel option
         alert.addAction(UIAlertAction(title: Localized.dismiss, style: .cancel, handler: { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             self.updatePrefixSettingsAndSection()
         }))
         
@@ -407,7 +407,7 @@ class RenameFileViewController: UIViewController {
         // Loop over all unused actions
         for actionType in availableActionTypes {
             alert.addAction(UIAlertAction(title: actionType.name, style: .default, handler: { [weak self] _ in
-                guard let self = self else { return }
+                guard let self else { return }
                 // Add action and corresponding row
                 self.replaceActions.append(RenameAction(type: actionType))
                 let indexPath = IndexPath(row: self.replaceActions.count, section: section)
@@ -421,7 +421,7 @@ class RenameFileViewController: UIViewController {
         
         // Add Cancel option
         alert.addAction(UIAlertAction(title: Localized.dismiss, style: .cancel, handler: { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             self.updateReplaceSettingsAndSection()
         }))
         
@@ -498,7 +498,7 @@ class RenameFileViewController: UIViewController {
         // Loop over all unused actions
         for actionType in availableActionTypes {
             alert.addAction(UIAlertAction(title: actionType.name, style: .default, handler: { [weak self] _ in
-                guard let self = self else { return }
+                guard let self else { return }
                 // Add action and corresponding row
                 self.suffixActions.append(RenameAction(type: actionType))
                 let indexPath = IndexPath(row: self.suffixActions.count, section: section)
@@ -512,7 +512,7 @@ class RenameFileViewController: UIViewController {
         
         // Add Cancel option
         alert.addAction(UIAlertAction(title: Localized.dismiss, style: .cancel, handler: { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             self.updateSuffixSettingsAndSection()
         }))
         

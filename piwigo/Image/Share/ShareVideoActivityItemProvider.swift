@@ -129,18 +129,18 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         let sema = DispatchSemaphore(value: 0)
         Task {
             await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: .fullRes, type: .album, atURL: imageURL,
-                                                  fromServer: serverID, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
+                                                  fromServer: serverID, fileSize: imageData.fileSize) { [weak self = self] fractionCompleted in
                 // Notify the delegate on the main thread to show how it makes progress.
                 self?.updateProgressView(with: Float((0.75 * fractionCompleted)))
             }
-            completion: { [weak self] fileURL in
-                self?.cachedFileURL = fileURL
+            completion: { [unowned self = self] fileURL in
+                self.cachedFileURL = fileURL
                 sema.signal()
             }
-            failure: { [weak self] error in
+            failure: { [unowned self = self] error in
                 // Will notify the delegate on the main thread that the processing is cancelled
-                self?.alertTitle = String(localized: "shareFailError_title", comment: "Share Fail")
-                self?.alertMessage = String.localizedStringWithFormat(String(localized: "downloadVideoFail_message", comment: "Failed to download video!\n%@"), error.localizedDescription)
+                self.alertTitle = String(localized: "shareFailError_title", comment: "Share Fail")
+                self.alertMessage = String.localizedStringWithFormat(String(localized: "downloadVideoFail_message", comment: "Failed to download video!\n%@"), error.localizedDescription)
                 sema.signal()
             }
         }
