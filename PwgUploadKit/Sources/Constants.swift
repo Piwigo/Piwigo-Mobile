@@ -43,6 +43,7 @@ public let kImageSuffix = "-img-"
 public let kMovieSuffix = "-mov-"
 public let kPdfSuffix = "-pdf-"
 public let kEpsSuffix = "-eps-"
+public let kGifSuffix = "-gif-"
 public let kOriginalSuffix = "-original"
 
 // System UTI for Encapsulated PostScript files (no static UTType.eps is provided by the SDK).

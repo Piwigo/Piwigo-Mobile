@@ -77,6 +77,12 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
         if ServerVars.shared.serverFileTypes.contains("eps") {
             types.append(UTType.eps.identifier)
         }
+        // GIF is already covered by the generic image type above, so this entry does not
+        // widen the item set: it only tells checkPasteboard() that a GIF representation
+        // may be preferred to the other image representations of the same item.
+        if ServerVars.shared.serverFileTypes.contains("gif") {
+            types.append(UTType.gif.identifier)
+        }
         return types
     }()
     

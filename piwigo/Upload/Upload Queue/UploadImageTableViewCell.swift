@@ -92,7 +92,7 @@ class UploadImageTableViewCell: UITableViewCell {
         // => UIPasteboard, share extension, in-app intent: use identifier of type
         /// - "pwgClipboard" is a header telling that the image/video comes from the pasteboard (see kClipboardPrefix)
         /// - "yyyyMMdd-HHmmssSSSS" is the date at which the objects were retrieved
-        /// - "typ" is "-img-", "-mov-" or "-pdf-" depending on the nature of the object (see kImageSuffix, kMovieSuffix, kPdfSuffix)
+        /// - "typ" is "-img-", "-mov-", "-pdf-", "-eps-" or "-gif-" depending on the nature of the object (see kImageSuffix, kMovieSuffix, kPdfSuffix, kEpsSuffix, kGifSuffix)
         /// - "#" is the index of the object in the pasteboard
         if upload.localIdentifier.hasPrefix(kClipboardPrefix) ||
            upload.localIdentifier.hasPrefix(kSharedPrefix) ||
@@ -126,8 +126,9 @@ class UploadImageTableViewCell: UITableViewCell {
         
         // Task depends on file type
         var image: UIImage!
-        if upload.localIdentifier.contains(kImageSuffix) {
-            // Case of a photo
+        if upload.localIdentifier.contains(kImageSuffix) ||
+           upload.localIdentifier.contains(kGifSuffix) {
+            // Case of a photo (the first frame of an animated GIF)
             playIcon.isHidden = true
 
             // Retrieve image data from file stored in the Uploads directory

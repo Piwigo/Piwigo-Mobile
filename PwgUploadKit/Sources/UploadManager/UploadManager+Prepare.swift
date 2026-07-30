@@ -242,6 +242,36 @@ extension UploadManager
             // EPS file format cannot be accepted by the Piwigo server
             throw .unacceptedDataFormat
         }
+        else if uploadData.localIdentifier.contains(kGifSuffix) {
+            // Set file type
+            uploadData.fileType = pwgImageFileType.image.rawValue
+            
+            // Check that the GIF format is accepted by the Piwigo server
+            if ServerVars.shared.serverFileTypes.contains("gif") {
+                // Upload the GIF file as is: only the full resolution file carries the
+                // animation (see Image.isGIF), which any re-encoding would flatten,
+                // so image modifications do not apply.
+                uploadData.creationDate = (fileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+
+                // Rename file according to user's demand from date/time/counter/etc.
+                renamedFile(for: &uploadData)
+
+                // Get MD5 checksum and MIME type, update counter
+                try setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: fileURL)
+                return
+            }
+            
+            // Try to convert image if JPEG format is accepted by Piwigo server
+            /// The animation is lost, but the first frame is better than nothing.
+            if ServerVars.shared.serverFileTypes.contains("jpg") {
+                // Try conversion to JPEG
+                try await convertImage(atURL: fileURL, for: &uploadData)
+                return
+            }
+            
+            // GIF file format cannot be accepted by the Piwigo server
+            throw .unacceptedImageFormat
+        }
         else {
             // Unknown type
             throw .unacceptedDataFormat

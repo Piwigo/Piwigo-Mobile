@@ -112,6 +112,20 @@ final class ObjectPreparation : Operation, @unchecked Sendable {
             // Store EPS data
             storePasteboardObject(epsData)
         }
+        else if pbObject.identifier.contains(kGifSuffix) {
+            // Get GIF data
+            guard let gifData = self.getDataOfPasteboardGif(at: pbObject.itemIndex) else {
+                pbObject.state = .failed
+                return
+            }
+
+            // Update object
+            pbObject.md5Sum = gifData.MD5checksum
+            pbObject.fileName.append(".gif")
+
+            // Store GIF data
+            storePasteboardObject(gifData)
+        }
         else {
             // Get image data and file extension
             guard let (imageData, fileExt) = self.getDataOfPasteboardImage(at: pbObject.itemIndex) else {
@@ -156,6 +170,15 @@ final class ObjectPreparation : Operation, @unchecked Sendable {
             return epsData
         }
         return nil  // Not an EPS document
+    }
+    
+    private func getDataOfPasteboardGif(at index:Int) -> Data? {
+        let indexSet = IndexSet(integer: index)
+        if pbObject.types.contains(UTType.gif.identifier),
+           let gifData = UIPasteboard.general.data(forPasteboardType: UTType.gif.identifier, inItemSet: indexSet)?.first {
+            return gifData
+        }
+        return nil  // Not a GIF image
     }
     
     private func getDataOfPasteboardImage(at index:Int) -> (imageData: Data, fileExt: String)? {

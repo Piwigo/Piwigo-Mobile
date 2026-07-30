@@ -42,7 +42,7 @@ extension PasteboardImagesViewController {
             /// Pasteboard images are identified with identifiers of the type "pwgClipboard-yyyyMMdd-HHmmssSSSS-typ-#" where:
             /// - "pwgClipboard" is a header telling that the image/video comes from the pasteboard (see kClipboardPrefix)
             /// - "yyyyMMdd-HHmmssSSSS" is the date at which the objects were retrieved
-            /// - "typ" is "-img-", "-mov-", "-pdf-" or "-eps-" depending on the nature of the object (see kImageSuffix, kMovieSuffix, kPdfSuffix, kEpsSuffix)
+            /// - "typ" is "-img-", "-mov-", "-pdf-", "-eps-" or "-gif-" depending on the nature of the object (see kImageSuffix, kMovieSuffix, kPdfSuffix, kEpsSuffix, kGifSuffix)
             /// - "#" is the index of the object in the pasteboard
             /// The item set may not start at 0 nor be contiguous (e.g. when the pasteboard
             /// also contains text items), so the matching items are enumerated:
@@ -66,6 +66,14 @@ extension PasteboardImagesViewController {
                 else if pasteboardTypes.contains(UTType.eps.identifier),
                         UIPasteboard.general.contains(pasteboardTypes: [UTType.eps.identifier], inItemSet: indexSet) {
                     identifier += kEpsSuffix + String(idx + 1)
+                }
+                // GIFs before the other image types (only when the server accepts GIF files):
+                // apps often place several representations of the same image in the pasteboard
+                // and the generic image branch below would adopt the first of them, losing the
+                // animation. The GIF file is then uploaded as is, see prepareImageFromFile().
+                else if pasteboardTypes.contains(UTType.gif.identifier),
+                        UIPasteboard.general.contains(pasteboardTypes: [UTType.gif.identifier], inItemSet: indexSet) {
+                    identifier += kGifSuffix + String(idx + 1)
                 }
                 else {
                     identifier += kImageSuffix + String(idx + 1)

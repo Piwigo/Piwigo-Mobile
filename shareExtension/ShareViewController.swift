@@ -349,11 +349,17 @@ final class ShareViewController: UIViewController {
         /// Shared items are identified with identifiers of the type "pwgShared-yyyyMMdd-HHmmssSSSS-typ-####" where:
         /// - "pwgShared" is a header telling that the image/video comes from the share extension (see kSharedPrefix)
         /// - "yyyyMMdd-HHmmssSSSS" is the date at which the items were shared
-        /// - "typ" is "-img-", "-mov-", "-pdf-" or "-eps-" depending on the nature of the object (see kImageSuffix, kMovieSuffix, kPdfSuffix, kEpsSuffix)
+        /// - "typ" is "-img-", "-mov-", "-pdf-", "-eps-" or "-gif-" depending on the nature of the object (see kImageSuffix, kMovieSuffix, kPdfSuffix, kEpsSuffix, kGifSuffix)
         /// - "####" is the index of the object being shared
         var sharedItemCount = 0
         var skippedPdfCount = 0
         var skippedEpsCount = 0
+
+        // File formats accepted by the Piwigo server
+        let serverExts = ServerVars.shared.serverFileTypes
+            .components(separatedBy: ",")
+            .map({ $0.trimmingCharacters(in: .whitespaces).lowercased() })
+
         for (index, provider) in attachments.enumerated() {
             // Stop when the user cancelled the share
             if Task.isCancelled { break }
@@ -386,14 +392,22 @@ final class ShareViewController: UIViewController {
                     sharedItemCount += 1
                 }
             }
+            // GIF before the other image formats (only when the server accepts GIF files):
+            // providers often offer several representations of the same image — e.g. Safari
+            // offers a WebP or PNG rendition besides the animated GIF — and the generic image
+            // branch below would adopt the compatibility rendition, losing the animation.
+            // The GIF file is then uploaded as is, see prepareImageFromFile().
+            else if serverExts.contains("gif"),
+                    provider.hasItemConformingToTypeIdentifier(UTType.gif.identifier) {
+                if await self.getSharedItem(atIndex: index, ofType: .gif, from: provider, on: shareDate) {
+                    sharedItemCount += 1
+                }
+            }
             else if provider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
                 // Request the original HEIC when the server accepts that format (and the provider
                 // offers it), otherwise the system's JPEG compatibility rendition. This delivers
                 // exactly the format the server wants without a redundant transcode — and, with
                 // delete-after-upload, avoids discarding the original for a lossy re-encode.
-                let serverExts = ServerVars.shared.serverFileTypes
-                    .components(separatedBy: ",")
-                    .map({ $0.trimmingCharacters(in: .whitespaces).lowercased() })
                 let serverAcceptsHeic = serverExts.contains("heic") || serverExts.contains("heif")
                 let imageType: UTType = (serverAcceptsHeic &&
                     provider.hasItemConformingToTypeIdentifier(UTType.heic.identifier)) ? .heic : .image
@@ -429,6 +443,8 @@ final class ShareViewController: UIViewController {
                     (suffix, fileExt) = (kPdfSuffix, "pdf")
                 case .eps:
                     (suffix, fileExt) = (kEpsSuffix, "eps")
+                case .gif:
+                    (suffix, fileExt) = (kGifSuffix, "gif")
                 default:
                     (suffix, fileExt) = (kImageSuffix, type.preferredFilenameExtension ?? "jpeg")
                 }

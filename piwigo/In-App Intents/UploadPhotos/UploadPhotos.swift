@@ -118,6 +118,14 @@ struct UploadPhotos: AppIntent {
                     }
                     (suffix, defaultExt) = (kEpsSuffix, "eps")
                 }
+                // GIF before the other image formats: when the server accepts GIF files,
+                // they are uploaded as is because any re-encoding would flatten the
+                // animation (see prepareImageFromFile()). When it does not, they follow
+                // the generic image path, i.e. they are converted to JPEG.
+                else if fileType.conforms(to: .gif) {
+                    let serverAcceptsGif = ServerVars.shared.serverFileTypes.contains("gif")
+                    (suffix, defaultExt) = (serverAcceptsGif ? kGifSuffix : kImageSuffix, "gif")
+                }
                 else {
                     (suffix, defaultExt) = (kImageSuffix, "jpeg")
                 }
