@@ -26,7 +26,7 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
                     Task {
                         await ImageDownloader.shared.getImage(withID: album.thumbnailId, ofSize: thumbSize, type: .album,
                                                               atURL: album.thumbnailUrl as? URL,
-                                                              fromServer: album.user?.server?.uuid) { _ in
+                                                              fromServer: album.user?.server?.uuid, isPrefetch: true) { _ in
                         } failure: { _ in }
                     }
                 } else if let image = try? self.mainContext.existingObject(with: objectID) as? Image {
@@ -34,7 +34,7 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
                     Task {
                         await ImageDownloader.shared.getImage(withID: image.pwgID, ofSize: imageSize, type: .image,
                                                               atURL: image.url(forMaxSize: imageSize),
-                                                              fromServer: image.server?.uuid, fileSize: image.fileSize) { _ in
+                                                              fromServer: image.server?.uuid, fileSize: image.fileSize, isPrefetch: true) { _ in
                         } failure: { _ in }
                     }
                 }

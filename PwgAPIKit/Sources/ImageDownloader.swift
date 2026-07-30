@@ -42,6 +42,7 @@ public actor ImageDownloader {
     // Return image in cache or download it
     public func getImage(withID imageID: Int64?, ofSize imageSize: pwgImageSize, type: pwgImageType,
                          atURL imageURL: URL?, fromServer serverID: String?, fileSize: Int64 = NSURLSessionTransferSizeUnknown,
+                         isPrefetch: Bool = false,
                          progress: ((Float) -> Void)? = nil,
                          completion: @escaping (URL) -> Void,
                          failure: @escaping (PwgKitError) -> Void) {
@@ -85,9 +86,11 @@ public actor ImageDownloader {
         if let download = downloads[imageURL]
         {
             // Refresh handlers so the new visible cell gets the callbacks
-            download.progressHandler = progress
-            download.completionHandler = completion
-            download.failureHandler = failure
+            if isPrefetch == false {
+                download.progressHandler = progress
+                download.completionHandler = completion
+                download.failureHandler = failure
+            }
             
             // Already existing task?
             if let task = download.task {
