@@ -21,15 +21,19 @@ final class ImageDownload: @unchecked Sendable {
     var isCancelled: Bool = false
     var resumeData: Data?
     var progress = Float.zero
-    var progressHandler: ((Float) -> Void)?
-    var failureHandler: ((PwgKitError) -> Void)!
-    var completionHandler: ((URL) -> Void)!
 
-    
+    /// The same image can be requested by several views at the same time, e.g. by an album cell
+    /// and by an image cell when album and image thumbnails have the same size.
+    /// The handlers of all of them are stored so that no view is left waiting for the image.
+    private(set) var progressHandlers: [(Float) -> Void] = []
+    private(set) var failureHandlers: [(PwgKitError) -> Void] = []
+    private(set) var completionHandlers: [(URL) -> Void] = []
+
+
     // MARK: - Initialization
     init(type: pwgImageType, atURL imageURL: URL, fileSize: Int64 = .zero, toCacheAt fileURL: URL,
-         progress: ((Float) -> Void)? = nil, completion: @escaping (URL) -> Void, failure: @escaping (PwgKitError) -> Void) {
-        
+         progress: ((Float) -> Void)? = nil, completion: ((URL) -> Void)? = nil, failure: ((PwgKitError) -> Void)? = nil) {
+
         // Store place holder according to image type
         self.placeHolder = type.placeHolder
         
@@ -38,10 +42,23 @@ final class ImageDownload: @unchecked Sendable {
         self.fileSize = fileSize
         self.fileURL = fileURL
         
-        // Store handlers
-        self.progressHandler = progress
-        self.completionHandler = completion
-        self.failureHandler = failure
+        // Store handlers of the view requesting this image
+        addHandlers(progress: progress, completion: completion, failure: failure)
+    }
+
+
+    // MARK: - Handlers
+    // Adds the handlers of another view requesting this image
+    func addHandlers(progress: ((Float) -> Void)?, completion: ((URL) -> Void)?, failure: ((PwgKitError) -> Void)?) {
+        if let progress {
+            progressHandlers.append(progress)
+        }
+        if let completion {
+            completionHandlers.append(completion)
+        }
+        if let failure {
+            failureHandlers.append(failure)
+        }
     }
     
     deinit {

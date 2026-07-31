@@ -55,6 +55,10 @@ public actor ImageDownloader {
             return
         }
         
+        #if DEBUG
+        ImageDownloader.logger.notice("Get image \(imageID) of size \(imageSize.name)")
+        #endif
+        
         // Determine URL of image in cache
         let cacheDir = DataDirectories.cacheDirectory.appendingPathComponent(serverID)
         let fileURL = cacheDir.appendingPathComponent(imageSize.path)
@@ -62,21 +66,30 @@ public actor ImageDownloader {
         
         // Do we already have this image or video in cache?
         let cachedFileSize = fileURL.fileSize
-//        debugPrint("••> Image \(fileURL.lastPathComponent) of \(cachedFileSize) bytes")
         if cachedFileSize > 0 {
             // We do have an image in cache, but is this the image or expected video?
+            var isExpectedFile = true
             if imageSize == .fullRes {
                 let diff = abs((Double(cachedFileSize) - Double(fileSize)) / Double(fileSize))
 //                debugPrint("••> Image \(fileURL.lastPathComponent): \((diff * 1000).rounded(.awayFromZero)/10)%) retrieved from cache.")
-                if diff < 0.1 {     // i.e. 10%
-                    downloads.removeValue(forKey: imageURL)
-                    complete(with: completion, fileURL: fileURL)
-                    return
+                isExpectedFile = diff < 0.1     // i.e. 10%
+            }
+            if isExpectedFile {
+                #if DEBUG
+                ImageDownloader.logger.notice("Return cached image \(fileURL.lastPathComponent) downloaded from \(imageURL)")
+                #endif
+                // The file may have just been stored in cache by a download whose task
+                // did not complete yet. Its handlers must then be called, not discarded.
+                if let download = downloads[imageURL],
+                   download.task?.state != .running, download.task?.state != .suspended {
+                    if isPrefetch == false {
+                        download.addHandlers(progress: progress, completion: completion, failure: failure)
+                    }
+                    completeDownload(download, for: imageURL)
                 }
-            } else {
-//                debugPrint("••> return cached image \(String(describing: download.fileURL.lastPathComponent)) i.e., downloaded from \(imageURL)")
-                downloads.removeValue(forKey: imageURL)
-                complete(with: completion, fileURL: fileURL)
+                else if isPrefetch == false {
+                    complete(with: completion, fileURL: fileURL)
+                }
                 return
             }
         }
@@ -85,20 +98,21 @@ public actor ImageDownloader {
         let runningDownloads: Int = downloads.values.filter({ $0.task?.state == .running }).count
         if let download = downloads[imageURL]
         {
-            // Refresh handlers so the new visible cell gets the callbacks
+            // Add the handlers of this view so that it also gets the callbacks
             if isPrefetch == false {
-                download.progressHandler = progress
-                download.completionHandler = completion
-                download.failureHandler = failure
+                #if DEBUG
+                ImageDownloader.logger.notice("Add handlers to download of \(fileURL.lastPathComponent)")
+                #endif
+                download.addHandlers(progress: progress, completion: completion, failure: failure)
             }
             
             // Already existing task?
             if let task = download.task {
                 switch task.state {
                 case .running:
-                    download.progressHandler?(download.progress)
+                    progress?(download.progress)
                     return
-                
+
                 case .suspended:
                     guard runningDownloads < maxConcurrentDownloads
                     else { return }
@@ -111,12 +125,13 @@ public actor ImageDownloader {
                     return
                 
                 case .completed:
+                    // The task did complete but the file is not in cache yet (checked above)
+                    // ► the delegate will store it and call the handlers of all views
                     #if DEBUG
-                    ImageDownloader.logger.notice("Delete completed download of \(fileURL.lastPathComponent)")
+                    ImageDownloader.logger.notice("Wait for the completion of the download of \(fileURL.lastPathComponent)")
                     #endif
-                    downloads[imageURL] = nil
                     return
-                
+
                 default:
                     guard runningDownloads < maxConcurrentDownloads
                     else { return }
@@ -265,7 +280,7 @@ public actor ImageDownloader {
         guard let download = downloads[imageURL]
         else { return }
         download.progress = progress
-        download.progressHandler?(progress)
+        download.progressHandlers.forEach { $0(progress) }
     }
     
     func storeAndComplete(tempFile: URL, for imageURL: URL) {
@@ -277,33 +292,48 @@ public actor ImageDownloader {
         }
         storeDownloadedFile(from: tempFile, to: fileURL, forImageURL: imageURL)
         try? FileManager.default.removeItem(at: tempFile)
+//        #if DEBUG
+//        ImageDownloader.logger.notice("Downloaded file of \(download.fileURL.lastPathComponent) stored in cache")
+//        #endif
     }
     
     func completeDownloadIfReady(for imageURL: URL) {
-        guard let download = downloads[imageURL],
-              let fileURL = download.fileURL
+        guard let download = downloads[imageURL]
         else { return }
-        complete(with: download.completionHandler, fileURL: fileURL)
-        downloads.removeValue(forKey: imageURL)
-
-        // Next downloads?
-        launchDownloadsIfAnyAndPossible()
+//        #if DEBUG
+//        ImageDownloader.logger.notice("Download of \(download.fileURL.lastPathComponent) completed")
+//        #endif
+        completeDownload(download, for: imageURL)
     }
     
     func failDownload(for imageURL: URL, error: PwgKitError) {
         guard let download = downloads[imageURL]
         else { return }
         if !download.isCancelled {
-            download.failureHandler?(error)
+            download.failureHandlers.forEach { $0(error) }
         }
         downloads.removeValue(forKey: imageURL)
-        
+
         // Next download?
         launchDownloadsIfAnyAndPossible()
     }
-    
-    
+
+
     // MARK: - Private helpers
+    // Returns the image in cache to every view which did request it
+    private func completeDownload(_ download: ImageDownload, for imageURL: URL) {
+        guard let fileURL = download.fileURL
+        else { return }
+//        #if DEBUG
+//        ImageDownloader.logger.notice("Calling \(download.completionHandlers.count) completion handler(s) for \(fileURL.lastPathComponent)")
+//        #endif
+        download.completionHandlers.forEach { complete(with: $0, fileURL: fileURL) }
+        downloads.removeValue(forKey: imageURL)
+
+        // Next downloads?
+        launchDownloadsIfAnyAndPossible()
+    }
+    
     // Completion handlers may perform heavy work such as image decoding,
     // so they are called outside the actor to avoid serialising all cache checks,
     // downloads and completions behind each decode.
@@ -334,6 +364,9 @@ public actor ImageDownloader {
         for (_, download) in downloads {
             // Max number of tasks reached?
             if runningDownloads >= maxConcurrentDownloads {
+                #if DEBUG
+                ImageDownloader.logger.notice("Max concurrent downloads reached: postpone download of \(download.fileURL.lastPathComponent) (\(runningDownloads)/\(self.maxConcurrentDownloads) running, \(self.downloads.count - runningDownloads) waiting)")
+                #endif
                 break
             }
             
@@ -345,9 +378,9 @@ public actor ImageDownloader {
             if let task = download.task {
                 switch task.state {
                 case .running:
-                    download.progressHandler?(download.progress)
+                    download.progressHandlers.forEach { $0(download.progress) }
                     continue
-                
+
                 case .suspended:
                     #if DEBUG
                     ImageDownloader.logger.notice("Resume suspended download of \(download.fileURL.lastPathComponent) (\(runningDownloads)/\(self.maxConcurrentDownloads) running, \(self.downloads.count - runningDownloads) waiting)")
