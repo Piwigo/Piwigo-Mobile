@@ -34,7 +34,7 @@ extension AlbumViewController {
         // Not all users can select/deselect images
         var children = [UIMenu?]()
         if user.canDownloadImages() || hasFavorites || user.hasUploadRights(forCatID: categoryId) {
-            children = [selectMenu(), sortMenu(), viewOptionsMenu()]
+            children = [selectMenu(enabled: albumData.nbImages != 0), sortMenu(), viewOptionsMenu()]
         } else {
             children = [sortMenu(), viewOptionsMenu()]
         }

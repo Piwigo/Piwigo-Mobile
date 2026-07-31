@@ -73,6 +73,7 @@ extension AlbumViewController: @MainActor NSFetchedResultsControllerDelegate
                 updatedItems.formUnion(Set(currentSnapshot.itemIdentifiers(inSection: sectionID)))
             }
             currentSnapshot.deleteSections(sectionsToRemove)
+            let hadNoImage = updatedItems.isEmpty
             
             // Append new non-empty image sections
             if snapshot.numberOfItems != 0 {
@@ -89,6 +90,19 @@ extension AlbumViewController: @MainActor NSFetchedResultsControllerDelegate
                        let cell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell {
                         cell.config(withImageData: image, size: self.imageSize, sortOption: self.sortOption)
                     }
+                }
+                
+                // Enable Select menu if needed
+                if hadNoImage {
+                    self.updateBarsInPreviewMode()
+                }
+            }
+            else {
+                // Disable Select mode if needed
+                if self.inSelectionMode {
+                    self.inSelectionMode = false
+                    self.initBarsInPreviewMode()
+                    self.setTitleViewFromAlbumData()
                 }
             }
         }
@@ -108,14 +122,8 @@ extension AlbumViewController: @MainActor NSFetchedResultsControllerDelegate
         self.updateNberOfImagesInFooter()
         
         // Show/hide "No album in your Piwigo" (e.g. after clearing the cache)
+        // Do not show "No album in your Piwigo" in Search view
         let hasItems = (categoryId == pwgSmartAlbum.search.rawValue) || (currentSnapshot.numberOfItems != 0)
         noAlbumLabel.isHidden = hasItems
-        
-        // Disable menu if there are no more images
-        if self.categoryId != 0, self.albumData.nbImages == 0 {
-            self.inSelectionMode = false
-            self.initBarsInPreviewMode()
-            self.setTitleViewFromAlbumData()
-        }
     }
 }

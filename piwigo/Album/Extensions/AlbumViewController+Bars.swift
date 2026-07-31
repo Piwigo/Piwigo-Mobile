@@ -112,14 +112,12 @@ extension AlbumViewController
             // Menu for activating the selection mode and changing the way images are sorted
             var children = [sortMenu(), viewOptionsMenu(), settingsMenu()]
             if shareBarButton != nil || favoriteBarButton != nil {
-                children.insert(selectMenu(), at: 0)
+                children.insert(selectMenu(enabled: albumData.nbImages != 0), at: 0)
             }
             let menu = UIMenu(title: "", options: UIMenu.Options.displayInline, children: children.compactMap({$0}))
             selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
             selectBarButton?.accessibilityIdentifier = "select"
-            let hasImages = albumData.nbImages != 0
-            selectBarButton?.isEnabled = hasImages
-
+            
             // User with admin or upload rights can do everything
             // except may be downloading images (i.e. sharing images)
             // User without admin rights cannot set album thumbnails, delete images
@@ -207,7 +205,7 @@ extension AlbumViewController
             // Menu for activating the selection mode and changing the way images are sorted
             var children = [sortMenu(), viewOptionsMenu()]
             if shareBarButton != nil || favoriteBarButton != nil {
-                children.insert(selectMenu(), at: 0)
+                children.insert(selectMenu(enabled: albumData.nbImages != 0), at: 0)
             }
             let menu = UIMenu(title: "", children: children.compactMap({$0}))
             selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
@@ -215,8 +213,6 @@ extension AlbumViewController
             
             // Set right bar buttons
             navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
-            let hasImages = albumData.nbImages != 0
-            selectBarButton?.isEnabled = hasImages
         }
     }
     
@@ -240,11 +236,10 @@ extension AlbumViewController
         // Menu for activating the selection mode or change the way images are sorted
         var children = [sortMenu(), viewOptionsMenu(), settingsMenu()]
         if shareBarButton != nil || favoriteBarButton != nil {
-            children.insert(selectMenu(), at: 0)
+            children.insert(selectMenu(enabled: albumData.nbImages != 0), at: 0)
         }
         let updatedMenu = selectBarButton?.menu?.replacingChildren(children.compactMap({$0}))
         selectBarButton?.menu = updatedMenu
-        selectBarButton?.isEnabled = albumData.nbImages != 0
     }
     
     @MainActor @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Specific to iOS 15 to 18")
@@ -266,11 +261,10 @@ extension AlbumViewController
         // Menu for activating the selection mode or change the way images are sorted
         var children = [sortMenu(), viewOptionsMenu()]
         if shareBarButton != nil || favoriteBarButton != nil {
-            children.insert(selectMenu(), at: 0)
+            children.insert(selectMenu(enabled: albumData.nbImages != 0), at: 0)
         }
         let updatedMenu = selectBarButton?.menu?.replacingChildren(children.compactMap({$0}))
         selectBarButton?.menu = updatedMenu
-        selectBarButton?.isEnabled = albumData.nbImages != 0
     }
     
     

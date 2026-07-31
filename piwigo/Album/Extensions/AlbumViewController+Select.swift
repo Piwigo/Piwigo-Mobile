@@ -30,15 +30,15 @@ extension AlbumViewController
 {
     // MARK: - Select Menu
     /// - for switching to the selection mode
-    func selectMenu() -> UIMenu {
+    func selectMenu(enabled: Bool) -> UIMenu {
         let menuId = UIMenu.Identifier("org.piwigo.images.selectMode")
         let menu = UIMenu(title: "", image: nil, identifier: menuId,
                           options: UIMenu.Options.displayInline,
-                          children: [selectAction()])
+                          children: [selectAction(enabled: enabled)])
         return menu
     }
     
-    private func selectAction() -> UIAction {
+    private func selectAction(enabled: Bool) -> UIAction {
         let actionId = UIAction.Identifier("org.piwigo.images.select")
         let action = UIAction(title: String(localized: "categoryImageList_selectButton", comment: "Select"),
                               image: UIImage(systemName: "checkmark.circle"),
@@ -46,6 +46,7 @@ extension AlbumViewController
             self.didTapSelect()
         })
         action.accessibilityIdentifier = "Select"
+        action.attributes = enabled ? [] : [.disabled]
         return action
     }
     
