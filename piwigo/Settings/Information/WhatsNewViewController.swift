@@ -133,7 +133,7 @@ final class WhatsNewViewController: UIViewController {
                 let bottomOffset = CGPoint( x: 0, y: max(0, height))
                 self.scrollView.setContentOffset(bottomOffset, animated: false)
             }
-            try await Task.sleep(nanoseconds: 300_000_000)
+            try? await Task.sleep(nanoseconds: 300_000_000)
 
             await animate(duration: scrollDuration) {
                 self.scrollView.setContentOffset(.zero, animated: false)
