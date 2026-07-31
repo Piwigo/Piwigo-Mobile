@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24127" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="25094" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="25068"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -23,22 +23,14 @@
                                     <constraint firstAttribute="width" constant="200" id="f1m-NO-YNe"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" verticalCompressionResistancePriority="1000" preservesSuperviewLayoutMargins="YES" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="llV-Zu-BaC">
-                                <rect key="frame" x="20" y="157.5" width="374" height="34"/>
-                                <string key="text">By Spencer Baker, Olaf Greck
- and Eddy Lelièvre-Berna</string>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" preservesSuperviewLayoutMargins="YES" text="Version" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nfp-vL-hrk">
-                                <rect key="frame" x="20" y="194.5" width="374" height="13.5"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" preservesSuperviewLayoutMargins="YES" text="— Version 4.3 (692) —" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nfp-vL-hrk">
+                                <rect key="frame" x="20" y="157.5" width="374" height="14"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" restorationIdentifier="thanks+licenses" preservesSuperviewLayoutMargins="YES" directionalLockEnabled="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" bouncesZoom="NO" editable="NO" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fvr-p8-2JB">
-                                <rect key="frame" x="20" y="216" width="374" height="680"/>
+                                <rect key="frame" x="20" y="179.5" width="374" height="716.5"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" staticText="YES"/>
@@ -53,23 +45,19 @@
                         <viewLayoutGuide key="safeArea" id="Uea-pc-qhv"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="llV-Zu-BaC" firstAttribute="top" secondItem="hzz-Tq-UjI" secondAttribute="bottom" constant="4" id="97Y-B1-Vic"/>
-                            <constraint firstItem="Nfp-vL-hrk" firstAttribute="top" secondItem="llV-Zu-BaC" secondAttribute="bottom" constant="3" id="OKh-1T-BuB"/>
+                            <constraint firstItem="Nfp-vL-hrk" firstAttribute="firstBaseline" secondItem="hzz-Tq-UjI" secondAttribute="baseline" constant="14.5" symbolType="layoutAnchor" id="6St-M3-Ee7"/>
                             <constraint firstItem="fvr-p8-2JB" firstAttribute="top" secondItem="Nfp-vL-hrk" secondAttribute="bottom" constant="8" symbolic="YES" id="Ooh-m8-vGT"/>
                             <constraint firstItem="hzz-Tq-UjI" firstAttribute="centerX" secondItem="Uea-pc-qhv" secondAttribute="centerX" id="UtD-6v-F9o"/>
                             <constraint firstItem="Nfp-vL-hrk" firstAttribute="leading" secondItem="Uea-pc-qhv" secondAttribute="leading" constant="20" id="Vdu-hJ-QA5"/>
                             <constraint firstItem="hzz-Tq-UjI" firstAttribute="top" secondItem="Uea-pc-qhv" secondAttribute="top" constant="8" id="avm-ov-j4g"/>
                             <constraint firstItem="fvr-p8-2JB" firstAttribute="bottom" secondItem="oEC-Mb-WXU" secondAttribute="bottom" id="eQL-cY-JEa"/>
                             <constraint firstItem="Uea-pc-qhv" firstAttribute="trailing" secondItem="fvr-p8-2JB" secondAttribute="trailing" constant="20" id="gZC-28-R5k"/>
-                            <constraint firstItem="Uea-pc-qhv" firstAttribute="trailing" secondItem="llV-Zu-BaC" secondAttribute="trailing" constant="20" id="iRU-fp-AJe"/>
                             <constraint firstItem="fvr-p8-2JB" firstAttribute="leading" secondItem="Uea-pc-qhv" secondAttribute="leading" constant="20" id="or5-U0-CuL"/>
                             <constraint firstItem="Uea-pc-qhv" firstAttribute="trailing" secondItem="Nfp-vL-hrk" secondAttribute="trailing" constant="20" id="tZD-kM-bvg"/>
-                            <constraint firstItem="llV-Zu-BaC" firstAttribute="leading" secondItem="Uea-pc-qhv" secondAttribute="leading" constant="20" id="zSz-WW-lYW"/>
                         </constraints>
                     </view>
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
-                        <outlet property="authorsLabel" destination="llV-Zu-BaC" id="8x8-7E-0bf"/>
                         <outlet property="piwigoLogo" destination="hzz-Tq-UjI" id="2Is-HV-eNS"/>
                         <outlet property="textView" destination="fvr-p8-2JB" id="vSS-KV-1ys"/>
                         <outlet property="versionLabel" destination="Nfp-vL-hrk" id="Cp5-bq-zqS"/>

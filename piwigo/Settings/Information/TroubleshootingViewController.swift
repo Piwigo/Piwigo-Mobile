@@ -18,7 +18,6 @@ import PwgUIKit
 class TroubleshootingViewController: UIViewController {
     
     @IBOutlet private weak var piwigoLogo: UIImageView!
-    @IBOutlet private weak var authorsLabel: UILabel!
     @IBOutlet private weak var versionLabel: UILabel!
     @IBOutlet private weak var tableView: UITableView!
     
@@ -59,7 +58,6 @@ class TroubleshootingViewController: UIViewController {
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
 
         // Text color depdending on background color
-        authorsLabel?.textColor = PwgColor.text
         versionLabel?.textColor = PwgColor.text
         
         // Table view
@@ -72,7 +70,6 @@ class TroubleshootingViewController: UIViewController {
         super.viewWillAppear(animated)
         
         // Piwigo authors and app version
-        authorsLabel?.text = SettingsUtilities.getAuthors(forView: view)
         versionLabel?.text = SettingsUtilities.getAppVersion()
         
         // Set colors, fonts, etc.
@@ -94,16 +91,6 @@ class TroubleshootingViewController: UIViewController {
             navigationController?.showHUD(withTitle: Localized.loading,
                 detail: String(localized: "settings_logs", comment: "Logs"), minWidth: 200)
         }
-    }
-    
-    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        
-        // Update Piwigo authors label
-        coordinator.animate(alongsideTransition: { [self] _ in
-            // Piwigo authors
-            self.authorsLabel?.text = SettingsUtilities.getAuthors(forView: self.view)
-        }, completion: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {

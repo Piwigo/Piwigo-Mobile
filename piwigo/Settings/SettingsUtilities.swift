@@ -16,24 +16,6 @@ import PwgUIKit
 
 struct SettingsUtilities
 {
-    // Return the author names for different devices and orientations
-    static func getAuthors(forView view: UIView) -> String {
-        // Piwigo authors
-        let authors1 = NSLocalizedString("authors1", tableName: "About", bundle: Bundle.main, value: "", comment: "By Spencer Baker, Olaf Greck,")
-        let authors2 = NSLocalizedString("authors2", tableName: "About", bundle: Bundle.main, value: "", comment: "and Eddy Lelièvre-Berna")
-        
-        // Change label according to orientation
-        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-        if (view.traitCollection.userInterfaceIdiom == .phone) && orientation.isPortrait {
-            // iPhone in portrait mode
-            return "\(authors1)\r\(authors2)"
-        }
-        else {
-            // iPhone in landscape mode, iPad in any orientation
-            return "\(authors1) \(authors2)"
-        }
-    }
-    
     // Return the version and build number
     static func getAppVersion() -> String {
         let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String

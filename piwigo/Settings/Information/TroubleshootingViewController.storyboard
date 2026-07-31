@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="25087" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="25094" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="25063.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="25068"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -25,13 +25,13 @@
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" preservesSuperviewLayoutMargins="YES" text="— Version 4.3 (692) —" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VKa-FU-aH2">
-                                <rect key="frame" x="20" y="175.66666666666666" width="353" height="13.333333333333343"/>
+                                <rect key="frame" x="20" y="180" width="353" height="13.333333333333343"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="errorLogs" alwaysBounceVertical="YES" dataMode="prototypes" style="insetGrouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="lw7-Yz-mXF">
-                                <rect key="frame" x="0.0" y="189" width="393" height="663"/>
+                                <rect key="frame" x="0.0" y="193.33333333333331" width="393" height="658.66666666666674"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <prototypes>
@@ -73,8 +73,8 @@
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="lw7-Yz-mXF" secondAttribute="trailing" id="E4X-jc-wd2"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="VKa-FU-aH2" secondAttribute="trailing" constant="20" id="OSC-Oh-c4u"/>
                             <constraint firstItem="VKa-FU-aH2" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="20" id="Y4N-g4-tfu"/>
+                            <constraint firstItem="VKa-FU-aH2" firstAttribute="firstBaseline" secondItem="LXi-x4-8LH" secondAttribute="baseline" constant="14.666666666666666" symbolType="layoutAnchor" id="gHX-cG-Iz4"/>
                             <constraint firstAttribute="bottom" secondItem="lw7-Yz-mXF" secondAttribute="bottom" id="hmA-zA-6vg"/>
-                            <constraint firstItem="VKa-FU-aH2" firstAttribute="top" secondItem="LXi-x4-8LH" secondAttribute="bottom" id="mv3-og-eH0"/>
                             <constraint firstItem="lw7-Yz-mXF" firstAttribute="top" secondItem="VKa-FU-aH2" secondAttribute="bottom" id="nxb-NN-kNr"/>
                             <constraint firstItem="LXi-x4-8LH" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="8" id="oQG-Gq-li8"/>
                             <constraint firstItem="LXi-x4-8LH" firstAttribute="centerX" secondItem="vDu-zF-Fre" secondAttribute="centerX" id="yew-o3-xiT"/>
