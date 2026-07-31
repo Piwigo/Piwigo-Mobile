@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24901" systemVersion="25E253" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="DataModel">
     <entity name="Album" representedClassName="Album" syncable="YES">
-        <attribute name="comment" attributeType="Transformable" valueTransformerName="DescriptionValueTransformer" customClassName=".NSAttributedString"/>
-        <attribute name="commentHTML" attributeType="Transformable" valueTransformerName="DescriptionValueTransformer" customClassName=".NSAttributedString"/>
+        <attribute name="comment" attributeType="Transformable" valueTransformerName="DescriptionValueTransformer" customClassName="NSAttributedString"/>
+        <attribute name="commentHTML" attributeType="Transformable" valueTransformerName="DescriptionValueTransformer" customClassName="NSAttributedString"/>
         <attribute name="commentStr" attributeType="String" defaultValueString=""/>
         <attribute name="currentCounter" attributeType="Integer 64" defaultValueString="-1" usesScalarValueType="YES"/>
         <attribute name="dateGetImages" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="YES"/>
@@ -16,7 +16,7 @@
         <attribute name="pwgID" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="query" attributeType="String" defaultValueString=""/>
         <attribute name="thumbnailId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="thumbnailUrl" optional="YES" attributeType="Transformable" valueTransformerName="RelativeURLValueTransformer" customClassName=".NSURL"/>
+        <attribute name="thumbnailUrl" optional="YES" attributeType="Transformable" valueTransformerName="RelativeURLValueTransformer" customClassName="NSURL"/>
         <attribute name="totalNbImages" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="upperIds" attributeType="String" defaultValueString="" customClassName=".Set&lt;Int&gt;"/>
         <attribute name="uuid" attributeType="String" defaultValueString=""/>
@@ -30,17 +30,17 @@
     </entity>
     <entity name="Image" representedClassName="Image" syncable="YES">
         <attribute name="author" attributeType="String" defaultValueString=""/>
-        <attribute name="comment" attributeType="Transformable" valueTransformerName="DescriptionValueTransformer" defaultValueString="" customClassName=".NSAttributedString"/>
+        <attribute name="comment" attributeType="Transformable" valueTransformerName="DescriptionValueTransformer" defaultValueString="" customClassName="NSAttributedString"/>
         <attribute name="commentHTML" attributeType="Transformable" valueTransformerName="DescriptionValueTransformer" allowsCloudEncryption="YES" customClassName="NSAttributedString"/>
         <attribute name="commentStr" attributeType="String" defaultValueString=""/>
         <attribute name="dateCreated" attributeType="Date" defaultDateTimeInterval="-3187296561" usesScalarValueType="YES"/>
         <attribute name="dateGetInfos" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="YES"/>
         <attribute name="datePosted" attributeType="Date" defaultDateTimeInterval="-3187296561" usesScalarValueType="YES"/>
-        <attribute name="downloadUrl" optional="YES" attributeType="Transformable" valueTransformerName="RelativeURLValueTransformer" customClassName=".NSURL"/>
+        <attribute name="downloadUrl" optional="YES" attributeType="Transformable" valueTransformerName="RelativeURLValueTransformer" customClassName="NSURL"/>
         <attribute name="fileName" attributeType="String" defaultValueString=""/>
         <attribute name="fileSize" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="fileType" attributeType="Integer 16" defaultValueString="NO" usesScalarValueType="YES"/>
-        <attribute name="fullRes" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
+        <attribute name="fullRes" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName="Resolution"/>
         <attribute name="latitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="longitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="md5sum" attributeType="String" defaultValueString=""/>
@@ -55,7 +55,7 @@
         <attribute name="sectionMonthPosted" optional="YES" transient="YES" attributeType="String"/>
         <attribute name="sectionWeekCreated" optional="YES" transient="YES" attributeType="String"/>
         <attribute name="sectionWeekPosted" optional="YES" transient="YES" attributeType="String"/>
-        <attribute name="title" attributeType="Transformable" valueTransformerName="DescriptionValueTransformer" defaultValueString="" customClassName=".NSAttributedString"/>
+        <attribute name="title" attributeType="Transformable" valueTransformerName="DescriptionValueTransformer" defaultValueString="" customClassName="NSAttributedString"/>
         <attribute name="titleStr" attributeType="String" defaultValueString=""/>
         <attribute name="uuid" attributeType="String" defaultValueString=""/>
         <attribute name="visits" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
@@ -94,15 +94,15 @@
         </uniquenessConstraints>
     </entity>
     <entity name="Sizes" representedClassName="Sizes" syncable="YES">
-        <attribute name="large" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
-        <attribute name="medium" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
-        <attribute name="small" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
-        <attribute name="square" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
-        <attribute name="thumb" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
-        <attribute name="xlarge" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
-        <attribute name="xsmall" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
-        <attribute name="xxlarge" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
-        <attribute name="xxsmall" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
+        <attribute name="large" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName="Resolution"/>
+        <attribute name="medium" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName="Resolution"/>
+        <attribute name="small" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName="Resolution"/>
+        <attribute name="square" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName="Resolution"/>
+        <attribute name="thumb" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName="Resolution"/>
+        <attribute name="xlarge" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName="Resolution"/>
+        <attribute name="xsmall" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName="Resolution"/>
+        <attribute name="xxlarge" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName="Resolution"/>
+        <attribute name="xxsmall" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName="Resolution"/>
         <relationship name="image" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Image" inverseName="sizes" inverseEntity="Image"/>
     </entity>
     <entity name="Tag" representedClassName="Tag" syncable="YES">
