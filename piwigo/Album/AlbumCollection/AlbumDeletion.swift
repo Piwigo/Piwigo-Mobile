@@ -190,7 +190,7 @@ final class AlbumDeletion: NSObject
         
         // Delete the category
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
                 try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
@@ -237,7 +237,7 @@ final class AlbumDeletion: NSObject
                     }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run { [self] in
                     self.topViewController.hideHUD { [self] in
                         // Display error alert after fetching album data

@@ -180,7 +180,7 @@ extension AlbumViewController
 
         // Send requests to Piwigo server
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
                 try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
@@ -206,7 +206,7 @@ extension AlbumViewController
                     removeImages(imagesToRemove, andThenDelete:toDelete, total: total)
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run { [self] in
                     self.removeImages(imagesToRemove, andThenDelete: toDelete, total: total, error: error)
                 }
@@ -261,7 +261,7 @@ extension AlbumViewController
         let albumID = albumData.pwgID
         let imageIDs = toRemove.map({ $0.pwgID })
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
                 try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
@@ -281,7 +281,7 @@ extension AlbumViewController
                     self.deleteImages(toDelete)
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 self.dissociateImagesError(error)
             }
         }
@@ -324,7 +324,7 @@ extension AlbumViewController
 
         // Let's delete all images at once
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
                 try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
@@ -367,7 +367,7 @@ extension AlbumViewController
                     }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 self.deleteImagesError(error)
             }
         }

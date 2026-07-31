@@ -31,7 +31,7 @@ extension SelectCategoryViewController
         
         // Send requests to Piwigo server
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
                 try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
@@ -64,7 +64,7 @@ extension SelectCategoryViewController
                     self.copyImages(toAlbum: albumData)
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 self.didFailWithError(error)
             }
         }
@@ -76,7 +76,7 @@ extension SelectCategoryViewController
         let albumID = albumData.pwgID
         let imageIDs = self.inputImages.map({ $0.pwgID })
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
                 try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
@@ -110,7 +110,7 @@ extension SelectCategoryViewController
                     }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run {
                     self.didFailWithError(error)
                 }
@@ -159,7 +159,7 @@ extension SelectCategoryViewController
         
         // Move next image to seleted album
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Append selected category ID to image category list
                 let albums = imageData.albums ?? Set<Album>()
                 var categoryIds = albums.compactMap({$0.pwgID})
@@ -206,7 +206,7 @@ extension SelectCategoryViewController
                     self.moveImages(toAlbum: albumData)
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 self.didFailWithError(error)
             }
         }
@@ -219,7 +219,7 @@ extension SelectCategoryViewController
         let imageIDs = self.inputImages.map({ $0.pwgID })
         // Send requests to Piwigo server
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
                 try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
@@ -239,7 +239,7 @@ extension SelectCategoryViewController
                     self.didMoveImagesWithSuccess()
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run {
                     self.didFailWithError(error)
                 }

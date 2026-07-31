@@ -161,7 +161,7 @@ class TagSelectorViewController: UIViewController {
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
         Task.detached {
-            do {
+            do throws(PwgKitError) {
                 // Check session
                 try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID,
                                                         lastConnected: self.user.lastUsed)
@@ -176,7 +176,7 @@ class TagSelectorViewController: UIViewController {
                     self.navigationController?.hideHUD { }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run { [self] in
                     // Session logout required?
                     if error.requiresLogout {

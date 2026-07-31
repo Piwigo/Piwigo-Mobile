@@ -64,7 +64,7 @@ extension TagsViewController
 
         // Add new tag
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
                 try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
@@ -81,7 +81,7 @@ extension TagsViewController
                     }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run {
                     self.hideHUD {
                         self.dismissPiwigoError(

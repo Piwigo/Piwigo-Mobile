@@ -119,7 +119,7 @@ public final class ImageProvider {
     private let batchSize = 25
     public func importImages(_ imageArray: [ImageGetInfo],
                              inAlbum albumId: Int32, withAlbumUpdate: Bool = false,
-                             sort: pwgImageSort, fromRank rank: Int64 = Int64.min) throws {
+                             sort: pwgImageSort, fromRank rank: Int64 = Int64.min) throws(PwgKitError) {
         // We shall perform at least one import in case where
         // the user did delete all images
         guard imageArray.isEmpty == false
@@ -167,7 +167,7 @@ public final class ImageProvider {
      */
     private func importOneBatch(_ imagesBatch: [ImageGetInfo],
                                 inAlbum albumId: Int32, withAlbumUpdate: Bool = false,
-                                sort: pwgImageSort, fromRank startRank: Int64 = Int64.min) throws {
+                                sort: pwgImageSort, fromRank startRank: Int64 = Int64.min) throws(PwgKitError) {
         
         // Get current user object (will create server and user objects if needed)
         let bckgContext = DataController.shared.newTaskContext()
@@ -198,104 +198,109 @@ public final class ImageProvider {
         
         // Runs on the URLSession's delegate queue
         // so it won’t block the main thread.
-        try bckgContext.performAndWait {
-            
-            // Create a fetched results controller and set its fetch request, context, and delegate.
-            let imageIds = Set(imagesBatch.compactMap({$0.id}))
-            let fetchRequest = fetchRequestOfImage(inContext: bckgContext, withIds: imageIds)
-            
-            // Loop over new images
-            let cachedImages:[Image] = try bckgContext.fetch(fetchRequest)
-            var rank = startRank
-            for imageData in imagesBatch {
+        do {
+            try bckgContext.performAndWait { () throws -> Void in
                 
-                // Stop importing images if user cancelled the search
-                if userDidCancelSearch {
-                    break
-                }
+                // Create a fetched results controller and set its fetch request, context, and delegate.
+                let imageIds = Set(imagesBatch.compactMap({$0.id}))
+                let fetchRequest = fetchRequestOfImage(inContext: bckgContext, withIds: imageIds)
                 
-                // Check that this image belongs at least to the current album
-                var albums: Set<Album> = [album]
-                if let albumIds = imageData.categories?.compactMap({$0.id}),
-                   let allAlbums = user.albums?.filter({albumIds.contains($0.pwgID)}) {
-                    albums.formUnion(allAlbums)
-                }
-                
-                // Check whether this image is a favorite
-                /// (available since version 13.0.0 of the Piwigo server)
-                if let favAlbum = favAlbum, let isFavorite = imageData.isFavorite, isFavorite {
-                    albums.insert(favAlbum)
-                }
-                
-                // Rank of image in album
-                rank = startRank == Int64.min ? Int64.min : rank + 1
-                
-                // Index of this new image in cache
-                guard let ID = imageData.id else { continue }
-                if let index = cachedImages.firstIndex(where: { $0.pwgID == ID }) {
-                    // Update the image's properties using the raw data
-                    do {
-                        // The current user will be added so that we know which images
-                        // are accessible to that user.
-                        try cachedImages[index].update(with: imageData,
-                                                       sort: sort, rank: rank,
-                                                       user: user, albums: albums)
-                    }
-                    catch let error as PwgKitError {
-                        // Could not perform the update
-                        throw error
-                    }
-                    catch let error {
-                        throw PwgKitError.otherError(innerError: error)
-                    }
-                }
-                else {
-                    // Create a Sizes managed object on the private queue context.
-                    let sizes = Sizes(context: bckgContext)
+                // Loop over new images
+                let cachedImages:[Image] = try bckgContext.fetch(fetchRequest)
+                var rank = startRank
+                for imageData in imagesBatch {
                     
-                    // Create an Image managed object on the private queue context.
-                    let image = Image(context: bckgContext)
+                    // Stop importing images if user cancelled the search
+                    if userDidCancelSearch {
+                        break
+                    }
                     
-                    // Populate the Image's properties using the raw data.
-                    image.sizes = sizes
-                    do {
-                        try image.update(with: imageData,
-                                         sort:sort, rank: rank,
-                                         user: user, albums: albums)
-                        
-                        // Update album data if asked
-                        if withAlbumUpdate {
-                            // Add image to cached albums
-                            try albums.forEach { album in
-                                try AlbumProvider().updateAlbums(addingImages: 1, toAlbum: album,
-                                                                 inContext: bckgContext)
-                            }
+                    // Check that this image belongs at least to the current album
+                    var albums: Set<Album> = [album]
+                    if let albumIds = imageData.categories?.compactMap({$0.id}),
+                       let allAlbums = user.albums?.filter({albumIds.contains($0.pwgID)}) {
+                        albums.formUnion(allAlbums)
+                    }
+                    
+                    // Check whether this image is a favorite
+                    /// (available since version 13.0.0 of the Piwigo server)
+                    if let favAlbum = favAlbum, let isFavorite = imageData.isFavorite, isFavorite {
+                        albums.insert(favAlbum)
+                    }
+                    
+                    // Rank of image in album
+                    rank = startRank == Int64.min ? Int64.min : rank + 1
+                    
+                    // Index of this new image in cache
+                    guard let ID = imageData.id else { continue }
+                    if let index = cachedImages.firstIndex(where: { $0.pwgID == ID }) {
+                        // Update the image's properties using the raw data
+                        do {
+                            // The current user will be added so that we know which images
+                            // are accessible to that user.
+                            try cachedImages[index].update(with: imageData,
+                                                           sort: sort, rank: rank,
+                                                           user: user, albums: albums)
+                        }
+                        catch let error as PwgKitError {
+                            // Could not perform the update
+                            throw error
+                        }
+                        catch let error {
+                            throw PwgKitError.otherError(innerError: error)
                         }
                     }
-                    catch let error as PwgKitError {
-                        // Delete invalid Image from the private queue context.
-                        bckgContext.delete(image)
-                        throw error
-                    }
-                    catch {
-                        // Delete invalid Image from the private queue context.
-                        bckgContext.delete(image)
-                        throw PwgKitError.otherError(innerError: error)
+                    else {
+                        // Create a Sizes managed object on the private queue context.
+                        let sizes = Sizes(context: bckgContext)
+                        
+                        // Create an Image managed object on the private queue context.
+                        let image = Image(context: bckgContext)
+                        
+                        // Populate the Image's properties using the raw data.
+                        image.sizes = sizes
+                        do {
+                            try image.update(with: imageData,
+                                             sort:sort, rank: rank,
+                                             user: user, albums: albums)
+                            
+                            // Update album data if asked
+                            if withAlbumUpdate {
+                                // Add image to cached albums
+                                try albums.forEach { album in
+                                    try AlbumProvider().updateAlbums(addingImages: 1, toAlbum: album,
+                                                                     inContext: bckgContext)
+                                }
+                            }
+                        }
+                        catch let error as PwgKitError {
+                            // Delete invalid Image from the private queue context.
+                            bckgContext.delete(image)
+                            throw error
+                        }
+                        catch {
+                            // Delete invalid Image from the private queue context.
+                            bckgContext.delete(image)
+                            throw PwgKitError.otherError(innerError: error)
+                        }
                     }
                 }
-            }
-            
-            // Save all insertions from the context to the store.
-            bckgContext.saveIfNeeded()
-
-            // Reset the taskContext to free the cache and lower the memory footprint.
-            bckgContext.reset()
-
-            // Save cached data in the main thread
-            Task { @MainActor in
-                DataController.shared.mainContext.saveIfNeeded()
+                
+                // Save all insertions from the context to the store.
+                bckgContext.saveIfNeeded()
+                
+                // Reset the taskContext to free the cache and lower the memory footprint.
+                bckgContext.reset()
+                
+                // Save cached data in the main thread
+                Task { @MainActor in
+                    DataController.shared.mainContext.saveIfNeeded()
+                }
             }
         }
+        catch let error as PwgKitError { throw error }
+        catch let error as NSError { throw PwgKitError.CoreDataError(innerError: error)}
+        catch let error { throw PwgKitError.otherError(innerError: error) }
     }
     
     

@@ -26,7 +26,7 @@ extension SelectCategoryViewController
 
         // Move album
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
                 try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
@@ -59,7 +59,7 @@ extension SelectCategoryViewController
                     }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run {
                     self.hideHUD { [self] in
                         self.showError(error)
@@ -80,7 +80,7 @@ extension SelectCategoryViewController
         
         // Set image as representative
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
                 try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
@@ -105,7 +105,7 @@ extension SelectCategoryViewController
                     }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run { [self] in
                     self.showError(error)
                 }

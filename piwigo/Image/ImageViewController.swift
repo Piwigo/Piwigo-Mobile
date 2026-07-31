@@ -305,7 +305,7 @@ class ImageViewController: UIViewController {
         // Retrieve image/video infos
         let imageID = imageData.pwgID
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
                 try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
@@ -376,7 +376,7 @@ class ImageViewController: UIViewController {
                     }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run {
                     // Display error only when image data is incomplete
                     if isIncomplete {
@@ -407,14 +407,14 @@ class ImageViewController: UIViewController {
         else { return }
         
         Task.detached {
-            do {
+            do throws(PwgKitError) {
                 // Check session
                 try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID, lastConnected: self.user.lastUsed)
                 
                 // Update server statistics
                 try await JSONManager.shared.logVisitOfImage(withID: imageID, asDownload: asDownload)
             }
-            catch let error as PwgKitError {
+            catch {
                 // Statistics not updated ► No error reported
                 await MainActor.run {
                     if error.requiresLogout {

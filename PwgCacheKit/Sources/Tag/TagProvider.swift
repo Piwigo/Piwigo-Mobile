@@ -21,7 +21,7 @@ public final class TagProvider {
      processing the record in batches to avoid a high memory footprint.
     */
     private let batchSize = 256
-    public func importTags(from tagPropertiesArray: [TagGetInfo], asAdmin: Bool) throws {
+    public func importTags(from tagPropertiesArray: [TagGetInfo], asAdmin: Bool) throws(PwgKitError) {
         // We keep IDs of tags to delete
         // Initialised and then updated at each iteration
         var tagToDeleteIDs: Set<Int32>? = nil
@@ -69,102 +69,94 @@ public final class TagProvider {
      tagIDs is nil or contains the IDs of tags to delete.
     */
     public func importOneBatch(_ tagsBatch: [TagGetInfo], asAdmin: Bool,
-                               tagIDs: Set<Int32>?) throws -> Set<Int32> {
+                               tagIDs: Set<Int32>?) throws(PwgKitError) -> Set<Int32> {
 
         var tagToDeleteIDs = Set<Int32>()
 
         // Runs on the URLSession's delegate queue
         // so it won’t block the main thread.
-        let bckgContext = DataController.shared.newTaskContext()
-        try bckgContext.performAndWait {
-            
-            // Get current server object
-            guard let server = try ServerProvider().getServer(inContext: bckgContext) else {
-                debugPrint(PwgKitError.tagCreationError.localizedDescription)
-                return
-            }
-            
-            // Retrieve tags in persistent store
-            let fetchRequest = Tag.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagName), ascending: true,
-                                             selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
-
-            // Look for tags belonging to the currently active server
-            fetchRequest.predicate = NSPredicate(format: "server.path == %@", server.path)
-            fetchRequest.returnsObjectsAsFaults = false
-            fetchRequest.shouldRefreshRefetchedObjects = true
-            
-            // Perform the fetch.
-            let cachedTags:[Tag] = try bckgContext.fetch(fetchRequest)
-
-            // Initialise set of tag IDs during the first iteration
-            if tagIDs == nil {
-                // Store IDs of present list of tags
-                tagToDeleteIDs = Set(cachedTags.map({$0.tagId}))
-            } else {
-                // Resume IDs of tags to delete
-                tagToDeleteIDs = tagIDs ?? Set<Int32>()
-            }
-            
-            // Loop over new tags
-            for tagData in tagsBatch {
-            
-                // Index of this new tag in cache
-                guard let ID = tagData.id?.int32Value else { continue }
-                if let index = cachedTags.firstIndex(where: { $0.tagId == ID }) {
-                    // Update the tag's properties using the raw data
-                    do {
+        do {
+            let bckgContext = DataController.shared.newTaskContext()
+            try bckgContext.performAndWait {
+                
+                // Get current server object
+                guard let server = try ServerProvider().getServer(inContext: bckgContext) else {
+                    debugPrint(PwgKitError.tagCreationError.localizedDescription)
+                    return
+                }
+                
+                // Retrieve tags in persistent store
+                let fetchRequest = Tag.fetchRequest()
+                fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagName), ascending: true,
+                                                                 selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
+                
+                // Look for tags belonging to the currently active server
+                fetchRequest.predicate = NSPredicate(format: "server.path == %@", server.path)
+                fetchRequest.returnsObjectsAsFaults = false
+                fetchRequest.shouldRefreshRefetchedObjects = true
+                
+                // Perform the fetch.
+                let cachedTags:[Tag] = try bckgContext.fetch(fetchRequest)
+                
+                // Initialise set of tag IDs during the first iteration
+                if tagIDs == nil {
+                    // Store IDs of present list of tags
+                    tagToDeleteIDs = Set(cachedTags.map({$0.tagId}))
+                } else {
+                    // Resume IDs of tags to delete
+                    tagToDeleteIDs = tagIDs ?? Set<Int32>()
+                }
+                
+                // Loop over new tags
+                for tagData in tagsBatch {
+                    
+                    // Index of this new tag in cache
+                    guard let ID = tagData.id?.int32Value else { continue }
+                    if let index = cachedTags.firstIndex(where: { $0.tagId == ID }) {
+                        // Update the tag's properties using the raw data
                         try cachedTags[index].update(with: tagData, server: server)
                         
                         // Do not delete this tag during the last iteration of the import
                         tagToDeleteIDs.remove(ID)
                     }
-                    catch let error as PwgKitError {
-                        // Could not perform the update
-                        throw error
-                    }
-                    catch {
-                        throw PwgKitError.otherError(innerError: error)
+                    else {
+                        // Create a Tag managed object on the private queue context.
+                        let tag = Tag(context: bckgContext)
+                        
+                        // Populate the Tag's properties using the raw data.
+                        do {
+                            try tag.update(with: tagData, server: server)
+                        }
+                        catch {
+                            // Delete invalid Tag from the private queue context.
+                            bckgContext.delete(tag)
+                            throw error
+                        }
                     }
                 }
-                else {
-                    // Create a Tag managed object on the private queue context.
-                    let tag = Tag(context: bckgContext)
-                    
-                    // Populate the Tag's properties using the raw data.
-                    do {
-                        try tag.update(with: tagData, server: server)
-                    }
-                    catch let error as PwgKitError {
-                        // Delete invalid Tag from the private queue context.
+                
+                // Delete remaining tags if this is the last iteration
+                if tagsBatch.count < batchSize,
+                   tagToDeleteIDs.isEmpty == false {
+                    // Delete tags
+                    let tagToDelete = cachedTags.filter({tagToDeleteIDs.contains($0.tagId)})
+                    tagToDelete.forEach { tag in
+                        debugPrint("••> delete tag with ID:\(tag.tagId) and name:\(tag.tagName)")
                         bckgContext.delete(tag)
-                        throw error
-                    }
-                    catch {
-                        // Delete invalid Tag from the private queue context.
-                        bckgContext.delete(tag)
-                        throw PwgKitError.otherError(innerError: error)
                     }
                 }
+                
+                // Save all insertions from the context to the store.
+                bckgContext.saveIfNeeded()
+                
+                // Reset the taskContext to free the cache and lower the memory footprint.
+                bckgContext.reset()
             }
-            
-            // Delete remaining tags if this is the last iteration
-            if tagsBatch.count < batchSize,
-               tagToDeleteIDs.isEmpty == false {
-                // Delete tags
-                let tagToDelete = cachedTags.filter({tagToDeleteIDs.contains($0.tagId)})
-                tagToDelete.forEach { tag in
-                    debugPrint("••> delete tag with ID:\(tag.tagId) and name:\(tag.tagName)")
-                    bckgContext.delete(tag)
-                }
-            }
-            
-            // Save all insertions from the context to the store.
-            bckgContext.saveIfNeeded()
-
-            // Reset the taskContext to free the cache and lower the memory footprint.
-            bckgContext.reset()
         }
+        catch let error as PwgKitError { throw error }
+        catch let error as NSError { throw PwgKitError.CoreDataError(innerError: error)}
+        catch let error { throw PwgKitError.otherError(innerError: error) }
+        
         return tagToDeleteIDs
     }
     

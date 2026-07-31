@@ -123,7 +123,7 @@ class AlbumRenaming: NSObject
 
         // Rename album, modify comment
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
                 try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
@@ -153,7 +153,7 @@ class AlbumRenaming: NSObject
                     }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run { [self] in
                     self.renameCategoryError(error, completion: completion)
                 }

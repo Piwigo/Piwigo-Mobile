@@ -385,7 +385,7 @@ final class SelectCategoryViewController: UIViewController {
         let hasAdminRights = user.hasAdminRights
         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
                 try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID,
                                                         lastConnected: self.user.lastUsed)
@@ -411,7 +411,7 @@ final class SelectCategoryViewController: UIViewController {
                         self.categoriesTableView.reloadData()
                     }
                 }
-            } catch let error as PwgKitError {
+            } catch {
                 await MainActor.run { [self] in
                     self.didFetchAlbumsWithError(error: error)
                 }

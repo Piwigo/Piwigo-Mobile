@@ -304,7 +304,7 @@ class EditImageParamsViewController: UIViewController
         // Update all images
         let index = 0
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
                 try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID,
                                                         lastConnected: self.user.lastUsed)
@@ -312,7 +312,7 @@ class EditImageParamsViewController: UIViewController
                 // Update image properties
                 self.updateImageProperties(fromIndex: index)
             }
-            catch let error as PwgKitError {
+            catch {
                 await self.hideHUD()
                 self.showUpdatePropertiesError(error, atIndex: index)
             }
@@ -339,7 +339,7 @@ class EditImageParamsViewController: UIViewController
         // Update image info on server
         /// The cache will be updated by the parent view controller.
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Set image properties
                 let paramsDict = getParameters(forImage: images[index])
                 try await JSONManager.shared.setInfos(with: paramsDict)
@@ -353,7 +353,7 @@ class EditImageParamsViewController: UIViewController
                     self.updateImageProperties(fromIndex: index + 1)
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await self.hideHUD()
                 self.showUpdatePropertiesError(error, atIndex: index)
             }

@@ -356,7 +356,7 @@ extension AlbumViewController
             
             // Retrieve image data if needed
             Task.detached {
-                do {
+                do throws(PwgKitError) {
                     // Check session
                     try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID,
                                                             lastConnected: self.user.lastUsed)
@@ -366,7 +366,7 @@ extension AlbumViewController
                         self.retrieveData(ofImagesWithID: imageIDsToRetrieve, among: imageIDs,
                                           beforeAction: action, contextually: contextually)
                     }
-                } catch let error as PwgKitError {
+                } catch {
                     await MainActor.run { [self] in
                         self.retrieveImageDataError(error, contextually: contextually)
                     }
@@ -394,7 +394,7 @@ extension AlbumViewController
         
         // Image data are not complete when retrieved using pwg.categories.getImages
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Retrieve image data
                 let pwgData = try await JSONManager.shared.getInfos(forID: imageID)
                 
@@ -415,7 +415,7 @@ extension AlbumViewController
                     retrieveData(ofImagesWithID: remainingIDs, among: imageIDs,
                                  beforeAction: action, contextually: contextually)
                 }
-            } catch let error as PwgKitError {
+            } catch {
                 await MainActor.run { [self] in
                     retrieveImageDataError(error, contextually: contextually)
                 }

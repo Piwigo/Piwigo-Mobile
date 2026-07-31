@@ -40,7 +40,7 @@ extension ImageViewController
 
         // Send requests to Piwigo server
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
                 try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
@@ -74,7 +74,7 @@ extension ImageViewController
                         }
                     }
                 }
-            } catch let error as PwgKitError {
+            } catch {
                 self.addToFavoritesError(error)
             }
         }
@@ -104,7 +104,7 @@ extension ImageViewController
 
         // Send requests to Piwigo server
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
                 try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
@@ -145,7 +145,7 @@ extension ImageViewController
                     }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 self.removeFromFavoritesError(error)
             }
         }

@@ -57,33 +57,38 @@ public final class AlbumProvider {
 //        catch { throw PwgKitError.otherError(innerError: error) }
 //    }
 
-    public func getAlbum(ofUser user: User, withId albumId: Int32, name: String = "") throws -> Album? {
+    public func getAlbum(ofUser user: User, withId albumId: Int32, name: String = "") throws(PwgKitError) -> Album? {
         // Initialisation
         guard let taskContext = user.managedObjectContext
         else { return nil }
         
         // Synchronous execution
-        return try taskContext.performAndWait { () -> Album? in
-            // Create a fetch request for the Album entity
-            let fetchRequest = fetchRequestOfAlbum(withId: albumId, forUser: user)
-
-            // Return the Album entity if possible
-            let album = try taskContext.fetch(fetchRequest).first
-            if let album { return album }
-            
-            // Create a smart Album on the current queue context if needed
-            if albumId <= 0 {     // We should not create standard albums manually
-                let newAlbum = Album(context: taskContext)
-                let smartAlbum = CategoryGetInfo(withId: albumId, albumName: name)
-                try newAlbum.update(with: smartAlbum, userObjectID: user.objectID)
-                taskContext.saveIfNeeded()
-                return newAlbum
+        do {
+            return try taskContext.performAndWait { () throws -> Album? in
+                // Create a fetch request for the Album entity
+                let fetchRequest = fetchRequestOfAlbum(withId: albumId, forUser: user)
+                
+                // Return the Album entity if possible
+                let album = try taskContext.fetch(fetchRequest).first
+                if let album { return album }
+                
+                // Create a smart Album on the current queue context if needed
+                if albumId <= 0 {     // We should not create standard albums manually
+                    let newAlbum = Album(context: taskContext)
+                    let smartAlbum = CategoryGetInfo(withId: albumId, albumName: name)
+                    try newAlbum.update(with: smartAlbum, userObjectID: user.objectID)
+                    taskContext.saveIfNeeded()
+                    return newAlbum
+                }
+                
+                // The album does not exist!
+                // Will select the default album or root album
+                return nil
             }
-
-            // The album does not exist!
-            // Will select the default album or root album
-            return nil
         }
+        catch let error as PwgKitError { throw error }
+        catch let error as NSError { throw PwgKitError.CoreDataError(innerError: error)}
+        catch let error { throw PwgKitError.otherError(innerError: error) }
     }
 
     /// Returns the requested album if it exists in the persistent store.
@@ -110,7 +115,7 @@ public final class AlbumProvider {
      */
     private let batchSize = 256
     public func importAlbums(_ albumArray: [CategoryGetInfo], recursively: Bool = false,
-                             inParent parentId: Int32) throws {
+                             inParent parentId: Int32) throws(PwgKitError) {
         // We keep album UUIDs of albums to delete
         // Initialised and then updated at each iteration
         var albumToDeleteUUIDs: Set<String>? = nil
@@ -158,7 +163,7 @@ public final class AlbumProvider {
      whether the import is successful.
      */
     private func importOneBatch(_ albumsBatch: [CategoryGetInfo], recursively: Bool = false,
-                                inParent parentId: Int32, albumUUIDs: Set<String>?) throws -> Set<String> {
+                                inParent parentId: Int32, albumUUIDs: Set<String>?) throws(PwgKitError) -> Set<String> {
         
         var albumToDeleteUUIDs = Set<String>()
         
@@ -174,52 +179,52 @@ public final class AlbumProvider {
         
         // Runs on the URLSession's delegate queue
         // so it won’t block the main thread.
-        try bckgContext.performAndWait {
-            
-            // Retrieve albums in persistent store
-            let fetchRequest = Album.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true)]
-            
-            // Retrieve albums:
-            /// — from the current server
-            /// — whose ID is the ID of the parent album because pwg.categories.getList also returns the parent album
-            /// — whose parent ID is the ID of the parent album
-            /// — whose ID is positive i.e. not a smart album
-            var andPredicates = [NSPredicate]()
-            andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
-            andPredicates.append(NSPredicate(format: "user.username == %@", user.username))
-            if recursively {
-                andPredicates.append(NSPredicate(format: "pwgID >= 0"))
-            } else {
-                var orSubpredicates = [NSPredicate]()
-                orSubpredicates.append(NSPredicate(format: "pwgID == %i", parentId))
-                orSubpredicates.append(NSPredicate(format: "parentId == %i", parentId))
-                andPredicates.append(NSCompoundPredicate(orPredicateWithSubpredicates: orSubpredicates))
-            }
-            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-            fetchRequest.returnsObjectsAsFaults = false
-            fetchRequest.shouldRefreshRefetchedObjects = true
-            
-            // Perform the fetch.
-            let cachedAlbums:[Album] = try bckgContext.fetch(fetchRequest)
-            
-            // Initialise set of album UUIDs during the first iteration
-            if albumUUIDs == nil {
-                // Store UUIDs of present list of albums, except root which must not be deleted
-                albumToDeleteUUIDs = Set(cachedAlbums.filter({$0.pwgID != 0}).map({$0.uuid}))
-            } else {
-                // Resume UUIDs of albums to delete
-                albumToDeleteUUIDs = albumUUIDs ?? Set<String>()
-            }
-            
-            // Loop over fetched albums
-            for albumData in albumsBatch {
+        do {
+            try bckgContext.performAndWait { () throws -> Void in
                 
-                // Index of this new album in cache
-                guard let ID = albumData.id else { continue }
-                if let index = cachedAlbums.firstIndex(where: { $0.pwgID == ID }) {
-                    // Update the album's properties using the raw data
-                    do {
+                // Retrieve albums in persistent store
+                let fetchRequest = Album.fetchRequest()
+                fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true)]
+                
+                // Retrieve albums:
+                /// — from the current server
+                /// — whose ID is the ID of the parent album because pwg.categories.getList also returns the parent album
+                /// — whose parent ID is the ID of the parent album
+                /// — whose ID is positive i.e. not a smart album
+                var andPredicates = [NSPredicate]()
+                andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
+                andPredicates.append(NSPredicate(format: "user.username == %@", user.username))
+                if recursively {
+                    andPredicates.append(NSPredicate(format: "pwgID >= 0"))
+                } else {
+                    var orSubpredicates = [NSPredicate]()
+                    orSubpredicates.append(NSPredicate(format: "pwgID == %i", parentId))
+                    orSubpredicates.append(NSPredicate(format: "parentId == %i", parentId))
+                    andPredicates.append(NSCompoundPredicate(orPredicateWithSubpredicates: orSubpredicates))
+                }
+                fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+                fetchRequest.returnsObjectsAsFaults = false
+                fetchRequest.shouldRefreshRefetchedObjects = true
+                
+                // Perform the fetch.
+                let cachedAlbums:[Album] = try bckgContext.fetch(fetchRequest)
+                
+                // Initialise set of album UUIDs during the first iteration
+                if albumUUIDs == nil {
+                    // Store UUIDs of present list of albums, except root which must not be deleted
+                    albumToDeleteUUIDs = Set(cachedAlbums.filter({$0.pwgID != 0}).map({$0.uuid}))
+                } else {
+                    // Resume UUIDs of albums to delete
+                    albumToDeleteUUIDs = albumUUIDs ?? Set<String>()
+                }
+                
+                // Loop over fetched albums
+                for albumData in albumsBatch {
+                    
+                    // Index of this new album in cache
+                    guard let ID = albumData.id else { continue }
+                    if let index = cachedAlbums.firstIndex(where: { $0.pwgID == ID }) {
+                        // Update the album's properties using the raw data
                         // The current user will be added so that we know which albums
                         // are accessible to that user.
                         try cachedAlbums[index].update(with: albumData, userObjectID: user.objectID)
@@ -235,70 +240,62 @@ public final class AlbumProvider {
                         // Do not delete this album during the last iteration of the import
                         albumToDeleteUUIDs.remove(cachedAlbums[index].uuid)
                     }
-                    catch PwgKitError.missingAlbumData {
-                        // Could not perform the update
-                        debugPrint(PwgKitError.missingAlbumData.localizedDescription)
-                    }
-                    catch {
-                        debugPrint(error.localizedDescription)
-                    }
-                }
-                else {
-                    // Create an Album managed object on the private queue context.
-                    let album = Album(context: bckgContext)
-                    
-                    // Populate the Album's properties using the raw data.
-                    do {
-                        try album.update(with: albumData, userObjectID: user.objectID)
-                        if albumData.hasUploadRights {
-                            user.addUploadRightsToAlbum(withID: ID)
-                        } else {
-                            user.removeUploadRightsToAlbum(withID: ID)
+                    else {
+                        // Create an Album managed object on the private queue context.
+                        let album = Album(context: bckgContext)
+                        
+                        // Populate the Album's properties using the raw data.
+                        do {
+                            try album.update(with: albumData, userObjectID: user.objectID)
+                            if albumData.hasUploadRights {
+                                user.addUploadRightsToAlbum(withID: ID)
+                            } else {
+                                user.removeUploadRightsToAlbum(withID: ID)
+                            }
+                        }
+                        catch {
+                            // Delete invalid Album from the private queue context.
+                            bckgContext.delete(album)
+                            throw error
                         }
                     }
-                    catch let error as PwgKitError {
-                        // Delete invalid Album from the private queue context.
-                        bckgContext.delete(album)
-                        throw error
-                    }
-                    catch let error {
-                        // Delete invalid Album from the private queue context.
-                        bckgContext.delete(album)
-                        throw PwgKitError.otherError(innerError: error)
-                    }
-                }
-            }
-            
-            // Delete albums if this is the last iteration
-            if albumsBatch.count < batchSize,
-               albumToDeleteUUIDs.isEmpty == false {
-                // Select albums not returned by the fetch, i.e. albums deleted on the server
-                let albumsToDelete = cachedAlbums.filter({albumToDeleteUUIDs.contains($0.uuid)})
-                
-                // Check whether the auto-upload destination album was deleted on the server
-                if cachedAlbums.first(where: { $0.pwgID == UploadVars.shared.autoUploadCategoryId }) == nil,
-                   albumsToDelete.first(where: { $0.pwgID == UploadVars.shared.autoUploadCategoryId }) != nil {
-                    NotificationCenter.default.post(name: .pwgDisableAutoUpload, object: nil)
                 }
                 
-                // Delete from the cache albums deleted on the server
-                albumsToDelete.forEach { album in
-                    debugPrint("••> delete album with ID:\(album.pwgID), name:\(album.name), UUID:\(album.uuid)")
-                    bckgContext.delete(album)
+                // Delete albums if this is the last iteration
+                if albumsBatch.count < batchSize,
+                   albumToDeleteUUIDs.isEmpty == false {
+                    // Select albums not returned by the fetch, i.e. albums deleted on the server
+                    let albumsToDelete = cachedAlbums.filter({albumToDeleteUUIDs.contains($0.uuid)})
+                    
+                    // Check whether the auto-upload destination album was deleted on the server
+                    if cachedAlbums.first(where: { $0.pwgID == UploadVars.shared.autoUploadCategoryId }) == nil,
+                       albumsToDelete.first(where: { $0.pwgID == UploadVars.shared.autoUploadCategoryId }) != nil {
+                        NotificationCenter.default.post(name: .pwgDisableAutoUpload, object: nil)
+                    }
+                    
+                    // Delete from the cache albums deleted on the server
+                    albumsToDelete.forEach { album in
+                        debugPrint("••> delete album with ID:\(album.pwgID), name:\(album.name), UUID:\(album.uuid)")
+                        bckgContext.delete(album)
+                    }
                 }
-            }
-            
-            // Save all insertions from the context to the store.
-            bckgContext.saveIfNeeded()
-            
-            // Reset the taskContext to free the cache and lower the memory footprint.
-            bckgContext.reset()
-
-            // Save cached data in the main thread
-            Task { @MainActor in
-                DataController.shared.mainContext.saveIfNeeded()
+                
+                // Save all insertions from the context to the store.
+                bckgContext.saveIfNeeded()
+                
+                // Reset the taskContext to free the cache and lower the memory footprint.
+                bckgContext.reset()
+                
+                // Save cached data in the main thread
+                Task { @MainActor in
+                    DataController.shared.mainContext.saveIfNeeded()
+                }
             }
         }
+        catch let error as PwgKitError { throw error }
+        catch let error as NSError { throw PwgKitError.CoreDataError(innerError: error)}
+        catch let error { throw PwgKitError.otherError(innerError: error) }
+
         return albumToDeleteUUIDs
     }
     

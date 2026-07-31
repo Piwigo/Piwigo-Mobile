@@ -805,14 +805,14 @@ final class AlbumViewController: UIViewController
         
         // Fetch album data and then image data
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
                 try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID,
                                                         lastConnected: self.user.lastUsed)
                 // Fetch album and image data
                 await self.fetchAlbumsAndImages()
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run {
                     // End refreshing if needed
                     self.collectionView?.refreshControl?.endRefreshing()

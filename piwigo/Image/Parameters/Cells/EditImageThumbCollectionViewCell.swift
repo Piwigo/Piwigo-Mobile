@@ -231,7 +231,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                                           "single_value_mode" : "replace"]
         // Launch request
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Set image properties
                 try await JSONManager.shared.setInfos(with: paramsDict)
 
@@ -248,7 +248,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                     }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run {
                     topViewController?.hideHUD {
                         topViewController?.dismissPiwigoError(

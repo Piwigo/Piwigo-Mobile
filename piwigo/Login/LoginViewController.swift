@@ -241,7 +241,7 @@ class LoginViewController: UIViewController {
     func requestServerMethods() {
         // Collect list of methods supplied by Piwigo server on background
         Task.detached {
-            do {
+            do throws(PwgKitError) {
                 try await JSONManager.shared.getMethods()
                 
                 // Pursue logging in…
@@ -249,7 +249,7 @@ class LoginViewController: UIViewController {
                     self.performLogin()
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run {
                     // If Piwigo uses a non-trusted certificate, ask permission
                     if ServerVars.shared.didRejectCertificate {
@@ -404,7 +404,7 @@ class LoginViewController: UIViewController {
             updateHUD(detail: String(localized: "login_newSession", comment: "Opening Session"))
 
             Task.detached {
-                do {
+                do throws(PwgKitError) {
                     // Perform login
                     try await JSONManager.shared.sessionLogin(withUsername: username, password: password)
                     // Session now opened
@@ -415,7 +415,7 @@ class LoginViewController: UIViewController {
                         self.getCommunityStatus()
                     }
                 }
-                catch let error as PwgKitError {
+                catch {
                     // Don't keep unaccepted credentials
                     KeychainUtilities.deletePassword(forService: ServerVars.shared.serverPath,
                                                      account: username)
@@ -457,7 +457,7 @@ class LoginViewController: UIViewController {
             updateHUD(detail: String(localized: "login_communityParameters", comment: "Community Parameters"))
 
             Task.detached {
-                do {
+                do throws(PwgKitError) {
                     // Community extension installed, get real user's status
                     try await JSONManager.shared.communityGetStatus()
                     
@@ -466,7 +466,7 @@ class LoginViewController: UIViewController {
                         self.getSessionStatus()
                     }
                 }
-                catch let error as PwgKitError {
+                catch {
                     // Inform user that server failed to retrieve Community parameters
                     await MainActor.run { [self] in
                         self.isAlreadyTryingToLogin = false
@@ -488,7 +488,7 @@ class LoginViewController: UIViewController {
         updateHUD(detail: String(localized: "login_serverParameters", comment: "Piwigo Parameters"))
 
         Task.detached {
-            do {
+            do throws(PwgKitError) {
                 // Update Piwigo username (≠ credential)
                 ServerVars.shared.user = try await JSONManager.shared.sessionGetStatus()
 
@@ -513,7 +513,7 @@ class LoginViewController: UIViewController {
                     }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run { [self] in
                     self.isAlreadyTryingToLogin = false
                     // Display error message

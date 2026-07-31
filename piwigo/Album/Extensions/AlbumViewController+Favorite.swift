@@ -72,7 +72,7 @@ extension AlbumViewController
 
         // Send requests to Piwigo server
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
                 try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
@@ -109,7 +109,7 @@ extension AlbumViewController
                     favorite(imagesWithID: remainingIDs, total: total, contextually: contextually)
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 self.favoriteError(error, contextually: contextually)
             }
         }
@@ -181,7 +181,7 @@ extension AlbumViewController
 
         // Send requests to Piwigo server
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
                 try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
@@ -218,7 +218,7 @@ extension AlbumViewController
                     unfavorite(imagesWithID: remainingIDs, total: total, contextually: contextually)
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 self.unfavoriteError(error, contextually: contextually)
             }
         }

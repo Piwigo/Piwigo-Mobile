@@ -150,7 +150,7 @@ public final class UploadProvider {
                             try taskContext.obtainPermanentIDs(for: [upload])
                             uploadIDs.append(upload.objectID)
                         }
-                        catch let error as PwgKitError {
+                        catch {
                             // Delete invalid Upload from the private queue context.
                             taskContext.delete(upload)
                             
@@ -161,12 +161,6 @@ public final class UploadProvider {
                             taskContext.reset()
 
                             throw error
-                        }
-                        catch let error as NSError {
-                            throw PwgKitError.CoreDataError(innerError: error)
-                        }
-                        catch {
-                            throw PwgKitError.otherError(innerError: error)
                         }
                     }
                 }
@@ -181,17 +175,11 @@ public final class UploadProvider {
                 return uploadIDs
             }
         }
-        catch let error as PwgKitError {
-            throw error
-        }
-        catch let error as NSError {
-            throw PwgKitError.CoreDataError(innerError: error)
-        }
-        catch {
-            throw PwgKitError.otherError(innerError: error)
-        }
+        catch let error as PwgKitError { throw error }
+        catch let error as NSError { throw PwgKitError.CoreDataError(innerError: error) }
+        catch { throw PwgKitError.otherError(innerError: error) }
     }
-        
+    
     /**
      Clear status of Core Data upload requests on the PwgUploadKit private queue
      */

@@ -52,7 +52,8 @@ public final class UserProvider {
             }
         }
         catch let error as PwgKitError { throw error }
-        catch { throw PwgKitError.otherError(innerError: error) }
+        catch let error as NSError { throw PwgKitError.CoreDataError(innerError: error)}
+        catch let error { throw PwgKitError.otherError(innerError: error) }
     }
     
     public func getUserAccount(of username: String = ServerVars.shared.user,
@@ -93,7 +94,8 @@ public final class UserProvider {
             }
         }
         catch let error as PwgKitError { throw error }
-        catch { throw PwgKitError.otherError(innerError: error) }
+        catch let error as NSError { throw PwgKitError.CoreDataError(innerError: error)}
+        catch let error { throw PwgKitError.otherError(innerError: error) }
     }
     
     public func updateUser(withID userID: NSManagedObjectID, status: Bool,

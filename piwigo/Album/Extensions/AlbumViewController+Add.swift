@@ -120,7 +120,7 @@ extension AlbumViewController
 
         // Send request to Piwigo server
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
                 try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
@@ -169,7 +169,7 @@ extension AlbumViewController
                     }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 self.addCategoryError(error)
             }
         }

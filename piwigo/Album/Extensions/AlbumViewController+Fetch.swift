@@ -58,7 +58,7 @@ extension AlbumViewController
         // handle general UI updates and error alerts on the main queue.
         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Fetch albums
                 let pwgData = try await JSONManager.shared.fetchAlbums(forUserWithAdminRights: hasAdminRights,
                                                                        inParentWithId: categoryId,
@@ -111,7 +111,7 @@ extension AlbumViewController
                 }
                 
             }
-            catch let error as PwgKitError {
+            catch {
                 // Show the error
                 await MainActor.run { [self] in
                     // Done fetching album data
@@ -132,7 +132,7 @@ extension AlbumViewController
         // Use the ImageProvider to fetch image data. On completion,
         // handle general UI updates and error alerts on the main queue.
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Fetch images
                 let (fetchedImageIds, totalCount, hasDownloadRight) =
                 try await fetchImages(ofAlbumWithId: albumData.pwgID, withQuery: query, sort: sortOption,
@@ -231,7 +231,7 @@ extension AlbumViewController
                     }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run { [self] in
                     // Done fetching images
                     // ► Remove current album from list of album being fetched
@@ -287,14 +287,11 @@ extension AlbumViewController
             }
             return (fetchedImageIds, totalCount, hasDownloadRight)
         }
-        catch let error as PwgKitError {
+        catch {
             throw error
         }
-        catch {
-            throw .otherError(innerError: error)
-        }
     }
-
+    
     private func removeImageWithIDs(_ imageIDs: Set<Int64>) {
         // Done fetching images ► Remove non-fetched images from album
         DispatchQueue.main.async { [self] in
