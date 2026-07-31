@@ -113,7 +113,7 @@ extension AlbumViewController
         // Prepare set of parent IDs before creating album (including root album)
         let hasAdminRights = user.hasAdminRights
         let parentIDs = Set(albumData.upperIds.components(separatedBy: ",")
-            .compactMap({Int32($0)})).filter({$0 != albumData.pwgID}).union(Set([pwgSmartAlbum.root.rawValue]))
+            .compactMap({Int32($0)})).union(Set([pwgSmartAlbum.root.rawValue]))
         
         // Display HUD during the update
         showHUD(withTitle: String(localized: "createNewAlbumHUD_label", comment: "Creating Album…"))
