@@ -14,7 +14,8 @@ import PwgCacheKit
 
 extension AlbumViewController
 {
-    // MARK: Toolbar Buttons (iOS 26+)
+    // MARK: Toolbar Buttons
+    @MainActor @available(iOS 26.0, *)
     func getUploadQueueBarButton(withTitle title: String? = nil) -> UIBarButtonItem? {
         guard let title = title
         else { return nil }
