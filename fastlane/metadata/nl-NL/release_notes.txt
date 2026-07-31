@@ -1,2 +1,3 @@
-• Verhelpt fouten en verbetert de gebruikersinterface
-• Voegt een ‘Delen’-extensie en een snelkoppeling toe waarmee foto’s, video’s en PDF-bestanden uit andere apps kunnen worden gedownload
+• Er is een ‘Delen’-extensie toegevoegd waarmee je foto’s, video’s en PDF-bestanden vanuit andere apps kunt uploaden
+• Speelt geanimeerde GIF-afbeeldingen af
+• Verhelpt bugs en verbetert de interface

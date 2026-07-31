@@ -10643,7 +10643,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.3\n\n• Ajout d'une extension « Partager » permettant de transférer des photos, des vidéos et des fichiers PDF depuis d'autres applications\n• Lecture d'images GIF animées\n• Correction de bugs et amélioration de l'interface"
+            "value" : "Version 4.3\n\n• Ajout d'une extension de partage permettant de transférer des photos, des vidéos et des fichiers PDF depuis d'autres applications\n• Lecture d'images GIF animées\n• Correction de bugs et amélioration de l'interface"
           }
         },
         "hu" : {

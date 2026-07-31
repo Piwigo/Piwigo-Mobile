@@ -1,2 +1,3 @@
-• Åtgärdar fel och förbättrar användargränssnittet
-• Lägger till en delningsfunktion och en genväg som gör det möjligt att ladda ner foton, videor och PDF-filer från andra appar
+• Lägger till en delningsfunktion som gör det möjligt att ladda upp foton, videor och PDF-filer från andra appar
+• Spelar upp animerade GIF-bilder
+• Åtgärdar buggar och förbättrar gränssnittet

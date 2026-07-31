@@ -1,2 +1,3 @@
-• Corrige des bugs et améliore l'interface
-• Ajoute une extension « Partager » et un raccourci permettant de transférer des photos, des vidéos et des fichiers PDF depuis d'autres applications
+• Ajout d'une extension de partage permettant de transférer des photos, des vidéos et des fichiers PDF depuis d'autres applications
+• Lecture d'images GIF animées
+• Correction de bugs et amélioration de l'interface
