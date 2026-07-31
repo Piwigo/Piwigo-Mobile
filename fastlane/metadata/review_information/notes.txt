@@ -1,4 +1,4 @@
-This version fixes an issue preventing the upload of photos when 2FA is enabled, pauses downloads when the device needs to cool down, and improves the downloading of thumbnails in albums containing a large number of photos. It also fixes a crash that sometimes occurs when downloading thumbnails.
+This version adds a Share extension and a shortcut allowing to upload photos, videos and PDF files. The photo previewer is now compatible with animated Gif images (album provided for testing). Many bugs were also fixed (list provided in the TestFlight section).
 
 Here is the address of the server requiring the above credentials and allowing to test all functionalities: https://piwigo.lelievre-berna.net/16.x/
 And here are servers you can try without credentials: https://raia.com, https://www.neilfitzgeraldphoto.co.nz/gallery, http://www.dongshawhwei.com/photos.
