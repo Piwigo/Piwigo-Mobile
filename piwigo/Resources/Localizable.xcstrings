@@ -57433,7 +57433,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "GIF Images"
+            "value" : "Images GIF"
           }
         },
         "hu" : {
@@ -57736,7 +57736,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajoute une extension Partage permettant de transférer des photos, des vidéos et des fichiers PDF depuis d'autres applications."
+            "value" : "Ajoute une extension de partage permettant de transférer des photos, des vidéos et des fichiers PDF depuis d'autres applications."
           }
         },
         "hu" : {
