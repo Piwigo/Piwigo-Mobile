@@ -403,8 +403,15 @@ public final class DataMigrator: NSObject {
             let options = [NSSQLitePragmasOption: ["journal_mode": "DELETE"]]
             let store = persistentStoreCoordinator.addPersistentStore(at: storeURL, options: options)
             try persistentStoreCoordinator.remove(store)
+
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .decimal
+            formatter.maximumFractionDigits = 3
+            formatter.minimumFractionDigits = 3
+            formatter.roundingMode = .halfUp
             let duration = CFAbsoluteTimeGetCurrent() - timeCounter
-            DataMigrator.logger.notice("WAL checkpointing: Completed in \(duration) s")
+            let durationString = formatter.string(from: NSNumber(value: duration)) ?? "?"
+            DataMigrator.logger.notice("WAL checkpointing: Completed in \(durationString) s")
         }
         catch let error {
             DataMigrator.logger.notice("WAL checkpointing failed: \(error.localizedDescription)")
