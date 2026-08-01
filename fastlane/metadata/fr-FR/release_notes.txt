@@ -1,8 +1,3 @@
-<<<<<<< HEAD
 • Ajout d'une extension de partage permettant de transférer des photos, des vidéos et des fichiers PDF depuis d'autres applications
 • Lecture d'images GIF animées
 • Correction de bugs et amélioration de l'interface
-=======
-• Corrige des bugs et améliore l'interface
-• Permet de modifier le nombre maximal de connexions simultanées au serveur Piwigo
->>>>>>> master

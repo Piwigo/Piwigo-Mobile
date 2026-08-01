@@ -246,13 +246,6 @@ public class UploadVars: NSObject, @unchecked Sendable {
     /// - Maximum number of simultaneous connections per host
     @UserDefault("maxConnectionsPerHost", defaultValue: 2, userDefaults: UserDefaults.dataSuite)
     public var maxConnectionsPerHost: Int
-<<<<<<< HEAD:PwgCacheKit/Sources/Upload/UploadVars.swift
-=======
-    
-    /// - Chunk size set by the user (uploadChunkSize by default - see above)
-    @UserDefault("customUploadChunkSize", defaultValue: 0, userDefaults: UserDefaults.dataSuite)
-    public var customUploadChunkSize: Int
->>>>>>> master:piwigoKit/Data Cache/Upload Data/UploadVars.swift
     
     
     // MARK: - Vars in Memory

@@ -50,10 +50,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Register App Metrics
         #if DEBUG
         AppMetrics.shared.start()
-<<<<<<< HEAD
-=======
-        AppMetrics.shared.saveSettings()
->>>>>>> master
         #endif
         
         // Register transformers at the very beginning

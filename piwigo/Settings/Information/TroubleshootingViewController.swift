@@ -113,7 +113,6 @@ class TroubleshootingViewController: UIViewController {
     private func getLogsAndJSONData() {
         // Operation for retrieving logs
         let getLogs = BlockOperation {
-<<<<<<< HEAD
             #if DEBUG
             let timeCounter = CFAbsoluteTimeGetCurrent()
             #endif
@@ -155,64 +154,6 @@ class TroubleshootingViewController: UIViewController {
                 .filter({ orderedCategories.contains($0) == false }).sorted()
             pwgLogs.append(contentsOf: otherCategories.compactMap { logsByCategory[$0] })
             self.pwgLogs = pwgLogs
-=======
-            do {
-                let timeCounter = CFAbsoluteTimeGetCurrent()
-                let logStore = try OSLogStore(scope: .currentProcessIdentifier)
-                let oneHourAgo = logStore.position(date: Date().addingTimeInterval(-3600))
-                let predicate = NSPredicate(format: "subsystem IN %@", self.pwgSubSystems)
-                let allEntries = try logStore.getEntries(at: oneHourAgo, matching: predicate)
-                let duration = (CFAbsoluteTimeGetCurrent() - timeCounter) * CFAbsoluteTime(1000)
-                debugPrint("••> completed in \(duration.rounded()) ms")
-                let entries = allEntries.compactMap({$0 as? OSLogEntryLog})
-                
-                // piwigo — App Metrics
-                #if DEBUG
-                var someLogs = entries.filter({$0.category == String(describing: AppMetrics.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                #else
-                var someLogs = [OSLogEntryLog]()
-                #endif
-                
-                // piwigoKit — Core Data
-                someLogs = entries.filter({$0.category == String(describing: DataMigrator.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                someLogs = entries.filter({$0.category == String(describing: Image.self)})
-                if someLogs.isEmpty ==  false { self.pwgLogs.append(someLogs)}
-                
-                // piwigoKit — Session Delegate
-                someLogs = entries.filter({$0.category == String(describing: PwgSessionDelegate.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                
-                // piwigoKit — JSON Manager
-                someLogs = entries.filter({$0.category == String(describing: JSONManager.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                
-                // piwigoKit — Image Downloader
-                someLogs = entries.filter({$0.category == String(describing: ImageDownloader.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                
-                // uploadKit — UploadManager
-                someLogs = entries.filter({$0.category == String(describing: UploadManager.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-
-                // uploadKit — UploadManagerActor
-                someLogs = entries.filter({$0.category == String(describing: UploadManagerActor.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                
-                // uploadKit — Upload Session Manager
-                someLogs = entries.filter({$0.category == String(describing: UploadSessionManager.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                
-                // uploadKit — Upload Sessions Delegate
-                someLogs = entries.filter({$0.category == String(describing: UploadSessionsDelegate.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-            }
-            catch {
-                debugPrint("••> Could not retrieve logs.")
-                self.pwgLogs = []
-            }
->>>>>>> master
         }
         getLogs.completionBlock = {
             DispatchQueue.main.async {

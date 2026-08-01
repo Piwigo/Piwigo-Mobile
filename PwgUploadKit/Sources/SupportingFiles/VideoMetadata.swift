@@ -1,10 +1,6 @@
 //
 //  VideoMetadata.swift
-<<<<<<< HEAD:PwgUploadKit/Sources/SupportingFiles/VideoMetadata.swift
 //  PwgUploadKit
-=======
-//  uploadKit
->>>>>>> master:uploadKit/Supporting Files/VideoMetadata.swift
 //
 //  Created by Eddy Lelièvre-Berna on 13/01/2021.
 //  Copyright © 2021 Piwigo.org. All rights reserved.

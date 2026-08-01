@@ -1,10 +1,6 @@
 //
 //  UploadSizes.swift
-<<<<<<< HEAD:PwgUploadKit/Sources/UploadManager/UploadSizes.swift
 //  PwgUploadKit
-=======
-//  uploadKit
->>>>>>> master:uploadKit/UploadSizes.swift
 //
 //  Created by Eddy Lelièvre-Berna on 25/06/2023.
 //  Copyright © 2023 Piwigo.org. All rights reserved.

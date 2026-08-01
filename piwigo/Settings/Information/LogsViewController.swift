@@ -33,13 +33,8 @@ class LogsViewController: UIViewController {
         // Initialise content
         guard let firstEntry = logEntries.first else { return }
         category?.text = firstEntry.category
-<<<<<<< HEAD
         versionLabel?.text = SettingsUtilities.getAppVersion()
         var currentLogDate = DateUtilities.logsDateFormatter.string(from: firstEntry.date)
-=======
-        dateTime?.text = DateUtilities.logsDateFormatter.string(from: firstEntry.date)
-        var currentLogDate = DateUtilities.logsTimeFormatter.string(from: firstEntry.date)
->>>>>>> master
         var msg = currentLogDate + "\n"
         for logEntry in logEntries {
             let logDate = DateUtilities.logsDateFormatter.string(from: logEntry.date)

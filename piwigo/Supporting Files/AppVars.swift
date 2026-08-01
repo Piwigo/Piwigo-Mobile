@@ -29,40 +29,13 @@ final class AppVars: @unchecked Sendable {
         if let _ = UserDefaults.standard.object(forKey: "switchPaletteThreshold") {
             UserDefaults.standard.removeObject(forKey: "switchPaletteThreshold")
         }
-<<<<<<< HEAD
 //        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
 //            UserDefaults.dataSuite.removeObject(forKey: "test")
 //        }
-=======
-        //        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
-        //            UserDefaults.dataSuite.removeObject(forKey: "test")
-        //        }
->>>>>>> master
     }
     
     // MARK: - Vars in UserDefaults / Standard
     // Application variables stored in UserDefaults / Standard
-<<<<<<< HEAD
-=======
-    /// - App color palette (adopts light/dark modes as from iOS 13)
-    @UserDefault("isDarkPaletteActive", defaultValue: false)
-    var isDarkPaletteActive: Bool
-    @UserDefault("switchPaletteAutomatically", defaultValue: true)
-    var switchPaletteAutomatically: Bool
-    @UserDefault("isDarkPaletteModeActive", defaultValue: false)
-    var isDarkPaletteModeActive: Bool
-    @UserDefault("isLightPaletteModeActive", defaultValue: false)
-    var isLightPaletteModeActive: Bool
-    
-    /// - App Lock option
-    @UserDefault("isAppLockActive", defaultValue: false)
-    var isAppLockActive: Bool
-    @UserDefault("appLockKey", defaultValue: "")
-    var appLockKey: String
-    @UserDefault("isBiometricsEnabled", defaultValue: true)
-    var isBiometricsEnabled: Bool
-    
->>>>>>> master
     /// — Clear clipboard after delay option (never by default)
     @UserDefault("clearClipboardDelay", defaultValue: pwgClearClipboard.never.rawValue)
     var clearClipboardDelay: Int

@@ -1,10 +1,6 @@
 //
 //  UploadManager+Finisher.swift
-<<<<<<< HEAD:PwgUploadKit/Sources/UploadManager/UploadManager+Finisher.swift
 //  PwgUploadKit
-=======
-//  uploadKit
->>>>>>> master:uploadKit/UploadManager Extensions/UploadManager+Finisher.swift
 //
 //  Created by Eddy Lelièvre-Berna on 01/06/2020.
 //  Copyright © 2020 Piwigo.org. All rights reserved.

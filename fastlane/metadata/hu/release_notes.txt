@@ -1,8 +1,3 @@
-<<<<<<< HEAD
 • Új „Megosztás” kiterjesztés, amely lehetővé teszi fényképek, videók és PDF-fájlok feltöltését más alkalmazásokból
 • Animált GIF-képek lejátszása
 • Hibajavítások és a felület fejlesztése
-=======
-• Hibajavítások és a kezelőfelület javítása
-• Lehetővé teszi a Piwigo-kiszolgálóhoz fennálló egyidejű kapcsolatok maximális számának módosítását
->>>>>>> master

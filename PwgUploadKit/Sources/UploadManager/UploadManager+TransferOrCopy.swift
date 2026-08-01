@@ -1,10 +1,6 @@
 //
 //  UploadManager+TransferOrCopy.swift
-<<<<<<< HEAD:PwgUploadKit/Sources/UploadManager/UploadManager+TransferOrCopy.swift
 //  PwgUploadKit
-=======
-//  uploadKit
->>>>>>> master:uploadKit/UploadManager Extensions/UploadManager+TransferOrCopy.swift
 //
 //  Created by Eddy Lelièvre-Berna on 21/05/2020.
 //  Copyright © 2020 Piwigo.org. All rights reserved.
