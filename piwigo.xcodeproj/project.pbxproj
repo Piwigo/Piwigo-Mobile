@@ -443,13 +443,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		AD28F187278E1F7700A16B79 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D82B8CB31A67820A000E47CA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = D82B8CBA1A67820A000E47CA;
-			remoteInfo = piwigo;
-		};
 		AD30FD3921316DA8009AA30E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D82B8CB31A67820A000E47CA /* Project object */;
@@ -535,7 +528,6 @@
 		AD0FE4BA2E01DB30002395CF /* Help09ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help09ViewController.swift; sourceTree = "<group>"; };
 		AD0FF37B2F9BD1F0000195C8 /* Help10ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help10ViewController.swift; sourceTree = "<group>"; };
 		AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
-		AD11E45E24A930B000C8876F /* API Testing.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "API Testing.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD12D6F52AA657080038BBFF /* VideoControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoControlsView.swift; sourceTree = "<group>"; };
 		AD13C04E2FE5AE36000168D8 /* UploadSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSessionManager.swift; sourceTree = "<group>"; };
 		AD13CD702B8E5A79001ACBE8 /* ImageViewController+Rotate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Rotate.swift"; sourceTree = "<group>"; };
@@ -993,13 +985,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		AD11E45B24A930B000C8876F /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		AD30FD3121316DA7009AA30E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1811,7 +1796,6 @@
 			children = (
 				D82B8CBB1A67820A000E47CA /* piwigo.app */,
 				AD30FD3421316DA7009AA30E /* Screenshots.xctest */,
-				AD11E45E24A930B000C8876F /* API Testing.xctest */,
 				AD7F1C0E2B6675AC008E100E /* AppPreviews.xctest */,
 				ADE2A73C2FAF89F600E5E12A /* shareExtension.appex */,
 			);
@@ -1979,24 +1963,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		AD11E45D24A930B000C8876F /* API Testing */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = AD11E46524A930B000C8876F /* Build configuration list for PBXNativeTarget "API Testing" */;
-			buildPhases = (
-				AD11E45A24A930B000C8876F /* Sources */,
-				AD11E45B24A930B000C8876F /* Frameworks */,
-				AD11E45C24A930B000C8876F /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				AD28F188278E1F7700A16B79 /* PBXTargetDependency */,
-			);
-			name = "API Testing";
-			productName = piwigoWebAPI;
-			productReference = AD11E45E24A930B000C8876F /* API Testing.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		AD30FD3321316DA7009AA30E /* Screenshots */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AD30FD3B21316DA8009AA30E /* Build configuration list for PBXNativeTarget "Screenshots" */;
@@ -2086,9 +2052,6 @@
 				LastUpgradeCheck = 2600;
 				ORGANIZATIONNAME = Piwigo.org;
 				TargetAttributes = {
-					AD11E45D24A930B000C8876F = {
-						CreatedOnToolsVersion = 11.5;
-					};
 					AD30FD3321316DA7009AA30E = {
 						CreatedOnToolsVersion = 9.4.1;
 						LastSwiftMigration = 1020;
@@ -2160,7 +2123,6 @@
 			targets = (
 				D82B8CBA1A67820A000E47CA /* piwigo */,
 				ADE2A73B2FAF89F600E5E12A /* shareExtension */,
-				AD11E45D24A930B000C8876F /* API Testing */,
 				AD30FD3321316DA7009AA30E /* Screenshots */,
 				AD7F1C002B6675AC008E100E /* AppPreviews */,
 			);
@@ -2168,13 +2130,6 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		AD11E45C24A930B000C8876F /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		AD30FD3221316DA7009AA30E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2312,13 +2267,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		AD11E45A24A930B000C8876F /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		AD30FD3021316DA7009AA30E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2646,11 +2594,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		AD28F188278E1F7700A16B79 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = D82B8CBA1A67820A000E47CA /* piwigo */;
-			targetProxy = AD28F187278E1F7700A16B79 /* PBXContainerItemProxy */;
-		};
 		AD30FD3A21316DA8009AA30E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = D82B8CBA1A67820A000E47CA /* piwigo */;
@@ -2765,84 +2708,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		AD11E46624A930B000C8876F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = ZEC3W885H6;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Supporting Targets/API Testing/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MARKETING_VERSION = "$(MARKETING_VERSION)";
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo.webAPI;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = YES;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_PRECOMPILE_BRIDGING_HEADER = NO;
-				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_UPCOMING_FEATURE_EXISTENTIAL_ANY = YES;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		AD11E46724A930B000C8876F /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Supporting Targets/API Testing/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MARKETING_VERSION = "$(MARKETING_VERSION)";
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo.webAPI;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = YES;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_PRECOMPILE_BRIDGING_HEADER = NO;
-				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_UPCOMING_FEATURE_EXISTENTIAL_ANY = YES;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 		AD30FD3C21316DA8009AA30E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3363,15 +3228,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		AD11E46524A930B000C8876F /* Build configuration list for PBXNativeTarget "API Testing" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AD11E46624A930B000C8876F /* Debug */,
-				AD11E46724A930B000C8876F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		AD30FD3B21316DA8009AA30E /* Build configuration list for PBXNativeTarget "Screenshots" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

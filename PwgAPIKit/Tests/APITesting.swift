@@ -19,7 +19,7 @@ final class PwgAPITesting: XCTestCase {
     func testCommunityCategoriesGetListDecoding() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: kCommunityCategoriesGetList, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -39,7 +39,7 @@ final class PwgAPITesting: XCTestCase {
     func testCommunityImagesUploadCompletedDecoding() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: kCommunityImagesUploadCompleted, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -59,7 +59,7 @@ final class PwgAPITesting: XCTestCase {
     func testCommunitySessionGetStatusDecoding() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: kCommunitySessionGetStatus, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -82,7 +82,7 @@ final class PwgAPITesting: XCTestCase {
     // MARK: - pwg.…
     func testPwgGetInfosDecoding() {
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgGetInfos, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -123,7 +123,7 @@ final class PwgAPITesting: XCTestCase {
     func testPwgCategoriesGetListDecoding() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgCategoriesGetList, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -144,7 +144,7 @@ final class PwgAPITesting: XCTestCase {
     func testPwgCategoriesAddDecoding() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgCategoriesAdd, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -164,7 +164,7 @@ final class PwgAPITesting: XCTestCase {
     func testPwgCategoriesSetInfoDecoding() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgCategoriesSetInfo, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -184,7 +184,7 @@ final class PwgAPITesting: XCTestCase {
     func testPwgCategoriesMoveDecoding() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgCategoriesMove, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -204,7 +204,7 @@ final class PwgAPITesting: XCTestCase {
     func testPwgCategoriesCalcOrphansDecoding() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgCategoriesCalcOrphans, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -224,7 +224,7 @@ final class PwgAPITesting: XCTestCase {
     func testPwgCategoriesDeleteDecoding() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgCategoriesDelete, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -244,7 +244,7 @@ final class PwgAPITesting: XCTestCase {
     func testPwgCategoriesSetRepresentativeDecoding() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgCategoriesSetRepresentative, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -264,7 +264,7 @@ final class PwgAPITesting: XCTestCase {
     func testPwgCategoriesGetImagesDecoding() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgCategoriesGetImages, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -291,7 +291,7 @@ final class PwgAPITesting: XCTestCase {
     func testPwgImagesExist() {
         
         // Case of a list containing existing and non-existing images
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgImagesExist, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -310,7 +310,7 @@ final class PwgAPITesting: XCTestCase {
     func testPwgImagesGetInfoDecoding() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgImagesGetInfo, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -332,7 +332,7 @@ final class PwgAPITesting: XCTestCase {
     func testPwgImagesSetInfoDecoding() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgImagesSetInfo, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -352,7 +352,7 @@ final class PwgAPITesting: XCTestCase {
     func testPwgImagesSetCategoryDecoding() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgImagesSetCategory, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -372,7 +372,7 @@ final class PwgAPITesting: XCTestCase {
     func testPwgImagesUploadCompletedDecoding() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgImagesUploadCompleted, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -391,7 +391,7 @@ final class PwgAPITesting: XCTestCase {
     func testPwgImagesDeleteDecoding() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgImagesDelete, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -413,7 +413,7 @@ final class PwgAPITesting: XCTestCase {
     func testPwgSessionHistoryLogDecoding() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgHistoryLog, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -433,7 +433,7 @@ final class PwgAPITesting: XCTestCase {
     // MARK: - pwg.session.…
     func testPwgSessionLoginDecoding() {
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgSessionLogin, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -482,7 +482,7 @@ final class PwgAPITesting: XCTestCase {
     func testPwgSessionGetStatusDecoding() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgSessionGetStatus, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -504,7 +504,7 @@ final class PwgAPITesting: XCTestCase {
 
     func testPwgSessionLogoutDecoding() {
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgSessionLogout, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -542,7 +542,7 @@ final class PwgAPITesting: XCTestCase {
     func testPwgTagsGetListDecoding() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgTagsGetList, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -563,7 +563,7 @@ final class PwgAPITesting: XCTestCase {
     func testPwgTagsGetAdminListDecoding() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgTagsGetAdminList, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -584,7 +584,7 @@ final class PwgAPITesting: XCTestCase {
     func testPwgTagsGetAdminList2Decoding() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: "pwg.tags.getAdminList2", withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -605,7 +605,7 @@ final class PwgAPITesting: XCTestCase {
     func testPwgTagsAddDecoding() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgTagsAdd, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -627,7 +627,7 @@ final class PwgAPITesting: XCTestCase {
     func testPwgUsersGetList() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgUsersGetList, withExtension: "json"),
               let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -651,7 +651,7 @@ final class PwgAPITesting: XCTestCase {
     func testPwgUsersFavoritesGetList() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgUsersFavoritesGetList, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -674,7 +674,7 @@ final class PwgAPITesting: XCTestCase {
     func testPwgUsersFavoritesAddDecoding() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: "pwg.users.favorites.addRemove", withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -695,7 +695,7 @@ final class PwgAPITesting: XCTestCase {
     func testPwgGroupsGetList() {
         
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgGroupsGetList, withExtension: "json"),
               let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
@@ -721,7 +721,7 @@ final class PwgAPITesting: XCTestCase {
     // MARK: - reflection.…
     func testReflectionGetMethodListDecoding() {
         // Case of a successful request
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle.module
         guard let url = bundle.url(forResource: kReflectionGetMethodList, withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
