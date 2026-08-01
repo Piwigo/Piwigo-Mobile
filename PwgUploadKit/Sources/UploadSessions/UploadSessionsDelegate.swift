@@ -70,7 +70,11 @@ extension UploadSessionsDelegate: URLSessionDelegate {
     public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: (any Error)?) {
         UploadSessionsDelegate.logger.notice("Session invalidated.")
         if let error = error {
+<<<<<<< HEAD:PwgUploadKit/Sources/UploadSessions/UploadSessionsDelegate.swift
             UploadSessionsDelegate.logger.error("Error: \(error.localizedDescription)")
+=======
+            UploadSessionsDelegate.logger.error("Error: \(error.localizedDescription, privacy: .public)")
+>>>>>>> master:uploadKit/UploadSessions Delegate/UploadSessionsDelegate.swift
         }
         Task { @UploadManagerActor in
             UploadSessionManager.shared.sessionDidBecomeInvalid(session.configuration.identifier ?? "Unknown")

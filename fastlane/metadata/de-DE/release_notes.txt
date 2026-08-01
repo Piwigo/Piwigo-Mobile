@@ -1,3 +1,7 @@
 • Fügt eine „Teilen“-Erweiterung hinzu, mit der Fotos, Videos und PDF-Dateien aus anderen Apps hochgeladen werden können
 • Spielt animierte GIF-Bilder ab
 • Behebt Fehler und verbessert die Benutzeroberfläche
+<<<<<<< HEAD
+=======
+• Erlaubt das Ändern der maximalen Anzahl an gleichzeitigen Verbindungen zum Piwigo-Server
+>>>>>>> master

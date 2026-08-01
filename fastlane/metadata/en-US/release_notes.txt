@@ -1,3 +1,7 @@
 • Adds a Share extension allowing to upload photos, videos and PDF files from other apps
 • Plays animated GIF images
 • Fixes bugs and improves the interface
+<<<<<<< HEAD
+=======
+• Allows to change the maximum number of simultaneous connections to the Piwigo server
+>>>>>>> master

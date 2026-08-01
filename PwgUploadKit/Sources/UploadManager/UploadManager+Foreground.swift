@@ -1,6 +1,10 @@
 //
 //  UploadManager+Foreground.swift
+<<<<<<< HEAD:PwgUploadKit/Sources/UploadManager/UploadManager+Foreground.swift
 //  PwgUploadKit
+=======
+//  uploadKit
+>>>>>>> master:uploadKit/UploadManager Extensions/UploadManager+Foreground.swift
 //
 //  Created by Eddy Lelièvre-Berna on 20/02/2023.
 //  Copyright © 2023 Piwigo.org. All rights reserved.

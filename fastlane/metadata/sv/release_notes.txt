@@ -1,3 +1,8 @@
+<<<<<<< HEAD
 • Lägger till en delningsfunktion som gör det möjligt att ladda upp foton, videor och PDF-filer från andra appar
 • Spelar upp animerade GIF-bilder
 • Åtgärdar buggar och förbättrar gränssnittet
+=======
+• Fixar buggar och förbättrar gränssnittet
+• Gör det möjligt att ändra det maximala antalet samtidiga anslutningar till Piwigo-servern
+>>>>>>> master

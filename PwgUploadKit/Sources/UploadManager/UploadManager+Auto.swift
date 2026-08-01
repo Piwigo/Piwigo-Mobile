@@ -1,6 +1,10 @@
 //
 //  UploadManager+Auto.swift
+<<<<<<< HEAD:PwgUploadKit/Sources/UploadManager/UploadManager+Auto.swift
 //  PwgUploadKit
+=======
+//  uploadKit
+>>>>>>> master:uploadKit/UploadManager Extensions/UploadManager+Auto.swift
 //
 //  Created by Eddy Lelièvre-Berna on 10/04/2021.
 //  Copyright © 2021 Piwigo.org. All rights reserved.
