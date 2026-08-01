@@ -8,8 +8,9 @@
 
 import AVFoundation
 import UIKit
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgUploadKit
+import PwgUIKit
 
 protocol UploadVideoSizeDelegate: NSObjectProtocol {
     func didSelectUploadVideoSize(_ imageSize: Int16)
@@ -41,7 +42,7 @@ class UploadVideoSizeViewController: UIViewController {
         super.viewDidLoad()
 
         // Title
-        title = NSLocalizedString("tabBar_upload", comment: "Upload")
+        title = String(localized: "tabBar_upload", comment: "Upload")
 
         // Table view
         tableView?.accessibilityIdentifier = "Video Size"
@@ -62,7 +63,7 @@ class UploadVideoSizeViewController: UIViewController {
 
         // Table view
         tableView.separatorColor = PwgColor.separator
-        tableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        tableView.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         tableView.reloadData()
     }
 
@@ -130,8 +131,8 @@ extension UploadVideoSizeViewController: UITableViewDelegate
 {
     // MARK: - UITableView - Header
     private func getContentOfHeader() -> (String, String) {
-        let title = String(format: "%@\n", NSLocalizedString("UploadVideoSize_title", comment: "Max Video Size"))
-        let text = NSLocalizedString("UploadVideoSize_header", comment: "Please select the maximum size of the videos which will be uploaded.")
+        let title = String(format: "%@\n", String(localized: "UploadVideoSize_title", comment: "Max Video Size"))
+        let text = String(localized: "UploadVideoSize_header", comment: "Please select the maximum size of the videos which will be uploaded.")
         return (title, text)
     }
 
@@ -165,7 +166,7 @@ extension UploadVideoSizeViewController: UITableViewDelegate
     private func getContentOfFooter() -> String {
         let resolution = UIDevice.current.modelVideoCapabilities
         if resolution.isEmpty { return "" }
-        return String(format: "%@ %@.", NSLocalizedString("UploadVideoSize_resolution", comment: "Built-in cameras maximum specifications:"), resolution)
+        return String(format: "%@ %@.", String(localized: "UploadVideoSize_resolution", comment: "Built-in cameras maximum specifications:"), resolution)
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
@@ -184,7 +185,7 @@ extension UploadVideoSizeViewController: UITableViewDelegate
 extension pwgVideoMaxSizes {
     public var name: String {
         switch self {
-        case .fullResolution:   return NSLocalizedString("UploadPhotoSize_original", comment: "No Downsizing")
+        case .fullResolution:   return String(localized: "UploadPhotoSize_original", comment: "No Downsizing")
         case .UHD4K:            return "4K"
         case .FullHD:           return "Full HD"
         case .HD:               return "HD"

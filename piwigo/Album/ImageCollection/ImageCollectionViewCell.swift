@@ -9,7 +9,10 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
+import PwgUIKit
 
 class ImageCollectionViewCell: UICollectionViewCell {
     
@@ -134,23 +137,23 @@ class ImageCollectionViewCell: UICollectionViewCell {
         // Retrieve image from cache or download it
         let scale = max(traitCollection.displayScale, 1.0)
         let cellSize = CGSizeMake(self.bounds.size.width * scale, self.bounds.size.height * scale)
-        imageURL = ImageUtilities.getPiwigoURL(imageData, ofMinSize: size)
+        imageURL = imageData.url(forMaxSize: size)
         Task {
             let expectedURL = imageURL
             await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: size, type: .image, atURL: imageURL,
-                                                  fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] cachedImageURL in
-                // Guard against cell reuse
-                guard let self = self, self.imageURL == expectedURL else { return }
-
+                                                  fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self = self] cachedImageURL in
                 // Downsample image in the background
                 let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .image)
                 
-                // Set image
-                DispatchQueue.main.async { [self] in
+                // Set image, guarding against cell reuse on the main actor
+                Task { @MainActor in
+                    guard let self, self.imageURL == expectedURL else { return }
                     self.configImage(cachedImage, withHiddenLabel: true)
                 }
-            } failure: { [self] _ in
-                DispatchQueue.main.async { [self] in
+            } failure: { [weak self = self] _ in
+                Task { @MainActor in
+                    // Guard against cell reuse
+                    guard let self, self.imageURL == expectedURL else { return }
                     self.configImage(pwgImageType.image.placeHolder, withHiddenLabel: false)
                 }
             }
@@ -160,7 +163,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
     private func getImageTitle(forSortOption sortOption: pwgImageSort) -> NSAttributedString {
         switch sortOption {
         case .visitsAscending, .visitsDescending:
-            let hits = NSLocalizedString("categoryDiscoverVisits_legend", comment: "hits")
+            let hits = String(localized: "categoryDiscoverVisits_legend", comment: "hits")
             let text = String(format: "%ld %@", Int(imageData.visits), hits)
             return attributedTitle(NSAttributedString(string: text))
         
@@ -259,7 +262,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         // Reset cell
         self.imageURL = nil
         self.nameLabel?.text = ""
-        self.noDataLabel?.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
+        self.noDataLabel?.text = Localized.loading
         self.cellImage?.image = pwgImageType.image.placeHolder
         self.isFavorite = false
         self.isSelection = false

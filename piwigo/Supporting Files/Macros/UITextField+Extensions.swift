@@ -8,6 +8,8 @@
 
 import Foundation
 import UIKit
+import PwgUIKit
+import PwgUIKit
 
 // Adds a "Done" button to a numberPad
 extension UITextField

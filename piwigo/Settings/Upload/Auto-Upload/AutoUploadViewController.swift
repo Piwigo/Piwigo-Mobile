@@ -9,8 +9,10 @@
 import CoreData
 import Photos
 import UIKit
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgCacheKit
+import PwgUploadKit
+import PwgUIKit
 
 class AutoUploadViewController: UIViewController {
 
@@ -29,7 +31,7 @@ class AutoUploadViewController: UIViewController {
 
     private lazy var hasTagCreationRights: Bool = {
         // Depends on the user's rights
-        switch NetworkVars.shared.userStatus {
+        switch ServerVars.shared.userStatus {
         case .guest, .generic:
             return false
         case .admin, .webmaster:
@@ -50,7 +52,7 @@ class AutoUploadViewController: UIViewController {
         super.viewDidLoad()
 
         // Title
-        title = NSLocalizedString("tabBar_upload", comment: "Upload")
+        title = String(localized: "tabBar_upload", comment: "Upload")
 
         // Table view
         autoUploadTableView?.accessibilityIdentifier = "Privacy"
@@ -71,7 +73,7 @@ class AutoUploadViewController: UIViewController {
 
         // Table view
         autoUploadTableView?.separatorColor = PwgColor.separator
-        autoUploadTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        autoUploadTableView?.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         autoUploadTableView?.reloadData()
     }
 

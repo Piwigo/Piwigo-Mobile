@@ -9,11 +9,16 @@
 import AVFoundation
 import BackgroundTasks
 import CoreData
+import ImageIO
 import LocalAuthentication
+import Photos
 import UIKit
+import UniformTypeIdentifiers
 
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgCacheKit
+import PwgUIKit
+import PwgUploadKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
@@ -26,7 +31,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         case showRecentPhotosAction = "ShowRecentPhotosAction"
     }
     var savedShortCutItem: UIApplicationShortcutItem!
-//    var savedUrlContext: UIOpenURLContext?
+    var savedUrlContexts: Set<UIOpenURLContext> = []
     
     // MARK: - Core Data Object Contexts
     private lazy var mainContext: NSManagedObjectContext = {
@@ -54,10 +59,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         // App was launched cold via deep link?
-//        if let urlContext = connectionOptions.urlContexts.first {
-//            // Save URL context for later when app becomes active
-//            savedUrlContext = urlContext
-//        }
+        if connectionOptions.urlContexts.isEmpty == false {
+            // Save URL context for later when app becomes active
+            savedUrlContexts = connectionOptions.urlContexts
+        }
         
         debugPrint("••> \(session.persistentIdentifier): Scene will connect to session.")
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate,
@@ -169,7 +174,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // First created/restored scene ► Blur views if the App Lock is enabled
             /// The passcode window is not presented so that the app
             /// does not request the passcode until it is put into the background.
-            if AppVars.shared.isAppLockActive {
+            if UIVars.shared.isAppLockActive {
                 // Protect presented login view
                 addPrivacyProtection()
             }
@@ -229,7 +234,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         UploadVars.shared.isApplicationActive = true
         
         // Flag used to force relogin at start
-        NetworkVars.shared.applicationShouldRelogin = true
+        ServerVars.shared.applicationShouldRelogin = true
     }
     
     func sceneDidBecomeActive(_ scene: UIScene) {
@@ -253,6 +258,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let isMigratingData = (scene as? UIWindowScene)?.topMostViewController() is DataMigrationViewController
         if appDelegate.isAuthenticatingWithBiometrics || isMigratingData || CacheVars.shared.isMigrationRunning { return }
         
+        // Was the app unlocked from the share extension moments ago?
+        if AppVars.shared.isAppUnlocked == false {
+            let lastUnlock = Date(timeIntervalSinceReferenceDate: UIVars.shared.dateOfLastUnlock)
+            if Date().timeIntervalSince(lastUnlock) < 60 {
+                // Consume the unlock so it cannot be reused
+                UIVars.shared.dateOfLastUnlock = Date.distantPast.timeIntervalSinceReferenceDate
+                AppVars.shared.isAppUnlocked = true
+            }
+        }
+        
         // Request passcode if necessary
         if AppVars.shared.isAppUnlocked == false {
             // Loop over all scenes
@@ -269,7 +284,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 // Remove privacy view
                 self.privacyView?.removeFromSuperview()
                 // Did user enable biometrics?
-                if AppVars.shared.isBiometricsEnabled,
+                if UIVars.shared.isBiometricsEnabled,
                    appDelegate.didCancelBiometricsAuthentication == false {
                     // Yes, perform biometrics authentication
                     appDelegate.performBiometricAuthentication() { success in
@@ -304,7 +319,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Blur views if the App Lock is enabled
         /// The passcode window is not presented so that the app
         /// does not request the passcode until it is put into the background.
-        if AppVars.shared.isAppLockActive {
+        if UIVars.shared.isAppLockActive {
             // Loop over all scenes
             let connectedScenes = UIApplication.shared.connectedScenes
             for scene in connectedScenes {
@@ -373,7 +388,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if connectedScenes.filter({$0.activationState == .foregroundActive}).count > 0 { return }
         
         // Remember to ask for passcode or not
-        AppVars.shared.isAppUnlocked = !AppVars.shared.isAppLockActive
+        AppVars.shared.isAppUnlocked = !UIVars.shared.isAppLockActive
         
         // Remember to resume all upload activities at restart
         UploadVars.shared.didResumeUploads = false
@@ -394,8 +409,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             UploadManager.shared.scheduleNextUpload()
         }
         
-        // Clean up /tmp directory
+        // Schedule the daily refresh of the album data exploited by the share extension
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        appDelegate?.scheduleAlbumRefresh()
+        
+        // Clean up /tmp directory
         appDelegate?.cleanUpTemporaryDirectory(immediately: false)
         
         // Flag used to:
@@ -450,14 +468,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     private func handleShortCutItem(shortcutItem: UIApplicationShortcutItem) -> Bool {
+        // Get top most view controller
+        guard let topMostVC = window?.windowScene?.topMostViewController()
+        else { return false }
+        
         // NOP in absence of user session
-        if let topMostVC = window?.windowScene?.topMostViewController(),
-           topMostVC is LoginViewController {
-            return true
+        if topMostVC is LoginViewController {
+            return false
         }
         
-        // Dismiss image or settings view controllers if needed
-        dismissNonAlbumViewControllers()
+        // Dismiss non-album views
+        topMostVC.dismissToAlbumNavigationController()
         
         // Load the requested view controller
         if let actionTypeValue = ActionType(rawValue: shortcutItem.type) {
@@ -497,33 +518,178 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         return true
     }
     
-    private func dismissNonAlbumViewControllers() {
-        if let topMostVC = window?.windowScene?.topMostViewController(),
-           (topMostVC is AlbumViewController) == false {
-            topMostVC.dismiss(animated: false) {
-                self.dismissNonAlbumViewControllers()
+
+    // MARK: - Application Deep Link Support
+    /// piwigo://shareExtension/albumID=23 (piwigo-debug:// for the debug version)
+    enum DeepLink: Sendable {
+        case shareExtension(albumIDs: [Int32], date: String)
+        
+        init?(url: URL) {
+            // Submitted to the right app?
+            guard let comps = URLComponents(url: url, resolvingAgainstBaseURL: false),
+                  comps.scheme == pwgURLScheme else { return nil }
+            
+            // What should be done?
+            switch comps.host {
+            case "share-extension":
+                guard let albumIDsList = comps.queryItems?.first(where: { $0.name == "albumIDs" })?.value as? String,
+                      let date = comps.queryItems?.first(where: { $0.name == "date" })?.value as? String
+                else { return nil }
+                let albumIDs: [Int32] = albumIDsList.components(separatedBy: ",").compactMap { Int32($0) }
+                self = .shareExtension(albumIDs: albumIDs, date: date)
+            
+            default:
+                return nil
             }
         }
     }
     
-
-    // MARK: - Application Deep Link Support
+    // App was launched warm via deep link
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        // App was launched cold via deep link?
-        if let urlContext = URLContexts.first {
-            // Save URL context for later when app becomes active
-            handleUrlContext(urlContext)
+        for context in URLContexts {
+            handleUrlContext(context.url)
         }
     }
     
-    private func handleUrlContext(_ urlContext: UIOpenURLContext) {
-        // Submitted to the right app?
-        guard urlContext.url.scheme == "piwigo" else { return }
+    func handleUrlContext(_ url: URL) {
+        // Get enum from URL
+        debugPrint("••> \(window?.windowScene?.session.persistentIdentifier ?? "UNKNOWN"): Scene received URL: \(url)")
+        guard let link = DeepLink(url: url) else { return }
         
         // What should be done?
-        debugPrint("URL context: \(urlContext.debugDescription)")
-        // let components = URLComponents(url: urlContext.url, resolvingAgainstBaseURL: false)
-        
+        switch link {
+        case .shareExtension(albumIDs: let albumIDs, date: let shareDate):
+            // Get top most view controller
+            guard let topMostVC = window?.windowScene?.topMostViewController()
+            else { return }
+            
+            // Uploads will start after login
+            if topMostVC is LoginViewController {
+                return
+            }
+            
+            // Dismiss non-album views
+            topMostVC.dismissToAlbumNavigationController() {
+                // Get current top album view controller
+                guard let defaultAlbum = self.window?.windowScene?.topMostViewController() as? AlbumViewController
+                else { return }
+                
+                // Get source and destination albums
+                guard let destinationAlbumID = albumIDs.last,
+                      let sourceAlbum = try? AlbumProvider().getAlbum(ofUser: defaultAlbum.user, withId: defaultAlbum.categoryId),
+                      let destinationAlbum = try? AlbumProvider().getAlbum(ofUser: defaultAlbum.user, withId: destinationAlbumID)
+                else { return }
+                
+                // Get common path (don't use Set() which does not retain the order)
+                let sourcePath = sourceAlbum.upperIds.components(separatedBy: ",").compactMap({ Int32($0) })
+                let destinationPath = destinationAlbum.upperIds.components(separatedBy: ",").compactMap({ Int32($0) })
+                let commonPath = sourcePath.filter({ destinationPath.contains($0) })
+                if commonPath.isEmpty {
+                    AlbumVars.shared.defaultCategory = pwgSmartAlbum.root.rawValue
+                }
+                let lastCommonAlbumId = Array(commonPath).last ?? Int32.zero
+                
+                // Keep album view controllers from which to push the remaining albums
+                /// Note: firstAlbumVCs should at least contain the root album vew controller.
+                var firstAlbumVCs: [AlbumViewController] = []
+                guard let navController = self.window?.rootViewController as? AlbumNavigationController,
+                      let albumVCs = navController.viewControllers as? [AlbumViewController],
+                      let indexOfCommonAlbumVC = albumVCs.firstIndex(where: { $0.categoryId == lastCommonAlbumId })
+                else { return }
+                firstAlbumVCs = Array(albumVCs[...indexOfCommonAlbumVC])
+                
+                // Create missing album view controllers
+                let remainingPath = destinationPath.filter({ sourcePath.contains($0) == false })
+                let newAlbumVCs = remainingPath.map({
+                    // Create album view controller
+                    let albumSB = UIStoryboard(name: "AlbumViewController", bundle: nil)
+                    guard let subAlbumVC = albumSB.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
+                    else { preconditionFailure("Could not load AlbumViewController") }
+                    subAlbumVC.categoryId = $0
+                    return subAlbumVC
+                })
+                
+                // Update the stack of album view controllers
+                let allViewControllers = firstAlbumVCs + newAlbumVCs
+                navController.setViewControllers(allViewControllers, animated: false)
+                guard let albumVC = allViewControllers.last else { return }
+                
+                // Get files in the Uploads directory related with the current share
+                var files = [URL]()
+                do {
+                    files = try FileManager.default.contentsOfDirectory(at: DataDirectories.appUploadsDirectory,
+                                                                        includingPropertiesForKeys: nil,
+                                                                        options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+                    files.removeAll(where: { $0.lastPathComponent.contains(shareDate) == false })
+                    files.removeAll(where: { $0.lastPathComponent.hasSuffix(".json") == false })
+                }
+                catch {
+                    debugPrint("••> Could not retrieve files in Uploads directory: \(error.localizedDescription)")
+                }
+                files.forEach({ debugPrint("••> \($0.lastPathComponent)") })
+                
+                // Prepare upload requests
+                // When Piwigo has full access to the Photo Library, try to resolve each shared file
+                // back to the asset it originates from, so the original can be offered for deletion
+                // after a successful upload (see ShareExtensionAssetMatcher).
+                // Resolving each shared file to its Photo Library asset reads image/video metadata
+                // asynchronously, so build the requests and present the options on the main actor.
+                let canAccessLibrary = PHPhotoLibrary.authorizationStatus(for: .readWrite) == .authorized
+                Task { @MainActor in
+                    var uploadRequests: [UploadProperties] = []
+                    for file in files {
+                        do {
+                            // Get data stored in JSON file
+                            let data = try Data(contentsOf: file)
+                            let uploadInfo = try JSONDecoder().decode([String: String].self, from: data)
+                            guard let identifier = uploadInfo["identifier"], identifier.isEmpty == false,
+                                  let fileName = uploadInfo["fileName"], fileName.isEmpty == false
+                            else { continue }
+
+                            // Create upload request
+                            var uploadRequest = UploadProperties(localIdentifier: identifier,
+                                                                 fileName: fileName,
+                                                                 category: destinationAlbumID)
+
+                            // Resolve the source Photo Library asset (unambiguous match only), so its
+                            // original can be deleted after upload. Left nil when it cannot be matched.
+                            if canAccessLibrary {
+                                let mediaURL = DataDirectories.appUploadsDirectory.appendingPathComponent(identifier + kOriginalSuffix)
+                                uploadRequest.deleteAssetIdentifier = await ShareExtensionAssetMatcher
+                                    .localIdentifier(forFileAt: mediaURL, originalFileName: fileName)
+                            }
+                            uploadRequests.append(uploadRequest)
+
+                            // Delete JSON file
+                            try? FileManager.default.removeItem(at: file)
+                        }
+                        catch {
+                            debugPrint("••> Could not decode upload info: \(error.localizedDescription)")
+                        }
+                    }
+
+                    // Show upload options views
+                    let uploadSwitchSB = UIStoryboard(name: "UploadSwitchViewController", bundle: nil)
+                    guard let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController
+                    else { preconditionFailure("Could not load UploadSwitchViewController") }
+
+                    // Prepare upload options selector
+                    uploadSwitchVC.delegate = nil
+                    uploadSwitchVC.user = albumVC.user
+                    uploadSwitchVC.categoryId = albumVC.categoryId
+                    uploadSwitchVC.categoryCurrentCounter = destinationAlbum.currentCounter
+                    // Offer to delete originals only for photos matched to a Photo Library asset
+                    uploadSwitchVC.canDeleteImages = uploadRequests.contains(where: { $0.deleteAssetIdentifier != nil })
+                    uploadSwitchVC.uploadRequests = uploadRequests
+
+                    // Push upload options view embedded in navigation controller
+                    let uploadNavController = UINavigationController(rootViewController: uploadSwitchVC)
+                    uploadNavController.modalTransitionStyle = .coverVertical
+                    uploadNavController.modalPresentationStyle = .pageSheet
+                    albumVC.navigationController?.present(uploadNavController, animated: true)
+                }
+            }
+        }
     }
 }
 
@@ -562,7 +728,9 @@ extension SceneDelegate: AppLockDelegate {
         let audioSession = AVAudioSession.sharedInstance()
         let availableCategories = audioSession.availableCategories
         if availableCategories.contains(AVAudioSession.Category.playback) {
-            try? audioSession.setCategory(.playback)
+            DispatchQueue.global(qos: .background).async {
+                try? audioSession.setCategory(.playback)
+            }
         }
 
         // Should we log in?
@@ -585,5 +753,232 @@ extension SceneDelegate: AppLockDelegate {
             await UploadManager.shared.resumeInForeground()
             #endif
         }
+    }
+}
+
+
+// MARK: - Share Extension Asset Matching
+/// Resolves the Photo Library asset a file shared via the share extension originates from, so that
+/// the original can be deleted after a successful upload.
+///
+/// The share extension only ever hands the app a file copy (there is no PHAsset in an
+/// `NSItemProvider`), so the match is a best-effort heuristic based on the file's capture date,
+/// pixel dimensions and original file name. Because the result drives a **destructive** deletion,
+/// a match is returned only when exactly one asset qualifies; any ambiguity (no candidate, or more
+/// than one) yields nil and the original is left untouched.
+///
+/// Both still images (ImageIO) and videos (AVFoundation) are matched — photos by EXIF capture date,
+/// videos by duration — plus pixel size and base file name. A file with no readable structural
+/// signal returns nil, so the "Delete after upload" option simply does not appear for it.
+fileprivate enum ShareExtensionAssetMatcher {
+
+    private struct Signature {
+        let captureDate: Date?      // nil for videos without creation-date metadata
+        let pixelWidth: Int
+        let pixelHeight: Int
+        let duration: Double        // seconds; 0 for still images
+        let mediaType: PHAssetMediaType
+    }
+
+    static func localIdentifier(forFileAt fileURL: URL, originalFileName: String) async -> String? {
+        // Read a signature (capture date + pixel size) from the shared file
+        guard let signature = await readSignature(forFileAt: fileURL, originalFileName: originalFileName) else { return nil }
+
+        // Narrow the search with whatever structural signals the file yields, then let the original
+        // base name make the final decision. Photos carry an EXIF capture date; videos may lack a
+        // creation date (e.g. non-camera MP4s) but always expose a duration and track size.
+        var predicates: [NSPredicate] = [
+            NSPredicate(format: "mediaType == %d", signature.mediaType.rawValue)
+        ]
+        // Capture date, when available — a wide (±1 day) window absorbs time-zone ambiguity.
+        if let captureDate = signature.captureDate {
+            let window: TimeInterval = 24 * 60 * 60
+            predicates.append(NSPredicate(format: "creationDate >= %@", captureDate.addingTimeInterval(-window) as NSDate))
+            predicates.append(NSPredicate(format: "creationDate <= %@", captureDate.addingTimeInterval(window) as NSDate))
+        }
+        // Video duration — only as a fallback discriminator when there is no capture date. It is a
+        // poor key for slow-motion clips, whose PHAsset presentation duration differs from the
+        // shared file's real-time duration; dated videos are already pinned by date + size + name.
+        if signature.captureDate == nil, signature.duration > 0 {
+            let tolerance = 1.0
+            predicates.append(NSPredicate(format: "duration >= %f AND duration <= %f",
+                                          signature.duration - tolerance, signature.duration + tolerance))
+        }
+        // Pixel size is compared unordered: the file's stored dimensions are un-oriented whereas
+        // PHAsset reports oriented dimensions, so a portrait photo has them swapped.
+        if signature.pixelWidth > 0, signature.pixelHeight > 0 {
+            predicates.append(NSPredicate(format: "(pixelWidth == %d AND pixelHeight == %d) OR (pixelWidth == %d AND pixelHeight == %d)",
+                                          signature.pixelWidth, signature.pixelHeight,
+                                          signature.pixelHeight, signature.pixelWidth))
+        }
+        // Never match on media type + base name alone — require at least one structural signal,
+        // otherwise a destructive deletion could target the wrong asset.
+        guard predicates.count > 1 else { return nil }
+
+        let options = PHFetchOptions()
+        options.includeHiddenAssets = true
+        options.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+
+        // Keep assets whose original file name matches; bail as soon as it is ambiguous
+        let assets = PHAsset.fetchAssets(with: options)
+        var matchedIdentifier: String?
+        var isAmbiguous = false
+        // Compare file names WITHOUT extension because
+        // only the base name is preserved ("IMG_1234.heic" → "IMG_1234.jpeg").
+        let sharedBaseName = (originalFileName as NSString).deletingPathExtension
+        assets.enumerateObjects { asset, _, stop in
+            guard let name = PHAssetResource.assetResources(for: asset).first?.originalFilename else { return }
+            let assetBaseName = (name as NSString).deletingPathExtension
+            guard assetBaseName.caseInsensitiveCompare(sharedBaseName) == .orderedSame else { return }
+            if matchedIdentifier == nil {
+                matchedIdentifier = asset.localIdentifier
+            } else {
+                isAmbiguous = true
+                stop.pointee = true
+            }
+        }
+        return isAmbiguous ? nil : matchedIdentifier
+    }
+
+    private static func imageSignature(forFileAt fileURL: URL) -> Signature? {
+        // Access the ImageIO property dictionary as an NSDictionary (toll-free bridged, no deep
+        // copy) and read only the scalar keys we need — bridging the whole tree to a Swift
+        // dictionary can trip over private CF value types ("unknown class" runtime traps).
+        let sourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
+        guard let source = CGImageSourceCreateWithURL(fileURL as CFURL, sourceOptions),
+              CGImageSourceGetCount(source) > 0,
+              let cfProperties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil)
+        else { return nil }
+        let properties = cfProperties as NSDictionary
+
+        let width = (properties[kCGImagePropertyPixelWidth] as? NSNumber)?.intValue ?? 0
+        let height = (properties[kCGImagePropertyPixelHeight] as? NSNumber)?.intValue ?? 0
+
+        // Capture date from EXIF (falls back to TIFF) — "yyyy:MM:dd HH:mm:ss", without time zone
+        var dateString: String?
+        if let exif = properties[kCGImagePropertyExifDictionary] as? NSDictionary {
+            dateString = (exif[kCGImagePropertyExifDateTimeOriginal] as? String)
+                ?? (exif[kCGImagePropertyExifDateTimeDigitized] as? String)
+        }
+        if dateString == nil, let tiff = properties[kCGImagePropertyTIFFDictionary] as? NSDictionary {
+            dateString = tiff[kCGImagePropertyTIFFDateTime] as? String
+        }
+        guard let captureDate = exifDate(from: dateString) else { return nil }
+        return Signature(captureDate: captureDate, pixelWidth: width, pixelHeight: height, duration: 0, mediaType: .image)
+    }
+
+    // Reads a signature from a video's container metadata (creation date + first track size).
+    private static func videoSignature(forFileAt fileURL: URL, originalFileName: String) async -> Signature? {
+        // AVURLAsset infers the container type from the path extension, but the shared file has none
+        // on disk. On iOS 17+ override the MIME type directly; on older systems create a hard link in
+        // the SAME directory (same filesystem, no data copy) carrying the original extension. A symlink
+        // into the app's tmp does NOT work — AVFoundation resolves it to the extensionless real path.
+        let ext = (originalFileName as NSString).pathExtension
+        let asset: AVURLAsset
+        var tempLinkURL: URL?
+        if #available(iOS 17, *) {
+            var options: [String: Any] = [:]
+            if let utType = UTType(filenameExtension: ext), let mimeType = utType.preferredMIMEType {
+                options[AVURLAssetOverrideMIMETypeKey] = mimeType
+            }
+            asset = AVURLAsset(url: fileURL, options: options)
+        } else {
+            var assetURL = fileURL
+            if ext.isEmpty == false {
+                let linkURL = fileURL.deletingLastPathComponent()
+                    .appendingPathComponent("pwgMatch-" + UUID().uuidString).appendingPathExtension(ext)
+                if (try? FileManager.default.linkItem(at: fileURL, to: linkURL)) != nil {
+                    assetURL = linkURL
+                    tempLinkURL = linkURL
+                }
+            }
+            asset = AVURLAsset(url: assetURL)
+        }
+        defer { if let tempLinkURL { try? FileManager.default.removeItem(at: tempLinkURL) } }
+
+        // Capture date: the common `creationDate` convenience is often nil for camera MOVs, so load
+        // and search the QuickTime/common metadata across container formats.
+        let captureDate = await creationDate(of: asset)
+        
+        // Natural (un-oriented) size of the first video track — compared unordered below
+        var width = 0, height = 0
+        if let tracks = try? await asset.loadTracks(withMediaType: .video), let track = tracks.first {
+            let size: CGSize
+            if #available(iOS 16, *) {
+                size = (try? await track.load(.naturalSize)) ?? .zero
+            } else {
+                size = track.naturalSize
+            }
+            width = abs(Int(size.width.rounded()))
+            height = abs(Int(size.height.rounded()))
+        }
+        // Duration — a structural signal that survives Photos' re-export even when the creation
+        // date does not (e.g. non-camera MP4s). Lets us match videos that carry no capture date.
+        var duration = 0.0
+        if #available(iOS 16, *) {
+            duration = (try? await asset.load(.duration)).map(CMTimeGetSeconds) ?? 0
+        } else {
+            duration = CMTimeGetSeconds(asset.duration)
+        }
+        if !duration.isFinite || duration < 0 { duration = 0 }
+
+        // Give up only if the file was unreadable (no date, no duration, no size)
+        guard captureDate != nil || duration > 0 || (width > 0 && height > 0) else { return nil }
+        return Signature(captureDate: captureDate, pixelWidth: width, pixelHeight: height, duration: duration, mediaType: .video)
+    }
+
+    // Loads and searches a video's metadata (across container formats and key spaces) for a
+    // creation date, since the common `creationDate` convenience is frequently absent.
+    private static func creationDate(of asset: AVURLAsset) async -> Date? {
+        let formats: [AVMetadataFormat] = [.quickTimeMetadata, .quickTimeUserData, .isoUserData, .iTunesMetadata]
+        var items: [AVMetadataItem] = []
+        for format in formats {
+            if let loaded = try? await asset.loadMetadata(for: format) {
+                items.append(contentsOf: loaded)
+            }
+        }
+        let creationIDs: [AVMetadataIdentifier] = [
+            .quickTimeMetadataCreationDate, .quickTimeUserDataCreationDate, .commonIdentifierCreationDate
+        ]
+        for identifier in creationIDs {
+            for item in AVMetadataItem.metadataItems(from: items, filteredByIdentifier: identifier) {
+                if let date = date(from: item) { return date }
+            }
+        }
+        // Fallback: any item flagged as a creation date via its common key
+        for item in items where item.commonKey == .commonKeyCreationDate {
+            if let date = date(from: item) { return date }
+        }
+        return nil
+    }
+
+    // Extracts a Date from a (loaded) metadata item, tolerating common QuickTime/ISO string forms.
+    private static func date(from item: AVMetadataItem) -> Date? {
+        if let date = item.dateValue { return date }
+        guard let string = item.stringValue else { return nil }
+        let iso = ISO8601DateFormatter()
+        iso.formatOptions = [.withInternetDateTime]
+        if let date = iso.date(from: string) { return date }
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        for format in ["yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ssZZZZZ", "yyyy:MM:dd HH:mm:ss"] {
+            formatter.dateFormat = format
+            if let date = formatter.date(from: string) { return date }
+        }
+        return nil
+    }
+
+    // Reads a matching signature: still image via ImageIO, else video via AVFoundation.
+    private static func readSignature(forFileAt fileURL: URL, originalFileName: String) async -> Signature? {
+        if let image = imageSignature(forFileAt: fileURL) { return image }
+        return await videoSignature(forFileAt: fileURL, originalFileName: originalFileName)
+    }
+
+    private static func exifDate(from string: String?) -> Date? {
+        guard let string = string else { return nil }
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy:MM:dd HH:mm:ss"
+        return formatter.date(from: string)
     }
 }

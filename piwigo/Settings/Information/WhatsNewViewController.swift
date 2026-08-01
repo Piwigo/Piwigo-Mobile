@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PwgUIKit
 
 final class WhatsNewViewController: UIViewController {
     
@@ -22,33 +23,42 @@ final class WhatsNewViewController: UIViewController {
     @IBOutlet weak var secondNewsTitle: UILabel!
     @IBOutlet weak var secondNewsDescription: UILabel!
     
+    @IBOutlet weak var thirdNewsImage: UIImageView!
+    @IBOutlet weak var thirdNewsTitle: UILabel!
+    @IBOutlet weak var thirdNewsDescription: UILabel!
+    
     @IBOutlet weak var continueButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Main title
-        titleLabel.text = NSLocalizedString("whatsNew_title", comment: "What's New in Piwigo")
+        titleLabel.text = String(localized: "whatsNew_title", comment: "What's New in Piwigo")
         
         // What's new — 1st annoucement
-        if #available(iOS 18.0, *) {
+        if #available(iOS 17.0, *) {
             secondNewsImage.image = UIImage(systemName: "photo.badge.plus")
         } else {
             // Fallback on ealier version
             secondNewsImage.image = UIImage(named: "photo.badge.plus")
         }
         firstNewsTitle.text = String(localized: "UploadRequests_cache", comment: "Uploads")
-        firstNewsDescription.text = String(localized: "whatsNew_uploads", comment: "Faster uploads, new advanced options, and the ability to continue uploads in the background on iOS 26.")
+        firstNewsDescription.text = String(localized: "whatsNew_shareExtension", comment: "Adds a Share extension allowing to upload photos, videos and PDF files from other apps.")
         
         // What's new — 2nd annoucement
+        secondNewsImage.image = UIImage(systemName: "square.stack.3d.forward.dottedline")
+        secondNewsTitle.text = String(localized: "whatsNew_gif", comment: "GIF Images")
+        secondNewsDescription.text = String(localized: "whatsNew_gifDescription", comment: "Plays animated GIF images.")
+        
+        // What's new — 3rd annoucement
         if #available(iOS 18.0, *) {
-            secondNewsImage.image = UIImage(systemName: "ladybug.slash")
+            thirdNewsImage.image = UIImage(systemName: "ladybug.slash")
         } else {
             // Fallback on ealier version
-            secondNewsImage.image = UIImage(named: "ladybug.slash")
+            thirdNewsImage.image = UIImage(named: "ladybug.slash")
         }
-        secondNewsTitle.text = String(localized: "whatsNew_improvements", comment: "Improvements")
-        secondNewsDescription.text = String(localized: "whatsNew_bugFixes", comment: "Bug fixes and improvement of the interface.")
+        thirdNewsTitle.text = String(localized: "whatsNew_improvements", comment: "Improvements")
+        thirdNewsDescription.text = String(localized: "whatsNew_bugFixes", comment: "Bug fixes and improvement of the interface.")
         
         // Continue button
         continueButton.setTitle(String(localized: "whatsNew_continue", comment: "Continue"), for: .normal)
@@ -66,6 +76,8 @@ final class WhatsNewViewController: UIViewController {
         firstNewsDescription.textColor = PwgColor.text
         secondNewsTitle.textColor = PwgColor.text
         secondNewsDescription.textColor = PwgColor.text
+        thirdNewsTitle.textColor = PwgColor.text
+        thirdNewsDescription.textColor = PwgColor.text
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -121,7 +133,7 @@ final class WhatsNewViewController: UIViewController {
                 let bottomOffset = CGPoint( x: 0, y: max(0, height))
                 self.scrollView.setContentOffset(bottomOffset, animated: false)
             }
-            try await Task.sleep(nanoseconds: 300_000_000)
+            try? await Task.sleep(nanoseconds: 300_000_000)
 
             await animate(duration: scrollDuration) {
                 self.scrollView.setContentOffset(.zero, animated: false)

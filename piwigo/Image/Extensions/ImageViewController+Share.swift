@@ -8,7 +8,8 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgUIKit
 
 extension ImageViewController
 {
@@ -129,14 +130,8 @@ extension ImageViewController
 //            debugPrint("Activity Type selected: \(activityType)")
 
             // If needed, sets items so that they will be deleted after a delay
-            let delay = pwgClearClipboard(rawValue: AppVars.shared.clearClipboardDelay)?.seconds ?? 0.0
-            if delay > 0, activityType == .copyToPasteboard {
-                let items = UIPasteboard.general.items
-                let expirationDate: NSDate = NSDate.init(timeIntervalSinceNow: delay)
-                let options: [UIPasteboard.OptionsKey : Any] = [.expirationDate : expirationDate]
-                UIPasteboard.general.setItems(items, options: options)
-            }
-            
+            ShareUtilities.setClipboardExpiration(forActivityType: activityType)
+
             // Enable buttons after action
             setEnableStateOfButtons(true)
 
@@ -175,8 +170,7 @@ extension ImageViewController: @preconcurrency ShareImageActivityItemProviderDel
     @MainActor
     func imageActivityItemProviderPreprocessingDidBegin(_ imageActivityItemProvider: UIActivityItemProvider?, withTitle title: String) {
         // Show HUD to let the user know the image is being downloaded in the background.
-        let cancelButton = NSLocalizedString("alertCancelButton", comment: "Cancel")
-        presentedViewController?.showHUD(withTitle: title, buttonTitle: cancelButton, buttonTarget: self, 
+        presentedViewController?.showHUD(withTitle: title, buttonTitle: Localized.cancel, buttonTarget: self,
                                          buttonSelector: #selector(cancelShareImage), inMode: .determinate)
     }
 

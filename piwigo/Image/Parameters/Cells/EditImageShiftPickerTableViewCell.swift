@@ -9,7 +9,8 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgUIKit
 
 @objc protocol EditImageShiftPickerDelegate: NSObjectProtocol {
     func didSelectDate(withPicker date: Date)

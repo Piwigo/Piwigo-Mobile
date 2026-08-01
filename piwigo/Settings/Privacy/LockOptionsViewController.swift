@@ -8,7 +8,8 @@
 
 import LocalAuthentication
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgUIKit
 
 protocol LockOptionsDelegate: NSObjectProtocol {
     func didSetAppLock(toState isLocked: Bool)
@@ -29,7 +30,7 @@ class LockOptionsViewController: UIViewController {
         super.viewDidLoad()
         
         // Title
-        title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
+        title = Localized.privacy
         
         // Table view
         lockOptionsTableView?.accessibilityIdentifier = "Lock Settings"
@@ -52,7 +53,7 @@ class LockOptionsViewController: UIViewController {
 
         // Table view
         lockOptionsTableView?.separatorColor = PwgColor.separator
-        lockOptionsTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        lockOptionsTableView?.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         lockOptionsTableView?.reloadData()
     }
     
@@ -102,19 +103,19 @@ extension LockOptionsViewController: UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
             else { preconditionFailure("Could not load SwitchTableViewCell") }
 
-            let title = NSLocalizedString("settings_appLock", comment: "App Lock")
+            let title = String(localized: "settings_appLock", comment: "App Lock")
             cell.configure(with: title)
-            cell.cellSwitch.setOn(AppVars.shared.isAppLockActive, animated: true)
+            cell.cellSwitch.setOn(UIVars.shared.isAppLockActive, animated: true)
             cell.cellSwitchBlock = { switchState in
                 // Check if a password exists
-                if switchState, AppVars.shared.appLockKey.isEmpty {
+                if switchState, UIVars.shared.appLockKey.isEmpty {
                     let appLockSB = UIStoryboard(name: "AppLockViewController", bundle: nil)
                     guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "AppLockViewController") as? AppLockViewController else { return }
                     appLockVC.config(forAction: .enterPasscode)
                     self.navigationController?.pushViewController(appLockVC, animated: true)
                 } else {
                     // Enable/disable app-lock option
-                    AppVars.shared.isAppLockActive = switchState
+                    UIVars.shared.isAppLockActive = switchState
                     self.delegate?.didSetAppLock(toState: switchState)
                 }
             }
@@ -123,10 +124,10 @@ extension LockOptionsViewController: UITableViewDataSource {
         case 1:     // Change Password
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "ButtonTableViewCell", for: indexPath) as? ButtonTableViewCell
             else { preconditionFailure("Could not load a ButtonTableViewCell!") }
-            if AppVars.shared.appLockKey.isEmpty {
-                cell.configure(with: NSLocalizedString("settings_appLockEnter", comment: "Enter Passcode"))
+            if UIVars.shared.appLockKey.isEmpty {
+                cell.configure(with: Localized.enterPasscode)
             } else {
-                cell.configure(with: NSLocalizedString("settings_appLockModify", comment: "Modify Passcode"))
+                cell.configure(with: Localized.modifyPasscode)
             }
             cell.accessibilityIdentifier = "passcode"
             tableViewCell = cell
@@ -137,11 +138,11 @@ extension LockOptionsViewController: UITableViewDataSource {
             var title = ""
             switch context.biometryType {
             case .touchID:
-                title = NSLocalizedString("settings_biometricsTouchID", comment: "Touch ID")
+                title = String(localized: "settings_biometricsTouchID", comment: "Touch ID")
             case .faceID:
-                title = NSLocalizedString("settings_biometricsFaceID", comment: "Face ID")
+                title = String(localized: "settings_biometricsFaceID", comment: "Face ID")
             case .opticID:
-                title = NSLocalizedString("settings_biometricsOpticID", comment: "Optic ID")
+                title = String(localized: "settings_biometricsOpticID", comment: "Optic ID")
             default:
                 title = "—?—"
             }
@@ -151,9 +152,9 @@ extension LockOptionsViewController: UITableViewDataSource {
                 cell.cellSwitch.onTintColor = PwgColor.rightLabel
                 cell.isUserInteractionEnabled = false
             }
-            cell.cellSwitch.setOn(AppVars.shared.isBiometricsEnabled, animated: true)
+            cell.cellSwitch.setOn(UIVars.shared.isBiometricsEnabled, animated: true)
             cell.cellSwitchBlock = { switchState in
-                AppVars.shared.isBiometricsEnabled = switchState
+                UIVars.shared.isBiometricsEnabled = switchState
             }
             tableViewCell = cell
 
@@ -202,7 +203,7 @@ extension LockOptionsViewController: UITableViewDelegate {
             // Display numpad for setting up a passcode
             let appLockSB = UIStoryboard(name: "AppLockViewController", bundle: nil)
             guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "AppLockViewController") as? AppLockViewController else { return }
-            if AppVars.shared.appLockKey.isEmpty {
+            if UIVars.shared.appLockKey.isEmpty {
                 appLockVC.config(forAction: .enterPasscode)
             } else {
                 appLockVC.config(forAction: .modifyPasscode)
@@ -217,20 +218,20 @@ extension LockOptionsViewController: UITableViewDelegate {
         var footer = ""
         switch section {
         case 0:     // App-Lock On/Off
-            footer = NSLocalizedString("settings_appLockInfo", comment: "With App Lock, ...")
+            footer = Localized.appLockInfo
         case 1:     // Change Passcode
-            footer = NSLocalizedString("settings_passcodeInfo", comment: "The passcode is separate…")
+            footer = String(localized: "settings_passcodeInfo", comment: "The passcode is separate…")
         case 2:     // Touch ID / Face ID On/Off
             if contextErrorMsg.isEmpty {
                 switch context.biometryType {
                 case .none:
                     footer = ""
                 case .touchID:
-                    footer = NSLocalizedString("settings_biometricsTouchIDinfo", comment: "Use Touch ID…")
+                    footer = String(localized: "settings_biometricsTouchIDinfo", comment: "Use Touch ID…")
                 case .faceID:
-                    footer = NSLocalizedString("settings_biometricsFaceIDinfo", comment:"Use Face ID…")
+                    footer = String(localized: "settings_biometricsFaceIDinfo", comment:"Use Face ID…")
                 case .opticID:
-                    footer = NSLocalizedString("settings_biometricsOpticIDinfo", comment:"Use Optic ID…")
+                    footer = String(localized: "settings_biometricsOpticIDinfo", comment:"Use Optic ID…")
                 @unknown default:
                     footer = ""
                 }

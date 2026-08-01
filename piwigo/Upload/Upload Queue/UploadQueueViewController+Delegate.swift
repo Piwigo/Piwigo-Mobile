@@ -8,8 +8,10 @@
 
 import Foundation
 import UIKit
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgCacheKit
+import PwgUIKit
+import PwgUploadKit
 
 // MARK: - UITableViewDelegate Methods
 extension UploadQueueViewController: UITableViewDelegate
@@ -18,7 +20,7 @@ extension UploadQueueViewController: UITableViewDelegate
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let sectionKey = SectionKeys(rawValue: diffableDataSource.snapshot().sectionIdentifiers[section]) ?? SectionKeys.Section4
         return TableViewUtilities.heightOfHeader(withTitle: sectionKey.name,
-                                                        width: tableView.frame.size.width)
+                                                 width: tableView.frame.size.width)
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -104,7 +106,7 @@ extension UploadQueueViewController: UITableViewDelegate
     @objc func applyUploadProgress(_ notification: Notification) {
         if let localIdentifier =  notification.userInfo?["localIdentifier"] as? String, !localIdentifier.isEmpty ,
            let progressFraction = notification.userInfo?["progressFraction"] as? Float,
-           let visibleCells = queueTableView.visibleCells as? [UploadImageTableViewCell],
+           let visibleCells = queueTableView?.visibleCells as? [UploadImageTableViewCell],
            let cell = visibleCells.first(where: {$0.localIdentifier == localIdentifier}) {
             cell.uploadingProgress?.setProgress(progressFraction, animated: true)
         }

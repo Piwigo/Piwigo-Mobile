@@ -6,9 +6,12 @@
 //  Copyright © 2025 Piwigo.org. All rights reserved.
 //
 
+import CoreData
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgCacheKit
+import PwgUIKit
 
 // MARK: - UITableView - Diffable Data Source
 extension SelectCategoryViewController
@@ -103,13 +106,10 @@ extension SelectCategoryViewController: UITableViewDataSource
         
         // No button if the user does not have upload rights
         var buttonState: pwgCategoryCellButtonState = .none
-        let allAlbums: [Album] = albums.fetchedObjects ?? []
-        let filteredCat = allAlbums.filter({ user.hasAdminRights ||
-                                             userUploadRights.contains($0.pwgID) })
-        if filteredCat.count > 0 {
+        if user.hasAdminRights || userUploadRights.contains(albumData.pwgID) {
             buttonState = albumsShowingSubAlbums.contains(albumData.pwgID) ? .hideSubAlbum : .showSubAlbum
         }
-
+        
         // How should we present the category
         cell.delegate = self
         switch wantedAction {

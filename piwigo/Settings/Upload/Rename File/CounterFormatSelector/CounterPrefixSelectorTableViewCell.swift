@@ -8,7 +8,9 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgCacheKit
+import PwgUIKit
 
 typealias cellPrefixSelectorBlock = (pwgCounterFormat.Prefix) -> Void
 

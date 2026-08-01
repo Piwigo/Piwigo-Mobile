@@ -7,8 +7,11 @@
 //
 
 import Foundation
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
+import PwgUIKit
+import PwgUploadKit
 
 extension AlbumViewController
 {
@@ -40,23 +43,38 @@ extension AlbumViewController
             await self.fetchImages(withInitialImageIds: oldImageIDs, query: query,
                                    fromPage: 0, toPage: 0)
         } else {
-            await self.fetchAlbums(forUserWithAdminRights: user.hasAdminRights,
+            // Fetch the root album recursively after a successful login
+            // so that the share extension can present the whole album tree
+            let recursively = (categoryId == pwgSmartAlbum.root.rawValue) && AlbumVars.shared.fetchAlbumDataRecursively
+            await self.fetchAlbums(forUserWithAdminRights: user.hasAdminRights, recursively: recursively,
                                    withInitialImageIds: oldImageIDs, query: query)
         }
     }
     
     @concurrent
-    private func fetchAlbums(forUserWithAdminRights hasAdminRights: Bool,
+    private func fetchAlbums(forUserWithAdminRights hasAdminRights: Bool, recursively: Bool,
                              withInitialImageIds oldImageIDs: Set<Int64>, query: String) async {
         // Use the AlbumProvider to fetch album data. On completion,
         // handle general UI updates and error alerts on the main queue.
         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Fetch albums
-                try await albumProvider.fetchAlbums(forUserWithAdminRights: hasAdminRights,
-                                                    inParentWithId: categoryId,
-                                                    thumbnailSize: thumnailSize)
+                let pwgData = try await JSONManager.shared.fetchAlbums(forUserWithAdminRights: hasAdminRights,
+                                                                       inParentWithId: categoryId,
+                                                                       recursively: recursively,
+                                                                       thumbnailSize: thumnailSize)
+                // Update labum data in cache
+                if pwgData.isEmpty == false {
+                    try await albumProvider.importAlbums(pwgData, recursively: recursively, inParent: categoryId)
+                }
+
+                // All album data fetched ► Remember when and disable the recursive mode
+                if recursively {
+                    AlbumVars.shared.fetchAlbumDataRecursively = false
+                    CacheVars.shared.dateOfLastAlbumRefresh = Date().timeIntervalSinceReferenceDate
+                }
+                
                 // Fetch image data?
                 await MainActor.run { [self] in
                     // ► Remove current album from list of albums being fetched
@@ -93,7 +111,7 @@ extension AlbumViewController
                 }
                 
             }
-            catch let error as PwgKitError {
+            catch {
                 // Show the error
                 await MainActor.run { [self] in
                     // Done fetching album data
@@ -106,7 +124,7 @@ extension AlbumViewController
         }
     }
     
-
+    
     // MARK: - Fetch Image Data in the Background
     @concurrent
     func fetchImages(withInitialImageIds oldImageIDs: Set<Int64>, query: String,
@@ -114,11 +132,11 @@ extension AlbumViewController
         // Use the ImageProvider to fetch image data. On completion,
         // handle general UI updates and error alerts on the main queue.
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Fetch images
                 let (fetchedImageIds, totalCount, hasDownloadRight) =
-                try await imageProvider.fetchImages(ofAlbumWithId: albumData.pwgID, withQuery: query, sort: sortOption,
-                                                    fromPage: onPage, perPage: perPage)
+                try await fetchImages(ofAlbumWithId: albumData.pwgID, withQuery: query, sort: sortOption,
+                                      fromPage: onPage, perPage: perPage)
 
                 await MainActor.run { [self] in
                     // Store user's right to download
@@ -213,7 +231,7 @@ extension AlbumViewController
                     }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run { [self] in
                     // Done fetching images
                     // ► Remove current album from list of album being fetched
@@ -222,6 +240,55 @@ extension AlbumViewController
                     self.showError(error)
                 }
             }
+        }
+    }
+    
+    private func fetchImages(ofAlbumWithId albumId: Int32, withQuery query: String,
+                             sort: pwgImageSort, fromPage page:Int, perPage: Int) async throws(PwgKitError) -> (Set<Int64>, Int64, Bool) {
+        debugPrint("••> Fetch images of album \(albumId) at page \(page)…")
+
+        // Fetch image data
+        let (paging, data) = try await JSONManager.shared.getImages(ofAlbumWithId: albumId, withQuery: query, sort: sort, fromPage: page, perPage: perPage)
+
+        // Import image data into Core Data.
+        do {
+            if [.rankAscending, .random].contains(sort) {
+                let startRank = Int64(page * perPage)
+                try imageProvider.importImages(data, inAlbum: albumId,
+                                                 sort: sort, fromRank: startRank)
+            } else {
+                try imageProvider.importImages(data, inAlbum: albumId, sort: sort)
+            }
+
+            // Retrieve total number of images
+            var totalCount = Int64.zero
+            if albumId == pwgSmartAlbum.favorites.rawValue {
+                totalCount = paging.count
+            } else {
+                // Bug leading to server providing wrong total_count value
+                // Discovered in Piwigo 13.5.0, appeared in 13.0.0, fixed in 13.6.0.
+                // See https://github.com/Piwigo/Piwigo/issues/1871
+                if ServerVars.shared.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending ||
+                    ServerVars.shared.pwgVersion.compare("13.5.0", options: .numeric) == .orderedDescending {
+                    totalCount = paging.totalCount?.int64Value ?? Int64.zero
+                } else {
+                    totalCount = paging.count
+                }
+            }
+
+            // Retrieve IDs of fetched images
+            let fetchedImageIds = Set(data.compactMap({$0.id}))
+
+            // Determine if the user has the right to download images
+            var hasDownloadRight = false
+            if data.isEmpty == false,
+               data.firstIndex(where: { $0.downloadUrl == nil }) == nil {
+                hasDownloadRight = true
+            }
+            return (fetchedImageIds, totalCount, hasDownloadRight)
+        }
+        catch {
+            throw error
         }
     }
     
@@ -261,19 +328,19 @@ extension AlbumViewController
     @MainActor
     private func showError(_ error: PwgKitError)
     {
-        var title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
+        var title = String(localized: "internetErrorGeneral_title", comment: "Connection Error")
         var detail = error.localizedDescription
         var buttonSelector = #selector(hideLoading)
         if error.requestCancelled {
-            title = NSLocalizedString("internetCancelledConnection_title", comment: "Connection Cancelled")
+            title = String(localized: "internetCancelledConnection_title", comment: "Connection Cancelled")
         }
         else if error.failedAuthentication {
-            title = NSLocalizedString("loginError_title", comment: "Login Fail")
+            title = String(localized: "loginError_title", comment: "Login Fail")
             buttonSelector = #selector(hideLoadingAndCloseSession)
         }
         else if error.incompatibleVersion {
-            title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
-            detail = String.localizedStringWithFormat(PwgKitError.incompatiblePwgVersion.localizedDescription, NetworkVars.shared.pwgVersion, pwgMinVersion)
+            title = String(localized: "serverVersionNotCompatible_title", comment: "Server Incompatible")
+            detail = String.localizedStringWithFormat(PwgKitError.incompatiblePwgVersion.localizedDescription, ServerVars.shared.pwgVersion, pwgMinVersion)
             buttonSelector = #selector(hideLoadingAndCloseSession)
         }
         else if detail.isEmpty {
@@ -281,7 +348,7 @@ extension AlbumViewController
         }
         navigationController?.showHUD(
             withTitle: title, detail: detail, minWidth: 240,
-            buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
+            buttonTitle: Localized.dismiss,
             buttonTarget: self, buttonSelector: buttonSelector,
             inMode: pwgHudMode.none)
     }
@@ -354,8 +421,9 @@ extension AlbumViewController
         Task {
             do {
                 let (fetchedImageIds, totalCount, _) =
-                try await imageProvider.fetchImages(ofAlbumWithId: album.pwgID, withQuery: "", sort: sortOption,
-                                                    fromPage: onPage, perPage: perPage)
+                try await fetchImages(ofAlbumWithId: album.pwgID, withQuery: "", sort: sortOption,
+                                      fromPage: onPage, perPage: perPage)
+                
                 // Re-calculate number of pages
                 var newLastPage = lastPage
                 newLastPage = Int(totalCount.quotientAndRemainder(dividingBy: Int64(perPage)).quotient)

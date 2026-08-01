@@ -7,7 +7,9 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgCacheKit
+import PwgUIKit
 
 extension AutoUploadViewController: UITableViewDelegate
 {
@@ -16,11 +18,11 @@ extension AutoUploadViewController: UITableViewDelegate
         var title = ""
         switch section {
         case 0:
-            title = NSLocalizedString("settings_autoUploadLong", comment: "Auto Upload Photos")
+            title = String(localized: "settings_autoUploadLong", comment: "Auto Upload Photos")
         case 1:
-            title = String(localized: "tabBar_albums", bundle: .piwigoKit, comment: "Albums")
+            title = Localized.tabBar_albums
         case 2:
-            title = NSLocalizedString("imageDetailsView_title", comment: "Properties")
+            title = String(localized: "imageDetailsView_title", comment: "Properties")
         default:
             title = ""
         }
@@ -66,13 +68,13 @@ extension AutoUploadViewController: UITableViewDelegate
         switch section {
         case 0:
             if UploadVars.shared.isAutoUploadActive {
-                if NetworkVars.shared.serverFileTypes.contains("mp4") {
-                    footer = NSLocalizedString("settings_autoUploadEnabledInfoAll", comment: "Photos and videos will be automatically uploaded to your Piwigo.")
+                if ServerVars.shared.serverFileTypes.contains("mp4") {
+                    footer = String(localized: "settings_autoUploadEnabledInfoAll", comment: "Photos and videos will be automatically uploaded to your Piwigo.")
                 } else {
-                    footer = NSLocalizedString("settings_autoUploadEnabledInfo", comment: "Photos will be automatically uploaded to your Piwigo.")
+                    footer = String(localized: "settings_autoUploadEnabledInfo", comment: "Photos will be automatically uploaded to your Piwigo.")
                 }
             } else {
-                footer = NSLocalizedString("settings_autoUploadDisabledInfo", comment: "Photos will not be automatically uploaded to your Piwigo.")
+                footer = String(localized: "settings_autoUploadDisabledInfo", comment: "Photos will not be automatically uploaded to your Piwigo.")
             }
         default:
             footer = " "

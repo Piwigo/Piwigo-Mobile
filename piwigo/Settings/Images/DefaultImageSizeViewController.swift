@@ -9,7 +9,8 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgUIKit
 
 protocol DefaultImageSizeDelegate: NSObjectProtocol {
     func didSelectImageDefaultSize(_ imageSize: pwgImageSize)
@@ -29,7 +30,7 @@ class DefaultImageSizeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = NSLocalizedString("severalImages", comment: "Images")
+        title = String(localized: "severalImages", comment: "Photos")
 
         // Table view
         tableView?.accessibilityIdentifier = "Image Preview Size"
@@ -50,7 +51,7 @@ class DefaultImageSizeViewController: UIViewController {
 
         // Table view
         tableView.separatorColor = PwgColor.separator
-        tableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        tableView.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         tableView.reloadData()
     }
     
@@ -131,7 +132,7 @@ extension DefaultImageSizeViewController: UITableViewDataSource {
         
         // Optimum?
         if size == optimumSize {
-            let detail = NSLocalizedString("defaultImageSize_recommended", comment: "(recommended)")
+            let detail = String(localized: "defaultImageSize_recommended", comment: "(recommended)")
             cell.configure(with: size.name, detail: detail)
         } else {
             cell.configure(with: size.name, detail: size.sizeAndScale(forScale: scale))
@@ -152,8 +153,8 @@ extension DefaultImageSizeViewController: UITableViewDelegate {
     
     // MARK: - Header
     private func getContentOfHeader() -> (String, String) {
-        let title = String(format: "%@\n", NSLocalizedString("defaultPreviewFile>414px", comment: "Preview Image File"))
-        let text = NSLocalizedString("defaultImageSizeHeader", comment: "Please select an image size")
+        let title = String(format: "%@\n", String(localized: "defaultPreviewFileLong", comment: "Preview Image File"))
+        let text = String(localized: "defaultImageSizeHeader", comment: "Please select an image size")
         return (title, text)
     }
 
@@ -193,12 +194,12 @@ extension DefaultImageSizeViewController: UITableViewDelegate {
 
     // MARK: - Footer
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        let footer = NSLocalizedString("defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
+        let footer = String(localized: "defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
         return TableViewUtilities.heightOfFooter(withText: footer, width: tableView.frame.width)
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let footer = NSLocalizedString("defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
+        let footer = String(localized: "defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
         return TableViewUtilities.viewOfFooter(withText: footer, alignment: .center)
     }
 }

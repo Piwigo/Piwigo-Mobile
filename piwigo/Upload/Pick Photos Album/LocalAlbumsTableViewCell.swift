@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PwgUIKit
 
 class LocalAlbumsTableViewCell: UITableViewCell {
     

@@ -8,7 +8,9 @@
 
 import AVKit
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgCacheKit
+import PwgUIKit
 
 class VideoDetailViewController: UIViewController
 {

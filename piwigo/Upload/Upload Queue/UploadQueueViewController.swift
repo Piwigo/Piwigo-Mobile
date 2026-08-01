@@ -8,8 +8,10 @@
 
 import CoreData
 import UIKit
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgCacheKit
+import PwgUIKit
+import PwgUploadKit
 
 class UploadQueueViewController: UIViewController {
     
@@ -44,8 +46,8 @@ class UploadQueueViewController: UIViewController {
         
         // Retrieves non-completed upload requests:
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
         var unwantedStates: [pwgUploadState] = [.finished, .moderated]
         andPredicates.append(NSPredicate(format: "NOT (requestState IN %@)", unwantedStates.map({$0.rawValue})))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
@@ -64,7 +66,7 @@ class UploadQueueViewController: UIViewController {
     
     
     // MARK: - View
-    @IBOutlet weak var queueTableView: UITableView!
+    @IBOutlet weak var queueTableView: UITableView?
     private var actionBarButton: UIBarButtonItem?
     private var doneBarButton: UIBarButtonItem?
     
@@ -135,15 +137,15 @@ class UploadQueueViewController: UIViewController {
         super.viewWillTransition(to: size, with: coordinator)
         
         // Save position of collection view
-        if queueTableView.visibleCells.count > 0,
-           let cell = queueTableView.visibleCells.first {
-            if let indexPath = queueTableView.indexPath(for: cell) {
+        if queueTableView?.visibleCells.count ?? 0 > 0,
+           let cell = queueTableView?.visibleCells.first {
+            if let indexPath = queueTableView?.indexPath(for: cell) {
                 // Reload the tableview on orientation change, to match the new width of the table.
                 coordinator.animate(alongsideTransition: { [self] _ in
-                    self.queueTableView.reloadData()
+                    self.queueTableView?.reloadData()
                     
                     // Scroll to previous position
-                    self.queueTableView.scrollToRow(at: indexPath, at: .middle, animated: true)
+                    self.queueTableView?.scrollToRow(at: indexPath, at: .middle, animated: true)
                 })
             }
         }
@@ -158,18 +160,19 @@ class UploadQueueViewController: UIViewController {
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
         
         // Table view
-        queueTableView.separatorColor = PwgColor.separator
-        queueTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        queueTableView?.separatorColor = PwgColor.separator
+        queueTableView?.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         
-        // Table view items
-        let visibleCells = queueTableView.visibleCells as? [UploadImageTableViewCell] ?? []
-        visibleCells.forEach { (cell) in
+        // Displayed table view items
+        guard queueTableView?.window != nil else { return }
+        queueTableView?.visibleCells.forEach { cell in
+            guard let cell = cell as? UploadImageTableViewCell else { return }
             cell.backgroundColor = PwgColor.cellBackground
             cell.uploadInfoLabel.textColor = PwgColor.leftLabel
             cell.imageInfoLabel.textColor = PwgColor.rightLabel
         }
-        for section in 0..<queueTableView.numberOfSections {
-            let header = queueTableView.headerView(forSection: section) as? UploadImageHeaderView
+        for section in 0..<(queueTableView?.numberOfSections ?? 0) {
+            let header = queueTableView?.headerView(forSection: section) as? UploadImageHeaderView
             header?.headerLabel.textColor = PwgColor.header
             header?.headerBckg.backgroundColor = PwgColor.background.withAlphaComponent(0.75)
         }
@@ -187,48 +190,46 @@ class UploadQueueViewController: UIViewController {
     
     @MainActor
     @objc func setTableViewMainHeader() {
-        // May be called from the notification center
-        DispatchQueue.main.async { [self] in
-            // Anything to do?
-            if queueTableView?.window == nil { return }
-            // No upload request in the queue?
-            if UploadVars.shared.nberOfUploadsToComplete == 0 {
-                queueTableView.tableHeaderView = nil
-                UIApplication.shared.isIdleTimerDisabled = false
-            }
-            else if !NetworkVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading {
-                // No Wi-Fi and user wishes to upload only on Wi-Fi
-                let headerView = TableHeaderView(frame: .zero)
-                headerView.configure(width: self.queueTableView.frame.size.width,
-                                     text: NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
-                self.queueTableView.tableHeaderView = headerView
-                UIApplication.shared.isIdleTimerDisabled = false
-            }
-            else if ProcessInfo.processInfo.isLowPowerModeEnabled {
-                // Low Power mode enabled
-                let headerView = TableHeaderView(frame: .zero)
-                headerView.configure(width: self.queueTableView.frame.size.width,
-                                     text: NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled"))
-                self.queueTableView.tableHeaderView = headerView
-                UIApplication.shared.isIdleTimerDisabled = false
-            }
-            else if [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) {
-                // Reduce usage of system resources at higher thermal states
-                let headerView = TableHeaderView(frame: .zero)
-                headerView.configure(width: self.queueTableView.frame.size.width,
-                                     text: NSLocalizedString("uploadThermalStateHigh", comment: "Thermal state high"))
-                self.queueTableView.tableHeaderView = headerView
-                UIApplication.shared.isIdleTimerDisabled = false
-            }
-            else {
-                // Uploads in progress
-                queueTableView.tableHeaderView = nil
-                if #unavailable(iOS 26.0) {
-                    UIApplication.shared.isIdleTimerDisabled = true
-                }
-            }
-            self.viewWillLayoutSubviews()
+        // Anything to do?
+        guard let queueTableView, queueTableView.window != nil else { return }
+        
+        // No upload request in the queue?
+        if UploadVars.shared.nberOfUploadsToComplete == 0 {
+            queueTableView.tableHeaderView = nil
+            UIApplication.shared.isIdleTimerDisabled = false
         }
+        else if !ServerVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading {
+            // No Wi-Fi and user wishes to upload only on Wi-Fi
+            let headerView = TableHeaderView(frame: .zero)
+            headerView.configure(width: queueTableView.frame.size.width,
+                                 text: String(localized: "uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
+            queueTableView.tableHeaderView = headerView
+            UIApplication.shared.isIdleTimerDisabled = false
+        }
+        else if ProcessInfo.processInfo.isLowPowerModeEnabled {
+            // Low Power mode enabled
+            let headerView = TableHeaderView(frame: .zero)
+            headerView.configure(width: queueTableView.frame.size.width,
+                                 text: String(localized: "uploadLowPowerMode", comment: "Low Power Mode enabled"))
+            queueTableView.tableHeaderView = headerView
+            UIApplication.shared.isIdleTimerDisabled = false
+        }
+        else if [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) {
+            // Reduce usage of system resources at higher thermal states
+            let headerView = TableHeaderView(frame: .zero)
+            headerView.configure(width: queueTableView.frame.size.width,
+                                 text: String(localized: "uploadThermalStateHigh", comment: "Thermal state high"))
+            queueTableView.tableHeaderView = headerView
+            UIApplication.shared.isIdleTimerDisabled = false
+        }
+        else {
+            // Uploads in progress
+            queueTableView.tableHeaderView = nil
+            if #unavailable(iOS 26.0) {
+                UIApplication.shared.isIdleTimerDisabled = true
+            }
+        }
+        self.viewWillLayoutSubviews()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -248,8 +249,8 @@ class UploadQueueViewController: UIViewController {
         var nberOfImagesInQueue = 0
         nberOfImagesInQueue = diffableDataSource.snapshot().numberOfItems
         title = nberOfImagesInQueue > 1
-        ? String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("severalImages", comment: "Photos"))
-        : String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("singleImage", comment: "Photo"))
+        ? String(format: "%ld %@", nberOfImagesInQueue, String(localized: "severalImages", comment: "Photos"))
+        : String(format: "%ld %@", nberOfImagesInQueue, String(localized: "singleImage", comment: "Photo"))
         
         // Set title of current scene (iPad only)
         view.window?.windowScene?.title = title
@@ -274,14 +275,15 @@ class UploadQueueViewController: UIViewController {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
         // Cancel action
-        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in })
+        let cancelAction = UIAlertAction(title: Localized.cancel,
+                                         style: .cancel, handler: { action in })
         alert.addAction(cancelAction)
         
         // Resume upload requests in section 2
         if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section2.rawValue) {
             let failedUploads = diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section2.rawValue)
             if failedUploads > 0 {
-                let titleResume = failedUploads > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber(value: failedUploads), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
+                let titleResume = failedUploads > 1 ? String(format: String(localized: "imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber(value: failedUploads), number: .decimal)) : String(localized: "imageUploadResumeSingle", comment: "Resume Failed Upload")
                 let resumeAction = UIAlertAction(title: titleResume, style: .default, handler: { action in
                     Task(priority: .utility) { @UploadManagerActor in
                         // Get Upload URI strings of active transfers
@@ -300,14 +302,17 @@ class UploadQueueViewController: UIViewController {
         if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section1.rawValue) {
             let impossibleUploads = diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section1.rawValue)
             if impossibleUploads > 0 {
-                let titleClear = impossibleUploads > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber(value: impossibleUploads), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
+                let titleClear = impossibleUploads > 1 ? String(format: String(localized: "imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber(value: impossibleUploads), number: .decimal)) : String(localized: "imageUploadClearFailedSingle", comment: "Clear 1 Failed")
                 let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { [weak self] action in
                     guard let self else { return }
+                    // Delete uploads
                     let uploadIDs = self.diffableDataSource.snapshot().itemIdentifiers(inSection: SectionKeys.Section1.rawValue)
+                    try? UploadProvider().deleteUploads(withID: uploadIDs, inContext: mainContext)
+                    mainContext.saveIfNeeded()
+                    
                     Task(priority: .utility) { @UploadManagerActor in
-                        // Delete uploads
-                        try? UploadProvider().deleteUploads(withID: uploadIDs, inContext: UploadManager.shared.uploadBckgContext)
-                        UploadManager.shared.uploadBckgContext.saveIfNeeded()
+                        // Remove upload requests from queue
+                        await UploadManagerActor.shared.removeUploads(withIDs: uploadIDs)
                         
                         // Update counter and app badge
                         UploadManager.shared.updateNberOfUploadsToComplete()
@@ -325,7 +330,7 @@ class UploadQueueViewController: UIViewController {
         
         // Present list of actions
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.barButtonItem = actionBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
@@ -346,7 +351,7 @@ class UploadQueueViewController: UIViewController {
             guard let self else { return }
                         
             // Reload visible cells, headers, and footers
-            self.queueTableView.reloadData()
+            self.queueTableView?.reloadData()
             
             // Update navigation bar
             self.navigationController?.navigationBar.configAppearance(withLargeTitles: false)

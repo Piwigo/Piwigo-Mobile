@@ -7,7 +7,8 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgUIKit
 
 class ColorPaletteViewController: UIViewController {
     
@@ -20,7 +21,7 @@ class ColorPaletteViewController: UIViewController {
         super.viewDidLoad()
         
         // Title
-        title = NSLocalizedString("settingsHeader_appearance", comment: "Appearance")
+        title = String(localized: "settingsHeader_appearance", comment: "Appearance")
 
         // Table view
         tableView?.accessibilityIdentifier = "Color Palette Selector"
@@ -41,7 +42,7 @@ class ColorPaletteViewController: UIViewController {
         
         // Table view
         tableView?.separatorColor = PwgColor.separator
-        tableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        tableView?.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         tableView?.reloadData()
     }
     
@@ -99,23 +100,22 @@ extension ColorPaletteViewController: UITableViewDataSource {
         case 1:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
             else { preconditionFailure("Could not load SwitchTableViewCell") }
-            cell.configure(with: NSLocalizedString("settings_switchPalette", comment: "Automatic"))
-            cell.cellSwitch.setOn(AppVars.shared.switchPaletteAutomatically, animated: true)
-            cell.cellSwitchBlock = { switchState in
-
+            cell.configure(with: String(localized: "settings_switchPalette", comment: "Automatic"))
+            cell.cellSwitch.setOn(UIVars.shared.switchPaletteAutomatically, animated: true)
+            cell.cellSwitchBlock = { [self] switchState in
+                
                 // Number of rows will change accordingly
-                AppVars.shared.switchPaletteAutomatically = switchState
-
+                UIVars.shared.switchPaletteAutomatically = switchState
+                
                 // What should we do?
                 if switchState {
                     // Switch off light/dark modes
-                    AppVars.shared.isLightPaletteModeActive = false
-                    AppVars.shared.isDarkPaletteModeActive = false
+                    UIVars.shared.isLightPaletteModeActive = false
+                    UIVars.shared.isDarkPaletteModeActive = false
                 }
-
+                
                 // Notify palette change
-                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                appDelegate?.screenBrightnessChanged()
+                UITools.shared.applyColorPalette(for: self.traitCollection.userInterfaceStyle)
             }
             cell.accessibilityIdentifier = "switchColourAuto"
             tableViewCell = cell
@@ -123,11 +123,11 @@ extension ColorPaletteViewController: UITableViewDataSource {
         default:
             fatalError()
         }
-
+        
         // Appearance
         tableViewCell.backgroundColor = PwgColor.cellBackground
         tableViewCell.tintColor = PwgColor.tintColor
-
+        
         return tableViewCell
     }
 }
@@ -138,7 +138,7 @@ extension ColorPaletteViewController: UITableViewDelegate {
     
     // MARK: - Header
     private func getContentOfHeader() -> String {
-        let title = NSLocalizedString("settingsHeader_colorPalette", comment: "Color Palette")
+        let title = String(localized: "settingsHeader_colorPalette", comment: "Color Palette")
         return title
     }
     

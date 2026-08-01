@@ -8,7 +8,8 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgCacheKit
 
 // MARK: Select Images
 extension LocalImagesViewController
@@ -97,9 +98,6 @@ extension LocalImagesViewController: UIGestureRecognizerDelegate
 
                 // Update navigation bar
                 updateNavBar()
-
-                // Refresh cell
-                cell.reloadInputViews()
             }
         }
 

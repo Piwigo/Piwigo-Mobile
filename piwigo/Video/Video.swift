@@ -8,7 +8,8 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgCacheKit
 
 struct Video: Hashable {
     

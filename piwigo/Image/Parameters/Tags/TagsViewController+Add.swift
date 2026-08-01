@@ -8,30 +8,33 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
+import PwgUIKit
 
 extension TagsViewController
 {
     // MARK: - Add tag (for admins only)
     @MainActor
     @objc func requestNewTagName() {
-        let alert = UIAlertController(title: NSLocalizedString("tagsAdd_title", comment: "Add Tag"), message: NSLocalizedString("tagsAdd_message", comment: "Enter a name for this new tag"), preferredStyle: .alert)
+        let alert = UIAlertController(title: String(localized: "tagsAdd_title", comment: "Add Tag"), message: String(localized: "tagsAdd_message", comment: "Enter a name for this new tag"), preferredStyle: .alert)
 
         alert.addTextField(configurationHandler: { textField in
-            textField.placeholder = NSLocalizedString("tagsAdd_placeholder", comment: "New tag")
+            textField.placeholder = String(localized: "tagsAdd_placeholder", comment: "New tag")
             textField.clearButtonMode = .always
             textField.keyboardType = .default
-            textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = UIVars.shared.isDarkPaletteActive ? .dark : .default
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes
             textField.returnKeyType = .continue
             textField.delegate = self
         })
 
-        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in
-            })
+        let cancelAction = UIAlertAction(title: Localized.cancel,
+                                         style: .cancel, handler: { action in })
 
-        addAction = UIAlertAction(title: NSLocalizedString("alertAddButton", comment: "Add"), style: .default, handler: { action in
+        addAction = UIAlertAction(title: String(localized: "alertAddButton", comment: "Add"), style: .default, handler: { action in
             // Rename album if possible
             if (alert.textFields?.first?.text?.count ?? 0) > 0 {
                 self.addTag(withName: alert.textFields?.first?.text)
@@ -43,7 +46,7 @@ extension TagsViewController
             alert.addAction(addAction)
         }
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = PwgColor.tintColor
@@ -57,16 +60,19 @@ extension TagsViewController
         else { return }
         
         // Display HUD during the update
-        showHUD(withTitle: NSLocalizedString("tagsAddHUD_label", comment: "Creating Tag…"))
+        showHUD(withTitle: String(localized: "tagsAddHUD_label", comment: "Creating Tag…"))
 
         // Add new tag
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
-                // Add tag to server and cache
-                try await TagProvider().addTag(with: tagName)
+                // Add tag on server
+                let tagData = try await JSONManager.shared.addTag(with: tagName)
+                
+                // Add tag to cache
+                let _ = try TagProvider().importOneBatch([tagData], asAdmin: true, tagIDs: Set<Int32>())
                 
                 // Update UI
                 await MainActor.run {
@@ -75,12 +81,12 @@ extension TagsViewController
                     }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run {
                     self.hideHUD {
                         self.dismissPiwigoError(
-                            withTitle: NSLocalizedString("tagsAddError_title", comment: "Create Fail"),
-                            message: NSLocalizedString("tagsAddError_message", comment: "Failed to…"),
+                            withTitle: String(localized: "tagsAddError_title", comment: "Create Fail"),
+                            message: String(localized: "tagsAddError_message", comment: "Failed to…"),
                             errorMessage: error.localizedDescription, completion: { })
                     }
                 }

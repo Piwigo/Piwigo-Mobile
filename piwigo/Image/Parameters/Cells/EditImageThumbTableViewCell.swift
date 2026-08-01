@@ -9,7 +9,9 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgCacheKit
+import PwgUIKit
 
 @objc protocol EditImageThumbnailCellDelegate: NSObjectProtocol {
     func didDeselectImage(withID imageID: Int64)

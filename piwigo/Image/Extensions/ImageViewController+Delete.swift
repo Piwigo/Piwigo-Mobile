@@ -8,8 +8,11 @@
 
 import Foundation
 import UIKit
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
+import PwgUIKit
+import PwgUploadKit
 
 // MARK: - Delete/Remove Image
 extension ImageViewController
@@ -27,24 +30,23 @@ extension ImageViewController
         setEnableStateOfButtons(false)
 
         let alert = UIAlertController(title: "",
-            message: imageData.isVideo ? NSLocalizedString("deleteSingleVideo_message", comment: "Are you sure you want to delete this image? This cannot be undone!") : NSLocalizedString("deleteSingleImage_message", comment: "Are you sure you want to delete this image? This cannot be undone!"),
+            message: imageData.isVideo ? String(localized: "deleteSingleVideo_message", comment: "Are you sure you want to delete this video? This cannot be undone!") : String(localized: "deleteSingleImage_message", comment: "Are you sure you want to delete this image? This cannot be undone!"),
             preferredStyle: .actionSheet)
 
-        let cancelAction = UIAlertAction(
-            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
-            style: .cancel, handler: { [self] action in
-                // Re-enable buttons
-                setEnableStateOfButtons(true)
-            })
+        let cancelAction = UIAlertAction(title: Localized.cancel,
+                                         style: .cancel, handler: { [self] action in
+            // Re-enable buttons
+            setEnableStateOfButtons(true)
+        })
 
         let removeAction = UIAlertAction(
-            title: NSLocalizedString("removeSingleImage_title", comment: "Remove from Album"),
+            title: String(localized: "removeSingleImage_title", comment: "Remove from Album"),
             style: .default, handler: { [self] action in
                 removeImageFromAlbum()
             })
 
         let deleteAction = UIAlertAction(
-            title: imageData.isVideo ? NSLocalizedString("deleteSingleVideo_title", comment: "Delete Video") : NSLocalizedString("deleteSingleImage_title", comment: "Delete Image"),
+            title: imageData.isVideo ? String(localized: "deleteSingleVideo_title", comment: "Delete Video") : String(localized: "deleteSingleImage_title", comment: "Delete Photo"),
             style: .destructive, handler: { [self] action in
                 deleteImageFromDatabase()
             })
@@ -60,7 +62,7 @@ extension ImageViewController
 
         // Present list of actions
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.barButtonItem = deleteBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
@@ -71,12 +73,12 @@ extension ImageViewController
     @MainActor
     func removeImageFromAlbum() {
         // Display HUD during deletion
-        showHUD(withTitle: imageData.isVideo ? NSLocalizedString("removeSingleVideoHUD_removing", comment: "Removing Video…") : NSLocalizedString("removeSingleImageHUD_removing", comment: "Removing Photo…"))
+        showHUD(withTitle: imageData.isVideo ? String(localized: "removeSingleVideoHUD_removing", comment: "Removing Video…") : String(localized: "removeSingleImageHUD_removing", comment: "Removing Photo…"))
         
         // Remove selected category ID from image category list
         guard let imageData = imageData,
               var catIDs = imageData.albums?.compactMap({$0.pwgID}).filter({$0 > 0}) else {
-            dismissPiwigoError(withTitle: NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")) { [self] in
+            dismissPiwigoError(withTitle: String(localized: "deleteImageFail_title", comment: "Delete Failed")) { [self] in
                 // Hide HUD
                 self.hideHUD { [self] in
                     // Re-enable buttons
@@ -96,9 +98,9 @@ extension ImageViewController
         
         // Send requests to Piwigo server
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Set image properties
                 try await JSONManager.shared.setInfos(with: paramsDict)
@@ -126,7 +128,7 @@ extension ImageViewController
                     }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run { [self] in
                     self.removeImageFromAlbumError(error)
                 }
@@ -143,8 +145,8 @@ extension ImageViewController
         }
 
         // Report error
-        let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
-        let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
+        let title = String(localized: "deleteImageFail_title", comment: "Delete Failed")
+        let message = String(localized: "deleteImageFail_message", comment: "Image could not be deleted.")
         self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
             // Hide HUD
             hideHUD { [self] in
@@ -158,7 +160,7 @@ extension ImageViewController
     func deleteImageFromDatabase() {
         // Remove selected category ID from image category list
         guard let imageData = imageData else {
-            dismissPiwigoError(withTitle: NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")) { [self] in
+            dismissPiwigoError(withTitle: String(localized: "deleteImageFail_title", comment: "Delete Failed")) { [self] in
                 // Hide HUD
                 self.hideHUD { [self] in
                     // Re-enable buttons
@@ -169,16 +171,16 @@ extension ImageViewController
         }
 
         // Display HUD during deletion
-        showHUD(withTitle: imageData.isVideo ? NSLocalizedString("deleteSingleVideoHUD_deleting", comment: "Deleting Video…") : NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Photo…"))
+        showHUD(withTitle: imageData.isVideo ? String(localized: "deleteSingleVideoHUD_deleting", comment: "Deleting Video…") : String(localized: "deleteSingleImageHUD_deleting", comment: "Deleting Photo…"))
         
         // Send request to Piwigo server
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Delete images
-                _ = try await JSONManager.shared.delete(Set([imageData]))
+                _ = try await JSONManager.shared.deleteImages(withID: [imageData.pwgID])
                 
                 // Update cache and UI
                 await MainActor.run { [self] in
@@ -213,7 +215,7 @@ extension ImageViewController
                         }
                     }
                 }
-            } catch let error as PwgKitError {
+            } catch {
                 self.deleteImageFromDatabaseError(error)
             }
         }
@@ -228,8 +230,8 @@ extension ImageViewController
         }
 
         // Report error
-        let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
-        let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
+        let title = String(localized: "deleteImageFail_title", comment: "Delete Failed")
+        let message = String(localized: "deleteImageFail_message", comment: "Image could not be deleted.")
         self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
             // Hide HUD
             hideHUD { [self] in

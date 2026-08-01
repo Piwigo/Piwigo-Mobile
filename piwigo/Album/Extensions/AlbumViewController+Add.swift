@@ -8,7 +8,10 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
+import PwgUIKit
 
 extension AlbumViewController
 {
@@ -48,15 +51,15 @@ extension AlbumViewController
     @MainActor
     func showCreateCategoryDialog() {
         let alert = UIAlertController(
-            title: NSLocalizedString("createNewAlbum_title", comment: "New Album"),
-            message: NSLocalizedString("createNewAlbum_message", comment: "Enter a name for this album:"),
+            title: String(localized: "createNewAlbum_title", comment: "New Album"),
+            message: String(localized: "createNewAlbum_message", comment: "Enter a name for this album:"),
             preferredStyle: .alert)
 
         alert.addTextField(configurationHandler: { textField in
-            textField.placeholder = NSLocalizedString("createNewAlbum_placeholder", comment: "Album Name")
+            textField.placeholder = String(localized: "createNewAlbum_placeholder", comment: "Album Name")
             textField.clearButtonMode = .always
             textField.keyboardType = .default
-            textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = UIVars.shared.isDarkPaletteActive ? .dark : .default
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes
             textField.returnKeyType = .continue
@@ -64,30 +67,29 @@ extension AlbumViewController
         })
 
         alert.addTextField(configurationHandler: { textField in
-            textField.placeholder = NSLocalizedString("createNewAlbumDescription_placeholder", comment: "Description")
+            textField.placeholder = String(localized: "createNewAlbumDescription_placeholder", comment: "Description")
             textField.clearButtonMode = .always
             textField.keyboardType = .default
-            textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = UIVars.shared.isDarkPaletteActive ? .dark : .default
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes
             textField.returnKeyType = .continue
             textField.delegate = self
         })
-
-        let cancelAction = UIAlertAction(
-            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
-            style: .cancel, handler: { [self] action in
-                // Cancel action
-                if homeAlbumButton.isHidden {
-                    didCancelTapAddButton()
-                }
+        
+        let cancelAction = UIAlertAction(title: Localized.cancel,
+                                         style: .cancel, handler: { [self] action in
+            // Cancel action
+            if homeAlbumButton.isHidden {
+                didCancelTapAddButton()
+            }
         })
-
+        
         createAlbumAction = UIAlertAction(
-            title: NSLocalizedString("alertAddButton", comment: "Add"),
+            title: String(localized: "alertAddButton", comment: "Add"),
             style: .default, handler: { [self] action in
                 // Create album
-                let albumName = alert.textFields?.first?.text ?? NSLocalizedString("categorySelection_title", comment: "Album")
+                let albumName = alert.textFields?.first?.text ?? String(localized: "categorySelection_title", comment: "Album")
                 addCategory(withName: albumName, andComment: alert.textFields?.last?.text ?? "",
                             inParent: albumData)
         })
@@ -98,7 +100,7 @@ extension AlbumViewController
         }
         alert.view.tintColor = PwgColor.tintColor
         alert.view.accessibilityIdentifier = "CreateAlbum"
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = PwgColor.tintColor
@@ -108,38 +110,44 @@ extension AlbumViewController
     @MainActor
     func addCategory(withName albumName: String, andComment albumComment: String,
                      inParent albumData: Album) {
+        // Prepare set of parent IDs before creating album (including root album)
+        let hasAdminRights = user.hasAdminRights
+        let parentIDs = Set(albumData.upperIds.components(separatedBy: ",")
+            .compactMap({Int32($0)})).union(Set([pwgSmartAlbum.root.rawValue]))
+        
         // Display HUD during the update
-        showHUD(withTitle: NSLocalizedString("createNewAlbumHUD_label", comment: "Creating Album…"))
+        showHUD(withTitle: String(localized: "createNewAlbumHUD_label", comment: "Creating Album…"))
 
         // Send request to Piwigo server
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Create album
                 let newCatId = try await JSONManager.shared.create(withName: albumName, description: albumComment,
                                                                    status: "public", inAlbumWithId: albumData.pwgID)
                 
-                // Album successfully created ▶ Add new album to cache and update parent albums
-                if AlbumVars.shared.isFetchingAlbumData.isEmpty
-                {
-                    // Remember that the app is fetching all album data
-                    AlbumVars.shared.isFetchingAlbumData.insert(pwgSmartAlbum.root.rawValue)
+                // Update parent album data
+                let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+                for parentID in parentIDs {
+                    // Don't fetch an album already being fetched
+                    if AlbumVars.shared.isFetchingAlbumData.contains(parentID) { continue }
                     
-                    // Fetch album data recursively
-                    let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                    try await AlbumProvider().fetchAlbums(forUserWithAdminRights: user.hasAdminRights,
-                                                          inParentWithId: pwgSmartAlbum.root.rawValue, recursively: true,
-                                                          thumbnailSize: thumnailSize)
+                    // Remember that the app is fetching album data
+                    AlbumVars.shared.isFetchingAlbumData.insert(parentID)
+
+                    // Fetch album data
+                    let pwgData = try await JSONManager.shared.fetchAlbums(forUserWithAdminRights: hasAdminRights,
+                                                                           inParentWithId: parentID,
+                                                                           thumbnailSize: thumnailSize)
+                    // Update cache
+                    try AlbumProvider().importAlbums(pwgData, inParent: parentID)
                     
-                    // Remove current album from list of album being fetched
-                    AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.root.rawValue)
-                    
-                    // Remember when album data was fetched recursively
-                    AppVars.shared.dateOfLatestRecursiveAlbumDataFetch = Date()
+                    // Remove album from list of albums being fetched
+                    AlbumVars.shared.isFetchingAlbumData.remove(parentID)
                 }
-                
+
                 // Update UI
                 await MainActor.run {
                     // Add created album to list of recently used albums
@@ -161,7 +169,7 @@ extension AlbumViewController
                     }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 self.addCategoryError(error)
             }
         }
@@ -177,8 +185,8 @@ extension AlbumViewController
             }
             
             // Report error
-            let title = NSLocalizedString("createAlbumError_title", comment: "Create Album Error")
-            let message = NSLocalizedString("createAlbumError_message", comment: "Failed to create a new album")
+            let title = String(localized: "createAlbumError_title", comment: "Create Album Error")
+            let message = String(localized: "createAlbumError_message", comment: "Failed to create a new album")
             dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
                 // Reset buttons
                 didCancelTapAddButton()
@@ -193,7 +201,7 @@ extension AlbumViewController: UITextFieldDelegate
 {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         // Disable Add Category action
-        if textField.placeholder == NSLocalizedString("createNewAlbum_placeholder", comment: "Album Name") {
+        if textField.placeholder == String(localized: "createNewAlbum_placeholder", comment: "Album Name") {
             createAlbumAction?.isEnabled = (textField.text?.count ?? 0) >= 1
         }
         return true
@@ -201,7 +209,7 @@ extension AlbumViewController: UITextFieldDelegate
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         // Enable Add Category action if album name is non null
-        if textField.placeholder == NSLocalizedString("createNewAlbum_placeholder", comment: "Album Name") {
+        if textField.placeholder == String(localized: "createNewAlbum_placeholder", comment: "Album Name") {
             let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
             createAlbumAction?.isEnabled = (finalString?.count ?? 0) >= 1
         }
@@ -210,7 +218,7 @@ extension AlbumViewController: UITextFieldDelegate
 
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
         // Disable Add Category action
-        if textField.placeholder == NSLocalizedString("createNewAlbum_placeholder", comment: "Album Name") {
+        if textField.placeholder == String(localized: "createNewAlbum_placeholder", comment: "Album Name") {
             createAlbumAction?.isEnabled = false
         }
         return true

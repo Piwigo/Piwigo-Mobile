@@ -8,12 +8,14 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgAPIKit
+import PwgUIKit
 
-class JsonViewController: UIViewController {
+final class JsonViewController: UIViewController {
     
     @IBOutlet weak var method: UILabel!
-    @IBOutlet weak var dateTime: UILabel!
+    @IBOutlet weak var dateTimeSize: UILabel!
     @IBOutlet weak var fileContent: UITextView!
     var fileURL: URL?
     private var fixTextPositionAfterLoadingViewOnPad: Bool!
@@ -24,7 +26,7 @@ class JsonViewController: UIViewController {
         super.viewDidLoad()
         
         // Title
-        title = NSLocalizedString("settings_JSONinvalid", comment: "Invalid JSON data")
+        title = String(localized: "settings_JSONinvalid", comment: "Invalid JSON data")
 
         // Initialise content
         guard let fileURL = fileURL else { return }
@@ -33,10 +35,10 @@ class JsonViewController: UIViewController {
         let fileName = String(fileURL.lastPathComponent.dropFirst(prefixCount).dropLast(suffixCount))
         if let pos = fileName.lastIndex(of: " ") {
             method?.text = String(fileName[pos...].dropFirst())
-            dateTime?.text = String(fileName[...pos]) + " | " + fileURL.fileSizeString
+            dateTimeSize?.text = String(fileName[...pos]) + " • " + fileURL.fileSizeString
         } else {
             method?.text = fileName
-            dateTime?.text = fileURL.fileSizeString
+            dateTimeSize?.text = fileURL.fileSizeString
         }
         let content = try? Data(contentsOf: fileURL, options: .alwaysMapped)
         let msg = String(decoding: content ?? Data(), as: UTF8.self)
@@ -65,7 +67,7 @@ class JsonViewController: UIViewController {
 
         // Text color depdending on background color
         method?.textColor = PwgColor.text
-        dateTime?.textColor = PwgColor.text
+        dateTimeSize?.textColor = PwgColor.text
         fileContent?.textColor = PwgColor.text
         fileContent?.backgroundColor = PwgColor.background
     }
@@ -150,10 +152,10 @@ extension JsonViewController: UIActivityItemSource
             let deviceOSversion = UIDevice.current.systemVersion
 
             // Set message body
-            var content = NSLocalizedString("settings_appName", comment: "Piwigo Mobile")
+            var content = String(localized: "settings_appName", comment: "Piwigo Mobile")
             content += " " + (appVersionString ?? "") + " (" + (appBuildString ?? "") + ")\n"
             content += deviceModel + " — " + deviceOS + " " + deviceOSversion + "\n"
-            content += (dateTime.text ?? "?") + "\n"
+            content += (dateTimeSize.text ?? "?") + "\n"
             content += "\n"
             content += fileContent?.text ?? ""
             return content
@@ -162,7 +164,7 @@ extension JsonViewController: UIActivityItemSource
     
     func activityViewController(_ activityViewController: UIActivityViewController,
                                 subjectForActivityType activityType: UIActivity.ActivityType?) -> String {
-        var subject = NSLocalizedString("settings_appName", comment: "Piwigo Mobile")
+        var subject = String(localized: "settings_appName", comment: "Piwigo Mobile")
         subject += " - " + (method?.text ?? "?")
         return subject
     }

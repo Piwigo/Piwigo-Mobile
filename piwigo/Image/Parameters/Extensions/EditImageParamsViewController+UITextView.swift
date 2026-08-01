@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PwgUIKit
 
 // MARK: - UITextViewDelegate Methods
 extension EditImageParamsViewController: UITextViewDelegate

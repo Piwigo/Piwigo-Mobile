@@ -9,7 +9,8 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgUIKit
 
 protocol CategorySortDelegate: NSObjectProtocol {
     func didSelectCategorySortType(_ sortType: pwgImageSort)
@@ -28,7 +29,7 @@ class CategorySortViewController: UIViewController {
         super.viewDidLoad()
         
         // Apply attributes to title
-        title = NSLocalizedString("severalImages", comment: "Images")
+        title = String(localized: "severalImages", comment: "Photos")
         
         // Table view
         sortSelectTableView?.accessibilityIdentifier = "sortSelect"
@@ -54,7 +55,7 @@ class CategorySortViewController: UIViewController {
 
         // Table view
         sortSelectTableView.separatorColor = PwgColor.separator
-        sortSelectTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        sortSelectTableView.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         sortSelectTableView.reloadData()
     }
     
@@ -116,8 +117,8 @@ extension CategorySortViewController: UITableViewDelegate {
     
     // MARK: - Header
     private func getContentOfHeader() -> (String, String) {
-        let title = String(format: "%@\n", NSLocalizedString("defaultImageSort>414px", comment: "Default Sort of Images"))
-        let text = NSLocalizedString("imageSortMessage", comment: "Please select how you wish to sort images")
+        let title = String(format: "%@\n", String(localized: "defaultImageSortLong", comment: "Default Sort of Images"))
+        let text = String(localized: "imageSortMessage", comment: "Please select how you wish to sort images")
         return (title, text)
     }
     

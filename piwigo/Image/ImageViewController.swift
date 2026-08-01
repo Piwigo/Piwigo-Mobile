@@ -9,7 +9,10 @@
 import CoreData
 import Photos
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
+import PwgUIKit
 
 protocol ImageDetailDelegate: NSObjectProtocol {
     func didSelectImage(atIndexPath indexPath: IndexPath)
@@ -73,7 +76,12 @@ class ImageViewController: UIViewController {
         let fileType = pwgImageFileType(rawValue: imageData.fileType) ?? .image
         switch fileType {
         case .image:
-            if let imageDVC = imageDetailViewController(ofImage: imageData, atIndexPath: indexPath) {
+            if imageData.isGIF {
+                if let gifDVC = gifDetailViewController(ofImage: imageData, atIndexPath: indexPath) {
+                    pageViewController?.setViewControllers([gifDVC], direction: .forward, animated: false)
+                }
+            }
+            else if let imageDVC = imageDetailViewController(ofImage: imageData, atIndexPath: indexPath) {
                 pageViewController?.setViewControllers([imageDVC], direction: .forward, animated: false)
             }
         case .video:
@@ -195,13 +203,8 @@ class ImageViewController: UIViewController {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
-        // Should we update user interface based on the appearance?
-        let isSystemDarkModeActive = UIScreen.main.traitCollection.userInterfaceStyle == .dark
-        if AppVars.shared.isSystemDarkModeActive != isSystemDarkModeActive {
-            AppVars.shared.isSystemDarkModeActive = isSystemDarkModeActive
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-            appDelegate?.screenBrightnessChanged()
-        }
+        // Should we update the user interface based on the appearance?
+        UITools.shared.applyColorPalette(for: traitCollection.userInterfaceStyle)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -302,12 +305,16 @@ class ImageViewController: UIViewController {
         // Retrieve image/video infos
         let imageID = imageData.pwgID
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Get complete image data
-                try await ImageProvider().getInfos(forID: imageID, inCategoryId: self.categoryId)
+                let pwgData = try await JSONManager.shared.getInfos(forID: imageID)
+                
+                // Update image data in cache
+                // The provided sort option will not change the rankManual/rankRandom values.
+                try ImageProvider().importImages([pwgData], inAlbum: self.categoryId, sort: .albumDefault)
                 
                 // Update UI and cache
                 await MainActor.run { [self] in
@@ -316,6 +323,19 @@ class ImageViewController: UIViewController {
                     for vc in vcs {
                         if let pvc = vc as? ImageDetailViewController, pvc.imageData.pwgID == imageID,
                            let updatedImage = self.images.fetchedObjects?.first(where: { $0.pwgID == imageID }) {
+                            // Update image data
+                            if updatedImage.isFault {
+                                // The image is not fired yet.
+                                updatedImage.willAccessValue(forKey: nil)
+                                updatedImage.didAccessValue(forKey: nil)
+                            }
+                            pvc.imageData = updatedImage
+                            // Update navigation bar and enable buttons
+                            self.updateNavBar()
+                            self.setEnableStateOfButtons(true)
+                            break
+                        } else if let pvc = vc as? GifDetailViewController, pvc.imageData.pwgID == imageID,
+                                  let updatedImage = self.images.fetchedObjects?.first(where: { $0.pwgID == imageID }) {
                             // Update image data
                             if updatedImage.isFault {
                                 // The image is not fired yet.
@@ -356,7 +376,7 @@ class ImageViewController: UIViewController {
                     }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run {
                     // Display error only when image data is incomplete
                     if isIncomplete {
@@ -376,25 +396,25 @@ class ImageViewController: UIViewController {
         }
         
         // Report error
-        let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
-        let message = NSLocalizedString("imageDetailsFetchError_message", comment: "Fetching the image data failed.")
+        let title = String(localized: "imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
+        let message = String(localized: "imageDetailsFetchError_message", comment: "Fetching the photo data failed.")
         dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { }
     }
     
     func logImageVisitIfNeeded(_ imageID: Int64, asDownload: Bool = false) {
         // Should we really log visits?
-        guard NetworkVars.shared.saveVisits
+        guard ServerVars.shared.saveVisits
         else { return }
         
         Task.detached {
-            do {
+            do throws(PwgKitError) {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID, lastConnected: self.user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID, lastConnected: self.user.lastUsed)
                 
                 // Update server statistics
                 try await JSONManager.shared.logVisitOfImage(withID: imageID, asDownload: asDownload)
             }
-            catch let error as PwgKitError {
+            catch {
                 // Statistics not updated ► No error reported
                 await MainActor.run {
                     if error.requiresLogout {
@@ -429,6 +449,7 @@ class ImageViewController: UIViewController {
         // Display/hide the description if any
         if let imagePVC = pageViewController?.viewControllers?.first {
             (imagePVC as? ImageDetailViewController)?.updateDescriptionVisibility()
+            (imagePVC as? GifDetailViewController)?.updateDescriptionVisibility()
             (imagePVC as? VideoDetailViewController)?.updateDescriptionControlsVisibility()
             (imagePVC as? PdfDetailViewController)?.updateDescriptionVisibility()
         }
@@ -445,6 +466,7 @@ class ImageViewController: UIViewController {
         // Zoom in/out the image if necessary
         if let imagePVC = pageViewController?.viewControllers?.first {
             (imagePVC as? ImageDetailViewController)?.didTapTwice(gestureRecognizer)
+            (imagePVC as? GifDetailViewController)?.didTapTwice(gestureRecognizer)
             (imagePVC as? VideoDetailViewController)?.didTapTwice(gestureRecognizer)
         }
     }
@@ -575,6 +597,11 @@ extension ImageViewController: UIPageViewControllerDelegate
             // Pause download
             Task { await ImageDownloader.shared.pauseDownload(atURL: imageURL) }
         }
+        else if let gifDVC = pageViewController.viewControllers?.first as? GifDetailViewController,
+                let imageURL = gifDVC.imageURL {
+            // Pause download
+            Task { await ImageDownloader.shared.pauseDownload(atURL: imageURL) }
+        }
         else if let pdfDVC = pageViewController.viewControllers?.first as? PdfDetailViewController,
                 let imageURL = pdfDVC.imageURL {
             // Pause download
@@ -596,6 +623,16 @@ extension ImageViewController: UIPageViewControllerDelegate
             indexPath = imageDVC.indexPath
             imageData = imageDVC.imageData
             
+            // Reset video player and PDF goToPage buttons
+            playBarButton = nil
+            muteBarButton = nil
+            goToPageButton = nil
+        }
+        else if let gifDVC = pageViewController.viewControllers?.first as? GifDetailViewController {
+            // Store index and image data of presented page
+            indexPath = gifDVC.indexPath
+            imageData = gifDVC.imageData
+
             // Reset video player and PDF goToPage buttons
             playBarButton = nil
             muteBarButton = nil
@@ -639,6 +676,9 @@ extension ImageViewController: UIPageViewControllerDelegate
         if let imageDVC = previousViewControllers.first as? ImageDetailViewController {
             didPresentNextPage = indexPath > imageDVC.indexPath
         }
+        else if let gifDVC = previousViewControllers.first as? GifDetailViewController {
+            didPresentNextPage = indexPath > gifDVC.indexPath
+        }
         else if let videoDVC = previousViewControllers.first as? VideoDetailViewController {
             didPresentNextPage = indexPath > videoDVC.indexPath
         }
@@ -670,6 +710,18 @@ extension ImageViewController: UIPageViewControllerDataSource
         return imageDVC
     }
     
+    // Create view controller for presenting the animated GIF at the provided index
+    func gifDetailViewController(ofImage imageData: Image, atIndexPath indexPath: IndexPath) -> GifDetailViewController? {
+//        debugPrint("••> Create page view controller for GIF #\(imageData.pwgID) at index \(indexPath)")
+        guard let gifDVC = storyboard?.instantiateViewController(withIdentifier: "GifDetailViewController") as? GifDetailViewController
+        else { return nil }
+
+        // Create GIF detail view
+        gifDVC.indexPath = indexPath
+        gifDVC.imageData = imageData
+        return gifDVC
+    }
+
     // Create view controller for presenting the video at the provided index
     func videoDetailViewController(ofImage imageData: Image, atIndexPath indexPath: IndexPath) -> VideoDetailViewController? {
 //        debugPrint("••> Create page view controller for video #\(imageData.pwgID) at index \(indexPath)")
@@ -714,6 +766,9 @@ extension ImageViewController: UIPageViewControllerDataSource
         let fileType = pwgImageFileType(rawValue: imageData.fileType) ?? .image
         switch fileType {
         case .image:
+            if imageData.isGIF {
+                return gifDetailViewController(ofImage: imageData, atIndexPath: nextIndexPath)
+            }
             return imageDetailViewController(ofImage: imageData, atIndexPath: nextIndexPath)
         case .video:
             return videoDetailViewController(ofImage: imageData, atIndexPath: nextIndexPath)
@@ -737,6 +792,9 @@ extension ImageViewController: UIPageViewControllerDataSource
         let fileType = pwgImageFileType(rawValue: imageData.fileType) ?? .image
         switch fileType {
         case .image:
+            if imageData.isGIF {
+                return gifDetailViewController(ofImage: imageData, atIndexPath: previousIndexPath)
+            }
             return imageDetailViewController(ofImage: imageData, atIndexPath: previousIndexPath)
         case .video:
             return videoDetailViewController(ofImage: imageData, atIndexPath: previousIndexPath)

@@ -7,10 +7,13 @@
 //
 
 import CoreData
+import PDFKit
 import Photos
 import UIKit
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgCacheKit
+import PwgUIKit
+import PwgUploadKit
 
 class UploadImageTableViewCell: UITableViewCell {
     
@@ -86,10 +89,15 @@ class UploadImageTableViewCell: UITableViewCell {
         
         // Determine from where the file comes from:
         // => Photo Library: use PHAsset local identifier
-        // => UIPasteborad: use identifier of type "Clipboard-yyyyMMdd-HHmmssSSSS-typ-#"
-        //    where "typ" is "img" (photo) or "mov" (video).
-        if upload.localIdentifier.contains(kClipboardPrefix) {
-            // Case of an image retrieved from the pasteboard
+        // => UIPasteboard, share extension, in-app intent: use identifier of type
+        /// - "pwgClipboard" is a header telling that the image/video comes from the pasteboard (see kClipboardPrefix)
+        /// - "yyyyMMdd-HHmmssSSSS" is the date at which the objects were retrieved
+        /// - "typ" is "-img-", "-mov-", "-pdf-", "-eps-" or "-gif-" depending on the nature of the object (see kImageSuffix, kMovieSuffix, kPdfSuffix, kEpsSuffix, kGifSuffix)
+        /// - "#" is the index of the object in the pasteboard
+        if upload.localIdentifier.hasPrefix(kClipboardPrefix) ||
+           upload.localIdentifier.hasPrefix(kSharedPrefix) ||
+           upload.localIdentifier.hasPrefix(kIntentPrefix) {
+            // Case of an image stored in the Uploads directory
             prepareThumbnailFromFile(for: upload, availableWidth: availableWidth)
         } else {
             // Case of an image from the local Photo Library
@@ -118,8 +126,9 @@ class UploadImageTableViewCell: UITableViewCell {
         
         // Task depends on file type
         var image: UIImage!
-        if fileURL.lastPathComponent.contains("img") {
-            // Case of a photo
+        if upload.localIdentifier.contains(kImageSuffix) ||
+           upload.localIdentifier.contains(kGifSuffix) {
+            // Case of a photo (the first frame of an animated GIF)
             playIcon.isHidden = true
 
             // Retrieve image data from file stored in the Uploads directory
@@ -139,7 +148,7 @@ class UploadImageTableViewCell: UITableViewCell {
                 image = pwgImageType.image.placeHolder
             }
         }
-        else if fileURL.lastPathComponent.contains("mov") {
+        else if upload.localIdentifier.contains(kMovieSuffix) {
             // Case of a movie
             let asset = AVURLAsset(url: fileURL, options: nil)
             let imageGenerator = AVAssetImageGenerator(asset: asset)
@@ -153,6 +162,16 @@ class UploadImageTableViewCell: UITableViewCell {
             // Add movie icon
             playIcon.isHidden = false
         }
+        else if upload.localIdentifier.contains(kPdfSuffix) {
+            // Case of a PDF file
+            playIcon.isHidden = true
+            image = PDFDocument(url: fileURL)?.extractedImage() ?? pwgImageType.image.placeHolder
+        }
+        else if upload.localIdentifier.contains(kEpsSuffix) {
+            // Case of an EPS file — render its embedded preview if present, else a placeholder
+            playIcon.isHidden = true
+            image = (try? Data(contentsOf: fileURL))?.epsPreviewImage() ?? pwgImageType.image.placeHolder
+        }
         else {
             // Unknown type
             playIcon.isHidden = true
@@ -161,9 +180,7 @@ class UploadImageTableViewCell: UITableViewCell {
 
         // Scale/crop image
         let finalImage = image.crop(width: 1.0, height: 1.0)?.resize(to: 58.0, opaque: true, scale: scale)
-        if let currentImage = cellImage.image, !currentImage.isEqual(finalImage) {
-            cellImage.image = finalImage
-        }
+        changeCellImageIfNeeded(withImage: finalImage ?? pwgImageType.image.placeHolder)
 
         // Image available
         var text = ""

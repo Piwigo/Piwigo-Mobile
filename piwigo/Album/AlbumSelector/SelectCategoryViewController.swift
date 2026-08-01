@@ -11,8 +11,11 @@
 import UIKit
 import CoreData
 import CoreMedia
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
+import PwgUploadKit
+import PwgUIKit
 
 enum pwgCategorySelectAction {
     case none
@@ -32,7 +35,7 @@ protocol SelectCategoryImageRemovedDelegate: NSObjectProtocol {
     func didRemoveImage()
 }
 
-class SelectCategoryViewController: UIViewController {
+final class SelectCategoryViewController: UIViewController {
 
     weak var delegate: (any SelectCategoryDelegate)?
     weak var imageCopiedDelegate: (any SelectCategoryImageCopiedDelegate)?
@@ -67,15 +70,15 @@ class SelectCategoryViewController: UIViewController {
 
     lazy var userUploadRights: [Int32] = {
         // Case of Community user?
-        if NetworkVars.shared.userStatus != .normal { return [] }
+        if ServerVars.shared.userStatus != .normal { return [] }
         let userUploadRights = user.uploadRights
         return userUploadRights.components(separatedBy: ",").compactMap({ Int32($0) })
     }()
     
     lazy var predicates: [NSPredicate] = {
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
         return andPredicates
     }()
 
@@ -85,7 +88,7 @@ class SelectCategoryViewController: UIViewController {
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true,
                                          selector: #selector(NSString.localizedStandardCompare(_:)))]
         var andPredicates = predicates
-        var recentCatIds: [Int32] = AlbumVars.shared.recentCategories.components(separatedBy: ",").compactMap({Int32($0)})
+        var recentCatIds: [Int32] = CacheVars.shared.recentCategories.components(separatedBy: ",").compactMap({Int32($0)})
         // Root album proposed for some actions, input album not proposed
         if [.setDefaultAlbum, .moveAlbum].contains(wantedAction) == false {
             recentCatIds.removeAll(where: { $0 == Int32.zero })
@@ -95,10 +98,12 @@ class SelectCategoryViewController: UIViewController {
         // Removes parent album
         recentCatIds.removeAll(where: { $0 == self.inputAlbum.parentId })
         // Limit the number of recent albums
-        let nberExtraCats: Int = max(0, recentCatIds.count - AlbumVars.shared.maxNberRecentCategories)
+        let nberExtraCats: Int = max(0, recentCatIds.count - CacheVars.shared.maxNberRecentCategories)
         andPredicates.append(NSPredicate(format: "pwgID IN %@", recentCatIds.dropLast(nberExtraCats)))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-        fetchRequest.fetchLimit = AlbumVars.shared.maxNberRecentCategories
+        fetchRequest.fetchLimit = CacheVars.shared.maxNberRecentCategories
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.shouldRefreshRefetchedObjects = true
         return fetchRequest
     }()
 
@@ -136,6 +141,8 @@ class SelectCategoryViewController: UIViewController {
             fetchRequest.predicate = albumPredicates
         }
         fetchRequest.fetchBatchSize = 20
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.shouldRefreshRefetchedObjects = true
         return fetchRequest
     }()
 
@@ -288,9 +295,8 @@ class SelectCategoryViewController: UIViewController {
         categoriesTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
 
         // Check that a root album exists in cache (create it if necessary)
-        guard let _ = try? AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.root.rawValue) else {
-            return
-        }
+        guard let _ = try? AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.root.rawValue)
+        else { return }
         
         // Initialise data source
         do {
@@ -309,22 +315,22 @@ class SelectCategoryViewController: UIViewController {
         // Set title and buttons
         switch wantedAction {
         case .setDefaultAlbum:
-            title = NSLocalizedString("setDefaultCategory_title", comment: "Default Album")
+            title = String(localized: "setDefaultCategory_title", comment: "Default Album")
         
         case .moveAlbum:
-            title = NSLocalizedString("moveCategory", comment:"Move Album")
+            title = String(localized: "moveCategory", comment:"Move Album")
         
         case .setAlbumThumbnail:
-            title = NSLocalizedString("categoryImageSet_title", comment:"Album Thumbnail")
+            title = String(localized: "categoryImageSet_title", comment:"Album Thumbnail")
 
         case .setAutoUploadAlbum:
-            title = NSLocalizedString("settings_autoUploadDestination", comment: "Destination")
+            title = String(localized: "settings_autoUploadDestination", comment: "Destination")
             
         case .copyImage, .copyImages:
-            title = NSLocalizedString("copyImage_title", comment:"Copy to Album")
+            title = String(localized: "copyImage_title", comment:"Copy to Album")
             
         case .moveImage, .moveImages:
-            title = NSLocalizedString("moveImage_title", comment:"Move to Album")
+            title = String(localized: "moveImage_title", comment:"Move to Album")
             
         default:
             title = ""
@@ -342,9 +348,9 @@ class SelectCategoryViewController: UIViewController {
         // Table view
         setTableViewMainHeader()
         categoriesTableView?.separatorColor = PwgColor.separator
-        categoriesTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        categoriesTableView?.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
@@ -364,32 +370,35 @@ class SelectCategoryViewController: UIViewController {
         // Display albums
         categoriesTableView?.reloadData()
     }
-
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         // Display HUD during fetch after the app launch or if data was fetched more than an hour ago
         if AppVars.shared.dateOfLatestRecursiveAlbumDataFetch.timeIntervalSinceNow < -3600 {
-            navigationController?.showHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"))
+            navigationController?.showHUD(withTitle: Localized.loading)
             AppVars.shared.dateOfLatestRecursiveAlbumDataFetch = Date()
         }
         
-        // Use the AlbumProvider to fetch album data recursively. On completion,
+        // Fetch album data recursively. On completion,
         // handle general UI updates and error alerts on the main queue.
+        let hasAdminRights = user.hasAdminRights
         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
-                                                          lastConnected: self.user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID,
+                                                        lastConnected: self.user.lastUsed)
                 
                 // Remember that the app is fetching album data recursively
                 AlbumVars.shared.isFetchingAlbumData.insert(pwgSmartAlbum.root.rawValue)
 
-                // Fetch albums recursively
-                try await AlbumProvider().fetchAlbums(forUserWithAdminRights: self.user.hasAdminRights,
-                                                      inParentWithId: pwgSmartAlbum.root.rawValue,
-                                                      recursively: true, thumbnailSize: thumnailSize)
+                // Fetch album data recursively
+                let pwgData = try await JSONManager.shared.fetchAlbums(forUserWithAdminRights: hasAdminRights,
+                                                                       inParentWithId: pwgSmartAlbum.root.rawValue,
+                                                                       recursively: true, thumbnailSize: thumnailSize)
+                // Update cache
+                try AlbumProvider().importAlbums(pwgData, recursively: true, inParent: pwgSmartAlbum.root.rawValue)
                 
                 // Remove current album from list of album being fetched
                 AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.root.rawValue)
@@ -398,9 +407,11 @@ class SelectCategoryViewController: UIViewController {
                 AppVars.shared.dateOfLatestRecursiveAlbumDataFetch = Date()
 
                 await MainActor.run { [self] in
-                    self.navigationController?.hideHUD { }
+                    self.navigationController?.hideHUD {
+                        self.categoriesTableView.reloadData()
+                    }
                 }
-            } catch let error as PwgKitError {
+            } catch {
                 await MainActor.run { [self] in
                     self.didFetchAlbumsWithError(error: error)
                 }
@@ -418,7 +429,7 @@ class SelectCategoryViewController: UIViewController {
             }
             
             // Report error
-            let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
+            let title = String(localized: "internetErrorGeneral_title", comment: "Connection Error")
             dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
         }
     }
@@ -487,38 +498,38 @@ class SelectCategoryViewController: UIViewController {
         switch wantedAction {
         case .setDefaultAlbum:
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSettingsWidth),
-                                 text: NSLocalizedString("setDefaultCategory_select", comment: "Please select an album or sub-album which will become the new root album."))
+                                 text: String(localized: "setDefaultCategory_select", comment: "Please select an album or sub-album which will become the new root album."))
 
         case .moveAlbum:
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
-                                 text: String(format: NSLocalizedString("moveCategory_select", comment:"Please select an album or sub-album to move album \"%@\" into."), inputAlbum.name))
+                                 text: String(format: String(localized: "moveCategory_select", comment:"Please select an album or sub-album to move album \"%@\" into."), inputAlbum.name))
 
         case .setAlbumThumbnail:
             let title = inputImages.first?.titleStr ?? ""
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
-                                 text: String(format: NSLocalizedString("categorySelection_setThumbnail", comment:"Please select the album which will use the photo \"%@\" as a thumbnail."), title.isEmpty ? inputImages.first?.fileName ?? "-?-" : title))
+                                 text: String(format: String(localized: "categorySelection_setThumbnail", comment:"Please select the album which will use the photo \"%@\" as a thumbnail."), title.isEmpty ? inputImages.first?.fileName ?? "-?-" : title))
 
         case .setAutoUploadAlbum:
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSettingsWidth),
-                                 text: String(localized: "settings_autoUploadDestinationInfo", comment: "Please select the album…"))
+                                 text: Localized.autoUploadDestinationInfo)
             
         case .copyImage:
             let title = inputImages.first?.titleStr ?? ""
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
-                                 text: String(format: NSLocalizedString("copySingleImage_selectAlbum", comment:"Please, select the album in which you wish to copy the photo \"%@\"."), title.isEmpty ? inputImages.first?.fileName ?? "-?-" : title))
+                                 text: String(format: String(localized: "copySingleImage_selectAlbum", comment:"Please, select the album in which you wish to copy the photo \"%@\"."), title.isEmpty ? inputImages.first?.fileName ?? "-?-" : title))
 
         case .moveImage:
             let title = inputImages.first?.titleStr ?? ""
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
-                                 text: String(format: NSLocalizedString("moveSingleImage_selectAlbum", comment:"Please, select the album in which you wish to move the photo \"%@\"."), title.isEmpty ? inputImages.first?.fileName ?? "-?-" : title))
+                                 text: String(format: String(localized: "moveSingleImage_selectAlbum", comment:"Please, select the album in which you wish to move the photo \"%@\"."), title.isEmpty ? inputImages.first?.fileName ?? "-?-" : title))
 
         case .copyImages:
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
-                                 text: NSLocalizedString("copySeveralImages_selectAlbum", comment: "Please, select the album in which you wish to copy the photos."))
+                                 text: String(localized: "copySeveralImages_selectAlbum", comment: "Please, select the album in which you wish to copy the photos."))
 
         case .moveImages:
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
-                                 text: NSLocalizedString("moveSeveralImages_selectAlbum", comment: "Please, select the album in which you wish to copy the photos."))
+                                 text: String(localized: "moveSeveralImages_selectAlbum", comment: "Please, select the album in which you wish to copy the photos."))
 
         default:
             preconditionFailure("Action not configured in setTableViewMainHeader().")
@@ -540,23 +551,23 @@ class SelectCategoryViewController: UIViewController {
         var message:String
         switch wantedAction {
         case .moveAlbum:
-            title = NSLocalizedString("moveCategoryError_title", comment:"Move Fail")
-            message = NSLocalizedString("moveCategoryError_message", comment:"Failed to move your album")
+            title = String(localized: "moveCategoryError_title", comment:"Move Fail")
+            message = String(localized: "moveCategoryError_message", comment:"Failed to move your album")
         case .setAlbumThumbnail:
-            title = NSLocalizedString("categoryImageSetError_title", comment:"Image Set Error")
-            message = NSLocalizedString("categoryImageSetError_message", comment:"Failed to set the album image")
+            title = String(localized: "categoryImageSetError_title", comment:"Image Set Error")
+            message = String(localized: "categoryImageSetError_message", comment:"Failed to set the album image")
         case .copyImage:
-            title = NSLocalizedString("copyImageError_title", comment:"Copy Fail")
-            message = NSLocalizedString("copySingleImageError_message", comment:"Failed to copy your photo")
+            title = String(localized: "copyImageError_title", comment:"Copy Failed")
+            message = String(localized: "copySingleImageError_message", comment:"Failed to copy your photo")
         case .copyImages:
-            title = NSLocalizedString("copyImageError_title", comment:"Copy Fail")
-            message = NSLocalizedString("copySeveralImagesError_message", comment:"Failed to copy some photos")
+            title = String(localized: "copyImageError_title", comment:"Copy Failed")
+            message = String(localized: "copySeveralImagesError_message", comment:"Failed to copy some photos")
         case .moveImage:
-            title = NSLocalizedString("moveImageError_title", comment:"Move Fail")
-            message = NSLocalizedString("moveSingleImageError_message", comment:"Failed to copy your photo")
+            title = String(localized: "moveImageError_title", comment:"Move Failed")
+            message = String(localized: "moveSingleImageError_message", comment:"Failed to copy your photo")
         case .moveImages:
-            title = NSLocalizedString("moveImageError_title", comment:"Move Fail")
-            message = NSLocalizedString("moveSeveralImagesError_message", comment:"Failed to move some photos")
+            title = String(localized: "moveImageError_title", comment:"Move Failed")
+            message = String(localized: "moveSeveralImagesError_message", comment:"Failed to move some photos")
         default:
             return
         }
@@ -585,7 +596,7 @@ class SelectCategoryViewController: UIViewController {
             self.categoriesTableView?.endUpdates()
 
             // Update navigation bar
-            self.navigationController?.navigationBar.configAppearance(withLargeTitles: true)
+            self.navigationController?.navigationBar.configAppearance(withLargeTitles: false)
         }
     }
 }

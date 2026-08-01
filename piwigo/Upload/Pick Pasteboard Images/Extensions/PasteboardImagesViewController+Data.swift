@@ -10,21 +10,28 @@ import CoreData
 import MobileCoreServices
 import Photos
 import UIKit
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgCacheKit
+import PwgUploadKit
 
 extension PasteboardImagesViewController {
     // MARK: - Check Pasteboard Content
     /// Called by the notification center when the pasteboard content is updated
     @objc func checkPasteboard() {
-        // Do nothing if the clipboard was emptied assuming that pasteboard objects are already stored
-        if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes),
-           let types = UIPasteboard.general.types(forItemSet: indexSet) {
+        // Job done if the pasteboard content did not change
+        // (this preserves the current selection when e.g. switching apps)
+        let changeCount = UIPasteboard.general.changeCount
+        if changeCount == pbChangeCount { return }
+        pbChangeCount = changeCount
 
-            // Reinitialise cached indexed uploads, deselect images
+        // Retrieve pasteboard object indexes and types, then create identifiers
+        if let itemSet = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes),
+           let types = UIPasteboard.general.types(forItemSet: itemSet) {
+
+            // Initialise cached indexed uploads
             pbObjects = []
-            indexedUploadsInQueue = .init(repeating: nil, count: indexSet.count)
-            selectedImages = .init(repeating: nil, count: indexSet.count)
+            selectedImages = .init(repeating: nil, count: itemSet.count)
+            indexedUploadsInQueue = .init(repeating: nil, count: itemSet.count)
 
             // Get date of retrieve
             let dateFormatter = DateFormatter()
@@ -32,27 +39,64 @@ extension PasteboardImagesViewController {
             let pbDateTime = dateFormatter.string(from: Date())
 
             // Loop over all pasteboard objects
-            /// Pasteboard images are identified with identifiers of the type "Clipboard-yyyyMMdd-HHmmssSSSS-typ-#" where:
-            /// - "Clipboard" is a header telling that the image/video comes from the pasteboard
+            /// Pasteboard images are identified with identifiers of the type "pwgClipboard-yyyyMMdd-HHmmssSSSS-typ-#" where:
+            /// - "pwgClipboard" is a header telling that the image/video comes from the pasteboard (see kClipboardPrefix)
             /// - "yyyyMMdd-HHmmssSSSS" is the date at which the objects were retrieved
-            /// - "typ" is "img" or "mov" depending on the nature of the object
+            /// - "typ" is "-img-", "-mov-", "-pdf-", "-eps-" or "-gif-" depending on the nature of the object (see kImageSuffix, kMovieSuffix, kPdfSuffix, kEpsSuffix, kGifSuffix)
             /// - "#" is the index of the object in the pasteboard
-            for idx in indexSet {
+            /// The item set may not start at 0 nor be contiguous (e.g. when the pasteboard
+            /// also contains text items), so the matching items are enumerated:
+            /// - "idx" is the index of the item in the pasteboard,
+            /// - "offset" is the index of the object in the local arrays and collection view.
+            for (offset, idx) in itemSet.enumerated() {
                 let indexSet = IndexSet(integer: idx)
-                var identifier = ""
-                // Movies first because objects may contain both movies and images
+                var identifier = kClipboardPrefix + pbDateTime
+                // Movies first because movies may contain images
                 if UIPasteboard.general.contains(pasteboardTypes: [UTType.movie.identifier], inItemSet: indexSet) {
-                    identifier = String(format: "%@%@%@%ld", kClipboardPrefix, pbDateTime, kMovieSuffix, idx)
-                } else {
-                    identifier = String(format: "%@%@%@%ld", kClipboardPrefix, pbDateTime, kImageSuffix, idx)
+                    identifier += kMovieSuffix + String(idx + 1)
                 }
-                let newObject = PasteboardObject(identifier: identifier, types: types[idx])
+                // PDFs next because PDF documents may also provide a preview image
+                // (only when the server accepts PDF files, i.e. when pasteboardTypes contains
+                //  the PDF type; otherwise mixed items fall back to their image representation)
+                else if pasteboardTypes.contains(UTType.pdf.identifier),
+                        UIPasteboard.general.contains(pasteboardTypes: [UTType.pdf.identifier], inItemSet: indexSet) {
+                    identifier += kPdfSuffix + String(idx + 1)
+                }
+                // EPS next, for the same reason as PDF (only when the server accepts EPS files)
+                else if pasteboardTypes.contains(UTType.eps.identifier),
+                        UIPasteboard.general.contains(pasteboardTypes: [UTType.eps.identifier], inItemSet: indexSet) {
+                    identifier += kEpsSuffix + String(idx + 1)
+                }
+                // GIFs before the other image types (only when the server accepts GIF files):
+                // apps often place several representations of the same image in the pasteboard
+                // and the generic image branch below would adopt the first of them, losing the
+                // animation. The GIF file is then uploaded as is, see prepareImageFromFile().
+                else if pasteboardTypes.contains(UTType.gif.identifier),
+                        UIPasteboard.general.contains(pasteboardTypes: [UTType.gif.identifier], inItemSet: indexSet) {
+                    identifier += kGifSuffix + String(idx + 1)
+                }
+                else {
+                    identifier += kImageSuffix + String(idx + 1)
+                }
+                let fileName = pbDateTime.dropLast(4) + "-" + String(idx + 1)
+                let newObject = PasteboardObject(identifier: identifier, fileName: fileName,
+                                                 types: types[offset], itemIndex: idx)
                 pbObjects.append(newObject)
-                
+
                 // Retrieve data, store in Upload folder and update cache
-                startOperations(for: newObject, at: IndexPath(item: idx, section: 0))
+                startOperations(for: newObject, at: IndexPath(item: offset, section: 0))
             }
         }
+        else {
+            // Initialise cached indexed uploads
+            pbObjects = []
+            selectedImages = .init(repeating: nil, count: 0)
+            indexedUploadsInQueue = .init(repeating: nil, count: 0)
+        }
+
+        // Refresh the collection view and navigation bar
+        localImagesCollection.reloadData()
+        updateNavBar()
     }
     
     
@@ -73,53 +117,62 @@ extension PasteboardImagesViewController {
         }
 
         // Create an instance of the preparation method
+        // Expansive work realised on a background queue
         let scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))
-        let preparer = ObjectPreparation(pbObject, at: indexPath.item, scale: scale)
+        let preparer = ObjectPreparation(pbObject, scale: scale)
       
         // Refresh the thumbnail of the cell and update upload cache
+        // The whole completion work is performed on the main queue so that
+        // the caches are only mutated on the main thread (no data race with
+        // the collection view data source and other completion blocks).
         preparer.completionBlock = {
             // Job done if operation was cancelled
             if preparer.isCancelled { return }
 
-            // Operation completed
-            self.pendingOperations.preparationsInProgress.removeValue(forKey: indexPath)
+            DispatchQueue.main.async {
+                // Operation completed
+                self.pendingOperations.preparationsInProgress.removeValue(forKey: indexPath)
 
-            // Update cell image if operation was successful
-            if pbObject.state == .stored {
-                // Set upload cache
-                if let upload = (self.uploads.fetchedObjects ?? []).first(where: {$0.md5Sum == pbObject.md5Sum}) {
-                    self.indexedUploadsInQueue[indexPath.item] = (upload.localIdentifier, upload.md5Sum, upload.state)
-                }
-                // Refresh the thumbnail of the cell
-                DispatchQueue.main.async {
+                // Update cell image if operation was successful
+                if pbObject.state == .stored {
+                    // Set upload cache
+                    if let upload = (self.uploads.fetchedObjects ?? []).first(where: {$0.md5Sum == pbObject.md5Sum}) {
+                        self.indexedUploadsInQueue[indexPath.item] = (upload.localIdentifier, upload.md5Sum, upload.state)
+                    }
+                    // Refresh the thumbnail of the cell
                     if let cell = self.localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
                         let uploadState = self.getUploadStateOfImage(at: indexPath.item, for: cell)
                         cell.update(selected: self.selectedImages[indexPath.item] != nil, state: uploadState)
                         cell.cellImage.image = pbObject.image
-                        self.reloadInputViews()
                     }
                 }
-            }
-                
-            // When all images/videos are ready:
-            /// - keep only stored objects
-            /// - refresh section to display the select button
-            /// - restart UploadManager activity
-            if self.pendingOperations.preparationsInProgress.isEmpty {
-                // Some objects may not be available anymore
-                var newSetOfObjects = [PasteboardObject]()
-                var newSetOfUploads = [(String?,String?,pwgUploadState?)?]()
-                for index in 0..<self.pbObjects.count {
-                    if [.stored, .ready].contains(self.pbObjects[index].state) {
-                        newSetOfObjects.append(self.pbObjects[index])
-                        newSetOfUploads.append(self.indexedUploadsInQueue[index])
+
+                // When all images/videos are ready:
+                /// - keep only stored objects
+                /// - refresh section to display the select button
+                /// - restart UploadManager activity
+                if self.pendingOperations.preparationsInProgress.isEmpty {
+                    // Some objects may not be available anymore
+                    var newSetOfObjects = [PasteboardObject]()
+                    var newSetOfUploads = [(String?,String?,pwgUploadState?)?]()
+                    var newSetOfSelections = [UploadProperties?]()
+                    for index in 0..<self.pbObjects.count {
+                        if [.stored, .ready].contains(self.pbObjects[index].state) {
+                            newSetOfObjects.append(self.pbObjects[index])
+                            newSetOfUploads.append(self.indexedUploadsInQueue[index])
+                            newSetOfSelections.append(self.selectedImages[index])
+                        }
                     }
-                }
-                self.pbObjects = newSetOfObjects
-                self.indexedUploadsInQueue = newSetOfUploads
-                
-                // Update section header and action buttonn
-                DispatchQueue.main.async {
+                    let didRemoveObjects = newSetOfObjects.count != self.pbObjects.count
+                    self.pbObjects = newSetOfObjects
+                    self.indexedUploadsInQueue = newSetOfUploads
+                    self.selectedImages = newSetOfSelections
+
+                    // Update section header and action button
+                    // Reload collection view if some objects were removed
+                    if didRemoveObjects {
+                        self.localImagesCollection.reloadData()
+                    }
                     self.updateNavBar()
                     self.updateSelectButton()
                     if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: IndexPath(item: 0, section: 0)) as? PasteboardImagesHeaderReusableView {
@@ -132,7 +185,7 @@ extension PasteboardImagesViewController {
         // Add the operation to help keep track of things
         pendingOperations.preparationsInProgress[indexPath] = preparer
         
-        // Add the operation to the download queue
+        // Add the operation to the queue
         pendingOperations.preparationQueue.addOperation(preparer)
     }
 
@@ -167,7 +220,9 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate
             if let index = selectedImages.firstIndex(where: {$0?.localIdentifier == upload.localIdentifier}) {
                 // Deselect image
                 selectedImages[index] = nil
-                // Add upload request to cache
+            }
+            // Add upload request to cache
+            if let index = indexedUploadsInQueue.firstIndex(where: {$0?.0 == upload.localIdentifier}) {
                 indexedUploadsInQueue[index] = (upload.localIdentifier, upload.md5Sum, upload.state)
             }
             
@@ -224,7 +279,6 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate
                let cell = visibleCells.first(where: {$0.localIdentifier == upload.localIdentifier}) {
                 // Update cell
                 cell.update(selected: false, state: upload.state)
-                cell.reloadInputViews()
 
                 // The section will be refreshed only if the button content needs to be changed
                 self.updateSelectButton()

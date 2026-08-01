@@ -6,7 +6,7 @@
 //  Copyright © 2023 Piwigo.org. All rights reserved.
 //
 
-import piwigoKit
+import PwgKit
 import UIKit
 
 // MARK: - UITableViewDelegate Methods

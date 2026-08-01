@@ -7,7 +7,9 @@
 //
 
 import Foundation
-import piwigoKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 extension SelectCategoryViewController
 {
@@ -29,9 +31,9 @@ extension SelectCategoryViewController
         
         // Send requests to Piwigo server
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Prepare parameters for copying the image/video to the selected category
                 let newImageCategories = categoryIds.compactMap({ String($0) }).joined(separator: ";")
@@ -53,7 +55,7 @@ extension SelectCategoryViewController
                     if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
                         albumData.thumbnailId = imageData.pwgID
                         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                        albumData.thumbnailUrl = ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumnailSize) as NSURL?
+                        albumData.thumbnailUrl = imageData.url(for: thumnailSize) as NSURL?
                     }
                     
                     // Next image
@@ -62,7 +64,7 @@ extension SelectCategoryViewController
                     self.copyImages(toAlbum: albumData)
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 self.didFailWithError(error)
             }
         }
@@ -74,9 +76,9 @@ extension SelectCategoryViewController
         let albumID = albumData.pwgID
         let imageIDs = self.inputImages.map({ $0.pwgID })
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Associate images
                 try await JSONManager.shared.setCategory(albumID, forImageIDs: imageIDs, withAction: .associate)
@@ -95,9 +97,9 @@ extension SelectCategoryViewController
                        let imageData = inputImages.first {
                         albumData.thumbnailId = imageData.pwgID
                         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                        albumData.thumbnailUrl = ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumnailSize) as NSURL?
+                        albumData.thumbnailUrl = imageData.url(for: thumnailSize) as NSURL?
                     }
-
+                    
                     // Should we also dissociate the images?
                     if dissociate {
                         // Dissociate images from the current album
@@ -108,7 +110,7 @@ extension SelectCategoryViewController
                     }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run {
                     self.didFailWithError(error)
                 }
@@ -157,7 +159,7 @@ extension SelectCategoryViewController
         
         // Move next image to seleted album
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Append selected category ID to image category list
                 let albums = imageData.albums ?? Set<Album>()
                 var categoryIds = albums.compactMap({$0.pwgID})
@@ -167,7 +169,7 @@ extension SelectCategoryViewController
                 categoryIds.removeAll(where: {$0 == inputAlbum.pwgID})
 
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Prepare parameters for moving the image/video to the selected category
                 let newImageCategories = categoryIds.compactMap({ String($0) }).joined(separator: ";")
@@ -189,7 +191,7 @@ extension SelectCategoryViewController
                     if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
                         albumData.thumbnailId = imageData.pwgID
                         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                        albumData.thumbnailUrl = ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumnailSize) as NSURL?
+                        albumData.thumbnailUrl = imageData.url(forMaxSize: thumnailSize) as NSURL?
                     }
 
                     // Remove image from source album
@@ -204,7 +206,7 @@ extension SelectCategoryViewController
                     self.moveImages(toAlbum: albumData)
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 self.didFailWithError(error)
             }
         }
@@ -217,9 +219,9 @@ extension SelectCategoryViewController
         let imageIDs = self.inputImages.map({ $0.pwgID })
         // Send requests to Piwigo server
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Associate images
                 try await JSONManager.shared.setCategory(albumID, forImageIDs: imageIDs, withAction: .dissociate)
@@ -237,7 +239,7 @@ extension SelectCategoryViewController
                     self.didMoveImagesWithSuccess()
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run {
                     self.didFailWithError(error)
                 }

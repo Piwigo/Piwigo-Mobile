@@ -8,15 +8,15 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgCacheKit
 
 // MARK: Edit Image Propertites
 extension ImageViewController
 {
     func editParamsAction() -> UIAction {
         // Edit image parameters
-        let action = UIAction(title: NSLocalizedString("imageOptions_properties",
-                                                       comment: "Modify Information"),
+        let action = UIAction(title: String(localized: "imageOptions_properties", comment: "Modify Properties"),
                               image: UIImage(systemName: "pencil"),
                               handler: { [self] _ in
             // Edit image properties
@@ -57,6 +57,7 @@ extension ImageViewController: EditImageParamsDelegate
         // Update image metadata
         if let imagePVC = pageViewController?.viewControllers?.first {
             (imagePVC as? ImageDetailViewController)?.updateImageMetadata(with: params)
+            (imagePVC as? GifDetailViewController)?.updateImageMetadata(with: params)
             (imagePVC as? VideoDetailViewController)?.updateImageMetadata(with: params)
             (imagePVC as? PdfDetailViewController)?.updateImageMetadata(with: params)
         }

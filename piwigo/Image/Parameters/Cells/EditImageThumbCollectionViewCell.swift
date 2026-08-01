@@ -10,7 +10,10 @@
 
 import Photos
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
+import PwgUIKit
 
 @objc protocol EditImageThumbnailDelegate: NSObjectProtocol {
     func didDeselectImage(withID imageID: Int64)
@@ -124,15 +127,15 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
         Task {
             await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: thumbnailSize, type: .image,
-                                                  atURL: ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumbnailSize),
-                                                  fromServer: imageData.server?.uuid) { [weak self] cachedImageURL in
-                DispatchQueue.main.async { [weak self] in
+                                                  atURL: imageData.url(forMaxSize: thumbnailSize),
+                                                  fromServer: imageData.server?.uuid) { [weak self = self] cachedImageURL in
+                Task { @MainActor in
                     guard let self else { return }
                     self.downsampleImage(atURL: cachedImageURL, to: cellSize)
                 }
             }
-            failure: { [weak self] _ in
-                DispatchQueue.main.async { [weak self] in
+            failure: { [weak self = self] _ in
+                Task { @MainActor in
                     guard let self else { return }
                     self.setThumbnailWithImage(pwgImageType.image.placeHolder)
                 }
@@ -174,29 +177,27 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         let topViewController = window?.topMostViewController()
 
         let alert = UIAlertController(
-            title: NSLocalizedString("renameImage_title", comment: "Original File"),
-            message: "\(NSLocalizedString("renameImage_message", comment: "Enter a new file name for this image")) \"\(imageFile.text ?? "")\":",
+            title: String(localized: "renameImage_title", comment: "Original File"),
+            message: "\(String(localized: "renameImage_message", comment: "Enter a new file name for this image")) \"\(imageFile.text ?? "")\":",
             preferredStyle: .alert)
 
         alert.addTextField(configurationHandler: { [self] textField in
-            textField.placeholder = NSLocalizedString("renameImage_title", comment: "Original File")
+            textField.placeholder = String(localized: "renameImage_title", comment: "Original File")
             textField.text = imageFile.text
             textField.clearButtonMode = .always
             textField.keyboardType = .default
-            textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = UIVars.shared.isDarkPaletteActive ? .dark : .default
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes
             textField.returnKeyType = .continue
             textField.delegate = self
         })
 
-        let cancelAction = UIAlertAction(
-            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
-            style: .cancel,
-            handler: { _ in })
+        let cancelAction = UIAlertAction(title: Localized.cancel,
+                                         style: .cancel, handler: { _ in })
 
         renameFileNameAction = UIAlertAction(
-            title: NSLocalizedString("renameCategory_button", comment: "Rename"),
+            title: String(localized: "renameCategory_button", comment: "Rename"),
             style: .default,
             handler: { [self] action in
                 // Rename album if possible
@@ -211,7 +212,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
             alert.addAction(renameFileNameAction)
         }
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
         topViewController?.present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = PwgColor.tintColor
@@ -222,7 +223,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
     private func renameImageFile(withName fileName: String,
                                  andViewController topViewController: UIViewController?) {
         // Display HUD during the update
-        topViewController?.showHUD(withTitle: NSLocalizedString("renameImageHUD_label", comment: "Renaming Original File…"))
+        topViewController?.showHUD(withTitle: String(localized: "renameImageHUD_label", comment: "Renaming Original File…"))
 
         // Prepare parameters for renaming the image/video filename
         let paramsDict: [String : Any] = ["image_id" : imageID,
@@ -230,7 +231,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                                           "single_value_mode" : "replace"]
         // Launch request
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Set image properties
                 try await JSONManager.shared.setInfos(with: paramsDict)
 
@@ -247,12 +248,12 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                     }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run {
                     topViewController?.hideHUD {
                         topViewController?.dismissPiwigoError(
-                            withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),
-                            message: NSLocalizedString("renameImageError_message", comment: "Failed to rename your image filename"),
+                            withTitle: String(localized: "renameCategoyError_title", comment: "Rename Fail"),
+                            message: String(localized: "renameImageError_message", comment: "Failed to rename your image filename"),
                             errorMessage: error.localizedDescription) { }
                     }
                 }

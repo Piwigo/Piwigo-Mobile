@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PwgUIKit
 
 enum SelectButtonState : Int {
     case none
@@ -21,10 +22,10 @@ extension UIButton
         let title: String, bckgColor: UIColor
         switch state {
         case .select:
-            title = String(format: "  %@  ", NSLocalizedString("selectAll", comment: "Select All"))
+            title = String(format: "  %@  ", String(localized: "selectAll", comment: "Select All"))
             bckgColor = PwgColor.cellBackground
         case .deselect:
-            title = String(format: "  %@  ", NSLocalizedString("categoryImageList_deselectButton", comment: "Deselect"))
+            title = String(format: "  %@  ", String(localized: "categoryImageList_deselectButton", comment: "Deselect"))
             bckgColor = PwgColor.cellBackground
         case .none:
             title = ""

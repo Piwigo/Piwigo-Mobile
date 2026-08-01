@@ -8,13 +8,14 @@
 
 import Foundation
 import UIKit
+import PwgUIKit
 
 extension UploadSettingsViewController {
     
     // MARK: - Header
     private func getContentOfHeader() -> (String, String) {
-        let title = String(format: "%@\n", NSLocalizedString("imageUploadHeaderTitle_upload", comment: "Upload Settings"))
-        let text = NSLocalizedString("imageUploadHeaderText_upload", comment: "Please set the upload parameters to apply to the selection of photos/videos")
+        let title = String(format: "%@\n", String(localized: "imageUploadHeaderTitle_upload", comment: "Upload Settings"))
+        let text = String(localized: "imageUploadHeaderText_upload", comment: "Please set the upload parameters to apply to the selection of photos/videos")
         return (title, text)
     }
 

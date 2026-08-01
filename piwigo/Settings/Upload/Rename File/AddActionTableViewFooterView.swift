@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import PwgUIKit
 
 class AddActionTableViewFooterView: UITableViewHeaderFooterView {
     
@@ -24,7 +25,7 @@ class AddActionTableViewFooterView: UITableViewHeaderFooterView {
     
     func config() {
         // Create Add Action button
-        button.setTitle(NSLocalizedString("alertAddButton", comment: "Add"), for: .normal)
+        button.setTitle(String(localized: "alertAddButton", comment: "Add"), for: .normal)
         button.setTitleColor(PwgColor.orange, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 13)
         button.translatesAutoresizingMaskIntoConstraints = false

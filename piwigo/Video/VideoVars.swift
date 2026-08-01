@@ -5,9 +5,10 @@
 //  Created by Eddy Lelièvre-Berna on 06/08/2023.
 //  Copyright © 2023 Piwigo.org. All rights reserved.
 //
+// A UserDefaultsManager subclass that persists video settings.
 
 import Foundation
-import piwigoKit
+import PwgKit
 
 // Mark VideoVars as Sendable since Apple documents UserDefaults as thread-safe
 final class VideoVars: @unchecked Sendable {

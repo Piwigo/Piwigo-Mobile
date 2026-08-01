@@ -9,7 +9,9 @@
 import Foundation
 import CoreLocation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgCacheKit
+import PwgUIKit
 
 protocol ImageHeaderDelegate: NSObjectProtocol {
     func changeImageGrouping(for group: pwgImageGroup)
@@ -115,8 +117,8 @@ class ImageHeaderReusableView: UICollectionReusableView
         mainLabel?.textColor = PwgColor.leftLabel
         detailLabel?.textColor = PwgColor.rightLabel
         selectButton?.backgroundColor = PwgColor.background
-        selectButton?.layer.shadowColor = AppVars.shared.isDarkPaletteActive ? UIColor.white.cgColor : UIColor.black.cgColor
-        selectButton?.layer.shadowOpacity = AppVars.shared.isDarkPaletteActive ? 0.7 : 0.3
+        selectButton?.layer.shadowColor = UIVars.shared.isDarkPaletteActive ? UIColor.white.cgColor : UIColor.black.cgColor
+        selectButton?.layer.shadowOpacity = UIVars.shared.isDarkPaletteActive ? 0.7 : 0.3
         albumDesc?.attributedText = description.adaptingTextColorPreservingHue(to: PwgColor.background, defaultColor: PwgColor.header)
         albumDesc?.linkTextAttributes = [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue,
                                          NSAttributedString.Key.underlineColor: PwgColor.header]

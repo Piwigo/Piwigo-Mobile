@@ -7,7 +7,8 @@
 //
 
 import AVKit
-import piwigoKit
+import PwgKit
+import PwgAPIKit
 
 protocol PlayerViewControllerCoordinatorDelegate: AnyObject {
     func playerViewControllerCoordinator(_ coordinator: PlayerViewControllerCoordinator,
@@ -211,7 +212,7 @@ final class PlayerViewControllerCoordinator: NSObject {
                     
                     // Observe playback rate
                     playerRateObservation = player.observe(\.rate, changeHandler: { [weak self] player, _ in
-                        guard let self = self else { return }
+                        guard let self else { return }
                         // Update play/pause button
                         let userInfo = ["pwgID"   : self.video.pwgID as Any,
                                         "playing" : player.rate != 0] as [String : Any]
@@ -221,7 +222,7 @@ final class PlayerViewControllerCoordinator: NSObject {
                     
                     // Observe playback mute option
                     playerMuteObservation = player.observe(\.isMuted, changeHandler: { [weak self] player, _ in
-                        guard let self = self else { return }
+                        guard let self else { return }
                         // Store user preference for next use
                         if playerViewController.parent is VideoDetailViewController {
                             VideoVars.shared.isMuted = playerViewController.player?.isMuted ?? false
@@ -741,8 +742,8 @@ extension PlayerViewControllerCoordinator: AVAssetResourceLoaderDelegate
         }
         else if protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPBasic {
             // HTTP basic authentification credentials
-            let user = NetworkVars.shared.httpUsername
-            let password = KeychainUtilities.password(forService: NetworkVars.shared.service, account: user)
+            let user = ServerVars.shared.httpUsername
+            let password = KeychainUtilities.password(forService: ServerVars.shared.service, account: user)
             authenticationChallenge.sender?.use(
                 URLCredential(user: user, password: password, persistence: .synchronizable),
                               for: authenticationChallenge)

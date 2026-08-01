@@ -8,7 +8,9 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgCacheKit
+import PwgUIKit
 
 class AdvancedOptionsViewController: UIViewController
 {
@@ -28,7 +30,7 @@ class AdvancedOptionsViewController: UIViewController
         super.viewDidLoad()
 
         // Title
-        title = NSLocalizedString("settings_advancedOptions", comment: "Advanced Options")
+        title = String(localized: "settings_advancedOptions", comment: "Advanced Options")
         
         // Table view
         tableView?.accessibilityIdentifier = "advancedOptions"
@@ -49,7 +51,7 @@ class AdvancedOptionsViewController: UIViewController
 
         // Table view
         tableView.separatorColor = PwgColor.separator
-        tableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        tableView.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         tableView.reloadData()
     }
 
@@ -100,7 +102,7 @@ extension AdvancedOptionsViewController: UITableViewDataSource
             let value = Float(UploadVars.shared.maxNberOfPreparedUploads)
             
             // Slider configuration
-            cell.configure(with: NSLocalizedString("settings_advancedLimit", comment: "Limit"),
+            cell.configure(with: String(localized: "settings_advancedLimit", comment: "Limit"),
                            value: value, increment: 1, minValue: 1, maxValue: 10,
                            prefix: "", suffix: "")
             cell.cellSliderBlock = { newValue in
@@ -114,7 +116,7 @@ extension AdvancedOptionsViewController: UITableViewDataSource
             let value = Float(UploadVars.shared.maxConnectionsPerHost)
             
             // Slider configuration
-            cell.configure(with: NSLocalizedString("settings_advancedLimit", comment: "Limit"),
+            cell.configure(with: String(localized: "settings_advancedLimit", comment: "Limit"),
                            value: value, increment: 1, minValue: 1, maxValue: 8,
                            prefix: "", suffix: "")
             cell.cellSliderBlock = { newValue in
@@ -125,17 +127,17 @@ extension AdvancedOptionsViewController: UITableViewDataSource
         
         case .chunkSize:
             // Values in bytes
-            let minValue = Float(UploadVars.shared.minChunkSize * 1000)
-            let value = Float(UploadVars.shared.customUploadChunkSize * 1000)
-            let maxValue = Float(UploadVars.shared.maxChunkSize * 1000)
+            let minValue = Float(ServerVars.shared.minChunkSize * 1000)
+            let value = Float(ServerVars.shared.customUploadChunkSize * 1000)
+            let maxValue = Float(ServerVars.shared.maxChunkSize * 1000)
             
             // Slider configuration
-            cell.configure(with: NSLocalizedString("settings_advancedChunkSize", comment: "Size"),
+            cell.configure(with: String(localized: "settings_advancedChunkSize", comment: "Size"),
                            value: value, increment: 250*1000, minValue: minValue, maxValue: maxValue,
                            prefix: "", suffix: "", style: sizeStyle)
             cell.cellSliderBlock = { newValue in
                 // Update settings
-                UploadVars.shared.customUploadChunkSize = Int(newValue / 1000)
+                ServerVars.shared.customUploadChunkSize = Int(newValue / 1000)
             }
             cell.accessibilityIdentifier = "chunkSize"
         
@@ -156,14 +158,14 @@ extension AdvancedOptionsViewController: UITableViewDelegate
         var title = "", text = ""
         switch pwgAvancedOptions(rawValue: section) {
         case .maxPrepared:
-            title = NSLocalizedString("settings_advancedPreparedTitle", comment: "Upload Preparation") + "\n"
-            text = NSLocalizedString("settings_advancedPreparedText", comment: "Please select the maximum number of uploads to prepare in advance.")
+            title = String(localized: "settings_advancedPreparedTitle", comment: "Upload Preparation") + "\n"
+            text = String(localized: "settings_advancedPreparedText", comment: "Please select the maximum number of uploads to prepare in advance.")
         case .maxTransfers:
             title = NSLocalizedString("settings_advancedConnectionsTitle", comment: "Connections") + "\n"
             text = NSLocalizedString("settings_advancedConnectionsText", comment: "Please select the maximum number of simultaneous connections to the Piwigo server.")
         case .chunkSize:
-            title = NSLocalizedString("settings_advancedChunksTitle", comment: "Chunk Size") + "\n"
-            text = NSLocalizedString("settings_advancedChunksText", comment: "Please select the size of the chunks that files are split into during upload.")
+            title = String(localized: "settings_advancedChunksTitle", comment: "Chunk Size") + "\n"
+            text = String(localized: "settings_advancedChunksText", comment: "Please select the size of the chunks that files are split into during upload.")
         default:
             break
         }
@@ -193,13 +195,13 @@ extension AdvancedOptionsViewController: UITableViewDelegate
         var text = ""
         switch pwgAvancedOptions(rawValue: section) {
         case .maxPrepared:
-            text = NSLocalizedString("settings_advancedPreparedDesc", comment: "A suitable value is one slightly above the maximum number of photos or videos you can upload at a time. Note that a higher limit will result in greater disk space usage.")
+            text = String(localized: "settings_advancedPreparedDesc", comment: "A suitable value is one slightly above the maximum number of photos or videos you can upload at a time. Note that a higher limit will result in greater disk space usage.")
         case .maxTransfers:
-            text = NSLocalizedString("settings_advancedTransfersDesc", comment: "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeouts or 503 errors, try reducing this number.")
+            text = String(localized: "settings_advancedTransfersDesc", comment: "A value of 4 is generally a good starting point. It is advisable to keep this number low, or to check with your hosting provider or network administrator. If you encounter timeouts or 503 errors, try reducing this number.")
         case .chunkSize:
             let advice = (1000 * 1000).formatted(sizeStyle)
             let max = (5000 * 1000).formatted(sizeStyle)
-            text = String(format: NSLocalizedString("settings_advancedChunkSizeDesc", comment: "A value of %@ is generally a good starting point. Fast connections will have better performances with high values, such as %@."), advice, max)
+            text = String(format: String(localized: "settings_advancedChunkSizeDesc", comment: "A value of %@ is generally a good starting point. Fast connections will have better performances with high values, such as %@."), advice, max)
         default:
             break
         }

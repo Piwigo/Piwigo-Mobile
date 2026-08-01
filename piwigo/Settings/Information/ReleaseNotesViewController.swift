@@ -9,14 +9,14 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgUIKit
 
 class ReleaseNotesViewController: UIViewController {
     
     @IBOutlet weak var closeButton: UIButton!
     @IBOutlet private weak var piwigoLogo: UIImageView!
     @IBOutlet weak var piwigoLogoTop: NSLayoutConstraint!
-    @IBOutlet private weak var authorsLabel: UILabel!
     @IBOutlet private weak var versionLabel: UILabel!
     @IBOutlet private weak var textView: UITextView!
     private var fixTextPositionAfterLoadingViewOnPad: Bool!
@@ -27,7 +27,7 @@ class ReleaseNotesViewController: UIViewController {
         super.viewDidLoad()
 
         // Title
-        title = NSLocalizedString("settings_releaseNotes", comment: "Release Notes")
+        title = String(localized: "settings_releaseNotes", comment: "Release Notes")
         
         // Show close button?
         if #available(iOS 26.0, *) {
@@ -49,13 +49,12 @@ class ReleaseNotesViewController: UIViewController {
         closeButton.tintColor = PwgColor.tintColor
 
         // Change text colour according to palette colour
-        piwigoLogo?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        piwigoLogo?.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
 
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
 
         // Text color depdending on background color
-        authorsLabel.textColor = PwgColor.text
         versionLabel.textColor = PwgColor.text
         textView.textColor = PwgColor.text
         textView.backgroundColor = PwgColor.background
@@ -65,7 +64,6 @@ class ReleaseNotesViewController: UIViewController {
         super.viewWillAppear(animated)
 
         // Piwigo authors and version
-        authorsLabel.text = SettingsUtilities.getAuthors(forView: view)
         versionLabel.text = SettingsUtilities.getAppVersion()
 
         // Release notes
@@ -80,16 +78,6 @@ class ReleaseNotesViewController: UIViewController {
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
-    }
-
-    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        
-        // Update Piwigo authors label
-        coordinator.animate(alongsideTransition: { [self] _ in
-            // Piwigo authors
-            self.authorsLabel.text = SettingsUtilities.getAuthors(forView: self.view)
-        }, completion: nil)
     }
     
     override func viewDidLayoutSubviews() {
@@ -125,7 +113,10 @@ class ReleaseNotesViewController: UIViewController {
         // Release notes attributed string
         let notesAttributedString = NSMutableAttributedString(string: "")
 
-        // release 4.2.x - Bundle string
+        // Release 4.3.x - Bundle string
+        notesAttributedString.append(releaseNotes("v4.3.0_text", comment: "v4.3.0 Release Notes text"))
+
+        // Release 4.2.x - Bundle string
         notesAttributedString.append(releaseNotes("v4.2.4_text", comment: "v4.2.4 Release Notes text"))
         notesAttributedString.append(releaseNotes("v4.2.3_text", comment: "v4.2.3 Release Notes text"))
         notesAttributedString.append(releaseNotes("v4.2.2_text", comment: "v4.2.2 Release Notes text"))

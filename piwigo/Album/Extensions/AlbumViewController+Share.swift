@@ -9,7 +9,8 @@
 import Foundation
 import Photos
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgUIKit
 
 extension AlbumViewController
 {
@@ -134,8 +135,8 @@ extension AlbumViewController
                 let count = itemsToShare.count
                 let deviceMemory = UIDevice.current.modelMemorySize * 1024 * 1024
                 if totalSize * 5 > deviceMemory {  // i.e. 20% of available memory
-                    let title = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-                    let message = NSLocalizedString("shareFailError_tooLarge", comment: "Selection too large to share")
+                    let title = String(localized: "shareFailError_title", comment: "Share Fail")
+                    let message = String(localized: "shareFailError_tooLarge", comment: "Selection too large to share")
                     let error = ByteCountFormatter.string(fromByteCount: totalSize, countStyle: .file)
                     self.navigationController?.dismissPiwigoError(withTitle: title, message: message, errorMessage: error ) { }
                     return
@@ -159,9 +160,10 @@ extension AlbumViewController
                 
                 // Delete image/video files and remove observers after dismissing activity view controller
                 activityViewController.completionWithItemsHandler = { [self] activityType, completed, returnedItems, activityError in
-                    //        NSLog(@"Activity Type selected: %@", activityType);
+                    // If needed, sets items so that they will be deleted after a delay
+                    ShareUtilities.setClipboardExpiration(forActivityType: activityType)
+
                     if completed {
-                        //            NSLog(@"Selected activity was performed and returned error:%ld", (long)activityError.code);
                         // Delete shared files & remove observers
                         NotificationCenter.default.post(name: .pwgDidShare, object: nil)
 
@@ -241,8 +243,8 @@ extension AlbumViewController: @preconcurrency ShareImageActivityItemProviderDel
             presentedViewController?.updateHUD(title: title, detail: detail)
         } else {
             presentedViewController?.showHUD(withTitle: title, detail: detail,
-                                             buttonTitle: NSLocalizedString("alertCancelButton", comment: "Cancel"),
-                                             buttonTarget: self, buttonSelector: #selector(cancelShareImages),
+                                             buttonTitle: Localized.cancel, buttonTarget: self,
+                                             buttonSelector: #selector(cancelShareImages),
                                              inMode: .determinate)
         }
     }

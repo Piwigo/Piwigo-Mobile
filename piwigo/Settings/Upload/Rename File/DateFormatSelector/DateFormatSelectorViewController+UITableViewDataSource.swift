@@ -8,7 +8,8 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgCacheKit
 
 // MARK: UITableViewDataSource
 extension DateFormatSelectorViewController: UITableViewDataSource
@@ -48,7 +49,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
 
-                cell.configure(with: NSLocalizedString("Year", comment: "Year"))
+                cell.configure(with: String(localized: "Year", comment: "Year"))
                 cell.cellSwitch.setOn(dateFormats[indexPath.section] != .year(format: .none), animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Get indexPaths of options to display or hide
@@ -76,7 +77,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
-                cell.configure(with: NSLocalizedString("settings_renameTwoDigit", comment: "2-digit version"), detail: "")
+                cell.configure(with: String(localized: "settings_renameTwoDigit", comment: "2-digit version"), detail: "")
                 let isSelected = dateFormats[indexPath.section] == .year(format: .yy)
                 cell.accessoryType = isSelected ? .checkmark : .none
                 cell.isUserInteractionEnabled = !isSelected
@@ -87,7 +88,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
-                cell.configure(with: NSLocalizedString("settings_renameFourDigit", comment: "4-digit version"), detail: "")
+                cell.configure(with: String(localized: "settings_renameFourDigit", comment: "4-digit version"), detail: "")
                 let isSelected = dateFormats[indexPath.section] == .year(format: .yyyy)
                 cell.accessoryType = isSelected ? .checkmark : .none
                 cell.isUserInteractionEnabled = !isSelected
@@ -104,7 +105,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
 
-                cell.configure(with: NSLocalizedString("Month", comment: "Month"))
+                cell.configure(with: String(localized: "Month", comment: "Month"))
                 cell.cellSwitch.setOn(dateFormats[indexPath.section] != .month(format: .none), animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Get indexPaths of options to display or hide
@@ -132,7 +133,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
-                cell.configure(with: NSLocalizedString("settings_renameTwoDigit", comment: "2-digit version"), detail: "")
+                cell.configure(with: String(localized: "settings_renameTwoDigit", comment: "2-digit version"), detail: "")
                 let isSelected = dateFormats[indexPath.section] == .month(format: .MM)
                 cell.accessoryType = isSelected ? .checkmark : .none
                 cell.isUserInteractionEnabled = !isSelected
@@ -143,7 +144,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
-                cell.configure(with: NSLocalizedString("Abbreviation", comment: "Abbreviation"), detail: "")
+                cell.configure(with: String(localized: "Abbreviation", comment: "Abbreviation"), detail: "")
                 let isSelected = dateFormats[indexPath.section] == .month(format: .MMM)
                 cell.accessoryType = isSelected ? .checkmark : .none
                 cell.isUserInteractionEnabled = !isSelected
@@ -154,7 +155,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
-                cell.configure(with: NSLocalizedString("FullName", comment: "Full Name"), detail: "")
+                cell.configure(with: String(localized: "FullName", comment: "Full Name"), detail: "")
                 let isSelected = dateFormats[indexPath.section] == .month(format: .MMMM)
                 cell.accessoryType = isSelected ? .checkmark : .none
                 cell.isUserInteractionEnabled = !isSelected
@@ -171,7 +172,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
 
-                cell.configure(with: NSLocalizedString("Day", comment: "Day"))
+                cell.configure(with: String(localized: "Day", comment: "Day"))
                 cell.cellSwitch.setOn(dateFormats[indexPath.section] != .day(format: .none), animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Get indexPaths of options to display or hide
@@ -199,7 +200,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
-                cell.configure(with: NSLocalizedString("settings_renameTwoDigit", comment: "2-digit version"), detail: "")
+                cell.configure(with: String(localized: "settings_renameTwoDigit", comment: "2-digit version"), detail: "")
                 let isSelected = dateFormats[indexPath.section] == .day(format: .dd)
                 cell.accessoryType = isSelected ? .checkmark : .none
                 cell.isUserInteractionEnabled = !isSelected
@@ -210,7 +211,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
-                cell.configure(with: NSLocalizedString("settings_renameDayOfYear", comment: "Day of Year"), detail: "")
+                cell.configure(with: String(localized: "settings_renameDayOfYear", comment: "Day of Year"), detail: "")
                 let isSelected = dateFormats[indexPath.section] == .day(format: .ddd)
                 cell.accessoryType = isSelected ? .checkmark : .none
                 cell.isUserInteractionEnabled = !isSelected
@@ -221,7 +222,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
-                cell.configure(with: NSLocalizedString("Abbreviation", comment: "Abbreviation"), detail: "")
+                cell.configure(with: String(localized: "Abbreviation", comment: "Abbreviation"), detail: "")
                 let isSelected = dateFormats[indexPath.section] == .day(format: .EEE)
                 cell.accessoryType = isSelected ? .checkmark : .none
                 cell.isUserInteractionEnabled = !isSelected
@@ -232,7 +233,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
-                cell.configure(with: NSLocalizedString("FullName", comment: "Full Name"), detail: "")
+                cell.configure(with: String(localized: "FullName", comment: "Full Name"), detail: "")
                 let isSelected = dateFormats[indexPath.section] == .day(format: .EEEE)
                 cell.accessoryType = isSelected ? .checkmark : .none
                 cell.isUserInteractionEnabled = !isSelected
@@ -249,7 +250,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
 
-                cell.configure(with: NSLocalizedString("Separator", comment: "Separator"))
+                cell.configure(with: String(localized: "Separator", comment: "Separator"))
                 cell.cellSwitch.setOn(dateFormats[indexPath.section] != .separator(format: .none), animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Get indexPath of option to display or hide

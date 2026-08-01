@@ -9,6 +9,7 @@
 //
 
 import UIKit
+import PwgUIKit
 
 typealias CellSwitchBlock = (Bool) -> Void
 

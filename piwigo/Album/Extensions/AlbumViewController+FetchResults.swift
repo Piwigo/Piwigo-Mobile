@@ -8,8 +8,9 @@
 
 import CoreData
 import Foundation
-import piwigoKit
 import UIKit
+import PwgKit
+import PwgCacheKit
 
 // MARK: NSFetchedResultsControllerDelegate Methods
 extension AlbumViewController: @MainActor NSFetchedResultsControllerDelegate
@@ -72,6 +73,7 @@ extension AlbumViewController: @MainActor NSFetchedResultsControllerDelegate
                 updatedItems.formUnion(Set(currentSnapshot.itemIdentifiers(inSection: sectionID)))
             }
             currentSnapshot.deleteSections(sectionsToRemove)
+            let hadNoImage = updatedItems.isEmpty
             
             // Append new non-empty image sections
             if snapshot.numberOfItems != 0 {
@@ -89,9 +91,26 @@ extension AlbumViewController: @MainActor NSFetchedResultsControllerDelegate
                         cell.config(withImageData: image, size: self.imageSize, sortOption: self.sortOption)
                     }
                 }
+                
+                // Enable Select menu if needed
+                if hadNoImage {
+                    self.updateBarsInPreviewMode()
+                }
+            }
+            else {
+                // Disable Select mode if needed
+                if self.inSelectionMode {
+                    self.inSelectionMode = false
+                    self.initBarsInPreviewMode()
+                    self.setTitleViewFromAlbumData()
+                }
             }
         }
         
+        // Update the cached snapshot before applying it so that the layout
+        // and data source methods called during the update use the new one
+        self.currentSnapshot = currentSnapshot
+
         // Animate only a non-empty UI
         let shouldAnimate = (collectionView?.numberOfSections ?? 0) != 0
         dataSource.apply(currentSnapshot as Snapshot, animatingDifferences: shouldAnimate)
@@ -103,14 +122,8 @@ extension AlbumViewController: @MainActor NSFetchedResultsControllerDelegate
         self.updateNberOfImagesInFooter()
         
         // Show/hide "No album in your Piwigo" (e.g. after clearing the cache)
+        // Do not show "No album in your Piwigo" in Search view
         let hasItems = (categoryId == pwgSmartAlbum.search.rawValue) || (currentSnapshot.numberOfItems != 0)
         noAlbumLabel.isHidden = hasItems
-        
-        // Disable menu if there are no more images
-        if self.categoryId != 0, self.albumData.nbImages == 0 {
-            self.inSelectionMode = false
-            self.initBarsInPreviewMode()
-            self.setTitleViewFromAlbumData()
-        }
     }
 }

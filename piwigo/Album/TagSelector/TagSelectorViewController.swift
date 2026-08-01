@@ -10,7 +10,10 @@
 
 import UIKit
 import CoreData
-import piwigoKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
+import PwgUIKit
 
 protocol TagSelectorViewDelegate: NSObjectProtocol {
     func pushTaggedImagesView(_ viewController: UIViewController)
@@ -46,7 +49,7 @@ class TagSelectorViewController: UIViewController {
     var searchQuery = ""
     lazy var predicate: NSPredicate = {
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "server.path == %@", ServerVars.shared.serverPath))
         andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", 0))
         andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", Int64.max))
         andPredicates.append(NSPredicate(format: "tagName LIKE[c] $query"))
@@ -83,7 +86,7 @@ class TagSelectorViewController: UIViewController {
         super.viewDidLoad()
         
         // Title
-        title = NSLocalizedString("tagsTitle_selectOne", comment: "Select a Tag")
+        title = String(localized: "tagsTitle_selectOne", comment: "Select a Tag")
         
         // Initialise search bar
         let searchBar = searchController.searchBar
@@ -137,7 +140,7 @@ class TagSelectorViewController: UIViewController {
         
         // Table view
         tagsTableView?.separatorColor = PwgColor.separator
-        tagsTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        tagsTableView?.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         tagsTableView?.reloadData()
     }
     
@@ -152,26 +155,28 @@ class TagSelectorViewController: UIViewController {
         super.viewDidAppear(animated)
         
         // Show HUD during the fetch
-        self.navigationController?.showHUD(
-            withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-            detail: NSLocalizedString("tags", comment: "Tags"), minWidth: 200)
+        self.navigationController?.showHUD(withTitle: Localized.loading,
+            detail: String(localized: "tags", comment: "Tags"), minWidth: 200)
         
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
         Task.detached {
-            do {
+            do throws(PwgKitError) {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
-                                                          lastConnected: self.user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID,
+                                                        lastConnected: self.user.lastUsed)
                 // Fetch tag data
-                try await TagProvider().fetchTags(asAdmin: false)
+                let tagData = try await JSONManager.shared.fetchTags(asAdmin: false)
+                
+                // Update tag data in cache
+                try TagProvider().importTags(from: tagData, asAdmin: false)
                 
                 // Close HUD
                 await MainActor.run { [self] in
                     self.navigationController?.hideHUD { }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run { [self] in
                     // Session logout required?
                     if error.requiresLogout {
@@ -264,9 +269,9 @@ extension TagSelectorViewController: UITableViewDelegate
         numberFormatter.numberStyle = .decimal
         let nberOfTags = (tags.fetchedObjects ?? []).count
         let nberAsStr = numberFormatter.string(from: NSNumber(value: nberOfTags)) ?? "0"
-        let footer = nberOfTags > 1 ?
-        String(format: String(localized: "severalTagsCount", bundle: .piwigoKit, comment: "%@ tags"), nberAsStr) :
-        String(format: String(localized: "singleTagCount", bundle: .piwigoKit, comment: "%@ tag"), nberAsStr)
+        let footer = nberOfTags > 1
+            ? String(format: Localized.severalTagsCount, nberAsStr)
+            : String(format: Localized.singleTagCount, nberAsStr)
         return footer
     }
     

@@ -9,7 +9,10 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
+import PwgUIKit
 
 enum pwgEditOption : Int {
     case none
@@ -38,9 +41,9 @@ class TagTableViewCell: UITableViewCell {
             let numberFormatter = NumberFormatter()
             numberFormatter.numberStyle = .decimal
             let nberPhotos = (numberFormatter.string(from: NSNumber(value: nber)) ?? "0") as String
-            let nberImages = nber > 1 ?
-            String(format: String(localized: "severalImagesCount", bundle: .piwigoKit, comment: "%@ photos"), nberPhotos) :
-            String(format: String(localized: "singleImageCount", bundle: .piwigoKit, comment: "%@ photo"), nberPhotos)
+            let nberImages = nber > 1
+                ? String(format: Localized.severalImagesCount, nberPhotos)
+                : String(format: Localized.singleImageCount, nberPhotos)
             leftLabel.text = "\(tag.tagName) (\(nberImages))"
         }
         leftLabel.textColor = PwgColor.leftLabel

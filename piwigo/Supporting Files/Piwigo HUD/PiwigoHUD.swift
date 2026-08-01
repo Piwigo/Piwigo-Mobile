@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import PwgUIKit
 
 enum pwgHudMode {
     case none
@@ -53,16 +54,18 @@ final class PiwigoHUD: UIView
     
     override func awakeFromNib() {
         super.awakeFromNib()
-
-        // Aspect
-        view?.layer.cornerCurve = .continuous
-        view?.layer.cornerRadius = TableViewUtilities.rowCornerRadius
-        view?.layer.borderWidth = 0.8
-        applyColorPalette()
-
-        // Register palette changes
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: Notification.Name.pwgPaletteChanged, object: nil)
+        
+        // Nibs are loaded on the main thread
+        MainActor.assumeIsolated {        // Aspect
+            view?.layer.cornerCurve = .continuous
+            view?.layer.cornerRadius = TableViewUtilities.rowCornerRadius
+            view?.layer.borderWidth = 0.8
+            applyColorPalette()
+            
+            // Register palette changes
+            NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                                   name: Notification.Name.pwgPaletteChanged, object: nil)
+        }
     }
     
     // MARK: - Create/Update HUD
@@ -81,8 +84,7 @@ final class PiwigoHUD: UIView
         // Configure HUD title (always shown and non-empty)
         let screenWidth = view.window?.screen.bounds.width ?? view.bounds.width
         if title.isEmpty {
-            titleLabel?.attributedText = getAttributed(title: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                                                      forMaxWidth: screenWidth)
+            titleLabel?.attributedText = getAttributed(title: Localized.loading, forMaxWidth: screenWidth)
         } else {
             titleLabel?.attributedText = getAttributed(title: title, forMaxWidth: screenWidth)
         }
@@ -165,8 +167,7 @@ final class PiwigoHUD: UIView
         if let title = title, title.isEmpty == false {
             titleLabel.attributedText = getAttributed(title: title,forMaxWidth: screenWidth)
         } else {
-            titleLabel.attributedText = getAttributed(title: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                                                      forMaxWidth: screenWidth)
+            titleLabel.attributedText = getAttributed(title: Localized.loading, forMaxWidth: screenWidth)
         }
         
         // Update HUD detail

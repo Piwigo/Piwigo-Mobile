@@ -7,8 +7,9 @@
 //
 
 import Foundation
-import piwigoKit
+import PwgKit
 import UIKit
+import PwgUIKit
 
 enum AppLockAction {
     case enterPasscode
@@ -19,9 +20,12 @@ enum AppLockAction {
 
 protocol AppLockDelegate: NSObjectProtocol {
     func loginOrReloginAndResumeUploads()
+    #if EXTENSION
+    func cancelShare()
+    #endif
 }
 
-class AppLockViewController: UIViewController {
+final class AppLockViewController: UIViewController {
 
     weak var delegate: (any AppLockDelegate)?
 
@@ -72,7 +76,7 @@ class AppLockViewController: UIViewController {
         case .verifyPasscode:
             passcodeToVerify = password
         case .unlockApp:
-            passcodeToVerify = AppVars.shared.appLockKey.decrypted
+            passcodeToVerify = UIVars.shared.appLockKey.decrypted
         }
     }
 
@@ -117,8 +121,35 @@ class AppLockViewController: UIViewController {
         super.viewDidLoad()
 
         // Title
-        title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
+        title = Localized.privacy
+
+        #if EXTENSION
+        // Add a Cancel button so that the user can leave the extension
+        view.addSubview(cancelButton)
+        NSLayoutConstraint.activate([
+            cancelButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            cancelButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
+        ])
+        #endif
     }
+
+    #if EXTENSION
+    // MARK: - Cancel Button (share extension only)
+    /// Allows the user to close the share sheet when the passcode is unknown
+    private lazy var cancelButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle(Localized.cancel, for: .normal)
+        button.titleLabel?.font = .preferredFont(forTextStyle: .body)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(didTapCancel), for: .touchUpInside)
+        return button
+    }()
+
+    @objc private func didTapCancel() {
+        // Cancel the share and close the share sheet
+        delegate?.cancelShare()
+    }
+    #endif
 
     @MainActor
     @objc func applyColorPalette() {
@@ -132,7 +163,7 @@ class AppLockViewController: UIViewController {
         var buttonBckgColor = PwgColor.cellBackground
         var buttonBorderColor = UIColor.clear.cgColor
         if wantedAction == .unlockApp {
-            if UIAccessibility.isReduceTransparencyEnabled {
+            if unsafe UIAccessibility.isReduceTransparencyEnabled {
                 // Settings ▸ Accessibility ▸ Display & Text Size ▸ Reduce Transparency is enabled
                 /// —> No blur effect, fixed colour background
                 view.backgroundColor = PwgColor.brown
@@ -148,7 +179,7 @@ class AppLockViewController: UIViewController {
                 /// —> Blur and vibrancy effects
                 view.backgroundColor = .clear
                 var blurEffect = UIBlurEffect(style: .dark)
-                if AppVars.shared.isDarkPaletteActive {
+                if UIVars.shared.isDarkPaletteActive {
                     blurEffect = UIBlurEffect(style: .light)
                 }
                 blurEffectView.effect = blurEffect
@@ -170,6 +201,11 @@ class AppLockViewController: UIViewController {
         titleLabel.tintColor = labelsColor
         infoLabel.textColor = labelsColor
         infoLabel.tintColor = labelsColor
+
+        #if EXTENSION
+        // Cancel button for leaving the extension
+        cancelButton.setTitleColor(buttonTitleColor, for: .normal)
+        #endif
 
         // App Lock digits
         digit1.layer.borderColor = digitBorderColor
@@ -227,13 +263,13 @@ class AppLockViewController: UIViewController {
         // Title and Info labels
         switch wantedAction {
         case .enterPasscode, .unlockApp:
-            titleLabel.text = NSLocalizedString("settings_appLockEnter", comment: "Enter Passcode")
+            titleLabel.text = Localized.enterPasscode
         case .verifyPasscode:
-            titleLabel.text = NSLocalizedString("settings_appLockVerify", comment: "Verify Passcode")
+            titleLabel.text = Localized.verifyPasscode
         case .modifyPasscode:
-            titleLabel.text = NSLocalizedString("settings_appLockModify", comment: "Modify Passcode")
+            titleLabel.text = Localized.modifyPasscode
         }
-        infoLabel.text = NSLocalizedString("settings_appLockInfo", comment: "With App Lock, ...")
+        infoLabel.text = Localized.appLockInfo
 
         // Set constraints, colors, fonts, etc.
         configConstraints()
@@ -380,20 +416,25 @@ class AppLockViewController: UIViewController {
             }
             
             // Activate App-Lock if this is the first time we create a passcode
-            if AppVars.shared.appLockKey.isEmpty {
-                AppVars.shared.isAppLockActive =  true
+            if UIVars.shared.appLockKey.isEmpty {
+                UIVars.shared.isAppLockActive =  true
             }
             
             // Store encrypted passcode
-            AppVars.shared.appLockKey = passcode.encrypted
+            UIVars.shared.appLockKey = passcode.encrypted
             
-            // Return to the Settings view
+            // Return to the appropriate view
+            #if EXTENSION
+            // Return to the extension
+            self.dismiss(animated: true)
+            #else
             if let vc = navigationController?.children.filter({ $0 is LockOptionsViewController}).first {
                 navigationController?.popToViewController(vc, animated: true)
             } else {
                 // Return to the root album
                 self.dismiss(animated: true)
             }
+            #endif
             
         case .unlockApp:
             // Do passcodes match?
@@ -403,14 +444,18 @@ class AppLockViewController: UIViewController {
                 return
             }
             
-            // User allowed to access app
+            #if !EXTENSION
+            // User of main app allowed to access app
             AppVars.shared.isAppUnlocked = true
-
+            #endif
+            
             // Unlock the app
             dismiss(animated: true) {
+                #if !EXTENSION
                 // Re-enable biometry for the next time
                 let appDelegate = UIApplication.shared.delegate as? AppDelegate
                 appDelegate?.didCancelBiometricsAuthentication = false
+                #endif
                 
                 // Login/relogin and resume uploads
                 self.delegate?.loginOrReloginAndResumeUploads()
@@ -435,7 +480,7 @@ class AppLockViewController: UIViewController {
         var digitKnownColor = PwgColor.orange
         var digitUnknowColor = PwgColor.cellBackground
         if wantedAction == .unlockApp {
-            if UIAccessibility.isReduceTransparencyEnabled {
+            if unsafe UIAccessibility.isReduceTransparencyEnabled {
                 // Settings ▸ Accessibility ▸ Display & Text Size ▸ Reduce Transparency is enabled
                 digitUnknowColor = .init(white: 0.8, alpha: 1.0)
             } else {
@@ -456,7 +501,7 @@ class AppLockViewController: UIViewController {
             buttonBackSpace.setTitleColor(.clear, for: .normal)
         } else {
             var digitTitleColor = PwgColor.rightLabel
-            if wantedAction == .unlockApp, !UIAccessibility.isReduceTransparencyEnabled {
+            if wantedAction == .unlockApp, !(unsafe UIAccessibility.isReduceTransparencyEnabled) {
                 // Settings ▸ Accessibility ▸ Display & Text Size ▸ Reduce Transparency is disabled
                 digitTitleColor = PwgColor.numkey
             }

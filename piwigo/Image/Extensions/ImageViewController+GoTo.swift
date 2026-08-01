@@ -8,7 +8,10 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
+import PwgUIKit
 
 // MARK: Go To
 extension ImageViewController
@@ -16,7 +19,7 @@ extension ImageViewController
     // MARK: - Menu
     @MainActor
     func goToAlbumMenu() -> UIMenu {
-        return UIMenu(title: NSLocalizedString("imageOptions_goToAlbum", comment: "Go To Album…"),
+        return UIMenu(title: String(localized: "imageOptions_goToAlbum", comment: "Go To Album…"),
                       image: nil,
                       identifier: UIMenu.Identifier("org.piwigo.image.goToAlbum"),
                       children: [goToAlbumActions()].compactMap({$0}))
@@ -99,7 +102,10 @@ extension ImageViewController
         let sourcePath = sourceAlbum.upperIds.components(separatedBy: ",").compactMap({ Int32($0) })
         let destinationPath = destinationAlbum.upperIds.components(separatedBy: ",").compactMap({ Int32($0) })
         let commonPath = sourcePath.filter({ destinationPath.contains($0) })
-        let lastCommonAlbumId = Array(commonPath).last ?? self.categoryId
+        if commonPath.isEmpty {
+            AlbumVars.shared.defaultCategory = pwgSmartAlbum.root.rawValue
+        }
+        let lastCommonAlbumId = Array(commonPath).last ?? Int32.zero
         
         // Keep album view controllers from which to push the remaining albums
         /// Note: firstAlbumVCs should at least contain the root album vew controller.
@@ -113,7 +119,7 @@ extension ImageViewController
             return
         }
         firstAlbumVCs = Array(albumVCs[...indexOfCommonAlbumVC])
-
+        
         // Create missing album view controllers
         let remainingPath = destinationPath.filter({ sourcePath.contains($0) == false })
         let newAlbumVCs = remainingPath.map({
@@ -126,7 +132,7 @@ extension ImageViewController
         })
         
         // Update the stack of album view controllers
-        navController.setViewControllers(firstAlbumVCs + newAlbumVCs, animated: false)
+        navController.setViewControllers(firstAlbumVCs + newAlbumVCs, animated: true)
         
         // Dismiss the image view and reset the search if necessary
         dismiss(animated: false) {
@@ -148,7 +154,7 @@ extension ImageViewController
 //        guard imageData.isPDF else { return nil }
 //        
 //        // Copy image to album
-//        let action = UIAction(title: NSLocalizedString("goToPage_title", comment: "Go to page…"),
+//        let action = UIAction(title: String(localized: "goToPage_title", comment: "Go to page…"),
 //                              image: UIImage(systemName: "arrow.turn.down.right"),
 //                              handler: { [self] _ in
 //            // Request page number
@@ -165,29 +171,27 @@ extension ImageViewController
         
         // Request page number
         let alert = UIAlertController(title: "",
-                                      message: NSLocalizedString("goToPage_message", comment: "Page number?"),
+                                      message: String(localized: "goToPage_message", comment: "Page number?"),
                                       preferredStyle: .alert)
         
         alert.addTextField(configurationHandler: { textField in
             textField.placeholder = "1"
             textField.clearButtonMode = .always
             textField.keyboardType = .numberPad
-            textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = UIVars.shared.isDarkPaletteActive ? .dark : .default
             textField.autocapitalizationType = .none
             textField.autocorrectionType = .no
             textField.returnKeyType = .continue
             textField.delegate = nil
         })
         
-        let cancelAction = UIAlertAction(
-            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
-            style: .cancel, handler: { [self] action in
-                // Re-enable buttons
-                setEnableStateOfButtons(true)
-            })
+        let cancelAction = UIAlertAction(title: Localized.cancel,
+                                         style: .cancel, handler: { [self] action in
+            // Re-enable buttons
+            setEnableStateOfButtons(true)
+        })
         
-        let goToPageAction = UIAlertAction(
-            title: NSLocalizedString("alertOkButton", comment: "OK"),
+        let goToPageAction = UIAlertAction(title: Localized.ok,
             style: .default, handler: { [self] action in
                 // Display requested page
                 if let pdfDVC = pageViewController?.viewControllers?.first as? PdfDetailViewController {
@@ -203,7 +207,7 @@ extension ImageViewController
         
         // Present list of actions
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.barButtonItem = actionBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying

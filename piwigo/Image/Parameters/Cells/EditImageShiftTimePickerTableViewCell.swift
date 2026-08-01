@@ -8,7 +8,8 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgUIKit
 
 @objc protocol EditImageShiftTimeDelegate: NSObjectProtocol {
     func didShiftTime(withPicker date: Date)

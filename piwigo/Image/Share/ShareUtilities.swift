@@ -8,10 +8,24 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgCacheKit
 
-class ShareUtilities {
-    
+final class ShareUtilities {
+
+    // MARK: - Clipboard Expiration
+    /// Applies the delay chosen in Settings ▶ Privacy ▶ Clear Clipboard
+    /// to the items placed in the pasteboard by the Copy activity.
+    static func setClipboardExpiration(forActivityType activityType: UIActivity.ActivityType?) {
+        let delay = pwgClearClipboard(rawValue: AppVars.shared.clearClipboardDelay)?.seconds ?? 0.0
+        guard delay > 0, activityType == .copyToPasteboard else { return }
+        let items = UIPasteboard.general.items
+        let expirationDate = NSDate(timeIntervalSinceNow: delay)
+        let options: [UIPasteboard.OptionsKey : Any] = [.expirationDate : expirationDate]
+        UIPasteboard.general.setItems(items, options: options)
+    }
+
+
     // MARK: - Image Download
     /** Returns:
      - the Piwigo image size
@@ -23,8 +37,8 @@ class ShareUtilities {
         // ATTENTION: Some sizes and/or URLs may not be available!
         // So we go through the whole list of URLs...
 
-        // If this is a video or a PDF file, always select the full resolution file.
-        if imageData.isNotImage {
+        // If this is a video, a GIF, an EPS or a PDF file, always select the full resolution file.
+        if imageData.hasFullResThumbnail == false {
             if let pwgURL = imageData.downloadUrl {
                 return (.fullRes, pwgURL as URL)
             } else {

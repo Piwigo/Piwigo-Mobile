@@ -10,8 +10,10 @@ import CoreData
 import Foundation
 import Photos
 import UIKit
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgCacheKit
+import PwgUIKit
+import PwgUploadKit
 
 // MARK: Menus
 extension LocalImagesViewController {
@@ -22,13 +24,13 @@ extension LocalImagesViewController {
         let swapOrder: UIAction!
         switch UploadVars.shared.localImagesSort {
         case .dateCreatedAscending:
-            swapOrder = UIAction(title: NSLocalizedString("Date", comment: "Date"),
+            swapOrder = UIAction(title: String(localized: "Date", comment: "Date"),
                                  image: UIImage(systemName: "arrow.up"), handler: { _ in self.swapSortOrder()})
         case .dateCreatedDescending:
-            swapOrder = UIAction(title: NSLocalizedString("Date", comment: "Date"),
+            swapOrder = UIAction(title: String(localized: "Date", comment: "Date"),
                                  image: UIImage(systemName: "arrow.down"), handler: { _ in self.swapSortOrder()})
         default:
-            swapOrder = UIAction(title: NSLocalizedString("Date", comment: "Date"),
+            swapOrder = UIAction(title: String(localized: "Date", comment: "Date"),
                                  image: nil, handler: { _ in self.swapSortOrder()})
         }
         swapOrder.accessibilityIdentifier = "Date"
@@ -64,7 +66,7 @@ extension LocalImagesViewController {
     func groupMenu() -> UIMenu {
         // Create a menu for selecting how to group images
         let children = [byDayAction(), byWeekAction(), byMonthAction(), byNoneAction()].compactMap({$0})
-        return UIMenu(title: NSLocalizedString("categoryView_group", comment: "Group Images By…"),
+        return UIMenu(title: String(localized: "categoryView_group", comment: "Group Images By…"),
                       image: nil,
                       identifier: UIMenu.Identifier("org.piwigo.images.group.main"),
                       options: UIMenu.Options.displayInline,
@@ -73,7 +75,7 @@ extension LocalImagesViewController {
     
     func byDayAction() -> UIAction {
         let isActive = sortType == .day
-        let action = UIAction(title: NSLocalizedString("Day", comment: "Day"),
+        let action = UIAction(title: String(localized: "Day", comment: "Day"),
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: UIAction.Identifier("org.piwigo.images.group.day"),
                               handler: { [self] action in
@@ -90,7 +92,7 @@ extension LocalImagesViewController {
     
     func byWeekAction() -> UIAction {
         let isActive = sortType == .week
-        let action = UIAction(title: NSLocalizedString("Week", comment: "Week"),
+        let action = UIAction(title: String(localized: "Week", comment: "Week"),
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: UIAction.Identifier("org.piwigo.images.group.week"),
                               handler: { [self] action in
@@ -107,7 +109,7 @@ extension LocalImagesViewController {
     
     func byMonthAction() -> UIAction {
         let isActive = sortType == .month
-        let action = UIAction(title: NSLocalizedString("Month", comment: "Month"),
+        let action = UIAction(title: String(localized: "Month", comment: "Month"),
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: UIAction.Identifier("org.piwigo.images.group.month"),
                               handler: { [self] action in
@@ -124,7 +126,7 @@ extension LocalImagesViewController {
     
     func byNoneAction() -> UIAction {
         let isActive = sortType == .none
-        let action = UIAction(title: NSLocalizedString("None", comment: "None"),
+        let action = UIAction(title: String(localized: "None", comment: "None"),
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: UIAction.Identifier("org.piwigo.images.group.none"),
                               handler: { [self] action in
@@ -152,7 +154,7 @@ extension LocalImagesViewController {
     func selectPhotosMenu() -> UIMenu? {
         if PHPhotoLibrary.authorizationStatus(for: .readWrite) == .limited {
             // Proposes to change the Photo Library selection
-            let selector = UIAction(title: NSLocalizedString("localAlbums_accessible", comment: "Accessible Photos"),
+            let selector = UIAction(title: String(localized: "localAlbums_accessible", comment: "Accessible Photos"),
                                     image: UIImage(systemName: "camera"), handler: { _ in
                 // Proposes to change the Photo Library selection
                 PHPhotoLibrary.shared().presentLimitedLibraryPicker(from: self)
@@ -172,7 +174,7 @@ extension LocalImagesViewController {
         if !canDeleteUploadedImages() { return nil }
         
         // Propose option for re-uploading photos
-        let reUpload = UIAction(title: NSLocalizedString("localImages_reUploadTitle", comment: "Re-upload"),
+        let reUpload = UIAction(title: String(localized: "localImages_reUploadTitle", comment: "Re-upload"),
                                 image: reUploadAllowed ? UIImage(systemName: "checkmark") : nil, handler: { _ in
             self.swapReuploadOption()
         })
@@ -191,7 +193,8 @@ extension LocalImagesViewController {
             let visibleCells = localImagesCollection.visibleCells as? [LocalImageCollectionViewCell]
 
             // Deselect already uploaded photos if needed
-            if (queue.operationCount == 0) && (selectedImages.count < indexedUploadsInQueue.count) {
+            if queue.operationCount == 0,
+               selectedImages.count <= indexedUploadsInQueue.count {
                 // Indexed uploads available
                 for index in 0..<selectedImages.count {
                     if let upload = indexedUploadsInQueue[index],
@@ -239,7 +242,7 @@ extension LocalImagesViewController {
            canDeleteSelectedImages() == false { return nil }
         
         // Propose option for deleting photos
-        let delete = UIAction(title: NSLocalizedString("localImages_deleteTitle", comment: "Remove from Camera Roll"),
+        let delete = UIAction(title: String(localized: "localImages_deleteTitle", comment: "Remove from Camera Roll"),
                               image: UIImage(systemName: "trash"), attributes: .destructive, handler: { _ in
             // Delete uploaded photos from the camera roll
             self.deleteUploadedImages()
@@ -271,11 +274,11 @@ extension LocalImagesViewController {
         }
         
         // Ask for confirmation
-        let title = NSLocalizedString("localImages_deleteTitle", comment: "Remove from Camera Roll")
-        let message = NSLocalizedString("localImages_deleteMessage", comment: "Message explaining what will happen")
+        let title = String(localized: "localImages_deleteTitle", comment: "Remove from Camera Roll")
+        let message = String(localized: "localImages_deleteMessage", comment: "Message explaining what will happen")
         let alert = UIAlertController(title: "", message: message, preferredStyle: .alert)
-        let defaultAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
-            style: .cancel, handler: { action in })
+        let defaultAction = UIAlertAction(title: Localized.cancel,
+                                          style: .cancel, handler: { action in })
         let deleteAction = UIAlertAction(title: title, style: .destructive, handler: { action in
             // Delete images and upload requests
             let uploadIDs = uploadsToDelete.map(\.objectID)
@@ -303,7 +306,7 @@ extension LocalImagesViewController {
         alert.addAction(defaultAction)
         alert.addAction(deleteAction)
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
         self.present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = PwgColor.tintColor

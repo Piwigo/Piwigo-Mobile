@@ -10,7 +10,10 @@
 
 import CoreData
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
+import PwgUIKit
 
 protocol PushAlbumCollectionViewCellDelegate: NSObjectProtocol {
     func pushAlbumView(_ viewController: UIViewController?,

@@ -8,7 +8,9 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 extension AlbumViewController
 {
@@ -70,12 +72,12 @@ extension AlbumViewController
 
         // Send requests to Piwigo server
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Add image to favorites
-                try await JSONManager.shared.addToFavorites(imageData)
+                try await JSONManager.shared.addToFavorites(imageWithID: imageData.pwgID)
                 
                 // Update cache and UI
                 await MainActor.run {
@@ -107,7 +109,7 @@ extension AlbumViewController
                     favorite(imagesWithID: remainingIDs, total: total, contextually: contextually)
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 self.favoriteError(error, contextually: contextually)
             }
         }
@@ -122,8 +124,8 @@ extension AlbumViewController
         }
         
         // Report error
-        let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
-        let message = NSLocalizedString("imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites.")
+        let title = String(localized: "imageFavorites_title", comment: "Favorites")
+        let message = String(localized: "imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites.")
         navigationController?.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
             navigationController?.hideHUD() { [self] in
                 if contextually {
@@ -179,12 +181,12 @@ extension AlbumViewController
 
         // Send requests to Piwigo server
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Remove image from favorites
-                try await JSONManager.shared.removeFromFavorites(imageData)
+                try await JSONManager.shared.removeFromFavorites(imageWithID: imageData.pwgID)
                 
                 // Update cache and UI
                 await MainActor.run {
@@ -216,7 +218,7 @@ extension AlbumViewController
                     unfavorite(imagesWithID: remainingIDs, total: total, contextually: contextually)
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 self.unfavoriteError(error, contextually: contextually)
             }
         }
@@ -231,8 +233,8 @@ extension AlbumViewController
         }
 
         // Report error
-        let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
-        let message = NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites.")
+        let title = String(localized: "imageFavorites_title", comment: "Favorites")
+        let message = String(localized: "imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites.")
         navigationController?.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
             navigationController?.hideHUD() { [self] in
                 if contextually {

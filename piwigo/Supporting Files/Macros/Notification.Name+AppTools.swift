@@ -9,10 +9,7 @@
 import Foundation
 
 public extension Notification.Name {
-    
-    /// - Change palette colour
-    static let pwgPaletteChanged = Notification.Name("pwgNotificationPaletteChanged")
-    
+        
     // MARK: - Fetch Images
     /// - Did fetch images —> used to update title view
     static let pwgFetchedImages = Notification.Name("pwgNotificationFetchedImages")

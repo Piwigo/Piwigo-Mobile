@@ -13,7 +13,7 @@ import UIKit
 extension ImageViewController
 {
     func setAsThumbnailAction() -> UIAction {
-        let action = UIAction(title: NSLocalizedString("imageOptions_setAlbumImage",
+        let action = UIAction(title: String(localized: "imageOptions_setAlbumImage",
                                                        comment:"Set as Album Thumbnail"),
                               image: UIImage(systemName: "rectangle.and.paperclip"),
                               handler: { [self] _ in

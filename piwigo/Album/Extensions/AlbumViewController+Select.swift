@@ -8,7 +8,10 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgAPIKit
+import PwgUIKit
+import PwgCacheKit
 
 // MARK: Buttons
 extension AlbumViewController
@@ -27,22 +30,23 @@ extension AlbumViewController
 {
     // MARK: - Select Menu
     /// - for switching to the selection mode
-    func selectMenu() -> UIMenu {
+    func selectMenu(enabled: Bool) -> UIMenu {
         let menuId = UIMenu.Identifier("org.piwigo.images.selectMode")
         let menu = UIMenu(title: "", image: nil, identifier: menuId,
                           options: UIMenu.Options.displayInline,
-                          children: [selectAction()])
+                          children: [selectAction(enabled: enabled)])
         return menu
     }
     
-    private func selectAction() -> UIAction {
+    private func selectAction(enabled: Bool) -> UIAction {
         let actionId = UIAction.Identifier("org.piwigo.images.select")
-        let action = UIAction(title: NSLocalizedString("categoryImageList_selectButton", comment: "Select"),
+        let action = UIAction(title: String(localized: "categoryImageList_selectButton", comment: "Select"),
                               image: UIImage(systemName: "checkmark.circle"),
                               identifier: actionId, handler: { [self] action in
             self.didTapSelect()
         })
         action.accessibilityIdentifier = "Select"
+        action.attributes = enabled ? [] : [.disabled]
         return action
     }
     
@@ -196,40 +200,43 @@ extension AlbumViewController
         }
 
         // Album section?
-        if let index = diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey),
+        let snapshot = currentSnapshot
+        if let index = snapshot.indexOfSection(pwgAlbumGroup.none.sectionKey),
            index == section {
             return .none
         }
-        
+
         // Number of images in section
         var nberOfImagesInSection = Int.zero
-        let snapshot = diffableDataSource.snapshot() as Snapshot
         let sectionID = snapshot.sectionIdentifiers[section]
         nberOfImagesInSection = snapshot.numberOfItems(inSection: sectionID)
         if nberOfImagesInSection == 0 {
             selectedSections[section] = SelectButtonState.none
             return .none
         }
-
-        // Number of selected images
-        var nberOfSelectedImagesInSection = 0
-        snapshot.itemIdentifiers(inSection: sectionID).forEach { objectID in
-            if let image = try? self.mainContext.existingObject(with: objectID) as? Image,
-               selectedImageIDs.contains(image.pwgID) {
-                nberOfSelectedImagesInSection += 1
-            }
-        }
         
-        // Update state of Select button only if needed
-        if nberOfImagesInSection == nberOfSelectedImagesInSection {
-            // All images are selected
-            selectedSections[section] = SelectButtonState.deselect
-            return .deselect
-        } else {
-            // Not all images are selected
+        // All images in the section cannot be selected if fewer images are selected overall
+        // (this avoids faulting every image of the section while the user is scrolling)
+        if selectedImageIDs.count < nberOfImagesInSection {
             selectedSections[section] = SelectButtonState.select
             return .select
         }
+        
+        // Check whether all images in the section are selected,
+        // stopping at the first one which is not selected
+        for objectID in snapshot.itemIdentifiers(inSection: sectionID) {
+            guard let image = try? self.mainContext.existingObject(with: objectID) as? Image,
+                  selectedImageIDs.contains(image.pwgID)
+            else {
+                // Not all images are selected
+                selectedSections[section] = SelectButtonState.select
+                return .select
+            }
+        }
+
+        // All images are selected
+        selectedSections[section] = SelectButtonState.deselect
+        return .deselect
     }
 
     
@@ -259,7 +266,7 @@ extension AlbumViewController
             NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
             
             // Complete image data is not necessary for Piwigo server version +14.x
-            if NetworkVars.shared.usesSetCategory {
+            if ServerVars.shared.usesSetCategory {
                 // Select album and copy images into that album
                 performAction(action, withImageIDs: imageIDs, contextually: contextually)
             } else {
@@ -272,8 +279,8 @@ extension AlbumViewController
             
             // Display HUD
             let title = imageIDs.count > 1 ?
-                NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…") :
-                NSLocalizedString("editImageDetailsHUD_updatingSingle", comment: "Updating Photo…")
+                String(localized: "editImageDetailsHUD_updatingPlural", comment: "Updating Photos…") :
+                String(localized: "editImageDetailsHUD_updatingSingle", comment: "Updating Photo…")
             navigationController?.showHUD(withTitle: title, inMode: imageIDs.count > 1 ? .determinate : .indeterminate)
             
             // Add or remove image from favorites
@@ -284,8 +291,8 @@ extension AlbumViewController
             
             // Display HUD
             let title = imageIDs.count > 1 ?
-                NSLocalizedString("rotateSeveralImageHUD_rotating", comment: "Rotating Photos…") :
-                NSLocalizedString("rotateSingleImageHUD_rotating", comment: "Rotating Photo…")
+                String(localized: "rotateSeveralImageHUD_rotating", comment: "Rotating Photos…") :
+                String(localized: "rotateSingleImageHUD_rotating", comment: "Rotating Photo…")
             navigationController?.showHUD(withTitle: title, inMode: imageIDs.count > 1 ? .determinate : .indeterminate)
             
             // Add or remove image from favorites
@@ -303,11 +310,9 @@ extension AlbumViewController
         case .share         /* Check Photo Library access rights */:
             // Display or update HUD
             if navigationController?.isShowingHUD() ?? false {
-                navigationController?.updateHUD(title: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                                                inMode: .indeterminate)
+                navigationController?.updateHUD(title: Localized.loading, inMode: .indeterminate)
             } else if selectedImageIDs.count > 200 {
-                navigationController?.showHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                                              inMode: .indeterminate)
+                navigationController?.showHUD(withTitle: Localized.loading, inMode: .indeterminate)
             }
             // Prepare items to share in background queue
             DispatchQueue(label: "org.piwigo.share", qos: .userInitiated).async { [self] in
@@ -347,22 +352,22 @@ extension AlbumViewController
             performAction(action, withImageIDs: imageIDs, contextually: contextually)
         } else {
             // Display HUD
-            navigationController?.showHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+            navigationController?.showHUD(withTitle: Localized.loading,
                           inMode: imageIDsToRetrieve.count > 1 ? .determinate : .indeterminate)
             
             // Retrieve image data if needed
             Task.detached {
-                do {
+                do throws(PwgKitError) {
                     // Check session
-                    try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
-                                                              lastConnected: self.user.lastUsed)
+                    try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID,
+                                                            lastConnected: self.user.lastUsed)
                     
                     // Retrieve image data
                     await MainActor.run { [self] in
                         self.retrieveData(ofImagesWithID: imageIDsToRetrieve, among: imageIDs,
                                           beforeAction: action, contextually: contextually)
                     }
-                } catch let error as PwgKitError {
+                } catch {
                     await MainActor.run { [self] in
                         self.retrieveImageDataError(error, contextually: contextually)
                     }
@@ -390,9 +395,13 @@ extension AlbumViewController
         
         // Image data are not complete when retrieved using pwg.categories.getImages
         Task {
-            do {
-                // Get complete image data
-                try await imageProvider.getInfos(forID: imageID, inCategoryId: self.albumData.pwgID)
+            do throws(PwgKitError) {
+                // Retrieve image data
+                let pwgData = try await JSONManager.shared.getInfos(forID: imageID)
+                
+                // Update image data in cache
+                // The provided sort option will not change the rankManual/rankRandom values.
+                try ImageProvider().importImages([pwgData], inAlbum: self.albumData.pwgID, sort: .albumDefault)
                 
                 // Proceed with next image
                 await MainActor.run { [self] in
@@ -407,7 +416,7 @@ extension AlbumViewController
                     retrieveData(ofImagesWithID: remainingIDs, among: imageIDs,
                                  beforeAction: action, contextually: contextually)
                 }
-            } catch let error as PwgKitError {
+            } catch {
                 await MainActor.run { [self] in
                     retrieveImageDataError(error, contextually: contextually)
                 }
@@ -424,8 +433,8 @@ extension AlbumViewController
         }
         
         // Report error
-        let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
-        let message = NSLocalizedString("imageDetailsFetchError_message", comment: "Fetching the photo data failed.")
+        let title = String(localized: "imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
+        let message = String(localized: "imageDetailsFetchError_message", comment: "Fetching the photo data failed.")
         dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
             navigationController?.hideHUD() { [self] in
                 if contextually {
@@ -521,7 +530,7 @@ extension AlbumViewController: ImageDetailDelegate
     func didSelectImage(atIndexPath indexPath: IndexPath) {
         // Album section presented?
         var imageIndexPath = indexPath
-        if let firstSectionID = diffableDataSource.snapshot().sectionIdentifiers.first,
+        if let firstSectionID = currentSnapshot.sectionIdentifiers.first,
            firstSectionID == pwgAlbumGroup.none.sectionKey {
             imageIndexPath.section += 1
         }

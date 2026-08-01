@@ -18,7 +18,7 @@ extension TagSelectorViewController
         searchBar.isTranslucent = true
         searchBar.showsCancelButton = false
         searchBar.showsSearchResultsButton = false
-        searchBar.placeholder = NSLocalizedString("tags", comment: "Tags")
+        searchBar.placeholder = String(localized: "tags", comment: "Tags")
         
         // Enable Dynamic Type
         searchBar.searchTextField.font = UIFont.preferredFont(forTextStyle: .body)

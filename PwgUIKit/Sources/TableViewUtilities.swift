@@ -1,0 +1,244 @@
+//
+//  TableViewUtilities.swift
+//  piwigo
+//
+//  Created by Eddy Lelièvre-Berna on 23/01/2022.
+//  Copyright © 2022 Piwigo.org. All rights reserved.
+//
+
+import UIKit
+
+public final class TableViewUtilities {
+    
+    // Constants
+    static let margin: CGFloat = 20.0
+
+    
+    // MARK: - Title & Subtitle
+    // NB: For some reason, the UIBarAppearance defined in UINavigationBar+AppTools is not applied.
+    @available(iOS 26.0, *)
+    public static func largeAttributedSubTitleForAlbum(_ subtitle: String?) -> AttributedString {
+        guard let subtitle, subtitle.isEmpty == false else { return AttributedString("") }
+
+        // Get title
+        var attrSubtitle = AttributedString(subtitle)
+        attrSubtitle.foregroundColor = .label
+        attrSubtitle.font = UIFont.preferredFont(forTextStyle: .subheadline)
+        return attrSubtitle
+    }
+
+    
+    // MARK: - Headers
+    // Returns the height of a header containing a title and/or a subtitle
+    @MainActor
+    public static func heightOfHeader(withTitle title: String, text: String = "",
+                                      width: CGFloat = CGFloat.zero) -> CGFloat {
+        // Initialise drawing context
+        let context = NSStringDrawingContext()
+        context.minimumScaleFactor = 1.0
+
+        // Initialise variables and width constraint
+        /// The minimum width of a screen is of 320 pixels.
+        /// See https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/adaptivity-and-layout/
+        var height: CGFloat = CGFloat.zero
+        let minWidth: CGFloat = 320.0 - 2 * (margin + rowCornerRadius)
+        let maxWidth = CGFloat(fmax(width - 2.0 * (margin + rowCornerRadius), minWidth))
+        let widthConstraint: CGSize = CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
+
+        // Add title height
+        if title.isEmpty == false {
+            let titleAttributes = [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .headline)]
+            height += title.boundingRect(with: widthConstraint, options: .usesLineFragmentOrigin,
+                                         attributes: titleAttributes, context: context).height
+        }
+
+        // Add text height
+        if text.isEmpty == false {
+            let textAttributes = [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)]
+            height += text.boundingRect(with: widthConstraint, options: .usesLineFragmentOrigin,
+                                           attributes: textAttributes, context: context).height
+        }
+
+        return CGFloat(fmax(TableViewUtilities.rowHeight, ceil(height)))
+    }
+    
+    @MainActor
+    public static func viewOfHeader(withTitle title: String, text: String = "") -> UIView? {
+        // Check header content
+        if title.isEmpty, text.isEmpty { return nil }
+
+        // Initialisation
+        let headerAttributedString = NSMutableAttributedString(string: "")
+
+        // Add title attributed string
+        if title.isEmpty == false {
+            let titleAttributedString = NSMutableAttributedString(string: title)
+            titleAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .headline),
+                                               range: NSRange(location: 0, length: title.count))
+            headerAttributedString.append(titleAttributedString)
+        }
+        
+        // Add text attributed string
+        if text.isEmpty == false {
+            let textAttributedString = NSMutableAttributedString(string: text)
+            textAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .footnote),
+                                              range: NSRange(location: 0, length: text.count))
+            headerAttributedString.append(textAttributedString)
+        }
+                
+        // Create header label
+        let headerLabel = UILabel()
+        headerLabel.translatesAutoresizingMaskIntoConstraints = false
+        headerLabel.textColor = PwgColor.header
+        headerLabel.numberOfLines = 0
+        headerLabel.adjustsFontSizeToFitWidth = false
+        headerLabel.adjustsFontForContentSizeCategory = true
+        headerLabel.lineBreakMode = .byWordWrapping
+        headerLabel.attributedText = headerAttributedString
+
+        // Create header view
+        let header = UIView()
+        header.addSubview(headerLabel)
+        let metrics = ["margin": NSNumber(value: margin)]
+        header.addConstraint(NSLayoutConstraint.constraintView(fromBottom: headerLabel, amount: 4)!)
+        header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-(margin)-[header]-(margin)-|",
+                                                             options: [], metrics: metrics, views: [
+                                                                "header": headerLabel
+                                                             ]))
+        return header
+    }
+    
+    
+    // MARK: - Rows
+    // Returns the top or bottom margins of a cell
+    static let defaultVertMargin: CGFloat = 48.0/3.0
+    static let defaultOldVertMargin: CGFloat = 35.0/3.0
+    public static let vertMargin: CGFloat = {
+        if #available(iOS 26.0, *) {
+            return defaultVertMargin
+        } else {
+            return defaultOldVertMargin
+        }
+    }()
+    
+    // Returns the row height
+    static let defaultRowHeight = CGFloat(53)
+    static let defaultOldRowHeight = CGFloat(44)
+    public static let rowHeight: CGFloat = {
+        if #available(iOS 26.0, *) {
+            return defaultRowHeight
+        } else {
+            return defaultOldRowHeight
+        }
+    }()
+    
+    public static func rowHeight(forContentSizeCategory contentSizeCategory: UIContentSizeCategory) -> CGFloat {
+        let rowHeight = TableViewUtilities.rowHeight
+        switch contentSizeCategory {
+        case .extraSmall:
+            return rowHeight - 3.0
+        case .small:
+            return rowHeight - 2.0
+        case .medium:
+            return rowHeight - 1.0
+        case .large:
+            return rowHeight
+        case .extraLarge:
+            return rowHeight + 2.0
+        case .extraExtraLarge:
+            return rowHeight + 4.0
+        case .extraExtraExtraLarge:
+            return rowHeight + 6.0
+        case .accessibilityMedium:
+            return rowHeight + 11.0
+        case .accessibilityLarge:
+            return rowHeight + 16.0
+        case .accessibilityExtraLarge:
+            return rowHeight + 23.0
+        case .accessibilityExtraExtraLarge:
+            return rowHeight + 30.0
+        case .accessibilityExtraExtraExtraLarge:
+            return rowHeight + 36.0
+        case .unspecified:
+            fallthrough
+        default:
+            return rowHeight
+        }
+    }
+    
+    // Returns the row corner radius
+    static let defaultCornerRadius = CGFloat(26)
+    public static let defaultOldRCornerRadius = CGFloat(10)
+    public static let rowCornerRadius: CGFloat = {
+        if #available(iOS 26.0, *) {
+            return defaultCornerRadius
+        } else {
+            return defaultOldRCornerRadius
+        }
+    }()
+
+    
+    // MARK: - Footers
+    // Returns the height of a footer containing some text
+    @MainActor
+    public static func heightOfFooter(withText text: String,
+                                      width: CGFloat = CGFloat.zero) -> CGFloat {
+        // Check header content
+        if text.isEmpty { return CGFloat.zero }
+
+        // Initialise drawing context
+        let context = NSStringDrawingContext()
+        context.minimumScaleFactor = 1.0
+
+        // Initialise variables and width constraint
+        /// The minimum width of a screen is of 320 pixels.
+        /// See https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/adaptivity-and-layout/
+        let minWidth: CGFloat = 320.0 - 2 * (margin + rowCornerRadius)
+        let maxWidth = CGFloat(fmax(width - 2.0 * (margin + rowCornerRadius), minWidth))
+        let widthConstraint: CGSize = CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
+
+        // Add title height
+        let titleAttributes = [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)]
+        let height: CGFloat = text.boundingRect(with: widthConstraint, options: .usesLineFragmentOrigin,
+                                                attributes: titleAttributes, context: context).height
+
+        return CGFloat(fmax(TableViewUtilities.rowHeight, ceil(height) + 10.0))
+    }
+    
+    @MainActor
+    public static func viewOfFooter(withText text: String = "", alignment: NSTextAlignment = .left) -> UIView? {
+        // Check header content
+        if text.isEmpty { return nil }
+
+        // Initialisation
+        let footerAttributedString = NSMutableAttributedString(string: "")
+        
+        // Add text attributed string
+        let textAttributedString = NSMutableAttributedString(string: text)
+        textAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .footnote),
+                                          range: NSRange(location: 0, length: text.count))
+        footerAttributedString.append(textAttributedString)
+                
+        // Create header label
+        let footerLabel = UILabel()
+        footerLabel.translatesAutoresizingMaskIntoConstraints = false
+        footerLabel.textColor = PwgColor.header
+        footerLabel.numberOfLines = 0
+        footerLabel.adjustsFontSizeToFitWidth = false
+        footerLabel.adjustsFontForContentSizeCategory = true
+        footerLabel.textAlignment = alignment
+        footerLabel.lineBreakMode = .byWordWrapping
+        footerLabel.attributedText = footerAttributedString
+
+        // Create header view
+        let footer = UIView()
+        footer.addSubview(footerLabel)
+        footer.addConstraint(NSLayoutConstraint.constraintView(fromTop: footerLabel, amount: 4)!)
+        let metrics = ["margin": NSNumber(value: margin)]
+        footer.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-(margin)-[footer]-(margin)-|",
+                                                             options: [], metrics: metrics, views: [
+                                                                "footer": footerLabel
+                                                             ]))
+        return footer
+    }
+}

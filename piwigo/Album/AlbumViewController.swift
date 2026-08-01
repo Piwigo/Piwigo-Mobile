@@ -10,8 +10,11 @@ import CoreData
 import Foundation
 import MessageUI
 import UIKit
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
+import PwgUIKit
+import PwgUploadKit
 
 enum pwgImageAction {
     case edit, delete, share
@@ -137,6 +140,19 @@ final class AlbumViewController: UIViewController
         // pwg.users.favorites… methods available from Piwigo version 2.10
         return user.canManageFavorites()
     }()
+    /// Album of favorites, used to determine whether images are favorites.
+    /// Checking Image.albums fires a Core Data fault per image, whereas the images of the favorites album are fetched in a single request.
+    /// NB: This property is accessed by the cell provider, i.e. while a snapshot may be being applied, so the album is fetched without being created when
+    /// it is missing — creating it would save the context and trigger a nested snapshot apply, i.e. a deadlock (case of a cleared cache).
+    var _favAlbum: Album? = nil
+    var favAlbum: Album? {
+        guard hasFavorites else { return nil }
+        // Fetch or re-fetch the album if needed (e.g. after clearing the cache)
+        if _favAlbum == nil || _favAlbum?.isDeleted == true || _favAlbum?.managedObjectContext == nil {
+            _favAlbum = albumProvider.fetchAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue)
+        }
+        return _favAlbum
+    }
     
     lazy var prefersLargeTitles: Bool = {
         // Adopts large title only when showing the default album
@@ -193,6 +209,10 @@ final class AlbumViewController: UIViewController
         }
         return _diffableDataSource as! DataSource
     }
+    /// Copy of the snapshot applied to the diffable data source.
+    /// diffableDataSource.snapshot() copies all identifiers at each call,
+    /// which is too costly for methods called repeatedly during scrolling and layout.
+    var currentSnapshot = Snapshot()
     
     lazy var user: User = {
         do {
@@ -290,13 +310,23 @@ final class AlbumViewController: UIViewController
         collectionView?.register(UINib(nibName: "ImageHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView")
         collectionView?.register(ImageFooterReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView")
         
+        // Pan gesture for selecting a series of images by swiping over the cells
+        // (only received in selection mode, and gestureRecognizerShouldBegin restricts it
+        // to horizontal pans, so it does not interfere with the vertical scrolling)
+        let imageSeriesRecognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))
+        imageSeriesRecognizer.minimumNumberOfTouches = 1
+        imageSeriesRecognizer.maximumNumberOfTouches = 1
+        imageSeriesRecognizer.cancelsTouchesInView = false
+        imageSeriesRecognizer.delegate = self
+        collectionView?.addGestureRecognizer(imageSeriesRecognizer)
+        
         // Initialise "no album / no photo" label
         if albumData.pwgID == Int64.zero {
-            noAlbumLabel.text = NSLocalizedString("categoryMainEmtpy", comment: "No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.")
+            noAlbumLabel.text = String(localized: "categoryMainEmtpy", comment: "No albums in your Piwigo yet. You may pull down to refresh or re-login.")
         } else {
-            noAlbumLabel.text = NSLocalizedString("noImages", comment:"No Images")
+            noAlbumLabel.text = String(localized: "noImages", comment:"No Images")
         }
-
+        
         // Add buttons above table view and other buttons
         if #unavailable(iOS 26.0) {
             view.insertSubview(addButton, aboveSubview: collectionView)
@@ -382,7 +412,7 @@ final class AlbumViewController: UIViewController
             homeAlbumButton.configuration = getHomeAlbumConfiguration()
             homeAlbumButton.layer.shadowColor = PwgColor.shadow.cgColor
             
-            if AppVars.shared.isDarkPaletteActive {
+            if UIVars.shared.isDarkPaletteActive {
                 addButton.layer.shadowRadius = 1.0
                 addButton.layer.shadowOffset = CGSize.zero
                 createAlbumButton.layer.shadowRadius = 1.0
@@ -409,7 +439,7 @@ final class AlbumViewController: UIViewController
         
         // Collection view
         collectionView?.backgroundColor = PwgColor.background
-        collectionView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        collectionView?.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         (collectionView?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader) ?? []).forEach { header in
             if let header = header as? AlbumHeaderReusableView {
                 header.applyColorPalette(withDescription: self.attributedComment())
@@ -443,15 +473,12 @@ final class AlbumViewController: UIViewController
             NSAttributedString.Key.foregroundColor: PwgColor.header,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .light)
         ]
-        collectionView?.refreshControl?.attributedTitle = NSAttributedString(string: NSLocalizedString("pullToRefresh", comment: "Reload Photos"), attributes: attributesRefresh)
+        collectionView?.refreshControl?.attributedTitle = NSAttributedString(string: String(localized: "pullToRefresh", comment: "Reload Photos"), attributes: attributesRefresh)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         debugPrint("••> viewWillAppear — Album #\(categoryId): \(albumData.name)")
-        
-        // For testing…
-//        timeCounter = CFAbsoluteTimeGetCurrent()
         
         // Always open this view with a navigation bar
         // (might have been hidden during Image Previewing)
@@ -501,13 +528,6 @@ final class AlbumViewController: UIViewController
         super.viewDidAppear(animated)
         debugPrint("••> viewDidAppear — Album #\(categoryId): \(albumData.name)")
         
-        // Speed and memory measurements with iPad Pro 11" in debug mode
-        /// Old method —> 0 photo: 527 ms, 24 photos: 583 ms, 3020 photos: 15 226 ms (memory crash after repeating tests)
-        /// hasFavorites  cached —> a very little quicker but less memory impacting (-195 MB transcient allocations for 3020 photos)
-        /// placeHolder & size cached —> 0 photo: 526 ms, 24 photos: 585 ms, 3020 photos: 14 586 ms i.e. -6% (memory crash after repeating tests)
-//        let duration = (CFAbsoluteTimeGetCurrent() - timeCounter)*1000
-//        debugPrint("••> completed in \(duration.rounded()) ms")
-
         // The user may have cleared the cached data
         // Display an empty root album in that case
         if categoryId == Int32.zero, albumData.isFault {
@@ -537,11 +557,11 @@ final class AlbumViewController: UIViewController
         /// Next line to be used for dispalying What's New in Piwigo:
 #if DEBUG
 //if categoryId == Int32.zero {
-//    AppVars.shared.didShowWhatsNewAppVersion = "3.2"
+//    AppVars.shared.didShowWhatsNewAppVersion = "4.2"
 //}
 #endif
         if let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
-            if AppVars.shared.didShowWhatsNewAppVersion.compare("4.2", options: .numeric) == .orderedAscending,
+            if AppVars.shared.didShowWhatsNewAppVersion.compare("4.3", options: .numeric) == .orderedAscending,
                appVersionString.compare(AppVars.shared.didShowWhatsNewAppVersion, options: .numeric) == .orderedDescending {
                 // Display What's New in Piwigo
                 let whatsNewSB = UIStoryboard(name: "WhatsNewViewController", bundle: nil)
@@ -684,12 +704,7 @@ final class AlbumViewController: UIViewController
         super.traitCollectionDidChange(previousTraitCollection)
         
         // Should we update the user interface based on the appearance?
-        let isSystemDarkModeActive = UIScreen.main.traitCollection.userInterfaceStyle == .dark
-        if AppVars.shared.isSystemDarkModeActive != isSystemDarkModeActive {
-            AppVars.shared.isSystemDarkModeActive = isSystemDarkModeActive
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-            appDelegate?.screenBrightnessChanged()
-        }
+        UITools.shared.applyColorPalette(for: traitCollection.userInterfaceStyle)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -784,21 +799,20 @@ final class AlbumViewController: UIViewController
         
         // Display HUD while downloading album data
         if withHUD {
-            self.navigationController?.showHUD(
-                withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                detail: NSLocalizedString("severalImages", comment: "Photos"), minWidth: 200)
+            self.navigationController?.showHUD(withTitle: Localized.loading,
+                detail: String(localized: "severalImages", comment: "Photos"), minWidth: 200)
         }
         
         // Fetch album data and then image data
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
-                                                          lastConnected: self.user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID,
+                                                        lastConnected: self.user.lastUsed)
                 // Fetch album and image data
                 await self.fetchAlbumsAndImages()
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run {
                     // End refreshing if needed
                     self.collectionView?.refreshControl?.endRefreshing()
@@ -811,7 +825,7 @@ final class AlbumViewController: UIViewController
                     
                     // Report error
                     self.navigationController?.hideHUD {
-                        let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
+                        let title = String(localized: "internetErrorGeneral_title", comment: "Connection Error")
                         self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
                     }
                 }
@@ -863,8 +877,8 @@ final class AlbumViewController: UIViewController
         // Fetch favorites in the background if needed
         do {
             if hasFavorites, categoryId != pwgSmartAlbum.favorites.rawValue,
-               "2.10.0".compare(NetworkVars.shared.pwgVersion, options: .numeric) != .orderedDescending,
-               NetworkVars.shared.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending,
+               "2.10.0".compare(ServerVars.shared.pwgVersion, options: .numeric) != .orderedDescending,
+               ServerVars.shared.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending,
                AlbumVars.shared.isFetchingAlbumData.contains(pwgSmartAlbum.favorites.rawValue) == false,
                let favAlbum = try AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue),
                Date.timeIntervalSinceReferenceDate - favAlbum.dateGetImages > TimeInterval(86400) { // i.e. a day
@@ -1023,16 +1037,16 @@ final class AlbumViewController: UIViewController
     // MARK: - Utilities
     func nberOfAlbums() -> Int {
         var nberOfAlbums = Int.zero
-        let snapshot = diffableDataSource.snapshot() as Snapshot
+        let snapshot = currentSnapshot
         if let _ = snapshot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
             nberOfAlbums = snapshot.numberOfItems(inSection: pwgAlbumGroup.none.sectionKey)
         }
         return nberOfAlbums
     }
-    
+
     func nberOfImages() -> Int {
-        let snapshot = diffableDataSource.snapshot() as Snapshot
-        var nberOfImages = diffableDataSource.snapshot().numberOfItems
+        let snapshot = currentSnapshot
+        var nberOfImages = snapshot.numberOfItems
         if let _ = snapshot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
             nberOfImages -= snapshot.numberOfItems(inSection: pwgAlbumGroup.none.sectionKey)
         }
@@ -1048,11 +1062,11 @@ final class AlbumViewController: UIViewController
 //                albumImageTableView.tableHeaderView = nil
 //                UIApplication.shared.isIdleTimerDisabled = false
 //            }
-//            else if !NetworkVars.shared.isConnectedToWiFi() && UploadVars.shared.wifiOnlyUploading {
+//            else if !ServerVars.shared.isConnectedToWiFi() && UploadVars.shared.wifiOnlyUploading {
 //                // No Wi-Fi and user wishes to upload only on Wi-Fi
 //                let headerView = TableHeaderView(frame: .zero)
 //                headerView.configure(width: albumImageTableView.frame.size.width,
-//                                     text: NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
+//                                     text: String(localized: "uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
 //                albumImageTableView.tableHeaderView = headerView
 //                UIApplication.shared.isIdleTimerDisabled = false
 //            }
@@ -1060,7 +1074,7 @@ final class AlbumViewController: UIViewController
 //                // Low Power mode enabled
 //                let headerView = TableHeaderView(frame: .zero)
 //                headerView.configure(width: albumImageTableView.frame.size.width,
-//                                     text: NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled"))
+//                                     text: String(localized: "uploadLowPowerMode", comment: "Low Power Mode enabled"))
 //                albumImageTableView.tableHeaderView = headerView
 //                UIApplication.shared.isIdleTimerDisabled = false
 //            } else {
@@ -1173,7 +1187,7 @@ final class AlbumViewController: UIViewController
         var rootAlbumViewController: AlbumViewController? = nil
         for viewController in navigationController?.viewControllers ?? []
         {
-            // Look for AlbumImagesViewControllers
+            // Look for AlbumViewControllers
             if let thisViewController = viewController as? AlbumViewController
             {
                 // Is this the view controller of the default album?

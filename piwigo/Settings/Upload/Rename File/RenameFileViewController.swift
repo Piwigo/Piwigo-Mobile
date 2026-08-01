@@ -8,8 +8,10 @@
 
 import Foundation
 import UIKit
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgCacheKit
+import PwgUIKit
+import PwgUploadKit
 
 protocol MofifyFilenameDelegate: NSObjectProtocol {
     func didChangeRenameFileSettings(prefix: Bool, prefixActions: RenameActionList,
@@ -55,7 +57,7 @@ class RenameFileViewController: UIViewController {
         super.viewDidLoad()
         
         // Title
-        title = NSLocalizedString("tabBar_upload", comment: "Upload")
+        title = String(localized: "tabBar_upload", comment: "Upload")
         
         // Table view
         tableView?.accessibilityIdentifier = "Rename File Settings"
@@ -87,7 +89,7 @@ class RenameFileViewController: UIViewController {
         
         // Table view
         tableView?.separatorColor = PwgColor.separator
-        tableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        tableView?.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         tableView?.reloadData()
     }
     
@@ -255,8 +257,8 @@ class RenameFileViewController: UIViewController {
     @MainActor
     private func setTableViewMainHeader() {
         let headerView = RenameFileTableHeaderView(frame: CGRect.zero)
-        let title = NSLocalizedString("settings_renameFileLong", comment: "Rename File Before Upload")
-        let text = NSLocalizedString("settings_renameFile_info", comment: "Please define how file names should be modified before uploading.")
+        let title = String(localized: "settings_renameFileLong", comment: "Rename File")
+        let text = String(localized: "settings_renameFile_info", comment: "Please define how file names should be modified before uploading.")
         headerView.config(with: title, text: text, forWidth: view.bounds.width)
         headerView.updateExample(prefix: prefixBeforeUpload, prefixActions: prefixActions,
                                  replace: replaceBeforeUpload, replaceActions: replaceActions,
@@ -308,12 +310,12 @@ class RenameFileViewController: UIViewController {
         
         // Create alert
         let section = RenameSection.prefix.rawValue
-        let alert = UIAlertController(title: "", message: NSLocalizedString("settings_addActionMsg", comment: "Please select the action to add"), preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "", message: String(localized: "settings_addActionMsg", comment: "Please select the action to add"), preferredStyle: .actionSheet)
         
         // Loop over all unused actions
         for actionType in availableActionTypes {
             alert.addAction(UIAlertAction(title: actionType.name, style: .default, handler: { [weak self] _ in
-                guard let self = self else { return }
+                guard let self else { return }
                 // Add action and corresponding row
                 self.prefixActions.append(RenameAction(type: actionType))
                 let indexPath = IndexPath(row: self.prefixActions.count, section: section)
@@ -326,14 +328,14 @@ class RenameFileViewController: UIViewController {
         }
         
         // Add Cancel option
-        alert.addAction(UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: { [weak self] _ in
-            guard let self = self else { return }
+        alert.addAction(UIAlertAction(title: Localized.dismiss, style: .cancel, handler: { [weak self] _ in
+            guard let self else { return }
             self.updatePrefixSettingsAndSection()
         }))
         
         // Present list of actions
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.sourceView = tableView
         alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
         alert.popoverPresentationController?.sourceRect = tableView?.rectForFooter(inSection: section) ?? CGRect.zero
@@ -400,12 +402,12 @@ class RenameFileViewController: UIViewController {
         
         // Create alert
         let section = RenameSection.replace.rawValue
-        let alert = UIAlertController(title: "", message: NSLocalizedString("settings_addActionMsg", comment: "Please select the action to add"), preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "", message: String(localized: "settings_addActionMsg", comment: "Please select the action to add"), preferredStyle: .actionSheet)
         
         // Loop over all unused actions
         for actionType in availableActionTypes {
             alert.addAction(UIAlertAction(title: actionType.name, style: .default, handler: { [weak self] _ in
-                guard let self = self else { return }
+                guard let self else { return }
                 // Add action and corresponding row
                 self.replaceActions.append(RenameAction(type: actionType))
                 let indexPath = IndexPath(row: self.replaceActions.count, section: section)
@@ -418,14 +420,14 @@ class RenameFileViewController: UIViewController {
         }
         
         // Add Cancel option
-        alert.addAction(UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: { [weak self] _ in
-            guard let self = self else { return }
+        alert.addAction(UIAlertAction(title: Localized.dismiss, style: .cancel, handler: { [weak self] _ in
+            guard let self else { return }
             self.updateReplaceSettingsAndSection()
         }))
         
         // Present list of actions
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.sourceView = tableView
         alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
         alert.popoverPresentationController?.sourceRect = tableView?.rectForFooter(inSection: section) ?? CGRect.zero
@@ -491,12 +493,12 @@ class RenameFileViewController: UIViewController {
 
         // Create alert
         let section = RenameSection.suffix.rawValue
-        let alert = UIAlertController(title: "", message: NSLocalizedString("settings_addActionMsg", comment: "Please select the action to add"), preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "", message: String(localized: "settings_addActionMsg", comment: "Please select the action to add"), preferredStyle: .actionSheet)
         
         // Loop over all unused actions
         for actionType in availableActionTypes {
             alert.addAction(UIAlertAction(title: actionType.name, style: .default, handler: { [weak self] _ in
-                guard let self = self else { return }
+                guard let self else { return }
                 // Add action and corresponding row
                 self.suffixActions.append(RenameAction(type: actionType))
                 let indexPath = IndexPath(row: self.suffixActions.count, section: section)
@@ -509,14 +511,14 @@ class RenameFileViewController: UIViewController {
         }
         
         // Add Cancel option
-        alert.addAction(UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: { [weak self] _ in
-            guard let self = self else { return }
+        alert.addAction(UIAlertAction(title: Localized.dismiss, style: .cancel, handler: { [weak self] _ in
+            guard let self else { return }
             self.updateSuffixSettingsAndSection()
         }))
         
         // Present list of actions
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.sourceView = tableView
         alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
         alert.popoverPresentationController?.sourceRect = tableView?.rectForFooter(inSection: section) ?? CGRect.zero

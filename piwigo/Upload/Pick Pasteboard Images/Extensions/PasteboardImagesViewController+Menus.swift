@@ -8,6 +8,8 @@
 
 import Foundation
 import UIKit
+import PwgKit
+import PwgCacheKit
 
 // MARK: Menus
 extension PasteboardImagesViewController {
@@ -18,7 +20,7 @@ extension PasteboardImagesViewController {
         if !canReUploadImages() { return nil }
         
         // Propose option for re-uploading photos
-        let reUpload = UIAction(title: NSLocalizedString("localImages_reUploadTitle", comment: "Re-upload"),
+        let reUpload = UIAction(title: String(localized: "localImages_reUploadTitle", comment: "Re-upload"),
                                 image: reUploadAllowed ? UIImage(systemName: "checkmark") : nil, handler: { _ in
             self.swapReuploadOption()
         })
@@ -41,7 +43,7 @@ extension PasteboardImagesViewController {
         // Deselect already uploaded photos if needed
         var didChangeSelection = false
         if pendingOperations.preparationsInProgress.isEmpty,
-           selectedImages.count < indexedUploadsInQueue.count {
+           selectedImages.count <= indexedUploadsInQueue.count {
             for index in 0..<selectedImages.count {
                 // Indexed uploads available
                 if let upload = indexedUploadsInQueue[index],

@@ -1,2 +1,3 @@
-• Lost bugs op en verbetert de interface
-• Biedt de mogelijkheid om het maximale aantal gelijktijdige verbindingen met de Piwigo-server aan te passen
+• Er is een ‘Delen’-extensie toegevoegd waarmee je foto’s, video’s en PDF-bestanden vanuit andere apps kunt uploaden
+• Speelt geanimeerde GIF-afbeeldingen af
+• Verhelpt bugs en verbetert de interface

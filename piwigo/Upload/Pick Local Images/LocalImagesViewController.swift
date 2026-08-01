@@ -11,8 +11,10 @@
 import CoreData
 import Photos
 import UIKit
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgUploadKit
+import PwgCacheKit
+import PwgUIKit
 
 enum SectionType: Int {
     case month
@@ -21,7 +23,7 @@ enum SectionType: Int {
     case none
 }
 
-class LocalImagesViewController: UIViewController
+final class LocalImagesViewController: UIViewController
 {
     // MARK: - Core Data Objects
     var user: User!
@@ -41,8 +43,8 @@ class LocalImagesViewController: UIViewController
         
         // Retrieves upload requests
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         return fetchRequest
     }()
@@ -69,7 +71,7 @@ class LocalImagesViewController: UIViewController
     var selectedImages = [UploadProperties?]()      // Array of images selected for upload
     var selectedSections = [SelectButtonState]()    // State of Select buttons
     var imagesBeingTouched = [IndexPath]()          // Array of indexPaths of touched images
-    var uploadRequests = [UploadProperties]()       // Array of images to upload
+    var uploadRequests = [UploadProperties]()       // Array of upload requests
     
     lazy var imageCellSize: CGSize = getImageCellSize()
     let defaultImageHeaderHeight: CGFloat = 42.0
@@ -120,11 +122,20 @@ class LocalImagesViewController: UIViewController
             collectionFlowLayout?.sectionHeadersPinToVisibleBounds = true
         }
         
+        // Pan gesture for selecting a series of images by swiping over the cells
+        // (gestureRecognizerShouldBegin restricts it to horizontal pans,
+        // so it does not interfere with the vertical scrolling)
+        let imageSeriesRecognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))
+        imageSeriesRecognizer.minimumNumberOfTouches = 1
+        imageSeriesRecognizer.maximumNumberOfTouches = 1
+        imageSeriesRecognizer.cancelsTouchesInView = false
+        imageSeriesRecognizer.delegate = self
+        localImagesCollection?.addGestureRecognizer(imageSeriesRecognizer)
+        
         // Check collection Id
         if imageCollectionId.count == 0 {
             PhotosFetch.shared.showPhotosLibraryAccessRestricted(in: self)
         }
-        
         
         // Fetch a specific path of the Photo Library to reduce the workload
         // and store the fetched assets for future use
@@ -203,7 +214,7 @@ class LocalImagesViewController: UIViewController
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
         
         // Collection view
-        localImagesCollection.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        localImagesCollection.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         localImagesCollection.reloadData()
     }
         

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PwgUIKit
 
 class TextViewTableViewCell: UITableViewCell {
     
@@ -18,7 +19,7 @@ class TextViewTableViewCell: UITableViewCell {
         // Initialization code
         super.awakeFromNib()
 
-        label.text = NSLocalizedString("editImageDetails_description", comment: "Description")
+        label.text = String(localized: "editImageDetails_description", comment: "Description")
         textView.layer.cornerRadius = 8.0
     }
 
@@ -33,7 +34,7 @@ class TextViewTableViewCell: UITableViewCell {
         textView.text = description
         textView.textColor = color
         textView.backgroundColor = PwgColor.background
-        textView.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
+        textView.keyboardAppearance = UIVars.shared.isDarkPaletteActive ? .dark : .default
         textViewHeight.constant = UIFont.preferredFont(forTextStyle: .body).lineHeight * 23.0
     }
 

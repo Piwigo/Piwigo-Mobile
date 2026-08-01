@@ -9,7 +9,8 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgUIKit
 
 typealias CellSliderBlock = (Float) -> Void
 
@@ -68,14 +69,14 @@ class SliderTableViewCell: UITableViewCell {
     }
 
     func updateDisplayedValue(_ value: Float) {
-        if Int(incrementSliderBy) == CacheVars.shared.recentPeriodKey {
+        if Int(incrementSliderBy) == ServerVars.shared.recentPeriodKey {
             // Special case of recent period, value = index of kRecentPeriods
             // 0, 1, 2, 3, … 19, 20, 25, 30, 40, 50, 60, 80, 99 days (same as Piwigo server)
             var indexOfPeriod:Int = Int(value.rounded(.toNearestOrAwayFromZero))
-            indexOfPeriod = min(indexOfPeriod, CacheVars.shared.recentPeriodList.count - 1)
+            indexOfPeriod = min(indexOfPeriod, ServerVars.shared.recentPeriodList.count - 1)
             indexOfPeriod = max(0, indexOfPeriod)
             slider.value = Float(indexOfPeriod)
-            sliderValue.text = String(format: (valueSuffix ?? ""), String(CacheVars.shared.recentPeriodList[indexOfPeriod]))
+            sliderValue.text = String(format: (valueSuffix ?? ""), String(ServerVars.shared.recentPeriodList[indexOfPeriod]))
         }
         else {
             let quotient = (value / incrementSliderBy).rounded(.towardZero) * incrementSliderBy

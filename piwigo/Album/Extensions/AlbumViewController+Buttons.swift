@@ -8,8 +8,10 @@
 
 import Foundation
 import UIKit
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgCacheKit
+import PwgUIKit
+import PwgUploadKit
 
 @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Exclusively before iOS 26")
 extension AlbumViewController
@@ -159,7 +161,7 @@ extension AlbumViewController
         button.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
         button.isHidden = true
         button.accessibilityIdentifier = "add"
-        button.accessibilityLabel = NSLocalizedString("createNewAlbum_title", comment: "New Album")
+        button.accessibilityLabel = String(localized: "createNewAlbum_title", comment: "New Album")
         return button
     }
     
@@ -392,7 +394,7 @@ extension AlbumViewController
     @objc func updateOldButton(withNberOfUploads nberOfUploads: Int) {
         // Only called in the root or default album
         if nberOfUploads > 0 {
-            if (!NetworkVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading) ||
+            if (!ServerVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading) ||
                 [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) ||
                 ProcessInfo.processInfo.isLowPowerModeEnabled {
                 nberOfUploadsLabel.text = "⚠️"
@@ -537,7 +539,7 @@ extension AlbumViewController
         button.addTarget(self, action: #selector(didTapCreateAlbum), for: .touchUpInside)
         button.isHidden = true
         button.accessibilityIdentifier = "createAlbum"
-        button.accessibilityLabel = NSLocalizedString("createNewAlbum_title", comment: "New Album")
+        button.accessibilityLabel = String(localized: "createNewAlbum_title", comment: "New Album")
         return button
     }
     
@@ -572,7 +574,7 @@ extension AlbumViewController
         button.addTarget(self, action: #selector(didTapUploadImagesButton), for: .touchUpInside)
         button.isHidden = true
         button.accessibilityIdentifier = "org.piwigo.addImages"
-        button.accessibilityLabel = NSLocalizedString("tabBar_upload", comment: "Upload")
+        button.accessibilityLabel = String(localized: "tabBar_upload", comment: "Upload")
         return button
     }
 

@@ -9,8 +9,9 @@
 import CoreData
 import Foundation
 import UIKit
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgCacheKit
+import PwgUploadKit
 
 // MARK: - Uploads Provider NSFetchedResultsControllerDelegate
 extension UploadQueueViewController: NSFetchedResultsControllerDelegate
@@ -21,7 +22,7 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate
         guard controller == uploads else { return }
         
         // Data source configured?
-        guard let dataSource = queueTableView.dataSource as? DataSource
+        guard let queueTableView, let dataSource = queueTableView.dataSource as? DataSource
         else { preconditionFailure("The data source has not implemented snapshot support while it should") }
         
         // Get old and new snapshots

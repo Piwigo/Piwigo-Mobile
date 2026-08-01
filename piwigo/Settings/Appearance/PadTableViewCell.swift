@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PwgUIKit
 
 class PadTableViewCell: UITableViewCell {
     
@@ -39,16 +40,16 @@ class PadTableViewCell: UITableViewCell {
 
         // Labels
         let labelHeight = UIFont.preferredFont(forTextStyle: .footnote).pointSize + TableViewUtilities.vertMargin
-        lightLabel.setTitle(NSLocalizedString("settings_lightColor", comment: "Light"), for: .normal)
+        lightLabel.setTitle(String(localized: "settings_lightColor", comment: "Light"), for: .normal)
         lightLabel.setTitleColor(PwgColor.leftLabel, for: .normal)
         lightLabelHeight.constant = labelHeight
-        darkLabel.setTitle(NSLocalizedString("settings_darkColor", comment: "Dark"), for: .normal)
+        darkLabel.setTitle(String(localized: "settings_darkColor", comment: "Dark"), for: .normal)
         darkLabel.setTitleColor(PwgColor.leftLabel, for: .normal)
         darkLabelHeight.constant = labelHeight
 
         // Buttons
         let config = UIImage.SymbolConfiguration(pointSize: labelHeight / 2.0, weight: .semibold)
-        if AppVars.shared.isDarkPaletteActive {
+        if UIVars.shared.isDarkPaletteActive {
             lightButton.setImage(UIImage(systemName: "circle", withConfiguration: config), for: .normal)
             lightButton.imageView?.tintColor = PwgColor.rightLabel
             darkButton.setImage(UIImage(systemName: "checkmark.circle.fill", withConfiguration: config), for: .normal)
@@ -63,12 +64,12 @@ class PadTableViewCell: UITableViewCell {
         
     @IBAction func didTapLightMode(_ sender: Any) {
         // Select static light mode
-        AppVars.shared.isLightPaletteModeActive = true
-        AppVars.shared.isDarkPaletteModeActive = false
-        AppVars.shared.switchPaletteAutomatically = false
+        UIVars.shared.isLightPaletteModeActive = true
+        UIVars.shared.isDarkPaletteModeActive = false
+        UIVars.shared.switchPaletteAutomatically = false
 
         // Apply light color palette
-        (UIApplication.shared.delegate as! AppDelegate).screenBrightnessChanged()
+        UITools.shared.applyColorPalette(for: traitCollection.userInterfaceStyle)
         
         // Update button
         lightButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
@@ -77,12 +78,12 @@ class PadTableViewCell: UITableViewCell {
     
     @IBAction func didTapDarkMode(_ sender: Any) {
         // Select static dark mode
-        AppVars.shared.isLightPaletteModeActive = false
-        AppVars.shared.isDarkPaletteModeActive = true
-        AppVars.shared.switchPaletteAutomatically = false
+        UIVars.shared.isLightPaletteModeActive = false
+        UIVars.shared.isDarkPaletteModeActive = true
+        UIVars.shared.switchPaletteAutomatically = false
 
         // Apply dark color palette
-        (UIApplication.shared.delegate as! AppDelegate).screenBrightnessChanged()
+        UITools.shared.applyColorPalette(for: traitCollection.userInterfaceStyle)
         
         // Update button
         lightButton.setImage(UIImage(systemName: "circle"), for: .normal)

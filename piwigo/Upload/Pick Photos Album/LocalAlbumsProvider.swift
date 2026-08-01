@@ -8,7 +8,8 @@
 
 import Foundation
 import Photos
-import piwigoKit
+import PwgKit
+import PwgAPIKit
 
 enum LocalAlbumType {
     case pasteboard
@@ -348,19 +349,19 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         case .pasteboard:
             return ""
         case .localAlbums:
-            title = NSLocalizedString("categoryUpload_LocalAlbums", comment: "Local Albums")
+            title = String(localized: "categoryUpload_LocalAlbums", comment: "Local Albums")
         case .eventsAlbums:
-            title = NSLocalizedString("categoryUpload_syncedEvents", comment: "iPhoto Events")
+            title = String(localized: "categoryUpload_syncedEvents", comment: "iPhoto Events")
         case .syncedAlbums:
-            title = NSLocalizedString("categoryUpload_syncedAlbums", comment: "iPhoto Albums")
+            title = String(localized: "categoryUpload_syncedAlbums", comment: "iPhoto Albums")
         case .facesAlbums:
-            title = NSLocalizedString("categoryUpload_syncedFaces", comment: "iPhoto Faces")
+            title = String(localized: "categoryUpload_syncedFaces", comment: "iPhoto Faces")
         case .sharedAlbums:
-            title = NSLocalizedString("categoryUpload_sharedAlbums", comment: "Shared Albums")
+            title = String(localized: "categoryUpload_sharedAlbums", comment: "Shared Albums")
         case .mediaTypes:
-            title = NSLocalizedString("categoryUpload_mediaTypes", comment: "Media Types")
+            title = String(localized: "categoryUpload_mediaTypes", comment: "Media Types")
         case .otherAlbums:
-            title = NSLocalizedString("categoryUpload_otherAlbums", comment: "Other Albums")
+            title = String(localized: "categoryUpload_otherAlbums", comment: "Other Albums")
         }
         return title
     }
@@ -391,9 +392,9 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
             count = otherAlbums.count
         }
         let nberOfAlbums = numberFormatter.string(from: NSNumber(value: count)) ?? ""
-        let footer = count > 1 ?
-        String(format: String(localized: "severalAlbumsCount", bundle: .piwigoKit, comment: "%@ albums"), nberOfAlbums) :
-        String(format: String(localized: "singleAlbumCount", bundle: .piwigoKit, comment: "%@ album"), nberOfAlbums)
+        let footer = count > 1
+            ? String(format: Localized.severalAlbumsCount, nberOfAlbums)
+            : String(format: Localized.singleAlbumCount, nberOfAlbums)
         return footer
     }
 }

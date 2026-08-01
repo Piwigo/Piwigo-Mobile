@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
 
 // MARK: - SelectPrivacyDelegate Methods
 extension EditImageParamsViewController: SelectPrivacyDelegate

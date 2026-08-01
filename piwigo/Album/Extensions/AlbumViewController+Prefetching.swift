@@ -8,7 +8,9 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 // MARK: - UICollectionViewDataSourcePrefetching
 extension AlbumViewController: UICollectionViewDataSourcePrefetching
@@ -24,15 +26,15 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
                     Task {
                         await ImageDownloader.shared.getImage(withID: album.thumbnailId, ofSize: thumbSize, type: .album,
                                                               atURL: album.thumbnailUrl as? URL,
-                                                              fromServer: album.user?.server?.uuid) { _ in
+                                                              fromServer: album.user?.server?.uuid, isPrefetch: true) { _ in
                         } failure: { _ in }
                     }
                 } else if let image = try? self.mainContext.existingObject(with: objectID) as? Image {
                     // Download image if needed
                     Task {
                         await ImageDownloader.shared.getImage(withID: image.pwgID, ofSize: imageSize, type: .image,
-                                                              atURL: ImageUtilities.getPiwigoURL(image, ofMinSize: imageSize),
-                                                              fromServer: image.server?.uuid, fileSize: image.fileSize) { _ in
+                                                              atURL: image.url(forMaxSize: imageSize),
+                                                              fromServer: image.server?.uuid, fileSize: image.fileSize, isPrefetch: true) { _ in
                         } failure: { _ in }
                     }
                 }
@@ -51,7 +53,7 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
                     Task { await ImageDownloader.shared.pauseDownload(atURL: imageURL) }
                 }
                 else if let image = try? self.mainContext.existingObject(with: objectID) as? Image,
-                        let imageURL = ImageUtilities.getPiwigoURL(image, ofMinSize: imageSize) {
+                        let imageURL = image.url(forMaxSize: imageSize) {
                     // Pause download if needed
                     Task { await ImageDownloader.shared.pauseDownload(atURL: imageURL) }
                 }

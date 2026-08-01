@@ -5,10 +5,11 @@
 //  Created by Eddy Lelièvre-Berna on 25/05/2021.
 //  Copyright © 2021 Piwigo.org. All rights reserved.
 //
+// A UserDefaultsManager subclass that persists album settings.
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
 
 // Mark AlbumVars as Sendable since Apple documents UserDefaults as thread-safe
 // and pwgImageSize, pwgImageSort, pwgImageGroup are Sendable
@@ -43,14 +44,6 @@ final class AlbumVars: @unchecked Sendable {
     /// - Default album thumbnail size determined from the available image sizes to present 144x144 pixel thumbnails
     @UserDefault("defaultAlbumThumbnailSize", defaultValue: -1)
     var defaultAlbumThumbnailSize: Int16
-
-    /// - List of albums recently visited / used
-    @UserDefault("recentCategories", defaultValue: "0")
-    var recentCategories: String
-    
-    /// - Maximum number of recent abums  presented to the user
-    @UserDefault("maxNberRecentCategories", defaultValue: 5)
-    var maxNberRecentCategories: Int
     
     /// - Display album description in collection views
     @UserDefault("displayAlbumDescriptions", defaultValue: false)
@@ -119,4 +112,8 @@ final class AlbumVars: @unchecked Sendable {
     // Album variables kept in memory
     /// - To remember which album data is being fetched
     var isFetchingAlbumData = Set<Int32>()
+
+    /// - To fetch all album data recursively when fetching the root album after a successful login
+    ///   (keeps the album cache complete for e.g. the share extension)
+    var fetchAlbumDataRecursively = false
 }

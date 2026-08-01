@@ -12,8 +12,11 @@ import CoreData
 import Intents
 import MessageUI
 import UIKit
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
+import PwgUIKit
+import PwgUploadKit
 
 enum SettingsSection: Int {
     case server
@@ -54,45 +57,45 @@ class SettingsViewController: UIViewController {
     private var helpBarButton: UIBarButtonItem?
     
     // Remember current user's recent period index
-    private var oldRecentPeriodIndex = CacheVars.shared.recentPeriodIndex
+    private var oldRecentPeriodIndex = ServerVars.shared.recentPeriodIndex
     
     // Tell which cell triggered the keyboard appearance
     var editedRow: IndexPath?
     
     // The image sort type is returned with album data since Piwigo 14.0.
-    lazy var defaultSortUnknown: Bool = NetworkVars.shared.pwgVersion
+    lazy var defaultSortUnknown: Bool = ServerVars.shared.pwgVersion
         .compare("14.0", options: .numeric) == .orderedAscending
     
     // For displaying cache sizes
-    var dataCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
+    var dataCacheSize: String = Localized.loading {
         didSet {
             DispatchQueue.main.async {
                 self.updateDataCacheCell()
             }
         }
     }
-    var thumbCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
+    var thumbCacheSize: String = Localized.loading {
         didSet {
             DispatchQueue.main.async {
                 self.updateThumbCacheCell()
             }
         }
     }
-    var photoCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
+    var photoCacheSize: String = Localized.loading {
         didSet {
             DispatchQueue.main.async {
                 self.updatePhotoCacheCell()
             }
         }
     }
-    var videoCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
+    var videoCacheSize: String = Localized.loading {
         didSet {
             DispatchQueue.main.async {
                 self.updateVideoCacheCell()
             }
         }
     }
-    var uploadCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
+    var uploadCacheSize: String = Localized.loading {
         didSet {
             DispatchQueue.main.async {
                 self.updateUploadCacheCell()
@@ -144,7 +147,7 @@ class SettingsViewController: UIViewController {
             Task.detached(priority: .background) { [self] in
                 do {
                     // Check session
-                    try await JSONManager.shared.checkSession(ofUserWithID: userID, lastConnected: lastUsed)
+                    try await LoginUtilities().checkSession(ofUserWithID: userID, lastConnected: lastUsed)
                     
                     // Collect stats from server and store them in cache
                     try await JSONManager.shared.getInfos()
@@ -156,7 +159,7 @@ class SettingsViewController: UIViewController {
                     await MainActor.run { [self] in
                         // Is the retrieved recent period different?
                         guard let nberOfDays = usersData.recentPeriod?.intValue,
-                              let index = CacheVars.shared.recentPeriodList.firstIndex(of: nberOfDays),
+                              let index = ServerVars.shared.recentPeriodList.firstIndex(of: nberOfDays),
                               index != self.oldRecentPeriodIndex
                         else { return }
                         
@@ -164,7 +167,7 @@ class SettingsViewController: UIViewController {
                         self.user.id = usersData.id ?? Int16.zero
                         self.user.managedObjectContext?.saveIfNeeded()
                         self.oldRecentPeriodIndex = index
-                        CacheVars.shared.recentPeriodIndex = index
+                        ServerVars.shared.recentPeriodIndex = index
                         let indexPath = IndexPath(row: 3, section: SettingsSection.albums.rawValue)
                         if let cell = self.settingsTableView.cellForRow(at: indexPath) as? SliderTableViewCell {
                             cell.updateDisplayedValue(Float(index))
@@ -179,7 +182,7 @@ class SettingsViewController: UIViewController {
         }
         
         // Title
-        title = NSLocalizedString("tabBar_preferences", comment: "Settings")
+        title = String(localized: "tabBar_preferences", comment: "Settings")
         
         // Button for returning to albums/images
         closeBarButton = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(quitSettings))
@@ -209,7 +212,7 @@ class SettingsViewController: UIViewController {
         
         // Table view
         settingsTableView?.separatorColor = PwgColor.separator
-        settingsTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        settingsTableView?.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         settingsTableView?.reloadData()
     }
     
@@ -262,9 +265,9 @@ class SettingsViewController: UIViewController {
             
             // Request a translation
             let alert = UIAlertController(title: kHelpUsTitle, message: kHelpUsTranslatePiwigo, preferredStyle: .alert)
-            let cancelAction = UIAlertAction(title: NSLocalizedString("alertNoButton", comment: "No"), style: .destructive, handler: { action in
+            let cancelAction = UIAlertAction(title: String(localized: "alertNoButton", comment: "No"), style: .destructive, handler: { action in
             })
-            let defaultAction = UIAlertAction(title: NSLocalizedString("alertYesButton", comment: "Yes"), style: .default, handler: { action in
+            let defaultAction = UIAlertAction(title: Localized.yes, style: .default, handler: { action in
                 if let url = URL(string: "https://crowdin.com/project/piwigo-mobile") {
                     UIApplication.shared.open(url)
                 }
@@ -273,7 +276,7 @@ class SettingsViewController: UIViewController {
             alert.addAction(cancelAction)
             alert.addAction(defaultAction)
             alert.view.tintColor = PwgColor.tintColor
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
             present(alert, animated: true, completion: {
                 // Bugfix: iOS9 - Tint not fully Applied without Reapplying
                 alert.view.tintColor = PwgColor.tintColor
@@ -289,16 +292,16 @@ class SettingsViewController: UIViewController {
             UploadManager.shared.updateNberOfUploadsToComplete()
         }
         // Did the user change the recent period?
-        let recentPeriodIndex = CacheVars.shared.recentPeriodIndex
+        let recentPeriodIndex = ServerVars.shared.recentPeriodIndex
         if userHasUploadRights, oldRecentPeriodIndex != recentPeriodIndex {
             // Update recent period on Piwigo server
             Task.detached {
                 do {
                     // Check session
-                    try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID, lastConnected: self.user.lastUsed)
+                    try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID, lastConnected: self.user.lastUsed)
                     
                     // Update server data
-                    let periodInDays = CacheVars.shared.recentPeriodList[recentPeriodIndex]
+                    let periodInDays = ServerVars.shared.recentPeriodList[recentPeriodIndex]
                     try await JSONManager.shared.setRecentPeriod(periodInDays, forUserWithID: self.user.id)
                 }
                 catch {
@@ -362,20 +365,20 @@ class SettingsViewController: UIViewController {
         mainContext.saveIfNeeded()
         
         // Guest user?
-        if NetworkVars.shared.user.isEmpty || NetworkVars.shared.user.lowercased() == "guest" {
+        if ServerVars.shared.user.isEmpty || ServerVars.shared.user.lowercased() == "guest" {
             ClearCache.closeSession()
             return
         }
         
         // Ask user for confirmation
-        let alert = UIAlertController(title: "", message: NSLocalizedString("logoutConfirmation_message", comment: "Are you sure you want to logout?"), preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "", message: String(localized: "logoutConfirmation_message", comment: "Are you sure you want to logout?"), preferredStyle: .actionSheet)
         
-        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in
-        })
+        let cancelAction = UIAlertAction(title: Localized.cancel,
+                                         style: .cancel, handler: { action in })
         
-        let logoutAction = UIAlertAction(title: NSLocalizedString("logoutConfirmation_title", comment: "Logout"), style: .destructive, handler: { action in
+        let logoutAction = UIAlertAction(title: String(localized: "logoutConfirmation_title", comment: "Logout"), style: .destructive, handler: { action in
             // Show HUD
-            let title = NSLocalizedString("login_closeSession", comment: "Closing Session...")
+            let title = String(localized: "login_closeSession", comment: "Closing Session...")
             self.navigationController?.showHUD(withTitle: title)
 
             // Perform Logout on background
@@ -396,7 +399,7 @@ class SettingsViewController: UIViewController {
                     // or simply a connection drop.
                     await MainActor.run {
                         self.navigationController?.hideHUD {
-                            self.navigationController?.dismissPiwigoError(withTitle: NSLocalizedString("logoutFail_title", comment: "Logout Failed"),
+                            self.navigationController?.dismissPiwigoError(withTitle: String(localized: "logoutFail_title", comment: "Logout Failed"),
                                                                           message: error.localizedDescription) {
                                 ClearCache.closeSession()
                             }
@@ -416,7 +419,7 @@ class SettingsViewController: UIViewController {
         
         // Present list of actions
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.sourceView = settingsTableView
         alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
         alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero

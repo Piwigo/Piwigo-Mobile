@@ -10,7 +10,10 @@
 
 import Photos
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgCacheKit
+import PwgUIKit
+import PwgUploadKit
 
 final class LocalImageCollectionViewCell: UICollectionViewCell {
 
@@ -84,7 +87,7 @@ final class LocalImageCollectionViewCell: UICollectionViewCell {
         
         // Image: retrieve data of right size and crop image
         changeCellImageIfNeeded(withImage: image)
-        let isVideo = identifier.contains("mov")
+        let isVideo = identifier.contains(kMovieSuffix)
         self.playIcon?.isHidden = !isVideo
     }
     

@@ -8,7 +8,9 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 // MARK: Rotate Image
 extension ImageViewController
@@ -16,7 +18,7 @@ extension ImageViewController
     // MARK: - Menu
     @MainActor
     func rotateMenu() -> UIMenu {
-        return UIMenu(title: NSLocalizedString("rotateImage_rotate", comment: "Rotate 90°…"),
+        return UIMenu(title: String(localized: "rotateImage_rotate", comment: "Rotate 90°…"),
                       image: UIImage(systemName: ""),
                       identifier: UIMenu.Identifier("org.piwigo.piwigoImage.rotate"),
                       children: [rotateRightAction(), rotateLeftAction()])
@@ -27,7 +29,7 @@ extension ImageViewController
     @MainActor
     func rotateRightAction() -> UIAction {
         // Rotate image right
-        let action = UIAction(title: NSLocalizedString("rotateImage_right", comment: "Clockwise"),
+        let action = UIAction(title: String(localized: "rotateImage_right", comment: "Clockwise"),
                               image: UIImage(systemName: "rotate.right"),
                               handler: { [self] _ in
             // Edit image informations
@@ -40,7 +42,7 @@ extension ImageViewController
     @MainActor
     func rotateLeftAction() -> UIAction {
         // Rotate image left
-        let action = UIAction(title: NSLocalizedString("rotateImage_left", comment: "Counterclockwise"),
+        let action = UIAction(title: String(localized: "rotateImage_left", comment: "Counterclockwise"),
                               image: UIImage(systemName: "rotate.left"),
                               handler: { [self] _ in
             // Edit image informations
@@ -59,16 +61,21 @@ extension ImageViewController
         setEnableStateOfButtons(false)
 
         // Display HUD during rotation
-        showHUD(withTitle: NSLocalizedString("rotateSingleImageHUD_rotating", comment: "Rotating Photo…"))
+        showHUD(withTitle: String(localized: "rotateSingleImageHUD_rotating", comment: "Rotating Photo…"))
         
         // Send request to Piwigo server
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Rotate thumbnails
-                try await JSONManager.shared.rotate(imageData, by: angle)
+                try await JSONManager.shared.rotateImage(withID: imageData.pwgID, by: angle)
+                
+                // Image rotated successfully ► Rotate thumbnails in cache
+                /// Image data not always immediately available from server.
+                /// We rotate the images stored in cache instead of downloading them.
+                imageData.rotateThumbnails(by: angle)
                 
                 // Update UI
                 await MainActor.run {
@@ -102,7 +109,7 @@ extension ImageViewController
                     self.mainContext.saveIfNeeded()
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 self.rotateImageInDatabaseError(error)
             }
         }
@@ -119,13 +126,13 @@ extension ImageViewController
         // Hide HUD
         self.hideHUD { [self] in
             // Plugin rotateImage installed?
-            let title = NSLocalizedString("rotateImageFail_title", comment: "Rotation Failed")
+            let title = String(localized: "rotateImageFail_title", comment: "Rotation Failed")
             var message = ""
             if error.pluginMissing {
-                message = NSLocalizedString("rotateImageFail_plugin", comment: "The rotateImage plugin is not activated.")
+                message = String(localized: "rotateImageFail_plugin", comment: "The rotateImage plugin is not activated.")
             }
             else {
-                message = NSLocalizedString("rotateImageFail_message", comment: "Image could not be rotated")
+                message = String(localized: "rotateImageFail_message", comment: "Image could not be rotated")
             }
             
             // Report error

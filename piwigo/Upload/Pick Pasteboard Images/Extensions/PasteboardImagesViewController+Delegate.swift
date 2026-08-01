@@ -7,7 +7,8 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgCacheKit
 
 // MARK: UICollectionViewDelegate Methods
 extension PasteboardImagesViewController: UICollectionViewDelegate
@@ -29,17 +30,16 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
             // Can we upload or re-upload this image?
             if (uploadState == nil) || reUploadAllowed {
                 // Select the image
+                let fileName = pbObjects.first(where: { $0.identifier == cell.localIdentifier })?.fileName
                 selectedImages[indexPath.item] = UploadProperties(localIdentifier: cell.localIdentifier,
+                                                                  fileName: fileName ?? cell.localIdentifier,
                                                                   category: categoryId)
                 cell.update(selected: true, state: uploadState)
             }
         }
-
+        
         // Update navigation bar
         updateNavBar()
-
-        // Refresh cell
-        cell.reloadInputViews()
 
         // Update state of Select button if needed
         updateSelectButton()
@@ -54,93 +54,63 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
     func collectionView(_ collectionView: UICollectionView,
                         contextMenuConfigurationForItemAt indexPath: IndexPath,
                         point: CGPoint) -> UIContextMenuConfiguration? {
-        if let cell = collectionView.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
-            // Get image identifier and corresponding upload request if it exists
-            let identifier = NSString(string: "\(cell.localIdentifier)")
-            let upload = (self.uploads.fetchedObjects ?? []).filter({$0.md5Sum == cell.md5sum})
-            
-            // Get upload state
-            let uploadState = self.getUploadStateOfImage(at: indexPath.item, for: cell)
-            
-            // Return preview and appropriate menu
-            return UIContextMenuConfiguration(identifier: identifier,
-                previewProvider: { [self] in
-                    // Create preview view controller
-                    let (image, _) = self.getImageAndMd5sumOfPbObject(atIndex: indexPath.item)
-                    return LocalImagePreviewViewController(image: image)
-                }, actionProvider: { suggestedActions in
-                    var children = [UIMenuElement]()
-                    if upload.isEmpty {
-                        if self.selectedImages[indexPath.item] != nil {
-                            // Image selected ► Propose to deselect it
-                            children.append(self.deselectAction(forCell: cell, at: indexPath,
-                                                                inUploadSate: uploadState))
-                        } else if (uploadState == nil) || self.reUploadAllowed {
-                            // Image deselected ► Propose to select it
-                            children.append(self.selectAction(forCell: cell, at: indexPath,
-                                                              inUploadSate: uploadState))
-                        }
-                        children.append(self.uploaAction(forCell: cell, at: indexPath))
-                    } else {
-                        children.append(self.statusAction(upload.first))
-                        if self.reUploadAllowed {
-                            children.append(self.uploaAction(forCell: cell, at: indexPath))
-                        }
-                    }
-                    return UIMenu(title: "", children: children)
-                })
-        }
-        return nil
+        return contextMenuConfiguration(in: collectionView, forItemAt: indexPath)
     }
     
     @available(iOS 16.0, *)
     func collectionView(_ collectionView: UICollectionView,
                         contextMenuConfigurationForItemsAt indexPaths: [IndexPath],
                         point: CGPoint) -> UIContextMenuConfiguration? {
-        if indexPaths.count == 1, let indexPath = indexPaths.first,
-           let cell = collectionView.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
-            // Get image identifier and corresponding upload request if it exists
-            let identifier = NSString(string: "\(cell.localIdentifier)")
-            let upload = (self.uploads.fetchedObjects ?? []).filter({$0.md5Sum == cell.md5sum})
-            
-            // Get upload state
-            let uploadState = self.getUploadStateOfImage(at: indexPath.item, for: cell)
-            
-            // Return preview and appropriate menu
-            return UIContextMenuConfiguration(identifier: identifier,
-                previewProvider: { [self] in
-                    // Create preview view controller
-                    let (image, _) = self.getImageAndMd5sumOfPbObject(atIndex: indexPath.item)
-                    return LocalImagePreviewViewController(image: image)
-                }, actionProvider: { suggestedActions in
-                    var children = [UIMenuElement]()
-                    if upload.isEmpty {
-                        if self.selectedImages[indexPath.item] != nil {
-                            // Image selected ► Propose to deselect it
-                            children.append(self.deselectAction(forCell: cell, at: indexPath,
-                                                                inUploadSate: uploadState))
-                        } else if (uploadState == nil) || self.reUploadAllowed {
-                            // Image deselected ► Propose to select it
-                            children.append(self.selectAction(forCell: cell, at: indexPath,
-                                                              inUploadSate: uploadState))
-                        }
-                        children.append(self.uploaAction(forCell: cell, at: indexPath))
-                    } else {
-                        children.append(self.statusAction(upload.first))
-                        if self.reUploadAllowed {
-                            children.append(self.uploaAction(forCell: cell, at: indexPath))
-                        }
+        guard indexPaths.count == 1, let indexPath = indexPaths.first
+        else { return nil }
+        return contextMenuConfiguration(in: collectionView, forItemAt: indexPath)
+    }
+
+    private func contextMenuConfiguration(in collectionView: UICollectionView,
+                                          forItemAt indexPath: IndexPath) -> UIContextMenuConfiguration? {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? LocalImageCollectionViewCell
+        else { return nil }
+
+        // Get image identifier and corresponding upload request if it exists
+        let identifier = NSString(string: "\(cell.localIdentifier)")
+        let upload = (self.uploads.fetchedObjects ?? []).filter({$0.md5Sum == cell.md5sum})
+
+        // Get upload state
+        let uploadState = self.getUploadStateOfImage(at: indexPath.item, for: cell)
+
+        // Return preview and appropriate menu
+        return UIContextMenuConfiguration(identifier: identifier,
+            previewProvider: { [self] in
+                // Create preview view controller
+                let (image, _) = self.getImageAndMd5sumOfPbObject(atIndex: indexPath.item)
+                return LocalImagePreviewViewController(image: image)
+            }, actionProvider: { suggestedActions in
+                var children = [UIMenuElement]()
+                if upload.isEmpty {
+                    if self.selectedImages[indexPath.item] != nil {
+                        // Image selected ► Propose to deselect it
+                        children.append(self.deselectAction(forCell: cell, at: indexPath,
+                                                            inUploadState: uploadState))
+                    } else if (uploadState == nil) || self.reUploadAllowed {
+                        // Image deselected ► Propose to select it
+                        children.append(self.selectAction(forCell: cell, at: indexPath,
+                                                          inUploadState: uploadState))
                     }
-                    return UIMenu(title: "", children: children)
-                })
-        }
-        return nil
+                    children.append(self.uploadAction(forCell: cell, at: indexPath))
+                } else {
+                    children.append(self.statusAction(upload.first))
+                    if self.reUploadAllowed {
+                        children.append(self.uploadAction(forCell: cell, at: indexPath))
+                    }
+                }
+                return UIMenu(title: "", children: children)
+            })
     }
 
     private func statusAction(_ upload: Upload?) -> UIAction {
         // Check if an upload request exists (should never happen)
         guard let upload = upload else {
-            return UIAction(title: String(localized: "errorHUD_label", bundle: .piwigoKit, comment: "Error"),
+            return UIAction(title: Localized.error,
                             image: UIImage(systemName: "exclamationmark.triangle"), handler: { _ in })
         }
         
@@ -154,19 +124,21 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
             return UIAction(title: upload.stateLabel,
                             image: UIImage(systemName: "exclamationmark.triangle"), handler: { _ in })
         case .finished, .moderated:
-            return UIAction(title: NSLocalizedString("imageUploadCompleted_title", comment: "Upload Completed"),
+            return UIAction(title: String(localized: "imageUploadCompleted_title", comment: "Upload Completed"),
                             image: UIImage(systemName: "checkmark"), handler: { _ in })
         }
     }
     
     private func selectAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath,
-                              inUploadSate uploadState: pwgUploadState?) -> UIAction
+                              inUploadState uploadState: pwgUploadState?) -> UIAction
     {
         // Image not selected and selectable ► Propose to select it
-        return UIAction(title: NSLocalizedString("categoryImageList_selectButton", comment: "Select"),
+        return UIAction(title: String(localized: "categoryImageList_selectButton", comment: "Select"),
                         image: UIImage(systemName: "checkmark.circle")) { _ in
             // Select the cell
+            let fileName = self.pbObjects.first(where: { $0.identifier == cell.localIdentifier })?.fileName
             self.selectedImages[indexPath.item] = UploadProperties(localIdentifier: cell.localIdentifier,
+                                                                   fileName: fileName ?? cell.localIdentifier,
                                                                    category: self.categoryId)
             cell.update(selected: true, state: uploadState)
             
@@ -183,7 +155,7 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
     }
     
     private func deselectAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath,
-                                inUploadSate uploadState: pwgUploadState?) -> UIAction
+                                inUploadState uploadState: pwgUploadState?) -> UIAction
     {
         var image: UIImage?
         if #available(iOS 16, *) {
@@ -191,7 +163,7 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
         } else {
             image = UIImage(systemName: "checkmark.circle")
         }
-        return UIAction(title: NSLocalizedString("categoryImageList_deselectButton", comment: "Deselect"),
+        return UIAction(title: String(localized: "categoryImageList_deselectButton", comment: "Deselect"),
                         image: image) { _ in
             // Deselect the cell
             self.selectedImages[indexPath.item] = nil
@@ -209,7 +181,7 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
         }
     }
 
-    private func uploaAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
+    private func uploadAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
         let imageUpload: UIImage?
         if #available(iOS 17.0, *) {
             let imageConfig = UIImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
@@ -217,7 +189,7 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
         } else {
             imageUpload = UIImage(named: "photo.badge.plus")
         }
-        return UIAction(title: NSLocalizedString("tabBar_upload", comment: "Upload"),
+        return UIAction(title: String(localized: "tabBar_upload", comment: "Upload"),
                         image: imageUpload) { [self] action in
             // Check that an upload request does not exist for that image (should never happen)
             if (self.uploads.fetchedObjects ?? []).filter({$0.md5Sum == cell.md5sum}).first != nil {
@@ -225,38 +197,12 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
             }
             
             // Create an upload request for that image and add it to the upload queue
-            let upload = UploadProperties(localIdentifier: cell.localIdentifier, category: self.categoryId)
+            let filename = pbObjects.first(where: { $0.identifier == cell.localIdentifier })?.fileName ?? cell.localIdentifier
+            let upload = UploadProperties(localIdentifier: cell.localIdentifier, fileName: filename, category: self.categoryId)
             self.uploadRequests.append(upload)
 
-            // Disable buttons
-            self.cancelBarButton?.isEnabled = false
-            self.uploadBarButton?.isEnabled = false
-            self.actionBarButton?.isEnabled = false
-            
             // Show upload parameter views
-            let uploadSwitchSB = UIStoryboard(name: "UploadSwitchViewController", bundle: nil)
-            guard let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController
-            else { preconditionFailure("Could not load UploadSwitchViewController") }
-            
-            uploadSwitchVC.delegate = self
-            uploadSwitchVC.user = self.user
-            uploadSwitchVC.categoryId = self.categoryId
-            uploadSwitchVC.categoryCurrentCounter = self.categoryCurrentCounter
-            uploadSwitchVC.canDeleteImages = false
-            
-            // Push Edit view embedded in navigation controller
-            let navController = UINavigationController(rootViewController: uploadSwitchVC)
-            #if targetEnvironment(macCatalyst)
-            navController.modalPresentationStyle = .formSheet
-            navController.modalTransitionStyle = .coverVertical
-            #else
-            navController.modalPresentationStyle = .popover
-            navController.modalTransitionStyle = .coverVertical
-            navController.popoverPresentationController?.sourceView = self.view
-            navController.popoverPresentationController?.barButtonItem = self.uploadBarButton
-            navController.popoverPresentationController?.permittedArrowDirections = .up
-            #endif
-            self.navigationController?.present(navController, animated: true)
+            self.presentUploadOptions()
         }
     }
 }

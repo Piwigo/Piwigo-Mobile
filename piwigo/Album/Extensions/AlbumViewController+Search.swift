@@ -8,7 +8,8 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgCacheKit
 
 // MARK: - Search Images
 extension AlbumViewController
@@ -107,7 +108,7 @@ extension AlbumViewController: UISearchControllerDelegate
         categoryId = AlbumVars.shared.defaultCategory
         
         // Title forgotten when searching immediately after launch
-        title = String(localized: "tabBar_albums", bundle: .piwigoKit, comment: "Albums")
+        title = Localized.tabBar_albums
         
         // Reset navigation bar
         applyColorPalette()

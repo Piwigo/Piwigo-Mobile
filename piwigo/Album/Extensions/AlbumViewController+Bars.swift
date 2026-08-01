@@ -8,7 +8,9 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgCacheKit
+import PwgUIKit
 
 extension AlbumViewController
 {
@@ -110,14 +112,12 @@ extension AlbumViewController
             // Menu for activating the selection mode and changing the way images are sorted
             var children = [sortMenu(), viewOptionsMenu(), settingsMenu()]
             if shareBarButton != nil || favoriteBarButton != nil {
-                children.insert(selectMenu(), at: 0)
+                children.insert(selectMenu(enabled: albumData.nbImages != 0), at: 0)
             }
             let menu = UIMenu(title: "", options: UIMenu.Options.displayInline, children: children.compactMap({$0}))
             selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
             selectBarButton?.accessibilityIdentifier = "select"
-            let hasImages = albumData.nbImages != 0
-            selectBarButton?.isEnabled = hasImages
-
+            
             // User with admin or upload rights can do everything
             // except may be downloading images (i.e. sharing images)
             // User without admin rights cannot set album thumbnails, delete images
@@ -205,7 +205,7 @@ extension AlbumViewController
             // Menu for activating the selection mode and changing the way images are sorted
             var children = [sortMenu(), viewOptionsMenu()]
             if shareBarButton != nil || favoriteBarButton != nil {
-                children.insert(selectMenu(), at: 0)
+                children.insert(selectMenu(enabled: albumData.nbImages != 0), at: 0)
             }
             let menu = UIMenu(title: "", children: children.compactMap({$0}))
             selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
@@ -213,8 +213,6 @@ extension AlbumViewController
             
             // Set right bar buttons
             navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
-            let hasImages = albumData.nbImages != 0
-            selectBarButton?.isEnabled = hasImages
         }
     }
     
@@ -238,11 +236,10 @@ extension AlbumViewController
         // Menu for activating the selection mode or change the way images are sorted
         var children = [sortMenu(), viewOptionsMenu(), settingsMenu()]
         if shareBarButton != nil || favoriteBarButton != nil {
-            children.insert(selectMenu(), at: 0)
+            children.insert(selectMenu(enabled: albumData.nbImages != 0), at: 0)
         }
         let updatedMenu = selectBarButton?.menu?.replacingChildren(children.compactMap({$0}))
         selectBarButton?.menu = updatedMenu
-        selectBarButton?.isEnabled = albumData.nbImages != 0
     }
     
     @MainActor @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Specific to iOS 15 to 18")
@@ -264,11 +261,10 @@ extension AlbumViewController
         // Menu for activating the selection mode or change the way images are sorted
         var children = [sortMenu(), viewOptionsMenu()]
         if shareBarButton != nil || favoriteBarButton != nil {
-            children.insert(selectMenu(), at: 0)
+            children.insert(selectMenu(enabled: albumData.nbImages != 0), at: 0)
         }
         let updatedMenu = selectBarButton?.menu?.replacingChildren(children.compactMap({$0}))
         selectBarButton?.menu = updatedMenu
-        selectBarButton?.isEnabled = albumData.nbImages != 0
     }
     
     
@@ -470,9 +466,7 @@ extension AlbumViewController
             return
         }
         
-        let title: String = categoryId == Int32.zero
-            ? String(localized: "tabBar_albums", bundle: .piwigoKit, comment: "Albums")
-            : albumData.name
+        let title: String = categoryId == Int32.zero ? Localized.tabBar_albums : albumData.name
         navigationItem.title = title
         view?.window?.windowScene?.title = title
         
@@ -496,30 +490,30 @@ extension AlbumViewController
         if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) {
             // Inform user that the app is fetching album data
             if progress == 0 {
-                subTitle = NSLocalizedString("categoryUpdating", comment: "Updating…")
+                subTitle = String(localized: "categoryUpdating", comment: "Updating…")
             } else {
                 let numberFormatter = NumberFormatter()
                 numberFormatter.numberStyle = NumberFormatter.Style.percent
                 let percent = numberFormatter.string(from: NSNumber(value: progress)) ?? ""
-                subTitle = NSLocalizedString("categoryUpdating", comment: "Updating…") + " " + percent
+                subTitle = String(localized: "categoryUpdating", comment: "Updating…") + " " + percent
             }
         }
         else if inSelectionMode {
             let nberPhotos = selectedImageIDs.count
             switch nberPhotos {
             case 0:
-                subTitle = NSLocalizedString("selectImages", comment: "Select Photos")
+                subTitle = String(localized: "selectImages", comment: "Select Photos")
             case 1:
-                subTitle = NSLocalizedString("selectImageSelected", comment: "1 Photo Selected")
+                subTitle = String(localized: "selectImageSelected", comment: "1 Photo Selected")
             default:
                 let nberPhotosStr = nberPhotos.formatted(.number)
-                subTitle = String(format: NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), nberPhotosStr)
+                subTitle = String(format: String(localized: "selectImagesSelected", comment: "%@ Photos Selected"), nberPhotosStr)
             }
         }
         else if albumData.dateGetImages > TimeInterval(86400) { // i.e. a day after minimum date
             let dateGetImages = Date(timeIntervalSinceReferenceDate: albumData.dateGetImages)
             if Date().timeIntervalSinceReferenceDate - albumData.dateGetImages < 60 {
-                subTitle = NSLocalizedString("categoryUpdatedNow", comment: "Updated just now")
+                subTitle = String(localized: "categoryUpdatedNow", comment: "Updated just now")
             } else {
                 let calendar = Calendar.current
                 let updatedDay = calendar.dateComponents([.day], from: dateGetImages)
@@ -528,12 +522,12 @@ extension AlbumViewController
                     // Album data updated today
                     let time = DateFormatter.localizedString(from: dateGetImages,
                                                              dateStyle: .none, timeStyle: .short)
-                    subTitle = String(format: NSLocalizedString("categoryUpdatedAt", comment: "Updated at…"), time)
+                    subTitle = String(format: String(localized: "categoryUpdatedAt", comment: "Updated at…"), time)
                 } else {
                     // Album data updated yesterday or before
                     let date = DateFormatter.localizedString(from: dateGetImages,
                                                              dateStyle: .short, timeStyle: .none)
-                    subTitle = String(format: NSLocalizedString("categoryUpdatedOn", comment: "Updated on…"), date)
+                    subTitle = String(format: String(localized: "categoryUpdatedOn", comment: "Updated on…"), date)
                 }
             }
         }
@@ -553,7 +547,7 @@ extension AlbumViewController
     func setTitleViewOld(progress: Float = 0) {
         // Title
         if [0, pwgSmartAlbum.search.rawValue].contains(categoryId) {
-            self.title = String(localized: "tabBar_albums", bundle: .piwigoKit, comment: "Albums")
+            self.title = Localized.tabBar_albums
             self.view?.window?.windowScene?.title = self.title
             return
         }
@@ -571,21 +565,21 @@ extension AlbumViewController
             if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) && !isAccessibilityCategory {
                 // Inform user that the app is fetching album data
                 if progress == 0 {
-                    subtitle = NSLocalizedString("categoryUpdating", comment: "Updating…")
+                    subtitle = String(localized: "categoryUpdating", comment: "Updating…")
                 } else {
                     let numberFormatter = NumberFormatter()
                     numberFormatter.numberStyle = NumberFormatter.Style.percent
                     let percent = numberFormatter.string(from: NSNumber(value: progress)) ?? ""
-                    subtitle = NSLocalizedString("categoryUpdating", comment: "Updating…") + " " + percent
+                    subtitle = String(localized: "categoryUpdating", comment: "Updating…") + " " + percent
                 }
             }
             else if inSelectionMode && !isAccessibilityCategory {
                 let nberPhotos = selectedImageIDs.count
                 switch nberPhotos {
                 case 0:
-                    subtitle = NSLocalizedString("selectImages", comment: "Select Photos")
+                    subtitle = String(localized: "selectImages", comment: "Select Photos")
                 case 1:
-                    subtitle = NSLocalizedString("selectImageSelected", comment: "1 Photo Selected")
+                    subtitle = String(localized: "selectImageSelected", comment: "1 Photo Selected")
                 case 2...nberPhotos:
                     var nberPhotosStr = ""
                     if #available(iOS 16, *) {
@@ -595,7 +589,7 @@ extension AlbumViewController
                         numberFormatter.numberStyle = NumberFormatter.Style.decimal
                         nberPhotosStr = numberFormatter.string(from: NSNumber(value: nberPhotos)) ?? String(nberPhotos)
                     }
-                    subtitle = String(format: NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), nberPhotosStr)
+                    subtitle = String(format: String(localized: "selectImagesSelected", comment: "%@ Photos Selected"), nberPhotosStr)
                 default:
                     subtitle = ""
                 }
@@ -603,7 +597,7 @@ extension AlbumViewController
             else if albumData.dateGetImages > TimeInterval(86400) && !isAccessibilityCategory { // i.e. a day after minimum date
                 let dateGetImages = Date(timeIntervalSinceReferenceDate: albumData.dateGetImages)
                 if Date().timeIntervalSinceReferenceDate - albumData.dateGetImages < 60 {
-                    subtitle = NSLocalizedString("categoryUpdatedNow", comment: "Updated just now")
+                    subtitle = String(localized: "categoryUpdatedNow", comment: "Updated just now")
                 } else {
                     let calendar = Calendar.current
                     let updatedDay = calendar.dateComponents([.day], from: dateGetImages)
@@ -612,12 +606,12 @@ extension AlbumViewController
                         // Album data updated today
                         let time = DateFormatter.localizedString(from: dateGetImages,
                                                                  dateStyle: .none, timeStyle: .short)
-                        subtitle = String(format: NSLocalizedString("categoryUpdatedAt", comment: "Updated at…"), time)
+                        subtitle = String(format: String(localized: "categoryUpdatedAt", comment: "Updated at…"), time)
                     } else {
                         // Album data updated yesterday or before
                         let date = DateFormatter.localizedString(from: dateGetImages,
                                                                  dateStyle: .short, timeStyle: .none)
-                        subtitle = String(format: NSLocalizedString("categoryUpdatedOn", comment: "Updated on…"), date)
+                        subtitle = String(format: String(localized: "categoryUpdatedOn", comment: "Updated on…"), date)
                     }
                 }
             }

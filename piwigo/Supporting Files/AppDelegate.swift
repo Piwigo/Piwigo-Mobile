@@ -16,12 +16,17 @@ import LocalAuthentication
 import Photos
 import UIKit
 
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
+import PwgUIKit
+import PwgUploadKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
         
+    static let logger = PwgLogger(subsystem: "org.piwigo", category: String(describing: AppDelegate.self))
+
     private let k1WeekInDays: TimeInterval  = 60 * 60 * 24 *  7.0
     private let k2WeeksInDays: TimeInterval = 60 * 60 * 24 * 14.0
     private let k3WeeksInDays: TimeInterval = 60 * 60 * 24 * 21.0
@@ -45,7 +50,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Register App Metrics
         #if DEBUG
         AppMetrics.shared.start()
-        AppMetrics.shared.saveSettings()
         #endif
         
         // Register transformers at the very beginning
@@ -57,29 +61,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UNUserNotificationCenter.current().requestAuthorization(options: .badge) { granted, Error in
 //                if granted { debugPrint("request succeeded!") }
         }
-
+        
+        // Migrate values to shared defaults
+        migrateToSharedDefaults()
+        
         // Remember the natural scale associated with the integrated screen for future initialisations
         AppVars.shared.currentDeviceScale = UIScreen.main.scale
         
         // Color palette depends on system settings
-        initColorPalette()
-        
-        // Check if the device supports haptics.
-        let hapticCapability = CHHapticEngine.capabilitiesForHardware()
-        AppVars.shared.supportsHaptics = hapticCapability.supportsHaptics
-        
+        UITools.shared.applyColorPalette(for: UIScreen.main.traitCollection.userInterfaceStyle)
+                
         // "0 day" option added in v3.1.2 for allowing user to disable "recent" icon
-        CacheVars.shared.correctRecentPeriodIndex()
+        ServerVars.shared.correctRecentPeriodIndex()
         
         // Piwigo account added in v4.1.2 for dissociating persistent cache data from credentials
-        NetworkVars.shared.createPiwigoUsernameAccountIfNeeded()
+        ServerVars.shared.createPiwigoUsernameAccountIfNeeded()
         
         // Set Settings Bundle data
         setSettingsBundleData()
         
         // In absence of passcode, albums are always accessible
-        if AppVars.shared.appLockKey.isEmpty {
-            AppVars.shared.isAppLockActive = false
+        if UIVars.shared.appLockKey.isEmpty {
+            UIVars.shared.isAppLockActive = false
             AppVars.shared.isAppUnlocked = true
         }
 
@@ -108,34 +111,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Register auto-upload appender failures
         NotificationCenter.default.addObserver(self, selector: #selector(displayAutoUploadErrorAndResume),
                                                name: Notification.Name.pwgAppendAutoUploadRequestsFailed, object: nil)
-        
-        // Register deletion of upload requests and assets (requires execution on the main thread)
-        NotificationCenter.default.addObserver(forName: Notification.Name.pwgDeleteUploadRequestsAndAssets, object: nil, queue: .main) { notification in
-            guard let objectURIs = notification.userInfo?["objectURIs"] as? String,
-                  let localIDs = notification.userInfo?["localIDs"] as? String
-            else { return }
-            let uploadURIs: [String] = objectURIs.components(separatedBy: ",").dropLast()
-            let uploadLocalIDs: [String] = localIDs.components(separatedBy: ",").dropLast()
-            self.deleteAssets(associatedToUploads: uploadURIs, uploadLocalIDs)
-        }
-//        NotificationCenter.default.addObserver(self, selector: #selector(deleteAssetsAssociatedToUploads),
-//                                               name: Notification.Name.pwgDeleteUploadRequestsAndAssets, object: nil)
         return true
     }
-    
-    func addPrivacyProtectionIfNeeded() {
-        // Blur view if the App Lock is enabled
-        /// The passcode window is not presented  so that the app
-        /// does not request the passcode until it is put into the background.
-        if AppVars.shared.isAppLockActive {
-            // User is not allowed to access albums yet
-            AppVars.shared.isAppUnlocked = false
-            // Protect presented login view
-            addPrivacyProtection(to: window)
-        }
-        else {
-            // User is allowed to access albums
-            AppVars.shared.isAppUnlocked = true
+        
+    private func migrateToSharedDefaults() {
+        // Get shared store
+        let sharedDefaults = UserDefaults.dataSuite
+
+        // Keys of variables to migrate
+        var keys: [String] = []
+        keys.append("recentCategories")                 // List of albums recently visited / used (AlbumVars -> CacheVars)
+        keys.append("maxNberRecentCategories")          // Maximum number of recent abums  presented to the user (AlbumVars -> CacheVars)
+        keys.append("isDarkPaletteActive")              // Colour palette settings shared by main app and extensions
+        keys.append("switchPaletteAutomatically")
+        keys.append("isDarkPaletteModeActive")
+        keys.append("isLightPaletteModeActive")
+        keys.append("isAppLockActive")                  // App lock settings shared by main app and extensions
+        keys.append("appLockKey")
+        keys.append("isBiometricsEnabled")
+        
+        // Only migrate values that have not been moved yet
+        for key in keys {
+            if sharedDefaults.object(forKey: key) == nil,
+               let value = UserDefaults.standard.object(forKey: key) {
+                sharedDefaults.set(value, forKey: key)
+                UserDefaults.standard.removeObject(forKey: key)
+            }
         }
     }
     
@@ -244,15 +245,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
 
     // MARK: - Background Task | Uploads
-    /* For testing the background task:
-    - Build and run the app, then background it to schedule the task.
-    - Bring the app to the foreground again. Then in Xcode, hit the pause button in the debugger, type one of the commands:
-      e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"org.piwigo.uploadManager"]
-      e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"net.lelievre-berna.piwigo.uploadManager"]
-      e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateExpirationForTaskWithIdentifier:@"org.piwigo.uploadManager"]
-      e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateExpirationForTaskWithIdentifier:@"net.lelievre-berna.piwigo.uploadManager"]
-     - and continue the execution.
-     */
     func application(_ application: UIApplication, handleEventsForBackgroundURLSession
                         identifier: String, completionHandler: @escaping () -> Void) {
         debugPrint("    > Handle events for background session with ID: \(identifier)");
@@ -296,65 +288,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func registerBgTasks() {
         // Register background upload task
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: pwgBackgroundUploadTask, using: nil) { bgTask in
-            // Check task creation
-            guard let task = bgTask as? BGProcessingTask else { return }
-                        
-            // Don't upload images now if a migration is planned
-            if CacheVars.shared.isMigrationRunning {
-                debugPrint("••> Background upload task rescheduled because a migration is ongoing.")
-                task.setTaskCompleted(success: false)
-                return
-            }
-            
-            // iOS may launch the task when the app is active (since iOS 18)
-            /// Comment below lines to debug BGProcessingTask
-            if UploadVars.shared.isApplicationActive {
-                debugPrint("••> Background upload task halted because the app is active.")
-                task.setTaskCompleted(success: false)
-                return
-            }
-            
-            // Are conditions appropriate?
-            if UploadVars.shared.isContinuedProcessingTaskActive,
-                ProcessInfo.processInfo.isLowPowerModeEnabled ||
-                [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) ||
-                (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
-                debugPrint("••> Background upload task halted because in Low-Power mode, Wi-Fi unavailable, device in high thermal state, or already uploading.")
-                task.setTaskCompleted(success: false)
-                return
-            }
-            
-            // Start network monitoring
-            Task { @NetworkMonitoring in
-                await self.networkMonitor?.startMonitoring()
-            }
-            
-            // Handle next upload
-            Task(priority: .utility) { @UploadManagerActor in
-                UploadManager.shared.handleNextUpload(task: task)
-            }
-        }
+        registerBgUploadImagesTask()
         
+        // Register background album data refresh task
+        registerAlbumRefreshTask()
+
         // Register continued background upload task
         #if os(iOS) && !targetEnvironment(macCatalyst)
         if #available(iOS 26.0, *) {
-            BGTaskScheduler.shared.register(forTaskWithIdentifier: pwgBackgroundContinuedUploadTask, using: nil) { bgTask in
-                // Check task creation
-                guard let task = bgTask as? BGContinuedProcessingTask else { return }
-                
-                // Don't upload images now if a migration is planned
-                if CacheVars.shared.isMigrationRunning {
-                    debugPrint("••> Background upload task rescheduled because a migration is ongoing.")
-                    task.setTaskCompleted(success: true)
-                    return
-                }
-                
-                // Handle next uploads
-                Task(priority: .utility) { @UploadManagerActor in
-                    UploadManager.shared.handleContinuedUpload(task: task)
-                }
-            }
+            registerBgContinuedUploadImagesTask()
         }
         #endif
     }
@@ -383,7 +325,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let errorMsg = notification.userInfo?["errorMsg"] as? String
 
         // Display error message and resume Upload Manager operation
-        let title = NSLocalizedString("settings_autoUpload", comment: "Auto Upload")
+        let title = String(localized: "settings_autoUpload", comment: "Auto Upload")
         let keyWindows = UIApplication.shared.connectedScenes
             .filter({$0.session.role == .windowApplication})
             .filter({$0.activationState == .foregroundActive})
@@ -423,52 +365,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
-    // Function moved to AppDelegate and called by notification center on main thread
-    // because calling it on the main thread in the UploadManager crashes.
-    func deleteAssets(associatedToUploads uploadURIs: [String], _ uploadLocalIDs: [String]) {
-        // Remember which uploads are concerned to avoid duplicate deletions
-        var uploadIDs = [NSManagedObjectID]()
-        Task { @UploadManagerActor in
-            uploadURIs.forEach { uploadURIstr in
-                if let objectURI = URL(string: uploadURIstr),
-                   let uploadID = UploadManager.shared.uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) {
-                    uploadIDs.append(uploadID)
-                }
-            }
-        }
-        
-        // Retrieve assets
-        let assetsToDelete = PHAsset.fetchAssets(withLocalIdentifiers: uploadLocalIDs, options: nil)
-        
-        // Do not suggest to delete assets when there is none but delete upload requests if any left
-        if assetsToDelete.count == 0 {
-            let myUploadIDs = uploadIDs
-            Task { @UploadManagerActor in
-                // Delete upload requests w/o reporting potential error
-                try? UploadProvider().deleteUploads(withID: myUploadIDs, inContext: UploadManager.shared.uploadBckgContext)
-            }
-            return
-        }
-        
-        // Delete images from the library (can't use an async function here)
-        PHPhotoLibrary.shared().performChanges {
-            PHAssetChangeRequest.deleteAssets(assetsToDelete as (any NSFastEnumeration))
-        }
-        completionHandler: { success, error in
-            let myUploadIDs = uploadIDs
-            Task { @UploadManagerActor in
-                if success {
-                    // Delete upload requests w/o reporting potential error
-                    try? UploadProvider().deleteUploads(withID: myUploadIDs, inContext: UploadManager.shared.uploadBckgContext)
-                } else {
-                    UploadManager.shared.disableDeleteAfterUpload(myUploadIDs)
-                }
-            }
-        }
-    }
-    
-    
-    // MARK: - Intents (before iOS 16)
+    // MARK: - Intents (before iOS 16.4)
     func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
         switch intent {
         case is AutoUploadIntent:
@@ -564,7 +461,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Get a fresh context
         let context = LAContext()
         context.localizedFallbackTitle = ""
-        context.localizedReason = NSLocalizedString("settings_appLockEnter", comment: "Enter Passcode")
+        context.localizedReason = Localized.enterPasscode
 
         // First check if we have the needed hardware support
         var error: NSError?
@@ -572,8 +469,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if context.canEvaluatePolicy(policy, error: &error) {
             // Exploit TouchID or FaceID
             self.isAuthenticatingWithBiometrics = true
-            let reason = NSLocalizedString("settings_biometricsReason", comment: "Access your Piwigo albums")
-            context.evaluatePolicy(policy, localizedReason: reason ) { success, error in
+            context.evaluatePolicy(policy, localizedReason: Localized.biometricsReason) { success, error in
                 // Biometric authentication completed
                 self.isAuthenticatingWithBiometrics = false
                 // Did user authenticate successfully?
@@ -689,7 +585,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     
     // MARK: - Album Navigator
-    func loadNavigation(in window: UIWindow?, keepLoginView: Bool = false) {
+    func loadNavigation(in window: UIWindow?) {
         guard let window = window else { return }
         
         // Display default album
@@ -700,12 +596,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window.rootViewController = AlbumNavigationController(rootViewController: albumVC)
         UIView.transition(with: window, duration: 0.3,
                           options: .transitionCrossDissolve) { }
-            completion: { [self] success in
-                if success, keepLoginView == false {
-                    self._loginVC = nil
+        completion: { [self] success in
+            if success {
+                // Release memory
+                self._loginVC = nil
+                
+                // Present album selected with the share extension?
+                guard let sceneDelegate = window.windowScene?.delegate as? SceneDelegate,
+                      sceneDelegate.savedUrlContexts.isEmpty == false
+                else { return }
+                for context in sceneDelegate.savedUrlContexts {
+                    sceneDelegate.handleUrlContext(context.url)
                 }
             }
-
+        }
+        
         // Resume upload operations in background queue
         // and update badge, upload button of album navigator
         Task(priority: .utility) { @UploadManagerActor in
@@ -749,7 +654,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let categoryIdStr = String(categoryId)
 
         // Get current list of recent albums
-        var recentAlbumsStr = AlbumVars.shared.recentCategories.components(separatedBy: ",").compactMap({$0})
+        var recentAlbumsStr = CacheVars.shared.recentCategories.components(separatedBy: ",").compactMap({$0})
         
         // Add or put back album ID to beginning of list
         if recentAlbumsStr.contains(categoryIdStr) {
@@ -760,8 +665,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // We will present 3 - 10 albums (5 by default), but because some recent albums
         // may not be suggested or other may be deleted, we store more than 10, say 20.
         let nberExtraCats: Int = max(0, recentAlbumsStr.count - 20)
-        AlbumVars.shared.recentCategories = recentAlbumsStr.dropLast(nberExtraCats).joined(separator: ",")
-        debugPrint("••> Added album \(categoryId); Recent albums: \(AlbumVars.shared.recentCategories) (max: \(AlbumVars.shared.maxNberRecentCategories))")
+        CacheVars.shared.recentCategories = recentAlbumsStr.dropLast(nberExtraCats).joined(separator: ",")
+        debugPrint("••> Added album \(categoryId); Recent albums: \(CacheVars.shared.recentCategories) (max: \(CacheVars.shared.maxNberRecentCategories))")
     }
 
     @objc func removeRecentAlbumWithAlbumId(_ notification: Notification) {
@@ -775,7 +680,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let categoryIdStr = String(categoryId)
 
         // Get current list of recent albums
-        var recentAlbumsStr = AlbumVars.shared.recentCategories.components(separatedBy: ",").compactMap({$0})
+        var recentAlbumsStr = CacheVars.shared.recentCategories.components(separatedBy: ",").compactMap({$0})
 
         // Remove album ID from list if necessary
         if recentAlbumsStr.contains(categoryIdStr) {
@@ -788,102 +693,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         // Update list
-        AlbumVars.shared.recentCategories = recentAlbumsStr.joined(separator: ",")
-        debugPrint("••> Removed album \(categoryIdStr); Recent albums: \(AlbumVars.shared.recentCategories) (max: \(AlbumVars.shared.maxNberRecentCategories))")
-    }
-
-
-    // MARK: - Light and Dark Modes
-    private func initColorPalette() {
-        // Color palette depends on system settings
-        AppVars.shared.isSystemDarkModeActive = (UIScreen.main.traitCollection.userInterfaceStyle == .dark)
-        debugPrint("••> iOS mode: \(AppVars.shared.isSystemDarkModeActive ? "Dark" : "Light"), App mode: \(AppVars.shared.isDarkPaletteModeActive ? "Dark" : "Light"), app: \(AppVars.shared.isDarkPaletteActive ? "Dark" : "Light")")
-
-        // Apply color palette
-        screenBrightnessChanged()
-    }
-
-    // Called when the screen brightness has changed, when user changes settings
-    // and by traitCollectionDidChange() when the system switches between Light and Dark modes
-    @objc func screenBrightnessChanged() {
-        if AppVars.shared.isLightPaletteModeActive
-        {
-            if !AppVars.shared.isDarkPaletteActive {
-                // Already in light mode but make sure that images stays in appropriate mode
-                NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
-                return;
-            } else {
-                // "Always Light Mode" selected
-                AppVars.shared.isDarkPaletteActive = false
-            }
-        }
-        else if AppVars.shared.isDarkPaletteModeActive
-        {
-            if AppVars.shared.isDarkPaletteActive {
-                // Already showing dark palette but make sure that images stays in appropriate mode
-                NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
-                return;
-            } else {
-                // "Always Dark Mode" selected or iOS Dark Mode active => Dark palette
-                AppVars.shared.isDarkPaletteActive = true
-            }
-        }
-        else if AppVars.shared.switchPaletteAutomatically
-        {
-            // Dynamic palette mode chosen
-            if AppVars.shared.isSystemDarkModeActive {
-                // System-wide dark mode active
-                if AppVars.shared.isDarkPaletteActive {
-                    // Keep dark palette but make sure that images stays in appropriate mode
-                    NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
-                    return;
-                } else {
-                    // Switch to dark mode
-                    AppVars.shared.isDarkPaletteActive = true
-                }
-            } else {
-                // System-wide light mode active
-                if AppVars.shared.isDarkPaletteActive {
-                    // Switch to light mode
-                    AppVars.shared.isDarkPaletteActive = false
-                } else {
-                    // Keep light palette but make sure that images stays in appropriate mode
-                    NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
-                    return;
-                }
-            }
-        } else {
-            // Return to either static Light or Dark mode
-            AppVars.shared.isLightPaletteModeActive = !AppVars.shared.isSystemDarkModeActive;
-            AppVars.shared.isDarkPaletteModeActive = AppVars.shared.isSystemDarkModeActive;
-            AppVars.shared.isDarkPaletteActive = AppVars.shared.isSystemDarkModeActive;
-        }
-        
-        // Tint colour
-        UIView.appearance().tintColor = PwgColor.tintColor
-        
-        // Activity indicator
-        UIActivityIndicatorView.appearance().color = PwgColor.orange
-        
-        // Tab bars
-        UITabBar.appearance().barTintColor = PwgColor.background
-
-        // Styles
-        if AppVars.shared.isDarkPaletteActive
-        {
-            UITabBar.appearance().barStyle = .black
-            UIToolbar.appearance().barStyle = .black
-            UINavigationBar.appearance().barStyle = .black
-        }
-        else {
-            UITabBar.appearance().barStyle = .default
-            UIToolbar.appearance().barStyle = .default
-            UINavigationBar.appearance().barStyle = .default
-        }
-
-        // Notify palette change to views
-        NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
-//        debugPrint("••> App changed to \(AppVars.shared.isDarkPaletteActive ? "dark" : "light") mode");
+        CacheVars.shared.recentCategories = recentAlbumsStr.joined(separator: ",")
+        debugPrint("••> Removed album \(categoryIdStr); Recent albums: \(CacheVars.shared.recentCategories) (max: \(CacheVars.shared.maxNberRecentCategories))")
     }
 }
 
@@ -898,8 +709,8 @@ extension AppDelegate: AppLockDelegate {
         if let rootVC = self.window?.rootViewController,
             let child = rootVC.children.first, child is LoginViewController {
             // Look for credentials if server address provided
-            let username = NetworkVars.shared.username
-            let service = NetworkVars.shared.serverPath
+            let username = ServerVars.shared.username
+            let service = ServerVars.shared.serverPath
             var password = ""
 
             // Look for paswword in Keychain if server address and username are provided

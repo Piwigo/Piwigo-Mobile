@@ -8,7 +8,8 @@
 
 import CoreData
 import Foundation
-import piwigoKit
+import PwgKit
+import PwgCacheKit
 
 @MainActor
 class AlbumViewData: NSObject
@@ -32,8 +33,8 @@ class AlbumViewData: NSObject
     private lazy var albumPredicate: NSPredicate = {
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "parentId == $catID"))
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
         return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
     }()
     
@@ -59,9 +60,9 @@ class AlbumViewData: NSObject
     // MARK: - Images
     private lazy var imagePredicate: NSPredicate = {
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "server.path == %@", ServerVars.shared.serverPath))
         andPredicates.append(NSPredicate(format: "ANY albums.pwgID == $catID"))
-        andPredicates.append(NSPredicate(format: "ANY albums.user.username == %@", NetworkVars.shared.user))
+        andPredicates.append(NSPredicate(format: "ANY albums.user.username == %@", ServerVars.shared.user))
         return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
     }()
 

@@ -10,7 +10,10 @@
 
 import UIKit
 import CoreData
-import piwigoKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
+import PwgUIKit
 
 protocol TagsViewControllerDelegate: NSObjectProtocol {
     func didSelectTags(_ selectedTags: Set<Tag>)
@@ -39,7 +42,7 @@ class TagsViewController: UITableViewController {
     
     // MARK: - Core Data Source
     lazy var tagPredicates: [NSPredicate] = {
-        let andPredicates = [NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath)]
+        let andPredicates = [NSPredicate(format: "server.path == %@", ServerVars.shared.serverPath)]
         return andPredicates
     }()
     
@@ -131,7 +134,7 @@ class TagsViewController: UITableViewController {
         }
                 
         // Title
-        title = NSLocalizedString("tags", comment: "Tags")
+        title = String(localized: "tags", comment: "Tags")
         
         // Add button for Admins
         if user.hasAdminRights {
@@ -160,7 +163,7 @@ class TagsViewController: UITableViewController {
         
         // Table view
         tagsTableView?.separatorColor = PwgColor.separator
-        tagsTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        tagsTableView?.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         tagsTableView?.reloadData()
     }
     
@@ -175,26 +178,28 @@ class TagsViewController: UITableViewController {
         super.viewDidAppear(animated)
         
         // Show HUD during the fetch
-        self.navigationController?.showHUD(
-            withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-            detail: NSLocalizedString("tags", comment: "Tags"), minWidth: 200)
+        self.navigationController?.showHUD(withTitle: Localized.loading,
+            detail: String(localized: "tags", comment: "Tags"), minWidth: 200)
         
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
         Task.detached {
-            do {
+            do throws(PwgKitError) {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
-                                                          lastConnected: self.user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID,
+                                                        lastConnected: self.user.lastUsed)
                 // Fetch tag data
-                try await TagProvider().fetchTags(asAdmin: self.user.hasAdminRights)
+                let tagData = try await JSONManager.shared.fetchTags(asAdmin: self.user.hasAdminRights)
+                
+                // Update tag data in cache
+                try await TagProvider().importTags(from: tagData, asAdmin: self.user.hasAdminRights)
                 
                 // Close HUD
                 await MainActor.run { [self] in
                     self.navigationController?.hideHUD { }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run { [self] in
                     // Session logout required?
                     if error.requiresLogout {
@@ -268,9 +273,9 @@ class TagsViewController: UITableViewController {
     // MARK: -- Headers
     private func getContentOfHeader(inSection section: Int) -> String {
         if section == 0 {
-            return NSLocalizedString("tagsHeader_selected", comment: "Selected")
+            return String(localized: "tagsHeader_selected", comment: "Selected")
         } else {
-            return NSLocalizedString("tagsHeader_notSelected", comment: "Not Selected")
+            return String(localized: "tagsHeader_notSelected", comment: "Not Selected")
         }
     }
     

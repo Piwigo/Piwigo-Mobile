@@ -1,6 +1,6 @@
 //
 //  NSAttributedString+AppTools.swift
-//  piwigoKit
+//  PwgKit
 //
 //  Created by Eddy Lelièvre-Berna on 13/12/2025.
 //  Copyright © 2025 Piwigo.org. All rights reserved.
@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import PwgUIKit
 
 extension NSAttributedString {
     

@@ -1,0 +1,104 @@
+//
+//  UploadManager.swift
+//  PwgUploadKit
+//
+//  Created by Eddy Lelièvre-Berna on 22/05/2020.
+//  Copyright © 2020 Piwigo.org. All rights reserved.
+//
+// See https://academy.realm.io/posts/gwendolyn-weston-ios-background-networking/
+
+import os
+import Foundation
+import CoreData
+import PwgKit
+import PwgCacheKit
+
+@UploadManagerActor
+public final class UploadManager {
+    
+    // Logs networking activities
+    /// sudo log collect --device --start '2025-01-11 15:00:00' --output piwigo.logarchive
+    static let logger = PwgLogger(subsystem: "org.piwigo.uploadKit", category: String(describing: UploadManager.self))
+    
+    // Singleton
+    public static let shared = UploadManager()
+        
+    // Extensions of image files which can be converted
+    let acceptedImageExtensions: [String] = {
+        return acceptedImageTypes.flatMap({$0.tags[.filenameExtension] ?? []})
+    }()
+    
+    // Extensions of movie files which can be converted
+    let acceptedMovieExtensions: [String] = {
+        return acceptedMovieTypes.flatMap({$0.tags[.filenameExtension] ?? []})
+    }()
+    
+    // Upload counters kept in memory during upload
+    // for updating progress bars and managing tasks
+    var transferCounters = [TransferCounter]()
+
+    // Guards against presenting the system Photo Library deletion prompt more than
+    // once at a time: the deletion flow is asynchronous and waits for the user to
+    // confirm, while the upload requests marking the assets as deletable are only
+    // removed once it completes (see deleteAssets(associatedToUploads:_:)).
+    var isDeletingAssets = false
+    
+    private init() {
+        // Disable auto-upload option
+        NotificationCenter.default.addObserver(forName: Notification.Name.pwgDisableAutoUpload, object: nil, queue: nil) { [weak self] _ in
+            Task(priority: .utility) { @UploadManagerActor in
+                await self?.disableAutoUpload(inBckgTask: false)
+            }
+        }
+    }
+    
+    deinit {
+        // Unregister all observers
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    
+    // MARK: - CoreData Context
+    public lazy var uploadBckgContext: NSManagedObjectContext = {
+        return DataController.shared.newTaskContext()
+    }()
+    
+    
+    // MARK: - CoreData Utilities
+    public func importUploads(from uploadRequest: [UploadProperties]) async throws -> [NSManagedObjectID] {
+        // Create upload requests
+        let uploadIDs = try await UploadProvider().importUploads(from: uploadRequest, inContext: uploadBckgContext)
+        
+        // Store number, update badge and default album view button (even in Low Power mode)
+        self.updateNberOfUploadsToComplete()
+        
+        return uploadIDs
+    }
+    
+    // Number of upload requests prepared to being prepared
+    var nberOfUploadsInPreparation: Int {
+        let states: [pwgUploadState] = [.prepared, .preparing]
+        let (inPreparation, _) = UploadProvider().getIDsOfPendingUploads(onlyInStates: states, inContext: self.uploadBckgContext)
+        return inPreparation.count
+    }
+    
+    // Number of uploads in transfer
+    var nberOfUploadsInTransfer: Int {
+        let states: [pwgUploadState] = [.uploading, .uploaded]
+        let (inTransfer, _) = UploadProvider().getIDsOfPendingUploads(onlyInStates: states, inContext: self.uploadBckgContext)
+        return inTransfer.count
+    }
+    
+    /// Number of pending upload requests
+    public func updateNberOfUploadsToComplete() {
+        // Get number of uploads to complete
+        UploadVars.shared.nberOfUploadsToComplete = UploadProvider().getCountOfPendingUploads(inContext: self.uploadBckgContext)
+        
+        // Store number, update badge and default album view button
+        DispatchQueue.main.async {
+            // Update app badge and button of root album (or default album)
+            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : UploadVars.shared.nberOfUploadsToComplete]
+            NotificationCenter.default.post(name: .pwgUpdateNberOfUploadsToComplete, object: nil, userInfo: uploadInfo)
+        }
+    }
+}

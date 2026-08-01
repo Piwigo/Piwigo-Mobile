@@ -7,7 +7,10 @@
 //
 
 import MessageUI
-import piwigoKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
+import PwgUIKit
 
 extension SettingsViewController: UITableViewDelegate
 {
@@ -18,35 +21,35 @@ extension SettingsViewController: UITableViewDelegate
         switch activeSection(section) {
         case .server:
             title = String(format: "%@ %@",
-                           NSLocalizedString("settingsHeader_server", comment: "Piwigo Server"),
-                           NetworkVars.shared.pwgVersion)
-            if (NetworkVars.shared.serverProtocol == "http://") {
+                           String(localized: "settingsHeader_server", comment: "Piwigo Server"),
+                           ServerVars.shared.pwgVersion)
+            if (ServerVars.shared.serverProtocol == "http://") {
                 title += "\n"
-                text = NSLocalizedString("settingsHeader_notSecure", comment: "Website Not Secure!")
+                text = String(localized: "settingsHeader_notSecure", comment: "Website Not Secure!")
             }
-            if NetworkVars.shared.pwgVersion.compare(pwgRecentVersion, options: .numeric) == .orderedAscending {
+            if ServerVars.shared.pwgVersion.compare(pwgRecentVersion, options: .numeric) == .orderedAscending {
                 if !title.contains("\n") { title += "\n" }
                 if !text.isEmpty { text += " — " }
-                text += NSLocalizedString("serverVersionOld_title", comment: "Server Update Available")
+                text += String(localized: "serverVersionOld_title", comment: "Server Update Available")
             }
         case .albums:
-            title = String(localized: "tabBar_albums", bundle: .piwigoKit, comment: "Albums")
+            title = Localized.tabBar_albums
         case .images:
-            title = NSLocalizedString("severalImages", comment: "Images")
+            title = String(localized: "severalImages", comment: "Photos")
         case .videos:
-            title = NSLocalizedString("severalVideos", comment: "Videos")
+            title = String(localized: "severalVideos", comment: "Videos")
         case .uploads:
-            title = NSLocalizedString("settingsHeader_upload", comment: "Default Upload Settings")
+            title = String(localized: "settingsHeader_upload", comment: "Default Upload Settings")
         case .appearance:
-            title = NSLocalizedString("settingsHeader_appearance", comment: "Appearance")
+            title = String(localized: "settingsHeader_appearance", comment: "Appearance")
         case .privacy:
-            title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
+            title = Localized.privacy
         case .cache:
-            title = NSLocalizedString("settingsHeader_cache", comment: "Cache Settings")
+            title = String(localized: "settingsHeader_cache", comment: "Cache Settings")
         case .about:
-            title = NSLocalizedString("settingsHeader_about", comment: "Information")
+            title = String(localized: "settingsHeader_about", comment: "Information")
         case .troubleshoot:
-            title = NSLocalizedString("settingsHeader_troubleshoot", comment: "Troubleshooting")
+            title = String(localized: "settingsHeader_troubleshoot", comment: "Troubleshooting")
         case .logout, .clear:
             fallthrough
         default:
@@ -182,16 +185,16 @@ extension SettingsViewController: UITableViewDelegate
         var footer = ""
         switch activeSection(section) {
         case .logout:
-            if NetworkVars.shared.serverFileTypes.isEmpty == false {
+            if ServerVars.shared.serverFileTypes.isEmpty == false {
                 if #available(iOS 16.0, *) {
-                    footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(NetworkVars.shared.serverFileTypes.replacing(",", with: ", "))."
+                    footer = "\(String(localized: "settingsFooter_formats", comment: "The server accepts the following file formats")): \(ServerVars.shared.serverFileTypes.replacing(",", with: ", "))."
                 } else {
                     // Fallback on earlier versions
-                    footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(NetworkVars.shared.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
+                    footer = "\(String(localized: "settingsFooter_formats", comment: "The server accepts the following file formats")): \(ServerVars.shared.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
                 }
             }
         case .about:
-            footer = NetworkVars.shared.pwgStatistics
+            footer = ServerVars.shared.pwgStatistics
         default:
             footer = ""
         }
@@ -390,7 +393,7 @@ extension SettingsViewController: UITableViewDelegate
                 // Present list of actions
                 let alert = getClearCacheAlert()
                 alert.view.tintColor = PwgColor.tintColor
-                alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+                alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
                 alert.popoverPresentationController?.sourceView = settingsTableView
                 alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
                 alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero
@@ -406,7 +409,7 @@ extension SettingsViewController: UITableViewDelegate
         case .about /* About — Informations */:
             switch indexPath.row {
             case 0 /* Open piwigo.org webpage */:
-                if let url = URL(string: NSLocalizedString("settings_pwgURL", comment: "https://piwigo.org")) {
+                if let url = URL(string: String(localized: "settings_pwgURL", comment: "https://piwigo.org")) {
                     UIApplication.shared.open(url)
                 }
             case 1 /* Open Piwigo App Store page for rating */:
@@ -446,7 +449,7 @@ extension SettingsViewController: UITableViewDelegate
                 else { preconditionFailure("Could not load TroubleshootingViewController") }
                 navigationController?.pushViewController(errorLogsVC, animated: true)
             case 1 /* Open Piwigo support forum webpage with default browser */:
-                if let url = URL(string: NSLocalizedString("settings_pwgForumURL", comment: "http://piwigo.org/forum")) {
+                if let url = URL(string: String(localized: "settings_pwgForumURL", comment: "http://piwigo.org/forum")) {
                     UIApplication.shared.open(url)
                 }
             case 2 /* Prepare draft email */:

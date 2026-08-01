@@ -9,12 +9,12 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgUIKit
 
 class AboutViewController: UIViewController, UITextViewDelegate {
     
     @IBOutlet private weak var piwigoLogo: UIImageView!
-    @IBOutlet private weak var authorsLabel: UILabel!
     @IBOutlet private weak var versionLabel: UILabel!
     @IBOutlet private weak var textView: UITextView!
     private var fixTextPositionAfterLoadingViewOnPad: Bool!
@@ -25,7 +25,7 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         super.viewDidLoad()
 
         // Title
-        title = NSLocalizedString("settings_acknowledgements", comment: "Acknowledgements")
+        title = String(localized: "settings_acknowledgements", comment: "Acknowledgements")
     }
 
     @MainActor
@@ -34,13 +34,12 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         view.backgroundColor = PwgColor.background
 
         // Change text colour according to palette colour
-        piwigoLogo?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        piwigoLogo?.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
 
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
 
         // Text color depdending on background color
-        authorsLabel.textColor = PwgColor.text
         versionLabel.textColor = PwgColor.text
         textView.textColor = PwgColor.text
         textView.backgroundColor = PwgColor.background
@@ -50,7 +49,6 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         super.viewWillAppear(animated)
 
         // Piwigo authors and app version
-        authorsLabel.text = SettingsUtilities.getAuthors(forView: view)
         versionLabel.text = SettingsUtilities.getAppVersion()
 
         // Thanks and licenses
@@ -66,17 +64,7 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
-    
-    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
         
-        // Update Piwigo authors label
-        coordinator.animate(alongsideTransition: { [self] _ in
-            // Piwigo authors
-            self.authorsLabel.text = SettingsUtilities.getAuthors(forView: self.view)
-        }, completion: nil)
-    }
-    
     override func viewDidLayoutSubviews() {
         // Scroll text to where it is expected to be after loading view
         if (fixTextPositionAfterLoadingViewOnPad) {

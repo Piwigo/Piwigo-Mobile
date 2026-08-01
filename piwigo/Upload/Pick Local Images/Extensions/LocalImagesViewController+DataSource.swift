@@ -8,7 +8,8 @@
 
 import Photos
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgCacheKit
 
 // MARK: UICollectionViewDataSource Methods
 extension LocalImagesViewController: UICollectionViewDataSource
@@ -137,15 +138,6 @@ extension LocalImagesViewController: UICollectionViewDataSource
         // Get upload state from cell data
         let uploadState = getUploadStateOfImage(at: index, for: cell)
         cell.update(selected: selectedImages[index] != nil, state: uploadState)
-
-        // Add pan gesture recognition
-        let imageSeriesRocognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))
-        imageSeriesRocognizer.minimumNumberOfTouches = 1
-        imageSeriesRocognizer.maximumNumberOfTouches = 1
-        imageSeriesRocognizer.cancelsTouchesInView = false
-        imageSeriesRocognizer.delegate = self
-        cell.addGestureRecognizer(imageSeriesRocognizer)
-        cell.isUserInteractionEnabled = true
 
         return cell
     }

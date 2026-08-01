@@ -6,7 +6,8 @@
 //  Copyright © 2024 Piwigo.org. All rights reserved.
 //
 
-import piwigoKit
+import PwgKit
+import PwgCacheKit
 
 // MARK: - LocalAlbumsSelectorDelegate Methods
 extension AutoUploadViewController: LocalAlbumsSelectorDelegate {

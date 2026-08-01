@@ -8,7 +8,10 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
+import PwgUIKit
 
 class AlbumCollectionViewCell: UICollectionViewCell {
     
@@ -35,10 +38,10 @@ class AlbumCollectionViewCell: UICollectionViewCell {
 
         // If requested, display recent icon when images have been uploaded recently
         let timeSinceLastUpload = Date.timeIntervalSinceReferenceDate - (albumData?.dateLast ?? TimeInterval(-3187296000))
-        var indexOfPeriod: Int = CacheVars.shared.recentPeriodIndex
-        indexOfPeriod = min(indexOfPeriod, CacheVars.shared.recentPeriodList.count - 1)
+        var indexOfPeriod: Int = ServerVars.shared.recentPeriodIndex
+        indexOfPeriod = min(indexOfPeriod, ServerVars.shared.recentPeriodList.count - 1)
         indexOfPeriod = max(0, indexOfPeriod)
-        let periodInDays: Int = CacheVars.shared.recentPeriodList[indexOfPeriod]
+        let periodInDays: Int = ServerVars.shared.recentPeriodList[indexOfPeriod]
         let isRecent = timeSinceLastUpload < TimeInterval(24*3600*periodInDays)
         self.recentlyModified.isHidden = !isRecent
 
@@ -48,7 +51,7 @@ class AlbumCollectionViewCell: UICollectionViewCell {
             // Set representative (case where images were uploaded recently)
             albumData?.thumbnailId = firstImage.pwgID
             let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-            albumData?.thumbnailUrl = ImageUtilities.getPiwigoURL(firstImage, ofMinSize: thumnailSize) as NSURL?
+            albumData?.thumbnailUrl = firstImage.url(forMaxSize: thumnailSize) as NSURL?
         }
         
         // Retrieve image from cache or download it
@@ -60,21 +63,19 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         Task {
             let expectedURL = imageURL
             await ImageDownloader.shared.getImage(withID: albumData?.thumbnailId, ofSize: thumbSize, type: .album,
-                                            atURL: imageURL, fromServer: albumData?.user?.server?.uuid) { [weak self] cachedImageURL in
-                // Guard against cell reuse
-                guard let self = self, self.imageURL == expectedURL else { return }
-                
+                                            atURL: imageURL, fromServer: albumData?.user?.server?.uuid) { [weak self = self] cachedImageURL in
                 // Downsample image in cache
                 let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .album)
                 
-                // Set album thumbnail
-                DispatchQueue.main.async { [self] in
+                // Guard against cell reuse and set album thumbnail
+                Task { @MainActor in
+                    guard let self, self.imageURL == expectedURL else { return }
                     self.albumThumbnail.image = cachedImage
                 }
-            } failure: { [weak self] _ in
+            } failure: { [weak self = self] _ in
                 // Set album thumbnail
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self else { return }
+                Task { @MainActor in
+                    guard let self else { return }
                     self.albumThumbnail.image = pwgImageType.album.placeHolder
                 }
             }
@@ -96,37 +97,33 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         // Constants
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = NumberFormatter.Style.decimal
-        let singleImage = String(localized: "singleImageCount", bundle: .piwigoKit, comment: "%@ photo")
-        let severalImages = String(localized: "severalImagesCount", bundle: .piwigoKit, comment: "%@ photos")
-        let singleSubAlbum = NSLocalizedString("singleSubAlbumCount", comment: "%@ sub-album")
-        let severalSubAlbums = NSLocalizedString("severalSubAlbumsCount", comment: "%@ sub-albums")
         // Determine string
         var text = ""
         if albumData?.nbSubAlbums ?? Int32.zero == Int32.zero {
             // There are no sub-albums
             let nberImages = numberFormatter.string(from: NSNumber(value: albumData?.nbImages ?? 0))
             text = (albumData?.nbImages ?? 0 > 1)
-                ? String.localizedStringWithFormat(severalImages, nberImages ?? "")
-                : String.localizedStringWithFormat(singleImage, nberImages ?? "")
+                ? String.localizedStringWithFormat(Localized.severalImagesCount, nberImages ?? "")
+                : String.localizedStringWithFormat(Localized.singleImageCount, nberImages ?? "")
         }
         else if albumData?.totalNbImages ?? Int64.zero == Int64.zero {
             // There are no images but sub-albums
             let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData?.nbSubAlbums ?? 0))
             text = (albumData?.nbSubAlbums ?? Int32.zero > 1)
-                ? String.localizedStringWithFormat(severalSubAlbums, nberAlbums ?? "")
-                : String.localizedStringWithFormat(singleSubAlbum, nberAlbums ?? "")
+                ? String.localizedStringWithFormat(Localized.severalSubAlbumsCount, nberAlbums ?? "")
+                : String.localizedStringWithFormat(Localized.singleSubAlbumCount, nberAlbums ?? "")
         }
         else {
             // There are images and sub-albums
             let nberImages = numberFormatter.string(from: NSNumber(value: albumData?.totalNbImages ?? 0))
             text = (albumData?.totalNbImages ?? Int64.zero > 1)
-                ? String.localizedStringWithFormat(severalImages, nberImages ?? "")
-                : String.localizedStringWithFormat(singleImage, nberImages ?? "")
+                ? String.localizedStringWithFormat(Localized.severalImagesCount, nberImages ?? "")
+                : String.localizedStringWithFormat(Localized.singleImageCount, nberImages ?? "")
             text += ", "
             let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData?.nbSubAlbums ?? 0))
             text += (albumData?.nbSubAlbums ?? Int32.zero > 1)
-                ? String.localizedStringWithFormat(severalSubAlbums, nberAlbums ?? "")
-                : String.localizedStringWithFormat(singleSubAlbum, nberAlbums ?? "")
+                ? String.localizedStringWithFormat(Localized.severalSubAlbumsCount, nberAlbums ?? "")
+                : String.localizedStringWithFormat(Localized.singleSubAlbumCount, nberAlbums ?? "")
         }
         return text
     }
@@ -141,7 +138,7 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         
         // Reset cell
         self.imageURL = nil
-        self.albumName.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
+        self.albumName.text = Localized.loading
         self.numberOfImages.text = ""
         self.recentlyModified.isHidden = true
         self.albumThumbnail.image = pwgImageType.album.placeHolder

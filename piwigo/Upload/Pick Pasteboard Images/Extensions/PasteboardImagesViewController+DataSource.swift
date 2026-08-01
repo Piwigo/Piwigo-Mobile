@@ -9,7 +9,7 @@
 import MobileCoreServices
 import UIKit
 import UniformTypeIdentifiers
-import piwigoKit
+import PwgKit
 
 // MARK: UICollectionViewDataSource Methods
 extension PasteboardImagesViewController: UICollectionViewDataSource
@@ -64,8 +64,8 @@ extension PasteboardImagesViewController: UICollectionViewDataSource
             return LocalImageCollectionViewCell()
         }
         
-        // Configure cell with image in pasteboard or stored in Uploads directory
-        // (the content of the pasteboard may not last forever)
+        // Configure cell with the thumbnail prepared in the background
+        // from the pasteboard data stored in the Uploads directory
         let identifier = pbObjects[indexPath.item].identifier
 
         // Configure cell
@@ -73,15 +73,6 @@ extension PasteboardImagesViewController: UICollectionViewDataSource
         cell.configure(with: image, identifier: identifier)
         cell.md5sum = md5sum
         
-        // Add pan gesture recognition
-        let imageSeriesRocognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))
-        imageSeriesRocognizer.minimumNumberOfTouches = 1
-        imageSeriesRocognizer.maximumNumberOfTouches = 1
-        imageSeriesRocognizer.cancelsTouchesInView = false
-        imageSeriesRocognizer.delegate = self
-        cell.addGestureRecognizer(imageSeriesRocognizer)
-        cell.isUserInteractionEnabled = true
-
         // Cell state
         let uploadState = getUploadStateOfImage(at: indexPath.item, for: cell)
         cell.update(selected: selectedImages[indexPath.item] != nil, state: uploadState)
@@ -90,20 +81,14 @@ extension PasteboardImagesViewController: UICollectionViewDataSource
     }
 
     func getImageAndMd5sumOfPbObject(atIndex index: Int) -> (UIImage, String) {
-        var image: UIImage = pwgImageType.image.placeHolder
-        var md5sum = ""
-        if [.stored, .ready].contains(pbObjects[index].state) {
-            image = pbObjects[index].image
-            md5sum = pbObjects[index].md5Sum
+        // Returns the thumbnail and MD5 checksum prepared in the background.
+        // Objects not stored yet get a placeholder and an empty checksum:
+        // the cell is refreshed as soon as the preparation completes.
+        let pbObject = pbObjects[index]
+        if [.stored, .ready].contains(pbObject.state) {
+            return (pbObject.image, pbObject.md5Sum)
         }
-        else {
-            if let data = UIPasteboard.general.data(forPasteboardType: UTType.image.identifier,
-                                                    inItemSet: IndexSet(integer: index))?.first {
-                image = UIImage(data: data) ?? pwgImageType.image.placeHolder
-                md5sum = data.MD5checksum
-            }
-        }
-        return (image, md5sum)
+        return (pwgImageType.image.placeHolder, "")
     }
     
     @objc func applyUploadProgress(_ notification: Notification) {

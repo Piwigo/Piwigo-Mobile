@@ -9,11 +9,13 @@
 import Foundation
 import Photos
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgCacheKit
 
 extension AlbumViewController
 {
-    // MARK: Toolbar Buttons (iOS 26+)
+    // MARK: Toolbar Buttons
+    @MainActor @available(iOS 26.0, *)
     func getUploadQueueBarButton(withTitle title: String? = nil) -> UIBarButtonItem? {
         guard let title = title
         else { return nil }
@@ -68,7 +70,7 @@ extension AlbumViewController
               nberOfUploads > 0
         else { return }
         
-        if (!NetworkVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading) ||
+        if (!ServerVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading) ||
             [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) ||
             ProcessInfo.processInfo.isLowPowerModeEnabled {
             if uploadQueueBarButton == nil {

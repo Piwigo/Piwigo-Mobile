@@ -8,12 +8,15 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgCacheKit
 
 // MARK: - UITableView - Diffable Data Source
 extension UploadQueueViewController
 {
     func configDataSource() -> DataSource {
+        guard let queueTableView else { preconditionFailure("queueTableView should be set") }
+        
         let dataSource = DataSource(tableView: queueTableView) { [self] (tableView, indexPath, objectID) -> UITableViewCell? in
             // Get data source item
             guard let upload = try? self.mainContext.existingObject(with: objectID) as? Upload

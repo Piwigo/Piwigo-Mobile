@@ -8,7 +8,9 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgCacheKit
+import PwgUIKit
 
 // MARK: Navigation Bar & Toolbar
 extension ImageViewController {
@@ -159,7 +161,7 @@ extension ImageViewController {
             }
             else {
                 // We present the toolbar only if it contains player controls or a PDF viewer
-                if imageData.isNotImage {
+                if imageData.isVideo || imageData.isPDF {
                     // Show toolbar with player controls
                     isToolbarRequired = true
                     setToolbarItems(finalToolbarItems, animated: false)

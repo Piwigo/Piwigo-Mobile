@@ -7,7 +7,9 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgAPIKit
+import PwgUIKit
 
 class LocalImagesFooterReusableView: UICollectionReusableView {
 
@@ -22,15 +24,15 @@ class LocalImagesFooterReusableView: UICollectionReusableView {
         // Number of images
         if nberOfImages == 0 {
             // Display "No images"
-            nberOfImagesLabel.text = NSLocalizedString("noImages", comment: "No Images")
+            nberOfImagesLabel.text = String(localized: "noImages", comment: "No Images")
         } else {
             // Display number of images…
             let numberFormatter = NumberFormatter()
             numberFormatter.numberStyle = .decimal
             let nberPhotos = (numberFormatter.string(from: NSNumber(value: nberOfImages)) ?? "0") as String
-            nberOfImagesLabel.text = nberOfImages > 1 ?
-            String(format: String(localized: "severalImagesCount", bundle: .piwigoKit, comment: "%@ photos"), nberPhotos) :
-            String(format: String(localized: "singleImageCount", bundle: .piwigoKit, comment: "%@ photo"), nberPhotos)
+            nberOfImagesLabel.text = nberOfImages > 1
+                ? String(format: Localized.severalImagesCount, nberPhotos)
+                : String(format: Localized.singleImageCount, nberPhotos)
         }
     }
 }

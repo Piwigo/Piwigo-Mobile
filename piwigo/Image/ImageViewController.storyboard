@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24412" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24765" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24405"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24743"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -152,6 +152,112 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sPj-N2-xH5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1569" y="73"/>
+        </scene>
+        <!--Gif Detail View Controller-->
+        <scene sceneID="gIF-00-new">
+            <objects>
+                <viewController storyboardIdentifier="GifDetailViewController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="gIF-01-new" customClass="GifDetailViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gIF-02-new">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" restorationIdentifier="ImageScrollView" insetsLayoutMarginsFromSafeArea="NO" minimumZoomScale="0.0" maximumZoomScale="5" translatesAutoresizingMaskIntoConstraints="NO" id="gIF-03-new">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="imageView" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gIF-04-new">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="414" id="gIF-05-new"/>
+                                            <constraint firstAttribute="height" constant="896" id="gIF-06-new"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="gIF-04-new" firstAttribute="trailing" secondItem="gIF-03-new" secondAttribute="trailing" id="gIF-07-new"/>
+                                    <constraint firstItem="gIF-04-new" firstAttribute="top" secondItem="gIF-03-new" secondAttribute="top" id="gIF-08-new"/>
+                                    <constraint firstAttribute="bottom" secondItem="gIF-04-new" secondAttribute="bottom" id="gIF-09-new"/>
+                                    <constraint firstItem="gIF-04-new" firstAttribute="leading" secondItem="gIF-03-new" secondAttribute="leading" id="gIF-10-new"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="delegate" destination="gIF-01-new" id="gIF-11-new"/>
+                                </connections>
+                            </scrollView>
+                            <visualEffectView hidden="YES" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gIF-12-new" customClass="ImageDescriptionView" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="76.666666666666686" y="696" width="240" height="88"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="gIF-13-new">
+                                    <rect key="frame" x="0.0" y="0.0" width="240" height="88"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" directionalLockEnabled="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" keyboardDismissMode="onDrag" editable="NO" textAlignment="center" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gIF-14-new">
+                                            <rect key="frame" x="0.0" y="0.0" width="240" height="88"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</string>
+                                            <color key="textColor" systemColor="labelColor"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                            <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" link="YES" address="YES" lookupSuggestion="YES"/>
+                                        </textView>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <constraints>
+                                        <constraint firstItem="gIF-14-new" firstAttribute="leading" secondItem="gIF-13-new" secondAttribute="leading" id="gIF-15-new"/>
+                                        <constraint firstItem="gIF-14-new" firstAttribute="top" secondItem="gIF-13-new" secondAttribute="top" id="gIF-16-new"/>
+                                        <constraint firstItem="gIF-14-new" firstAttribute="trailing" secondItem="gIF-13-new" secondAttribute="trailing" id="gIF-17-new"/>
+                                        <constraint firstItem="gIF-14-new" firstAttribute="bottom" secondItem="gIF-13-new" secondAttribute="bottom" id="gIF-18-new"/>
+                                    </constraints>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="88" id="gIF-19-new"/>
+                                    <constraint firstAttribute="width" constant="240" id="gIF-20-new"/>
+                                </constraints>
+                                <blurEffect style="regular"/>
+                                <connections>
+                                    <outlet property="descHeight" destination="gIF-19-new" id="gIF-21-new"/>
+                                    <outlet property="descOffset" destination="gIF-29-new" id="gIF-22-new"/>
+                                    <outlet property="descTextView" destination="gIF-14-new" id="gIF-23-new"/>
+                                    <outlet property="descWidth" destination="gIF-20-new" id="gIF-24-new"/>
+                                </connections>
+                            </visualEffectView>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gIF-25-new" customClass="PieProgressView" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="185" y="134" width="23" height="23"/>
+                                <color key="backgroundColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" notEnabled="YES"/>
+                                </accessibility>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="23" id="gIF-26-new"/>
+                                    <constraint firstAttribute="height" constant="23" id="gIF-27-new"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="gIF-28-new"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="gIF-28-new" firstAttribute="bottom" secondItem="gIF-12-new" secondAttribute="bottom" id="gIF-29-new"/>
+                            <constraint firstItem="gIF-12-new" firstAttribute="centerX" secondItem="gIF-28-new" secondAttribute="centerX" id="gIF-30-new"/>
+                            <constraint firstItem="gIF-03-new" firstAttribute="trailing" secondItem="gIF-02-new" secondAttribute="trailing" id="gIF-31-new"/>
+                            <constraint firstItem="gIF-25-new" firstAttribute="centerX" secondItem="gIF-28-new" secondAttribute="centerX" id="gIF-32-new"/>
+                            <constraint firstItem="gIF-03-new" firstAttribute="top" secondItem="gIF-02-new" secondAttribute="top" id="gIF-33-new"/>
+                            <constraint firstItem="gIF-25-new" firstAttribute="top" secondItem="gIF-28-new" secondAttribute="top" constant="16" id="gIF-34-new"/>
+                            <constraint firstItem="gIF-03-new" firstAttribute="leading" secondItem="gIF-02-new" secondAttribute="leading" id="gIF-35-new"/>
+                            <constraint firstItem="gIF-03-new" firstAttribute="bottom" secondItem="gIF-02-new" secondAttribute="bottom" id="gIF-36-new"/>
+                        </constraints>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <connections>
+                        <outlet property="descContainer" destination="gIF-12-new" id="gIF-37-new"/>
+                        <outlet property="imageView" destination="gIF-04-new" id="gIF-38-new"/>
+                        <outlet property="imageViewHeightConstraint" destination="gIF-06-new" id="gIF-39-new"/>
+                        <outlet property="imageViewWidthConstraint" destination="gIF-05-new" id="gIF-40-new"/>
+                        <outlet property="progressView" destination="gIF-25-new" id="gIF-41-new"/>
+                        <outlet property="scrollView" destination="gIF-03-new" id="gIF-42-new"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gIF-43-new" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3590" y="71"/>
         </scene>
         <!--Video Detail View Controller-->
         <scene sceneID="2wm-HV-SVE">

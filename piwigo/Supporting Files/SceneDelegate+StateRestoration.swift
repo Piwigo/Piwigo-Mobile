@@ -21,13 +21,13 @@ extension SceneDelegate {
         let stateActivity = ActivityType.album.userActivity()
         
         // Create array of sub-album IDs
-        var albumIDs = Set<Int32>()
+        var albumIDs = [Int32]()
         for viewController in navController.viewControllers {
             if let vc = viewController as? AlbumViewController {
                 // Bypass the default album
                 if vc.categoryId == defaultAlbum.categoryId { continue }
                 // Store sub-album ID
-                albumIDs.insert(vc.categoryId)
+                albumIDs.append(vc.categoryId)
             }
         }
                 
@@ -55,7 +55,7 @@ extension SceneDelegate {
         }
 
         // Should we restore sub-albums?
-        let catIDs = (userInfo["catIDs"] as? Set<Int32>) ?? Set<Int32>()
+        let catIDs = (userInfo["catIDs"] as? [Int32]) ?? [Int32]()
         guard catIDs.isEmpty == false
         else {
             // Root album displayed ► Fetch album data in the background

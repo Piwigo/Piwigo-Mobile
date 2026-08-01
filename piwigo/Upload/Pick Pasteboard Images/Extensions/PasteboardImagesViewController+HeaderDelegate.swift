@@ -7,7 +7,8 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgCacheKit
 
 // MARK: - PasteboardImagesHeaderDelegate Methods
 extension PasteboardImagesViewController: PasteboardImagesHeaderDelegate
@@ -21,6 +22,7 @@ extension PasteboardImagesViewController: PasteboardImagesHeaderDelegate
                 // Images in the upload queue cannot be selected
                 if indexedUploadsInQueue[index] == nil {
                     selectedImages[index] = UploadProperties(localIdentifier: pbObjects[index].identifier,
+                                                             fileName: pbObjects[index].fileName,
                                                              category: self.categoryId)
                 }
             }

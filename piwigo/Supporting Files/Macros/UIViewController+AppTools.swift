@@ -7,13 +7,14 @@
 //
 
 import UIKit
+import PwgUIKit
 
 let kDelayPiwigoHUD = 500
 let loadingViewTag = 899
 
 extension UIViewController {
 
-    // MARK: - Top Most View Controller
+    // MARK: - View Controllers
     func topMostViewController() -> UIViewController? {
         // Look for the top most UIViewController
         var topViewController: UIViewController? = self
@@ -31,7 +32,22 @@ extension UIViewController {
         }
         return topViewController
     }
-
+    
+    func dismissToAlbumNavigationController(completion: (() -> Void)? = nil) {
+        // Walk up the presenting chain to find the AlbumViewController
+        var presenter: UIViewController? = self
+        while let current = presenter {
+            if current is AlbumNavigationController {
+                // Dismiss everything above it
+                current.presentedViewController?.dismiss(animated: false, completion: completion)
+                return
+            }
+            presenter = current.presentingViewController
+        }
+        // No AlbumViewController found
+        completion?()
+    }
+    
     
     // MARK: - PiwigoHUD
     @MainActor
@@ -82,7 +98,7 @@ extension UIViewController {
         // Retrieve the existing HUD
         if let hud = self.view.viewWithTag(pwgTagHUD) as? PiwigoHUD {
             // Show "Complete" icon and text
-            hud.update(title: NSLocalizedString("completeHUD_label", comment: "Complete"),
+            hud.update(title: String(localized: "completeHUD_label", comment: "Complete"),
                        detail: nil, inMode: .success)
         }
         completion()
@@ -126,7 +142,7 @@ extension UIViewController {
         }
         
         // Prepare actions
-        let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
+        let dismissAction = UIAlertAction(title: Localized.dismiss,
                                           style: .cancel) { _ in completion() }
 
         // Present alert
@@ -154,10 +170,10 @@ extension UIViewController {
         }
         
         // Prepare actions
-        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment:"Cancel"),
+        let cancelAction = UIAlertAction(title: Localized.cancel,
                                          style: .cancel) { _ in cancel() }
         return await withCheckedContinuation { continuation in
-            let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
+            let dismissAction = UIAlertAction(title: Localized.dismiss,
                                               style: .default) { _ in continuation.resume(returning: ()) }
             
             // Present alert
@@ -176,9 +192,9 @@ extension UIViewController {
         }
         
         // Prepare actions
-        let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
+        let dismissAction = UIAlertAction(title: Localized.dismiss,
                                           style: .cancel) { _ in dismiss() }
-        let retryAction = UIAlertAction(title: NSLocalizedString("alertRetryButton", comment:"Retry"),
+        let retryAction = UIAlertAction(title: String(localized: "alertRetryButton", comment:"Retry"),
                                         style: .default) { _ in retry() }
 
         // Present alert
@@ -196,11 +212,11 @@ extension UIViewController {
         }
         
         // Prepare actions
-        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment:"Cancel"),
+        let cancelAction = UIAlertAction(title: Localized.cancel,
                                          style: .cancel) { _ in cancel() }
-        let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
+        let dismissAction = UIAlertAction(title: Localized.dismiss,
                                           style: .default) { _ in dismiss() }
-        let retryAction = UIAlertAction(title: NSLocalizedString("alertRetryButton", comment:"Retry"),
+        let retryAction = UIAlertAction(title: String(localized: "alertRetryButton", comment:"Retry"),
                                         style: .default) { _ in retry() }
 
         // Present alert
@@ -220,7 +236,7 @@ extension UIViewController {
         
         // Present alert
         alert.view.tintColor = PwgColor.tintColor
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
         self.present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = PwgColor.tintColor

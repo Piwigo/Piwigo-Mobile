@@ -8,8 +8,10 @@
 
 import Foundation
 import UIKit
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
+import PwgUploadKit
 
 final class ClearCache
 {    
@@ -18,10 +20,10 @@ final class ClearCache
         var title = "", message = ""
         switch error {
         case .incompatiblePwgVersion:
-            title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
-            message = String.localizedStringWithFormat(PwgKitError.incompatiblePwgVersion.localizedDescription, NetworkVars.shared.pwgVersion, pwgMinVersion)
+            title = String(localized: "serverVersionNotCompatible_title", comment: "Server Incompatible")
+            message = String.localizedStringWithFormat(PwgKitError.incompatiblePwgVersion.localizedDescription, ServerVars.shared.pwgVersion, pwgMinVersion)
         default:
-            title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
+            title = String(localized: "internetErrorGeneral_title", comment: "Connection Error")
         }
         if message.isEmpty {
             viewController.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {
@@ -39,16 +41,16 @@ final class ClearCache
         cancelTasks {
             // Back to default album settings
             AlbumVars.shared.defaultCategory = 0
-            AlbumVars.shared.recentCategories = "0"
+            CacheVars.shared.recentCategories = "0"
             AlbumVars.shared.isFetchingAlbumData = Set<Int32>()
             
             // Back to default server properties
-            NetworkVars.shared.usesCommunityPluginV29 = false
-            NetworkVars.shared.usesSetCategory = false
+            ServerVars.shared.usesCommunityPluginV29 = false
+            ServerVars.shared.usesSetCategory = false
             NetworkVars.shared.usesAPIkeys = false
             
             // Back to default user properties
-            NetworkVars.shared.userStatus = pwgUserStatus.guest
+            ServerVars.shared.userStatus = pwgUserStatus.guest
             
             // Disable Auto-Uploading and clear settings
             UploadVars.shared.isAutoUploadActive = false

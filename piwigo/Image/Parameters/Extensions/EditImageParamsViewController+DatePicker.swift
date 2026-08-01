@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import piwigoKit
+import PwgKit
 
 // MARK: -  EditImageDatePickerDelegate Methods
 extension EditImageParamsViewController: EditImageDatePickerDelegate

@@ -9,7 +9,9 @@
 //
 
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgCacheKit
+import PwgUIKit
 
 protocol DefaultAlbumThumbnailSizeDelegate: NSObjectProtocol {
     func didSelectAlbumDefaultThumbnailSize(_ thumbnailSize: pwgImageSize)
@@ -30,7 +32,7 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController {
         super.viewDidLoad()
         
         // Title
-        title = String(localized: "tabBar_albums", bundle: .piwigoKit, comment: "Albums")
+        title = Localized.tabBar_albums
 
         // Table view
         tableView?.accessibilityIdentifier = "Album Thumbnail Size"
@@ -51,7 +53,7 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController {
 
         // Table view
         tableView.separatorColor = PwgColor.separator
-        tableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        tableView.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         tableView.reloadData()
     }
     
@@ -134,7 +136,7 @@ extension DefaultAlbumThumbnailSizeViewController: UITableViewDataSource {
         
         // Optimum?
         if size == optimumSize {
-            let detail = NSLocalizedString("defaultImageSize_recommended", comment: "(recommended)")
+            let detail = String(localized: "defaultImageSize_recommended", comment: "(recommended)")
             cell.configure(with: size.name, detail: detail)
         } else {
             cell.configure(with: size.name, detail: size.sizeAndScale(forScale: scale))
@@ -155,8 +157,8 @@ extension DefaultAlbumThumbnailSizeViewController: UITableViewDelegate {
     
     // MARK: - Header
     private func getContentOfHeader() -> (String, String) {
-        let title = String(format: "%@\n", NSLocalizedString("defaultAlbumThumbnailFile>414px", comment: "Albums Thumbnail File"))
-        let text = NSLocalizedString("defaultAlbumThumbnailSizeHeader", comment: "Please select an album thumbnail size")
+        let title = String(format: "%@\n", String(localized: "defaultAlbumThumbnailFile>414px", comment: "Albums Thumbnail File"))
+        let text = String(localized: "defaultAlbumThumbnailSizeHeader", comment: "Please select an album thumbnail size")
         return (title, text)
     }
     
@@ -196,12 +198,12 @@ extension DefaultAlbumThumbnailSizeViewController: UITableViewDelegate {
     
     // MARK: - Footer
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        let footer = NSLocalizedString("defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
+        let footer = String(localized: "defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
         return TableViewUtilities.heightOfFooter(withText: footer, width: tableView.frame.width)
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let footer = NSLocalizedString("defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
+        let footer = String(localized: "defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
         return TableViewUtilities.viewOfFooter(withText: footer, alignment: .center)
     }
 }

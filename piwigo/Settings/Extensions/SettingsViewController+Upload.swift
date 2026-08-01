@@ -8,8 +8,9 @@
 
 import Foundation
 import MessageUI
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgCacheKit
+import PwgUploadKit
 
 // MARK: - SelectedPrivacyDelegate Methods
 extension SettingsViewController: SelectPrivacyDelegate {
@@ -132,9 +133,9 @@ extension SettingsViewController: MofifyFilenameDelegate {
         if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
            let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
             if isRenameFileAtiveByDefault == true {
-                cell.detailLabel.text = NSLocalizedString("settings_autoUploadEnabled", comment: "On")
+                cell.detailLabel.text = String(localized: "settings_autoUploadEnabled", comment: "On")
             } else {
-                cell.detailLabel.text = NSLocalizedString("settings_autoUploadDisabled", comment: "Off")
+                cell.detailLabel.text = String(localized: "settings_autoUploadDisabled", comment: "Off")
             }
         }
     }

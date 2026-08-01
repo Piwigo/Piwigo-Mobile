@@ -11,8 +11,10 @@ import LinkPresentation
 import MobileCoreServices
 import UIKit
 import UniformTypeIdentifiers
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
+import PwgUploadKit
 
 // Warning: class must restate inherited '@unchecked Sendable' conformance
 class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable {
@@ -102,7 +104,7 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
         
         // Notify the delegate on the main thread that the processing is beginning.
         DispatchQueue.main.async { [self] in
-            let title = NSLocalizedString("downloadingPDF", comment: "Downloading PDF file")
+            let title = String(localized: "downloadingPDF", comment: "Downloading PDF file")
             self.delegate?.imageActivityItemProviderPreprocessingDidBegin(self, withTitle: title)
         }
         
@@ -113,7 +115,7 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled
             alertTitle = PwgKitError.failedToPrepareDownload.localizedDescription
-            alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadPdfFail_message", comment: "Failed to download PDF file!\n%@"), "")
+            alertMessage = String.localizedStringWithFormat(String(localized: "downloadPdfFail_message", comment: "Failed to download PDF file!\n%@"), "")
             preprocessingDidEnd()
             return placeholderItem!
         }
@@ -125,18 +127,18 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
         let sema = DispatchSemaphore(value: 0)
         Task {
             await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: .fullRes, type: .album, atURL: imageURL,
-                                                  fromServer: serverID, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
+                                                  fromServer: serverID, fileSize: imageData.fileSize) { [weak self = self] fractionCompleted in
                 // Notify the delegate on the main thread to show how it makes progress.
                 self?.updateProgressView(with: Float((0.75 * fractionCompleted)))
             }
-            completion: { [unowned self] fileURL in
+            completion: { [unowned self = self] fileURL in
                 self.cachedFileURL = fileURL
                 sema.signal()
             }
-            failure: { [unowned self] error in
+            failure: { [unowned self = self] error in
                 // Will notify the delegate on the main thread that the processing is cancelled
-                self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-                self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadPdfFail_message", comment: "Failed to download PDF file!\n%@"), error.localizedDescription)
+                self.alertTitle = String(localized: "shareFailError_title", comment: "Share Fail")
+                self.alertMessage = String.localizedStringWithFormat(String(localized: "downloadPdfFail_message", comment: "Failed to download PDF file!\n%@"), error.localizedDescription)
                 sema.signal()
             }
         }
@@ -154,8 +156,8 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
         // Check that we have the URL of the cached PDF file
         guard let cachedFileURL = cachedFileURL else {
             // Will notify the delegate on the main thread that the processing is cancelled
-            self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadPdfFail_message", comment: "Failed to download PDF file!\n%@"), "")
+            self.alertTitle = String(localized: "shareFailError_title", comment: "Share Fail")
+            self.alertMessage = String.localizedStringWithFormat(String(localized: "downloadPdfFail_message", comment: "Failed to download PDF file!\n%@"), "")
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.
@@ -183,7 +185,7 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.
-            alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+            alertTitle = String(localized: "shareFailError_title", comment: "Share Fail")
             alertMessage = String.localizedStringWithFormat("%@ (%@)", PwgKitError.cannotStripPrivateMetadata.localizedDescription, error.localizedDescription)
             preprocessingDidEnd()
             return placeholderItem!

@@ -8,7 +8,9 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
 extension SelectCategoryViewController
 {
@@ -16,7 +18,7 @@ extension SelectCategoryViewController
     @MainActor
     func moveCategory(intoCategory parentData: Album) {
         // Display HUD during the update
-        showHUD(withTitle: NSLocalizedString("moveCategoryHUD_moving", comment: "Moving Album…"))
+        showHUD(withTitle: String(localized: "moveCategoryHUD_moving", comment: "Moving Album…"))
 
         // Add category ID to list of recently used albums
         let userInfo = ["categoryId": parentData.pwgID]
@@ -24,9 +26,9 @@ extension SelectCategoryViewController
 
         // Move album
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Move album
                 try await JSONManager.shared.move(self.inputAlbum.pwgID, intoAlbumWithId: parentData.pwgID)
@@ -36,9 +38,11 @@ extension SelectCategoryViewController
 
                 // Fetch album data recursively
                 let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                try await AlbumProvider().fetchAlbums(forUserWithAdminRights: user.hasAdminRights,
-                                                      inParentWithId: pwgSmartAlbum.root.rawValue, recursively: true,
-                                                      thumbnailSize: thumnailSize)
+                let pwgData = try await JSONManager.shared.fetchAlbums(forUserWithAdminRights: user.hasAdminRights,
+                                                                       inParentWithId: pwgSmartAlbum.root.rawValue,
+                                                                       recursively: true, thumbnailSize: thumnailSize)
+                // Update cache
+                try AlbumProvider().importAlbums(pwgData, recursively: true, inParent: pwgSmartAlbum.root.rawValue)
                 
                 // Remove current album from list of album being fetched
                 AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.root.rawValue)
@@ -55,7 +59,7 @@ extension SelectCategoryViewController
                     }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run {
                     self.hideHUD { [self] in
                         self.showError(error)
@@ -72,23 +76,23 @@ extension SelectCategoryViewController
         guard let imageData = self.inputImages.first else { return }
         
         // Display HUD during the update
-        showHUD(withTitle: NSLocalizedString("categoryImageSetHUD_updating", comment:"Updating Album Thumbnail…"))
+        showHUD(withTitle: String(localized: "categoryImageSetHUD_updating", comment:"Updating Album Thumbnail…"))
         
         // Set image as representative
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
                 
                 // Set album representative
-                try await JSONManager.shared.setRepresentative(albumData, with: imageData)
+                try await JSONManager.shared.setRepresentative(ofAlbumWithID: albumData.pwgID, withImageID: imageData.pwgID)
                 
                 // Update cache and UI
                 await MainActor.run { [self] in
                     // Album thumbnail successfully changed ▶ Update catagory in cache
                     albumData.thumbnailId = imageData.pwgID
                     let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                    albumData.thumbnailUrl = ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumnailSize) as NSURL?
+                    albumData.thumbnailUrl = imageData.url(forMaxSize: thumnailSize) as NSURL?
                     
                     // Save changes
                     self.mainContext.saveIfNeeded()
@@ -101,7 +105,7 @@ extension SelectCategoryViewController
                     }
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await MainActor.run { [self] in
                     self.showError(error)
                 }

@@ -8,9 +8,11 @@
 
 import Foundation
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
 
-class ImagePreviewViewController: UIViewController
+final class ImagePreviewViewController: UIViewController
 {
     private var aspectRatio = 1.0
     private let imageView = UIImageView()
@@ -23,22 +25,8 @@ class ImagePreviewViewController: UIViewController
         let viewSize = CGSizeMake(view.bounds.size.width * scale, view.bounds.size.height * scale)
         let sizes = imageData.sizes
         aspectRatio = sizes.medium?.aspectRatio ?? sizes.thumb?.aspectRatio ?? 1.0
-        var previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
-        if imageData.isNotImage, previewSize == .fullRes {
-            if pwgImageSize.xxxxLarge.isAvailable {
-                previewSize = .xxxxLarge
-            } else if pwgImageSize.xxxLarge.isAvailable {
-                previewSize = .xxxLarge
-            } else if pwgImageSize.xxLarge.isAvailable {
-                previewSize = .xxLarge
-            } else if pwgImageSize.xLarge.isAvailable {
-                previewSize = .xLarge
-            } else if pwgImageSize.large.isAvailable {
-                previewSize = .large
-            } else {
-                previewSize = .medium
-            }
-        }
+        let defaultSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
+        let previewSize = imageData.thumbnailSize(ofMaxSize: defaultSize)
         
         // Check if we already have the high-resolution image in cache
         if let wantedImage = imageData.cachedThumbnail(ofSize: previewSize) {
@@ -51,16 +39,16 @@ class ImagePreviewViewController: UIViewController
             self.setImageView(with: imageData.cachedThumbnail(ofSize: thumbSize) ?? pwgImageType.image.placeHolder)
             
             // Download high-resolution image
-            if let imageURL = ImageUtilities.getPiwigoURL(imageData, ofMinSize: previewSize) {
+            if let imageURL = imageData.url(for: previewSize) {
                 Task {
                     await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, type: .image, atURL: imageURL,
-                                                          fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] cachedImageURL in
+                                                          fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self = self] cachedImageURL in
                         // Downsample image in the background
                         let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: viewSize, for: .image)
                         
                         // Set image
-                        DispatchQueue.main.async { [weak self] in
-                            guard let self = self else { return }
+                        Task { @MainActor in
+                            guard let self else { return }
                             self.setImageView(with: cachedImage)
                         }
                     } failure: { _ in }

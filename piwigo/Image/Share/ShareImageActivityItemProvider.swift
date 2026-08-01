@@ -13,8 +13,10 @@ import MobileCoreServices
 import Photos
 import UIKit
 import UniformTypeIdentifiers
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
+import PwgUploadKit
 
 @objc
 protocol ShareImageActivityItemProviderDelegate: NSObjectProtocol {
@@ -114,7 +116,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         
         // Notify the delegate on the main thread that the processing is beginning.
         DispatchQueue.main.async { [self] in
-            let title = NSLocalizedString("downloadingImage", comment: "Downloading Photo")
+            let title = String(localized: "downloadingImage", comment: "Downloading Photo")
             self.delegate?.imageActivityItemProviderPreprocessingDidBegin(self, withTitle: title)
         }
 
@@ -128,7 +130,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled
             alertTitle = PwgKitError.failedToPrepareDownload.localizedDescription
-            alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!\n%@"), "")
+            alertMessage = String.localizedStringWithFormat(String(localized: "downloadImageFail_message", comment: "Failed to download image!\n%@"), "")
             preprocessingDidEnd()
             return placeholderItem!
         }
@@ -140,18 +142,18 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         let sema = DispatchSemaphore(value: 0)
         Task {
             await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, type: .album, atURL: imageURL,
-                                                  fromServer: serverID, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
+                                                  fromServer: serverID, fileSize: imageData.fileSize) { [weak self = self] fractionCompleted in
                 // Notify the delegate on the main thread to show how it makes progress.
                 self?.updateProgressView(with: Float((0.75 * fractionCompleted)))
             }
-            completion: { [weak self] fileURL in
-                self?.cachedFileURL = fileURL
+            completion: { [unowned self = self] fileURL in
+                self.cachedFileURL = fileURL
                 sema.signal()
             }
-            failure: { [weak self] error in
+            failure: { [unowned self = self] error in
                 // Will notify the delegate on the main thread that the processing is cancelled
-                self?.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-                self?.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!\n%@"), error.localizedDescription)
+                self.alertTitle = String(localized: "shareFailError_title", comment: "Share Fail")
+                self.alertMessage = String.localizedStringWithFormat(String(localized: "downloadImageFail_message", comment: "Failed to download image!\n%@"), error.localizedDescription)
                 sema.signal()
             }
         }
@@ -169,8 +171,8 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         // Check that we have the URL of the cached image
         guard let cachedFileURL = cachedFileURL else {
             // Will notify the delegate on the main thread that the processing is cancelled
-            self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!\n%@"), "")
+            self.alertTitle = String(localized: "shareFailError_title", comment: "Share Fail")
+            self.alertMessage = String.localizedStringWithFormat(String(localized: "downloadImageFail_message", comment: "Failed to download image!\n%@"), "")
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.
@@ -198,7 +200,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.
-            alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+            alertTitle = String(localized: "shareFailError_title", comment: "Share Fail")
             alertMessage = String.localizedStringWithFormat("%@ (%@)", PwgKitError.cannotStripPrivateMetadata.localizedDescription, error.localizedDescription)
             preprocessingDidEnd()
             return placeholderItem!
@@ -235,7 +237,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.
-            alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+            alertTitle = String(localized: "shareFailError_title", comment: "Share Fail")
             alertMessage = String.localizedStringWithFormat("%@ (%@)", PwgKitError.cannotStripPrivateMetadata.localizedDescription, error.localizedDescription)
             preprocessingDidEnd()
             return placeholderItem!
@@ -249,7 +251,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.
-            alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+            alertTitle = String(localized: "shareFailError_title", comment: "Share Fail")
             alertMessage = PwgKitError.cannotStripPrivateMetadata.localizedDescription
             preprocessingDidEnd()
             return placeholderItem!
@@ -261,7 +263,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.
-            alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+            alertTitle = String(localized: "shareFailError_title", comment: "Share Fail")
             alertMessage = PwgKitError.cannotStripPrivateMetadata.localizedDescription
             preprocessingDidEnd()
             return placeholderItem!
@@ -301,7 +303,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.
-            alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+            alertTitle = String(localized: "shareFailError_title", comment: "Share Fail")
             alertMessage = PwgKitError.cannotStripPrivateMetadata.localizedDescription
             preprocessingDidEnd()
             return placeholderItem!
@@ -323,7 +325,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.
-            alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+            alertTitle = String(localized: "shareFailError_title", comment: "Share Fail")
             alertMessage = PwgKitError.cannotStripPrivateMetadata.localizedDescription
             preprocessingDidEnd()
             return placeholderItem!

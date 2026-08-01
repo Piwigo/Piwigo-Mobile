@@ -7,7 +7,8 @@
 //
 
 import Foundation
-import piwigoKit
+import PwgKit
+import PwgCacheKit
 
 // MARK: DefaultAlbumThumbnailSizeDelegate Methods
 extension SettingsViewController: DefaultAlbumThumbnailSizeDelegate {
@@ -78,7 +79,7 @@ extension SettingsViewController: SelectCategoryDelegate {
         if view.bounds.size.width > 375 {
             rootName = pwgSmartAlbum.root.name
         } else {
-            rootName = NSLocalizedString("categorySelection_root<375pt", comment: "Root")
+            rootName = String(localized: "categorySelection_root<375pt", comment: "Root")
         }
 
         // Root album?
@@ -91,7 +92,7 @@ extension SettingsViewController: SelectCategoryDelegate {
            album.name.isEmpty == false {
             return album.name
         } else {
-            return NSLocalizedString("categorySelection_title", comment: "Album")
+            return String(localized: "categorySelection_title", comment: "Album")
         }
     }
 }

@@ -1,0 +1,20 @@
+{
+    "stat":"ok",
+    "result":{
+        "infos": [{"name":"version","value":"16.3.0"},
+                  {"name":"nb_elements","value":"3446"},
+                  {"name":"nb_categories","value":"44"},
+                  {"name":"nb_virtual","value":"44"},
+                  {"name":"nb_physical","value":"0"},
+                  {"name":"nb_image_category","value":"3468"},
+                  {"name":"nb_tags","value":"302"},
+                  {"name":"nb_image_tag","value":"89"},
+                  {"name":"nb_users","value":"8"},
+                  {"name":"nb_groups","value":"3"},
+                  {"name":"nb_comments","value":"1"},
+                  {"name":"first_date","value":"2017-08-31 22:44:11"},
+                  {"name":"nb_unvalidated_comments", "value":"0"},
+                  {"name":"cache_size","value":4242}
+        ]
+    }
+}

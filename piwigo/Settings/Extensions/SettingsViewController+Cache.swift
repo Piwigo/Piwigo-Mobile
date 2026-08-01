@@ -8,8 +8,9 @@
 
 import Foundation
 import UIKit
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgUIKit
+import PwgUploadKit
 
 extension SettingsViewController
 {
@@ -76,10 +77,10 @@ extension SettingsViewController
     // MARK: - Return Clear Cache Alert
     @MainActor
     func getClearCacheAlert() -> UIAlertController {
-        let alert = UIAlertController(title: "", message: NSLocalizedString("settings_cacheClearMsg", comment: "Are you sure you want to clear the cache? This will make albums and images take a while to load again."), preferredStyle: .actionSheet)
-        let hudTitle = NSLocalizedString("settings_cacheClearing", comment: "Clearing Cache")
+        let alert = UIAlertController(title: "", message: String(localized: "settings_cacheClearMsg", comment: "Are you sure you want to clear the cache? This will make albums and images take a while to load again."), preferredStyle: .actionSheet)
+        let hudTitle = String(localized: "settings_cacheClearing", comment: "Clearing Cache")
         
-        var title = String(format: "%@ (%@)", NSLocalizedString("settings_database", comment: "Data"), dataCacheSize)
+        var title = String(format: "%@ (%@)", String(localized: "settings_database", comment: "Data"), dataCacheSize)
         let clearDataAction = UIAlertAction(title: title, style: .default, handler: { action in
             // Display HUD during deletion
             self.navigationController?.showHUD(withTitle: hudTitle)
@@ -97,6 +98,11 @@ extension SettingsViewController
                     // Refresh Settings cell related with data
                     self.dataCacheSize = server.getAlbumImageCount(inContext: self.mainContext)
                     
+                    // Will fetch all album data recursively when fetching the root album
+                    // so that the share extension can present the whole album tree
+                    // if user launches a refresh
+                    AlbumVars.shared.fetchAlbumDataRecursively = true
+                    
                     // Hide HUD on completion
                     self.navigationController?.hideHUD { [self] in
                         self.removeExtraScenesAndReloadRootAlbum()
@@ -106,7 +112,7 @@ extension SettingsViewController
         })
         alert.addAction(clearDataAction)
         
-        title = String(format: "%@ (%@)", NSLocalizedString("settingsHeader_thumbnails", comment: "Thumbnails"), thumbCacheSize)
+        title = String(format: "%@ (%@)", String(localized: "settingsHeader_thumbnails", comment: "Thumbnails"), thumbCacheSize)
         let clearThumbCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
             // Display HUD during deletion
             self.navigationController?.showHUD(withTitle: hudTitle)
@@ -127,7 +133,7 @@ extension SettingsViewController
         })
         alert.addAction(clearThumbCacheAction)
         
-        title = String(format: "%@ (%@)", NSLocalizedString("severalImages", comment: "Photos"), photoCacheSize)
+        title = String(format: "%@ (%@)", String(localized: "severalImages", comment: "Photos"), photoCacheSize)
         let clearPhotoCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
             // Display HUD during deletion
             self.navigationController?.showHUD(withTitle: hudTitle)
@@ -148,7 +154,7 @@ extension SettingsViewController
         })
         alert.addAction(clearPhotoCacheAction)
         
-        title = String(format: "%@ (%@)", NSLocalizedString("severalVideos", comment: "Videos"), videoCacheSize)
+        title = String(format: "%@ (%@)", String(localized: "severalVideos", comment: "Videos"), videoCacheSize)
         let clearVideoCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
             // Display HUD during deletion
             self.navigationController?.showHUD(withTitle: hudTitle)
@@ -198,7 +204,7 @@ extension SettingsViewController
             alert.addAction(clearUploadCacheAction)
         }
         
-        let clearAction = UIAlertAction(title: NSLocalizedString("settings_cacheClearAll", comment: "Clear All"), style: .destructive, handler: { action in
+        let clearAction = UIAlertAction(title: String(localized: "settings_cacheClearAll", comment: "Clear All"), style: .destructive, handler: { action in
             // Display HUD during deletion
             self.navigationController?.showHUD(withTitle: hudTitle)
             
@@ -224,6 +230,11 @@ extension SettingsViewController
                     self.videoCacheSize = server.getCacheSizeOfVideos()
                     self.uploadCacheSize = server.getUploadCount(inContext: self.mainContext)
                     
+                    // Will fetch all album data recursively when fetching the root album
+                    // so that the share extension can present the whole album tree
+                    // if the user refreshes the empty root album
+                    AlbumVars.shared.fetchAlbumDataRecursively = true
+                    
                     // Hide HUD on completion
                     self.navigationController?.hideHUD { [self] in
                         self.removeExtraScenesAndReloadRootAlbum()
@@ -233,7 +244,7 @@ extension SettingsViewController
         })
         alert.addAction(clearAction)
         
-        let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: nil)
+        let dismissAction = UIAlertAction(title: Localized.dismiss, style: .cancel, handler: nil)
         alert.addAction(dismissAction)
         
         return alert

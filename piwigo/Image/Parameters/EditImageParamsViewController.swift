@@ -10,7 +10,10 @@
 
 import CoreData
 import UIKit
-import piwigoKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
+import PwgUIKit
 
 @objc protocol EditImageParamsDelegate: NSObjectProtocol {
     func didDeselectImage(withID imageID: Int64)
@@ -92,7 +95,7 @@ class EditImageParamsViewController: UIViewController
         editImageParamsTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
         
         // Title
-        title = NSLocalizedString("imageDetailsView_title", comment: "Properties")
+        title = String(localized: "imageDetailsView_title", comment: "Properties")
         
         // Buttons
         let cancel = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(cancelEdit))
@@ -289,10 +292,10 @@ class EditImageParamsViewController: UIViewController
     @objc func doneEdit() {
         // Display HUD during the update
         if images.count > 1 {
-            showHUD(withTitle: NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"),
+            showHUD(withTitle: String(localized: "editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"),
                     inMode: .determinate)
         } else {
-            showHUD(withTitle: NSLocalizedString("editImageDetailsHUD_updatingSingle", comment: "Updating Photo…"))
+            showHUD(withTitle: String(localized: "editImageDetailsHUD_updatingSingle", comment: "Updating Photo…"))
         }
         
         // Determine common time offset to apply
@@ -301,15 +304,15 @@ class EditImageParamsViewController: UIViewController
         // Update all images
         let index = 0
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Check session
-                try await JSONManager.shared.checkSession(ofUserWithID: self.user.objectID,
-                                                          lastConnected: self.user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID,
+                                                        lastConnected: self.user.lastUsed)
                 
                 // Update image properties
                 self.updateImageProperties(fromIndex: index)
             }
-            catch let error as PwgKitError {
+            catch {
                 await self.hideHUD()
                 self.showUpdatePropertiesError(error, atIndex: index)
             }
@@ -336,7 +339,7 @@ class EditImageParamsViewController: UIViewController
         // Update image info on server
         /// The cache will be updated by the parent view controller.
         Task {
-            do {
+            do throws(PwgKitError) {
                 // Set image properties
                 let paramsDict = getParameters(forImage: images[index])
                 try await JSONManager.shared.setInfos(with: paramsDict)
@@ -350,7 +353,7 @@ class EditImageParamsViewController: UIViewController
                     self.updateImageProperties(fromIndex: index + 1)
                 }
             }
-            catch let error as PwgKitError {
+            catch {
                 await self.hideHUD()
                 self.showUpdatePropertiesError(error, atIndex: index)
             }
@@ -406,7 +409,7 @@ class EditImageParamsViewController: UIViewController
         /// token required for updating HTML in title/comment
         if shouldUpdateComment {
             paramsDict["comment"] = commonComment.utf8mb3Encoded
-            paramsDict["pwg_token"] = NetworkVars.shared.pwgToken
+            paramsDict["pwg_token"] = ServerVars.shared.pwgToken
         }
         
         return paramsDict
@@ -501,8 +504,8 @@ class EditImageParamsViewController: UIViewController
         }
         
         // Report error
-        let title = NSLocalizedString("editImageDetailsError_title", comment: "Failed to Update")
-        let message = NSLocalizedString("editImageDetailsError_message", comment: "Failed to update your changes with your server.")
+        let title = String(localized: "editImageDetailsError_title", comment: "Failed to Update")
+        let message = String(localized: "editImageDetailsError_message", comment: "Failed to update your changes with your server.")
         if index + 1 < images.count {
             cancelDismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) {
                 // Stop updating properties

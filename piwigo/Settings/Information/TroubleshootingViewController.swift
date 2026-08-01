@@ -9,13 +9,15 @@
 import Foundation
 import OSLog
 import UIKit
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgAPIKit
+import PwgCacheKit
+import PwgUploadKit
+import PwgUIKit
 
 class TroubleshootingViewController: UIViewController {
     
     @IBOutlet private weak var piwigoLogo: UIImageView!
-    @IBOutlet private weak var authorsLabel: UILabel!
     @IBOutlet private weak var versionLabel: UILabel!
     @IBOutlet private weak var tableView: UITableView!
     
@@ -28,8 +30,7 @@ class TroubleshootingViewController: UIViewController {
     private lazy var JSONprefixCount: Int = JSONprefix.count
     private lazy var JSONextensionCount: Int = JSONextension.count
     private var JSONfiles = [URL]()
-    private var pwgLogs = [[OSLogEntryLog]]()
-    private let pwgSubSystems = ["org.piwigo", "org.piwigo.piwigoKit", "org.piwigo.uploadKit"]
+    private var pwgLogs = [[PwgLogEntry]]()
     
     
     // MARK: - View Lifecycle
@@ -37,7 +38,7 @@ class TroubleshootingViewController: UIViewController {
         super.viewDidLoad()
         
         // Title
-        title = NSLocalizedString("settings_logs", comment: "Logs")
+        title = String(localized: "settings_logs", comment: "Logs")
 
         // Button for returning to albums/images
         clearBarButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(deleteJSONfiles))
@@ -57,12 +58,11 @@ class TroubleshootingViewController: UIViewController {
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
 
         // Text color depdending on background color
-        authorsLabel?.textColor = PwgColor.text
         versionLabel?.textColor = PwgColor.text
         
         // Table view
         tableView?.separatorColor = PwgColor.separator
-        tableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        tableView?.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         tableView?.reloadData()
     }
     
@@ -70,7 +70,6 @@ class TroubleshootingViewController: UIViewController {
         super.viewWillAppear(animated)
         
         // Piwigo authors and app version
-        authorsLabel?.text = SettingsUtilities.getAuthors(forView: view)
         versionLabel?.text = SettingsUtilities.getAppVersion()
         
         // Set colors, fonts, etc.
@@ -89,20 +88,9 @@ class TroubleshootingViewController: UIViewController {
         
         // Display HUD while retrieving logs and invalid JSON data
         if queue.operations.count != 0 {
-            navigationController?.showHUD(
-                withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                detail: NSLocalizedString("settings_logs", comment: "Logs"), minWidth: 200)
+            navigationController?.showHUD(withTitle: Localized.loading,
+                detail: String(localized: "settings_logs", comment: "Logs"), minWidth: 200)
         }
-    }
-    
-    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        
-        // Update Piwigo authors label
-        coordinator.animate(alongsideTransition: { [self] _ in
-            // Piwigo authors
-            self.authorsLabel?.text = SettingsUtilities.getAuthors(forView: self.view)
-        }, completion: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -125,62 +113,47 @@ class TroubleshootingViewController: UIViewController {
     private func getLogsAndJSONData() {
         // Operation for retrieving logs
         let getLogs = BlockOperation {
-            do {
-                let timeCounter = CFAbsoluteTimeGetCurrent()
-                let logStore = try OSLogStore(scope: .currentProcessIdentifier)
-                let oneHourAgo = logStore.position(date: Date().addingTimeInterval(-3600))
-                let predicate = NSPredicate(format: "subsystem IN %@", self.pwgSubSystems)
-                let allEntries = try logStore.getEntries(at: oneHourAgo, matching: predicate)
-                let duration = (CFAbsoluteTimeGetCurrent() - timeCounter) * CFAbsoluteTime(1000)
-                debugPrint("••> completed in \(duration.rounded()) ms")
-                let entries = allEntries.compactMap({$0 as? OSLogEntryLog})
-                
-                // piwigo — App Metrics
-                #if DEBUG
-                var someLogs = entries.filter({$0.category == String(describing: AppMetrics.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                #else
-                var someLogs = [OSLogEntryLog]()
-                #endif
-                
-                // piwigoKit — Core Data
-                someLogs = entries.filter({$0.category == String(describing: DataMigrator.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                someLogs = entries.filter({$0.category == String(describing: Image.self)})
-                if someLogs.isEmpty ==  false { self.pwgLogs.append(someLogs)}
-                
-                // piwigoKit — Session Delegate
-                someLogs = entries.filter({$0.category == String(describing: PwgSessionDelegate.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                
-                // piwigoKit — JSON Manager
-                someLogs = entries.filter({$0.category == String(describing: JSONManager.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                
-                // piwigoKit — Image Downloader
-                someLogs = entries.filter({$0.category == String(describing: ImageDownloader.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                
-                // uploadKit — UploadManager
-                someLogs = entries.filter({$0.category == String(describing: UploadManager.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
+            #if DEBUG
+            let timeCounter = CFAbsoluteTimeGetCurrent()
+            #endif
+            // Collect the entries stored in log files by the app and the extensions
+            // during the last 24 hours (shares may have been performed hours ago)
+            let logsByCategory = PwgLogger.logEntries(since: Date().addingTimeInterval(-86_400))
+            #if DEBUG
+            let duration = (CFAbsoluteTimeGetCurrent() - timeCounter) * CFAbsoluteTime(1000)
+            debugPrint("••> Logs retrieved in \(duration.rounded()) ms")
+            #endif
 
-                // uploadKit — UploadManagerActor
-                someLogs = entries.filter({$0.category == String(describing: UploadManagerActor.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                
-                // uploadKit — Upload Session Manager
-                someLogs = entries.filter({$0.category == String(describing: UploadSessionManager.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                
-                // uploadKit — Upload Sessions Delegate
-                someLogs = entries.filter({$0.category == String(describing: UploadSessionsDelegate.self)})
-                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-            }
-            catch {
-                debugPrint("••> Could not retrieve logs.")
-                self.pwgLogs = []
-            }
+            // Present known categories in the expected order,
+            // with entries in chronological order in each category
+            let orderedCategories: [String] = {
+                var categories = [
+                    // PwgAPIKit — Session Delegate
+                    String(describing: PwgSessionDelegate.self),
+                    String(describing: JSONManager.self),
+                    String(describing: ImageDownloader.self),
+                    // PwgCacheKit — Core Data
+                    String(describing: DataMigrator.self),
+                    String(describing: Image.self),
+                    // PwgUploadKit — UploadManager
+                    String(describing: UploadManager.self),
+                    String(describing: UploadManagerActor.self),
+                    String(describing: UploadSessionManager.self),
+                    String(describing: UploadSessionsDelegate.self)
+                ]
+                #if DEBUG
+                // piwigo — App Metrics
+                categories.insert(String(describing: AppMetrics.self), at: 0)
+                #endif
+                return categories
+            }()
+            var pwgLogs = orderedCategories.compactMap { logsByCategory[$0] }
+
+            // Followed by the other categories, e.g. those of the extensions
+            let otherCategories = logsByCategory.keys
+                .filter({ orderedCategories.contains($0) == false }).sorted()
+            pwgLogs.append(contentsOf: otherCategories.compactMap { logsByCategory[$0] })
+            self.pwgLogs = pwgLogs
         }
         getLogs.completionBlock = {
             DispatchQueue.main.async {
@@ -206,7 +179,7 @@ class TroubleshootingViewController: UIViewController {
         }
         getJSONfiles.completionBlock = {
             DispatchQueue.main.async {
-                self.tableView?.reloadSections(IndexSet(integer: 1), with: .automatic)
+                self.tableView?.reloadData()
                 self.clearBarButton?.isEnabled = !self.JSONfiles.isEmpty
             }
         }
@@ -332,9 +305,9 @@ extension TroubleshootingViewController: UITableViewDelegate
         var title = "", text = ""
         switch section {
         case 0 /* Logs */:
-            title = NSLocalizedString("settings_logs", comment: "Logs")
+            title = String(localized: "settings_logs", comment: "Logs")
         case 1 /* Invalid JSON data */:
-            title = NSLocalizedString("settings_JSONinvalid", comment: "Invalid JSON data")
+            title = String(localized: "settings_JSONinvalid", comment: "Invalid JSON data")
         default:
             title = ""
         }

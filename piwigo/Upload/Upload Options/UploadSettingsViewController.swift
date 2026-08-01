@@ -7,8 +7,10 @@
 //
 
 import UIKit
-import piwigoKit
-import uploadKit
+import PwgKit
+import PwgCacheKit
+import PwgUIKit
+import PwgUploadKit
 
 class UploadSettingsViewController: UITableViewController {
     
@@ -65,7 +67,7 @@ class UploadSettingsViewController: UITableViewController {
 
         // Table view
         settingsTableView.separatorColor = PwgColor.separator
-        settingsTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        settingsTableView.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
         settingsTableView.reloadData()
     }
 
@@ -146,6 +148,7 @@ extension UploadSettingsViewController: UploadVideoSizeDelegate {
     }
 }
 
+
 // MARK: - MofifyFilenameDelegate Methods
 extension UploadSettingsViewController: MofifyFilenameDelegate {
     func didChangeRenameFileSettings(prefix: Bool, prefixActions: RenameActionList,
@@ -171,9 +174,9 @@ extension UploadSettingsViewController: MofifyFilenameDelegate {
         if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
            let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
             if prefix || replace || suffix || changeCase {
-                cell.detailLabel.text = NSLocalizedString("settings_autoUploadEnabled", comment: "On")
+                cell.detailLabel.text = String(localized: "settings_autoUploadEnabled", comment: "On")
             } else {
-                cell.detailLabel.text = NSLocalizedString("settings_autoUploadDisabled", comment: "Off")
+                cell.detailLabel.text = String(localized: "settings_autoUploadDisabled", comment: "Off")
             }
         }
     }

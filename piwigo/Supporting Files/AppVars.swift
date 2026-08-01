@@ -5,16 +5,11 @@
 //  Created by Eddy Lelièvre-Berna on 01/06/2021.
 //  Copyright © 2021 Piwigo.org. All rights reserved.
 //
+// A UserDefaultsManager subclass that persists app settings.
 
 import Foundation
 import UIKit
-import piwigoKit
-
-// Constants
-/// - Preferred popover view width on iPad
-let pwgPadSubViewWidth = CGFloat(425.0)
-/// - Preferred Settings view width on iPad
-let pwgPadSettingsWidth = CGFloat(512.0)
+import PwgKit
 
 // Mark AppVars as Sendable since Apple documents UserDefaults as thread-safe
 final class AppVars: @unchecked Sendable {
@@ -34,31 +29,13 @@ final class AppVars: @unchecked Sendable {
         if let _ = UserDefaults.standard.object(forKey: "switchPaletteThreshold") {
             UserDefaults.standard.removeObject(forKey: "switchPaletteThreshold")
         }
-        //        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
-        //            UserDefaults.dataSuite.removeObject(forKey: "test")
-        //        }
+//        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
+//            UserDefaults.dataSuite.removeObject(forKey: "test")
+//        }
     }
     
     // MARK: - Vars in UserDefaults / Standard
     // Application variables stored in UserDefaults / Standard
-    /// - App color palette (adopts light/dark modes as from iOS 13)
-    @UserDefault("isDarkPaletteActive", defaultValue: false)
-    var isDarkPaletteActive: Bool
-    @UserDefault("switchPaletteAutomatically", defaultValue: true)
-    var switchPaletteAutomatically: Bool
-    @UserDefault("isDarkPaletteModeActive", defaultValue: false)
-    var isDarkPaletteModeActive: Bool
-    @UserDefault("isLightPaletteModeActive", defaultValue: false)
-    var isLightPaletteModeActive: Bool
-    
-    /// - App Lock option
-    @UserDefault("isAppLockActive", defaultValue: false)
-    var isAppLockActive: Bool
-    @UserDefault("appLockKey", defaultValue: "")
-    var appLockKey: String
-    @UserDefault("isBiometricsEnabled", defaultValue: true)
-    var isBiometricsEnabled: Bool
-    
     /// — Clear clipboard after delay option (never by default)
     @UserDefault("clearClipboardDelay", defaultValue: pwgClearClipboard.never.rawValue)
     var clearClipboardDelay: Int
@@ -92,12 +69,6 @@ final class AppVars: @unchecked Sendable {
     
     // MARK: - Vars in Memory
     // Application variables kept in memory
-    /// - Is system dark palette active?
-    var isSystemDarkModeActive = false
-    
-    /// - Check for haptics compatibility at the app’s launch
-    var supportsHaptics: Bool = false
-    
     /// - App Lock status
     var isAppUnlocked: Bool = false
     

@@ -1,2 +1,3 @@
-• Poprawki błędów i usprawnienia interfejsu
-• Dodano możliwość zmiany maksymalnej liczby jednoczesnych połączeń z serwerem Piwigo
+• Dodano rozszerzenie „Udostępnij”, umożliwiające przesyłanie zdjęć, filmów i plików PDF z innych aplikacji
+• Odtwarza animowane pliki GIF
+• Naprawiono błędy i ulepszono interfejs
