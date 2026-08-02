@@ -33,6 +33,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
     private var imageFileURL: URL                       // URL of shared video file
     private var isCancelledByUser = false               // Flag updated when pressing Cancel
     private var contextually = false
+    private let options: ShareOptions                   // Options chosen by the user before sharing
 
 
     // MARK: - Progress Faction
@@ -53,10 +54,13 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
     
     
     // MARK: - Placeholder Image
-    init(imageData: Image, scale: CGFloat, contextually: Bool) {
+    init(imageData: Image, scale: CGFloat, options: ShareOptions, contextually: Bool) {
         // Store Piwigo image data for future use
         self.imageData = imageData
-        
+
+        // Store the options chosen by the user in the Options view
+        self.options = options
+
         // Remember if this video is shared from a contextual menu
         self.contextually = contextually
 
@@ -194,13 +198,21 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             return placeholderItem!
         }
 
-        // Should we strip GPS metadata (yes by default)?
-        if !(activityType?.shouldStripMetadata() ?? true) {
+        // Must the video be exported?
+        /// - The export always produces an MP4 file whose metadata is filtered for sharing,
+        ///   so it is required as soon as the user asks for the most compatible format
+        ///   or refuses to share some of the private metadata.
+        /// - AVAssetExportSession filters the metadata as a whole: unlike photos, videos
+        ///   cannot keep their author while dropping their location.
+        let toStrip = options.metadataToStrip
+        let needsConversion = (options.format == .mostCompatible)
+                           && imageFileURL.pathExtension.lowercased() != "mp4"
+        if toStrip.isEmpty, needsConversion == false {
             // Notify the delegate on the main thread to show how it makes progress.
             progressFraction = 1.0
             // Notify the delegate on the main thread that the processing has finished.
             preprocessingDidEnd()
-            // No need to strip metadata, share the file immediately
+            // Nothing to remove nor to convert, share the file immediately
             return imageFileURL
         }
 
@@ -213,7 +225,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
 //        let allMetadata = asset.metadata
 //        debugPrint("===>> All Metadata: \(allMetadata)")
 
-        if !asset.metadata.containsPrivateMetadata() {
+        if needsConversion == false, !asset.metadata.containsPrivateMetadata() {
             // Notify the delegate on the main thread to show how it makes progress.
             progressFraction = 1.0
             // Notify the delegate on the main thread that the processing has finished.
@@ -264,8 +276,14 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         let originalAsset = AVAsset(url: newSourceURL)
         let presets = AVAssetExportSession.exportPresets(compatibleWith: originalAsset)
         
+        // The exported file is an MP4 one: adopt the matching file name.
+        /// The original file has just been moved aside, but a file of that name may be
+        /// left over from a previous share — the export session refuses to overwrite it.
+        imageFileURL = imageFileURL.deletingPathExtension().appendingPathExtension("mp4")
+        try? FileManager.default.removeItem(at: imageFileURL)
+
         // Get the maximum accepted resolution (infinity for largest)
-        let maxResolution = activityType?.maxSizeWhenOptimised() ?? Int.max
+        let maxResolution = options.maxSize(for: activityType)
 
         // We select a resolution lower than the one required by the activity type
         /// - The export will not scale the video up from a smaller size.

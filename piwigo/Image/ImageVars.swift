@@ -18,10 +18,28 @@ final class ImageVars: @unchecked Sendable {
 
     // Remove deprecated stored objects if needed
     init() {
-        // Share metadata settings of activity types which iOS no longer proposes:
-        // the built-in social integration was removed in iOS 11 and the apps which
-        // replaced it are handled by the 'shareMetadataTypeOther' setting.
-        let deprecatedShareMetadataKeys = ["shareMetadataTypePostToFacebook",
+        // Adopt the metadata setting which used to govern the apps the user actually shares with.
+        /// The built-in social activity types have not been vended since iOS 11, so every
+        /// third-party app fell into the 'other' case: it is the only one worth carrying over.
+        /// The choice is now global instead of per-activity, hence a single value for both switches.
+        /// Runs only once: the key is removed by the loop below.
+        if let sharesMetadataWithOtherApps = UserDefaults.standard.object(forKey: "shareMetadataTypeOther") as? Bool,
+           UserDefaults.standard.object(forKey: "shareKeepsLocation") == nil,
+           UserDefaults.standard.object(forKey: "shareKeepsContactInfo") == nil {
+            self.shareKeepsLocation = sharesMetadataWithOtherApps
+            self.shareKeepsContactInfo = sharesMetadataWithOtherApps
+        }
+
+        // Per-activity share metadata settings, replaced by the options which the user
+        // now chooses before each share (see ShareOptionsViewController).
+        let deprecatedShareMetadataKeys = ["shareMetadataTypeAirDrop",
+                                           "shareMetadataTypeAssignToContact",
+                                           "shareMetadataTypeCopyToPasteboard",
+                                           "shareMetadataTypeMail",
+                                           "shareMetadataTypeMessage",
+                                           "shareMetadataTypeSaveToCameraRoll",
+                                           "shareMetadataTypeOther",
+                                           "shareMetadataTypePostToFacebook",
                                            "shareMetadataTypeMessenger",
                                            "shareMetadataTypePostToFlickr",
                                            "shareMetadataTypePostInstagram",
@@ -45,35 +63,22 @@ final class ImageVars: @unchecked Sendable {
     @UserDefault("defaultImagePreviewSize", defaultValue: -1)
     var defaultImagePreviewSize: Int16
 
-    /// - Share image by AirDrop with metadata by default
-    @UserDefault("shareMetadataTypeAirDrop", defaultValue: true)
-    var shareMetadataTypeAirDrop: Bool
+    /// - Options chosen the last time images were shared
+    ///   The location is dropped by default, the author's name and contact info are kept:
+    ///   Piwigo users are most often the photographers of the images they share.
+    @UserDefault("shareFormat", defaultValue: pwgShareFormat.original.rawValue)
+    var shareFormat: Int16
 
-    /// - Strip metadata when assigning image to Contact by default
-    @UserDefault("shareMetadataTypeAssignToContact", defaultValue: false)
-    var shareMetadataTypeAssignToContact: Bool
+    @UserDefault("shareSize", defaultValue: pwgShareSize.original.rawValue)
+    var shareSize: Int16
 
-    /// - Strip metadata when sharing image with the clipboard by default
-    @UserDefault("shareMetadataTypeCopyToPasteboard", defaultValue: false)
-    var shareMetadataTypeCopyToPasteboard: Bool
+    @UserDefault("shareKeepsLocation", defaultValue: false)
+    var shareKeepsLocation: Bool
 
-    /// - Share image by email with metadata by default
-    @UserDefault("shareMetadataTypeMail", defaultValue: true)
-    var shareMetadataTypeMail: Bool
+    @UserDefault("shareKeepsContactInfo", defaultValue: true)
+    var shareKeepsContactInfo: Bool
 
-    /// - Share image with metadata when sharing with Messages by default
-    @UserDefault("shareMetadataTypeMessage", defaultValue: true)
-    var shareMetadataTypeMessage: Bool
 
-    /// - Keep metadata when saving image in camera roll by default
-    @UserDefault("shareMetadataTypeSaveToCameraRoll", defaultValue: true)
-    var shareMetadataTypeSaveToCameraRoll: Bool
-    
-    /// - Strip metadata when sharing image with unknown app by default
-    @UserDefault("shareMetadataTypeOther", defaultValue: false)
-    var shareMetadataTypeOther: Bool
-
-    
     // MARK: - Vars in UserDefaults / App Group
     // Image variables stored in UserDefaults / App Group
     /// - None

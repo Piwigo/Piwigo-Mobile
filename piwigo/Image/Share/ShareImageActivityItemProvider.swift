@@ -43,6 +43,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
     private var imageFileURL: URL                       // URL of shared image file
     private var isCancelledByUser = false               // Flag updated when pressing Cancel
     private var contextually = false
+    private let options: ShareOptions                   // Options chosen by the user before sharing
     
     
     // MARK: - Progress Fraction
@@ -63,10 +64,13 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
     
     
     // MARK: - Placeholder Image
-    init(imageData: Image, scale: CGFloat, contextually: Bool) {
+    init(imageData: Image, scale: CGFloat, options: ShareOptions, contextually: Bool) {
         // Store Piwigo image data for future use
         self.imageData = imageData
-        
+
+        // Store the options chosen by the user in the Options view
+        self.options = options
+
         // Remember if this video is shared from a contextual menu
         self.contextually = contextually
 
@@ -121,7 +125,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         }
 
         // Get the maximum accepted image size (infinity for largest)
-        let maxSize = activityType?.maxSizeWhenOptimised() ?? Int.max
+        let maxSize = options.maxSize(for: activityType)
 
         // Get the server ID and optimum available image size
         guard let serverID = imageData.server?.uuid,
@@ -206,13 +210,20 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             return placeholderItem!
         }
 
-        // Should we strip GPS metadata (yes by default)?
-        if !(activityType?.shouldStripMetadata() ?? true) {
+        // Which private metadata should be removed, and must the file be converted?
+        /// - Server-generated derivatives are always JPEG files, so only a full resolution
+        ///   HEIC original has to be converted to be readable by any app.
+        let toStrip = options.metadataToStrip
+        let needsConversion = (options.format == .mostCompatible)
+                           && (imageSize == .fullRes) && imageData.needsConversionToJPEG
+
+        // Share the downloaded file as it is when it needs neither conversion nor cleaning
+        if toStrip.isEmpty, needsConversion == false {
             // Notify the delegate on the main thread to show how it makes progress.
             progressFraction = 1.0
             // Notify the delegate on the main thread that the processing has finished.
             preprocessingDidEnd()
-            // No need to strip metadata, share the file immediately
+            // Nothing to remove, share the file immediately
             return imageFileURL
         }
 
@@ -243,6 +254,12 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             return placeholderItem!
         }
         
+        // The converted file is a JPEG one: adopt the matching file name.
+        /// The original file has just been moved aside, so this name is free.
+        if needsConversion {
+            imageFileURL = imageFileURL.deletingPathExtension().appendingPathExtension("jpg")
+        }
+
         // Notify the delegate on the main thread to show how it makes progress.
         progressFraction = 0.80
 
@@ -257,8 +274,8 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             return placeholderItem!
         }
 
-        // Prepare destination file of same type
-        guard let UTI = CGImageSourceGetType(sourceRef),
+        // Prepare destination file, of the same type unless it must be converted to JPEG
+        guard let UTI = needsConversion ? (UTType.jpeg.identifier as CFString) : CGImageSourceGetType(sourceRef),
               let destinationRef = CGImageDestinationCreateWithURL(imageFileURL as CFURL, UTI, 1, nil) else {
             // Cancel task
             cancel()
@@ -273,17 +290,19 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         /// See https://developer.apple.com/library/archive/qa/qa1895/_index.html
         /// Try to copy source into destination w/o recompression
         /// One of kCGImageDestinationMetadata, kCGImageDestinationOrientation, or kCGImageDestinationDateTime is required.
-        if var metadata = CGImageSourceCopyMetadataAtIndex(sourceRef, 0, nil) {
-            // Strip private metadata
-            metadata = metadata.stripPrivateMetadata()
-            
+        /// A file which must be converted cannot be copied: it has to be recompressed below.
+        if needsConversion == false,
+           var metadata = CGImageSourceCopyMetadataAtIndex(sourceRef, 0, nil) {
+            // Strip the private metadata the user chose not to share
+            metadata = metadata.stripPrivateMetadata(toStrip)
+
             // Set destination options
-            let options = [kCGImageDestinationMetadata      : metadata,
-                           kCGImageMetadataShouldExcludeGPS : true
+            let destOptions = [kCGImageDestinationMetadata      : metadata,
+                               kCGImageMetadataShouldExcludeGPS : toStrip.contains(.location)
             ] as [CFString : Any] as CFDictionary
-            
+
             // Copy image source w/o private metadata
-            if CGImageDestinationCopyImageSource(destinationRef, sourceRef, options, nil) {
+            if CGImageDestinationCopyImageSource(destinationRef, sourceRef, destOptions, nil) {
                 // Notify the delegate on the main thread to show how it makes progress.
                 progressFraction = 1.0
 
@@ -309,8 +328,8 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             return placeholderItem!
         }
 
-        // Strip private properties
-        imageProperties = imageProperties.stripPrivateProperties()
+        // Strip the private properties the user chose not to share
+        imageProperties = imageProperties.stripPrivateProperties(toStrip)
 
         // Copy source into destination with unavoidable recompression
         CGImageDestinationSetProperties(destinationRef, imageProperties as CFDictionary)

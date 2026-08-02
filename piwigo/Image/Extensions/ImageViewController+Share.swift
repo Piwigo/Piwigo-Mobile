@@ -57,18 +57,58 @@ extension ImageViewController
 
     @MainActor
     func presentShareImageViewController(withCameraRollAccess hasCameraRollAccess: Bool) {
+        // Check input image data
+        guard let imageData = imageData else { return }
+
+        // PDF, EPS and GIF files are shared as they are: no option can change anything.
+        let sections = ShareUtilities.optionsToPropose(for: [imageData])
+        guard sections.metadata else {
+            presentActivityViewController(with: ShareOptions.lastUsed,
+                                          withCameraRollAccess: hasCameraRollAccess)
+            return
+        }
+
+        // Let the user choose what will be shared before presenting the share sheet.
+        /// The choice cannot be proposed afterwards: the type and the size of the item
+        /// decide which activities the share sheet proposes and what they receive.
+        guard let optionsVC = UIStoryboard(name: "ShareOptionsViewController", bundle: nil)
+            .instantiateViewController(withIdentifier: "ShareOptionsViewController") as? ShareOptionsViewController
+        else { return }
+
+        optionsVC.images = [imageData]
+        optionsVC.completion = { [weak self] options in
+            guard let options = options else {
+                // The user gave up: enable the buttons again
+                self?.setEnableStateOfButtons(true)
+                return
+            }
+            self?.presentActivityViewController(with: options,
+                                                withCameraRollAccess: hasCameraRollAccess)
+        }
+
+        let navController = UINavigationController(rootViewController: optionsVC)
+        if let sheet = navController.sheetPresentationController {
+            sheet.detents = [.medium(), .large()]
+            sheet.prefersGrabberVisible = true
+        }
+        present(navController, animated: true)
+    }
+
+    @MainActor
+    func presentActivityViewController(with options: ShareOptions,
+                                       withCameraRollAccess hasCameraRollAccess: Bool) {
         // To exclude some activity types
         var excludedActivityTypes = Set<UIActivity.ActivityType>()
 
         // Check input image data
         guard let imageData = imageData else { return }
-        
+
         // Create new activity provider item to pass to the activity view controller
         let scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))
         var itemsToShare: [AnyHashable] = []
         if imageData.isVideo {
             // Case of a video
-            let videoItemProvider = ShareVideoActivityItemProvider(imageData: imageData, scale: scale, contextually: false)
+            let videoItemProvider = ShareVideoActivityItemProvider(imageData: imageData, scale: scale, options: options, contextually: false)
 
             // Use delegation to monitor the progress of the item method
             videoItemProvider.delegate = self
@@ -102,7 +142,7 @@ extension ImageViewController
         }
         else {
             // Case of an image
-            let imageItemProvider = ShareImageActivityItemProvider(imageData: imageData, scale: scale, contextually: false)
+            let imageItemProvider = ShareImageActivityItemProvider(imageData: imageData, scale: scale, options: options, contextually: false)
 
             // Use delegation to monitor the progress of the item method
             imageItemProvider.delegate = self

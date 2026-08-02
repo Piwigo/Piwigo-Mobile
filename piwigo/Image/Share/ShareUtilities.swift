@@ -10,6 +10,74 @@ import Foundation
 import UIKit
 import PwgKit
 import PwgCacheKit
+import PwgUploadKit
+
+
+// MARK: - Share Options
+/// Options presented to the user before the share sheet appears.
+/// They cannot be chosen afterwards: the type of the item handed to
+/// UIActivityViewController decides which activities it proposes.
+enum pwgShareFormat: Int16, CaseIterable {
+    case original = 0       // Share the file as it is stored on the server
+    case mostCompatible     // JPEG for HEIC photos, MP4 for videos
+}
+
+enum pwgShareSize: Int16, CaseIterable {
+    case original = 0       // Full resolution
+    case optimised          // Nearest smaller size available on the server
+}
+
+struct ShareOptions {
+    /// Photos and videos larger than Full HD are shared with the nearest smaller size
+    /// available on the server. Smaller ones are left untouched: they cost little to
+    /// transfer and downsizing them would only degrade them for no gain.
+    static let optimisedMaxSize = 1920
+
+    var format: pwgShareFormat
+    var size: pwgShareSize
+    var keepsLocation: Bool
+    var keepsContactInfo: Bool
+
+    /// Which groups of private metadata must be removed from the shared file.
+    /// - Camera and lens serial numbers identify the photographer as surely as their name,
+    ///   so they go whenever the file has to be rewritten anyway. When the user keeps
+    ///   everything, the file is shared untouched — no rewrite, hence no recompression.
+    var metadataToStrip: PrivateMetadata {
+        var toStrip = PrivateMetadata()
+        if keepsLocation == false    { toStrip.insert(.location) }
+        if keepsContactInfo == false { toStrip.insert(.contact) }
+        if toStrip.isEmpty == false  { toStrip.insert(.device) }
+        return toStrip
+    }
+
+    /// Maximum resolution of the shared file for the given activity.
+    /// - The per-activity limits are a floor applied inside the "Optimised" option only:
+    ///   an image shared in its "Original" size is never downsized, whatever the destination.
+    func maxSize(for activityType: UIActivity.ActivityType?) -> Int {
+        switch size {
+        case .original:
+            return Int.max
+        case .optimised:
+            return min(Self.optimisedMaxSize, activityType?.maxSizeWhenOptimised() ?? Int.max)
+        }
+    }
+
+    // Last options chosen by the user
+    static var lastUsed: ShareOptions {
+        get {
+            return ShareOptions(format: pwgShareFormat(rawValue: ImageVars.shared.shareFormat) ?? .original,
+                                size: pwgShareSize(rawValue: ImageVars.shared.shareSize) ?? .original,
+                                keepsLocation: ImageVars.shared.shareKeepsLocation,
+                                keepsContactInfo: ImageVars.shared.shareKeepsContactInfo)
+        }
+        set(options) {
+            ImageVars.shared.shareFormat = options.format.rawValue
+            ImageVars.shared.shareSize = options.size.rawValue
+            ImageVars.shared.shareKeepsLocation = options.keepsLocation
+            ImageVars.shared.shareKeepsContactInfo = options.keepsContactInfo
+        }
+    }
+}
 
 final class ShareUtilities {
 
@@ -228,6 +296,51 @@ final class ShareUtilities {
     static private func sizeIsNearest(_ size: Int, current: Int, wanted: Int) -> Bool {
         return (size < wanted) && (abs(wanted - size) < abs(wanted - current))
     }
+
+
+    // MARK: - Share Options
+    /// Returns which sections the Options view should propose for the given selection.
+    /// - PDF, EPS and GIF files are always shared as they are: they have no derivative
+    ///   the app could pick, and re-encoding them would destroy them.
+    /// - The Format section is only proposed when it can change something,
+    ///   i.e. for videos and for photos whose original file is a HEIC one
+    ///   (server-generated derivatives are always JPEG files).
+    static func optionsToPropose(for images: [Image]) -> (format: Bool, metadata: Bool, size: Bool) {
+        let shareable = images.filter({ $0.hasFullResThumbnail || $0.isVideo })
+        guard shareable.isEmpty == false else { return (false, false, false) }
+
+        let hasVideo = shareable.contains(where: { $0.isVideo })
+        let hasHEIC = shareable.contains(where: {
+            ["heic", "heif"].contains(URL(fileURLWithPath: $0.fileName).pathExtension.lowercased())
+        })
+        return (format: hasVideo || hasHEIC, metadata: true, size: true)
+    }
+
+    /// Returns the resolution of the largest image of the selection, and the resolution
+    /// which would be shared if the user picked the optimised size, so that the Options
+    /// view can label both rows with the dimensions the user will actually get.
+    static func resolutions(of images: [Image]) -> (original: Resolution?, optimised: Resolution?) {
+        var original: Resolution?, optimised: Resolution?
+        for image in images where image.hasFullResThumbnail || image.isVideo {
+            if let fullRes = image.fullRes ?? image.sizes.xxxxlarge,
+               fullRes.maxSize > (original?.maxSize ?? 0) {
+                original = fullRes
+            }
+            if let (size, _) = getOptimumSizeAndURL(image, ofMaxSize: ShareOptions.optimisedMaxSize),
+               let resolution = image.resolution(ofSize: size),
+               resolution.maxSize > (optimised?.maxSize ?? 0) {
+                optimised = resolution
+            }
+        }
+        return (original, optimised)
+    }
+
+    /// Returns "4032 × 3024" for the given resolution, or an empty string when unknown.
+    static func dimensions(of resolution: Resolution?) -> String {
+        guard let resolution = resolution, resolution.width > 1, resolution.height > 1
+        else { return "" }
+        return String(format: "%d × %d", resolution.width, resolution.height)
+    }
     
     // Returns the URL of the image/video/PDF file stored in /tmp before sharing
     static func getFileUrl(ofImage image: Image?, withURL imageUrl: URL?) -> URL {
@@ -296,6 +409,34 @@ final class ShareUtilities {
 }
 
 
+// MARK: - Image Extensions
+extension Image
+{
+    // Return the resolution of the derivative of the given size
+    func resolution(ofSize size: pwgImageSize) -> Resolution? {
+        switch size {
+        case .square:       return sizes.square
+        case .thumb:        return sizes.thumb
+        case .xxSmall:      return sizes.xxsmall
+        case .xSmall:       return sizes.xsmall
+        case .small:        return sizes.small
+        case .medium:       return sizes.medium
+        case .large:        return sizes.large
+        case .xLarge:       return sizes.xlarge
+        case .xxLarge:      return sizes.xxlarge
+        case .xxxLarge:     return sizes.xxxlarge
+        case .xxxxLarge:    return sizes.xxxxlarge
+        case .fullRes:      return fullRes
+        }
+    }
+
+    // Whether the original file needs to be converted to share it in the most compatible format
+    var needsConversionToJPEG: Bool {
+        return ["heic", "heif"].contains(URL(fileURLWithPath: fileName).pathExtension.lowercased())
+    }
+}
+
+
 // MARK: - UIActivityType Extensions
 extension UIActivity.ActivityType
 {    
@@ -318,31 +459,4 @@ extension UIActivity.ActivityType
         }
     }
 
-    func shouldStripMetadata() -> Bool {
-        // Return whether the user wants to strip metadata
-        /// - The flags are set in Settings / Privacy / Share Metadata
-        /// - Only the activity types which iOS still proposes are listed:
-        ///   the built-in social ones (Facebook, Twitter, Flickr, Vimeo, Weibo, Tencent Weibo)
-        ///   have not been vended since iOS 11 removed the system social accounts,
-        ///   and the apps which replaced them are handled by the default case.
-        switch self {
-        case .airDrop:
-            return !ImageVars.shared.shareMetadataTypeAirDrop
-        case .assignToContact:
-            return !ImageVars.shared.shareMetadataTypeAssignToContact
-        case .copyToPasteboard:
-            return !ImageVars.shared.shareMetadataTypeCopyToPasteboard
-        case .mail:
-            return !ImageVars.shared.shareMetadataTypeMail
-        case .message:
-            return !ImageVars.shared.shareMetadataTypeMessage
-        case .saveToCameraRoll:
-            return !ImageVars.shared.shareMetadataTypeSaveToCameraRoll
-        case .print:
-            // Printers discard metadata: stripping it would only cost time and quality
-            return false
-        default:
-            return !ImageVars.shared.shareMetadataTypeOther
-        }
-    }
 }

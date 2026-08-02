@@ -29,7 +29,7 @@ extension AlbumViewController
     }
 
 
-    // MARK: Share Images
+    // MARK: - Share Images
     @objc func shareSelection() {
         initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .share, contextually: false)
     }
@@ -49,11 +49,49 @@ extension AlbumViewController
                 DispatchQueue.main.async {
                     self.shareImages(withID: imageIDs, withCameraRollAccess: false, contextually: contextually)
                 }
-            })
+            }
+        )
     }
 
     @MainActor
     func shareImages(withID imageIDs: Set<Int64>, withCameraRollAccess hasCameraRollAccess: Bool, contextually: Bool) {
+
+        // PDF, EPS and GIF files are shared as they are: no option can change anything.
+        let selection = (images.fetchedObjects ?? []).filter({ imageIDs.contains($0.pwgID) })
+        guard ShareUtilities.optionsToPropose(for: selection).metadata else {
+            shareImages(withID: imageIDs, using: ShareOptions.lastUsed,
+                        withCameraRollAccess: hasCameraRollAccess, contextually: contextually)
+            return
+        }
+        
+        // Let the user choose what will be shared before presenting the share sheet.
+        /// The choice cannot be proposed afterwards: the type and the size of the items
+        /// decide which activities the share sheet proposes and what they receive.
+        guard let optionsVC = UIStoryboard(name: "ShareOptionsViewController", bundle: nil)
+            .instantiateViewController(withIdentifier: "ShareOptionsViewController") as? ShareOptionsViewController
+        else { return }
+        
+        optionsVC.images = selection
+        optionsVC.completion = { [weak self] options in
+            guard let options = options else {
+                // The user gave up: leave the selection mode untouched
+                return
+            }
+            self?.shareImages(withID: imageIDs, using: options,
+                              withCameraRollAccess: hasCameraRollAccess, contextually: contextually)
+        }
+        
+        let navController = UINavigationController(rootViewController: optionsVC)
+        if let sheet = navController.sheetPresentationController {
+            sheet.detents = [.medium(), .large()]
+            sheet.prefersGrabberVisible = true
+        }
+        present(navController, animated: true)
+    }
+
+    @MainActor
+    func shareImages(withID imageIDs: Set<Int64>, using options: ShareOptions,
+                     withCameraRollAccess hasCameraRollAccess: Bool, contextually: Bool) {
 
         // Create new activity provider items to pass to the activity view controller
         var itemsToShare: [UIActivityItemProvider] = []
@@ -73,7 +111,7 @@ extension AlbumViewController
                 if let image = (images.fetchedObjects ?? []).first(where: {$0.pwgID == imageID}) {
                     if image.isVideo {
                         // Case of a video
-                        let videoItemProvider = ShareVideoActivityItemProvider(imageData: image, scale: scale, contextually: contextually)
+                        let videoItemProvider = ShareVideoActivityItemProvider(imageData: image, scale: scale, options: options, contextually: contextually)
                         
                         // Use delegation to monitor the progress of the item method
                         videoItemProvider.delegate = self
@@ -109,7 +147,7 @@ extension AlbumViewController
                     }
                     else {
                         // Case of an image
-                        let imageItemProvider = ShareImageActivityItemProvider(imageData: image, scale: scale, contextually: contextually)
+                        let imageItemProvider = ShareImageActivityItemProvider(imageData: image, scale: scale, options: options, contextually: contextually)
                         
                         // Use delegation to monitor the progress of the item method
                         imageItemProvider.delegate = self

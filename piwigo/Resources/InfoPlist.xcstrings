@@ -205,9 +205,6 @@
         }
       }
     },
-    "Encapsulated PostScript" : {
-
-    },
     "NSFaceIDUsageDescription" : {
       "comment" : "Privacy - Face ID Usage Description",
       "extractionState" : "extracted_with_value",
