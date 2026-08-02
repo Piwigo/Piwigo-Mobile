@@ -49938,7 +49938,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Geotagging"
+            "value" : "Standort"
           }
         },
         "en" : {
@@ -50027,97 +50027,97 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "مشاركة البيانات الوصفية"
+            "value" : "بيانات التعريف"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Del Metadata"
+            "value" : "Metadata"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Metadaten teilen"
+            "value" : "Metadaten"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Share Metadata"
+            "value" : "Metadata"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Compartir metadatos"
+            "value" : "Metadatos"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Partager les métadonnées"
+            "value" : "Métadonnées"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Metaadatok megosztása"
+            "value" : "Metaadatok"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Share Metadata"
+            "value" : "Metadata"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Condividere i metadati"
+            "value" : "Metadati"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "メタデータを共有する"
+            "value" : "メタデータ"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deel metadata"
+            "value" : "Metagegevens"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Udostępnij metadane"
+            "value" : "Metadane"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Поделиться метаданными"
+            "value" : "Метаданные"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dela Metadata"
+            "value" : "Metadata"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "共享元数据"
+            "value" : "元数据"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "分享中繼資料"
+            "value" : "元數據"
           }
         }
       }
@@ -50140,7 +50140,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die Seriennummern der Kamera und der Objektive werden stets entfernt. Der gesamte Inhalt der Datei bleibt unverändert."
+            "value" : "Die Seriennummer der Kamera und der Objektive werden stets entfernt. Der gesamte Inhalt der Datei bleibt unverändert."
           }
         },
         "en" : {
