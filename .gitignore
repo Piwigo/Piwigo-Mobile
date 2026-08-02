@@ -34,3 +34,4 @@ WorkspaceSettings.xcsettings
 Pods-iRate.xcscheme
 xcschememanagement.plist
 *.DS_Store
+/PwgUploadKit/.build
