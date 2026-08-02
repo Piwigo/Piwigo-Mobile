@@ -102,9 +102,6 @@ public final class UITools {
         
         // Notify palette change to views
         NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
-        debugPrint("••> App changed to \(UIVars.shared.isDarkPaletteActive ? "dark" : "light") mode");
+//        debugPrint("••> App changed to \(UIVars.shared.isDarkPaletteActive ? "dark" : "light") mode");
     }
-    
-    
-    // - App Lock 
 }
