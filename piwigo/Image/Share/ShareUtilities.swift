@@ -275,6 +275,12 @@ final class ShareUtilities {
             else if image?.isPDF ?? false {
                 fileName = fileName?.appending(".pdf")
             }
+            else if image?.isEPS ?? false {
+                fileName = fileName?.appending(".eps")
+            }
+            else if image?.isGIF ?? false {
+                fileName = fileName?.appending(".gif")
+            }
             else {
                 // Adopt JPEG photo format by default, will be rechecked
                 fileName = fileName?.appending(".jpg")
