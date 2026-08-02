@@ -265,7 +265,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         let presets = AVAssetExportSession.exportPresets(compatibleWith: originalAsset)
         
         // Get the maximum accepted resolution (infinity for largest)
-        let maxResolution = activityType?.imageMaxSize() ?? Int.max
+        let maxResolution = activityType?.maxSizeWhenOptimised() ?? Int.max
 
         // We select a resolution lower than the one required by the activity type
         /// - The export will not scale the video up from a smaller size.

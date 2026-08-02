@@ -12,11 +12,9 @@ import UIKit
 import PwgKit
 import PwgUIKit
 
-let pwgActivityTypeMessenger = UIActivity.ActivityType(rawValue: "com.facebook.Messenger.ShareExtension")
-let pwgActivityTypePostInstagram = UIActivity.ActivityType(rawValue: "com.burbn.instagram.shareextension")
-let pwgActivityTypePostToSignal = UIActivity.ActivityType(rawValue: "org.whispersystems.signal.shareextension")
-let pwgActivityTypePostToSnapchat = UIActivity.ActivityType(rawValue: "com.toyopagroup.picaboo.share")
-let pwgActivityTypePostToWhatsApp = UIActivity.ActivityType(rawValue: "net.whatsapp.WhatsApp.ShareExtension")
+/// Sentinel used by this screen to represent every activity type which is not listed above.
+/// It is never returned by iOS: unlisted activities fall into the default case of
+/// `shouldStripMetadata()` and use the `shareMetadataTypeOther` setting.
 let pwgActivityTypeOther = UIActivity.ActivityType(rawValue: "undefined.ShareExtension")
 
 class ShareMetadataViewController: UIViewController {
@@ -298,61 +296,6 @@ extension ShareMetadataViewController {
         } else {
             activitiesNotSharing.append(.message)
         }
-        if ImageVars.shared.shareMetadataTypePostToFacebook {
-            activitiesSharing.append(.postToFacebook)
-        } else {
-            activitiesNotSharing.append(.postToFacebook)
-        }
-        if ImageVars.shared.shareMetadataTypeMessenger {
-            activitiesSharing.append(pwgActivityTypeMessenger)
-        } else {
-            activitiesNotSharing.append(pwgActivityTypeMessenger)
-        }
-        if ImageVars.shared.shareMetadataTypePostToFlickr {
-            activitiesSharing.append(.postToFlickr)
-        } else {
-            activitiesNotSharing.append(.postToFlickr)
-        }
-        if ImageVars.shared.shareMetadataTypePostInstagram {
-            activitiesSharing.append(pwgActivityTypePostInstagram)
-        } else {
-            activitiesNotSharing.append(pwgActivityTypePostInstagram)
-        }
-        if ImageVars.shared.shareMetadataTypePostToSignal {
-            activitiesSharing.append(pwgActivityTypePostToSignal)
-        } else {
-            activitiesNotSharing.append(pwgActivityTypePostToSignal)
-        }
-        if ImageVars.shared.shareMetadataTypePostToSnapchat {
-            activitiesSharing.append(pwgActivityTypePostToSnapchat)
-        } else {
-            activitiesNotSharing.append(pwgActivityTypePostToSnapchat)
-        }
-        if ImageVars.shared.shareMetadataTypePostToTencentWeibo {
-            activitiesSharing.append(.postToTencentWeibo)
-        } else {
-            activitiesNotSharing.append(.postToTencentWeibo)
-        }
-        if ImageVars.shared.shareMetadataTypePostToTwitter {
-            activitiesSharing.append(.postToTwitter)
-        } else {
-            activitiesNotSharing.append(.postToTwitter)
-        }
-        if ImageVars.shared.shareMetadataTypePostToVimeo {
-            activitiesSharing.append(.postToVimeo)
-        } else {
-            activitiesNotSharing.append(.postToVimeo)
-        }
-        if ImageVars.shared.shareMetadataTypePostToWeibo {
-            activitiesSharing.append(.postToWeibo)
-        } else {
-            activitiesNotSharing.append(.postToWeibo)
-        }
-        if ImageVars.shared.shareMetadataTypePostToWhatsApp {
-            activitiesSharing.append(pwgActivityTypePostToWhatsApp)
-        } else {
-            activitiesNotSharing.append(pwgActivityTypePostToWhatsApp)
-        }
         if ImageVars.shared.shareMetadataTypeSaveToCameraRoll {
             activitiesSharing.append(.saveToCameraRoll)
         } else {
@@ -383,28 +326,6 @@ extension ShareMetadataViewController {
             ImageVars.shared.shareMetadataTypeMail = newState
         case .message:
             ImageVars.shared.shareMetadataTypeMessage = newState
-        case .postToFacebook:
-            ImageVars.shared.shareMetadataTypePostToFacebook = newState
-        case pwgActivityTypeMessenger:
-            ImageVars.shared.shareMetadataTypeMessenger = newState
-        case .postToFlickr:
-            ImageVars.shared.shareMetadataTypePostToFlickr = newState
-        case pwgActivityTypePostInstagram:
-            ImageVars.shared.shareMetadataTypePostInstagram = newState
-        case pwgActivityTypePostToSignal:
-            ImageVars.shared.shareMetadataTypePostToSignal = newState
-        case pwgActivityTypePostToSnapchat:
-            ImageVars.shared.shareMetadataTypePostToSnapchat = newState
-        case .postToTencentWeibo:
-            ImageVars.shared.shareMetadataTypePostToTencentWeibo = newState
-        case .postToTwitter:
-            ImageVars.shared.shareMetadataTypePostToTwitter = newState
-        case .postToVimeo:
-            ImageVars.shared.shareMetadataTypePostToVimeo = newState
-        case .postToWeibo:
-            ImageVars.shared.shareMetadataTypePostToWeibo = newState
-        case pwgActivityTypePostToWhatsApp:
-            ImageVars.shared.shareMetadataTypePostToWhatsApp = newState
         case .saveToCameraRoll:
             ImageVars.shared.shareMetadataTypeSaveToCameraRoll = newState
         case pwgActivityTypeOther:
@@ -437,39 +358,6 @@ extension ShareMetadataViewController {
         case .message:
             name = width > 375 ? String(localized: "shareActivityCode_Message>375px", comment: "Post images with the Message app")
                                : String(localized: "shareActivityCode_Message", comment: "Post with Message")
-        case .postToFacebook:
-            name = width > 375 ? String(localized: "shareActivityCode_Facebook>375px", comment: "Post images to Facebook")
-                               : String(localized: "shareActivityCode_Facebook", comment: "Post to Facebook")
-        case pwgActivityTypeMessenger:
-            name = width > 375 ? String(localized: "shareActivityCode_Messenger>375px", comment: "Post images with the Messenger app")
-                               : String(localized: "shareActivityCode_Messenger", comment: "Post with Messenger")
-        case .postToFlickr:
-            name = width > 375 ? String(localized: "shareActivityCode_Flickr>375px", comment: "Post images to Flickr")
-                               : String(localized: "shareActivityCode_Flickr", comment: "Post to Flickr")
-        case pwgActivityTypePostInstagram:
-            name = width > 375 ? String(localized: "shareActivityCode_Instagram>375px", comment: "Post images to Instagram")
-                               : String(localized: "shareActivityCode_Instagram", comment: "Post to Instagram")
-        case pwgActivityTypePostToSignal:
-            name = width > 375 ? String(localized: "shareActivityCode_Signal>375px", comment: "Post images with the Signal app")
-                               : String(localized: "shareActivityCode_Signal", comment: "Post with Signal")
-        case pwgActivityTypePostToSnapchat:
-            name = width > 375 ? String(localized: "shareActivityCode_Snapchat>375px", comment: "Post images to Snapchat app")
-                               : String(localized: "shareActivityCode_Snapchat", comment: "Post to Snapchat")
-        case .postToTencentWeibo:
-            name = width > 375 ? String(localized: "shareActivityCode_TencentWeibo>375px", comment: "Post images to TencentWeibo")
-                               : String(localized: "shareActivityCode_TencentWeibo", comment: "Post to TencentWeibo")
-        case .postToTwitter:
-            name = width > 375 ? String(localized: "shareActivityCode_Twitter>375px", comment: "Post images to Twitter")
-                               : String(localized: "shareActivityCode_Twitter", comment: "Post to Twitter")
-        case .postToVimeo:
-            name = width > 375 ? String(localized: "shareActivityCode_Vimeo>375px", comment: "Post videos to Vimeo")
-                               : String(localized: "shareActivityCode_Vimeo", comment: "Post to Vimeo")
-        case .postToWeibo:
-            name = width > 375 ? String(localized: "shareActivityCode_Weibo>375px", comment: "Post images to Weibo")
-                               : String(localized: "shareActivityCode_Weibo", comment: "Post to Weibo")
-        case pwgActivityTypePostToWhatsApp:
-            name = width > 375 ? String(localized: "shareActivityCode_WhatsApp>375px", comment: "Post images with the WhatsApp app")
-                               : String(localized: "shareActivityCode_WhatsApp", comment: "Post with WhatsApp")
         case .saveToCameraRoll:
             name = width > 375 ? String(localized: "shareActivityCode_CameraRoll>375px", comment: "Save images to Camera Roll")
                                : String(localized: "shareActivityCode_CameraRoll", comment: "Save to Camera Roll")

@@ -121,7 +121,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         }
 
         // Get the maximum accepted image size (infinity for largest)
-        let maxSize = activityType?.imageMaxSize() ?? Int.max
+        let maxSize = activityType?.maxSizeWhenOptimised() ?? Int.max
 
         // Get the server ID and optimum available image size
         guard let serverID = imageData.server?.uuid,

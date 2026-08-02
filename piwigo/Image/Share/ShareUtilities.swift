@@ -300,113 +300,49 @@ final class ShareUtilities {
 extension UIActivity.ActivityType
 {    
     // Return the maximum resolution accepted for some activity types
-    func imageMaxSize() -> Int {
-        // Get the maximum image size according to the activity type (infinity if no limit)
-        /// - See https://makeawebsitehub.com/social-media-image-sizes-cheat-sheet/
-        /// - High resolution for: AirDrop, Copy, Mail, Message, iBooks, Flickr, Print, SaveToCameraRoll
-        var maxSize = Int.max
+    /// - This limit is a floor applied inside the "Optimised" size option only.
+    ///   Images shared in their "Original" size are never downsized, whatever the destination.
+    /// - AirDrop, Mail, Message, Print and the other activities have no limit:
+    ///   they either handle large files well or propose their own resizing options.
+    func maxSizeWhenOptimised() -> Int {
         switch self {
         case .assignToContact:
-            maxSize = 1024
-        case .postToFacebook:
-            maxSize = 1200
-        case .postToTencentWeibo:
-            maxSize = 640 // 9 images max + 1 video
-        case .postToTwitter:
-            maxSize = 880 // 4 images max
-        case .postToWeibo:
-            maxSize = 640 // 9 images max + 1 video
-        case pwgActivityTypePostToWhatsApp:
-            maxSize = 1920
-        case pwgActivityTypePostToSignal:
-            maxSize = 1920
-        case pwgActivityTypeMessenger:
-            maxSize = 1920
-        case pwgActivityTypePostInstagram:
-            maxSize = 1080
+            // A contact card never displays more than a portrait thumbnail
+            return 1024
+        case .copyToPasteboard:
+            // The pasteboard keeps items in memory and uploads them to iCloud
+            // when Universal Clipboard is enabled
+            return 1920
         default:
-            maxSize = Int.max
+            return Int.max
         }
-        return maxSize
     }
 
     func shouldStripMetadata() -> Bool {
         // Return whether the user wants to strip metadata
-        /// - The flag are set in Settings / Images / Share Metadata
+        /// - The flags are set in Settings / Privacy / Share Metadata
+        /// - Only the activity types which iOS still proposes are listed:
+        ///   the built-in social ones (Facebook, Twitter, Flickr, Vimeo, Weibo, Tencent Weibo)
+        ///   have not been vended since iOS 11 removed the system social accounts,
+        ///   and the apps which replaced them are handled by the default case.
         switch self {
         case .airDrop:
-            if !ImageVars.shared.shareMetadataTypeAirDrop {
-                return true
-            }
+            return !ImageVars.shared.shareMetadataTypeAirDrop
         case .assignToContact:
-            if !ImageVars.shared.shareMetadataTypeAssignToContact {
-                return true
-            }
+            return !ImageVars.shared.shareMetadataTypeAssignToContact
         case .copyToPasteboard:
-            if !ImageVars.shared.shareMetadataTypeCopyToPasteboard {
-                return true
-            }
+            return !ImageVars.shared.shareMetadataTypeCopyToPasteboard
         case .mail:
-            if !ImageVars.shared.shareMetadataTypeMail {
-                return true
-            }
+            return !ImageVars.shared.shareMetadataTypeMail
         case .message:
-            if !ImageVars.shared.shareMetadataTypeMessage {
-                return true
-            }
-        case .postToFacebook:
-            if !ImageVars.shared.shareMetadataTypePostToFacebook {
-                return true
-            }
-        case pwgActivityTypeMessenger:
-            if !ImageVars.shared.shareMetadataTypeMessenger {
-                return true
-            }
-        case .postToFlickr:
-            if !ImageVars.shared.shareMetadataTypePostToFlickr {
-                return true
-            }
-        case pwgActivityTypePostInstagram:
-            if !ImageVars.shared.shareMetadataTypePostInstagram {
-                return true
-            }
-        case pwgActivityTypePostToSignal:
-            if !ImageVars.shared.shareMetadataTypePostToSignal {
-                return true
-            }
-        case pwgActivityTypePostToSnapchat:
-            if !ImageVars.shared.shareMetadataTypePostToSnapchat {
-                return true
-            }
-        case .postToTencentWeibo:
-            if !ImageVars.shared.shareMetadataTypePostToTencentWeibo {
-                return true
-            }
-        case .postToTwitter:
-            if !ImageVars.shared.shareMetadataTypePostToTwitter {
-                return true
-            }
-        case .postToVimeo:
-            if !ImageVars.shared.shareMetadataTypePostToVimeo {
-                return true
-            }
-        case .postToWeibo:
-            if !ImageVars.shared.shareMetadataTypePostToWeibo {
-                return true
-            }
-        case pwgActivityTypePostToWhatsApp:
-            if !ImageVars.shared.shareMetadataTypePostToWhatsApp {
-                return true
-            }
+            return !ImageVars.shared.shareMetadataTypeMessage
         case .saveToCameraRoll:
-            if !ImageVars.shared.shareMetadataTypeSaveToCameraRoll {
-                return true
-            }
+            return !ImageVars.shared.shareMetadataTypeSaveToCameraRoll
+        case .print:
+            // Printers discard metadata: stripping it would only cost time and quality
+            return false
         default:
-            if !ImageVars.shared.shareMetadataTypeOther {
-                return true
-            }
+            return !ImageVars.shared.shareMetadataTypeOther
         }
-        return false
     }
 }

@@ -100,9 +100,7 @@ extension AlbumViewController
                         itemsToShare.append(pdfItemProvider)
                         
                         // Exclude some activities
-                        excludedActivityTypes.formUnion([.assignToContact, .saveToCameraRoll,
-                                                         .postToFacebook, .postToTwitter, .postToWeibo,
-                                                         .postToVimeo, .postToTencentWeibo])
+                        excludedActivityTypes.formUnion([.assignToContact, .saveToCameraRoll])
                         if #available(iOS 16.4, *) {
                             excludedActivityTypes.formUnion([.addToHomeScreen,
                                                              .collaborationCopyLink, .collaborationInviteWithLink])

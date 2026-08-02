@@ -18,13 +18,25 @@ final class ImageVars: @unchecked Sendable {
 
     // Remove deprecated stored objects if needed
     init() {
-//        // Deprecated data?
-//        if let _ = UserDefaults.standard.object(forKey: "test") {
-//            UserDefaults.standard.removeObject(forKey: "test")
-//        }
-//        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
-//            UserDefaults.dataSuite.removeObject(forKey: "test")
-//        }
+        // Share metadata settings of activity types which iOS no longer proposes:
+        // the built-in social integration was removed in iOS 11 and the apps which
+        // replaced it are handled by the 'shareMetadataTypeOther' setting.
+        let deprecatedShareMetadataKeys = ["shareMetadataTypePostToFacebook",
+                                           "shareMetadataTypeMessenger",
+                                           "shareMetadataTypePostToFlickr",
+                                           "shareMetadataTypePostInstagram",
+                                           "shareMetadataTypePostToSignal",
+                                           "shareMetadataTypePostToSnapchat",
+                                           "shareMetadataTypePostToTencentWeibo",
+                                           "shareMetadataTypePostToTwitter",
+                                           "shareMetadataTypePostToVimeo",
+                                           "shareMetadataTypePostToWeibo",
+                                           "shareMetadataTypePostToWhatsApp"]
+        for key in deprecatedShareMetadataKeys {
+            if UserDefaults.standard.object(forKey: key) != nil {
+                UserDefaults.standard.removeObject(forKey: key)
+            }
+        }
     }
 
     // MARK: - Vars in UserDefaults / Standard
@@ -53,50 +65,6 @@ final class ImageVars: @unchecked Sendable {
     @UserDefault("shareMetadataTypeMessage", defaultValue: true)
     var shareMetadataTypeMessage: Bool
 
-    /// - Strip metadata when sharing image with Facebook by default
-    @UserDefault("shareMetadataTypePostToFacebook", defaultValue: false)
-    var shareMetadataTypePostToFacebook: Bool
-
-    /// - Strip metadata when sharing image with Messenger by default
-    @UserDefault("shareMetadataTypeMessenger", defaultValue: false)
-    var shareMetadataTypeMessenger: Bool
-    
-    /// - Strip metadata when sharing image with Flicker by default
-    @UserDefault("shareMetadataTypePostToFlickr", defaultValue: false)
-    var shareMetadataTypePostToFlickr: Bool
-    
-    /// - Strip metadata when posting image on Instagram by default
-    @UserDefault("shareMetadataTypePostInstagram", defaultValue: true)
-    var shareMetadataTypePostInstagram: Bool
-    
-    /// - Share image with metadata when sharing with Signal by default
-    @UserDefault("shareMetadataTypePostToSignal", defaultValue: true)
-    var shareMetadataTypePostToSignal: Bool
-    
-    /// - Strip metadata when posting image on Snapchat by default
-    @UserDefault("shareMetadataTypePostToSnapchat", defaultValue: false)
-    var shareMetadataTypePostToSnapchat: Bool
-    
-    /// - Strip metadata when posting image on Tencent Weibo by default
-    @UserDefault("shareMetadataTypePostToTencentWeibo", defaultValue: false)
-    var shareMetadataTypePostToTencentWeibo: Bool
-    
-    /// - Strip metadata when posting image on Twitter by default
-    @UserDefault("shareMetadataTypePostToTwitter", defaultValue: false)
-    var shareMetadataTypePostToTwitter: Bool
-    
-    /// - Strip metadata when posting image on Vimeo by default
-    @UserDefault("shareMetadataTypePostToVimeo", defaultValue: false)
-    var shareMetadataTypePostToVimeo: Bool
-    
-    /// - Strip metadata when posting image on Weibo by default
-    @UserDefault("shareMetadataTypePostToWeibo", defaultValue: false)
-    var shareMetadataTypePostToWeibo: Bool
-    
-    /// - Strip metadata when sharing image with Whatsapp by default
-    @UserDefault("shareMetadataTypePostToWhatsApp", defaultValue: false)
-    var shareMetadataTypePostToWhatsApp: Bool
-    
     /// - Keep metadata when saving image in camera roll by default
     @UserDefault("shareMetadataTypeSaveToCameraRoll", defaultValue: true)
     var shareMetadataTypeSaveToCameraRoll: Bool
