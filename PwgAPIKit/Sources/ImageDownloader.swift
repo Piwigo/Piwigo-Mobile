@@ -55,9 +55,9 @@ public actor ImageDownloader {
             return
         }
         
-        #if DEBUG
-        ImageDownloader.logger.notice("Get image \(imageID) of size \(imageSize.name)")
-        #endif
+//        #if DEBUG
+//        ImageDownloader.logger.notice("Get image \(imageID) of size \(imageSize.name)")
+//        #endif
         
         // Determine URL of image in cache
         let cacheDir = DataDirectories.cacheDirectory.appendingPathComponent(serverID)
@@ -75,9 +75,9 @@ public actor ImageDownloader {
                 isExpectedFile = diff < 0.1     // i.e. 10%
             }
             if isExpectedFile {
-                #if DEBUG
-                ImageDownloader.logger.notice("Return cached image \(fileURL.lastPathComponent) downloaded from \(imageURL)")
-                #endif
+//                #if DEBUG
+//                ImageDownloader.logger.notice("Return cached image \(fileURL.lastPathComponent) downloaded from \(imageURL)")
+//                #endif
                 // The file may have just been stored in cache by a download whose task
                 // did not complete yet. Its handlers must then be called, not discarded.
                 if let download = downloads[imageURL],
