@@ -357,6 +357,7 @@ extension SettingsViewController: UITableViewDelegate
                 else { preconditionFailure("Could not load LockOptionsViewController") }
                 appLockVC.delegate = self
                 navigationController?.pushViewController(appLockVC, animated: true)
+
             case 1 /* Clear Clipboard */:
                 // Display list of delays
                 let delaySB = UIStoryboard(name: "ClearClipboardViewController", bundle: nil)
@@ -364,11 +365,6 @@ extension SettingsViewController: UITableViewDelegate
                 else { preconditionFailure("Could not load ClearClipboardViewController") }
                 delayVC.delegate = self
                 navigationController?.pushViewController(delayVC, animated: true)
-            case 2 /* Share image metadata options */:
-                let metadataOptionsSB = UIStoryboard(name: "ShareMetadataViewController", bundle: nil)
-                guard let metadataOptionsVC = metadataOptionsSB.instantiateViewController(withIdentifier: "ShareMetadataViewController") as? ShareMetadataViewController
-                else { preconditionFailure("Could not load ShareMetadataViewController") }
-                navigationController?.pushViewController(metadataOptionsVC, animated: true)
 
             default:
                 break

@@ -57,7 +57,7 @@ extension SettingsViewController: UITableViewDataSource
             nberOfRows += (UploadVars.shared.compressImageOnUpload ? 1 : 0)
             nberOfRows += UIDevice.current.hasCellular ? 1 : 0
         case .privacy:
-            nberOfRows = 3
+            nberOfRows = 2
         case .appearance:
             nberOfRows = 1
         case .cache:
@@ -617,18 +617,6 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "clearClipboard"
                 tableViewCell = cell
                 
-            case 2 /* Share Image Metadata Options */:
-                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                    ? "LabelTableViewCell"
-                    : "LabelTableViewCell3"
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
-                else { preconditionFailure("Could not load LabelTableViewCell") }
-                // See https://iosref.com/res
-                cell.configure(with: String(localized: "settings_shareGPSdata", comment: "Share Private Metadata"), detail: "")
-                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-                cell.accessibilityIdentifier = "defaultShareOptions"
-                tableViewCell = cell
-
             default:
                 break
             }

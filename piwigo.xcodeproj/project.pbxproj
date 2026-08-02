@@ -58,7 +58,6 @@
 		AD1806FE2A803DA000B3BEF8 /* VideoVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1806FD2A803DA000B3BEF8 /* VideoVars.swift */; };
 		AD18C74027F22A0D002CD05C /* LockOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD18C73F27F22A0D002CD05C /* LockOptionsViewController.swift */; };
 		AD18C74227F22B1B002CD05C /* LockOptionsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD18C74127F22B1B002CD05C /* LockOptionsViewController.storyboard */; };
-		AD196AA12438D2D6006C492A /* ShareMetadataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD196AA02438D2D5006C492A /* ShareMetadataViewController.swift */; };
 		AD1AD61E2DFF195700D25EF9 /* AppShortcuts.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD1AD61C2DFF195700D25EF9 /* AppShortcuts.strings */; };
 		AD1BFE3E2745A15800858145 /* UIImageView+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1BFE3D2745A15800858145 /* UIImageView+AppTools.swift */; };
 		AD2058832B779AF500CF7E0B /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058822B779AF500CF7E0B /* Photos.framework */; };
@@ -435,8 +434,6 @@
 		ADFA31652E5211340019FC4B /* LocalImagesViewController+Bar.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFA31642E5211340019FC4B /* LocalImagesViewController+Bar.swift */; };
 		ADFA31672E5216730019FC4B /* PasteboardImagesViewController+Bar.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFA31662E5216730019FC4B /* PasteboardImagesViewController+Bar.swift */; };
 		ADFA31692E5216F20019FC4B /* PasteboardImagesViewController+Menus.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFA31682E5216F20019FC4B /* PasteboardImagesViewController+Menus.swift */; };
-		ADFA89042438CF4500F73F0F /* ShareMetadataViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADFA89032438CF4400F73F0F /* ShareMetadataViewController.storyboard */; };
-		ADFA89052438CFD800F73F0F /* ShareMetadataCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5A90782438C60500F8DAE6 /* ShareMetadataCell.swift */; };
 		ADFC3A4C2401D704004CD337 /* PrivacyPolicyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFC3A4B2401D704004CD337 /* PrivacyPolicyViewController.swift */; };
 		BF7EDD0C92425F2CD94FC559 /* AlbumEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B153098313E8E45CAC445B4 /* AlbumEntity.swift */; };
 		F0F9267E1FD04E25802D6386 /* GifDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12695FF2A60F479AA0A5105C /* GifDetailViewController.swift */; };
@@ -538,7 +535,6 @@
 		AD1806FD2A803DA000B3BEF8 /* VideoVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoVars.swift; sourceTree = "<group>"; };
 		AD18C73F27F22A0D002CD05C /* LockOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockOptionsViewController.swift; sourceTree = "<group>"; };
 		AD18C74127F22B1B002CD05C /* LockOptionsViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LockOptionsViewController.storyboard; sourceTree = "<group>"; };
-		AD196AA02438D2D5006C492A /* ShareMetadataViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareMetadataViewController.swift; sourceTree = "<group>"; };
 		AD1AD61D2DFF195700D25EF9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
 		AD1AD61F2DFF1B7C00D25EF9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
 		AD1AD6202DFF1C8200D25EF9 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
@@ -695,7 +691,6 @@
 		AD56B7BB266905ED001D4E21 /* release.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = release.entitlements; sourceTree = "<group>"; };
 		AD58F77E24EFC62F00ECF6BD /* UploadImageHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadImageHeaderView.swift; sourceTree = "<group>"; };
 		AD591A3A1F9116FA008D02B6 /* de */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/About.strings; sourceTree = "<group>"; };
-		AD5A90782438C60500F8DAE6 /* ShareMetadataCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareMetadataCell.swift; sourceTree = "<group>"; };
 		AD5B498024E5C02300BDF5B4 /* UploadQueueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadQueueViewController.swift; sourceTree = "<group>"; };
 		AD5FB3A22D96A49400802895 /* RenameFileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameFileViewController.swift; sourceTree = "<group>"; };
 		AD5FB3A42D96A4AB00802895 /* RenameFileViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = RenameFileViewController.storyboard; sourceTree = "<group>"; };
@@ -978,7 +973,6 @@
 		ADFA31662E5216730019FC4B /* PasteboardImagesViewController+Bar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PasteboardImagesViewController+Bar.swift"; sourceTree = "<group>"; };
 		ADFA31682E5216F20019FC4B /* PasteboardImagesViewController+Menus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PasteboardImagesViewController+Menus.swift"; sourceTree = "<group>"; };
 		ADFA64BD29B3B5BB003F1B36 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InAppIntents.strings"; sourceTree = "<group>"; };
-		ADFA89032438CF4400F73F0F /* ShareMetadataViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ShareMetadataViewController.storyboard; sourceTree = "<group>"; };
 		ADFC3A4B2401D704004CD337 /* PrivacyPolicyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyViewController.swift; sourceTree = "<group>"; };
 		D0B07F397539C725E4E665D9 /* UploadPhotosError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = UploadPhotosError.swift; sourceTree = "<group>"; };
 		D82B8CBB1A67820A000E47CA /* piwigo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = piwigo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1533,9 +1527,6 @@
 				AD2D959927D7F14900AC1FD8 /* AppLockViewController.storyboard */,
 				ADF3AE5B2803340D009F5931 /* ClearClipboardViewController.swift */,
 				ADF3AE5D280336B6009F5931 /* ClearClipboardViewController.storyboard */,
-				AD196AA02438D2D5006C492A /* ShareMetadataViewController.swift */,
-				ADFA89032438CF4400F73F0F /* ShareMetadataViewController.storyboard */,
-				AD5A90782438C60500F8DAE6 /* ShareMetadataCell.swift */,
 			);
 			path = Privacy;
 			sourceTree = "<group>";
@@ -2215,7 +2206,6 @@
 				ADD3F4A12FA50AB5008B4D5E /* help10.png in Resources */,
 				AD563B422603FCE800B6EF93 /* AutoUploadViewController.storyboard in Resources */,
 				ADEAFB8F25F8198800EEDB1D /* ColorPaletteViewController.storyboard in Resources */,
-				ADFA89042438CF4500F73F0F /* ShareMetadataViewController.storyboard in Resources */,
 				AD1AD61E2DFF195700D25EF9 /* AppShortcuts.strings in Resources */,
 				ADD3F4A32FA50ABE008B4D5E /* help10-iOS18.png in Resources */,
 				ADD741F82699976100B47056 /* UploadPhotoSizeViewController.storyboard in Resources */,
@@ -2477,11 +2467,9 @@
 				AD7D13282DFED40200EEE90D /* AutoUpload.swift in Sources */,
 				ADDFFB932EEDD720003DCCFF /* NSAttributedString+AppTools.swift in Sources */,
 				ADC820DC276DF5E000720F33 /* AlbumUtilities.swift in Sources */,
-				ADFA89052438CFD800F73F0F /* ShareMetadataCell.swift in Sources */,
 				ADBE0C2F2BE967F000F16A50 /* AlbumViewController+DataSource.swift in Sources */,
 				AD6BA1042BA5ED1A00755257 /* LocalImagePreviewViewController.swift in Sources */,
 				AD0FE4BB2E01DB30002395CF /* Help09ViewController.swift in Sources */,
-				AD196AA12438D2D6006C492A /* ShareMetadataViewController.swift in Sources */,
 				AD0F4E5F2E74B8F700D05C4C /* LocalAlbumsViewController+Delegate.swift in Sources */,
 				AD7B4E582E9C0EC900E3219E /* EditImageShiftDatePickerTableViewCell.swift in Sources */,
 				AD9F9C2F2B4AF2D700943A96 /* EditImageParamsViewController+Keyboard.swift in Sources */,
