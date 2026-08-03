@@ -40,7 +40,7 @@ class ShareOptionsViewController: UIViewController {
         super.viewDidLoad()
         
         // Title and buttons
-        title = String(localized: "shareOptions_title", comment: "Options")
+        title = String(localized: "shareOptions_title", comment: "Title of the view proposing what to share, presented before the share sheet")
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self,
                                                            action: #selector(cancelShare))
         navigationItem.rightBarButtonItem = UIBarButtonItem.shareImageButton(self, action: #selector(share))
@@ -183,7 +183,7 @@ extension ShareOptionsViewController: UITableViewDataSource
             let format: pwgShareFormat = indexPath.row == 0 ? .original : .mostCompatible
             let title = format == .original
                 ? String(localized: "shareOptions_formatOriginal", comment: "Share the file in its original format — adjective agreeing with 'Format', the section header")
-                : String(localized: "shareOptions_formatCompatible", comment: "Most Compatible")
+                : String(localized: "shareOptions_formatCompatible", comment: "Share the file in a format any app can read — adjective agreeing with 'Format', the section header")
             cell.configure(with: title, detail: "")
             cell.accessoryType = options.format == format ? .checkmark : .none
             cell.accessibilityIdentifier = "shareFormat"
@@ -194,14 +194,14 @@ extension ShareOptionsViewController: UITableViewDataSource
             else { preconditionFailure("Could not load SwitchTableViewCell") }
             
             if indexPath.row == 0 {
-                cell.configure(with: String(localized: "shareOptions_location", comment: "Location"))
+                cell.configure(with: String(localized: "shareOptions_location", comment: "Switch keeping or dropping the place where the photo was taken"))
                 cell.cellSwitch.setOn(options.keepsLocation, animated: false)
                 cell.cellSwitchBlock = { [weak self] isOn in
                     self?.options.keepsLocation = isOn
                 }
                 cell.accessibilityIdentifier = "shareLocation"
             } else {
-                cell.configure(with: String(localized: "shareOptions_contactInfo", comment: "Contact Info"))
+                cell.configure(with: String(localized: "shareOptions_contactInfo", comment: "Switch keeping or dropping the name and contact info of the author of the photo"))
                 cell.cellSwitch.setOn(options.keepsContactInfo, animated: false)
                 cell.cellSwitchBlock = { [weak self] isOn in
                     self?.options.keepsContactInfo = isOn
@@ -220,7 +220,7 @@ extension ShareOptionsViewController: UITableViewDataSource
             let size: pwgShareSize = indexPath.row == 0 ? .original : .optimised
             let title = size == .original
                       ? String(localized: "shareOptions_sizeOriginal", comment: "Share the file in its original resolution — adjective agreeing with 'Size', the section header")
-                      : String(localized: "shareOptions_sizeOptimised", comment: "Optimised")
+                      : String(localized: "shareOptions_sizeOptimised", comment: "Share the file in a smaller resolution, downloaded faster — adjective agreeing with 'Size', the section header")
             let resolution = size == .original ? originalResolution : optimisedResolution
             cell.configure(with: title, detail: ShareUtilities.dimensions(of: resolution))
             cell.accessoryType = options.size == size ? .checkmark : .none

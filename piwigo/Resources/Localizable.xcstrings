@@ -49416,7 +49416,7 @@
       }
     },
     "shareOptions_contactInfo" : {
-      "comment" : "Contact Info",
+      "comment" : "Switch keeping or dropping the name and contact info of the author of the photo",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -49618,7 +49618,7 @@
       }
     },
     "shareOptions_formatCompatible" : {
-      "comment" : "Most Compatible",
+      "comment" : "Share the file in a format any app can read — adjective agreeing with 'Format', the section header",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -49921,7 +49921,7 @@
       }
     },
     "shareOptions_location" : {
-      "comment" : "Location",
+      "comment" : "Switch keeping or dropping the place where the photo was taken",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -50426,7 +50426,7 @@
       }
     },
     "shareOptions_sizeOptimised" : {
-      "comment" : "Optimised",
+      "comment" : "Share the file in a smaller resolution, downloaded faster — adjective agreeing with 'Size', the section header",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -50628,7 +50628,7 @@
       }
     },
     "shareOptions_title" : {
-      "comment" : "Options",
+      "comment" : "Title of the view proposing what to share, presented before the share sheet",
       "localizations" : {
         "ar" : {
           "stringUnit" : {

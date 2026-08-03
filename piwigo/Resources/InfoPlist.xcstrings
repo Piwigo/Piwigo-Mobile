@@ -205,6 +205,17 @@
         }
       }
     },
+    "Encapsulated PostScript" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encapsulated PostScript"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
     "NSFaceIDUsageDescription" : {
       "comment" : "Privacy - Face ID Usage Description",
       "extractionState" : "extracted_with_value",
