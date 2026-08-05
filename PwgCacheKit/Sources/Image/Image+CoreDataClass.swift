@@ -129,6 +129,12 @@ public final nonisolated class Image: NSManagedObject, Identifiable {
             }
         }
         
+        // Remembers who added the image
+        if let newAddedBy = imageData.addedBy?.int16Value, newAddedBy != 0,
+            addedBy != newAddedBy {
+            addedBy = newAddedBy
+        }
+        
         // Update date only if new date is after 00:00:00 UTC on 8 January 1900
         if let newPostedInterval = DateUtilities.timeInterval(from: imageData.datePosted) {
             if newPostedInterval != datePosted {
@@ -165,7 +171,7 @@ public final nonisolated class Image: NSManagedObject, Identifiable {
         // Add tags (Attention: pwg.categories.getImages returns only one tag)
         if imageData.title != nil {
             if let tags = imageData.tags, let serverTags = user.server?.tags {
-                let tagIds = tags.map { $0.id?.int32Value }
+                let tagIds = tags.compactMap { $0.id?.int32Value }
                 let imageTags = serverTags.filter({ tag in
                     tagIds.contains(where: { $0 == tag.tagId }) == true
                 })

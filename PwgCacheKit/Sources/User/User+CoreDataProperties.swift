@@ -17,21 +17,26 @@ extension User {
         return NSFetchRequest<User>(entityName: "User")
     }
 
-    @NSManaged public var id: Int16
-    @NSManaged public var username: String
-    @NSManaged public var email: String
-    @NSManaged public var status: String
-    @NSManaged public var recentPeriod: Int16
-    @NSManaged public var registrationDate: TimeInterval
-    @NSManaged public var lastUsed: TimeInterval
-    @NSManaged public var name: String
-    @NSManaged public var server: Server?
-    @NSManaged public var groups: Set<UserGroup>?
-    @NSManaged public var albums: Set<Album>?
-    @NSManaged public var uploadRights: String
-    @NSManaged public var downloadRights: Bool
-    @NSManaged public var uploads: Set<Upload>?
-    @NSManaged public var images: Set<Image>?
+    @NSManaged public var pwgID: Int16                          // Piwigo user ID
+    @NSManaged public var login: String                         // Username or API public key
+    @NSManaged public var username: String                      // User's account name
+    @NSManaged public var name: String                          // User's name
+    @NSManaged public var email: String                         // User's email
+    @NSManaged public var status: String                        // See pwgUserStatus
+    
+    @NSManaged public var recentPeriod: Int16                   // Recent period in number of days
+    @NSManaged public var registrationDate: TimeInterval        // Date of account creation
+    @NSManaged public var lastUsed: TimeInterval                // Last time the account was accessed
+    
+    @NSManaged public var createAlbumRights: String?            // Allowed to create albums in album IDs
+    @NSManaged public var uploadRights: String                  // Allowed to upload in album IDs
+    @NSManaged public var downloadRights: Bool                  // Allowed to download
+    
+    @NSManaged public var server: Server?                       // Server of the account
+    @NSManaged public var groups: Set<UserGroup>?               // Groups to which the user belongs to
+    @NSManaged public var albums: Set<Album>?                   // Albums to which the user has access to
+    @NSManaged public var images: Set<Image>?                   // Images to which the user has access to
+    @NSManaged public var uploads: Set<Upload>?                 // Uploads requested by the user
 
 }
 
