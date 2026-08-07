@@ -14,6 +14,25 @@ public final class ImageProvider {
     
     public init() {}    // To make this class public
     
+    // MARK: - Fetch Request
+    func fetchRequestOfImage(inContext taskContext: NSManagedObjectContext,
+                             withIds imageIds: Set<Int64>) -> NSFetchRequest<Image> {
+        let fetchRequest = Image.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Image.pwgID), ascending: true)]
+        
+        // Select images:
+        /// — of the current server
+        /// — having an ID matching one of the given image IDs
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "pwgID IN %@", Array(imageIds)))
+        andPredicates.append(NSPredicate(format: "server.path == %@", ServerVars.shared.serverPath))
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.shouldRefreshRefetchedObjects = true
+        return fetchRequest
+    }
+
+    
     // MARK: - Get Images
     public func getObjectCount(inContext taskContext: NSManagedObjectContext) -> Int64 {
 
@@ -34,49 +53,7 @@ public final class ImageProvider {
         }
         return Int64.zero
     }
-
-    func fetchRequestOfImage(inContext taskContext: NSManagedObjectContext,
-                             withIds imageIds: Set<Int64>) -> NSFetchRequest<Image> {
-        let fetchRequest = Image.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Image.pwgID), ascending: true)]
         
-        // Select images:
-        /// — of the current server
-        /// — having an ID matching one of the given image IDs
-        var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "pwgID IN %@", Array(imageIds)))
-        andPredicates.append(NSPredicate(format: "server.path == %@", ServerVars.shared.serverPath))
-        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-        fetchRequest.returnsObjectsAsFaults = false
-        fetchRequest.shouldRefreshRefetchedObjects = true
-        return fetchRequest
-    }
-    
-//    public func getPropertiesOfImage(withID imageID: Int64,
-//                                     inContext taskContext: NSManagedObjectContext) throws(PwgKitError) -> ImageProperties?
-//    {
-//        var imageProperties: ImageProperties? = nil
-//        do {
-//            try taskContext.performAndWait { () throws -> Void in
-//                
-//                // Create a fetch request for the Album entity
-//                let fetchRequest = fetchRequestOfImage(inContext: taskContext, withIds: [imageID])
-//                
-//                // Return the Image entities if possible
-//                let images = try taskContext.fetch(fetchRequest)
-//                guard let image = images.first
-//                else { throw PwgKitError.imageNotFound }
-//                
-//                imageProperties = image.getProperties()
-//            }
-//        }
-//        catch let error as PwgKitError { throw error }
-//        catch let error as NSError { throw PwgKitError.CoreDataError(innerError: error)}
-//        catch let error { throw PwgKitError.otherError(innerError: error) }
-//        
-//        return imageProperties
-//    }
-    
     public func getImages(inContext taskContext: NSManagedObjectContext,
                           withIds imageIds: Set<Int64>) throws -> Set<Image> {
         
@@ -99,6 +76,31 @@ public final class ImageProvider {
             }
         }
     }
+    
+//    public func getPropertiesOfImage(withID imageID: Int64,
+//                                     inContext taskContext: NSManagedObjectContext) throws(PwgKitError) -> ImageProperties?
+//    {
+//        var imageProperties: ImageProperties? = nil
+//        do {
+//            try taskContext.performAndWait { () throws -> Void in
+//
+//                // Create a fetch request for the Album entity
+//                let fetchRequest = fetchRequestOfImage(inContext: taskContext, withIds: [imageID])
+//
+//                // Return the Image entities if possible
+//                let images = try taskContext.fetch(fetchRequest)
+//                guard let image = images.first
+//                else { throw PwgKitError.imageNotFound }
+//
+//                imageProperties = image.getProperties()
+//            }
+//        }
+//        catch let error as PwgKitError { throw error }
+//        catch let error as NSError { throw PwgKitError.CoreDataError(innerError: error)}
+//        catch let error { throw PwgKitError.otherError(innerError: error) }
+//
+//        return imageProperties
+//    }
     
     
     // MARK: - Import Images
