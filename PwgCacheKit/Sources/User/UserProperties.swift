@@ -25,11 +25,11 @@ public struct UserProperties: Sendable
     public var registrationDate: TimeInterval       // Date of account creation
     public var lastUsed: TimeInterval               // Last time the account was accessed
     
-    public var createAlbumRights: String            // Allowed to create albums in album IDs
+    public var createAlbumRights: String?           // Allowed to create albums in album IDs
     public var uploadRights: String                 // Allowed to upload in album IDs
     public var downloadRights: Bool                 // Allowed to download
     
-    public var userURIstr: String                   // User instance URI string
+    public var URIstr: String                       // URI string representation
 }
 
 
@@ -41,7 +41,7 @@ extension UserProperties
                   registrationDate: Date.distantPast.timeIntervalSinceReferenceDate,
                   lastUsed: Date.distantPast.timeIntervalSinceReferenceDate,
                   createAlbumRights: "", uploadRights: "", downloadRights: false,
-                  userURIstr: "")
+                  URIstr: "")
     }
     
     public var role: pwgUserStatus {
@@ -50,5 +50,65 @@ extension UserProperties
     
     public var hasAdminRights: Bool {
         return [.webmaster, .admin].contains(self.role)
+    }
+    
+    public func canManageFavorites() -> Bool {
+        return !(self.role == .guest)
+    }
+    
+    public func canDownloadImages() -> Bool {
+        // Since Piwigo 14, pwg.categories.getImages method returns download_url if the user has download rights
+        // For previous versions, we assumed that all only registered users have download rights
+        // The download right is reset each time a batch of images is imported.
+        let versionTooOld = ServerVars.shared.pwgVersion.compare("14.0", options: .numeric) == .orderedAscending
+        if versionTooOld, self.role == .guest {
+            return false
+        }
+        if versionTooOld == false, self.downloadRights == false {
+            return false
+        }
+        return true
+    }
+    
+    public var hasUploadRights: Bool {
+        // Admin user?
+        if self.hasAdminRights { return true }
+        // Guest user?
+        if self.role == .guest { return false }
+        // Community user (.generic or .normal) ?
+        return ServerVars.shared.usesCommunityPluginV29
+    }
+    
+    public func hasUploadRights(forCatID categoryID: Int32) -> Bool {
+        // Admin user?
+        if self.hasAdminRights { return true }
+        // Guest user?
+        if self.role == .guest { return false }
+        // Community user (.generic or .normal) ?
+        if ServerVars.shared.usesCommunityPluginV29 == false { return false }
+        switch categoryID {
+        case .zero:
+            return false
+        case 1...Int32.max:
+            return self.uploadRights.components(separatedBy: ",").contains(String(categoryID))
+        default:
+            return false
+        }
+    }
+    
+    public func hasAlbumCreationRights(inCatID categoryID: Int32) -> Bool {
+        // Admin user?
+        if self.hasAdminRights { return true }
+        // Guest user?
+        if self.role == .guest { return false }
+        // Community user (.generic or .normal) ?
+        if ServerVars.shared.usesCommunityPluginV29 == false { return false }
+        switch categoryID {
+        case 0...Int32.max:
+            guard let createAlbumRights = self.createAlbumRights else { return false }
+            return createAlbumRights.components(separatedBy: ",").contains(String(categoryID))
+        default:
+            return false
+        }
     }
 }

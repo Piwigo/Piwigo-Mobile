@@ -14,7 +14,7 @@ import PwgUIKit
 
 class VideoDetailViewController: UIViewController
 {
-    var user: User!
+    var userData: UserProperties!
     var indexPath = IndexPath(item: 0, section: 0)
     var imageData: Image! {
         didSet {

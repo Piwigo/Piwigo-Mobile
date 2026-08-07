@@ -197,7 +197,7 @@ extension AlbumViewController
         localAlbumsVC.categoryId = categoryId
         localAlbumsVC.categoryCurrentCounter = albumData.currentCounter
         localAlbumsVC.albumDelegate = self
-        localAlbumsVC.user = user
+        localAlbumsVC.userData = userData
         let navController = UINavigationController(rootViewController: localAlbumsVC)
         navController.modalTransitionStyle = .coverVertical
         navController.modalPresentationStyle = .pageSheet
@@ -221,6 +221,10 @@ extension AlbumViewController
 // MARK: - AlbumViewControllerDelegate Methods
 extension AlbumViewController: @MainActor AlbumViewControllerDelegate {
     func didSelectCurrentCounter(value: Int64) {
-        albumData.currentCounter = value    // Don't save this change also here to prevent a crash (conflict)
+        // Save counter value if needed
+        if value != albumData.currentCounter {
+            albumData.currentCounter = value
+            try? albumProvider.updateAlbum(withProperties: albumData, inContext: mainContext)
+        }
     }
 }

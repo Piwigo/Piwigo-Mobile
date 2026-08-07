@@ -100,7 +100,7 @@ extension AlbumViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
                 
                 // Rotate thumbnails on server
                 try await JSONManager.shared.rotateImage(withID: imageData.pwgID, by: angle)

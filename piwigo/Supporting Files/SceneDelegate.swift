@@ -33,11 +33,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var savedShortCutItem: UIApplicationShortcutItem!
     var savedUrlContexts: Set<UIOpenURLContext> = []
     
-    // MARK: - Core Data Object Contexts
-    private lazy var mainContext: NSManagedObjectContext = {
-        return DataController.shared.mainContext
-    }()
-    
+    // MARK: - Core Data Objects
+    @MainActor
+    private lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
+
     
     // MARK: - Connecting and Disconnecting scenes
     /** Apps configure their UIWindow and attach it to the provided UIWindowScene scene.
@@ -491,8 +490,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     navController.popToRootViewController(animated: false)
                     
                     // Check that an album of favorites exists in cache (create it if necessary)
-                    guard let albumVC = navController.viewControllers.first as? AlbumViewController,
-                          let _ = try? AlbumProvider().getAlbum(ofUser: albumVC.user, withId: pwgSmartAlbum.favorites.rawValue)
+                    guard let _ = try? AlbumProvider().getOrCreateAlbum(withID: pwgSmartAlbum.favorites.rawValue,
+                                                                        inContext: mainContext)
                     else { return false }
                     
                     // Present favorite images
@@ -576,8 +575,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 
                 // Get source and destination albums
                 guard let destinationAlbumID = albumIDs.last,
-                      let sourceAlbum = try? AlbumProvider().getAlbum(ofUser: defaultAlbum.user, withId: defaultAlbum.categoryId),
-                      let destinationAlbum = try? AlbumProvider().getAlbum(ofUser: defaultAlbum.user, withId: destinationAlbumID)
+                      let sourceAlbum = AlbumProvider().getAlbum(withID: defaultAlbum.categoryId, inContext: self.mainContext),
+                      let destinationAlbum = AlbumProvider().getAlbum(withID: destinationAlbumID, inContext: self.mainContext)
                 else { return }
                 
                 // Get common path (don't use Set() which does not retain the order)
@@ -675,7 +674,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
                     // Prepare upload options selector
                     uploadSwitchVC.delegate = nil
-                    uploadSwitchVC.user = albumVC.user
+                    uploadSwitchVC.userData = albumVC.userData
                     uploadSwitchVC.categoryId = albumVC.categoryId
                     uploadSwitchVC.categoryCurrentCounter = destinationAlbum.currentCounter
                     // Offer to delete originals only for photos matched to a Photo Library asset

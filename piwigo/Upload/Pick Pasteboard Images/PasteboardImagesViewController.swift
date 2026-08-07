@@ -18,14 +18,12 @@ import PwgUploadKit
 final class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
     
     // MARK: - Core Data Objects
-    var user: User!
-    lazy var mainContext: NSManagedObjectContext = {
-        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
-            fatalError("!!! Missing Managed Object Context !!!")
-        }
-        return context
-    }()
-
+    @MainActor
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
+    var userData: UserProperties!
+    
+    
+    // MARK: - Core Data Source
     lazy var fetchUploadRequest: NSFetchRequest = {
         let fetchRequest = Upload.fetchRequest()
         // Priority to uploads requested manually, oldest ones first
@@ -43,7 +41,7 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
 
     public lazy var uploads: NSFetchedResultsController<Upload> = {
         let uploads = NSFetchedResultsController(fetchRequest: fetchUploadRequest,
-                                                 managedObjectContext: self.mainContext,
+                                                 managedObjectContext: mainContext,
                                                  sectionNameKeyPath: nil,
                                                  cacheName: nil)
         uploads.delegate = self
@@ -256,7 +254,7 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
         else { preconditionFailure("Could not load UploadSwitchViewController") }
         
         uploadSwitchVC.delegate = self
-        uploadSwitchVC.user = self.user
+        uploadSwitchVC.userData = self.userData
         uploadSwitchVC.categoryId = self.categoryId
         uploadSwitchVC.categoryCurrentCounter = self.categoryCurrentCounter
         uploadSwitchVC.canDeleteImages = false

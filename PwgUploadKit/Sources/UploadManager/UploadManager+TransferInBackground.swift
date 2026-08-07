@@ -312,10 +312,9 @@ extension UploadManager {
             }
             
             // Add uploaded image to cache and update UI if needed
-            if let userURI = URL(string: uploadData.userURIstr),
-               let userID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: userURI),
-               let user = try? uploadBckgContext.existingObject(with: userID) as? User,
-               user.hasAdminRights {
+            if let userData = try? UserProvider().getPropertiesOfUser(withURIstr: uploadData.userURIstr,
+                                                                      inContext: uploadBckgContext),
+               userData.hasAdminRights {
                 // Retrieve complete image data from the server now that the lounge is emptied.
                 // The pwg.images.uploadAsync response may carry derivatives whose files are not
                 // yet generated (empty/invalid thumbnail URLs), which would make the album show

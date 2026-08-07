@@ -56,10 +56,10 @@ extension AlbumViewController: @MainActor NSFetchedResultsControllerDelegate
                 if let objectID = diffableDataSource.itemIdentifier(for: indexPath), updatedItems.contains(objectID),
                    let album = try? self.mainContext.existingObject(with: objectID) as? Album {
                     if let cell = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCell {
-                        cell.config(withAlbumData: album)
+                        cell.config(withAlbum: album)
                     }
                     else if let cell = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCellOld,
-                            cell.albumData != album {
+                            cell.album != album {
                         cell.tableView?.reloadData()
                     }
                 }

@@ -106,19 +106,16 @@ extension AppDelegate
             }
 
             do {
-                // Retrieve the current user account
+                // Retrieve the current user account data
                 let bckgContext = DataController.shared.newTaskContext()
-                guard let user = try UserProvider().getUserAccount(inContext: bckgContext)
+                guard let userData = try? UserProvider().getPropertiesOfCurrentUser(inContext: bckgContext)
                 else {
                     AppDelegate.logger.notice("Background task '\(pwgBackgroundAlbumRefreshTask)' stopped: no user account.")
                     return
                 }
-                let userID = user.objectID
-                let userData = try UserProvider().getPropertiesOfUser(withURIstr: userID.uriRepresentation().absoluteString,
-                                                                      inContext: bckgContext)
-
+                
                 // Re-login if the session was closed
-                try await UploadManager.shared.checkSession(ofUserWithID: userID, lastConnected: userData.lastUsed)
+                try await UploadManager.shared.checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
                 if Task.isCancelled { return }
 
                 // Fetch data of all albums at once

@@ -37,7 +37,7 @@ extension UploadParametersViewController {
     override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         // Don't present privacy level choice to non-admin users
         var row = indexPath.row
-        row += (!(user?.hasAdminRights ?? false) && (row > 1)) ? 1 : 0
+        row += (!(userData?.hasAdminRights ?? false) && (row > 1)) ? 1 : 0
 
         var result: Bool
         switch EditImageDetailsOrder(rawValue: row) {
@@ -54,7 +54,7 @@ extension UploadParametersViewController {
 
         // Don't present privacy level choice to non-admin users
         var row = indexPath.row
-        row += (!(user?.hasAdminRights ?? false) && (row > 1)) ? 1 : 0
+        row += (!(userData?.hasAdminRights ?? false) && (row > 1)) ? 1 : 0
 
         switch EditImageDetailsOrder(rawValue: row) {
         case .author:
@@ -87,7 +87,7 @@ extension UploadParametersViewController {
             guard let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController
             else { preconditionFailure("Could not load TagsViewController") }
             tagsVC.delegate = self
-            tagsVC.user = user
+            tagsVC.userData = userData
             tagsVC.setPreselectedTagIds(Set(commonTags.map({$0.tagId})))
             navigationController?.pushViewController(tagsVC, animated: true)
             

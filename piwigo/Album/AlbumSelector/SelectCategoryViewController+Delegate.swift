@@ -72,7 +72,7 @@ extension SelectCategoryViewController: UITableViewDelegate
                    catIds.count > indexPath.row {
                     catId = catIds[indexPath.row]
                 }
-                albumData = (try? AlbumProvider().getAlbum(ofUser: user, withId: catId))!
+                albumData = AlbumProvider().getAlbum(withID: catId, inContext: mainContext)!
             } else if hasRecentAlbums {
                 // Recent albums
                 albumData = recentAlbums.object(at: indexPath)
@@ -153,7 +153,7 @@ extension SelectCategoryViewController: UITableViewDelegate
                    catIds.count > indexPath.row {
                     catId = catIds[indexPath.row]
                 }
-                albumData = (try? AlbumProvider().getAlbum(ofUser: user, withId: catId))!
+                albumData = AlbumProvider().getAlbum(withID: catId, inContext: mainContext)!
             } else if hasRecentAlbums {
                 // Recent albums
                 albumData = recentAlbums.object(at: indexPath)

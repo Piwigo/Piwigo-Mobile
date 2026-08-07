@@ -17,7 +17,7 @@ import PwgCacheKit
 import PwgUIKit
 import PwgUploadKit
 
-class LoginViewController: UIViewController {
+final class LoginViewController: UIViewController {
 
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var contentView: UIView!
@@ -34,6 +34,7 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var piwigoURL: UIButton!
     
     private var isAlreadyTryingToLogin = false
+    private var userData = UserProperties.init(withStatus: .guest)
     var httpAlertController: UIAlertController?
     var httpLoginAction: UIAlertAction?
 
@@ -42,14 +43,9 @@ class LoginViewController: UIViewController {
     }
 
     
-    // MARK: - Core Data Object Contexts
-    lazy var mainContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.mainContext
-        return context
-    }()
-
-
-    // MARK: - Core Data Providers
+    // MARK: - Core Data Objects
+    @MainActor
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
     private lazy var userProvider: UserProvider = {
         let provider : UserProvider = UserProvider()
         return provider
@@ -399,7 +395,26 @@ class LoginViewController: UIViewController {
         // Perform login if username exists
         let username = userTextField.text ?? ""
         let password = passwordTextField.text ?? ""
-        if username.isEmpty == false {
+        
+        if username.isEmpty {
+            // Access the server as guest
+            ServerVars.shared.user = ""
+            ServerVars.shared.username = ""
+            ServerVars.shared.userStatus = .guest
+            
+            // Prepare user account
+            self.userData.login = ""
+            self.userData.username = ""
+            
+            // Reset keychain and credentials
+            KeychainUtilities.deletePassword(forService: ServerVars.shared.serverPath,
+                                             account: username)
+
+            // Check Piwigo version, get token, available sizes, etc.
+            self.getCommunityStatus()
+        }
+        else {
+            // Try logging in
             // Update HUD during login
             updateHUD(detail: String(localized: "login_newSession", comment: "Opening Session"))
 
@@ -407,10 +422,16 @@ class LoginViewController: UIViewController {
                 do throws(PwgKitError) {
                     // Perform login
                     try await JSONManager.shared.sessionLogin(withUsername: username, password: password)
-                    // Session now opened
-                    ServerVars.shared.username = username
 
+                    // Session now opened
                     await MainActor.run { [self] in
+                        // Remember username for future
+                        ServerVars.shared.username = username
+                        
+                        // Prepare user account
+                        self.userData.login = username
+                        self.userData.username = username
+                        
                         // First determine user rights if Community extension installed
                         self.getCommunityStatus()
                     }
@@ -425,29 +446,9 @@ class LoginViewController: UIViewController {
                     }
                 }
             }
-        } else {
-            // Reset keychain and credentials
-            KeychainUtilities.deletePassword(forService: ServerVars.shared.serverPath,
-                                             account: username)
-            ServerVars.shared.user = ""
-            ServerVars.shared.username = ""
-            ServerVars.shared.userStatus = .guest
-            
-            // Create/update guest account in persistent cache, create Server if necessary.
-            do {
-                // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
-                _ = try self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
-                
-                // Check Piwigo version, get token, available sizes, etc.
-                self.getCommunityStatus()
-            }
-            catch {
-                // Login request failed
-                logging(inConnectionError: error)
-            }
         }
     }
-
+    
     // Determine true user rights when Community extension installed
     @MainActor
     func getCommunityStatus() {
@@ -459,9 +460,18 @@ class LoginViewController: UIViewController {
             Task.detached {
                 do throws(PwgKitError) {
                     // Community extension installed, get real user's status
-                    try await JSONManager.shared.communityGetStatus()
+                    let (userStatus, albumIDs) = try await JSONManager.shared.communityGetStatus()
                     
                     await MainActor.run { [self] in
+                        // Remember user role for future
+                        ServerVars.shared.userStatus = userStatus
+                        
+                        // Prepare user account
+                        self.userData.status = userStatus.rawValue
+                        if let albumIDs {
+                            self.userData.createAlbumRights = albumIDs
+                        }
+                        
                         // Check Piwigo version, get token, available sizes, etc.
                         self.getSessionStatus()
                     }
@@ -489,10 +499,37 @@ class LoginViewController: UIViewController {
 
         Task.detached {
             do throws(PwgKitError) {
-                // Update Piwigo username (≠ credential)
-                ServerVars.shared.user = try await JSONManager.shared.sessionGetStatus()
+                // Get session status
+                /// The username is not the login name when using API keys
+                /// User rights are determined by the Community extension (if installed)
+                let (username, userStatus) = try await JSONManager.shared.sessionGetStatus()
 
+                // Remember username and user status for future
+                ServerVars.shared.user = username
+                if ServerVars.shared.usesCommunityPluginV29 == false {
+                    ServerVars.shared.userStatus = userStatus
+                }
+                
+                // Get admin user info (no API method available for non-admins)
+                var data: UserGetInfo?
+                if [.admin, .webmaster].contains(ServerVars.shared.userStatus) {
+                    data = try? await JSONManager.shared.getUserInfo(.all, forUserName: username)
+                }
+                let recentPeriod = data?.recentPeriod?.int16Value
+                
                 await MainActor.run { [self] in
+                    
+                    // Prepare user account
+                    /// The username is not the login name when using API keys
+                    /// User rights are determined by Community extension (if installed)
+                    self.userData.username = username
+                    if ServerVars.shared.usesCommunityPluginV29 == false {
+                        self.userData.status = userStatus.rawValue
+                    }
+                    if let recentPeriod {
+                        self.userData.recentPeriod = recentPeriod
+                    }
+                    
                     // Should this server be updated?
                     let now: Double = Date().timeIntervalSinceReferenceDate
                     if now > ServerVars.shared.dateOfLastUpdateRequest + AppVars.shared.pwgOneMonth,
@@ -529,8 +566,8 @@ class LoginViewController: UIViewController {
 
         // Create/update User account in persistent cache, create Server if necessary.
         do {
-            // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
-            _ = try self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
+            // Performed in main thread to avoid concurrency issue with AlbumViewController initialisation
+            try self.userProvider.createOrUpdateAccount(withProperties: userData, inContext: mainContext)
         }
         catch {
             logging(inConnectionError: error)

@@ -250,7 +250,7 @@ extension LocalImagesViewController {
         else { preconditionFailure("could not load UploadSwitchViewController") }
         
         uploadSwitchVC.delegate = self
-        uploadSwitchVC.user = self.user
+        uploadSwitchVC.userData = self.userData
         uploadSwitchVC.categoryId = self.categoryId
         uploadSwitchVC.categoryCurrentCounter = self.categoryCurrentCounter
         uploadSwitchVC.uploadRequests = self.uploadRequests

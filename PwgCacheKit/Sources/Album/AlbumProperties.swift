@@ -11,9 +11,42 @@ import Foundation
 /**
  A struct for managing album data
 */
-//public struct AlbumProperties: Sendable
-//{
-//    public let pwgID: Int32                         // Piwigo album ID
-//    
-//    public let images: [Int64]                      // List of images IDs
-//}
+public struct AlbumProperties: Sendable
+{
+    public let pwgID: Int32                         // Piwigo album ID
+    public var name: String                         // Album name
+    public var comment: AttributedString            // Plain version of the description
+    public var commentHTML: AttributedString        // HTML version of the description
+    public var query: String                        // Search query
+
+    public var upperIds: String                     // Parent album IDs
+
+    public var nbImages: Int64                      // Number of images in album
+    public var totalNbImages: Int64                 // Number of images in album and sub-albums
+    public var images: [Int64]                      // List of images IDs
+    public var imageSort: String                    // How images are sorted on the server
+    public var currentCounter: Int64                // Used to rename images before upload
+    public var dateGetImages: TimeInterval          // When images were fetched
+        
+    public var URIstr: String                       // URI string representation
+    public var userURIstr: String                   // URI string representation of the associated User instance
+}
+
+extension AlbumProperties
+{
+    public init(withID pwgID: Int32) {
+        self.init(pwgID: pwgID, name: "",
+                  comment: AttributedString(), commentHTML: AttributedString(),
+                  query: "",
+
+                  upperIds: "",
+        
+                  nbImages: 0, totalNbImages: 0, images: [],
+                  imageSort: "", currentCounter: Int64.zero,
+                  dateGetImages: Date.distantPast.timeIntervalSinceReferenceDate,
+                  
+                  URIstr: "",
+                  userURIstr: ""
+        )
+    }
+}

@@ -13,14 +13,12 @@ import PwgCacheKit
 import PwgUIKit
 import PwgUploadKit
 
-class UploadQueueViewController: UIViewController {
+final class UploadQueueViewController: UIViewController {
     
     // MARK: - Core Data Object Contexts
-    lazy var mainContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.mainContext
-        return context
-    }()
-    
+    @MainActor
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
+
     
     // MARK: - Core Data Source
     typealias DataSource = UITableViewDiffableDataSource<String, NSManagedObjectID>

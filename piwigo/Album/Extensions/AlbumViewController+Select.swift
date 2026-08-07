@@ -195,7 +195,7 @@ extension AlbumViewController
 
     func updateSelectButton(ofSection section: Int) -> SelectButtonState {
         // No selector for users not allowed to share images or manage favorites
-        if (user.canDownloadImages() || hasFavorites || user.hasUploadRights(forCatID: categoryId)) == false {
+        if (userData.canDownloadImages() || userData.canManageFavorites() || userData.hasUploadRights(forCatID: categoryId)) == false {
             return .none
         }
 
@@ -359,8 +359,8 @@ extension AlbumViewController
             Task.detached {
                 do throws(PwgKitError) {
                     // Check session
-                    try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID,
-                                                            lastConnected: self.user.lastUsed)
+                    try await LoginUtilities().checkSession(ofUserWithID: self.userData.URIstr,
+                                                            lastConnected: self.userData.lastUsed)
                     
                     // Retrieve image data
                     await MainActor.run { [self] in

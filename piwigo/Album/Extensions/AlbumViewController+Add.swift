@@ -109,9 +109,9 @@ extension AlbumViewController
 
     @MainActor
     func addCategory(withName albumName: String, andComment albumComment: String,
-                     inParent albumData: Album) {
+                     inParent albumData: AlbumProperties) {
         // Prepare set of parent IDs before creating album (including root album)
-        let hasAdminRights = user.hasAdminRights
+        let hasAdminRights = userData.hasAdminRights
         let parentIDs = Set(albumData.upperIds.components(separatedBy: ",")
             .compactMap({Int32($0)})).union(Set([pwgSmartAlbum.root.rawValue]))
         
@@ -122,7 +122,7 @@ extension AlbumViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
                 
                 // Create album
                 let newCatId = try await JSONManager.shared.create(withName: albumName, description: albumComment,

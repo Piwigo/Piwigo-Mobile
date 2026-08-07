@@ -28,7 +28,7 @@ extension SelectCategoryViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
                 
                 // Move album
                 try await JSONManager.shared.move(self.inputAlbum.pwgID, intoAlbumWithId: parentData.pwgID)
@@ -38,7 +38,7 @@ extension SelectCategoryViewController
 
                 // Fetch album data recursively
                 let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                let pwgData = try await JSONManager.shared.fetchAlbums(forUserWithAdminRights: user.hasAdminRights,
+                let pwgData = try await JSONManager.shared.fetchAlbums(forUserWithAdminRights: userData.hasAdminRights,
                                                                        inParentWithId: pwgSmartAlbum.root.rawValue,
                                                                        recursively: true, thumbnailSize: thumnailSize)
                 // Update cache
@@ -82,7 +82,7 @@ extension SelectCategoryViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
                 
                 // Set album representative
                 try await JSONManager.shared.setRepresentative(ofAlbumWithID: albumData.pwgID, withImageID: imageData.pwgID)

@@ -26,26 +26,27 @@ public extension JSONManager {
     }
     
     @concurrent
-    func communityGetStatus() async throws(PwgKitError) {
+    func communityGetStatus() async throws(PwgKitError) -> (pwgUserStatus, String?) {
         JSONManager.logger.notice("Session: getting Community status…")
         // Launch request
         let pwgData = try await postRequest(withMethod: kCommunitySessionGetStatus, paramDict: [:],
                                             jsonObjectClientExpectsToReceive: CommunitySessionGetStatusJSON.self,
                                             countOfBytesClientExpectsToReceive: kCommunitySessionGetStatusBytes)
-        // Update user's status
+        // User's status
         guard pwgData.realUser.isEmpty == false,
               let userStatus = pwgUserStatus(rawValue: pwgData.realUser)
         else {
             throw .unknownUserStatus
         }
-        ServerVars.shared.userStatus = userStatus
         
-//        // Update user's album list in which he/she can create albums
-//        if let createAlbumRights = pwgData.createAlbumRights {
-//            ServerVars.shared.createAlbumRights = createAlbumRights.compactMap({"\($0)"}).joined(separator: ",")
-//        } else {
-//            ServerVars.shared.createAlbumRights = "\(Int32.min)"
-//        }
+        // IDs of albums in which the user can create sub-albums
+        if let createAlbumRights = pwgData.createAlbumRights {
+            let albumIDs = createAlbumRights.compactMap({"\($0)"}).joined(separator: ",")
+            return (userStatus, albumIDs)
+        }
+        else {
+            return (userStatus, nil)
+        }
     }
     
     /**

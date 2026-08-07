@@ -20,12 +20,11 @@ final class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
     static let logger = PwgLogger(subsystem: "org.piwigo", category: String(describing: AutoUploadIntentHandler.self))
     
-    // MARK: - Core Data Object Contexts
+
+    // MARK: - Core Data Objects
     @MainActor
-    private lazy var mainContext: NSManagedObjectContext = {
-        return DataController.shared.mainContext
-    }()
-    
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
+
     
     // MARK: - Handle Intent
     func handle(intent: AutoUploadIntent, completion: @escaping (AutoUploadIntentResponse) -> Void) {

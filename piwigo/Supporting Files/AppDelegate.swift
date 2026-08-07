@@ -37,11 +37,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var didCancelBiometricsAuthentication = false
     var networkMonitor: NetworkMonitor?
 
-    // MARK: - Core Data Object Contexts
-    private lazy var mainContext: NSManagedObjectContext = {
-        return DataController.shared.mainContext
-    }()
-    
+    // MARK: - Core Data Objects
+    @MainActor
+    private lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
+
 
     // MARK: - App Initialisation
     func application(_ application: UIApplication, didFinishLaunchingWithOptions

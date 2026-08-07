@@ -15,7 +15,7 @@ import PwgUIKit
 
 class AlbumCollectionViewCell: UICollectionViewCell {
     
-    var albumData: Album?
+    var album: Album?
     var imageURL: URL?
 
     @IBOutlet weak var albumThumbnail: UIImageView!
@@ -24,20 +24,20 @@ class AlbumCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var numberOfImages: UILabel!
     @IBOutlet weak var legendHeight: NSLayoutConstraint!
     
-    func config(withAlbumData albumData: Album?) {
+    func config(withAlbum album: Album?) {
         // Store album data
-        self.albumData = albumData
+        self.album = album
 
         // General settings
         applyColorPalette()
         
         // Legend
-        albumName.text = albumData?.name ?? "—?—"
-        numberOfImages.text = getNberOfImages(fromAlbumData: albumData)
+        albumName.text = album?.name ?? "—?—"
+        numberOfImages.text = getNberOfImages(fromAlbumData: album)
         legendHeight.constant = UIFont.preferredFont(forTextStyle: .headline).lineHeight + UIFont.preferredFont(forTextStyle: .footnote).lineHeight + 8.0
 
         // If requested, display recent icon when images have been uploaded recently
-        let timeSinceLastUpload = Date.timeIntervalSinceReferenceDate - (albumData?.dateLast ?? TimeInterval(-3187296000))
+        let timeSinceLastUpload = Date.timeIntervalSinceReferenceDate - (album?.dateLast ?? TimeInterval(-3187296000))
         var indexOfPeriod: Int = ServerVars.shared.recentPeriodIndex
         indexOfPeriod = min(indexOfPeriod, ServerVars.shared.recentPeriodList.count - 1)
         indexOfPeriod = max(0, indexOfPeriod)
@@ -46,12 +46,12 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         self.recentlyModified.isHidden = !isRecent
 
         // Can we add a representative if needed?
-        if albumData?.thumbnailUrl == nil || albumData?.thumbnailId == Int64.zero,
-           let images = albumData?.images, let firstImage = images.first {
+        if album?.thumbnailUrl == nil || album?.thumbnailId == Int64.zero,
+           let images = album?.images, let firstImage = images.first {
             // Set representative (case where images were uploaded recently)
-            albumData?.thumbnailId = firstImage.pwgID
+            album?.thumbnailId = firstImage.pwgID
             let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-            albumData?.thumbnailUrl = firstImage.url(forMaxSize: thumnailSize) as NSURL?
+            album?.thumbnailUrl = firstImage.url(forMaxSize: thumnailSize) as NSURL?
         }
         
         // Retrieve image from cache or download it
@@ -59,11 +59,11 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         let scale = max(self.albumThumbnail.traitCollection.displayScale, 1.0)
         let cellSize = CGSizeMake(self.albumThumbnail.bounds.size.width * scale, self.albumThumbnail.bounds.size.height * scale)
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-        imageURL = albumData?.thumbnailUrl as? URL
+        imageURL = album?.thumbnailUrl as? URL
         Task {
             let expectedURL = imageURL
-            await ImageDownloader.shared.getImage(withID: albumData?.thumbnailId, ofSize: thumbSize, type: .album,
-                                            atURL: imageURL, fromServer: albumData?.user?.server?.uuid) { [weak self = self] cachedImageURL in
+            await ImageDownloader.shared.getImage(withID: album?.thumbnailId, ofSize: thumbSize, type: .album,
+                                            atURL: imageURL, fromServer: album?.user?.server?.uuid) { [weak self = self] cachedImageURL in
                 // Downsample image in cache
                 let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .album)
                 

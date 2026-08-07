@@ -12,21 +12,19 @@ import PwgKit
 import PwgCacheKit
 
 @MainActor
-class AlbumViewData: NSObject
+final class AlbumViewData: NSObject
 {
-    private var albumData: Album
+    private var albumData: AlbumProperties
 
-    init(withAlbum albumData: Album) {
+    init(withData albumData: AlbumProperties) {
         self.albumData = albumData
         super.init()
     }
     
 
-    // MARK: - Core Data Object Contexts
-    private lazy var mainContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.mainContext
-        return context
-    }()
+    // MARK: - Core Data Objects
+    @MainActor
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
 
 
     // MARK: - Sub-Albums
@@ -44,6 +42,8 @@ class AlbumViewData: NSObject
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true,
                                                          selector: #selector(NSString.localizedStandardCompare(_:)))]
         fetchRequest.predicate = albumPredicate.withSubstitutionVariables(["catID" : albumData.pwgID])
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.shouldRefreshRefetchedObjects = true
         fetchRequest.fetchBatchSize = 20
         return fetchRequest
     }()

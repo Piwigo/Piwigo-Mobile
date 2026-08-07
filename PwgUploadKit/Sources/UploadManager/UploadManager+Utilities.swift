@@ -80,7 +80,7 @@ extension UploadManager {
     
     // MARK: - Piwigo Session Management
     // Re-login if session was closed
-    public func checkSession(ofUserWithID objectID: NSManagedObjectID,
+    public func checkSession(ofUserWithID objectURIstr: String,
                              lastConnected lastUsed: TimeInterval) async throws(PwgKitError) {
                 
         // Check if the session is still active and update the server status
@@ -96,7 +96,7 @@ extension UploadManager {
         ServerVars.shared.hasNetworkConnectionChanged = false
         debugPrint("Session: starting checking… \(ServerVars.shared.isConnectedToWiFi ? "WiFi" : "Cellular")")
         let oldToken = ServerVars.shared.pwgToken
-        let pwgUser = try await JSONManager.shared.sessionGetStatus()
+        let (pwgUser, _) = try await JSONManager.shared.sessionGetStatus()
 #if DEBUG
         debugPrint("Session: \"\(ServerVars.shared.user)\" vs \"\(pwgUser)\", \"\(oldToken)\" vs \"\(ServerVars.shared.pwgToken)\"")
 #endif
@@ -105,7 +105,6 @@ extension UploadManager {
             // => Determine if Community extension 2.9a or later is installed and active
             try await JSONManager.shared.getMethods()
             
-            // Known methods, perform re-login
             // Perform login
             let username = ServerVars.shared.username
             let password = KeychainUtilities.password(forService: ServerVars.shared.serverPath, account: username)
@@ -113,38 +112,32 @@ extension UploadManager {
 #if DEBUG
             debugPrint("Session: logged as \(ServerVars.shared.username)")
 #endif
-            // Session now opened
-            try await getPiwigoConfigForUser(withID: objectID)
-            
+            // Check Piwigo version, get token, available sizes, etc.
+            if ServerVars.shared.usesCommunityPluginV29 {
+                let (userStatus, albumIDs) = try await JSONManager.shared.communityGetStatus()
+                ServerVars.shared.userStatus = userStatus
+            }
+            try await getPiwigoStatusForUser(withID: objectURIstr)
+
             // Update date of accesss to the server by guest
-            updateUser(withID: objectID, includingStatus: true)
+            UserProvider().updateUser(withID: objectURIstr, includingStatus: true)
             ServerVars.shared.applicationShouldRelogin = false
         }
         else {
-            updateUser(withID: objectID, includingStatus: false)
+            UserProvider().updateUser(withID: objectURIstr, includingStatus: false)
         }
     }
-    
-    fileprivate func updateUser(withID objectID: NSManagedObjectID, includingStatus status: Bool) {
-        let bckgContext = DataController.shared.newTaskContext()
-        UserProvider().updateUser(withID: objectID,status: status, inContext: bckgContext)
-    }
-    
-    fileprivate func getPiwigoConfigForUser(withID objectID: NSManagedObjectID) async throws(PwgKitError) {
-        // Check Piwigo version, get token, available sizes, etc.
-        if ServerVars.shared.usesCommunityPluginV29 {
-            try await JSONManager.shared.communityGetStatus()
-        }
-        try await getPiwigoStatusForUser(withID: objectID)
-    }
-    
-    fileprivate func getPiwigoStatusForUser(withID objectID: NSManagedObjectID) async throws(PwgKitError)
+            
+    fileprivate func getPiwigoStatusForUser(withID objectURIstr: String) async throws(PwgKitError)
     {
         // Retrieve the username
-        let userName = try await JSONManager.shared.sessionGetStatus()
+        let (userName, userStatus) = try await JSONManager.shared.sessionGetStatus()
         
         // Set Piwigo user
         ServerVars.shared.user = userName
+        if ServerVars.shared.usesCommunityPluginV29 == false {
+            ServerVars.shared.userStatus = userStatus
+        }
         
         // Are cached data associated to an API public key?
         // (pursue logging in without waiting for the fix to complete)
@@ -155,7 +148,7 @@ extension UploadManager {
                 
                 // Attribute upload requests to appropriate user if necessary
                 debugPrint("Session: attributing API Key upload requests to user…")
-                UploadProvider().attributeAPIKeyUploadRequests(toUserWithID: objectID,
+                UploadProvider().attributeAPIKeyUploadRequests(toUserWithID: objectURIstr,
                                                                inContext: bckgContext)
                 
                 // Delete API Key user (and albums in cascade)

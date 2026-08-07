@@ -169,24 +169,13 @@ public final class ImageProvider {
                                 inAlbum albumId: Int32, withAlbumUpdate: Bool = false,
                                 sort: pwgImageSort, fromRank startRank: Int64 = Int64.min) throws(PwgKitError) {
         
-        // Get current user object (will create server and user objects if needed)
+        // Get current user object (should exist at this stage)
         let bckgContext = DataController.shared.newTaskContext()
-        guard let user = try UserProvider().getUserAccount(inContext: bckgContext)
-        else { throw PwgKitError.userCreationError }
-        if user.isFault {
-            // user is not fired yet.
-            user.willAccessValue(forKey: nil)
-            user.didAccessValue(forKey: nil)
-        }
+        let user = try UserProvider().getCurrentUser(inContext: bckgContext)
         
         // Get album of selected ID (should exist at this stage)
         guard let album = user.albums?.first(where: {$0.pwgID == albumId})
         else { throw PwgKitError.albumCreationError }
-        if album.isFault {
-            // album is not fired yet.
-            album.willAccessValue(forKey: nil)
-            album.didAccessValue(forKey: nil)
-        }
         
         // Import tags which are not yet in cache
         let imageTags = imagesBatch.compactMap({$0.tags}).reduce([],+)
@@ -194,7 +183,8 @@ public final class ImageProvider {
         _ = try TagProvider().importOneBatch(imageTags, asAdmin: isAdmin, tagIDs: Set<Int32>())
 
         // Get favorite album if possible (will not prevent import)
-        let favAlbum = try AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue)
+        let favAlbum = try AlbumProvider().getOrCreateAlbum(withID: pwgSmartAlbum.favorites.rawValue,
+                                                            inContext: bckgContext)
         
         // Runs on the URLSession's delegate queue
         // so it won’t block the main thread.
@@ -224,7 +214,7 @@ public final class ImageProvider {
                     
                     // Check whether this image is a favorite
                     /// (available since version 13.0.0 of the Piwigo server)
-                    if let favAlbum = favAlbum, let isFavorite = imageData.isFavorite, isFavorite {
+                    if let isFavorite = imageData.isFavorite, isFavorite {
                         albums.insert(favAlbum)
                     }
                     

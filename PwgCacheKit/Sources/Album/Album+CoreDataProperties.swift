@@ -19,10 +19,10 @@ extension Album {
 
     @NSManaged public var uuid: String
     @NSManaged public var pwgID: Int32
-    @NSManaged public var comment: NSAttributedString
-    @NSManaged public var commentRaw: String
-    @NSManaged public var commentStr: String
-    @NSManaged public var commentHTML: NSAttributedString
+    @NSManaged public var commentRaw: String                // Potentially containing HTML encoded characters, selected language
+    @NSManaged public var commentStr: String                // Potentially containing HTML encoded characters, all languages
+    @NSManaged public var comment: NSAttributedString       // Plain version
+    @NSManaged public var commentHTML: NSAttributedString   // HTML version
     @NSManaged public var currentCounter: Int64
     @NSManaged public var dateLast: TimeInterval
     @NSManaged public var dateGetImages: TimeInterval

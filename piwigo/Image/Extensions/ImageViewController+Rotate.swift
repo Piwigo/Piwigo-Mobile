@@ -67,7 +67,7 @@ extension ImageViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
                 
                 // Rotate thumbnails
                 try await JSONManager.shared.rotateImage(withID: imageData.pwgID, by: angle)
@@ -106,7 +106,7 @@ extension ImageViewController
                         }
                     }
                     // Save changes
-                    self.mainContext.saveIfNeeded()
+                    mainContext.saveIfNeeded()
                 }
             }
             catch {

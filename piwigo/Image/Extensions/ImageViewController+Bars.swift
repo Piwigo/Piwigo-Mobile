@@ -31,7 +31,7 @@ extension ImageViewController {
         // WRONG =====> 'normal' user with upload access to the current category can copy, move, edit images
         // SHOULD BE => 'normal' user having uploaded images can only edit their images.
         //              This requires 'user_id' and 'added_by' values of images for checking rights
-        if user.hasUploadRights(forCatID: categoryId) {
+        if userData.hasUploadRights(forCatID: categoryId) {
             // The action button proposes:
             /// - to copy or move images to other albums
             /// - to set the image as album thumbnail

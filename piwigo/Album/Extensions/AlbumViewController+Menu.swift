@@ -33,7 +33,7 @@ extension AlbumViewController {
         // Update menu
         // Not all users can select/deselect images
         var children = [UIMenu?]()
-        if user.canDownloadImages() || hasFavorites || user.hasUploadRights(forCatID: categoryId) {
+        if userData.canDownloadImages() || userData.canManageFavorites() || userData.hasUploadRights(forCatID: categoryId) {
             children = [selectMenu(enabled: albumData.nbImages != 0), sortMenu(), viewOptionsMenu()]
         } else {
             children = [sortMenu(), viewOptionsMenu()]
@@ -583,7 +583,7 @@ extension AlbumViewController: @MainActor ImageHeaderDelegate
                     cell.isSelection = true
                 } else {
                     // pwg.users.favorites… methods available from Piwigo version 2.10
-                    selectImage(image, isFavorite: favAlbum?.images?.contains(image) ?? false)
+                    selectImage(image, isFavorite: favAlbum?.images.contains(image.pwgID) ?? false)
                 }
             }
             // Change section button state

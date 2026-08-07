@@ -19,7 +19,7 @@ protocol TagSelectorViewDelegate: NSObjectProtocol {
     func pushTaggedImagesView(_ viewController: UIViewController)
 }
 
-class TagSelectorViewController: UIViewController {
+final class TagSelectorViewController: UIViewController {
     
     weak var tagSelectedDelegate: (any TagSelectorViewDelegate)?
     
@@ -29,16 +29,12 @@ class TagSelectorViewController: UIViewController {
     
     
     // MARK: - Core Data Objects
-    var user: User!
-    private lazy var mainContext: NSManagedObjectContext = {
-        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
-            fatalError("!!! Missing Managed Object Context !!!")
-        }
-        return context
-    }()
+    @MainActor
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
+    var userData: UserProperties!
     
     
-    // MARK: - Fetched Results Controller
+    // MARK: - Core Data source
     lazy var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)
         searchController.searchResultsUpdater = self
@@ -46,7 +42,7 @@ class TagSelectorViewController: UIViewController {
         searchController.hidesNavigationBarDuringPresentation = false
         return searchController
     }()
-    var searchQuery = ""
+    
     lazy var predicate: NSPredicate = {
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "server.path == %@", ServerVars.shared.serverPath))
@@ -56,6 +52,7 @@ class TagSelectorViewController: UIViewController {
         return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
     }()
     
+    var searchQuery = ""
     func getQueryVar() -> [String : Any] {
         return ["query"  : "*" + (searchQuery.isEmpty ? "" : searchQuery + "*")]
     }
@@ -163,8 +160,8 @@ class TagSelectorViewController: UIViewController {
         Task.detached {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID,
-                                                        lastConnected: self.user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: self.userData.URIstr,
+                                                        lastConnected: self.userData.lastUsed)
                 // Fetch tag data
                 let tagData = try await JSONManager.shared.fetchTags(asAdmin: false)
                 
@@ -298,9 +295,9 @@ extension TagSelectorViewController: UITableViewDelegate
         let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.tagId)
         
         // Check that an album of tagged images exists in cache (create it if necessary)
-        guard let _ = try? AlbumProvider().getAlbum(ofUser: user, withId: catID, name: tag.tagName) else {
-            return
-        }
+        guard let _ = try? AlbumProvider().getOrCreateProperties(ofAlbumWithID: catID, name: tag.tagName,
+                                                                 inContext: mainContext)
+        else { return }
         
         // Deactivate search bar
         searchController.isActive = false

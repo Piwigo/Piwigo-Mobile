@@ -19,7 +19,7 @@ protocol TagsViewControllerDelegate: NSObjectProtocol {
     func didSelectTags(_ selectedTags: Set<Tag>)
 }
 
-class TagsViewController: UITableViewController {
+final class TagsViewController: UITableViewController {
     
     weak var delegate: (any TagsViewControllerDelegate)?
     private var updateOperations = [BlockOperation]()
@@ -32,12 +32,9 @@ class TagsViewController: UITableViewController {
     
     
     // MARK: - Core Data Objects
-    var user: User!
-    lazy var mainContext: NSManagedObjectContext = {
-        guard let context: NSManagedObjectContext = user?.managedObjectContext
-        else { preconditionFailure("!!! Missing Managed Object Context !!!") }
-        return context
-    }()
+    @MainActor
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
+    var userData: UserProperties!
     
     
     // MARK: - Core Data Source
@@ -137,7 +134,7 @@ class TagsViewController: UITableViewController {
         title = String(localized: "tags", comment: "Tags")
         
         // Add button for Admins
-        if user.hasAdminRights {
+        if userData.hasAdminRights {
             addBarButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(requestNewTagName))
             navigationItem.setRightBarButton(addBarButton, animated: false)
         }
@@ -186,13 +183,13 @@ class TagsViewController: UITableViewController {
         Task.detached {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID,
-                                                        lastConnected: self.user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: self.userData.URIstr,
+                                                        lastConnected: self.userData.lastUsed)
                 // Fetch tag data
-                let tagData = try await JSONManager.shared.fetchTags(asAdmin: self.user.hasAdminRights)
+                let tagData = try await JSONManager.shared.fetchTags(asAdmin: self.userData.hasAdminRights)
                 
                 // Update tag data in cache
-                try await TagProvider().importTags(from: tagData, asAdmin: self.user.hasAdminRights)
+                try await TagProvider().importTags(from: tagData, asAdmin: self.userData.hasAdminRights)
                 
                 // Close HUD
                 await MainActor.run { [self] in

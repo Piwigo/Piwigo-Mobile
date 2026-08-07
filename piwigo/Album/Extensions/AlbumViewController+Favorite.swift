@@ -17,7 +17,7 @@ extension AlbumViewController
     // MARK: Favorite Button
     func getFavoriteBarButton() -> UIBarButtonItem? {
         // pwg.users.favorites… methods available from Piwigo version 2.10 for registered users
-        if hasFavorites == false {
+        if userData.canManageFavorites() == false {
             return nil
         }
         
@@ -74,26 +74,35 @@ extension AlbumViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
                 
                 // Add image to favorites
                 try await JSONManager.shared.addToFavorites(imageWithID: imageData.pwgID)
-                
+                                
                 // Update cache and UI
                 await MainActor.run {
                     // Update HUD
                     navigationController?.updateHUD(withProgress: 1.0 - Float(remainingIDs.count) / total)
 
-                    // Image added to favorites ► Add it in the background
-                    if let favAlbum = try? AlbumProvider().getAlbum(ofUser: self.user, withId: pwgSmartAlbum.favorites.rawValue) {
+                    // Image added to favorites ► Add it to the cached album
+                    if let favAlbum = try? albumProvider.getOrCreateAlbum(withID: pwgSmartAlbum.favorites.rawValue,
+                                                                          inContext: mainContext) {
                         // Add image to favorites album
                         favAlbum.addToImages(imageData)
-                        // Update favorites album data
-                        try? self.albumProvider.updateAlbums(addingImages: 1, toAlbum: favAlbum, inContext: self.mainContext)
+                        
+                        // Add images to album
+                        favAlbum.nbImages += 1
+                        favAlbum.totalNbImages += 1
+                        
+                        // Keep 'date_last' set as expected by the server
+                        favAlbum.dateLast = max(Date().timeIntervalSinceReferenceDate, favAlbum.dateLast)
+                        
+                        // Save changes
+                        mainContext.saveIfNeeded()
                     }
 
                     // pwg.users.favorites… methods available from Piwigo version 2.10
-                    if self.hasFavorites {
+                    if self.userData.canManageFavorites() {
                         let visibleCells = self.collectionView?.visibleCells ?? []
                         let imageCells = visibleCells.compactMap({$0 as? ImageCollectionViewCell})
                         if let cell = imageCells.first(where: { $0.imageData.pwgID == imageID}) {
@@ -183,7 +192,7 @@ extension AlbumViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
                 
                 // Remove image from favorites
                 try await JSONManager.shared.removeFromFavorites(imageWithID: imageData.pwgID)
@@ -193,16 +202,37 @@ extension AlbumViewController
                     // Update HUD
                     navigationController?.updateHUD(withProgress: 1.0 - Float(remainingIDs.count) / total)
 
-                    // Image removed from favorites ► Remove it in the foreground
-                    if let favAlbum = try? AlbumProvider().getAlbum(ofUser: self.user, withId: pwgSmartAlbum.favorites.rawValue) {
+                    // Image removed from favorites ► Remove it from the cached album
+                    if let favAlbum = try? albumProvider.getOrCreateAlbum(withID: pwgSmartAlbum.favorites.rawValue,
+                                                                          inContext: mainContext) {
                         // Remove image from favorites album
                         favAlbum.removeFromImages(imageData)
-                        // Update favorites album data
-                        try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: favAlbum, inContext: self.mainContext)
+                        
+                        // Removes image from album
+                        favAlbum.nbImages = max(0, favAlbum.nbImages - 1)
+                        favAlbum.totalNbImages = max(0, favAlbum.totalNbImages - 1)
+                        
+                        // Keep 'date_last' set as expected by the server
+                        var dateLast = DateUtilities.unknownDateInterval    // i.e. unknown date
+                        for keptImage in favAlbum.images ?? Set<Image>() {
+                            if dateLast < keptImage.datePosted {
+                                dateLast = keptImage.datePosted
+                            }
+                        }
+                        favAlbum.dateLast = dateLast
+                        
+                        // Reset source album thumbnail if necessary
+                        if favAlbum.nbImages == 0 {
+                            favAlbum.thumbnailId = Int64.zero
+                            favAlbum.thumbnailUrl = nil
+                        }
+
+                        // Save changes
+                        mainContext.saveIfNeeded()
                     }
 
                     // pwg.users.favorites… methods available from Piwigo version 2.10
-                    if self.hasFavorites {
+                    if self.userData.canManageFavorites() {
                         let visibleCells = self.collectionView?.visibleCells ?? []
                         let imageCells = visibleCells.compactMap({$0 as? ImageCollectionViewCell})
                         if let cell = imageCells.first(where: { $0.imageData.pwgID == imageID}) {

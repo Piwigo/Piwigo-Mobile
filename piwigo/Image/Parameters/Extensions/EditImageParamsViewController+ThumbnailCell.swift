@@ -41,7 +41,7 @@ extension EditImageParamsViewController: EditImageThumbnailCellDelegate
 
     func didRenameFileOfImage(_ imageData: Image) {
         // Update data source
-        self.mainContext.saveIfNeeded()
+        mainContext.saveIfNeeded()
 
         // Update parent image view
         self.delegate?.didChangeImageParameters(imageData)

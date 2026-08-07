@@ -117,7 +117,7 @@ extension SettingsViewController: UITableViewDelegate
         // MARK: Uploads
         case .uploads /* Default Upload Settings */:
             var row = indexPath.row
-            row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
+            row += (!userData.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
             row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
             row += (!UIDevice.current.hasCellular && (row > 8)) ? 1 : 0
@@ -232,7 +232,7 @@ extension SettingsViewController: UITableViewDelegate
                 let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController
                 else { preconditionFailure("Could not load SelectCategoryViewController") }
-                categoryVC.user = user
+                categoryVC.userData = userData
                 if categoryVC.setInput(parameter: AlbumVars.shared.defaultCategory,
                                        for: .setDefaultAlbum) {
                     categoryVC.delegate = self
@@ -285,7 +285,7 @@ extension SettingsViewController: UITableViewDelegate
         // MARK: Uploads
         case .uploads /* Default upload Settings */:
             var row = indexPath.row
-            row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
+            row += (!userData.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
             row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
             row += (!UIDevice.current.hasCellular && (row > 8)) ? 1 : 0
@@ -334,7 +334,7 @@ extension SettingsViewController: UITableViewDelegate
                 let autoUploadSB = UIStoryboard(name: "AutoUploadViewController", bundle: nil)
                 guard let autoUploadVC = autoUploadSB.instantiateViewController(withIdentifier: "AutoUploadViewController") as? AutoUploadViewController
                 else { preconditionFailure("Could not load AutoUploadViewController") }
-                autoUploadVC.user = user
+                autoUploadVC.userData = userData
                 navigationController?.pushViewController(autoUploadVC, animated: true)
 
             case 12 /* Advanced Options */:
@@ -382,7 +382,7 @@ extension SettingsViewController: UITableViewDelegate
             switch indexPath.row {
             case 0 /* Clear cache */:
                 // Determine position of cell in table view
-                let section = SettingsSection.clear.rawValue - (userHasUploadRights ? 0 : 1)
+                let section = SettingsSection.clear.rawValue - (userData.hasUploadRights ? 0 : 1)
                 let rowAtIndexPath = IndexPath(row: 0, section: section)
                 let rectOfCellInTableView = settingsTableView?.rectForRow(at: rowAtIndexPath)
                 

@@ -162,7 +162,7 @@ extension AlbumViewController
         guard let settingsVC = settingsSB.instantiateViewController(withIdentifier: "SettingsViewController") as? SettingsViewController
         else { preconditionFailure("Could not load SettingsViewController") }
         settingsVC.settingsDelegate = self
-        settingsVC.user = user
+        settingsVC.userData = userData
         let navController = UINavigationController(rootViewController: settingsVC)
         navController.modalTransitionStyle = .coverVertical
         navController.modalPresentationStyle = .formSheet

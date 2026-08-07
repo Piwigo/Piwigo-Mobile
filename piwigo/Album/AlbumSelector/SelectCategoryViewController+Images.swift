@@ -33,7 +33,7 @@ extension SelectCategoryViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
                 
                 // Prepare parameters for copying the image/video to the selected category
                 let newImageCategories = categoryIds.compactMap({ String($0) }).joined(separator: ";")
@@ -49,7 +49,8 @@ extension SelectCategoryViewController
                     albumData.addToImages(imageData)
                     
                     // Update albums
-                    try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: albumData, inContext: self.mainContext)
+                    try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: albumData,
+                                                      inContext: mainContext)
                     
                     // Set album thumbnail with first copied image if necessary
                     if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
@@ -78,7 +79,7 @@ extension SelectCategoryViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
                 
                 // Associate images
                 try await JSONManager.shared.setCategory(albumID, forImageIDs: imageIDs, withAction: .associate)
@@ -90,7 +91,8 @@ extension SelectCategoryViewController
 
                     // Update albums
                     let nberOfImages = Int64(self.inputImages.count)
-                    try? AlbumProvider().updateAlbums(addingImages: nberOfImages, toAlbum: albumData, inContext: self.mainContext)
+                    try? AlbumProvider().updateAlbums(addingImages: nberOfImages, toAlbum: albumData,
+                                                      inContext: mainContext)
 
                     // Set album thumbnail with first copied image if necessary
                     if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil,
@@ -123,7 +125,7 @@ extension SelectCategoryViewController
         // Close HUD
         updateHUDwithSuccess() { [self] in
             // Save changes
-            self.mainContext.saveIfNeeded()
+            mainContext.saveIfNeeded()
             // Hide HUD and dismiss album selector
             self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                 self.dismiss(animated: true) { [self] in
@@ -169,7 +171,7 @@ extension SelectCategoryViewController
                 categoryIds.removeAll(where: {$0 == inputAlbum.pwgID})
 
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
                 
                 // Prepare parameters for moving the image/video to the selected category
                 let newImageCategories = categoryIds.compactMap({ String($0) }).joined(separator: ";")
@@ -185,7 +187,8 @@ extension SelectCategoryViewController
                     albumData.addToImages(imageData)
 
                     // Update target albums
-                    try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: albumData, inContext: self.mainContext)
+                    try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: albumData,
+                                                      inContext: mainContext)
 
                     // Set album thumbnail with first copied image if necessary
                     if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
@@ -198,7 +201,8 @@ extension SelectCategoryViewController
                     imageData.removeFromAlbums(self.inputAlbum)
 
                     // Update albums
-                    try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: self.inputAlbum, inContext: self.mainContext)
+                    try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: self.inputAlbum,
+                                                      inContext: mainContext)
 
                     // Next image…
                     self.inputImages.remove(imageData)
@@ -221,7 +225,7 @@ extension SelectCategoryViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
                 
                 // Associate images
                 try await JSONManager.shared.setCategory(albumID, forImageIDs: imageIDs, withAction: .dissociate)
@@ -233,7 +237,8 @@ extension SelectCategoryViewController
 
                     // Update albums
                     let nberOfImages = Int64(self.inputImages.count)
-                    try? AlbumProvider().updateAlbums(removingImages: nberOfImages, fromAlbum: albumData, inContext: self.mainContext)
+                    try? AlbumProvider().updateAlbums(removingImages: nberOfImages, fromAlbum: albumData,
+                                                      inContext: mainContext)
 
                     // Close HUD, save modified data
                     self.didMoveImagesWithSuccess()
@@ -252,7 +257,7 @@ extension SelectCategoryViewController
         // Close HUD
         updateHUDwithSuccess() { [self] in
             // Save changes
-            self.mainContext.saveIfNeeded()
+            mainContext.saveIfNeeded()
             
             // Hide HUD and dismiss album selector
             self.hideHUD(afterDelay: pwgDelayHUD) { [self] in

@@ -47,16 +47,13 @@ extension UploadManager {
         // Is this image already stored on the Piwigo server?
         do {
             // Check that the MD5 checksum and user are known
-            guard uploadData.md5Sum.isEmpty == false,
-                  let userURI = URL(string: uploadData.userURIstr),
-                  let userID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: userURI)
-            else {
-                throw PwgKitError.missingAsset
-            }
+            guard uploadData.md5Sum.isEmpty == false
+            else { throw PwgKitError.missingAsset }
             
             // Check session
-            let userData = try UserProvider().getPropertiesOfUser(withURIstr: uploadData.userURIstr, inContext: self.uploadBckgContext)
-            try await checkSession(ofUserWithID: userID, lastConnected: userData.lastUsed)
+            let userData = try UserProvider().getPropertiesOfUser(withURIstr: uploadData.userURIstr,
+                                                                  inContext: self.uploadBckgContext)
+            try await checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
             
             // Update state of upload request
             uploadData.requestState = .uploading
@@ -168,8 +165,8 @@ extension UploadManager {
             
             // Update displayed albums which are concerned
             try? AlbumProvider().updateAlbums(addingImages: 1, toAlbumWithID: properties.category,
-                                             belongingToUser: properties.userURIstr,
-                                             inContext: self.uploadBckgContext)
+                                              belongingToUser: properties.userURIstr,
+                                              inContext: self.uploadBckgContext)
         }
         
         // Update UploadQueue cell and button shown in root album (or default album)

@@ -99,14 +99,8 @@ public final class UploadProvider {
                 // Main context automatically sees changes via merge
                 var uploadIDs: [NSManagedObjectID] = []
                 
-                // Get current user account
-                guard let user = try UserProvider().getUserAccount(inContext: taskContext)
-                else { throw PwgKitError.userCreationError }
-                if user.isFault {
-                    // user is not fired yet.
-                    user.willAccessValue(forKey: nil)
-                    user.didAccessValue(forKey: nil)
-                }
+                // Get current user account (should exist at this stage)
+                let user = try UserProvider().getCurrentUser(inContext: taskContext)
                 
                 // Retrieve existing uploads
                 // Create a fetch request for the Upload entity sorted by localIdentifier
@@ -553,7 +547,7 @@ public final class UploadProvider {
      Used to fix situations where a user logins with API keys before v4.1.2 (since Piwigo 16)
      To be called on a background queue so it won’t block the main thread.
      */
-    public func attributeAPIKeyUploadRequests(toUserWithID userID: NSManagedObjectID,
+    public func attributeAPIKeyUploadRequests(toUserWithID userURIstr: String,
                                               inContext taskContext: NSManagedObjectContext) {
         // To be called on a background queue so it won’t block the main thread.
         taskContext.performAndWait {
@@ -574,7 +568,9 @@ public final class UploadProvider {
                 let uploadIDs = try taskContext.fetch(fetchRequest)
                 
                 // Retrieve Piwigo user object
-                guard let piwigoUser = try? taskContext.existingObject(with: userID) as? User
+                guard let userURI = URL(string: userURIstr),
+                      let userID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: userURI),
+                      let piwigoUser = try? taskContext.existingObject(with: userID) as? User
                 else { return }
                 
                 // Attribute API key upload requests to the Piwigo user

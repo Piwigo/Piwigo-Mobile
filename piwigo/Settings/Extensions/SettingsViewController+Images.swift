@@ -8,32 +8,39 @@
 
 import Foundation
 import PwgKit
+import PwgCacheKit
 
 // MARK: - DefaultImageThumbnailSizeDelegate Methods
 extension SettingsViewController: DefaultImageThumbnailSizeDelegate {
     func didSelectImageDefaultThumbnailSize(_ thumbnailSize: pwgImageSize) {
         // Do nothing if size is unchanged
         guard let oldThumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize),
-              thumbnailSize != oldThumbnailSize else {
-            return
-        }
+              thumbnailSize != oldThumbnailSize
+        else { return }
         
-        // Delete image thumbnails in foreground queue if not used anymore
-        DispatchQueue.global(qos: .userInitiated).async {
-            guard let server = self.user.server else {
-                fatalError("••> User not provided!")
-            }
-            if oldThumbnailSize.rawValue != AlbumVars.shared.defaultAlbumThumbnailSize,
-               oldThumbnailSize.rawValue != ImageVars.shared.defaultImagePreviewSize,
-               oldThumbnailSize != .fullRes {
-                server.clearCachedImages(ofSizes: [oldThumbnailSize], exceptVideos: true)
-            }
+        // Delete image thumbnails in background queue if not used anymore
+        if oldThumbnailSize.rawValue != AlbumVars.shared.defaultAlbumThumbnailSize,
+           oldThumbnailSize.rawValue != ImageVars.shared.defaultImagePreviewSize,
+           oldThumbnailSize != .fullRes {
             
-            DispatchQueue.main.async {
-                // Refresh Settings cell
+            DispatchQueue.global(qos: .userInitiated).async {
+                // Get server instance
+                let bckgContext = DataController.shared.newTaskContext()
+                guard let server = try? ServerProvider().getCurrentServer(inContext: bckgContext)
+                else { preconditionFailure("••> Server is not in cache!") }
+                
+                // Delete useless thumbnails
+                server.clearCachedImages(ofSizes: [oldThumbnailSize], exceptVideos: true)
+                
+                // Recalculate cache size
                 let sizes = self.getThumbnailSizes()
-                self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
-                self.updateThumbCacheCell()
+                let cacheSize = server.getCacheSize(forImageSizes: sizes)
+                
+                DispatchQueue.main.async {
+                    // Refresh Settings cell
+                    self.thumbCacheSize = cacheSize
+                    self.updateThumbCacheCell()
+                }
             }
         }
 
@@ -60,22 +67,27 @@ extension SettingsViewController: DefaultImageSizeDelegate {
             return
         }
         
-        // Delete image files in foreground queue if not used anymore
-        DispatchQueue.global(qos: .userInitiated).async {
-            guard let server = self.user.server else {
-                fatalError("••> User not provided!")
-            }
-            if oldPhotoSize.rawValue != AlbumVars.shared.defaultAlbumThumbnailSize,
-               oldPhotoSize.rawValue != AlbumVars.shared.defaultThumbnailSize,
-               oldPhotoSize != .fullRes {
-                server.clearCachedImages(ofSizes: [oldPhotoSize], exceptVideos: true)
-            }
+        // Delete image files in background queue if not used anymore
+        if oldPhotoSize.rawValue != AlbumVars.shared.defaultAlbumThumbnailSize,
+           oldPhotoSize.rawValue != AlbumVars.shared.defaultThumbnailSize,
+           oldPhotoSize != .fullRes {
             
-            DispatchQueue.main.async {
-                // Refresh Settings cell
+            DispatchQueue.global(qos: .userInitiated).async {
+                // Get server instance
+                let bckgContext = DataController.shared.newTaskContext()
+                guard let server = try? ServerProvider().getCurrentServer(inContext: bckgContext)
+                else { preconditionFailure("••> Server is not in cache!") }
+                
+                // Delete useless thumbnails
+                server.clearCachedImages(ofSizes: [oldPhotoSize], exceptVideos: true)
                 let sizes = self.getPhotoSizes()
-                self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
-                self.updatePhotoCacheCell()
+                let cacheSize = server.getCacheSize(forImageSizes: sizes)
+                
+                DispatchQueue.main.async {
+                    // Refresh Settings cell
+                    self.thumbCacheSize = cacheSize
+                    self.updatePhotoCacheCell()
+                }
             }
         }
 

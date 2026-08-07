@@ -21,7 +21,7 @@ extension UploadParametersViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // Don't present privacy level choice to non-admin users
         var nberOfRows = EditImageDetailsOrder.count.rawValue
-        nberOfRows -= (!(user?.hasAdminRights ?? false) ? 1 : 0)
+        nberOfRows -= (!(userData?.hasAdminRights ?? false) ? 1 : 0)
         
         return nberOfRows
     }
@@ -29,7 +29,7 @@ extension UploadParametersViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Don't present privacy level choice to non-admin users
         var row = indexPath.row
-        row += (!(user?.hasAdminRights ?? false) && (row > 1)) ? 1 : 0
+        row += (!(userData?.hasAdminRights ?? false) && (row > 1)) ? 1 : 0
         
         let contentSizeCategory = traitCollection.preferredContentSizeCategory
         var tableViewCell = UITableViewCell()

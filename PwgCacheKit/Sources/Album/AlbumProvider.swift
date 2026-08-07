@@ -14,8 +14,10 @@ public final class AlbumProvider {
         
     public init() {}    // To make this class public
 
-    // MARK: - Get/Create Album
-    private func fetchRequestOfAlbum(withId albumId: Int32, forUser user: User) -> NSFetchRequest<Album> {
+    // MARK: - Fetch Request
+    fileprivate func fetchRequestOfAlbum(withID pwgID: Int32,
+                                         ofUser username: String = ServerVars.shared.user,
+                                         onServerAtPath serverPath: String = ServerVars.shared.serverPath) -> NSFetchRequest<Album> {
         // Create a fetch request sorted by ID
         let fetchRequest = Album.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.pwgID), ascending: true)]
@@ -24,87 +26,97 @@ public final class AlbumProvider {
         /// — from the current server which is accessible to the current user
         /// — whose ID is the ID of the displayed album
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", user.username))
-        andPredicates.append(NSPredicate(format: "pwgID == %i", albumId))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", username))
+        andPredicates.append(NSPredicate(format: "pwgID == %i", pwgID))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-        fetchRequest.fetchLimit = 1
         fetchRequest.returnsObjectsAsFaults = false
-        fetchRequest.shouldRefreshRefetchedObjects = true        
+        fetchRequest.shouldRefreshRefetchedObjects = true
+        fetchRequest.fetchLimit = 1
         return fetchRequest
     }
     
-//    public func getPropertiesOfAlbum(withID pwgID: Int32, belongingToUser userURIstr: String,
-//                                     inContext taskContext: NSManagedObjectContext) throws(PwgKitError) -> AlbumProperties {
-//        do {
-//            // Synchronous execution
-//            return try taskContext.performAndWait { () -> AlbumProperties in
-//                // Retrieve User instrance
-//                guard let userURI = URL(string: userURIstr),
-//                      let userID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: userURI),
-//                      let user = try taskContext.existingObject(with: userID) as? User
-//                else { throw PwgKitError.emptyUsername }
-//
-//                // Retrieve album data
-//                guard let album = try getAlbum(ofUser: user, withId: pwgID)
-//                else { throw PwgKitError.albumNotFound }
-//                
-//                // Extract properties
-//                return album.getProperties()
-//            }
-//        }
-//        catch let error as PwgKitError { throw error }
-//        catch { throw PwgKitError.otherError(innerError: error) }
-//    }
-
-    public func getAlbum(ofUser user: User, withId albumId: Int32, name: String = "") throws(PwgKitError) -> Album? {
-        // Initialisation
-        guard let taskContext = user.managedObjectContext
-        else { return nil }
-        
+    
+    // MARK: - Create/Get Album of Current User
+    /// Returns the requested album of the current user if it exists in the persistent store.
+    /// Unlike getOrCreateAlbum(withID:name:inContext:),
+    /// this method never creates smart albums and never saves the context,
+    /// so it can be called while a snapshot is being applied to a diffable data source
+    /// without triggering a nested apply.
+    public func getAlbum(withID pwgID: Int32,
+                         inContext taskContext: NSManagedObjectContext) -> Album? {
         // Synchronous execution
+        return taskContext.performAndWait { () -> Album? in
+            let fetchRequest = fetchRequestOfAlbum(withID: pwgID)
+            return try? taskContext.fetch(fetchRequest).first
+        }
+    }
+    
+    public func getProperties(ofAlbumWithID pwgID: Int32,
+                              inContext taskContext: NSManagedObjectContext) -> AlbumProperties? {
+        // Synchronous execution
+        return getAlbum(withID: pwgID, inContext: taskContext)?.getProperties()
+    }
+    
+    public func getOrCreateAlbum(withID pwgID: Int32, name: String = "",
+                                 inContext taskContext: NSManagedObjectContext) throws(PwgKitError) -> Album {
+        // Do {} below is used to allow typed throws
         do {
-            return try taskContext.performAndWait { () throws -> Album? in
+            // Synchronous execution
+            return try taskContext.performAndWait { () -> Album in
                 // Create a fetch request for the Album entity
-                let fetchRequest = fetchRequestOfAlbum(withId: albumId, forUser: user)
+                let fetchRequest = fetchRequestOfAlbum(withID: pwgID)
                 
-                // Return the Album entity if possible
+                // Return the album if is exists
                 let album = try taskContext.fetch(fetchRequest).first
                 if let album { return album }
                 
                 // Create a smart Album on the current queue context if needed
-                if albumId <= 0 {     // We should not create standard albums manually
+                if pwgID <= 0 {     // We should not create standard albums manually
                     let newAlbum = Album(context: taskContext)
-                    let smartAlbum = CategoryGetInfo(withId: albumId, albumName: name)
-                    try newAlbum.update(with: smartAlbum, userObjectID: user.objectID)
+                    let smartAlbum = CategoryGetInfo(withId: pwgID, albumName: name)
+                    let user = try UserProvider().getCurrentUser(inContext: taskContext)
+                    let userURIstr = user.objectID.uriRepresentation().absoluteString
+                    try newAlbum.update(with: smartAlbum, userURIstr: userURIstr)
                     taskContext.saveIfNeeded()
                     return newAlbum
                 }
                 
                 // The album does not exist!
                 // Will select the default album or root album
-                return nil
+                throw PwgKitError.albumNotFound
             }
         }
         catch let error as PwgKitError { throw error }
         catch let error as NSError { throw PwgKitError.CoreDataError(innerError: error)}
-        catch let error { throw PwgKitError.otherError(innerError: error) }
+        catch { throw PwgKitError.otherError(innerError: error) }
+    }
+    
+    public func getOrCreateProperties(ofAlbumWithID pwgID: Int32, name: String = "",
+                                      inContext taskContext: NSManagedObjectContext) throws(PwgKitError) -> AlbumProperties {
+        return try getOrCreateAlbum(withID: pwgID, name: name, inContext: taskContext).getProperties()
     }
 
-    /// Returns the requested album if it exists in the persistent store.
-    /// Unlike getAlbum(ofUser:withId:name:), this method never creates smart albums
-    /// and never saves the context, so it can be called while a snapshot is being
-    /// applied to a diffable data source without triggering a nested apply.
-    public func fetchAlbum(ofUser user: User, withId albumId: Int32) -> Album? {
-        // Initialisation
-        guard let taskContext = user.managedObjectContext
-        else { return nil }
-
+    
+    // MARK: - Get Album of Other User
+    /// Returns the requested album of the current user if it exists in the persistent store.
+    public func getAlbum(withID pwgID: Int32, ofUserWithURI userURIstr: String,
+                         inContext taskContext: NSManagedObjectContext) -> Album? {
         // Synchronous execution
         return taskContext.performAndWait { () -> Album? in
-            let fetchRequest = fetchRequestOfAlbum(withId: albumId, forUser: user)
+            guard let userData = try? UserProvider().getUser(withURIstr: userURIstr, inContext: taskContext),
+                  let serverPath = userData.server?.path
+            else { return nil }
+            
+            let fetchRequest = fetchRequestOfAlbum(withID: pwgID, ofUser: userData.username, onServerAtPath: serverPath)
             return try? taskContext.fetch(fetchRequest).first
         }
+    }
+    
+    public func getProperties(ofAlbumWithID pwgID: Int32, ofUserWithURI userURIstr: String,
+                              inContext taskContext: NSManagedObjectContext) -> AlbumProperties? {
+        // Synchronous execution
+        return getAlbum(withID: pwgID, ofUserWithURI: userURIstr,inContext: taskContext)?.getProperties()
     }
     
     
@@ -167,15 +179,9 @@ public final class AlbumProvider {
         
         var albumToDeleteUUIDs = Set<String>()
         
-        // Get current user object (will create server and user objects if needed)
+        // Get current user object (should exist at this stage)
         let bckgContext = DataController.shared.newTaskContext()
-        guard let user = try UserProvider().getUserAccount(inContext: bckgContext)
-        else { throw PwgKitError.userCreationError }
-        if user.isFault {
-            // user is not fired yet.
-            user.willAccessValue(forKey: nil)
-            user.didAccessValue(forKey: nil)
-        }
+        let user = try UserProvider().getCurrentUser(inContext: bckgContext)
         
         // Runs on the URLSession's delegate queue
         // so it won’t block the main thread.
@@ -219,6 +225,7 @@ public final class AlbumProvider {
                 }
                 
                 // Loop over fetched albums
+                let userURIstr = user.objectID.uriRepresentation().absoluteString
                 for albumData in albumsBatch {
                     
                     // Index of this new album in cache
@@ -227,7 +234,7 @@ public final class AlbumProvider {
                         // Update the album's properties using the raw data
                         // The current user will be added so that we know which albums
                         // are accessible to that user.
-                        try cachedAlbums[index].update(with: albumData, userObjectID: user.objectID)
+                        try cachedAlbums[index].update(with: albumData, userURIstr: userURIstr)
                         
                         // IDs of albums to which the user has upload access
                         // are stored in the uploadRights attribute.
@@ -246,7 +253,7 @@ public final class AlbumProvider {
                         
                         // Populate the Album's properties using the raw data.
                         do {
-                            try album.update(with: albumData, userObjectID: user.objectID)
+                            try album.update(with: albumData, userURIstr: userURIstr)
                             if albumData.hasUploadRights {
                                 user.addUploadRightsToAlbum(withID: ID)
                             } else {
@@ -300,6 +307,30 @@ public final class AlbumProvider {
     }
     
     
+    // MARK: - Update Albums
+    public func updateAlbum(withProperties properties: AlbumProperties,
+                            inContext taskContext: NSManagedObjectContext) throws(PwgKitError) {
+        // Do {} below is used to allow typed throws
+        do {
+            // Synchronous execution
+            return try taskContext.performAndWait {
+                // Retrieve Album instance
+                guard let albumURI = URL(string: properties.URIstr),
+                      let albumID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: albumURI),
+                      let album = try taskContext.existingObject(with: albumID) as? Album
+                else { throw PwgKitError.albumNotFound }
+                                
+                // Update properties
+                try album.update(with: properties)
+                taskContext.saveIfNeeded()
+            }
+        }
+        catch let error as PwgKitError { throw error }
+        catch let error as NSError { throw PwgKitError.CoreDataError(innerError: error)}
+        catch let error { throw PwgKitError.otherError(innerError: error) }
+    }
+    
+    
     // MARK: - Images Related Utilities
     /**
      Add/substract the number of moved images to
@@ -310,17 +341,12 @@ public final class AlbumProvider {
     public func updateAlbums(addingImages nbImages: Int64, toAlbumWithID pwgID: Int32,
                              belongingToUser userURIstr: String,
                              inContext taskContext: NSManagedObjectContext) throws(PwgKitError) {
+        // Do {} below is used to allow typed throws
         do {
             // Synchronous execution
             try taskContext.performAndWait { () -> Void in
-                // Retrieve User instance
-                guard let userURI = URL(string: userURIstr),
-                      let userID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: userURI),
-                      let user = try taskContext.existingObject(with: userID) as? User
-                else { throw PwgKitError.emptyUsername }
-                
                 // Retrieve album instance
-                guard let album = try getAlbum(ofUser: user, withId: pwgID)
+                guard let album = getAlbum(withID: pwgID, ofUserWithURI: userURIstr, inContext: taskContext)
                 else { throw PwgKitError.albumNotFound }
                 
                 // Update album instance

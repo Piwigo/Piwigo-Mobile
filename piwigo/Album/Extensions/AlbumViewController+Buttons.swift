@@ -61,7 +61,7 @@ extension AlbumViewController
         // — admin rights
         // — normal rights and upload access to the current category
         if [0, AlbumVars.shared.defaultCategory].contains(categoryId),
-           user.hasUploadRights(forCatID: categoryId) {
+           userData.hasUploadRights(forCatID: categoryId) {
             // Show Add Album button
             if addButton.isHidden {
                 // Show Add button
@@ -74,7 +74,7 @@ extension AlbumViewController
                 }
             }
         } else if categoryId > 0,
-                  user.hasUploadRights(forCatID: categoryId) {
+                  userData.hasUploadRights(forCatID: categoryId) {
             // Show Upload button if needed
             if addButton.isHidden {
                 // Show Add button
@@ -465,7 +465,7 @@ extension AlbumViewController
         // Position of Home Album button depends on user's rights
         // — webmaster or admin rights
         // — normal rights and upload access to the current category
-        if categoryId > 0, user.hasUploadRights(forCatID: categoryId) {
+        if categoryId > 0, userData.hasUploadRights(forCatID: categoryId) {
             let xPos = addButton.frame.origin.x
             let yPos = addButton.frame.origin.y
             return CGRect(x: xPos - 3 * kRadius, y: yPos,

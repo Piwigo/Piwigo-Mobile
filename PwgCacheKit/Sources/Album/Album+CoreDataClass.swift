@@ -21,11 +21,11 @@ public final nonisolated class Album: NSManagedObject, Identifiable {
     /**
      Updates an Album instance with the values from a CategoryGetInfo struct.
      */
-    public func update(with albumData: CategoryGetInfo, userObjectID: NSManagedObjectID) throws {
+    public func update(with albumData: CategoryGetInfo, userURIstr: String) throws {
         
         // Update the album only if the Id and Name properties have values.
         guard let newPwgId = albumData.id,
-              let newName = albumData.name else {
+              let newName = albumData.name, newName.isEmpty == false else {
             throw PwgKitError.missingAlbumData
         }
         if uuid.isEmpty {
@@ -40,7 +40,7 @@ public final nonisolated class Album: NSManagedObject, Identifiable {
         if name != newNameUTF8 {
             name = newNameUTF8
         }
-
+        
         // Album description (required)
         let newCommentStr = albumData.comment?.utf8mb4Encoded ?? ""
         if commentStr != newCommentStr {
@@ -64,7 +64,7 @@ public final nonisolated class Album: NSManagedObject, Identifiable {
         if globalRank != newGlobalRank {
             globalRank = newGlobalRank
         }
-
+        
         // When upperCat i.e. parentId is null or not supplied, album at the root (required)
         let newUpperCat = Int32(albumData.upperCat ?? "") ?? 0
         if parentId != newUpperCat {
@@ -76,13 +76,13 @@ public final nonisolated class Album: NSManagedObject, Identifiable {
         if upperIds != newUpperCats {
             upperIds = newUpperCats
         }
-
+        
         // Image sort option (required)
         let newImageSort = albumData.imageSort ?? ""
         if imageSort != newImageSort {
             imageSort = newImageSort
         }
-
+        
         // Number of images and sub-albums
         let newNbImages = albumData.nbImages ?? Int64.zero
         if nbImages != newNbImages {
@@ -96,7 +96,7 @@ public final nonisolated class Album: NSManagedObject, Identifiable {
         if nbSubAlbums != newNbCategories {
             nbSubAlbums = newNbCategories
         }
-
+        
         // Album thumbnail
         /// - Store relative URLs to save space and because the URL might changed in future
         /// - Remove photo from cache if the path has changed
@@ -108,7 +108,7 @@ public final nonisolated class Album: NSManagedObject, Identifiable {
         if thumbnailUrl != newThumbnailUrl {
             thumbnailUrl = newThumbnailUrl
         }
-
+        
         // When "date_last" is null or not supplied: date in distant past
         /// - 'date_last' is the maximum 'date_available' of the images associated to an album.
         if let newTimeInterval = DateUtilities.timeInterval(from: albumData.dateLast) {
@@ -118,10 +118,12 @@ public final nonisolated class Album: NSManagedObject, Identifiable {
         } else {
             dateLast = DateUtilities.unknownDateInterval
         }
-
+        
         // This album belongs to the provided user
         if user == nil,
-           let userInContext = self.managedObjectContext?.object(with: userObjectID) as? User {
+           let userURI = URL(string: userURIstr),
+           let userID = self.managedObjectContext?.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: userURI),
+           let userInContext = self.managedObjectContext?.object(with: userID) as? User {
             user = userInContext
         }
         
@@ -132,16 +134,62 @@ public final nonisolated class Album: NSManagedObject, Identifiable {
             currentCounter = UploadVars.shared.categoryCounterInit
         }
     }
+    
+    /**
+     Updates a User instance from UserProperties.
+     */
+    public func update(with albumData: AlbumProperties) throws {
+        
+        // Update the album only if the Id and Name properties have values.
+        guard albumData.name.isEmpty == false else {
+            throw PwgKitError.missingAlbumData
+        }
+
+        // Album name (required)
+        let newNameUTF8 = albumData.name.utf8mb4Encoded
+        if name != newNameUTF8 {
+            name = newNameUTF8
+        }
+                
+        // Number of images and sub-albums
+        let newNbImages = albumData.nbImages
+        if nbImages != newNbImages {
+            nbImages = newNbImages
+        }
+        let newTotalNbImages = albumData.totalNbImages
+        if totalNbImages != newTotalNbImages {
+            totalNbImages = newTotalNbImages
+        }
+        
+        // Counter for renaming files before upload
+        if currentCounter < albumData.currentCounter {
+            currentCounter = albumData.currentCounter
+        }
+    }
 }
 
 
-//extension Album
-//{
-//    public func getProperties() -> AlbumProperties {
-//        return AlbumProperties(
-//            pwgID: self.pwgID,
-//            
-//            images: (self.images ?? Set<Image>()).map { $0.pwgID }
-//        )
-//    }
-//}
+extension Album
+{
+    public func getProperties() -> AlbumProperties {
+        return AlbumProperties(
+            pwgID: self.pwgID, name: self.name,
+            /// The bridge is lossless: every attribute produced by String.attributedHTML
+            /// belongs to a registered AttributeScope. Only unregistered keys would be dropped.
+            comment: AttributedString(self.comment),
+            commentHTML: AttributedString(self.commentHTML),
+            query: self.query,
+            
+            upperIds: self.upperIds,
+            
+            nbImages: self.nbImages, totalNbImages: self.totalNbImages,
+            images: (self.images ?? Set<Image>()).map { $0.pwgID },
+            imageSort: self.imageSort,
+            currentCounter: self.currentCounter,
+            dateGetImages: self.dateGetImages,
+            
+            URIstr: self.objectID.uriRepresentation().absoluteString,
+            userURIstr: self.user?.objectID.uriRepresentation().absoluteString ?? ""
+        )
+    }
+}

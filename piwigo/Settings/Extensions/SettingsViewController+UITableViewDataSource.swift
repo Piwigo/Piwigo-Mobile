@@ -21,7 +21,7 @@ extension SettingsViewController: UITableViewDataSource
         // — admin rights
         // — normal rights with upload access to some categories with Community
         var rawSection = section
-        if !userHasUploadRights, rawSection > SettingsSection.videos.rawValue {
+        if !userData.hasUploadRights, rawSection > SettingsSection.videos.rawValue {
             rawSection += 1
         }
         guard let activeSection = SettingsSection(rawValue: rawSection)
@@ -31,7 +31,7 @@ extension SettingsViewController: UITableViewDataSource
     
     func numberOfSections(in tableView: UITableView) -> Int {
         var nberSections = SettingsSection.count.rawValue
-        nberSections -= (userHasUploadRights ? 0 : 1)
+        nberSections -= (userData.hasUploadRights ? 0 : 1)
         return nberSections
     }
     
@@ -52,7 +52,7 @@ extension SettingsViewController: UITableViewDataSource
         case .videos:
             nberOfRows = 2
         case .uploads:
-            nberOfRows = 8 + (user.hasAdminRights ? 1 : 0)
+            nberOfRows = 8 + (userData.hasAdminRights ? 1 : 0)
             nberOfRows += (UploadVars.shared.resizeImageOnUpload ? 2 : 0)
             nberOfRows += (UploadVars.shared.compressImageOnUpload ? 1 : 0)
             nberOfRows += UIDevice.current.hasCellular ? 1 : 0
@@ -61,7 +61,7 @@ extension SettingsViewController: UITableViewDataSource
         case .appearance:
             nberOfRows = 1
         case .cache:
-            nberOfRows = 4 + (userHasUploadRights ? 1 : 0)
+            nberOfRows = 4 + (userData.hasUploadRights ? 1 : 0)
         case .clear:
             nberOfRows = 1
         case .about:
@@ -312,7 +312,7 @@ extension SettingsViewController: UITableViewDataSource
         // MARK: Uploads
         case .uploads /* Default Upload Settings */:
             var row = indexPath.row
-            row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
+            row += (!userData.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
             row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
             row += (!UIDevice.current.hasCellular && (row > 8)) ? 1 : 0
@@ -384,9 +384,9 @@ extension SettingsViewController: UITableViewDataSource
                     // Number of rows will change accordingly
                     UploadVars.shared.resizeImageOnUpload = switchState
                     // Position of the row that should be added/removed
-                    let photoAtIndexPath = IndexPath(row: 3 + (self.user.hasAdminRights ? 1 : 0),
+                    let photoAtIndexPath = IndexPath(row: 3 + (self.userData.hasAdminRights ? 1 : 0),
                                                    section: SettingsSection.uploads.rawValue)
-                    let videoAtIndexPath = IndexPath(row: 4 + (self.user.hasAdminRights ? 1 : 0),
+                    let videoAtIndexPath = IndexPath(row: 4 + (self.userData.hasAdminRights ? 1 : 0),
                                                    section: SettingsSection.uploads.rawValue)
                     if switchState {
                         // Insert row in existing table
@@ -437,7 +437,7 @@ extension SettingsViewController: UITableViewDataSource
                     // Number of rows will change accordingly
                     UploadVars.shared.compressImageOnUpload = switchState
                     // Position of the row that should be added/removed
-                    let rowAtIndexPath = IndexPath(row: 4 + (self.user.hasAdminRights ? 1 : 0)
+                    let rowAtIndexPath = IndexPath(row: 4 + (self.userData.hasAdminRights ? 1 : 0)
                                                           + (UploadVars.shared.resizeImageOnUpload ? 2 : 0),
                                                    section: SettingsSection.uploads.rawValue)
                     if switchState {

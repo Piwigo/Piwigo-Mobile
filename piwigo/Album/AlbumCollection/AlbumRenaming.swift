@@ -15,20 +15,20 @@ import PwgCacheKit
 import PwgUIKit
 
 // MARK: - Rename Album, Update Description
-class AlbumRenaming: NSObject
+final class AlbumRenaming: NSObject
 {
     // Initialisation
-    init(albumData: Album, user: User, mainContext: NSManagedObjectContext,
-         topViewController: UIViewController) {
-        self.albumData = albumData
-        self.user = user
-        self.mainContext = mainContext
+    init(album: Album, topViewController: UIViewController) {
+        self.album = album
         self.topViewController = topViewController
     }
     
-    var albumData: Album
-    var user: User
-    var mainContext: NSManagedObjectContext
+    var album: Album
+    lazy var userData: UserProperties = {
+        guard let user = album.user?.getProperties()
+        else { preconditionFailure("Album has no User instance") }
+        return user
+    }()
     var topViewController: UIViewController
     
     private var renameAlert: UIAlertController?
@@ -37,17 +37,23 @@ class AlbumRenaming: NSObject
         case albumName = 1000, albumDescription
     }
 
+    // MARK: - Core Data Objects
+    @MainActor
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
+
+    
+    // MARK: - Rename Album
     @MainActor
     func displayAlert(completion: @escaping (Bool) -> Void)
     {
         renameAlert = UIAlertController(
             title: String(localized: "renameCategory_title", comment: "Rename Album"),
-            message: String(format: "%@ (%@):", String(localized: "renameCategory_message", comment: "Enter a new name for this album"), albumData.name),
+            message: String(format: "%@ (%@):", String(localized: "renameCategory_message", comment: "Enter a new name for this album"), album.name),
             preferredStyle: .alert)
 
         renameAlert?.addTextField(configurationHandler: { [self] textField in
             textField.placeholder = String(localized: "createNewAlbum_placeholder", comment: "Album Name")
-            textField.text = albumData.name
+            textField.text = album.name
             textField.clearButtonMode = .always
             textField.keyboardType = .default
             textField.keyboardAppearance = UIVars.shared.isDarkPaletteActive ? .dark : .default
@@ -60,7 +66,7 @@ class AlbumRenaming: NSObject
 
         renameAlert?.addTextField(configurationHandler: { [self] textField in
             textField.placeholder = String(localized: "createNewAlbumDescription_placeholder", comment: "Description")
-            let attributedStr = NSMutableAttributedString(attributedString: albumData.comment)
+            let attributedStr = NSMutableAttributedString(attributedString: album.comment)
             let wholeRange = NSRange(location: 0, length: attributedStr.string.count)
             let style = NSMutableParagraphStyle()
             style.alignment = NSTextAlignment.left
@@ -125,10 +131,10 @@ class AlbumRenaming: NSObject
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
                 
                 // Update album data
-                try await JSONManager.shared.setInfos(albumData.pwgID, withName: albumName, description: albumComment)
+                try await JSONManager.shared.setInfos(album.pwgID, withName: albumName, description: albumComment)
                 
                 // Update cache and UI
                 await MainActor.run { [self] in
@@ -136,20 +142,22 @@ class AlbumRenaming: NSObject
                     completion(true)
 
                     // Update album in cache and cell
-                    if albumData.name != albumName {
-                        albumData.name = albumName
+                    if album.name != albumName {
+                        album.name = albumName
                     }
-                    if albumData.commentRaw != albumComment {
-                        albumData.commentStr = albumComment
-                        albumData.commentRaw = albumComment
-                        albumData.comment = albumComment.attributedPlain
-                        albumData.commentHTML = albumComment.attributedHTML
+                    if album.commentRaw != albumComment {
+                        album.commentStr = albumComment
+                        album.commentRaw = albumComment
+                        album.comment = albumComment.attributedPlain
+                        album.commentHTML = albumComment.attributedHTML
                     }
-                    self.mainContext.saveIfNeeded()
+                    mainContext.saveIfNeeded()
 
                     // Hide HUD
                     self.topViewController.updateHUDwithSuccess() {
-                        self.topViewController.hideHUD(afterDelay: pwgDelayHUD) { }
+                        self.topViewController.hideHUD(afterDelay: pwgDelayHUD) {
+                            // Update albumData !!!
+                        }
                     }
                 }
             }
@@ -190,7 +198,7 @@ extension AlbumRenaming: UITextFieldDelegate
         else { return false }
         
         // Compare with the old album name
-        if newAlbumName != albumData.name {
+        if newAlbumName != album.name {
             return true
         }
         
@@ -199,7 +207,7 @@ extension AlbumRenaming: UITextFieldDelegate
         else { return false }
         
         // Compare the old and new album descriptions
-        return (albumData.commentStr != newAlbumDesc)
+        return (album.commentStr != newAlbumDesc)
     }
 
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {

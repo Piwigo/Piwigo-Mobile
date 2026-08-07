@@ -26,14 +26,12 @@ enum SectionType: Int {
 final class LocalImagesViewController: UIViewController
 {
     // MARK: - Core Data Objects
-    var user: User!
-    lazy var mainContext: NSManagedObjectContext = {
-        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
-            fatalError("!!! Missing Managed Object Context !!!")
-        }
-        return context
-    }()
+    @MainActor
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
+    var userData: UserProperties!
     
+    
+    // MARK: - Core Data Source
     lazy var fetchUploadRequest: NSFetchRequest = {
         let fetchRequest = Upload.fetchRequest()
         // Priority to uploads requested manually, oldest ones first

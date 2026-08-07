@@ -21,7 +21,7 @@ import PwgUIKit
     func didFinishEditingParameters()
 }
 
-class EditImageParamsViewController: UIViewController
+final class EditImageParamsViewController: UIViewController
 {
     var images = [Image]()
     var hasTagCreationRights = false
@@ -73,13 +73,9 @@ class EditImageParamsViewController: UIViewController
     
     
     // MARK: - Core Data Objects
-    var user: User!
-    lazy var mainContext: NSManagedObjectContext = {
-        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
-            fatalError("!!! Missing Managed Object Context !!!")
-        }
-        return context
-    }()
+    @MainActor
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
+    var userData: UserProperties!
     
     
     // MARK: - View Lifecycle
@@ -306,8 +302,8 @@ class EditImageParamsViewController: UIViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID,
-                                                        lastConnected: self.user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: self.userData.URIstr,
+                                                        lastConnected: self.userData.lastUsed)
                 
                 // Update image properties
                 self.updateImageProperties(fromIndex: index)
@@ -326,7 +322,7 @@ class EditImageParamsViewController: UIViewController
             // Done, save, hide HUD and dismiss controller
             self.updateHUDwithSuccess { [self] in
                 // Save changes
-                self.mainContext.saveIfNeeded()
+                mainContext.saveIfNeeded()
                 // Close HUD
                 self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                     // Return to image preview or album view
@@ -457,7 +453,8 @@ class EditImageParamsViewController: UIViewController
                     imageData.removeFromAlbums(albumData)
                     
                     // Update albums
-                    try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: albumData, inContext: self.mainContext)
+                    try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: albumData,
+                                                      inContext: mainContext)
                 }
             }
             // Loop over the added tags
@@ -469,11 +466,13 @@ class EditImageParamsViewController: UIViewController
                 }
                 // Add image to album of tagged images if it exists
                 let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.tagId)
-                if let albumData = try? AlbumProvider().getAlbum(ofUser: user, withId: catID) {
+                if let albumData = AlbumProvider().getAlbum(withID: catID,
+                                                            inContext: mainContext) {
                     imageData.addToAlbums(albumData)
                     
                     // Update albums
-                    try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: albumData, inContext: self.mainContext)
+                    try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: albumData,
+                                                      inContext: mainContext)
                 }
             }
         }
@@ -488,7 +487,7 @@ class EditImageParamsViewController: UIViewController
         }
         
         // Save changes
-        self.mainContext.saveIfNeeded()
+        mainContext.saveIfNeeded()
         
         // Notify album/image view of modification
         self.delegate?.didChangeImageParameters(imageData)

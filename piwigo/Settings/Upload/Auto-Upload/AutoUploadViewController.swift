@@ -14,21 +14,17 @@ import PwgCacheKit
 import PwgUploadKit
 import PwgUIKit
 
-class AutoUploadViewController: UIViewController {
+final class AutoUploadViewController: UIViewController {
 
     @IBOutlet var autoUploadTableView: UITableView!
     
     var oldContentOffset = CGPoint.zero
     
     // MARK: - Core Data Objects
-    var user: User!
-    lazy var mainContext: NSManagedObjectContext = {
-        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
-            preconditionFailure("!!! Missing Managed Object Context !!!")
-        }
-        return context
-    }()
-
+    @MainActor
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
+    var userData: UserProperties!
+    
     private lazy var hasTagCreationRights: Bool = {
         // Depends on the user's rights
         switch ServerVars.shared.userStatus {
@@ -38,7 +34,7 @@ class AutoUploadViewController: UIViewController {
             return true
         case .normal:
             // Community user with upload rights?
-            if user.uploadRights.components(separatedBy: ",")
+            if userData.uploadRights.components(separatedBy: ",")
                 .contains(String(UploadVars.shared.autoUploadCategoryId)) {
                 return true
             }

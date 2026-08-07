@@ -97,7 +97,7 @@ extension SceneDelegate {
         // Prepare image detail view
         let imageDetailSB = UIStoryboard(name: "ImageViewController", bundle: nil)
         guard let imageDetailVC = imageDetailSB.instantiateViewController(withIdentifier: "ImageViewController") as? ImageViewController else { return }
-        imageDetailVC.user = subAlbumVC.user
+        imageDetailVC.userData = subAlbumVC.userData
         imageDetailVC.categoryId = subAlbumVC.categoryId
         imageDetailVC.images = subAlbumVC.images
         imageDetailVC.indexPath = indexPath

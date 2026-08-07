@@ -33,7 +33,7 @@ public extension JSONManager {
     }
     
     @concurrent
-    func sessionGetStatus() async throws(PwgKitError) -> String {
+    func sessionGetStatus() async throws(PwgKitError) -> (String, pwgUserStatus) {
         // Launch request
         let pwgData = try await postRequest(withMethod: pwgSessionGetStatus, paramDict: [:],
                                             jsonObjectClientExpectsToReceive: SessionGetStatusJSON.self,
@@ -129,16 +129,6 @@ public extension JSONManager {
         // The iPhone creates mov files that will be uploaded in mp4 format.
         ServerVars.shared.serverFileTypes = data.uploadFileTypes ?? "jpg,jpeg,png,gif"
         
-        // User rights are determined by Community extension (if installed)
-        if let status = data.userStatus, status.isEmpty == false,
-           let userStatus = pwgUserStatus(rawValue: status) {
-            if ServerVars.shared.usesCommunityPluginV29 == false {
-                ServerVars.shared.userStatus = userStatus
-            }
-        } else {
-            throw .unknownUserStatus
-        }
-
         // Retrieve the list of available sizes
         ServerVars.shared.hasSquareSizeImages  = data.imageSizes?.contains("square") ?? false
         ServerVars.shared.hasThumbSizeImages   = data.imageSizes?.contains("thumb") ?? false
@@ -155,7 +145,12 @@ public extension JSONManager {
         // Should the app log visits and downloads? (since Piwigo 14)
         ServerVars.shared.saveVisits = data.saveVisits ?? false
 
-        return data.userName ?? ""
+        // Attention: User rights are determined by Community extension (if installed)
+        if let status = data.userStatus, status.isEmpty == false,
+           let userStatus = pwgUserStatus(rawValue: status) {
+            return (data.userName ?? "", userStatus)
+        }
+        throw .unknownUserStatus
     }
 
     @concurrent

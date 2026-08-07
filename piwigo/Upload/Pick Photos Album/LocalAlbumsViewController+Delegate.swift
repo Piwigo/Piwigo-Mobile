@@ -51,7 +51,7 @@ extension LocalAlbumsViewController: UITableViewDelegate {
             pasteboardImagesVC.categoryId = categoryId
             pasteboardImagesVC.categoryCurrentCounter = categoryCurrentCounter
             pasteboardImagesVC.albumDelegate = albumDelegate
-            pasteboardImagesVC.user = user
+            pasteboardImagesVC.userData = userData
             navigationController?.pushViewController(pasteboardImagesVC, animated: true)
             return
         case .localAlbums:
@@ -100,7 +100,7 @@ extension LocalAlbumsViewController: UITableViewDelegate {
             localImagesVC.albumDelegate = albumDelegate
             localImagesVC.imageCollectionId = albumID
             localImagesVC.imageCollectionName = albumName
-            localImagesVC.user = user
+            localImagesVC.userData = userData
             navigationController?.pushViewController(localImagesVC, animated: true)
         }
     }

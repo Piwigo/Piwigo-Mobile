@@ -80,7 +80,8 @@ public final class TagProvider {
             try bckgContext.performAndWait {
                 
                 // Get current server object
-                guard let server = try ServerProvider().getServer(inContext: bckgContext) else {
+                guard let server = try? ServerProvider().getCurrentServer(inContext: bckgContext)
+                else {
                     debugPrint(PwgKitError.tagCreationError.localizedDescription)
                     return
                 }

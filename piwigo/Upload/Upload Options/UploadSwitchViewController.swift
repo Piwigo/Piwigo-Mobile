@@ -42,7 +42,7 @@ final class UploadSwitchViewController: UIViewController {
     
     
     // MARK: - Core Data Objects
-    var user: User!
+    var userData: UserProperties!
 
 
     // MARK: - View Lifecycle

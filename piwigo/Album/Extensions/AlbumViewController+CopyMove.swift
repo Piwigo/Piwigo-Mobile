@@ -49,7 +49,7 @@ extension AlbumViewController
         guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController
         else { preconditionFailure("Could not instantiate SelectCategoryViewController") }
         let parameter: [Any] = [imageIDs, albumData.pwgID]
-        copyVC.user = user
+        copyVC.userData = userData
         if copyVC.setInput(parameter: parameter, for: .copyImages) {
             copyVC.delegate = self              // To re-enable toolbar
             pushView(copyVC)
@@ -61,7 +61,7 @@ extension AlbumViewController
         guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController
         else { preconditionFailure("Could not instantiate SelectCategoryViewController") }
         let parameter: [Any] = [imageIDs, albumData.pwgID]
-        moveVC.user = user
+        moveVC.userData = userData
         if moveVC.setInput(parameter: parameter, for: .moveImages) {
             moveVC.delegate = self              // To re-enable toolbar
             pushView(moveVC)

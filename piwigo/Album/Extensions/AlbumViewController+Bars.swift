@@ -50,7 +50,7 @@ extension AlbumViewController
             // WRONG =====> 'generic' or 'normal' user with upload access to the current category can copy, move, edit images
             // SHOULD BE => 'generic' or 'normal' user having uploaded images can only edit their images.
             //              This requires 'user_id' and 'added_by' values of images for checking rights
-            if user.hasUploadRights(forCatID: categoryId) {
+            if userData.hasUploadRights(forCatID: categoryId) {
                 // Initialise UploadQueue toolbar button if needed
                 // and place it with other buttons in the navigation bar
                 let nberOfUploads = UploadVars.shared.nberOfUploadsToComplete
@@ -124,7 +124,7 @@ extension AlbumViewController
             // WRONG =====> 'normal' user with upload access to the current category can copy, move, edit images
             // SHOULD BE => 'normal' user having uploaded images can only edit their images.
             //              This requires 'user_id' and 'added_by' values of images for checking rights
-            if user.hasUploadRights(forCatID: categoryId) {
+            if userData.hasUploadRights(forCatID: categoryId) {
                 switch view.traitCollection.userInterfaceIdiom {
                 case .phone:
                     // Select menu on the right side of the navigation bar
@@ -286,7 +286,7 @@ extension AlbumViewController
         // WRONG =====> 'normal' user with upload access to the current category can copy, move, edit images
         // SHOULD BE => 'normal' user having uploaded images can only edit their images.
         //              This requires 'user_id' and 'added_by' values of images for checking rights
-        if user.hasUploadRights(forCatID: categoryId) {
+        if userData.hasUploadRights(forCatID: categoryId) {
             initBarsInSelectModeForAdmin(orientation: orientation)
         } else {
             initBarsInSelectModeForStdUserOrGuest(orientation: orientation)
@@ -392,7 +392,7 @@ extension AlbumViewController
         // WRONG =====> 'normal' user with upload access to the current category can copy, move, edit images
         // SHOULD BE => 'normal' user having uploaded images can only edit their images.
         //              This requires 'user_id' and 'added_by' values of images for checking rights
-        if user.hasUploadRights(forCatID: categoryId) {
+        if userData.hasUploadRights(forCatID: categoryId) {
             selectBarButton?.isEnabled = hasImagesSelected
             actionBarButton?.isEnabled = hasImagesSelected
             shareBarButton?.isEnabled = hasImagesSelected

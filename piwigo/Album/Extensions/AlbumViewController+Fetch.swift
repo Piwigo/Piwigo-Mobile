@@ -46,7 +46,7 @@ extension AlbumViewController
             // Fetch the root album recursively after a successful login
             // so that the share extension can present the whole album tree
             let recursively = (categoryId == pwgSmartAlbum.root.rawValue) && AlbumVars.shared.fetchAlbumDataRecursively
-            await self.fetchAlbums(forUserWithAdminRights: user.hasAdminRights, recursively: recursively,
+            await self.fetchAlbums(forUserWithAdminRights: userData.hasAdminRights, recursively: recursively,
                                    withInitialImageIds: oldImageIDs, query: query)
         }
     }
@@ -64,7 +64,7 @@ extension AlbumViewController
                                                                        inParentWithId: categoryId,
                                                                        recursively: recursively,
                                                                        thumbnailSize: thumnailSize)
-                // Update labum data in cache
+                // Update album data in cache
                 if pwgData.isEmpty == false {
                     try await albumProvider.importAlbums(pwgData, recursively: recursively, inParent: categoryId)
                 }
@@ -77,20 +77,32 @@ extension AlbumViewController
                 
                 // Fetch image data?
                 await MainActor.run { [self] in
-                    // ► Remove current album from list of albums being fetched
-                    AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
+                    // Album data fetched, image data may still be missing
+                    /// The album remains in the list of albums being fetched until fetchCompleted()
+
+                    // Current album still exist?
+                    guard let updatedAlbumData = albumProvider.getProperties(ofAlbumWithID: categoryId, inContext: mainContext)
+                    else {  // ► The album has been deleted
+                        // ► Remove current album from list of albums being fetched
+                        AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
+                        navigationController?.hideHUD { [self] in
+                            navigationController?.popViewController(animated: true)
+                        }
+                        return
+                    }
+                    
+                    // Update album properties
+                    self.albumData = updatedAlbumData
                     
                     // Any image data to fetch?
-                    let nbImages = self.albumData.nbImages
-                    if self.categoryId == 0 || nbImages == 0 {
-                        // Done fetching images
-                        // ► Check if the album has been deleted
-                        if self.albumData.isDeleted {
-                            navigationController?.hideHUD { [self] in
-                                navigationController?.popViewController(animated: true)
-                            }
-                            return
+                    if self.categoryId == 0 {
+                        // ► Update navigtion bar, number of images, etc.
+                        Task {
+                            await self.fetchCompleted()
                         }
+                        return
+                    }
+                    else if self.albumData.nbImages == 0 {
                         // ► Remove non-fetched images from album
                         self.removeImageWithIDs(oldImageIDs)
                         // ► Update navigtion bar, number of images, etc.
@@ -102,7 +114,7 @@ extension AlbumViewController
                     
                     // Use the ImageProvider to fetch image data. On completion,
                     // handle general UI updates and error alerts on the main queue.
-                    let (quotient, remainder) = nbImages.quotientAndRemainder(dividingBy: Int64(self.perPage))
+                    let (quotient, remainder) = self.albumData.nbImages.quotientAndRemainder(dividingBy: Int64(self.perPage))
                     let lastPage = Int(quotient) + Int(remainder > 0 ? 1 : 0)
                     Task {
                         await self.fetchImages(withInitialImageIds: oldImageIDs, query: query,
@@ -137,10 +149,11 @@ extension AlbumViewController
                 let (fetchedImageIds, totalCount, hasDownloadRight) =
                 try await fetchImages(ofAlbumWithId: albumData.pwgID, withQuery: query, sort: sortOption,
                                       fromPage: onPage, perPage: perPage)
-
+                
                 await MainActor.run { [self] in
-                    // Store user's right to download
-                    user.downloadRights = hasDownloadRight
+                    // Store user's download right
+                    userData.downloadRights = hasDownloadRight
+                    try? userProvider.updateUser(withProperties: userData, inContext: mainContext)
                     
                     // Smart album?
                     var newLastPage = lastPage
@@ -167,6 +180,7 @@ extension AlbumViewController
                                 albumData.totalNbImages = min(totalCount, maxCount)
                             }
                         }
+                        try? albumProvider.updateAlbum(withProperties: albumData, inContext: mainContext)
                     }
                     
                     // Will not remove fetched images from album image list
@@ -293,28 +307,31 @@ extension AlbumViewController
     }
     
     private func removeImageWithIDs(_ imageIDs: Set<Int64>) {
-        // Done fetching images ► Remove non-fetched images from album
-        DispatchQueue.main.async { [self] in
-            // Remember when images were fetched
-            self.albumData.dateGetImages = Date().timeIntervalSinceReferenceDate
-            // Update titleView
-            self.setTitleViewFromAlbumData()
+        // Done fetching images
+        // ► Remove non-fetched images from album
+        // ► Remember when images were fetched
+        self.albumData.dateGetImages = Date().timeIntervalSinceReferenceDate
+        
+        if let album = albumProvider.getAlbum(withID: self.albumData.pwgID, inContext: mainContext) {
+            album.dateGetImages = self.albumData.dateGetImages
             
             // Remove images if necessary
-            if let images = self.albumData.images {
-                if imageIDs.isEmpty == false {
-                    let toRemove = images.filter({ imageIDs.contains($0.pwgID) })
-                    self.albumData.removeFromImages(toRemove)
-                    self.deselectImages(withIDs: imageIDs)
-                    self.mainContext.saveIfNeeded()
-                } else if self.albumData.nbImages == Int64.zero,
-                          images.isEmpty == false {
-                    self.albumData.removeFromImages(images)
-                    self.mainContext.saveIfNeeded()
+            if imageIDs.isEmpty == false {
+                if let toRemove = album.images?.filter({ imageIDs.contains($0.pwgID) }) {
+                    album.removeFromImages(toRemove)
                 }
+                self.deselectImages(withIDs: imageIDs)
             }
+            else if self.albumData.nbImages == Int64.zero,
+                    let images = album.images, images.isEmpty == false {
+                album.removeFromImages(images)
+            }
+            self.mainContext.saveIfNeeded()
         }
         
+        // Update titleView
+        self.setTitleViewFromAlbumData()
+                
         // Delete upload requests of images deleted from the Piwigo server
         if imageIDs.isEmpty == false {
             Task(priority: .utility) { @UploadManagerActor in
@@ -390,14 +407,12 @@ extension AlbumViewController
     /// The below methods are only called if the Piwigo server version is between 2.10.0 and 13.0.0.
     func loadFavoritesInBckg() async {
         // Check that an album of favorites exists in cache (create it if necessary)
-        guard let album = try? AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) else {
+        let bckgContext = DataController.shared.newTaskContext()
+        guard let album = try? albumProvider.getOrCreateAlbum(withID: pwgSmartAlbum.favorites.rawValue,
+                                                              inContext: bckgContext) else {
             // Remove favorite album from list of album being fetched
             AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.favorites.rawValue)
             return
-        }
-        if album.isFault {
-            album.willAccessValue(forKey: nil)
-            album.didAccessValue(forKey: nil)
         }
 
         // Remember which images belong to this album
@@ -447,19 +462,19 @@ extension AlbumViewController
                     return
                 }
                 
-                // Done fetching images
-                let bckgContext = DataController.shared.newTaskContext()
                 // ► Remove non-fetched images from album
-                if let images = try? ImageProvider().getImages(inContext: bckgContext, withIds: newImageIds) {
-                    album.removeFromImages(images)
+                if let toRemove = album.images?.filter({ newImageIds.contains($0.pwgID) }) {
+                    album.removeFromImages(toRemove)
                 }
+                
                 // ► Remember when favorites were fetched
                 album.dateGetImages = Date().timeIntervalSinceReferenceDate
+                
                 // ► Remove favorite album from list of album being fetched
                 AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.favorites.rawValue)
                 
                 // Save changes
-                bckgContext.saveIfNeeded()
+                album.managedObjectContext?.saveIfNeeded()
                 Task { @MainActor in
                     self.mainContext.saveIfNeeded()
                 }

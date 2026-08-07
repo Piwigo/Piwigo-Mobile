@@ -182,18 +182,21 @@ extension AlbumViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
                 
                 // Set image properties
                 try await JSONManager.shared.setInfos(with: paramsDict)
                 
-                // Update cache
+                // Update cache and proceed with next image
                 await MainActor.run { [self] in
-                    // Remove image from source album
-                    imageData.removeFromAlbums(albumData)
-                    
-                    // Update albums
-                    try? self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: albumData, inContext: self.mainContext)
+                    // Remove image from source album in cache
+                    if let albums = imageData.albums,
+                       let album = albums.first(where: { $0.pwgID == categoryId }) {
+                        imageData.removeFromAlbums(album)
+                        
+                        // Update albums
+                        try? self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: album, inContext: self.mainContext)
+                    }
                     
                     // Next image
                     imagesToRemove.removeFirst()
@@ -263,7 +266,7 @@ extension AlbumViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
                 
                 // Dissociate images
                 try await JSONManager.shared.setCategory(albumID, forImageIDs: imageIDs, withAction: .dissociate)
@@ -271,12 +274,15 @@ extension AlbumViewController
                 // Update cache and UI
                 await MainActor.run { [self] in
                     // Remove images from album
-                    self.albumData.removeFromImages(toRemove)
-
-                    // Update albums
-                    let nberOfImages = Int64(toRemove.count)
-                    try? self.albumProvider.updateAlbums(removingImages: nberOfImages, fromAlbum: self.albumData, inContext: self.mainContext)
-
+                    if let album = albumProvider.getAlbum(withID: categoryId, inContext: mainContext) {
+                        album.removeFromImages(toRemove)
+                        
+                        // Update albums
+                        let nberOfImages = Int64(toRemove.count)
+                        try? self.albumProvider.updateAlbums(removingImages: nberOfImages, fromAlbum: album, inContext: self.mainContext)
+                        self.albumData = album.getProperties()
+                    }
+                    
                     // Continue with deletion if needed
                     self.deleteImages(toDelete)
                 }
@@ -326,7 +332,7 @@ extension AlbumViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
                 
                 // Delete images
                 let imageIds: [Int64] = toDelete.map({ $0.pwgID })
@@ -346,7 +352,12 @@ extension AlbumViewController
                         if let albums = imageData.albums {
                             // Remove image from cached albums
                             albums.forEach { album in
-                                try? self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: album, inContext: self.mainContext)
+                                try? self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: album,
+                                                                     inContext: self.mainContext)
+                                // Update properties
+                                if album.pwgID == categoryId {
+                                    self.albumData = album.getProperties()
+                                }
                             }
                         }
                     }

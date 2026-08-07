@@ -18,7 +18,7 @@ protocol ImageDetailDelegate: NSObjectProtocol {
     func didSelectImage(atIndexPath indexPath: IndexPath)
 }
 
-class ImageViewController: UIViewController {
+final class ImageViewController: UIViewController {
     
     weak var imgDetailDelegate: (any ImageDetailDelegate)?
     var images: NSFetchedResultsController<Image>!
@@ -31,13 +31,9 @@ class ImageViewController: UIViewController {
     let playbackController = PlaybackController.shared
     
     // MARK: - Core Data Objects
-    var user: User!
-    lazy var mainContext: NSManagedObjectContext = {
-        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
-            fatalError("!!! Missing Managed Object Context !!!")
-        }
-        return context
-    }()
+    @MainActor
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
+    var userData: UserProperties!
     
     
     // MARK: - Navigation Bar & Toolbar Buttons
@@ -54,10 +50,12 @@ class ImageViewController: UIViewController {
     var muteBarButton: UIBarButtonItem?
     var goToPageButton: UIBarButtonItem?
     
+    
     // MARK: - Rotate View & Buttons
     var rotateView: UIView?
     var rotateLeftButton: UIButton?
     var rotateRightButton: UIButton?
+    
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -307,7 +305,7 @@ class ImageViewController: UIViewController {
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
                 
                 // Get complete image data
                 let pwgData = try await JSONManager.shared.getInfos(forID: imageID)
@@ -409,7 +407,7 @@ class ImageViewController: UIViewController {
         Task.detached {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID, lastConnected: self.user.lastUsed)
+                try await LoginUtilities().checkSession(ofUserWithID: self.userData.URIstr, lastConnected: self.userData.lastUsed)
                 
                 // Update server statistics
                 try await JSONManager.shared.logVisitOfImage(withID: imageID, asDownload: asDownload)
@@ -729,7 +727,7 @@ extension ImageViewController: UIPageViewControllerDataSource
         else { return nil }
 
         // Create video detail view
-        videoDVC.user = user
+        videoDVC.userData = userData
         videoDVC.indexPath = indexPath
         videoDVC.imageData = imageData
         return videoDVC
