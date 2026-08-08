@@ -461,9 +461,14 @@ public final class AlbumProvider {
         let fetchRequest = Album.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true)]
         
-        // Select albums of the current server only
-        fetchRequest.predicate = NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath)
-        
+        // Select albums of the current server and user only
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        fetchRequest.returnsObjectsAsFaults = true
+        fetchRequest.shouldRefreshRefetchedObjects = true
+
         // Create batch delete request
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<any NSFetchRequestResult>)
         
