@@ -44,10 +44,7 @@ extension SelectCategoryViewController
                                                                        inParentWithId: pwgSmartAlbum.root.rawValue,
                                                                        recursively: true, thumbnailSize: thumnailSize)
                 // Update cache
-                try AlbumProvider().importAlbums(pwgData, recursively: true, inParent: pwgSmartAlbum.root.rawValue)
-                
-                // Remove current album from list of album being fetched
-                AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.root.rawValue)
+                try await AlbumProvider().importAlbums(pwgData, recursively: true, inParent: pwgSmartAlbum.root.rawValue)
 
                 // Remember when album data was fetched recursively
                 AppVars.shared.dateOfLatestRecursiveAlbumDataFetch = Date()

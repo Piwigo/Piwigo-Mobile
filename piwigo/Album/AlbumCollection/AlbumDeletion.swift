@@ -222,10 +222,7 @@ final class AlbumDeletion: NSObject
                                                                            inParentWithId: parentID,
                                                                            thumbnailSize: thumnailSize)
                     // Update cache
-                    try AlbumProvider().importAlbums(pwgData, inParent: parentID)
-                    
-                    // Remove album from list of albums being fetched
-                    AlbumVars.shared.isFetchingAlbumData.remove(parentID)
+                    try await AlbumProvider().importAlbums(pwgData, inParent: parentID)
                 }
                 
                 // Work completed ► Hide HUD, update UI

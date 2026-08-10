@@ -45,9 +45,16 @@ extension AlbumViewController
         } else {
             // Fetch the root album recursively after a successful login
             // so that the share extension can present the whole album tree
-            let recursively = (categoryId == pwgSmartAlbum.root.rawValue) && AlbumVars.shared.fetchAlbumDataRecursively
-            await self.fetchAlbums(forUserWithAdminRights: userData.hasAdminRights, recursively: recursively,
-                                   withInitialImageIds: oldImageIDs, query: query)
+            if (categoryId == pwgSmartAlbum.root.rawValue) && AlbumVars.shared.fetchAlbumDataRecursively {
+                AlbumVars.shared.fetchAlbumDataRecursively = false
+                debugPrint("••> Fetching root album data recursively for user \(userData.username)")
+                await self.fetchAlbums(forUserWithAdminRights: userData.hasAdminRights, recursively: true,
+                                       withInitialImageIds: oldImageIDs, query: query)
+            } else {
+                debugPrint("••> Fetching data of album with ID: \(categoryId) for user \(userData.username)")
+                await self.fetchAlbums(forUserWithAdminRights: userData.hasAdminRights, recursively: false,
+                                       withInitialImageIds: oldImageIDs, query: query)
+            }
         }
     }
     

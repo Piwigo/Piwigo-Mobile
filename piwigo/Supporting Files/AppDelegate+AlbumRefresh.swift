@@ -126,7 +126,7 @@ extension AppDelegate
                 if Task.isCancelled { return }
 
                 // Import the album data into the cache
-                try AlbumProvider().importAlbums(pwgData, recursively: true, inParent: 0)
+                try await AlbumProvider().importAlbums(pwgData, recursively: true, inParent: 0)
 
                 // Remember when all album data was last refreshed with success
                 CacheVars.shared.dateOfLastAlbumRefresh = Date.timeIntervalSinceReferenceDate

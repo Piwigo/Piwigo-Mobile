@@ -133,16 +133,16 @@ public final class AlbumProvider {
      */
     private let batchSize = 256
     public func importAlbums(_ albumArray: [CategoryGetInfo], recursively: Bool = false,
-                             inParent parentId: Int32) throws(PwgKitError) {
+                             inParent parentId: Int32) async throws(PwgKitError) {
         // We keep album UUIDs of albums to delete
         // Initialised and then updated at each iteration
         var albumToDeleteUUIDs: Set<String>? = nil
-        
+
         // We shall perform at least one import in case where
         // the user did delete all albums
         guard albumArray.isEmpty == false else {
-            _ = try importOneBatch([CategoryGetInfo](), recursively: recursively,
-                                   inParent: parentId, albumUUIDs: albumToDeleteUUIDs)
+            _ = try await importOneBatch([CategoryGetInfo](), recursively: recursively,
+                                         inParent: parentId, albumUUIDs: albumToDeleteUUIDs)
             return
         }
         
@@ -165,8 +165,8 @@ public final class AlbumProvider {
             let albumsBatch = Array(albumArray[range])
             
             // Stop the entire import if any batch is unsuccessful.
-            let albumUUIDs = try importOneBatch(albumsBatch, recursively: recursively,
-                                              inParent: parentId, albumUUIDs: albumToDeleteUUIDs)
+            let albumUUIDs = try await importOneBatch(albumsBatch, recursively: recursively,
+                                                      inParent: parentId, albumUUIDs: albumToDeleteUUIDs)
             albumToDeleteUUIDs = albumUUIDs
         }
     }
@@ -176,23 +176,26 @@ public final class AlbumProvider {
      and saving them to the persistent store, on a private queue. After saving,
      resets the context to clean up the cache and lower the memory footprint.
      
-     NSManagedObjectContext.performAndWait doesn't rethrow so this function
-     catches throws within the closure and uses a return value to indicate
-     whether the import is successful.
+     This function catches throws within the closure and uses a return value
+     to indicate whether the import is successful.
      */
     private func importOneBatch(_ albumsBatch: [CategoryGetInfo], recursively: Bool = false,
-                                inParent parentId: Int32, albumUUIDs: Set<String>?) throws(PwgKitError) -> Set<String> {
-        
+                                inParent parentId: Int32, albumUUIDs: Set<String>?) async throws(PwgKitError) -> Set<String> {
+        // For remembering which albums to delete
         var albumToDeleteUUIDs = Set<String>()
         
-        // Get current user object (should exist at this stage)
+        // Get background context
         let bckgContext = DataController.shared.newTaskContext()
-        let user = try UserProvider().getCurrentUser(inContext: bckgContext)
         
-        // Runs on the URLSession's delegate queue
-        // so it won’t block the main thread.
+        // Copied locally so that the closure below does not capture self
+        let batchSize = self.batchSize
+        
+        // The asynchronous variant of perform() suspends this task instead of
+        // blocking the thread it runs on. performAndWait() would park a thread of
+        // the cooperative pool for the whole import, starving the other tasks and
+        // actors (e.g. the ImageDownloader would not serve any thumbnail).
         do {
-            try bckgContext.performAndWait { () throws -> Void in
+            try await bckgContext.perform { () throws -> Void in
                 
                 // Retrieve albums in persistent store
                 let fetchRequest = Album.fetchRequest()
@@ -230,8 +233,11 @@ public final class AlbumProvider {
                     albumToDeleteUUIDs = albumUUIDs ?? Set<String>()
                 }
                 
-                // Loop over fetched albums
+                // Get current user object (should exist at this stage)
+                let user = try UserProvider().getCurrentUser(inContext: bckgContext)
                 let userURIstr = user.objectID.uriRepresentation().absoluteString
+
+                // Loop over fetched albums
                 for albumData in albumsBatch {
                     
                     // Index of this new album in cache
