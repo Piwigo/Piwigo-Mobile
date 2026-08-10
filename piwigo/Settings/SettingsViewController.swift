@@ -137,7 +137,7 @@ final class SettingsViewController: UIViewController {
             Task.detached(priority: .background) { [self] in
                 do {
                     // Check session
-                    try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
+                    try await LoginUtilities().checkSessionOfCurrentUser()
                     
                     // Collect stats from server and store them in cache
                     try await JSONManager.shared.getInfos()
@@ -288,7 +288,7 @@ final class SettingsViewController: UIViewController {
             Task.detached {
                 do {
                     // Check session
-                    try await LoginUtilities().checkSession(ofUserWithID: self.userData.URIstr, lastConnected: self.userData.lastUsed)
+                    try await LoginUtilities().checkSessionOfCurrentUser()
                     
                     // Update server data
                     let periodInDays = ServerVars.shared.recentPeriodList[recentPeriodIndex]
@@ -353,7 +353,7 @@ final class SettingsViewController: UIViewController {
         try? userProvider.updateUser(withProperties: userData, inContext: mainContext)
         
         // Guest user?
-        if ServerVars.shared.user.isEmpty || ServerVars.shared.user.lowercased() == "guest" {
+        if ServerVars.shared.username.isEmpty || ServerVars.shared.username.lowercased() == "guest" {
             ClearCache.closeSession()
             return
         }

@@ -199,7 +199,7 @@ public final class AlbumProvider {
                 /// — whose ID is positive i.e. not a smart album
                 var andPredicates = [NSPredicate]()
                 andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
-                andPredicates.append(NSPredicate(format: "user.username == %@", user.username))
+                andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
                 if recursively {
                     andPredicates.append(NSPredicate(format: "pwgID >= 0"))
                 } else {
@@ -411,7 +411,7 @@ public final class AlbumProvider {
         /// — whose ID is not the one of the root album
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
+        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
         let parentIDs = album.upperIds.components(separatedBy: ",").compactMap({Int32($0)})
             .filter({ [0, album.pwgID].contains($0) == false })
         andPredicates.append(NSPredicate(format: "pwgID IN %@", parentIDs))
@@ -464,7 +464,7 @@ public final class AlbumProvider {
         // Select albums of the current server and user only
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
+        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         fetchRequest.returnsObjectsAsFaults = true
         fetchRequest.shouldRefreshRefetchedObjects = true

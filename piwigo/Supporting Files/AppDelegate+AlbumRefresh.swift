@@ -60,7 +60,7 @@ extension AppDelegate
     func scheduleAlbumRefresh() {
         // NOP until the user establishes a connection to a Piwigo server
         guard ServerVars.shared.serverPath.isEmpty == false,
-              ServerVars.shared.username.isEmpty == false
+              ServerVars.shared.login.isEmpty == false
         else { return }
 
         // Schedule album data refresh one day after the last refresh
@@ -108,14 +108,14 @@ extension AppDelegate
             do {
                 // Retrieve the current user account data
                 let bckgContext = DataController.shared.newTaskContext()
-                guard let userData = try? UserProvider().getPropertiesOfCurrentUser(inContext: bckgContext)
+                guard var userData = try? UserProvider().getPropertiesOfCurrentUser(inContext: bckgContext)
                 else {
                     AppDelegate.logger.notice("Background task '\(pwgBackgroundAlbumRefreshTask)' stopped: no user account.")
                     return
                 }
                 
                 // Re-login if the session was closed
-                try await UploadManager.shared.checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
+                try await UploadManager.shared.checkSession(ofUser: &userData)
                 if Task.isCancelled { return }
 
                 // Fetch data of all albums at once
