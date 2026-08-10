@@ -100,7 +100,7 @@ extension ImageViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Set image properties
                 try await JSONManager.shared.setInfos(with: paramsDict)
@@ -177,7 +177,7 @@ extension ImageViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Delete images
                 _ = try await JSONManager.shared.deleteImages(withID: [imageData.pwgID])

@@ -48,8 +48,8 @@ extension AlbumViewController
     func smartAlbumsMenu() -> UIMenu {
         let menuId = UIMenu.Identifier("org.piwigo.discover.smart")
         var children = [taggedAction(), mostVisitedAction(), bestRatedAction(), recentAction()]
-        if ServerVars.shared.user.isEmpty == false,
-           ServerVars.shared.user.lowercased() != "guest" {
+        if ServerVars.shared.username.isEmpty == false,
+           ServerVars.shared.username.lowercased() != "guest" {
             children.insert(favoritesAction(), at: 0)
         }
         let menu = UIMenu(title: "", image: nil, identifier: menuId,

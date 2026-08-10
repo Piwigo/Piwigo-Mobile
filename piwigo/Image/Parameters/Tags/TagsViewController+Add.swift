@@ -66,7 +66,7 @@ extension TagsViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Add tag on server
                 let tagData = try await JSONManager.shared.addTag(with: tagName)

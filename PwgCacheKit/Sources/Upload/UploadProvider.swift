@@ -110,7 +110,7 @@ public final class UploadProvider {
                 // Select upload requests:
                 /// — for the current server and user only
                 var andPredicates = [NSPredicate]()
-                andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
+                andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
                 andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
                 fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
                 fetchRequest.returnsObjectsAsFaults = false
@@ -275,7 +275,7 @@ public final class UploadProvider {
             /// — for the current server and user only
             var andPredicates = [NSPredicate]()
             andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
-            andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
+            andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
             fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
             
             // Fetch number of objects
@@ -303,7 +303,7 @@ public final class UploadProvider {
 
             // Retrieves only non-completed upload requests
             let variables = ["serverPath" : ServerVars.shared.serverPath,
-                             "userName"   : ServerVars.shared.user]
+                             "userName"   : ServerVars.shared.username]
             fetchRequest.predicate = pendingPredicate.withSubstitutionVariables(variables)
             fetchRequest.shouldRefreshRefetchedObjects = true
 
@@ -334,7 +334,7 @@ public final class UploadProvider {
             
             // Retrieves only non-completed upload requests
             let variables = ["serverPath" : ServerVars.shared.serverPath,
-                             "userName"   : ServerVars.shared.user]
+                             "userName"   : ServerVars.shared.username]
             fetchRequest.predicate = pendingPredicate.withSubstitutionVariables(variables)
             fetchRequest.returnsObjectsAsFaults = false
             fetchRequest.shouldRefreshRefetchedObjects = true
@@ -383,7 +383,7 @@ public final class UploadProvider {
             
             // Retrieves only non-completed upload requests
             let variables = ["serverPath" : ServerVars.shared.serverPath,
-                             "userName"   : ServerVars.shared.user]
+                             "userName"   : ServerVars.shared.username]
             fetchRequest.predicate = completedPredicate.withSubstitutionVariables(variables)
             fetchRequest.returnsObjectsAsFaults = false
             fetchRequest.shouldRefreshRefetchedObjects = true
@@ -430,7 +430,7 @@ public final class UploadProvider {
             let fetchRequest = Upload.fetchRequest()
             fetchRequest.sortDescriptors = sortDescriptors
             let variables = ["serverPath" : ServerVars.shared.serverPath,
-                             "userName"   : ServerVars.shared.user]
+                             "userName"   : ServerVars.shared.username]
             fetchRequest.predicate = completedPredicate.withSubstitutionVariables(variables)
             fetchRequest.returnsObjectsAsFaults = false
             fetchRequest.shouldRefreshRefetchedObjects = true
@@ -463,7 +463,7 @@ public final class UploadProvider {
             // Select upload requests:
             /// — for the current server and user only
             var andPredicates = [NSPredicate]()
-            andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
+            andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
             andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
             fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
             fetchRequest.returnsObjectsAsFaults = false
@@ -514,7 +514,7 @@ public final class UploadProvider {
         /// — for the current server and user only
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
+        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         
         // Create batch delete request
@@ -560,7 +560,7 @@ public final class UploadProvider {
             /// — from the current server
             var andPredicates = [NSPredicate]()
             andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
-            andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
+            andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.login))
             fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
             
             do {

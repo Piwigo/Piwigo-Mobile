@@ -279,13 +279,13 @@ extension URLRequest
         else { return }
         
         // API key available?
-        let publicKey = ServerVars.shared.username
+        let publicKey = ServerVars.shared.login
         guard publicKey.isValidPublicKey()
         else { return }
         
         // Set HTTP header from keys
         let secretKey = KeychainUtilities.password(forService: ServerVars.shared.serverPath,
-                                                   account: ServerVars.shared.username)
+                                                   account: ServerVars.shared.login)
         setValue("\(publicKey):\(secretKey)", forHTTPHeaderField: HTTPAPIKey)
     }
 }

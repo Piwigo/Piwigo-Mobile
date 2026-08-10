@@ -32,7 +32,7 @@ let package = Package(
             ],
             path: "Sources",
             resources: [
-//                .process("Resources/"),
+                .process("Resources/"),
                 .process("DataModel.xcdatamodeld"),
                 .process("MigrationTools/MappingModel_0A_to_0B/MappingModel_0A_to_0B.xcmappingmodel"),
                 .process("MigrationTools/MappingModel_0B_to_0C/MappingModel_0B_to_0C.xcmappingmodel"),

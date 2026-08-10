@@ -105,9 +105,9 @@ extension UploadManager {
             if uploadDataArrayForAlbum.isEmpty { continue }
             
             // Check session
-            let userData = try UserProvider().getPropertiesOfUser(withURIstr: uploadDataArrayForAlbum[0].userURIstr,
+            var userData = try UserProvider().getPropertiesOfUser(withURIstr: uploadDataArrayForAlbum[0].userURIstr,
                                                                   inContext: self.uploadBckgContext)
-            try await checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
+            try await checkSession(ofUser: &userData)
             
             // Empty lounge
             let imageIds = uploadDataArrayForAlbum.map({ $0.imageId })
@@ -119,12 +119,6 @@ extension UploadManager {
     // MARK: - Moderate Images Uploaded by Community User
     func moderateUploadedImagesIfNeeded() async throws(PwgKitError) -> Void
     {
-        // Normal user?
-        if (ServerVars.shared.usesCommunityPluginV29
-            && ServerVars.shared.userStatus == .normal) == false {
-            return
-        }
-        
         // Are there uploaded images to moderate?
         // Considers only uploads to the server to which the user is logged in
         let (finishedID, _) = UploadProvider().getIDsOfCompletedUploads(onlyInStates: [.finished],
@@ -141,10 +135,16 @@ extension UploadManager {
             return
         }
         
-        // Check session
-        let userData = try UserProvider().getPropertiesOfUser(withURIstr: firstUploadData.userURIstr,
+        // Community user?
+        var userData = try UserProvider().getPropertiesOfUser(withURIstr: firstUploadData.userURIstr,
                                                               inContext: self.uploadBckgContext)
-        try await checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
+        if (ServerVars.shared.usesCommunityPluginV29
+            && pwgUserStatus(rawValue: userData.status) == .normal) == false {
+            return
+        }
+        
+        // Check session
+        try await checkSession(ofUser: &userData)
 
         // Get properties of upload requests
         var allUploadData: [(NSManagedObjectID, UploadProperties)] = []

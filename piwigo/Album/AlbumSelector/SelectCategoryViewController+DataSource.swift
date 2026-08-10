@@ -106,7 +106,7 @@ extension SelectCategoryViewController: UITableViewDataSource
         
         // No button if the user does not have upload rights
         var buttonState: pwgCategoryCellButtonState = .none
-        if userData.hasAdminRights || userUploadRights.contains(albumData.pwgID) {
+        if userData.hasAdminRights || userData.hasUploadRights(forCatID: albumData.pwgID) {
             buttonState = albumsShowingSubAlbums.contains(albumData.pwgID) ? .hideSubAlbum : .showSubAlbum
         }
         

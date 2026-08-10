@@ -183,8 +183,8 @@ final class TagsViewController: UITableViewController {
         Task.detached {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: self.userData.URIstr,
-                                                        lastConnected: self.userData.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
+                
                 // Fetch tag data
                 let tagData = try await JSONManager.shared.fetchTags(asAdmin: self.userData.hasAdminRights)
                 

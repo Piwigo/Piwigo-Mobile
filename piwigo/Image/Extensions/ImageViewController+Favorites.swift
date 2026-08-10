@@ -42,7 +42,7 @@ extension ImageViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Add image to favorites
                 try await JSONManager.shared.addToFavorites(imageWithID: imageData.pwgID)
@@ -115,7 +115,7 @@ extension ImageViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Remove image from favorites
                 try await JSONManager.shared.removeFromFavorites(imageWithID: imageData.pwgID)

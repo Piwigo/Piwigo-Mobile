@@ -307,7 +307,7 @@ public final class ImageProvider {
         // Select images of the current server not belonging to an album
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "server.path == %@", ServerVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "ANY users.username == %@", ServerVars.shared.user))
+        andPredicates.append(NSPredicate(format: "ANY users.username == %@", ServerVars.shared.username))
         andPredicates.append(NSPredicate(format: "albums.@count == 0"))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         

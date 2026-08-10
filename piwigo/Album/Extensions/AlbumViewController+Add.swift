@@ -122,7 +122,7 @@ extension AlbumViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Create album
                 let newCatId = try await JSONManager.shared.create(withName: albumName, description: albumComment,

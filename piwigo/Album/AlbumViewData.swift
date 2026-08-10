@@ -32,7 +32,7 @@ final class AlbumViewData: NSObject
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "parentId == $catID"))
         andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
+        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
         return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
     }()
     
@@ -62,7 +62,7 @@ final class AlbumViewData: NSObject
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "server.path == %@", ServerVars.shared.serverPath))
         andPredicates.append(NSPredicate(format: "ANY albums.pwgID == $catID"))
-        andPredicates.append(NSPredicate(format: "ANY albums.user.username == %@", ServerVars.shared.user))
+        andPredicates.append(NSPredicate(format: "ANY albums.user.username == %@", ServerVars.shared.username))
         return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
     }()
 

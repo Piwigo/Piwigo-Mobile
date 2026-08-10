@@ -264,7 +264,7 @@ extension AlbumViewController: UICollectionViewDelegate
             }
             
             // pwg.users.favorites… methods available from Piwigo version 2.10 for registered users
-            if self.userData.canManageFavorites() {
+            if userData.canManageFavorites() {
                 if cell.isFavorite {
                     children.append(unfavoriteImageAction(withID: imageID))
                 } else {
@@ -273,7 +273,7 @@ extension AlbumViewController: UICollectionViewDelegate
             }
             
             // Not all users can select/deselect images
-            if canShareImages || self.userData.canManageFavorites() || userData.hasUploadRights(forCatID: categoryId) {
+            if canShareImages || userData.canManageFavorites() || userData.hasUploadRights(forCatID: categoryId) {
                 if self.selectedImageIDs.contains(imageID) {
                     // Image not selected ► Propose to select it
                     children.append(deselectImageAction(forCell: cell, at: indexPath))

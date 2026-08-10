@@ -195,7 +195,7 @@ final class AlbumDeletion: NSObject
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Delete album
                 _ = try await JSONManager.shared.deleteCategory(withID: album.pwgID, inMode: deletionMode)

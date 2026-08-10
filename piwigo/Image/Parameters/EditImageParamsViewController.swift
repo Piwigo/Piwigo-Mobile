@@ -302,8 +302,7 @@ final class EditImageParamsViewController: UIViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: self.userData.URIstr,
-                                                        lastConnected: self.userData.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Update image properties
                 self.updateImageProperties(fromIndex: index)

@@ -33,18 +33,29 @@ public extension JSONManager {
     }
     
     @concurrent
-    func sessionGetStatus() async throws(PwgKitError) -> (String, pwgUserStatus) {
+    func sessionGetStatus(_ userData: inout UserProperties) async throws(PwgKitError) {
         // Launch request
         let pwgData = try await postRequest(withMethod: pwgSessionGetStatus, paramDict: [:],
                                             jsonObjectClientExpectsToReceive: SessionGetStatusJSON.self,
                                             countOfBytesClientExpectsToReceive: pwgSessionGetStatusBytes)
         // No status returned?
-        guard let data = pwgData.data
+        guard let data = pwgData.data,
+              let username = data.userName, username.isEmpty == false,
+              let pwgToken = data.pwgToken, pwgToken.isEmpty == false
+        else { throw .emptyUsername }
+                
+        // Store username (may be different from login name)
+        userData.username = username
+        
+        // Remember current Piwigo token
+        ServerVars.shared.pwgToken = pwgToken
+        
+        // Attention: User rights are determined by Community extension (if installed)
+        guard let status = data.userStatus, status.isEmpty == false,
+              pwgUserStatus(rawValue: status) != nil
         else { throw .unknownUserStatus }
-
-        // Update Piwigo token
-        if let pwgToken = data.pwgToken {
-            ServerVars.shared.pwgToken = pwgToken
+        if ServerVars.shared.usesCommunityPluginV29 == false {
+            userData.status = status
         }
         
         // Default language
@@ -144,13 +155,6 @@ public extension JSONManager {
 
         // Should the app log visits and downloads? (since Piwigo 14)
         ServerVars.shared.saveVisits = data.saveVisits ?? false
-
-        // Attention: User rights are determined by Community extension (if installed)
-        if let status = data.userStatus, status.isEmpty == false,
-           let userStatus = pwgUserStatus(rawValue: status) {
-            return (data.userName ?? "", userStatus)
-        }
-        throw .unknownUserStatus
     }
 
     @concurrent

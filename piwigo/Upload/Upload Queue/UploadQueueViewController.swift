@@ -45,7 +45,7 @@ final class UploadQueueViewController: UIViewController {
         // Retrieves non-completed upload requests:
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
+        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
         var unwantedStates: [pwgUploadState] = [.finished, .moderated]
         andPredicates.append(NSPredicate(format: "NOT (requestState IN %@)", unwantedStates.map({$0.rawValue})))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)

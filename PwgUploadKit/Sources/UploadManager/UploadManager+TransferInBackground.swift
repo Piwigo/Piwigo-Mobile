@@ -50,7 +50,7 @@ extension UploadManager {
         else { preconditionFailure("!!! Invalid uploadAsync URL") }
         
         // Get credentials (not appropriate for several accounts)
-        let username = ServerVars.shared.username
+        let username = ServerVars.shared.login
         let serverPath = ServerVars.shared.serverPath
         let password = KeychainUtilities.password(forService: serverPath, account: username)
         guard password.isEmpty == false
@@ -313,19 +313,25 @@ extension UploadManager {
             
             // Add uploaded image to cache and update UI if needed
             if let userData = try? UserProvider().getPropertiesOfUser(withURIstr: uploadData.userURIstr,
-                                                                      inContext: uploadBckgContext),
-               userData.hasAdminRights {
+                                                                      inContext: uploadBckgContext) {
                 // Retrieve complete image data from the server now that the lounge is emptied.
                 // The pwg.images.uploadAsync response may carry derivatives whose files are not
                 // yet generated (empty/invalid thumbnail URLs), which would make the album show
                 // the placeholder image instead of the thumbnail (see foreground copy path).
                 if var imageData = try? await JSONManager.shared.getInfos(forID: imageId) {
                     imageData.fixingUnknowns()
-                    ImageProvider().didUploadImage(imageData, inAlbumId: uploadData.category)
-                } else {
+                    await ImageProvider().didUploadImage(imageData, inAlbumId: uploadData.category)
+
+                    // An upload is an occasion to retrieve the ID or a Community user
+                    storeCommunityUserIDIfNeeded(userData, from: imageData)
+                }
+                else {
                     // Fall back on the data returned by the upload request
                     getInfos.fixingUnknowns()
-                    ImageProvider().didUploadImage(getInfos, inAlbumId: uploadData.category)
+                    await ImageProvider().didUploadImage(getInfos, inAlbumId: uploadData.category)
+
+                    // An upload is an occasion to retrieve the ID or a Community user
+                    storeCommunityUserIDIfNeeded(userData, from: getInfos)
                 }
             }
             

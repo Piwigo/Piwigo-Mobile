@@ -45,7 +45,7 @@ final class ShareViewController: UIViewController {
     lazy var predicates: [NSPredicate] = {
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
+        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
         return andPredicates
     }()
     

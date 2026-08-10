@@ -129,14 +129,14 @@ struct LoginUtilities
     
     // MARK: - Piwigo Session Management
     // Re-login if session was closed
-    public func checkSession(ofUserWithID objectURIstr: String,
-                             lastConnected lastUsed: TimeInterval) async throws(PwgKitError) {
-                
-        // Check if the session is still active and update the server status
-        // every 60 seconds or more
-        let secondsSinceLastCheck = Date.timeIntervalSinceReferenceDate - lastUsed
+    public func checkSessionOfCurrentUser() async throws(PwgKitError) {
+        // Retrieve current user properties
+        let bckgContext = DataController.shared.newTaskContext()
+        var userData = try UserProvider().getPropertiesOfCurrentUser(inContext: bckgContext)
+        
+        // Check if the session is still active and re-login every 60 seconds or more
+        let secondsSinceLastCheck = Date.timeIntervalSinceReferenceDate - userData.lastUsed
         if ServerVars.shared.hasNetworkConnectionChanged == false,
-           ServerVars.shared.applicationShouldRelogin == false,
            secondsSinceLastCheck < 60 {
             return
         }
@@ -145,11 +145,12 @@ struct LoginUtilities
         ServerVars.shared.hasNetworkConnectionChanged = false
         debugPrint("Session: starting checking… \(ServerVars.shared.isConnectedToWiFi ? "WiFi" : "Cellular")")
         let oldToken = ServerVars.shared.pwgToken
-        let (pwgUser, _) = try await JSONManager.shared.sessionGetStatus()
+        var sessionData = userData
+        try await JSONManager.shared.sessionGetStatus(&sessionData)
 #if DEBUG
-        debugPrint("Session: \"\(ServerVars.shared.user)\" vs \"\(pwgUser)\", \"\(oldToken)\" vs \"\(ServerVars.shared.pwgToken)\"")
+        debugPrint("Session: \"\(ServerVars.shared.username)\" vs \"\(sessionData.username)\", \"\(oldToken)\" vs \"\(ServerVars.shared.pwgToken)\"")
 #endif
-        if pwgUser != ServerVars.shared.user || oldToken.isEmpty || ServerVars.shared.pwgToken != oldToken {
+        if sessionData.username != ServerVars.shared.username || oldToken.isEmpty || ServerVars.shared.pwgToken != oldToken {
             // Collect list of methods supplied by Piwigo server
             // => Determine if Community extension 2.9a or later is installed and active
             try await JSONManager.shared.getMethods()
@@ -160,63 +161,58 @@ struct LoginUtilities
                 
                 // Session opened for guest
                 debugPrint("Session: logged as Guest")
-                try await getPiwigoStatusForUser(withID: objectURIstr)
+                try await getPiwigoStatusForUser(&userData)
                 
-                // Update date of accesss to the server by guest
-                UserProvider().updateUser(withID: objectURIstr, includingStatus: true)
-                ServerVars.shared.applicationShouldRelogin = false
+                // Update User values in cache, including the access date to the server
+                userData.createAlbumRights = nil
+                userData.lastUsed = Date.timeIntervalSinceReferenceDate
+                try UserProvider().updateUser(withProperties: userData, inContext: bckgContext)
             }
             else {
                 // Perform login
-                let username = ServerVars.shared.username
+                let username = ServerVars.shared.login
                 let password = KeychainUtilities.password(forService: ServerVars.shared.serverPath, account: username)
                 try await JSONManager.shared.sessionLogin(withUsername: username, password: password)
 #if DEBUG
-                debugPrint("Session: logged as \(ServerVars.shared.username)")
+                debugPrint("Session: logged as \(ServerVars.shared.login)")
 #endif
                 // Check Piwigo version, get token, available sizes, etc.
                 if ServerVars.shared.usesCommunityPluginV29 {
-                    let (userStatus, albumIDs) = try await JSONManager.shared.communityGetStatus()
-                    ServerVars.shared.userStatus = userStatus
+                    try await JSONManager.shared.communityGetStatus(&userData)
                 }
-                try await getPiwigoStatusForUser(withID: objectURIstr)
+                else {
+                    userData.createAlbumRights = nil
+                }
+                try await getPiwigoStatusForUser(&userData)
                 
-                // Update date of accesss to the server by guest
-                UserProvider().updateUser(withID: objectURIstr, includingStatus: true)
-                ServerVars.shared.applicationShouldRelogin = false
+                // Update User values in cache, including the access date to the server
+                userData.lastUsed = Date.timeIntervalSinceReferenceDate
+                try UserProvider().updateUser(withProperties: userData, inContext: bckgContext)
             }
-        }
-        else {
-            UserProvider().updateUser(withID: objectURIstr, includingStatus: false)
         }
     }
     
-    fileprivate func getPiwigoStatusForUser(withID objectURIstr: String) async throws(PwgKitError)
+    fileprivate func getPiwigoStatusForUser(_ userData: inout UserProperties) async throws(PwgKitError)
     {
-        // Retrieve the username
-        let (userName, userStatus) = try await JSONManager.shared.sessionGetStatus()
-        
-        // Set Piwigo user
-        ServerVars.shared.user = userName
-        if ServerVars.shared.usesCommunityPluginV29 == false {
-            ServerVars.shared.userStatus = userStatus
-        }
+        // Retrieve the username, and user's role if not using Community
+        try await JSONManager.shared.sessionGetStatus(&userData)
         
         // Are cached data associated to an API public key?
         // (pursue logging in without waiting for the fix to complete)
         if ServerVars.shared.fixUserIsAPIKeyV412 {
+            let userURIstr = userData.URIstr
             DispatchQueue.global(qos: .background).async {
                 // Retrieve background context
                 let bckgContext = DataController.shared.newTaskContext()
                 
                 // Attribute upload requests to appropriate user if necessary
                 debugPrint("Session: attributing API Key upload requests to user…")
-                UploadProvider().attributeAPIKeyUploadRequests(toUserWithID: objectURIstr,
+                UploadProvider().attributeAPIKeyUploadRequests(toUserWithID: userURIstr,
                                                                inContext: bckgContext)
                 
                 // Delete API Key user (and albums in cascade)
                 debugPrint("Session: deleting API Key user…")
-                UserProvider().deleteUser(withUsername: ServerVars.shared.username,
+                UserProvider().deleteUser(withUsername: ServerVars.shared.login,
                                           inContext: bckgContext)
                 
                 // Job completed

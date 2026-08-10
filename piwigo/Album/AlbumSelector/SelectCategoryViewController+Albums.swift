@@ -28,7 +28,7 @@ extension SelectCategoryViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Move album
                 try await JSONManager.shared.move(self.inputAlbum.pwgID, intoAlbumWithId: parentData.pwgID)
@@ -82,7 +82,7 @@ extension SelectCategoryViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Set album representative
                 try await JSONManager.shared.setRepresentative(ofAlbumWithID: albumData.pwgID, withImageID: imageData.pwgID)

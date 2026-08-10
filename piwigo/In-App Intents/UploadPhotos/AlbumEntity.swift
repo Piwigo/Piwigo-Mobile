@@ -57,7 +57,7 @@ struct AlbumQuery: EntityStringQuery {
 
         var andPredicates = [
             NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath),
-            NSPredicate(format: "user.username == %@", ServerVars.shared.user),
+            NSPredicate(format: "user.username == %@", ServerVars.shared.username),
             NSPredicate(format: "pwgID > 0")   // Exclude the root and smart albums.
         ]
         if let predicate { andPredicates.append(predicate) }
@@ -76,7 +76,7 @@ struct AlbumQuery: EntityStringQuery {
         }
 
         // User with normal rights?
-        if ServerVars.shared.userStatus != .normal { return [] }
+        if pwgUserStatus(rawValue: userData.status) != .normal { return [] }
         let uploadRights = userData.uploadRights.components(separatedBy: ",").compactMap { Int32($0) }
         return albums
             .filter { uploadRights.contains($0.pwgID) }

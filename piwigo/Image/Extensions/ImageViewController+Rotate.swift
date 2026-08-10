@@ -67,7 +67,7 @@ extension ImageViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Rotate thumbnails
                 try await JSONManager.shared.rotateImage(withID: imageData.pwgID, by: angle)

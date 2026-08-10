@@ -17,7 +17,7 @@ public final class UserProvider {
     /// A user account is defined with:
     /// - a server path (without the scheme)
     /// - a username (≠ login name)
-    fileprivate func fetchRequestOfUser(withUsername username: String = ServerVars.shared.user,
+    fileprivate func fetchRequestOfUser(withUsername username: String = ServerVars.shared.username,
                                         ofServerAtPath path: String = ServerVars.shared.serverPath) -> NSFetchRequest<User> {
         // Create a fetch request sorted by username
         let fetchRequest = User.fetchRequest()
@@ -177,7 +177,7 @@ public final class UserProvider {
     
     
     // MARK: - Delete User Object
-    public func deleteUser(withUsername username: String = ServerVars.shared.user,
+    public func deleteUser(withUsername username: String = ServerVars.shared.username,
                            ofServerAtPath path: String = ServerVars.shared.serverPath,
                            inContext taskContext: NSManagedObjectContext) {
         

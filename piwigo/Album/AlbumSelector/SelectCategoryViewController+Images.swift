@@ -33,7 +33,7 @@ extension SelectCategoryViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Prepare parameters for copying the image/video to the selected category
                 let newImageCategories = categoryIds.compactMap({ String($0) }).joined(separator: ";")
@@ -79,7 +79,7 @@ extension SelectCategoryViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Associate images
                 try await JSONManager.shared.setCategory(albumID, forImageIDs: imageIDs, withAction: .associate)
@@ -171,7 +171,7 @@ extension SelectCategoryViewController
                 categoryIds.removeAll(where: {$0 == inputAlbum.pwgID})
 
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Prepare parameters for moving the image/video to the selected category
                 let newImageCategories = categoryIds.compactMap({ String($0) }).joined(separator: ";")
@@ -225,7 +225,7 @@ extension SelectCategoryViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Associate images
                 try await JSONManager.shared.setCategory(albumID, forImageIDs: imageIDs, withAction: .dissociate)

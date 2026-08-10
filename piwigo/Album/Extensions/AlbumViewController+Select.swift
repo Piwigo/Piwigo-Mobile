@@ -359,8 +359,7 @@ extension AlbumViewController
             Task.detached {
                 do throws(PwgKitError) {
                     // Check session
-                    try await LoginUtilities().checkSession(ofUserWithID: self.userData.URIstr,
-                                                            lastConnected: self.userData.lastUsed)
+                    try await LoginUtilities().checkSessionOfCurrentUser()
                     
                     // Retrieve image data
                     await MainActor.run { [self] in

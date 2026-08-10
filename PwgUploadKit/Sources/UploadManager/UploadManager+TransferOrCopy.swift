@@ -51,9 +51,9 @@ extension UploadManager {
             else { throw PwgKitError.missingAsset }
             
             // Check session
-            let userData = try UserProvider().getPropertiesOfUser(withURIstr: uploadData.userURIstr,
+            var userData = try UserProvider().getPropertiesOfUser(withURIstr: uploadData.userURIstr,
                                                                   inContext: self.uploadBckgContext)
-            try await checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
+            try await checkSession(ofUser: &userData)
             
             // Update state of upload request
             uploadData.requestState = .uploading

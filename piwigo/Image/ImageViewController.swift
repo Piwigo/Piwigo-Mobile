@@ -305,7 +305,7 @@ final class ImageViewController: UIViewController {
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Get complete image data
                 let pwgData = try await JSONManager.shared.getInfos(forID: imageID)
@@ -407,7 +407,7 @@ final class ImageViewController: UIViewController {
         Task.detached {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: self.userData.URIstr, lastConnected: self.userData.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Update server statistics
                 try await JSONManager.shared.logVisitOfImage(withID: imageID, asDownload: asDownload)

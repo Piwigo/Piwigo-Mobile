@@ -16,7 +16,7 @@ public final class AlbumProvider {
 
     // MARK: - Fetch Request
     fileprivate func fetchRequestOfAlbum(withID pwgID: Int32,
-                                         ofUser username: String = ServerVars.shared.user,
+                                         ofUser username: String = ServerVars.shared.username,
                                          onServerAtPath serverPath: String = ServerVars.shared.serverPath) -> NSFetchRequest<Album> {
         // Create a fetch request sorted by ID
         let fetchRequest = Album.fetchRequest()

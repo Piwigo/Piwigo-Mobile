@@ -131,7 +131,7 @@ final class AlbumRenaming: NSObject
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: userData.URIstr, lastConnected: userData.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Update album data
                 try await JSONManager.shared.setInfos(album.pwgID, withName: albumName, description: albumComment)

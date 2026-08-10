@@ -37,8 +37,14 @@ public final class ServerVars: @unchecked Sendable {
         if let _ = UserDefaults.dataSuite.object(forKey: "usesUploadAsync") {
             UserDefaults.dataSuite.removeObject(forKey: "usesUploadAsync")
         }
-        if let _ = UserDefaults.dataSuite.object(forKey: "usesCalcOrphans") {
-            UserDefaults.dataSuite.removeObject(forKey: "usesCalcOrphans")
+        // Rename username and user as login and username
+        /// - username was the username or the API public key ➜ login
+        /// - user was the username of the account ➜ username
+        if let user = UserDefaults.dataSuite.object(forKey: "user"),
+           let username = UserDefaults.dataSuite.object(forKey: "username") {
+            UserDefaults.dataSuite.removeObject(forKey: "user")
+            UserDefaults.dataSuite.set(username, forKey: "login")
+            UserDefaults.dataSuite.set(user, forKey: "username")
         }
     }
     
@@ -108,19 +114,19 @@ public final class ServerVars: @unchecked Sendable {
     public var username: String
     
     /// - Username returned by the Piwigo server, introduced in v4.1.2 for correcting user attribution in persistent cache
-    @UserDefault("user", defaultValue: "", userDefaults: UserDefaults.dataSuite)
-    public var user: String
+    @UserDefault("login", defaultValue: "", userDefaults: UserDefaults.dataSuite)
+    public var login: String
     
     /// - Tells whether
     @UserDefault("fixUserIsAPIKeyV412", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var fixUserIsAPIKeyV412: Bool
     public func createPiwigoUsernameAccountIfNeeded() {
         // 'user' added in v4.1.2 for dissociating persistent cache data from credentials
-        if ServerVars.shared.user.isEmpty,
-           ServerVars.shared.username.isEmpty == false &&
-            ServerVars.shared.username.lowercased() != "guest" {
-            // Adopts login username, i.e. Piwigo username or API key
-            ServerVars.shared.user = ServerVars.shared.username
+        if ServerVars.shared.username.isEmpty,
+           ServerVars.shared.login.isEmpty == false &&
+            ServerVars.shared.login.lowercased() != "guest" {
+            // Adopts login name, i.e. Piwigo username or API key
+            ServerVars.shared.username = ServerVars.shared.login
             // If the user is using an API key:
             /// - 1. Call API method to retrieve the Piwigo user
             /// - 2. Attribute 'API key' upload requests to 'Piwigo user' in persistent cache

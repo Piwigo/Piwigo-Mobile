@@ -64,18 +64,11 @@ final class SelectCategoryViewController: UIViewController {
 //        }
 //        return _diffableDataSource as! DataSource
 //    }
-
-    lazy var userUploadRights: [Int32] = {
-        // Case of Community user?
-        if ServerVars.shared.userStatus != .normal { return [] }
-        let userUploadRights = userData.uploadRights
-        return userUploadRights.components(separatedBy: ",").compactMap({ Int32($0) })
-    }()
     
     lazy var predicates: [NSPredicate] = {
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
+        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
         return andPredicates
     }()
 
@@ -382,8 +375,7 @@ final class SelectCategoryViewController: UIViewController {
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: self.userData.URIstr,
-                                                        lastConnected: self.userData.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Remember that the app is fetching album data recursively
                 AlbumVars.shared.isFetchingAlbumData.insert(pwgSmartAlbum.root.rawValue)
