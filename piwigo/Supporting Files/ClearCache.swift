@@ -48,10 +48,7 @@ final class ClearCache
             ServerVars.shared.usesCommunityPluginV29 = false
             ServerVars.shared.usesSetCategory = false
             NetworkVars.shared.usesAPIkeys = false
-            
-            // Back to default user properties
-            ServerVars.shared.userStatus = pwgUserStatus.guest
-            
+                        
             // Disable Auto-Uploading and clear settings
             UploadVars.shared.isAutoUploadActive = false
             UploadVars.shared.autoUploadCategoryId = Int32.min

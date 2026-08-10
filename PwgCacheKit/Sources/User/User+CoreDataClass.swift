@@ -34,8 +34,7 @@ public final nonisolated class User: NSManagedObject, Identifiable {
         }
         
         // Piwigo ID
-        if userProperties.pwgID != Int16.min,
-           userProperties.pwgID != self.pwgID {
+        if userProperties.pwgID != self.pwgID {
             self.pwgID = userProperties.pwgID
         }
         
@@ -133,14 +132,33 @@ public final nonisolated class User: NSManagedObject, Identifiable {
 
 
 extension User {    
+    public var role: pwgUserStatus {
+        return pwgUserStatus(rawValue: self.status) ?? .guest
+    }
+    
+    public var hasAdminRights: Bool {
+        return [.webmaster, .admin].contains(self.role)
+    }
+    
     public func getProperties() -> UserProperties {
-        return UserProperties(
-            pwgID: self.pwgID, login: self.login,
-            username: self.username, name: self.name, email: self.email, status: self.status,
-            recentPeriod: self.recentPeriod,
-            registrationDate: self.registrationDate, lastUsed: self.lastUsed,
-            createAlbumRights: self.createAlbumRights,
-            uploadRights: self.uploadRights, downloadRights: self.downloadRights,
-            URIstr: self.objectID.uriRepresentation().absoluteString)
+        let userStatus = pwgUserStatus(rawValue: self.status) ?? .guest
+        var userData = UserProperties(withStatus: userStatus)
+        
+        userData.pwgID = self.pwgID
+        userData.login = self.login
+        userData.username = self.username
+        userData.name = self.name
+        userData.email = self.email
+        
+        userData.recentPeriod = self.recentPeriod
+        userData.registrationDate = self.registrationDate
+        userData.lastUsed = self.lastUsed
+        
+        userData.createAlbumRights = self.createAlbumRights
+        userData.uploadRights = self.uploadRights
+        userData.downloadRights = self.downloadRights
+        
+        userData.URIstr = self.objectID.uriRepresentation().absoluteString
+        return userData
     }
 }

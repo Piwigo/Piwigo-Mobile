@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import PwgKit
 
 /**
  A struct for managing user accounts
@@ -36,11 +35,11 @@ public struct UserProperties: Sendable
 extension UserProperties
 {
     public init(withStatus status: pwgUserStatus) {
-        self.init(pwgID: Int16.min, login: "", username: "", name: "", email: "",
-                  status: pwgUserStatus.guest.rawValue, recentPeriod: 7,
+        self.init(pwgID: 0, login: "", username: "", name: "", email: "",
+                  status: status.rawValue, recentPeriod: 7,
                   registrationDate: Date.distantPast.timeIntervalSinceReferenceDate,
                   lastUsed: Date.distantPast.timeIntervalSinceReferenceDate,
-                  createAlbumRights: "", uploadRights: "", downloadRights: false,
+                  createAlbumRights: nil, uploadRights: "", downloadRights: false,
                   URIstr: "")
     }
     

@@ -60,12 +60,16 @@ struct SettingsUtilities
         // Device and system info
         msg += "\(UIDevice.current.modelName) — \(UIDevice.current.systemName) \(UIDevice.current.systemVersion)\n"
         
+        // User status
+        let bckgContext = DataController.shared.newTaskContext()
+        let userData = try? UserProvider().getPropertiesOfCurrentUser(inContext: bckgContext)
+        
         // App settings
         msg += "\n— Piwigo App —\n"
         msg += "• switchPaletteAutomatically: \(UIVars.shared.switchPaletteAutomatically ? "Yes" : "No")\n"
         msg += "• isAppLockActive: \(UIVars.shared.isAppLockActive ? "Yes" : "No")\n"
         msg += "• isBiometricsEnabled: \(UIVars.shared.isBiometricsEnabled ? "Yes" : "No")\n"
-        msg += "• userStatusRaw: \(ServerVars.shared.userStatus)\n"
+        msg += "• userStatus: \(pwgUserStatus(rawValue: userData?.status ?? pwgUserStatus.guest.rawValue) ?? .guest)\n"
         msg += "• displayAlbumDescriptions: \(AlbumVars.shared.displayAlbumDescriptions ? "Yes" : "No")\n"
         msg += "• defaultAlbumThumbnailSize: \((pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize)?.name ?? "?"))\n"
         msg += "• displayImageTitles: \(AlbumVars.shared.displayImageTitles ? "Yes" : "No")\n"

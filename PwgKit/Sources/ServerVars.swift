@@ -34,8 +34,13 @@ public final class ServerVars: @unchecked Sendable {
 //        if let _ = UserDefaults.standard.object(forKey: "test") {
 //            UserDefaults.standard.removeObject(forKey: "test")
 //        }
-        if let _ = UserDefaults.dataSuite.object(forKey: "usesUploadAsync") {
-            UserDefaults.dataSuite.removeObject(forKey: "usesUploadAsync")
+        let deprecatedKeys = ["usesUploadAsync",
+                              "usesCalcOrphans",
+                              "userStatusRaw"]
+        for key in deprecatedKeys {
+            if UserDefaults.dataSuite.object(forKey: key) != nil {
+                UserDefaults.dataSuite.removeObject(forKey: key)
+            }
         }
         // Rename username and user as login and username
         /// - username was the username or the API public key ➜ login
@@ -137,22 +142,6 @@ public final class ServerVars: @unchecked Sendable {
             }
         }
     }
-    
-    /// - Status of the user accessing the Piwigo server
-    @UserDefault("userStatusRaw", defaultValue: pwgUserStatus.guest.rawValue, userDefaults: UserDefaults.dataSuite)
-    private var userStatusRaw: String
-    public var userStatus: pwgUserStatus {
-        get { return pwgUserStatus(rawValue: userStatusRaw) ?? pwgUserStatus.guest }
-        set (value) {
-            if pwgUserStatus.allCases.contains(value) {
-                userStatusRaw = value.rawValue
-            }
-        }
-    }
-    
-    /// - IDs of albums in which a Community user can create sub-albums (Int32.min if unknown, i.e. Piwigo version before 16.4)
-//    @UserDefault("createAlbumRights", defaultValue: "\(Int32.min)", userDefaults: UserDefaults.dataSuite)
-//    public var createAlbumRights: String
     
     /// - Library/Caches/Piwigo/Thumbnail folder size
     @UserDefault("thumbFolderSize", defaultValue: 0, userDefaults: UserDefaults.dataSuite)

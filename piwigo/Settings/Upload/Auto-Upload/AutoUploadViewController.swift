@@ -27,15 +27,14 @@ final class AutoUploadViewController: UIViewController {
     
     private lazy var hasTagCreationRights: Bool = {
         // Depends on the user's rights
-        switch ServerVars.shared.userStatus {
+        switch pwgUserStatus(rawValue: userData.status) ?? .guest {
         case .guest, .generic:
             return false
         case .admin, .webmaster:
             return true
         case .normal:
             // Community user with upload rights?
-            if userData.uploadRights.components(separatedBy: ",")
-                .contains(String(UploadVars.shared.autoUploadCategoryId)) {
+            if userData.hasUploadRights(forCatID: UploadVars.shared.autoUploadCategoryId) {
                 return true
             }
         }

@@ -144,7 +144,7 @@ extension AutoUploadViewController: UITableViewDelegate
                 guard let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController
                 else { preconditionFailure("Could not load TagsViewController") }
                 tagsVC.delegate = self
-                tagsVC.userData = self.userData
+                tagsVC.userData = userData
                 tagsVC.setPreselectedTagIds(Set(UploadVars.shared.autoUploadTagIds
                                                     .components(separatedBy: ",")
                                                     .map { Int32($0) ?? nil }.compactMap {$0}))
