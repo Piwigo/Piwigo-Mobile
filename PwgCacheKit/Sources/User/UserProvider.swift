@@ -60,9 +60,18 @@ public final class UserProvider {
                 else {
                     // Create a User object on the current queue context
                     let newUser = User(context: taskContext)
-                    try newUser.update(with: userData, onServer: server)
+                    do {
+                        try newUser.update(with: userData, onServer: server)
+                    }
+                    catch {
+                        taskContext.delete(newUser)
+                        throw error
+                    }
                 }
-                taskContext.saveIfNeeded()
+
+                // The account must be persisted, otherwise it would remain invisible
+                // to the background contexts and the user could not be retrieved from cache
+                try taskContext.saveIfNeededOrThrow()
             }
         }
         catch let error as PwgKitError { throw error }
@@ -81,7 +90,7 @@ public final class UserProvider {
                 
                 // Return fetched account properties
                 guard let user = try taskContext.fetch(fetchRequest).first
-                        else { throw PwgKitError.userNotFound }
+                else { throw PwgKitError.userNotFound }
                 return user
             }
         }
@@ -106,7 +115,7 @@ public final class UserProvider {
                 guard let userURI = URL(string: userURIstr),
                       let userID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: userURI),
                       let user = try taskContext.existingObject(with: userID) as? User
-                        else { throw PwgKitError.userNotFound }
+                else { throw PwgKitError.userNotFound }
                 
                 // Extract properties
                 return user
@@ -147,32 +156,6 @@ public final class UserProvider {
         catch let error as PwgKitError { throw error }
         catch let error as NSError { throw PwgKitError.CoreDataError(innerError: error)}
         catch let error { throw PwgKitError.otherError(innerError: error) }
-    }
-    
-    public func updateUser(withID objectURIstr: String, includingStatus status: Bool) {
-        // Do {} below is used to allow typed throws
-        do {
-            let bckgContext = DataController.shared.newTaskContext()
-            try bckgContext.performAndWait {
-                // Retrieve User instrance
-                guard let objectURI = URL(string: objectURIstr),
-                      let userID = bckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI),
-                      let user = try bckgContext.existingObject(with: userID) as? User
-                else { return }
-                
-                // Update date
-                let dateOfLogin = Date.timeIntervalSinceReferenceDate
-                user.lastUsed = dateOfLogin
-                if status {
-                    user.status = ServerVars.shared.userStatus.rawValue
-                }
-                if let server = user.server {
-                    server.lastUsed = dateOfLogin
-                }
-                bckgContext.saveIfNeeded()
-            }
-        }
-        catch { print("Error updating User: \(error)") }
     }
     
     
