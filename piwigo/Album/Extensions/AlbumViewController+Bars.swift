@@ -35,7 +35,7 @@ extension AlbumViewController
             navigationItem.hidesBackButton = true
         } else {
             // Back button to parent album
-            navigationItem.setLeftBarButtonItems([], animated: true)
+            navigationItem.setLeftBarButtonItems(nil, animated: true)
             navigationItem.hidesBackButton = false
         }
         
@@ -180,7 +180,7 @@ extension AlbumViewController
             navigationItem.setLeftBarButtonItems([], animated: true)
         } else {
             // Back button to parent album
-            navigationItem.setLeftBarButtonItems([], animated: true)
+            navigationItem.setLeftBarButtonItems(nil, animated: true)
             navigationItem.hidesBackButton = false
         }
 
