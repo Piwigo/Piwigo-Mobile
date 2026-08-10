@@ -274,10 +274,10 @@ extension AlbumViewController
         do {
             if [.rankAscending, .random].contains(sort) {
                 let startRank = Int64(page * perPage)
-                try imageProvider.importImages(data, inAlbum: albumId,
-                                                 sort: sort, fromRank: startRank)
+                try await imageProvider.importImages(data, inAlbum: albumId,
+                                                     sort: sort, fromRank: startRank)
             } else {
-                try imageProvider.importImages(data, inAlbum: albumId, sort: sort)
+                try await imageProvider.importImages(data, inAlbum: albumId, sort: sort)
             }
 
             // Retrieve total number of images

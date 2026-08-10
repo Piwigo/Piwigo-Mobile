@@ -223,7 +223,6 @@ final class ImageViewController: UIViewController {
     }
     
     deinit {
-        //        debugPrint("••> ImageViewController is being deinitialized.")
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
     }
@@ -312,7 +311,7 @@ final class ImageViewController: UIViewController {
                 
                 // Update image data in cache
                 // The provided sort option will not change the rankManual/rankRandom values.
-                try ImageProvider().importImages([pwgData], inAlbum: self.categoryId, sort: .albumDefault)
+                try await ImageProvider().importImages([pwgData], inAlbum: self.categoryId, sort: .albumDefault)
                 
                 // Update UI and cache
                 await MainActor.run { [self] in

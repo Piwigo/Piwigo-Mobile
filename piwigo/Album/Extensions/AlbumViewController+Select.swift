@@ -400,7 +400,7 @@ extension AlbumViewController
                 
                 // Update image data in cache
                 // The provided sort option will not change the rankManual/rankRandom values.
-                try ImageProvider().importImages([pwgData], inAlbum: self.albumData.pwgID, sort: .albumDefault)
+                try await ImageProvider().importImages([pwgData], inAlbum: self.albumData.pwgID, sort: .albumDefault)
                 
                 // Proceed with next image
                 await MainActor.run { [self] in

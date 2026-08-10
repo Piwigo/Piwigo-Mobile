@@ -161,7 +161,7 @@ extension UploadManager {
             
             // Update image data in cache
             // The provided sort option will not change the rankManual/rankRandom values.
-            try? ImageProvider().importImages([pwgData], inAlbum: properties.category, sort: .albumDefault)
+            try? await ImageProvider().importImages([pwgData], inAlbum: properties.category, sort: .albumDefault)
             
             // Update displayed albums which are concerned
             try? AlbumProvider().updateAlbums(addingImages: 1, toAlbumWithID: properties.category,

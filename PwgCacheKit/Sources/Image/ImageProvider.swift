@@ -107,10 +107,10 @@ public final class ImageProvider {
     /**
      Imports uploaded image data into Core Data.
      */
-    public func didUploadImage(_ imageData: ImageGetInfo, inAlbumId albumId: Int32) {
+    public func didUploadImage(_ imageData: ImageGetInfo, inAlbumId albumId: Int32) async {
         // Import the image data into Core Data.
         // The provided sort option will not change the rankManual/rankRandom values of Int64.min
-        try? self.importImages([imageData], inAlbum: albumId, withAlbumUpdate: true, sort: .albumDefault)
+        try? await self.importImages([imageData], inAlbum: albumId, withAlbumUpdate: true, sort: .albumDefault)
     }
     
     /**
@@ -121,12 +121,12 @@ public final class ImageProvider {
     private let batchSize = 25
     public func importImages(_ imageArray: [ImageGetInfo],
                              inAlbum albumId: Int32, withAlbumUpdate: Bool = false,
-                             sort: pwgImageSort, fromRank rank: Int64 = Int64.min) throws(PwgKitError) {
+                             sort: pwgImageSort, fromRank rank: Int64 = Int64.min) async throws(PwgKitError) {
         // We shall perform at least one import in case where
         // the user did delete all images
         guard imageArray.isEmpty == false
         else {
-            _ = try importOneBatch([ImageGetInfo](), inAlbum: albumId, sort: sort)
+            _ = try await importOneBatch([ImageGetInfo](), inAlbum: albumId, sort: sort)
             return
         }
         
@@ -152,9 +152,9 @@ public final class ImageProvider {
             
             // Stop the entire import if any batch is unsuccessful.
             let startRank = rank + Int64(batchStart)
-            try importOneBatch(imagesBatch, inAlbum: albumId,
-                               withAlbumUpdate: withAlbumUpdate,
-                               sort: sort, fromRank: startRank)
+            try await importOneBatch(imagesBatch, inAlbum: albumId,
+                                     withAlbumUpdate: withAlbumUpdate,
+                                     sort: sort, fromRank: startRank)
         }
     }
     
@@ -163,39 +163,53 @@ public final class ImageProvider {
      and saving them to the persistent store, on a private queue. After saving,
      resets the context to clean up the cache and lower the memory footprint.
      
-     NSManagedObjectContext.performAndWait doesn't rethrow so this function
-     catches throws within the closure and uses a return value to indicate
-     whether the import is successful.
+     This function catches throws within the closure and uses a return value
+     to indicate whether the import is successful.
      */
     private func importOneBatch(_ imagesBatch: [ImageGetInfo],
                                 inAlbum albumId: Int32, withAlbumUpdate: Bool = false,
-                                sort: pwgImageSort, fromRank startRank: Int64 = Int64.min) throws(PwgKitError) {
+                                sort: pwgImageSort, fromRank startRank: Int64 = Int64.min) async throws(PwgKitError) {
         
-        // Get current user object (should exist at this stage)
+        // Get background context
         let bckgContext = DataController.shared.newTaskContext()
-        let user = try UserProvider().getCurrentUser(inContext: bckgContext)
-        
-        // Get album of selected ID (should exist at this stage)
-        guard let album = user.albums?.first(where: {$0.pwgID == albumId})
-        else { throw PwgKitError.albumCreationError }
-        
-        // Import tags which are not yet in cache
-        let imageTags = imagesBatch.compactMap({$0.tags}).reduce([],+)
-        let isAdmin = [pwgUserStatus.admin.rawValue, pwgUserStatus.webmaster.rawValue].contains(user.status)
-        _ = try TagProvider().importOneBatch(imageTags, asAdmin: isAdmin, tagIDs: Set<Int32>())
 
-        // Get favorite album if possible (will not prevent import)
-        let favAlbum = try AlbumProvider().getOrCreateAlbum(withID: pwgSmartAlbum.favorites.rawValue,
-                                                            inContext: bckgContext)
-        
-        // Runs on the URLSession's delegate queue
-        // so it won’t block the main thread.
+        // Copied locally so that the closure below does not capture self
+        let userDidCancelSearch = self.userDidCancelSearch
+
+        // The asynchronous variant of perform() suspends this task instead of
+        // blocking the thread it runs on. performAndWait() would park a thread of
+        // the cooperative pool for the whole import, starving the other tasks and
+        // actors (e.g. the ImageDownloader would not serve any thumbnail).
         do {
-            try bckgContext.performAndWait { () throws -> Void in
+            try await bckgContext.perform { () throws -> Void in
                 
-                // Create a fetched results controller and set its fetch request, context, and delegate.
+                // Get current user object (should exist at this stage)
+                let user = try UserProvider().getCurrentUser(inContext: bckgContext)
+                
+                // Get album of selected ID (should exist at this stage)
+                guard let album = user.albums?.first(where: {$0.pwgID == albumId})
+                else { throw PwgKitError.albumCreationError }
+                
+                // Import tags which are not yet in cache
+                let imageTags = imagesBatch.compactMap({$0.tags}).reduce([],+)
+                _ = try TagProvider().importOneBatch(imageTags, asAdmin: user.hasAdminRights, tagIDs: Set<Int32>())
+                
+                // Get favorite album (create it if necessary)
+                let favAlbum = try AlbumProvider().getOrCreateAlbum(withID: pwgSmartAlbum.favorites.rawValue,
+                                                                    inContext: bckgContext)
+                
+                // Prepare fetch request selecting images:
+                /// — of the current server
+                /// — having an ID matching one of the given image IDs
                 let imageIds = Set(imagesBatch.compactMap({$0.id}))
-                let fetchRequest = fetchRequestOfImage(inContext: bckgContext, withIds: imageIds)
+                let fetchRequest = Image.fetchRequest()
+                fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Image.pwgID), ascending: true)]
+                var andPredicates = [NSPredicate]()
+                andPredicates.append(NSPredicate(format: "pwgID IN %@", Array(imageIds)))
+                andPredicates.append(NSPredicate(format: "server.path == %@", ServerVars.shared.serverPath))
+                fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+                fetchRequest.returnsObjectsAsFaults = false
+                fetchRequest.shouldRefreshRefetchedObjects = true
                 
                 // Loop over new images
                 let cachedImages:[Image] = try bckgContext.fetch(fetchRequest)
