@@ -452,4 +452,14 @@ extension UploadManager {
         let chunkFileName = imageFile + "." + numberFormatter.string(from: NSNumber(value: chunk))!
         deleteFilesInUploadsDirectory(withPrefix: chunkFileName)
     }
+    
+    fileprivate func storeCommunityUserIDIfNeeded(_ userData: UserProperties, from imageData: ImageGetInfo) {
+        // An upload is an occasion to retrieve the ID or a Community user
+        if userData.hasAdminRights == false,
+           userData.pwgID == Int16.zero {
+            var newUserData = userData
+            newUserData.pwgID = imageData.addedBy?.int16Value ?? 0
+            try? UserProvider().updateUser(withProperties: newUserData, inContext: uploadBckgContext)
+        }
+    }
 }
