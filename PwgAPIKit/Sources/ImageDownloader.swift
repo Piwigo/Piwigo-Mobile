@@ -273,7 +273,7 @@ public actor ImageDownloader {
     
     // MARK: - Accessors called from PwgSessionDelegate
     func download(for imageURL: URL) -> ImageDownload? {
-        downloads[imageURL]
+        return downloads[imageURL]
     }
     
     func updateProgress(_ progress: Float, for imageURL: URL) {
@@ -337,9 +337,14 @@ public actor ImageDownloader {
     // Completion handlers may perform heavy work such as image decoding,
     // so they are called outside the actor to avoid serialising all cache checks,
     // downloads and completions behind each decode.
+    /// They are dispatched on a GCD queue and not with Task.detached, which would run them
+    /// on the cooperative pool feeding this actor's executor: enough concurrent decodes
+    /// would then leave no thread for the actor, stalling every getImage() call.
+    private static let decodingQueue = DispatchQueue(label: "org.piwigo.apiKit.imageDecoding",
+                                                     qos: .userInitiated, attributes: .concurrent)
     private nonisolated func complete(with completionHandler: ((URL) -> Void)?, fileURL: URL) {
         guard let completionHandler else { return }
-        Task.detached(priority: .userInitiated) {
+        ImageDownloader.decodingQueue.async {
             completionHandler(fileURL)
         }
     }
