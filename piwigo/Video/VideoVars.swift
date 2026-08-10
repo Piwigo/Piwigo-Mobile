@@ -19,8 +19,11 @@ final class VideoVars: @unchecked Sendable {
     // Remove deprecated stored objects if needed
     init() {
         // Deprecated data?
-        if let _ = UserDefaults.standard.object(forKey: "defaultPlayerRate") {
-            UserDefaults.standard.removeObject(forKey: "defaultPlayerRate")
+        let deprecatedKeys = ["defaultPlayerRate"]
+        for key in deprecatedKeys {
+            if UserDefaults.standard.object(forKey: key) != nil {
+                UserDefaults.standard.removeObject(forKey: key)
+            }
         }
 //        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
 //            UserDefaults.dataSuite.removeObject(forKey: "test")

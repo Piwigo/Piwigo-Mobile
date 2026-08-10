@@ -21,8 +21,11 @@ final class AlbumVars: @unchecked Sendable {
     // Remove deprecated stored objects if needed
     init() {
         // Deprecated data?
-        if let _ = UserDefaults.standard.object(forKey: "recentPeriod") {
-            UserDefaults.standard.removeObject(forKey: "recentPeriod")
+        let deprecatedKeys = ["recentPeriod"]
+        for key in deprecatedKeys {
+            if UserDefaults.standard.object(forKey: key) != nil {
+                UserDefaults.standard.removeObject(forKey: key)
+            }
         }
         if let defaultSort = UserDefaults.standard.object(forKey: "defaultSort") {
             UserDefaults.standard.removeObject(forKey: "defaultSort")
