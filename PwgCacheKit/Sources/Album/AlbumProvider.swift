@@ -438,8 +438,11 @@ public final class AlbumProvider {
         let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Album")
         fetchRequest.resultType = .countResultType
         
-        // Select albums of the current server only
-        fetchRequest.predicate = NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath)
+        // Select albums of the current server and user only
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         
         // Fetch number of objects
         do {
