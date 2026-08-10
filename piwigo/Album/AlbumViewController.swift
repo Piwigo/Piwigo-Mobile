@@ -580,7 +580,7 @@ final class AlbumViewController: UIViewController
         // Display help views only when showing regular albums
         // and less than once a day
         let dateOfLastHelpView = AppVars.shared.dateOfLastHelpView
-        let diff = Date().timeIntervalSinceReferenceDate - dateOfLastHelpView
+        let diff = Date.timeIntervalSinceReferenceDate - dateOfLastHelpView
         if categoryId <= 0 || diff > TimeInterval(86400) { return }
         
         // Determine which help pages should be presented

@@ -50,7 +50,7 @@ final class AppVars: @unchecked Sendable {
     
     /// - Request help for translating Piwigo once a month max
     let pwgOneMonth: TimeInterval = 31.0 * 24.0 * 60.0 * 60.0     // i.e. 31 days
-    @UserDefault("dateOfLastTranslationRequest", defaultValue: Date().timeIntervalSinceReferenceDate)
+    @UserDefault("dateOfLastTranslationRequest", defaultValue: Date.timeIntervalSinceReferenceDate)
     var dateOfLastTranslationRequest: TimeInterval
     
     /// - Remember for which version the What's New in Piwigo view was presented

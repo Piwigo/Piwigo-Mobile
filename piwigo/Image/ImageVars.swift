@@ -90,7 +90,7 @@ final class ImageVars: @unchecked Sendable {
     let dateCommit18e4273 = ISO8601DateFormatter().date(from: "2024-09-06T00:00:00Z")!
     let dateOfFirstOptImageV323 = {
         if AppVars.shared.dateOfFirstOptImageV323 == Date.distantFuture.timeIntervalSinceReferenceDate {
-            AppVars.shared.dateOfFirstOptImageV323 = Date().timeIntervalSinceReferenceDate
+            AppVars.shared.dateOfFirstOptImageV323 = Date.timeIntervalSinceReferenceDate
         }
         return Date(timeIntervalSinceReferenceDate: AppVars.shared.dateOfFirstOptImageV323)
     }()

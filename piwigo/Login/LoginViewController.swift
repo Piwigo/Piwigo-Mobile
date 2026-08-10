@@ -531,7 +531,7 @@ final class LoginViewController: UIViewController {
                     }
                     
                     // Should this server be updated?
-                    let now: Double = Date().timeIntervalSinceReferenceDate
+                    let now: Double = Date.timeIntervalSinceReferenceDate
                     if now > ServerVars.shared.dateOfLastUpdateRequest + AppVars.shared.pwgOneMonth,
                        ServerVars.shared.pwgVersion.compare(pwgRecentVersion, options: .numeric) == .orderedAscending {
                         // Store date of last upgrade request

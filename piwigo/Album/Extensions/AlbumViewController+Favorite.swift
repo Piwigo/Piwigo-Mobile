@@ -95,7 +95,7 @@ extension AlbumViewController
                         favAlbum.totalNbImages += 1
                         
                         // Keep 'date_last' set as expected by the server
-                        favAlbum.dateLast = max(Date().timeIntervalSinceReferenceDate, favAlbum.dateLast)
+                        favAlbum.dateLast = max(Date.timeIntervalSinceReferenceDate, favAlbum.dateLast)
                         
                         // Save changes
                         mainContext.saveIfNeeded()

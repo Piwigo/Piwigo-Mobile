@@ -527,7 +527,7 @@ final class EditImageParamsViewController: UIViewController
         
         // Display help views less than once a day
         let dateOfLastHelpView = AppVars.shared.dateOfLastHelpView
-        let diff = Date().timeIntervalSinceReferenceDate - dateOfLastHelpView
+        let diff = Date.timeIntervalSinceReferenceDate - dateOfLastHelpView
         if diff > TimeInterval(86400) { return }
             
         // Determine which help pages should be presented

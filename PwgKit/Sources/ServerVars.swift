@@ -45,7 +45,7 @@ public final class ServerVars: @unchecked Sendable {
     // MARK: - Vars in UserDefaults / Standard
     // Server variables stored in UserDefaults / Standard
     /// - Request server update once a month max
-    @UserDefault("dateOfLastUpdateRequest", defaultValue: Date().timeIntervalSinceReferenceDate)
+    @UserDefault("dateOfLastUpdateRequest", defaultValue: Date.timeIntervalSinceReferenceDate)
     public var dateOfLastUpdateRequest: TimeInterval
 
     /// - Recent period in number of days

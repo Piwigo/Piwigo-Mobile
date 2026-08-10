@@ -117,7 +117,7 @@ extension UploadManager
         let deadline = DateUtilities.nextDayAt4AM(after: UploadVars.shared.dateOfLastPhotoLibraryDeletion)
         if uploadIDs.isEmpty == false && (nberOfPendingUploads == 0 || Date.now > deadline) {
             // Store date of proposed deletion
-            UploadVars.shared.dateOfLastPhotoLibraryDeletion = Date().timeIntervalSinceReferenceDate
+            UploadVars.shared.dateOfLastPhotoLibraryDeletion = Date.timeIntervalSinceReferenceDate
             
             // Suggest to delete assets from the Photo Library
             deleteAssets(associatedToUploads: uploadIDs, localIdentifiers)

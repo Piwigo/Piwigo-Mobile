@@ -128,8 +128,8 @@ extension AppDelegate
                 // Import the album data into the cache
                 try AlbumProvider().importAlbums(pwgData, recursively: true, inParent: 0)
 
-                // Remember when all album data was last refreshed
-                CacheVars.shared.dateOfLastAlbumRefresh = Date().timeIntervalSinceReferenceDate
+                // Remember when all album data was last refreshed with success
+                CacheVars.shared.dateOfLastAlbumRefresh = Date.timeIntervalSinceReferenceDate
 
                 // Inform that the task is completed with success
                 /// 1.7 s to retrieve the data of 582 albums with the Piwigo 16.4 test server

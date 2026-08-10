@@ -92,11 +92,11 @@ extension UploadProperties {
             serverFileTypes: ServerVars.shared.serverFileTypes,
             
             // Upload request date is now and state is waiting
-            requestDate: Date().timeIntervalSinceReferenceDate,
+            requestDate: Date.timeIntervalSinceReferenceDate,
             requestState: .waiting, requestError: "",
             
             // Photo creation date and filename
-            creationDate: Date().timeIntervalSinceReferenceDate,
+            creationDate: Date.timeIntervalSinceReferenceDate,
             fileName: fileName ?? "",
             fileNameExtensionCase: fileNameExtensionCase,
             fileNamePrefixEncodedActions: prefixFileNameActionList,

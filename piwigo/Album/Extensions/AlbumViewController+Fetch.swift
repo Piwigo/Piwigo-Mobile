@@ -310,7 +310,7 @@ extension AlbumViewController
         // Done fetching images
         // ► Remove non-fetched images from album
         // ► Remember when images were fetched
-        self.albumData.dateGetImages = Date().timeIntervalSinceReferenceDate
+        self.albumData.dateGetImages = Date.timeIntervalSinceReferenceDate
         
         if let album = albumProvider.getAlbum(withID: self.albumData.pwgID, inContext: mainContext) {
             album.dateGetImages = self.albumData.dateGetImages
@@ -468,7 +468,7 @@ extension AlbumViewController
                 }
                 
                 // ► Remember when favorites were fetched
-                album.dateGetImages = Date().timeIntervalSinceReferenceDate
+                album.dateGetImages = Date.timeIntervalSinceReferenceDate
                 
                 // ► Remove favorite album from list of album being fetched
                 AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.favorites.rawValue)

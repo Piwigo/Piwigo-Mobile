@@ -512,7 +512,7 @@ extension AlbumViewController
         }
         else if albumData.dateGetImages > TimeInterval(86400) { // i.e. a day after minimum date
             let dateGetImages = Date(timeIntervalSinceReferenceDate: albumData.dateGetImages)
-            if Date().timeIntervalSinceReferenceDate - albumData.dateGetImages < 60 {
+            if Date.timeIntervalSinceReferenceDate - albumData.dateGetImages < 60 {
                 subTitle = String(localized: "categoryUpdatedNow", comment: "Updated just now")
             } else {
                 let calendar = Calendar.current
@@ -596,7 +596,7 @@ extension AlbumViewController
             }
             else if albumData.dateGetImages > TimeInterval(86400) && !isAccessibilityCategory { // i.e. a day after minimum date
                 let dateGetImages = Date(timeIntervalSinceReferenceDate: albumData.dateGetImages)
-                if Date().timeIntervalSinceReferenceDate - albumData.dateGetImages < 60 {
+                if Date.timeIntervalSinceReferenceDate - albumData.dateGetImages < 60 {
                     subtitle = String(localized: "categoryUpdatedNow", comment: "Updated just now")
                 } else {
                     let calendar = Calendar.current

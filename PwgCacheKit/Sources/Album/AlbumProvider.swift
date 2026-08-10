@@ -366,7 +366,7 @@ public final class AlbumProvider {
         }
         
         // Keep 'date_last' set as expected by the server
-        album.dateLast = max(Date().timeIntervalSinceReferenceDate, album.dateLast)
+        album.dateLast = max(Date.timeIntervalSinceReferenceDate, album.dateLast)
         
         // Update parent albums in the background
         try self.updateParents(ofAlbum: album, nbImages: +(nbImages), inContext: taskContext)

@@ -89,7 +89,7 @@ public final nonisolated class Image: NSManagedObject, Identifiable {
         let newSize = 1024 * (imageData.fileSize ?? Int64.zero)
         if newSize != Int64.zero {
             // Remember when pwg.images.getInfos was called
-            dateGetInfos = Date().timeIntervalSinceReferenceDate
+            dateGetInfos = Date.timeIntervalSinceReferenceDate
             // Check if the value has changed
             if fileSize != newSize {
                 fileSize = newSize
