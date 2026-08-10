@@ -40,7 +40,7 @@ extension AlbumViewController
         }
         
         // Right side of navigation bar and toolbar
-        if categoryId == Int32.zero {
+        if categoryId == pwgSmartAlbum.root.rawValue {
             // Root album => Discover menu button in navigation bar
             discoverBarButton = getDiscoverButton()
             
@@ -185,7 +185,7 @@ extension AlbumViewController
         }
 
         // Right side of navigation bar
-        if categoryId == 0 {
+        if categoryId == pwgSmartAlbum.root.rawValue {
             // Root album => Discover menu button
             navigationItem.setRightBarButtonItems([discoverBarButton].compactMap { $0 }, animated: true)
         }
