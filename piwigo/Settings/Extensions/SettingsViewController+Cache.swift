@@ -101,6 +101,7 @@ extension SettingsViewController
                     // Will fetch all album data recursively when fetching the root album
                     // so that the share extension can present the whole album tree
                     // if user launches a refresh
+                    AlbumVars.shared.isFetchingAlbumData = []
                     AlbumVars.shared.fetchAlbumDataRecursively = true
                     
                     // Hide HUD on completion

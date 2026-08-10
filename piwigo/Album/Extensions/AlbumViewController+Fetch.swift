@@ -68,11 +68,10 @@ extension AlbumViewController
                 if pwgData.isEmpty == false {
                     try await albumProvider.importAlbums(pwgData, recursively: recursively, inParent: categoryId)
                 }
-
-                // All album data fetched ► Remember when and disable the recursive mode
+                
+                // Remember when all album data was last refreshed with success
                 if recursively {
-                    AlbumVars.shared.fetchAlbumDataRecursively = false
-                    CacheVars.shared.dateOfLastAlbumRefresh = Date().timeIntervalSinceReferenceDate
+                    CacheVars.shared.dateOfLastAlbumRefresh = Date.timeIntervalSinceReferenceDate
                 }
                 
                 // Fetch image data?
@@ -95,7 +94,7 @@ extension AlbumViewController
                     self.albumData = updatedAlbumData
                     
                     // Any image data to fetch?
-                    if self.categoryId == 0 {
+                    if self.categoryId == pwgSmartAlbum.root.rawValue {
                         // ► Update navigtion bar, number of images, etc.
                         Task {
                             await self.fetchCompleted()

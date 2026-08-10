@@ -212,9 +212,11 @@ final class AlbumDeletion: NSObject
                     // Don't fetch an album already being fetched
                     if AlbumVars.shared.isFetchingAlbumData.contains(parentID) { continue }
                     
-                    // Remember that the app is fetching album data
+                    // Remember that the app is fetching all album data
+                    // until the fetch completes or the fetch or the import below throws an error
                     AlbumVars.shared.isFetchingAlbumData.insert(parentID)
-
+                    defer { AlbumVars.shared.isFetchingAlbumData.remove(parentID) }
+                    
                     // Fetch album data
                     let pwgData = try await JSONManager.shared.fetchAlbums(forUserWithAdminRights: userData.hasAdminRights,
                                                                            inParentWithId: parentID,

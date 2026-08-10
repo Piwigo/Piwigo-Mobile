@@ -377,9 +377,11 @@ final class SelectCategoryViewController: UIViewController {
                 // Check session
                 try await LoginUtilities().checkSessionOfCurrentUser()
                 
-                // Remember that the app is fetching album data recursively
+                // Remember that the app is fetching all album data
+                // until the fetch completes or the fetch or the import below throws an error
                 AlbumVars.shared.isFetchingAlbumData.insert(pwgSmartAlbum.root.rawValue)
-
+                defer { AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.root.rawValue) }
+                
                 // Fetch album data recursively
                 let pwgData = try await JSONManager.shared.fetchAlbums(forUserWithAdminRights: userData.hasAdminRights,
                                                                        inParentWithId: pwgSmartAlbum.root.rawValue,

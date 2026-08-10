@@ -194,11 +194,13 @@ extension AlbumViewController: UISearchBarDelegate
         
         // Did the query string change?
         if albumData.query == query {
-            // Remember that the app is fetching this album data again
-            AlbumVars.shared.isFetchingAlbumData.insert(categoryId)
-
             // Restart loading pages of images
             Task {
+                // Remember that the app is fetching all album data
+                // until the fetch completes or the fetch or the import below throws an error
+                AlbumVars.shared.isFetchingAlbumData.insert(categoryId)
+                defer { AlbumVars.shared.isFetchingAlbumData.remove(categoryId) }
+
                 await self.fetchImages(withInitialImageIds: self.oldImageIDs, query: query,
                                        fromPage: self.onPage, toPage: self.lastPage)
             }

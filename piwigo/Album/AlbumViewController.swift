@@ -329,7 +329,7 @@ final class AlbumViewController: UIViewController
         }
         
         // Place search bar in navigation bar of root album, reset fetching album flags
-        if categoryId == 0 {
+        if categoryId == pwgSmartAlbum.root.rawValue {
             initSearchBar()
             AlbumVars.shared.isFetchingAlbumData = Set<Int32>()
         }
