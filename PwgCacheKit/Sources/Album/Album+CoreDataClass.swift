@@ -25,7 +25,7 @@ public final nonisolated class Album: NSManagedObject, Identifiable {
         
         // Update the album only if the Id and Name properties have values.
         guard let newPwgId = albumData.id,
-              let newName = albumData.name, newName.isEmpty == false else {
+              let newName = albumData.name else {
             throw PwgKitError.missingAlbumData
         }
         if uuid.isEmpty {
