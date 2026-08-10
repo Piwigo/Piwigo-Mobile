@@ -98,13 +98,13 @@ final class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                 
                 // Add upload requests to queue
                 UploadVars.shared.isPaused = false
-                #if os(iOS) && !targetEnvironment(macCatalyst)
+                #if os(iOS) && !targetEnvironment(macCatalyst) && !targetEnvironment(simulator)
                 // Queue uploads to prepare
                 await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
                 
                 // Process next uploads if possible
                 await UploadManagerActor.shared.processNextUpload()
-                #elseif targetEnvironment(macCatalyst)
+                #elseif targetEnvironment(macCatalyst) || targetEnvironment(simulator)
                 // Queue uploads to prepare
                 await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
                 

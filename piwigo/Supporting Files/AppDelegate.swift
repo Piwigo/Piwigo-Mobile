@@ -95,7 +95,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Register launch handlers for tasks
         /// All launch handlers must be registered before application finishes launching.
         /// Will have to check if pwg.images.uploadAsync is available
+        #if !targetEnvironment(simulator)
         registerBgTasks()
+        #endif
 
         // Register network connection changes
         Task { @MainActor in
@@ -567,7 +569,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private func resumeUploads() {
         Task(priority: .utility) { @UploadManagerActor in
-            #if os(iOS) && !targetEnvironment(macCatalyst)
+            #if os(iOS) && !targetEnvironment(macCatalyst) && !targetEnvironment(simulator)
             if #available(iOS 26.0, *) {
                 UploadManager.shared.runContinuedUploadTask()
             }
@@ -575,7 +577,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 UploadVars.shared.didResumeUploads = false
                 await UploadManager.shared.resumeInForeground()
             }
-            #elseif targetEnvironment(macCatalyst)
+            #elseif targetEnvironment(macCatalyst) || targetEnvironment(simulator)
             UploadVars.shared.didResumeUploads = false
             await UploadManager.shared.resumeInForeground()
             #endif
@@ -613,14 +615,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Resume upload operations in background queue
         // and update badge, upload button of album navigator
         Task(priority: .utility) { @UploadManagerActor in
-            #if os(iOS) && !targetEnvironment(macCatalyst)
+            #if os(iOS) && !targetEnvironment(macCatalyst) && !targetEnvironment(simulator)
             if #available(iOS 26.0, *) {
                 UploadManager.shared.runContinuedUploadTask()
             }
             else {
                 await UploadManager.shared.resumeInForeground()
             }
-            #elseif targetEnvironment(macCatalyst)
+            #elseif targetEnvironment(macCatalyst) || targetEnvironment(simulator)
             await UploadManager.shared.resumeInForeground()
             #endif
         }
@@ -708,7 +710,7 @@ extension AppDelegate: AppLockDelegate {
         if let rootVC = self.window?.rootViewController,
             let child = rootVC.children.first, child is LoginViewController {
             // Look for credentials if server address provided
-            let username = ServerVars.shared.username
+            let username = ServerVars.shared.login
             let service = ServerVars.shared.serverPath
             var password = ""
 

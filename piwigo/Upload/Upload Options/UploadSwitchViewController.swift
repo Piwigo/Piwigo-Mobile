@@ -211,7 +211,7 @@ final class UploadSwitchViewController: UIViewController {
                 
                 // Add upload requests to queue
                 UploadVars.shared.isPaused = false
-                #if os(iOS) && !targetEnvironment(macCatalyst)
+                #if os(iOS) && !targetEnvironment(macCatalyst) && !targetEnvironment(simulator)
                 if #available(iOS 26.0, *) {
                     // Launch new continued upload task if possible
                     UploadManager.shared.runContinuedUploadTask()
@@ -223,7 +223,7 @@ final class UploadSwitchViewController: UIViewController {
                     // Process next uploads if possible
                     await UploadManagerActor.shared.processNextUpload()
                 }
-                #elseif targetEnvironment(macCatalyst)
+                #elseif targetEnvironment(macCatalyst) || targetEnvironment(simulator)
                 // Queue uploads to prepare
                 await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
                 
@@ -251,7 +251,7 @@ final class UploadSwitchViewController: UIViewController {
                             // Resume upload operations in background queue
                             UploadVars.shared.isPaused = false
                             Task(priority: .utility) { @UploadManagerActor in
-                                #if os(iOS) && !targetEnvironment(macCatalyst)
+                                #if os(iOS) && !targetEnvironment(macCatalyst) && !targetEnvironment(simulator)
                                 if #available(iOS 26.0, *) {
                                     // Launch new continued upload task if possible
                                     UploadManager.shared.runContinuedUploadTask()
@@ -260,7 +260,7 @@ final class UploadSwitchViewController: UIViewController {
                                     // Process next uploads if possible
                                     await UploadManagerActor.shared.processNextUpload()
                                 }
-                                #elseif targetEnvironment(macCatalyst)
+                                #elseif targetEnvironment(macCatalyst) || targetEnvironment(simulator)
                                 // Process next uploads if possible
                                 await UploadManagerActor.shared.processNextUpload()
                                 #endif

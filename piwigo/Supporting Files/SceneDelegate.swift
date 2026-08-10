@@ -403,14 +403,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         // Schedule background tasks after cancelling pending onces
+        #if !targetEnvironment(simulator)
         BGTaskScheduler.shared.cancelAllTaskRequests()
         Task(priority: .utility) { @UploadManagerActor in
             UploadManager.shared.scheduleNextUpload()
         }
+        #endif
         
         // Schedule the daily refresh of the album data exploited by the share extension
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        #if !targetEnvironment(simulator)
         appDelegate?.scheduleAlbumRefresh()
+        #endif
         
         // Clean up /tmp directory
         appDelegate?.cleanUpTemporaryDirectory(immediately: false)
@@ -741,14 +745,14 @@ extension SceneDelegate: AppLockDelegate {
         // Resume upload operations in background queue
         // and update badge and upload button of album navigator
         Task(priority: .utility) { @UploadManagerActor in
-            #if os(iOS) && !targetEnvironment(macCatalyst)
+            #if os(iOS) && !targetEnvironment(macCatalyst) && !targetEnvironment(simulator)
             if #available(iOS 26.0, *) {
                 UploadManager.shared.runContinuedUploadTask()
             }
             else {
                 await UploadManager.shared.resumeInForeground()
             }
-            #elseif targetEnvironment(macCatalyst)
+            #elseif targetEnvironment(macCatalyst) || targetEnvironment(simulator)
             await UploadManager.shared.resumeInForeground()
             #endif
         }
