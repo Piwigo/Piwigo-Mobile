@@ -48,9 +48,15 @@ public final class ServerProvider {
                 else {
                     // Create a Server object on the current queue context
                     let newServer = Server(context: taskContext)
-                    try newServer.update(withProtocol: ServerVars.shared.serverProtocol,
-                                         path: ServerVars.shared.serverPath,
-                                         fileTypes: ServerVars.shared.serverFileTypes)
+                    do {
+                        try newServer.update(withProtocol: ServerVars.shared.serverProtocol,
+                                             path: ServerVars.shared.serverPath,
+                                             fileTypes: ServerVars.shared.serverFileTypes)
+                    }
+                    catch {
+                        taskContext.delete(newServer)
+                        throw error
+                    }
                     taskContext.saveIfNeeded()
                     return newServer
                 }
