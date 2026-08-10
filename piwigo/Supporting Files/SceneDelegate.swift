@@ -35,7 +35,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     // MARK: - Core Data Objects
     @MainActor
-    private lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
 
     
     // MARK: - Connecting and Disconnecting scenes
@@ -231,9 +231,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // - stop the network monitoring when ending the background continued processing upload task,
         // - resume upload activities after the completion iof a background task.
         UploadVars.shared.isApplicationActive = true
-        
-        // Flag used to force relogin at start
-        ServerVars.shared.applicationShouldRelogin = true
     }
     
     func sceneDidBecomeActive(_ scene: UIScene) {

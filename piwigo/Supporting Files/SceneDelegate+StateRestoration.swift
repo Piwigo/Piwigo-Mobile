@@ -8,6 +8,8 @@
 
 import UIKit
 
+import PwgCacheKit
+
 extension SceneDelegate {
     
     func stateRestorationActivity(for scene: UIScene) -> NSUserActivity? {
@@ -56,7 +58,29 @@ extension SceneDelegate {
 
         // Should we restore sub-albums?
         let catIDs = (userInfo["catIDs"] as? [Int32]) ?? [Int32]()
-        guard catIDs.isEmpty == false
+        
+        // The user account must still be available in cache.
+        /// It may be missing after an interrupted data migration.
+        guard (try? UserProvider().getCurrentUser(inContext: mainContext)) != nil
+        else {
+            // Unknown user instance! ► Back to login view
+            ClearCache.closeSession()
+            return
+        }
+        
+        // The sub-albums must still be available in cache.
+        /// Restoring an album which is not in cache would present the default album instead
+        /// (see currentAlbumData()) and fail to load its data. Sub-albums are therefore
+        /// restored down to the first album missing from the cache, because a sub-album
+        /// cannot be presented without its parent albums.
+        let albumProvider = AlbumProvider()
+        var restorableIDs = [Int32]()
+        for catID in catIDs {
+            guard albumProvider.getAlbum(withID: catID, inContext: mainContext) != nil else { break }
+            restorableIDs.append(catID)
+        }
+        
+        guard restorableIDs.isEmpty == false
         else {
             // Root album displayed ► Fetch album data in the background
             albumVC.startFetchingAlbumAndImages(withHUD: false)
@@ -66,7 +90,7 @@ extension SceneDelegate {
         // Restore sub-albums
         let albumSB = UIStoryboard(name: "AlbumViewController", bundle: nil)
         var subAlbumVC: AlbumViewController!
-        for catID in catIDs {
+        for catID in restorableIDs {
             subAlbumVC = albumSB.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
             if subAlbumVC == nil { return }
             subAlbumVC.categoryId = catID
@@ -74,7 +98,10 @@ extension SceneDelegate {
         }
         
         // Should we restore an image preview?
+        /// Only if the whole album path was restored, i.e. if the presented album
+        /// is the one which was presenting that image.
         guard let subAlbumVC = subAlbumVC,
+              restorableIDs.count == catIDs.count,
               let imagePath = userInfo["imagePath"] as? [Int]?,
               let item = imagePath?.first, let section = imagePath?.last
         else {
