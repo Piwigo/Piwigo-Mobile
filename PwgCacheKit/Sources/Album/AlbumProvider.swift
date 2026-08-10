@@ -74,10 +74,16 @@ public final class AlbumProvider {
                 // Create a smart Album on the current queue context if needed
                 if pwgID <= 0 {     // We should not create standard albums manually
                     let newAlbum = Album(context: taskContext)
-                    let smartAlbum = CategoryGetInfo(withId: pwgID, albumName: name)
-                    let user = try UserProvider().getCurrentUser(inContext: taskContext)
-                    let userURIstr = user.objectID.uriRepresentation().absoluteString
-                    try newAlbum.update(with: smartAlbum, userURIstr: userURIstr)
+                    do {
+                        let smartAlbum = CategoryGetInfo(withId: pwgID, albumName: name)
+                        let user = try UserProvider().getCurrentUser(inContext: taskContext)
+                        let userURIstr = user.objectID.uriRepresentation().absoluteString
+                        try newAlbum.update(with: smartAlbum, userURIstr: userURIstr)
+                    }
+                    catch {
+                        taskContext.delete(newAlbum)
+                        throw error
+                    }
                     taskContext.saveIfNeeded()
                     return newAlbum
                 }
