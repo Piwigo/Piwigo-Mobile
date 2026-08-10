@@ -140,11 +140,6 @@ public final nonisolated class Album: NSManagedObject, Identifiable {
      */
     public func update(with albumData: AlbumProperties) throws {
         
-        // Update the album only if the Id and Name properties have values.
-        guard albumData.name.isEmpty == false else {
-            throw PwgKitError.missingAlbumData
-        }
-
         // Album name (required)
         let newNameUTF8 = albumData.name.utf8mb4Encoded
         if name != newNameUTF8 {
