@@ -133,6 +133,70 @@ public final class UserProvider {
     
     
     // MARK: - Update User Object
+    /// Stores the download right on its own.
+    /// updateUser(withProperties:) would also write the album IDs in which the user may
+    /// upload or create sub-albums, silently reverting them to those of the provided
+    /// snapshot — while an album import running in parallel owns them.
+    public func updateDownloadRights(_ hasDownloadRights: Bool,
+                                     inContext taskContext: NSManagedObjectContext) throws(PwgKitError) {
+        // Do {} below is used to allow typed throws
+        do {
+            try taskContext.performAndWait {
+                let user = try getCurrentUser(inContext: taskContext)
+                guard user.downloadRights != hasDownloadRights else { return }
+                user.downloadRights = hasDownloadRights
+                taskContext.saveIfNeeded()
+            }
+        }
+        catch let error as PwgKitError { throw error }
+        catch let error as NSError { throw PwgKitError.CoreDataError(innerError: error)}
+        catch let error { throw PwgKitError.otherError(innerError: error) }
+    }
+    
+    /// Stores the Piwigo user ID and the recent period on their own,
+    /// for the same reason as updateDownloadRights(_:inContext:) above.
+    public func updateRecentPeriod(_ recentPeriod: Int16, pwgID: Int16,
+                                   inContext taskContext: NSManagedObjectContext) throws(PwgKitError) {
+        // Do {} below is used to allow typed throws
+        do {
+            try taskContext.performAndWait {
+                let user = try getCurrentUser(inContext: taskContext)
+                if user.pwgID != pwgID {
+                    user.pwgID = pwgID
+                }
+                if user.recentPeriod != recentPeriod {
+                    user.recentPeriod = recentPeriod
+                }
+                taskContext.saveIfNeeded()
+            }
+        }
+        catch let error as PwgKitError { throw error }
+        catch let error as NSError { throw PwgKitError.CoreDataError(innerError: error)}
+        catch let error { throw PwgKitError.otherError(innerError: error) }
+    }
+
+    /// Stores the date of last use of the account and of its server on their own,
+    /// for the same reason as updateDownloadRights(_:inContext:) above.
+    public func updateLastUsed(_ lastUsed: TimeInterval,
+                               inContext taskContext: NSManagedObjectContext) throws(PwgKitError) {
+        // Do {} below is used to allow typed throws
+        do {
+            try taskContext.performAndWait {
+                let user = try getCurrentUser(inContext: taskContext)
+                if user.lastUsed < lastUsed {
+                    user.lastUsed = lastUsed
+                }
+                if let server = user.server, server.lastUsed < lastUsed {
+                    server.lastUsed = lastUsed
+                }
+                taskContext.saveIfNeeded()
+            }
+        }
+        catch let error as PwgKitError { throw error }
+        catch let error as NSError { throw PwgKitError.CoreDataError(innerError: error)}
+        catch let error { throw PwgKitError.otherError(innerError: error) }
+    }
+    
     public func updateUser(withProperties properties: UserProperties,
                            inContext taskContext: NSManagedObjectContext) throws(PwgKitError) {
         // Do {} below is used to allow typed throws
