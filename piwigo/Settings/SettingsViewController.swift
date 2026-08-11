@@ -153,10 +153,11 @@ final class SettingsViewController: UIViewController {
                               index != self.oldRecentPeriodIndex
                         else { return }
                         
-                        // Update data
-                        self.userData.pwgID = usersData.id ?? Int16.zero
+                        // Update user's recent period parameter
                         self.userData.recentPeriod = Int16(nberOfDays)
-                        try? self.userProvider.updateUser(withProperties: self.userData, inContext: self.mainContext)
+                        try? self.userProvider.updateRecentPeriod(self.userData.recentPeriod,
+                                                                  pwgID: self.userData.pwgID,
+                                                                  inContext: self.mainContext)
                         self.oldRecentPeriodIndex = index
                         ServerVars.shared.recentPeriodIndex = index
                         let indexPath = IndexPath(row: 3, section: SettingsSection.albums.rawValue)
