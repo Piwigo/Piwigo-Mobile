@@ -132,8 +132,12 @@ public final class AlbumProvider {
      processing the record in batches to avoid a high memory footprint.
      */
     private let batchSize = 256
+    /// Returns the properties of the current user as stored at the end of the import:
+    /// each batch updates the album IDs in which the user may upload images,
+    /// so a snapshot taken before the import is stale (and must not be written back).
+    @discardableResult
     public func importAlbums(_ albumArray: [CategoryGetInfo], recursively: Bool = false,
-                             inParent parentId: Int32) async throws(PwgKitError) {
+                             inParent parentId: Int32) async throws(PwgKitError) -> UserProperties {
         // We keep album UUIDs of albums to delete
         // Initialised and then updated at each iteration
         var albumToDeleteUUIDs: Set<String>? = nil
@@ -141,9 +145,9 @@ public final class AlbumProvider {
         // We shall perform at least one import in case where
         // the user did delete all albums
         guard albumArray.isEmpty == false else {
-            _ = try await importOneBatch([CategoryGetInfo](), recursively: recursively,
-                                         inParent: parentId, albumUUIDs: albumToDeleteUUIDs)
-            return
+            let (_, userProperties) = try await importOneBatch([CategoryGetInfo](), recursively: recursively,
+                                                               inParent: parentId, albumUUIDs: albumToDeleteUUIDs)
+            return userProperties
         }
         
         // Process records in batches to avoid a high memory footprint.
@@ -154,6 +158,7 @@ public final class AlbumProvider {
         numBatches += count % batchSize > 0 ? 1 : 0
         
         // Loop over the batches
+        var importedUserProperties: UserProperties? = nil
         for batchNumber in 0 ..< numBatches {
             
             // Determine the range for this batch.
@@ -165,10 +170,16 @@ public final class AlbumProvider {
             let albumsBatch = Array(albumArray[range])
             
             // Stop the entire import if any batch is unsuccessful.
-            let albumUUIDs = try await importOneBatch(albumsBatch, recursively: recursively,
-                                                      inParent: parentId, albumUUIDs: albumToDeleteUUIDs)
+            let (albumUUIDs, userProperties) = try await importOneBatch(albumsBatch, recursively: recursively,
+                                                                        inParent: parentId, albumUUIDs: albumToDeleteUUIDs)
             albumToDeleteUUIDs = albumUUIDs
+            importedUserProperties = userProperties
         }
+        
+        // The last batch holds the rights of every album imported above
+        guard let importedUserProperties
+        else { throw PwgKitError.userNotFound }
+        return importedUserProperties
     }
     
     /**
@@ -180,9 +191,14 @@ public final class AlbumProvider {
      to indicate whether the import is successful.
      */
     private func importOneBatch(_ albumsBatch: [CategoryGetInfo], recursively: Bool = false,
-                                inParent parentId: Int32, albumUUIDs: Set<String>?) async throws(PwgKitError) -> Set<String> {
+                                inParent parentId: Int32, albumUUIDs: Set<String>?) async throws(PwgKitError) -> (Set<String>, UserProperties) {
         // For remembering which albums to delete
         var albumToDeleteUUIDs = Set<String>()
+        
+        // The import is the only writer of the album IDs in which the user may upload.
+        // Its properties are collected once saved, so that views
+        // adopt them instead of a snapshot taken before this import.
+        var importedUserProperties: UserProperties? = nil
         
         // Get background context
         let bckgContext = DataController.shared.newTaskContext()
@@ -301,7 +317,11 @@ public final class AlbumProvider {
                 
                 // Save all insertions from the context to the store.
                 bckgContext.saveIfNeeded()
-                
+
+                // Collect the user's rights as stored, i.e. after the save and
+                // before reset() turns the User instance into a fault.
+                importedUserProperties = user.getProperties()
+
                 // Reset the taskContext to free the cache and lower the memory footprint.
                 bckgContext.reset()
                 
@@ -315,7 +335,9 @@ public final class AlbumProvider {
         catch let error as NSError { throw PwgKitError.CoreDataError(innerError: error)}
         catch let error { throw PwgKitError.otherError(innerError: error) }
 
-        return albumToDeleteUUIDs
+        guard let importedUserProperties
+        else { throw PwgKitError.userNotFound }
+        return (albumToDeleteUUIDs, importedUserProperties)
     }
     
     

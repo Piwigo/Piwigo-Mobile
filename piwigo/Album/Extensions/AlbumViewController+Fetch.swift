@@ -102,6 +102,12 @@ extension AlbumViewController
                     // Update album properties
                     self.albumData = updatedAlbumData
                     
+                    // Update the user's upload rights, which the import
+                    // did refresh for every album it returned
+                    if let importedUserData {
+                        self.userData = importedUserData
+                    }
+                    
                     // Any image data to fetch?
                     if self.categoryId == pwgSmartAlbum.root.rawValue {
                         // ► Update navigtion bar, number of images, etc.
