@@ -72,9 +72,11 @@ extension AlbumViewController
                                                                        recursively: recursively,
                                                                        thumbnailSize: thumnailSize)
                 // Update album data in cache
-                if pwgData.isEmpty == false {
-                    try await albumProvider.importAlbums(pwgData, recursively: recursively, inParent: categoryId)
-                }
+                /// The import owns the album IDs in which the user may upload photo
+                /// Retrieve the properties it returns (see below)
+                let importedUserData: UserProperties? = pwgData.isEmpty
+                    ? nil
+                    : try await albumProvider.importAlbums(pwgData, recursively: recursively, inParent: categoryId)
                 
                 // Remember when all album data was last refreshed with success
                 if recursively {
@@ -158,8 +160,9 @@ extension AlbumViewController
                 
                 await MainActor.run { [self] in
                     // Store user's download right
+                    /// Only that attribute: the other rights belong to the album import
                     userData.downloadRights = hasDownloadRight
-                    try? userProvider.updateUser(withProperties: userData, inContext: mainContext)
+                    try? userProvider.updateDownloadRights(hasDownloadRight, inContext: mainContext)
                     
                     // Smart album?
                     var newLastPage = lastPage
