@@ -40,13 +40,11 @@ struct LoginUtilities
         // and select the next available size in case of unavailability
         let albumThumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
         AlbumVars.shared.defaultAlbumThumbnailSize = getAvailableSize(near: albumThumbSize).rawValue
-        debugPrint("Album thumbnail size: \(getAvailableSize(near: albumThumbSize))")
         
         // Check that the actual default image thumbnail size is available
         // and select the next available size in case of unavailability
         let imageThumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
         AlbumVars.shared.defaultThumbnailSize = getAvailableSize(near: imageThumbSize).rawValue
-        debugPrint("Image thumbnail size: \(getAvailableSize(near: imageThumbSize))")
         
         // Calculate number of thumbnails per row for that selection
         let albumThumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
@@ -61,7 +59,6 @@ struct LoginUtilities
         // and select the next available size in case of unavailability
         let imagePreviewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
         ImageVars.shared.defaultImagePreviewSize = getAvailableSize(near: imagePreviewSize).rawValue
-        debugPrint("Image preview size: \(getAvailableSize(near: imagePreviewSize))")
     }
     
     @MainActor
