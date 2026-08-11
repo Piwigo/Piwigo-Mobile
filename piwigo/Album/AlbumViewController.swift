@@ -548,7 +548,8 @@ final class AlbumViewController: UIViewController
         let expectedNbImages = self.albumData.nbImages
         let missingImages = (expectedNbImages > 0) && (nbImages < expectedNbImages / 2)
         if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty,
-           isSmartAlbum || missingImages || lastLoad > TimeInterval(3600)
+           isSmartAlbum || missingImages ||
+            (lastLoad > TimeInterval(3600) || AlbumVars.shared.fetchAlbumDataRecursively)
         {
             // Fetch album/image data after checking session
             self.startFetchingAlbumAndImages(withHUD: isSmartAlbum || missingImages)
