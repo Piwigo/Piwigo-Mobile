@@ -350,8 +350,10 @@ final class SettingsViewController: UIViewController {
     @MainActor
     func loginLogout() {
         // Set date of use of server and user
+        /// Only that attribute: the album IDs in which the user may upload images
+        /// belong to the album import
         userData.lastUsed = Date.timeIntervalSinceReferenceDate
-        try? userProvider.updateUser(withProperties: userData, inContext: mainContext)
+        try? userProvider.updateLastUsed(userData.lastUsed, inContext: mainContext)
         
         // Guest user?
         if ServerVars.shared.username.isEmpty || ServerVars.shared.username.lowercased() == "guest" {
