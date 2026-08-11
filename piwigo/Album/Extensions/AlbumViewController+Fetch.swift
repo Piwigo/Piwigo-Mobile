@@ -324,9 +324,6 @@ extension AlbumViewController
     private func removeImageWithIDs(_ imageIDs: Set<Int64>) {
         // Done fetching images
         // ► Remove non-fetched images from album
-        // ► Remember when images were fetched
-        self.albumData.dateGetImages = Date.timeIntervalSinceReferenceDate
-        
         if let album = albumProvider.getAlbum(withID: self.albumData.pwgID, inContext: mainContext) {
             album.dateGetImages = self.albumData.dateGetImages
             

@@ -274,19 +274,28 @@ public final class AlbumProvider {
                         
                         // Do not delete this album during the last iteration of the import
                         albumToDeleteUUIDs.remove(cachedAlbums[index].uuid)
+                        
+                        // Remember when this album was fetched
+                        cachedAlbums[index].dateGetImages = Date.timeIntervalSinceReferenceDate
                     }
                     else {
                         // Create an Album managed object on the private queue context.
                         let album = Album(context: bckgContext)
                         
-                        // Populate the Album's properties using the raw data.
                         do {
+                            // Populate the Album's properties using the raw data.
                             try album.update(with: albumData, userURIstr: userURIstr)
+
+                            // IDs of albums to which the user has upload access
+                            // are stored in the uploadRights attribute.
                             if albumData.hasUploadRights {
                                 user.addUploadRightsToAlbum(withID: ID)
                             } else {
                                 user.removeUploadRightsToAlbum(withID: ID)
                             }
+                            
+                            // Remember when this album was fetched
+                            album.dateGetImages = Date.timeIntervalSinceReferenceDate
                         }
                         catch {
                             // Delete invalid Album from the private queue context.
@@ -295,7 +304,16 @@ public final class AlbumProvider {
                         }
                     }
                 }
-                
+
+                // Remember when the parent album was fetched when the server did not return it,
+                // i.e. the root album which does not exist on the server and is created locally.
+                // Without this, its dateGetImages would keep its default value and the album
+                // would be fetched again at each appearance.
+                if albumsBatch.contains(where: { $0.id == parentId }) == false,
+                   let index = cachedAlbums.firstIndex(where: { $0.pwgID == parentId }) {
+                    cachedAlbums[index].dateGetImages = Date.timeIntervalSinceReferenceDate
+                }
+
                 // Delete albums if this is the last iteration
                 if albumsBatch.count < batchSize,
                    albumToDeleteUUIDs.isEmpty == false {
