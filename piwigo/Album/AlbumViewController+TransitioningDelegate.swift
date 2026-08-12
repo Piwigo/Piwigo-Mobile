@@ -21,13 +21,12 @@ extension AlbumViewController: UIViewControllerTransitioningDelegate {
               let navBarSnapshot = self.navBarSnapshot
             else { return nil }
 
-        imageAnimator = ImageAnimatedTransitioning(type: .present,
-                                                   albumViewController: albumViewController,
-                                                   imageNavViewController: imageNavViewController,
-                                                   albumViewSnapshot: albumViewSnapshot,
-                                                   cellImageViewSnapshot: cellImageViewSnapshot,
-                                                   navBarSnapshot: navBarSnapshot)
-        return imageAnimator
+        return ImageAnimatedTransitioning(type: .present,
+                                         albumViewController: albumViewController,
+                                         imageNavViewController: imageNavViewController,
+                                         albumViewSnapshot: albumViewSnapshot,
+                                         cellImageViewSnapshot: cellImageViewSnapshot,
+                                         navBarSnapshot: navBarSnapshot)
     }
 
     public func animationController(forDismissed dismissed: UIViewController) -> (any UIViewControllerAnimatedTransitioning)? {
@@ -37,11 +36,10 @@ extension AlbumViewController: UIViewControllerTransitioningDelegate {
               let navBarSnapshot = self.navBarSnapshot
             else { return nil }
 
-        imageAnimator = ImageAnimatedTransitioning(type: .dismiss, albumViewController: self,
-                                                   imageNavViewController: imageNavViewController,
-                                                   albumViewSnapshot: albumViewSnapshot,
-                                                   cellImageViewSnapshot: cellImageViewSnapshot,
-                                                   navBarSnapshot: navBarSnapshot)
-        return imageAnimator
+        return ImageAnimatedTransitioning(type: .dismiss, albumViewController: self,
+                                         imageNavViewController: imageNavViewController,
+                                         albumViewSnapshot: albumViewSnapshot,
+                                         cellImageViewSnapshot: cellImageViewSnapshot,
+                                         navBarSnapshot: navBarSnapshot)
     }
 }

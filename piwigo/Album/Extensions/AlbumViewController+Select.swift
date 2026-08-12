@@ -42,7 +42,8 @@ extension AlbumViewController
         let actionId = UIAction.Identifier("org.piwigo.images.select")
         let action = UIAction(title: String(localized: "categoryImageList_selectButton", comment: "Select"),
                               image: UIImage(systemName: "checkmark.circle"),
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+            guard let self else { return }
             self.didTapSelect()
         })
         action.accessibilityIdentifier = "Select"
