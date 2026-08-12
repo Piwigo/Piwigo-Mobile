@@ -71,7 +71,8 @@ extension AlbumViewController {
         let isActive = sortOption == .albumDefault
         let action = UIAction(title: pwgImageSort.albumDefault.name,
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+            guard let self else { return }
             // Should sorting be changed?
             if isActive { return }
             
@@ -99,7 +100,8 @@ extension AlbumViewController {
         case .nameAscending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
                               image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+                guard let self else { return }
                 sortOption = .nameDescending
                 images.delegate = nil
                 images = data.images(sortedBy: .nameDescending)
@@ -109,7 +111,8 @@ extension AlbumViewController {
         case .nameDescending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
                               image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+                guard let self else { return }
                 sortOption = .nameAscending
                 images.delegate = nil
                 images = data.images(sortedBy: .nameAscending)
@@ -118,7 +121,8 @@ extension AlbumViewController {
             })
         default:
             action = UIAction(title: title, subtitle: nil, image: nil,
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+                guard let self else { return }
                 sortOption = .nameAscending
                 images.delegate = nil
                 images = data.images(sortedBy: .nameAscending)
@@ -144,7 +148,8 @@ extension AlbumViewController {
         case .dateCreatedAscending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
                               image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+                guard let self else { return }
                 sortOption = .dateCreatedDescending
                 images.delegate = nil
                 images = data.images(sortedBy: .dateCreatedDescending)
@@ -154,7 +159,8 @@ extension AlbumViewController {
         case .dateCreatedDescending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
                               image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+                guard let self else { return }
                 sortOption = .dateCreatedAscending
                 images.delegate = nil
                 images = data.images(sortedBy: .dateCreatedAscending)
@@ -163,7 +169,8 @@ extension AlbumViewController {
             })
         default:
             action = UIAction(title: title, subtitle: nil, image: nil,
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+                guard let self else { return }
                 sortOption = .dateCreatedDescending
                 images.delegate = nil
                 images = data.images(sortedBy: .dateCreatedDescending)
@@ -189,7 +196,8 @@ extension AlbumViewController {
         case .datePostedAscending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
                               image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+                guard let self else { return }
                 sortOption = .datePostedDescending
                 images.delegate = nil
                 images = data.images(sortedBy: .datePostedDescending)
@@ -199,7 +207,8 @@ extension AlbumViewController {
         case .datePostedDescending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
                               image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+                guard let self else { return }
                 sortOption = .datePostedAscending
                 images.delegate = nil
                 images = data.images(sortedBy: .datePostedAscending)
@@ -208,7 +217,8 @@ extension AlbumViewController {
             })
         default:
             action = UIAction(title: title, subtitle: nil, image: nil,
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+                guard let self else { return }
                 sortOption = .datePostedDescending
                 images.delegate = nil
                 images = data.images(sortedBy: .datePostedDescending)
@@ -234,7 +244,8 @@ extension AlbumViewController {
         case .ratingScoreAscending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
                               image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+                guard let self else { return }
                 sortOption = .ratingScoreDescending
                 images.delegate = nil
                 images = data.images(sortedBy: .ratingScoreDescending)
@@ -244,7 +255,8 @@ extension AlbumViewController {
         case .ratingScoreDescending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
                               image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+                guard let self else { return }
                 sortOption = .ratingScoreAscending
                 images.delegate = nil
                 images = data.images(sortedBy: .ratingScoreAscending)
@@ -253,7 +265,8 @@ extension AlbumViewController {
             })
         default:
             action = UIAction(title: title, subtitle: nil, image: nil,
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+                guard let self else { return }
                 sortOption = .ratingScoreDescending
                 images.delegate = nil
                 images = data.images(sortedBy: .ratingScoreDescending)
@@ -279,7 +292,8 @@ extension AlbumViewController {
         case .visitsAscending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
                               image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+                guard let self else { return }
                 sortOption = .visitsDescending
                 images.delegate = nil
                 images = data.images(sortedBy: .visitsDescending)
@@ -289,7 +303,8 @@ extension AlbumViewController {
         case .visitsDescending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
                               image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+                guard let self else { return }
                 sortOption = .visitsAscending
                 images.delegate = nil
                 images = data.images(sortedBy: .visitsAscending)
@@ -298,7 +313,8 @@ extension AlbumViewController {
             })
         default:
             action = UIAction(title: title, subtitle: nil, image: nil,
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+                guard let self else { return }
                 sortOption = .visitsDescending
                 images.delegate = nil
                 images = data.images(sortedBy: .visitsDescending)
@@ -321,7 +337,8 @@ extension AlbumViewController {
         let isActive = sortOption == .rankAscending
         let action = UIAction(title: pwgImageSort.rankAscending.name,
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+            guard let self else { return }
             // Should sorting be changed?
             if isActive { return }
             
@@ -348,7 +365,8 @@ extension AlbumViewController {
         let isActive = sortOption == .random
         let action = UIAction(title: String(localized: "categorySort_randomly", comment: "Randomly"),
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+            guard let self else { return }
             // Should sorting be changed?
             if isActive { return }
             
@@ -395,7 +413,8 @@ extension AlbumViewController {
         let action = UIAction(title: String(localized: "Day", comment: "Day"),
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: UIAction.Identifier("org.piwigo.images.group.day"),
-                              handler: { [self] action in
+                              handler: { [weak self] action in
+            guard let self else { return }
             // Should image grouping be changed?
             if isActive { return }
             
@@ -414,7 +433,8 @@ extension AlbumViewController {
         let action = UIAction(title: String(localized: "Week", comment: "Week"),
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: UIAction.Identifier("org.piwigo.images.group.week"),
-                              handler: { [self] action in
+                              handler: { [weak self] action in
+            guard let self else { return }
             // Should image grouping be changed?
             if isActive { return }
             
@@ -433,7 +453,8 @@ extension AlbumViewController {
         let action = UIAction(title: String(localized: "Month", comment: "Month"),
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: UIAction.Identifier("org.piwigo.images.group.month"),
-                              handler: { [self] action in
+                              handler: { [weak self] action in
+            guard let self else { return }
             // Should sorting be changed?
             if isActive { return }
             
@@ -452,7 +473,8 @@ extension AlbumViewController {
         let action = UIAction(title: String(localized: "None", comment: "None"),
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: UIAction.Identifier("org.piwigo.images.group.none"),
-                              handler: { [self] action in
+                              handler: { [weak self] action in
+            guard let self else { return }
             // Should image grouping be changed?
             if isActive { return }
             
@@ -481,7 +503,8 @@ extension AlbumViewController {
         let action = UIAction(title: String(localized: "settings_displayDescriptions", comment: "Album Descriptions"),
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: UIAction.Identifier("org.piwigo.images.show.descriptions"),
-                              handler: { [self] action in
+                              handler: { [weak self] action in
+            guard let self else { return }
             // Show or hide album descriptions of visible views
             AlbumVars.shared.displayAlbumDescriptions = !isActive
             (navigationController?.viewControllers ?? []).forEach({ viewController in
@@ -507,7 +530,8 @@ extension AlbumViewController {
         let action = UIAction(title: String(localized: "settings_displayTitles", comment: "Image Titles"),
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: UIAction.Identifier("org.piwigo.images.show.titles"),
-                              handler: { [self] action in
+                              handler: { [weak self] action in
+            guard let self else { return }
             // Show or hide image titles
             AlbumVars.shared.displayImageTitles = !isActive
             // Update menu

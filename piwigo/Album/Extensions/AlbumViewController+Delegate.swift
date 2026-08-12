@@ -315,7 +315,8 @@ extension AlbumViewController: UICollectionViewDelegate
     private func selectImageAction(forCell cell: ImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
         // Image not selected ► Propose to select it
         return UIAction(title: String(localized: "categoryImageList_selectButton", comment: "Select"),
-                        image: UIImage(systemName: "checkmark.circle")) { [self] _ in
+                        image: UIImage(systemName: "checkmark.circle")) { [weak self] _ in
+            guard let self else { return }
             // Select image
             guard let imageData = cell.imageData else { return }
             self.selectImage(imageData, isFavorite: cell.isFavorite)

@@ -164,7 +164,8 @@ final class AlbumViewController: UIViewController
     var albumViewSnapshot: UIView?
     var cellImageViewSnapshot: UIView?
     var navBarSnapshot: UIView?
-    var imageAnimator: ImageAnimatedTransitioning?
+    /// The animator is not stored: it holds this view controller, which would then never
+    /// be released. UIKit retains it for the duration of the transition anyway.
     
     
     // MARK: - Fetch

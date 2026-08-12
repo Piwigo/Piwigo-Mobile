@@ -18,7 +18,8 @@ extension AlbumViewController
         let actionId = UIAction.Identifier("Copy")
         let action = UIAction(title: String(localized: "copyImage_title", comment: "Copy to Album"),
                               image: UIImage(systemName: "photo.on.rectangle"),
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+            guard let self else { return }
             // Disable buttons during action
             setEnableStateOfButtons(false)
             // Retrieve complete image data before copying images
@@ -32,7 +33,8 @@ extension AlbumViewController
         let actionId = UIAction.Identifier("Move")
         let action = UIAction(title: String(localized: "moveImage_title", comment: "Move to Album"),
                               image: UIImage(systemName: "arrow.forward"),
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+            guard let self else { return }
             // Disable buttons during action
             setEnableStateOfButtons(false)
             // Retrieve complete image data before moving images

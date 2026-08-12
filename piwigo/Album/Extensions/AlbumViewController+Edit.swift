@@ -18,7 +18,8 @@ extension AlbumViewController
         let actionId = UIAction.Identifier("org.piwigo.images.edit")
         let action = UIAction(title: String(localized: "imageOptions_properties", comment: "Modify Properties"),
                               image: UIImage(systemName: "pencil"),
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+           guard let self else { return }
            // Edit image informations
             editSelection()
         })
