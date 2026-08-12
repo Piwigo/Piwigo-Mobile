@@ -28,7 +28,8 @@ class PhoneTableViewCell: UITableViewCell {
         lightImage.layoutIfNeeded() // Ensure buttonView is in its final size.
         var scale = max(lightImage.traitCollection.displayScale, 1.0)
         var cellSize = CGSizeMake(lightImage.bounds.size.width * scale, lightImage.bounds.size.height * scale)
-        lightImage.setImage(ImageUtilities.downsample(imageAt: lightUrl, to: cellSize, for: .image), for: .normal)
+        /// The type .help prevents the saving of an optimised version in the app bundle
+        lightImage.setImage(ImageUtilities.downsample(imageAt: lightUrl, to: cellSize, for: .help), for: .normal)
 
         // iPhone - dark mode
         guard let darkUrl = Bundle.main.url(forResource: "darkPhone", withExtension: "png")
@@ -36,7 +37,7 @@ class PhoneTableViewCell: UITableViewCell {
         darkImage.layoutIfNeeded() // Ensure buttonView is in its final size.
         scale = darkImage.traitCollection.displayScale
         cellSize = CGSizeMake(darkImage.bounds.size.width * scale, darkImage.bounds.size.height * scale)
-        darkImage.setImage(ImageUtilities.downsample(imageAt: darkUrl, to: cellSize, for: .image), for: .normal)
+        darkImage.setImage(ImageUtilities.downsample(imageAt: darkUrl, to: cellSize, for: .help), for: .normal)
 
         // Labels
         let labelHeight = UIFont.preferredFont(forTextStyle: .footnote).pointSize + TableViewUtilities.vertMargin
