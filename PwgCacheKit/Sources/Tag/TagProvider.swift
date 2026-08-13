@@ -82,7 +82,9 @@ public final class TagProvider {
                 // Get current server object
                 guard let server = try? ServerProvider().getCurrentServer(inContext: bckgContext)
                 else {
+                    #if DEBUG
                     debugPrint(PwgKitError.tagCreationError.localizedDescription)
+                    #endif
                     return
                 }
                 
@@ -142,7 +144,9 @@ public final class TagProvider {
                     // Delete tags
                     let tagToDelete = cachedTags.filter({tagToDeleteIDs.contains($0.tagId)})
                     tagToDelete.forEach { tag in
+                        #if DEBUG
                         debugPrint("••> delete tag with ID:\(tag.tagId) and name:\(tag.tagName)")
+                        #endif
                         bckgContext.delete(tag)
                     }
                 }
@@ -209,7 +213,9 @@ public final class TagProvider {
             return countResult.first!.int64Value
         }
         catch let error {
+            #if DEBUG
             debugPrint("••> Tag count not fetched: \(error.localizedDescription)")
+            #endif
         }
         return Int64.zero
     }

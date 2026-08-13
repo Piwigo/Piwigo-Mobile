@@ -328,7 +328,9 @@ public final class AlbumProvider {
                     
                     // Delete from the cache albums deleted on the server
                     albumsToDelete.forEach { album in
+                        #if DEBUG
                         debugPrint("••> delete album with ID:\(album.pwgID), name:\(album.name), UUID:\(album.uuid)")
+                        #endif
                         bckgContext.delete(album)
                     }
                 }
@@ -502,7 +504,9 @@ public final class AlbumProvider {
             return countResult.first!.int64Value
         }
         catch let error {
+            #if DEBUG
             debugPrint("••> Album count not fetched \(error)")
+            #endif
         }
         return Int64.zero
     }

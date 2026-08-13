@@ -189,7 +189,9 @@ public final nonisolated class Upload: NSManagedObject, Identifiable {
                 try filesToDelete.forEach({ try fm.removeItem(at: $0) })
             }
             catch let error {
+                #if DEBUG
                 debugPrint("••> could not clear the Uploads folder: \(error.localizedDescription)")
+                #endif
             }
         }
     }

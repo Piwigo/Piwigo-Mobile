@@ -103,18 +103,24 @@ extension NSManagedObjectContext {
     }
 
     private func reportSaveError(_ error: NSError) {
+        #if DEBUG
         debugPrint("••> Could not save context: \(error.localizedDescription)")
+        #endif
         // Multiple errors?
         if error.code == NSValidationMultipleErrorsError {
             let detailedErrors: [NSError] = error.userInfo[NSDetailedErrorsKey] as? [NSError] ?? []
             let errorCount = detailedErrors.count
+            #if DEBUG
             debugPrint("••> \(errorCount) validation error\(errorCount == 1 ? "" : "s"):")
+            #endif
             var printedErros: Set<String> = []
             for detailError in detailedErrors {
                 guard !printedErros.contains(detailError.localizedDescription)
                 else { continue }
                 printedErros.insert(detailError.localizedDescription)
+                #if DEBUG
                 debugPrint("••> - \(detailError.localizedDescription)")
+                #endif
             }
         }
 
@@ -125,7 +131,9 @@ extension NSManagedObjectContext {
         /// Discarding the pending changes is the only way to get that context working again.
         if error.domain == NSCocoaErrorDomain,
            (NSManagedObjectValidationError...NSValidationInvalidURIError).contains(error.code) {
+            #if DEBUG
             debugPrint("••> Discarding the changes which could not be saved.")
+            #endif
             rollback()
         }
     }

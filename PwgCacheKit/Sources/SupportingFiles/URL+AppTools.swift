@@ -40,7 +40,9 @@ extension URL {
             return size(of: contents)
 
         } catch let error {
+            #if DEBUG
             debugPrint(error.localizedDescription)
+            #endif
             return UInt64.zero
         }
     }
@@ -52,7 +54,9 @@ extension URL {
             return size(of: onlyPhotos)
 
         } catch let error {
+            #if DEBUG
             debugPrint(error.localizedDescription)
+            #endif
             return UInt64.zero
         }
     }
@@ -65,7 +69,9 @@ extension URL {
             return size(of: onlyVideos)
             
         } catch let error {
+            #if DEBUG
             debugPrint(error.localizedDescription)
+            #endif
             return UInt64.zero
         }
     }

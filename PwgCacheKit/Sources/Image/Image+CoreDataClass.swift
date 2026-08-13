@@ -586,7 +586,9 @@ public final nonisolated class Image: NSManagedObject, Identifiable {
                     do {
                         try data.write(toFile: filePath, options: .atomic)
                     } catch {
+                        #if DEBUG
                         debugPrint(error.localizedDescription)
+                        #endif
                     }
                 }
                 

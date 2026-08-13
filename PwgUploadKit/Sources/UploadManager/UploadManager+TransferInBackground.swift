@@ -90,7 +90,9 @@ extension UploadManager {
                 }
                 catch let error {
                     // Disk full? —> to be managed…
+                    #if DEBUG
                     debugPrint(error)
+                    #endif
                     return
                 }
                 

@@ -49,7 +49,9 @@ public final class ImageProvider {
             return countResult.first!.int64Value
         }
         catch let error {
+            #if DEBUG
             debugPrint("••> Could not fetch image count, \(error.localizedDescription)")
+            #endif
         }
         return Int64.zero
     }

@@ -284,7 +284,9 @@ public final class UploadProvider {
                 return countResult.first!.int64Value
             }
             catch let error {
+                #if DEBUG
                 debugPrint("••> Upload count not fetched: \(error.localizedDescription)")
+                #endif
             }
             return Int64.zero
         }
@@ -313,7 +315,9 @@ public final class UploadProvider {
                 return countResult.first!.intValue
             }
             catch let error {
+                #if DEBUG
                 debugPrint("••> Upload count not fetched: \(error.localizedDescription)")
+                #endif
             }
             return Int.zero
         }
@@ -475,7 +479,9 @@ public final class UploadProvider {
                 return cachedUploads.map(\.md5Sum)
             }
             catch {
+                #if DEBUG
                 debugPrint("••> Error fetching uploads: \(error)")
+                #endif
                 return []
             }
         }
@@ -596,7 +602,9 @@ public final class UploadProvider {
                     }
                 }
             } catch {
+                #if DEBUG
                 debugPrint("••> Unresolved error \(error.localizedDescription)")
+                #endif
             }
         }
     }

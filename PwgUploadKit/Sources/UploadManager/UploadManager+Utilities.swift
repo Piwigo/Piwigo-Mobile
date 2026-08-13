@@ -91,7 +91,9 @@ extension UploadManager {
         
         // Determine if the session is still active
         ServerVars.shared.hasNetworkConnectionChanged = false
+        #if DEBUG
         debugPrint("Session: starting checking… \(ServerVars.shared.isConnectedToWiFi ? "WiFi" : "Cellular")")
+        #endif
         let oldToken = ServerVars.shared.pwgToken
         var sessionData = userData
         try await JSONManager.shared.sessionGetStatus(&sessionData)
@@ -140,17 +142,23 @@ extension UploadManager {
                 let bckgContext = DataController.shared.newTaskContext()
                 
                 // Attribute upload requests to appropriate user if necessary
+                #if DEBUG
                 debugPrint("Session: attributing API Key upload requests to user…")
+                #endif
                 UploadProvider().attributeAPIKeyUploadRequests(toUserWithID: userURIstr,
                                                                inContext: bckgContext)
                 
                 // Delete API Key user (and albums in cascade)
+                #if DEBUG
                 debugPrint("Session: deleting API Key user…")
+                #endif
                 UserProvider().deleteUser(withUsername: ServerVars.shared.login,
                                           inContext: bckgContext)
                 
                 // Job completed
+                #if DEBUG
                 debugPrint("Session: API Key user deleted")
+                #endif
                 ServerVars.shared.fixUserIsAPIKeyV412 = false
                 
                 // Try to resume upload requests if the low power mode is not enabled
