@@ -101,14 +101,18 @@ extension SelectCategoryViewController: @MainActor NSFetchedResultsControllerDel
             guard var newIndexPath = newIndexPath else { return }
             if hasAlbumsInSection1 { newIndexPath.section = 1 }
             updateOperations.append( BlockOperation { [weak self] in
+                #if DEBUG
                 debugPrint("••> Insert category item at \(newIndexPath)")
+                #endif
                 self?.categoriesTableView?.insertRows(at: [newIndexPath], with: .automatic)
             })
         case .update:
             guard var indexPath = indexPath else { return }
             if hasAlbumsInSection1 { indexPath.section = 1 }
             updateOperations.append( BlockOperation {  [weak self] in
+                #if DEBUG
                 debugPrint("••> Update category item at \(indexPath)")
+                #endif
                 self?.categoriesTableView?.reloadRows(at: [indexPath], with: .automatic)
             })
         case .move:
@@ -118,18 +122,24 @@ extension SelectCategoryViewController: @MainActor NSFetchedResultsControllerDel
                 newIndexPath.section = 1
             }
             updateOperations.append( BlockOperation { [weak self] in
+                #if DEBUG
                 debugPrint("••> Move category item from \(indexPath) to \(newIndexPath)")
+                #endif
                 self?.categoriesTableView?.moveRow(at: indexPath, to: newIndexPath)
             })
         case .delete:
             guard var indexPath = indexPath else { return }
             if hasAlbumsInSection1 { indexPath.section = 1 }
             updateOperations.append( BlockOperation { [weak self] in
+                #if DEBUG
                 debugPrint("••> Delete category item at \(indexPath)")
+                #endif
                 self?.categoriesTableView?.deleteRows(at: [indexPath], with: .automatic)
             })
         @unknown default:
+            #if DEBUG
             debugPrint("SelectCategoryViewController: unknown NSFetchedResultsChangeType")
+            #endif
         }
     }
     

@@ -20,7 +20,9 @@ extension AlbumViewController: @MainActor NSFetchedResultsControllerDelegate
         // Data source configured?
         guard let dataSource = collectionView?.dataSource as? DataSource
         else {
+            #if DEBUG
             debugPrint("The data source has not implemented snapshot support while it should.")
+            #endif
             return
         }
         

@@ -28,11 +28,14 @@ final class HapticUtilities {
             let audioSession = AVAudioSession.sharedInstance()
             engine = try CHHapticEngine(audioSession: audioSession)
         } catch let error {
+            #if DEBUG
             debugPrint("Engine Creation Error: \(error.localizedDescription)")
+            #endif
         }
         
         // The stopped handler alerts you of engine stoppage due to external causes.
         engine?.stoppedHandler = { reason in
+            #if DEBUG
             debugPrint("The engine stopped for reason: \(reason.rawValue)")
             switch reason {
             case .audioSessionInterrupt:
@@ -52,16 +55,21 @@ final class HapticUtilities {
             @unknown default:
                 debugPrint("Unknown error")
             }
+            #endif
         }
  
         // The reset handler provides an opportunity for your app to restart the engine in case of failure.
         engine?.resetHandler = {
             // Try restarting the engine.
+            #if DEBUG
             debugPrint("The engine reset --> Restarting now!")
+            #endif
             do {
                 try HapticUtilities.engine?.start()
             } catch {
+                #if DEBUG
                 debugPrint("Failed to restart the engine: \(error.localizedDescription)")
+                #endif
             }
         }
         return engine
@@ -86,7 +94,9 @@ final class HapticUtilities {
             try engine?.playPattern(from: URL(fileURLWithPath: path))
             
         } catch { // Engine startup errors
+            #if DEBUG
             debugPrint("An error occured playing \(filename): \(error.localizedDescription).")
+            #endif
         }
     }
 }

@@ -424,7 +424,9 @@ final class PlayerViewControllerCoordinator: NSObject {
                 let fm = FileManager.default
                 let dirURL = self.video.cacheURL.deletingLastPathComponent()
                 if fm.fileExists(atPath: dirURL.path) == false {
+                    #if DEBUG
                     debugPrint("••> Create directory \(dirURL.path)")
+                    #endif
                     try? fm.createDirectory(at: dirURL, withIntermediateDirectories: true,
                                                 attributes: nil)
                 }
@@ -436,11 +438,19 @@ final class PlayerViewControllerCoordinator: NSObject {
                 exportSession.exportAsynchronously { [self] in
                     switch exportSession.status {
                     case .waiting:
+                        #if DEBUG
                         debugPrint("••> Video waiting to export more data… ;-)")
+                        #endif
+                        break
                     case .exporting:
+                        #if DEBUG
                         debugPrint("••> Video export is in progress… ;-)")
+                        #endif
+                        break
                     case .completed:
+                        #if DEBUG
                         debugPrint("••> Video stored in cache ;-)")
+                        #endif
                         // Replace player item
                         DispatchQueue.main.async {
                             if let playerViewController = self.playerViewControllerIfLoaded {
@@ -456,9 +466,13 @@ final class PlayerViewControllerCoordinator: NSObject {
                             }
                         }
                     case .unknown, .failed, .cancelled:
+                        #if DEBUG
                         debugPrint("••> Video not stored in cache: \(String(describing: exportSession.error)) — \(exportSession.outputURL?.absoluteString ?? "—?—")")
+                        #endif
                     @unknown default:
+                        #if DEBUG
                         debugPrint("••> Video not stored in cache: Unknown error")
+                        #endif
                     }
                 }
            }
@@ -751,7 +765,9 @@ extension PlayerViewControllerCoordinator: AVAssetResourceLoaderDelegate
         }
         else {
             // Other type: username password, client trust...
+            #if DEBUG
             debugPrint("Other type: username password, client trust...")
+            #endif
         }
         return true
     }

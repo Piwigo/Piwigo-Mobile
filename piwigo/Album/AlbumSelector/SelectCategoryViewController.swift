@@ -157,7 +157,9 @@ final class SelectCategoryViewController: UIViewController {
         switch action {
         case .setDefaultAlbum:
             guard let albumId = parameter as? Int32, albumId >= Int32.zero else {
+                #if DEBUG
                 debugPrint("Input parameter expected to be a positive album ID.")
+                #endif
                 return false
             }
             // Actual default album to be replaced by the selected one
@@ -172,7 +174,9 @@ final class SelectCategoryViewController: UIViewController {
             
         case .setAutoUploadAlbum:
             guard let albumId = parameter as? Int32 else {
+                #if DEBUG
                 debugPrint("Input parameter expected to be an Int32.")
+                #endif
                 return false
             }
             // Actual album in which photos are auto-uploaded
@@ -188,7 +192,9 @@ final class SelectCategoryViewController: UIViewController {
             
         case .moveAlbum:
             guard let albumData = parameter as? Album else {
+                #if DEBUG
                 debugPrint("Input parameter expected to be of Album type.")
+                #endif
                 return false
             }
             // Album which will be moved into the selected one
@@ -198,7 +204,9 @@ final class SelectCategoryViewController: UIViewController {
             guard let array = parameter as? [Any],
                   let imageData = array[0] as? Image,
                   let albumId = array[1] as? Int32 else {
+                #if DEBUG
                 debugPrint("Input parameter expected to be of type [Image, Int32].")
+                #endif
                 return false
             }
             // Image which will be set as thumbnail of the selected album
@@ -220,19 +228,25 @@ final class SelectCategoryViewController: UIViewController {
                   let imageIDs = array[0] as? Set<Int64>,
                   let images = try? ImageProvider().getImages(inContext: mainContext, withIds: imageIDs),
                   let albumId = array[1] as? Int32 else {
+                #if DEBUG
                 debugPrint("Input parameter expected to be of type [[NSNumber], Int32]")
+                #endif
                 return false
             }
             // IDs of the selected images which will be copied/moved to the selected album
             inputImageIds = imageIDs
             if inputImageIds.isEmpty {
+                #if DEBUG
                 debugPrint("List of image IDs should not be empty")
+                #endif
                 return false
             }
             inputImages = images
             nberOfImages = Int64(inputImages.count)
             if inputImages.isEmpty {
+                #if DEBUG
                 debugPrint("No image in cache with these IDs: \(inputImageIds)")
+                #endif
                 return false
             }
             // Album from which the images have been selected
@@ -255,7 +269,9 @@ final class SelectCategoryViewController: UIViewController {
             }
 
         default:
+            #if DEBUG
             debugPrint("Called setParameter before setting wanted action")
+            #endif
             return false
         }
         
@@ -292,7 +308,9 @@ final class SelectCategoryViewController: UIViewController {
             try recentAlbums.performFetch()
             try albums.performFetch()
         } catch {
+            #if DEBUG
             debugPrint("Error: \(error)")
+            #endif
         }
 
         // Button for returning to albums/images collections

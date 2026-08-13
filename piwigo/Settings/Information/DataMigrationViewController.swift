@@ -70,7 +70,9 @@ class DataMigrationViewController: UIViewController {
         // Should this view launch the migration?
         guard let migrator = self.migrator
         else {
+            #if DEBUG
             debugPrint("Migration already running. Display view only...")
+            #endif
             return
         }
 
@@ -131,7 +133,9 @@ class DataMigrationViewController: UIViewController {
                        let window = sceneDelegate.window {
                         if let userActivity =  scene.userActivity ?? scene.session.stateRestorationActivity,
                            sceneDelegate.configure(window: window, session: scene.session, with: userActivity) {
+                            #if DEBUG
                             debugPrint("••> \(scene.session.persistentIdentifier): Restore scene after migration")
+                            #endif
                             // Collect restored scenes
                             restoredScenes.insert(scene)
                             // Remember this activity for later when this app quits or suspends.
@@ -157,7 +161,9 @@ class DataMigrationViewController: UIViewController {
                     otherScenes.forEach { scene in
                         if let sceneDelegate = (scene.delegate as? SceneDelegate),
                            let window = sceneDelegate.window {
+                            #if DEBUG
                             debugPrint("••> \(scene.session.persistentIdentifier): Present Login view after migration")
+                            #endif
                             if scene.activationState == .foregroundActive, hasProtectedActiveScene == false {
                                 // Replace migration with login view controller
                                 appDelegate.loadLoginView(in: window)
@@ -177,7 +183,9 @@ class DataMigrationViewController: UIViewController {
                     otherScenes.forEach { scene in
                         if let sceneDelegate = (scene.delegate as? SceneDelegate),
                            let window = sceneDelegate.window {
+                            #if DEBUG
                             debugPrint("••> \(scene.session.persistentIdentifier): Present Album view after migration")
+                            #endif
                             // Replace migration with login view controller
                             appDelegate.loadNavigation(in: window)
                             // Blur views if the App Lock is enabled
@@ -228,7 +236,9 @@ class DataMigrationViewController: UIViewController {
         // Tell iOS to provide additional background execution
         // This time will be used to complete or cancel the migration.
         migrationBckgTask = UIApplication.shared.beginBackgroundTask(withName: "Data Migration Background Task", expirationHandler: { [weak self] in
+            #if DEBUG
             debugPrint("Data Migration: iOS has signaled time has expired.")
+            #endif
             // Function to call when iOS is going to stop the migration
             self?.endBackgroundTaskIfActive()
         })
@@ -237,10 +247,14 @@ class DataMigrationViewController: UIViewController {
         updateTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [self] _ in
             let timeRemaining = UIApplication.shared.backgroundTimeRemaining
             let secondsRemaining = String(format: "%.1f s remaining", timeRemaining)
+            #if DEBUG
             debugPrint("Data Migration: App is backgrounded - \(secondsRemaining)")
+            #endif
             if timeRemaining < 5 {
                 // Stop the migration
+                #if DEBUG
                 debugPrint("Data Migration: Migration halted due to low background time remaining.")
+                #endif
                 self.queue.cancelAllOperations()
                 // End the background task
                 endBackgroundTaskIfActive()
@@ -252,7 +266,9 @@ class DataMigrationViewController: UIViewController {
         // Called right before iOS stops the migration
         let isBackgroundTaskActive = migrationBckgTask != .invalid
         if isBackgroundTaskActive {
+            #if DEBUG
             debugPrint("Data Migration: Background task ended.")
+            #endif
             UIApplication.shared.endBackgroundTask(migrationBckgTask)
             migrationBckgTask = .invalid
         }
@@ -263,7 +279,9 @@ class DataMigrationViewController: UIViewController {
     }
     
     @objc func appWillResignActive() {
+        #if DEBUG
         debugPrint("Data Migration: App is going to background.")
+        #endif
         let isBackgroundTaskActive = migrationBckgTask == .invalid
         if isBackgroundTaskActive {
             // Request additional background execution
@@ -272,7 +290,9 @@ class DataMigrationViewController: UIViewController {
     }
     
     @objc func appDidBecomeActive() {
+        #if DEBUG
         debugPrint( "Data Migration: App is back in foreground.")
+        #endif
         endBackgroundTaskIfActive()
     }
 }

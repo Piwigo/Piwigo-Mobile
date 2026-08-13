@@ -140,7 +140,9 @@ struct LoginUtilities
         
         // Determine if the session is still active
         ServerVars.shared.hasNetworkConnectionChanged = false
+        #if DEBUG
         debugPrint("Session: starting checking… \(ServerVars.shared.isConnectedToWiFi ? "WiFi" : "Cellular")")
+        #endif
         let oldToken = ServerVars.shared.pwgToken
         var sessionData = userData
         try await JSONManager.shared.sessionGetStatus(&sessionData)
@@ -157,7 +159,9 @@ struct LoginUtilities
             if ServerVars.shared.username.isEmpty || ServerVars.shared.username.lowercased() == "guest" {
                 
                 // Session opened for guest
+                #if DEBUG
                 debugPrint("Session: logged as Guest")
+                #endif
                 try await getPiwigoStatusForUser(&userData)
                 
                 // Update User values in cache, including the access date to the server
@@ -170,9 +174,9 @@ struct LoginUtilities
                 let username = ServerVars.shared.login
                 let password = KeychainUtilities.password(forService: ServerVars.shared.serverPath, account: username)
                 try await JSONManager.shared.sessionLogin(withUsername: username, password: password)
-#if DEBUG
+                #if DEBUG
                 debugPrint("Session: logged as \(ServerVars.shared.login)")
-#endif
+                #endif
                 // Check Piwigo version, get token, available sizes, etc.
                 if ServerVars.shared.usesCommunityPluginV29 {
                     try await JSONManager.shared.communityGetStatus(&userData)
@@ -203,17 +207,23 @@ struct LoginUtilities
                 let bckgContext = DataController.shared.newTaskContext()
                 
                 // Attribute upload requests to appropriate user if necessary
+                #if DEBUG
                 debugPrint("Session: attributing API Key upload requests to user…")
+                #endif
                 UploadProvider().attributeAPIKeyUploadRequests(toUserWithID: userURIstr,
                                                                inContext: bckgContext)
                 
                 // Delete API Key user (and albums in cascade)
+                #if DEBUG
                 debugPrint("Session: deleting API Key user…")
+                #endif
                 UserProvider().deleteUser(withUsername: ServerVars.shared.login,
                                           inContext: bckgContext)
                 
                 // Job completed
+                #if DEBUG
                 debugPrint("Session: API Key user deleted")
+                #endif
                 ServerVars.shared.fixUserIsAPIKeyV412 = false
                 
                 // Try to resume upload requests if the low power mode is not enabled

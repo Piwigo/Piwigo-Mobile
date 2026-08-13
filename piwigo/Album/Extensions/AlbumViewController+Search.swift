@@ -64,7 +64,9 @@ extension AlbumViewController
 extension AlbumViewController: UISearchControllerDelegate
 {
     func willPresentSearchController(_ searchController: UISearchController) {
+        #if DEBUG
         debugPrint("willPresentSearchController…")
+        #endif
         // Switch to Search album
         categoryId = pwgSmartAlbum.search.rawValue
         
@@ -92,12 +94,16 @@ extension AlbumViewController: UISearchControllerDelegate
     }
     
     func didPresentSearchController(_ searchController: UISearchController) {
+        #if DEBUG
         debugPrint("didPresentSearchController")
+        #endif
         searchController.becomeFirstResponder()
     }
     
     func willDismissSearchController(_ searchController: UISearchController) {
+        #if DEBUG
         debugPrint("willDismissSearchController…")
+        #endif
         // Deselect photos if needed
         cancelSelect()
 
@@ -115,7 +121,9 @@ extension AlbumViewController: UISearchControllerDelegate
     }
     
     func didDismissSearchController(_ searchController: UISearchController) {
+        #if DEBUG
         debugPrint("didDismissSearchController…")
+        #endif
         // Update albumData
         albumData = AlbumProvider().getProperties(ofAlbumWithID: categoryId, inContext: mainContext)!
         
@@ -161,13 +169,17 @@ extension AlbumViewController: UISearchControllerDelegate
 extension AlbumViewController: UISearchBarDelegate
 {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        #if DEBUG
         debugPrint("searchBar textDidChange…")
+        #endif
         // Pause image loader and stop importing images
         imageProvider.userDidCancelSearch = true
     }
     
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
+        #if DEBUG
         debugPrint("searchBarShouldBeginEditing…")
+        #endif
         
         // Animates Cancel button appearance
         if #unavailable(iOS 26.0) {
@@ -178,13 +190,17 @@ extension AlbumViewController: UISearchBarDelegate
     }
     
     func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool {
+        #if DEBUG
         debugPrint("searchBarShouldEndEditing…")
+        #endif
         // Dismiss keyboard
         return true
     }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        #if DEBUG
         debugPrint("searchBarTextDidEndEditing…")
+        #endif
         // Will fetch images and accept imports
         imageProvider.userDidCancelSearch = false
 
@@ -218,7 +234,9 @@ extension AlbumViewController: UISearchBarDelegate
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        #if DEBUG
         debugPrint("searchBarCancelButtonClicked…")
+        #endif
         // Stop image loader and image import
         imageProvider.userDidCancelSearch = true
 
@@ -234,7 +252,9 @@ extension AlbumViewController: UISearchBarDelegate
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        #if DEBUG
         debugPrint("searchBarSearchButtonClicked…")
+        #endif
         
         // Animates Cancel button appearance
         if #unavailable(iOS 26.0) {

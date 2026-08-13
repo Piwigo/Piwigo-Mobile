@@ -47,11 +47,15 @@ extension AlbumViewController
             // so that the share extension can present the whole album tree
             if (categoryId == pwgSmartAlbum.root.rawValue) && AlbumVars.shared.fetchAlbumDataRecursively {
                 AlbumVars.shared.fetchAlbumDataRecursively = false
+                #if DEBUG
                 debugPrint("••> Fetching root album data recursively for user \(userData.username)")
+                #endif
                 await self.fetchAlbums(forUserWithAdminRights: userData.hasAdminRights, recursively: true,
                                        withInitialImageIds: oldImageIDs, query: query)
             } else {
+                #if DEBUG
                 debugPrint("••> Fetching data of album with ID: \(categoryId) for user \(userData.username)")
+                #endif
                 await self.fetchAlbums(forUserWithAdminRights: userData.hasAdminRights, recursively: false,
                                        withInitialImageIds: oldImageIDs, query: query)
             }
@@ -274,7 +278,9 @@ extension AlbumViewController
     
     private func fetchImages(ofAlbumWithId albumId: Int32, withQuery query: String,
                              sort: pwgImageSort, fromPage page:Int, perPage: Int) async throws(PwgKitError) -> (Set<Int64>, Int64, Bool) {
+        #if DEBUG
         debugPrint("••> Fetch images of album \(albumId) at page \(page)…")
+        #endif
 
         // Fetch image data
         let (paging, data) = try await JSONManager.shared.getImages(ofAlbumWithId: albumId, withQuery: query, sort: sort, fromPage: page, perPage: perPage)

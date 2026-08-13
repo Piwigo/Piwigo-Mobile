@@ -106,7 +106,10 @@ extension PasteboardImagesViewController {
         case .new:
             startPreparation(of: pbObject, at: indexPath)
         default:
+            #if DEBUG
             debugPrint("Do nothing")
+            #endif
+            break
         }
     }
 
@@ -212,7 +215,9 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate
 
         switch type {
         case .insert:
+            #if DEBUG
             debugPrint("••> PasteboardImagesViewController: insert pending upload request…")
+            #endif
             // Add upload request to cache and update cell
             guard let upload:Upload = anObject as? Upload else { return }
 
@@ -229,7 +234,9 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate
             // Update corresponding cell
             updateCellAndSectionHeader(for: upload)
         case .delete:
+            #if DEBUG
             debugPrint("••> PasteboardImagesViewController: delete pending upload request…")
+            #endif
             // Delete upload request from cache and update cell
             guard let upload:Upload = anObject as? Upload else { return }
 
@@ -249,7 +256,9 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate
         case .move:
             assertionFailure("••> PasteboardImagesViewController: Unexpected move!")
         case .update:
+            #if DEBUG
             debugPrint("••• PasteboardImagesViewController controller:update...")
+            #endif
             // Update upload request and cell
             guard let upload:Upload = anObject as? Upload else { return }
 

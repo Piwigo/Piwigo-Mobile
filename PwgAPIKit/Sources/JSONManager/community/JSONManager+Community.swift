@@ -14,7 +14,9 @@ public extension JSONManager {
     @concurrent
     func getCommunityAlbums(inParentWithId parentId: Int32,
                             recursively: Bool = false) async throws(PwgKitError) -> [CategoryGetInfo] {
+        #if DEBUG
         debugPrint("••> Fetch Community albums in parent with ID: \(parentId)")
+        #endif
         // Prepare parameters
         let paramsDict: [String : Any] = ["cat_id"    : parentId,
                                           "recursive" : recursively]

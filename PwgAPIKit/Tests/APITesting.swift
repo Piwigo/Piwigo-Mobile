@@ -109,11 +109,15 @@ final class PwgAPITesting: XCTestCase {
             }
         }
         catch let error as DecodingError {
+            #if DEBUG
             debugPrint(error.localizedDescription)
+            #endif
             XCTFail("Error returned is not a Piwigo error.")
         }
         catch let error {
+            #if DEBUG
             debugPrint(error.localizedDescription)
+            #endif
             XCTFail("Error returned is not a Piwigo error.")
         }
     }
@@ -470,11 +474,15 @@ final class PwgAPITesting: XCTestCase {
             }
         }
         catch let error as DecodingError {
+            #if DEBUG
             debugPrint(error.localizedDescription)
+            #endif
             XCTFail("Error returned is not a Piwigo error.")
         }
         catch let error {
+            #if DEBUG
             debugPrint(error.localizedDescription)
+            #endif
             XCTFail("Error returned is not a Piwigo error.")
         }
     }
@@ -521,18 +529,24 @@ final class PwgAPITesting: XCTestCase {
         catch let DecodingError.dataCorrupted(context) {
             // Piwigo error?
             if let pwgError = context.underlyingError as? PwgKitError {
+                #if DEBUG
                 debugPrint(pwgError.localizedDescription)
+                #endif
             }
             else {
                 XCTFail("Error returned is not a Piwigo error.")
             }
         }
         catch let error as DecodingError {
+            #if DEBUG
             debugPrint(error.localizedDescription)
+            #endif
             XCTFail("Error returned is not a Piwigo error.")
         }
         catch let error {
+            #if DEBUG
             debugPrint(error.localizedDescription)
+            #endif
             XCTFail("Error returned is not a Piwigo error.")
         }
     }

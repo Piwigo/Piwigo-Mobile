@@ -178,9 +178,13 @@ extension ImageViewController
 
             if !completed {
                 if activityType == nil {
+                    #if DEBUG
                     debugPrint("User dismissed the view controller without making a selection.");
+                    #endif
                 } else {
+                    #if DEBUG
                     debugPrint("Activity was not performed.")
+                    #endif
                     // Cancel download task
                     NotificationCenter.default.post(name: .pwgCancelDownload, object: nil)
                 }

@@ -63,7 +63,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             savedUrlContexts = connectionOptions.urlContexts
         }
         
+        #if DEBUG
         debugPrint("••> \(session.persistentIdentifier): Scene will connect to session.")
+        #endif
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate,
               let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
@@ -138,7 +140,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     // Blur views if the App Lock is enabled
                     addPrivacyProtection(toFirstScene: true)
                 } else {
+                    #if DEBUG
                     debugPrint("••> Failed to restore scene from \(userActivity)")
+                    #endif
                 }
             }
         } else {
@@ -154,7 +158,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     // Blur views if the App is locked
                     addPrivacyProtection(toFirstScene: false)
                 } else {
+                    #if DEBUG
                     debugPrint("••> Failed to restore scene from \(userActivity)")
+                    #endif
                 }
             } else {
                 // Tell user to wait until migration is completed
@@ -206,7 +212,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {
+        #if DEBUG
         debugPrint("••> \(scene.session.persistentIdentifier): Scene did disconnect.")
+        #endif
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.
         // Release any resources associated with this scene that can be re-created the next time the scene connects.
@@ -216,7 +224,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     // MARK: - Transitioning to the Foreground
     func sceneWillEnterForeground(_ scene: UIScene) {
+        #if DEBUG
         debugPrint("••> \(scene.session.persistentIdentifier): Scene will enter foreground.")
+        #endif
         // Called as the scene is about to begin running in the foreground and become visible to the user.
         // Use this method to undo the changes made on entering the background.
         
@@ -234,7 +244,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func sceneDidBecomeActive(_ scene: UIScene) {
+        #if DEBUG
         debugPrint("••> \(scene.session.persistentIdentifier): Scene did become active.")
+        #endif
         // Called when the scene has become active and is now responding to user events.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
         
@@ -304,7 +316,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     // MARK: - Transitioning to the Background
     func sceneWillResignActive(_ scene: UIScene) {
+        #if DEBUG
         debugPrint("••> \(scene.session.persistentIdentifier): Scene will resign active.")
+        #endif
         // Called when the scene is about to resign the active state and stop responding to user events.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
         
@@ -375,7 +389,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func sceneDidEnterBackground(_ scene: UIScene) {
+        #if DEBUG
         debugPrint("••> \(scene.session.persistentIdentifier): Scene did enter background.")
+        #endif
         // Called when the scene is running in the background and is no longer onscreen.
         // Use this method to save data, release shared resources, and store enough scene-specific state information to restore the scene back to its current state.
         
@@ -436,7 +452,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     // MARK: - Privacy & Passcode
     func addPrivacyProtection() {
+        #if DEBUG
         debugPrint("••> \(window?.windowScene?.session.persistentIdentifier ?? "UNKNOWN"): Scene shows privacy protection window.")
+        #endif
         // Blur views if the App Lock is enabled
         /// The passcode window is not presented now so that the app
         /// does not request the passcode until it is put into the background.
@@ -553,7 +571,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func handleUrlContext(_ url: URL) {
         // Get enum from URL
+        #if DEBUG
         debugPrint("••> \(window?.windowScene?.session.persistentIdentifier ?? "UNKNOWN"): Scene received URL: \(url)")
+        #endif
         guard let link = DeepLink(url: url) else { return }
         
         // What should be done?
@@ -624,9 +644,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     files.removeAll(where: { $0.lastPathComponent.hasSuffix(".json") == false })
                 }
                 catch {
+                    #if DEBUG
                     debugPrint("••> Could not retrieve files in Uploads directory: \(error.localizedDescription)")
+                    #endif
                 }
+                #if DEBUG
                 files.forEach({ debugPrint("••> \($0.lastPathComponent)") })
+                #endif
                 
                 // Prepare upload requests
                 // When Piwigo has full access to the Photo Library, try to resolve each shared file
@@ -664,7 +688,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                             try? FileManager.default.removeItem(at: file)
                         }
                         catch {
+                            #if DEBUG
                             debugPrint("••> Could not decode upload info: \(error.localizedDescription)")
+                            #endif
                         }
                     }
 
@@ -697,7 +723,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 // MARK: - AppLockDelegate Methods
 extension SceneDelegate: AppLockDelegate {
     func loginOrReloginAndResumeUploads() {
+        #if DEBUG
         debugPrint("••> \(window?.windowScene?.session.persistentIdentifier ?? "UNKNOWN"): Scene presents the login view or resume uploads.")
+        #endif
         // Remove privacy view
         privacyView?.removeFromSuperview()
         

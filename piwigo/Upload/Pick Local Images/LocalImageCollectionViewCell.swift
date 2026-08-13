@@ -64,7 +64,9 @@ final class LocalImageCollectionViewCell: UICollectionViewCell {
             DispatchQueue.main.async {
                 guard let image = result else {
                     if let error = info?[PHImageErrorKey] as? (any Error) {
+                        #if DEBUG
                         debugPrint("••> Error : \(error.localizedDescription)")
+                        #endif
                     }
                     self.changeCellImageIfNeeded(withImage: pwgImageType.image.placeHolder)
                     return

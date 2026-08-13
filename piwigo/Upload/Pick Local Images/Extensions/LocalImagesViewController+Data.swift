@@ -174,7 +174,9 @@ extension LocalImagesViewController
         for i in 0...iterations {
             // Continue with this operation?
             if queue.operations.first!.isCancelled {
+                #if DEBUG
                 debugPrint("Stop first operation in iteration \(i) ;-)")
+                #endif
                 indexOfImageSortedByDay = [IndexSet]()
                 indexOfImageSortedByWeek = [IndexSet]()
                 indexOfImageSortedByMonth = [IndexSet]()
@@ -262,7 +264,9 @@ extension LocalImagesViewController
         for i in 0...iterations {
             // Continue with this operation?
             if queue.operations.first!.isCancelled {
+                #if DEBUG
                 debugPrint("Stop first operation in iteration \(i) ;-)")
+                #endif
                 indexOfImageSortedByDay = [IndexSet]()
                 indexOfImageSortedByWeek = [IndexSet]()
                 indexOfImageSortedByMonth = [IndexSet]()
@@ -448,7 +452,9 @@ extension LocalImagesViewController
                 // Continue with this operation?
                 if queue.operations.first!.isCancelled {
                     indexedUploadsInQueue = []
+                    #if DEBUG
                     debugPrint("••> LocalImagesViewController: Stop second operation in iteration \(i) ;-)")
+                    #endif
                     return
                 }
 

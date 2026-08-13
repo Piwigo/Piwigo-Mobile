@@ -88,7 +88,9 @@ extension SelectCategoryViewController: UITableViewDelegate
         switch wantedAction {
         case .setDefaultAlbum:
             // The current default category is not selectable
+            #if DEBUG
             debugPrint("••> albums: \(albumData.pwgID) and \(inputAlbum.pwgID)")
+            #endif
             if albumData.pwgID == inputAlbum.pwgID {
                 return false
             }

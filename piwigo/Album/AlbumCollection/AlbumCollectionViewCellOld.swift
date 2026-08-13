@@ -125,7 +125,9 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
                 self.nbOrphans = try await JSONManager.shared.calcOrphans(album.pwgID)
             }
             catch {
+                #if DEBUG
                 debugPrint("Could not retrieve number of orphans: \(error)")
+                #endif
             }
         }
 

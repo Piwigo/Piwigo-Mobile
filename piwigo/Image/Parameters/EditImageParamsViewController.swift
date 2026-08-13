@@ -188,7 +188,9 @@ final class EditImageParamsViewController: UIViewController
     }
     
     deinit {
+        #if DEBUG
         debugPrint("EditImageParamsViewController of \(images.count) image(s) is being deinitialized.")
+        #endif
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
     }

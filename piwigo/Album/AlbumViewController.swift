@@ -264,7 +264,9 @@ final class AlbumViewController: UIViewController
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        #if DEBUG
         debugPrint("••> viewDidLoad — Album #\(categoryId): \(albumData.name)")
+        #endif
         
         // Initialise album width and height
         updateContentSizes(for: traitCollection.preferredContentSizeCategory)
@@ -326,7 +328,9 @@ final class AlbumViewController: UIViewController
             }
             try images.performFetch()
         } catch {
+            #if DEBUG
             debugPrint("Error: \(error)")
+            #endif
         }
         
         // Place search bar in navigation bar of root album, reset fetching album flags
@@ -446,7 +450,9 @@ final class AlbumViewController: UIViewController
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        #if DEBUG
         debugPrint("••> viewWillAppear — Album #\(categoryId): \(albumData.name)")
+        #endif
         
         // Always open this view with a navigation bar
         // (might have been hidden during Image Previewing)
@@ -494,7 +500,9 @@ final class AlbumViewController: UIViewController
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        #if DEBUG
         debugPrint("••> viewDidAppear — Album #\(categoryId): \(albumData.name)")
+        #endif
         
         // The user may have cleared the cached data
         // Display an empty root album in that case
@@ -684,7 +692,9 @@ final class AlbumViewController: UIViewController
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        #if DEBUG
         debugPrint("••> viewWillDisappear — Album #\(categoryId): \(albumData.name)")
+        #endif
 
         // Cancel remaining tasks
         let catIDstr = String(self.categoryId)
@@ -694,7 +704,9 @@ final class AlbumViewController: UIViewController
                 .value(forHTTPHeaderField: HTTPCatID) == catIDstr })
             // Cancel remaining tasks related with this completed upload request
             tasksToCancel.forEach({
+                #if DEBUG
                 debugPrint("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel task \($0.taskIdentifier) related with album \(catIDstr)")
+                #endif
                 $0.cancel()
             })
         }
@@ -710,7 +722,9 @@ final class AlbumViewController: UIViewController
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        #if DEBUG
         debugPrint("••> viewDidDisappear — Album #\(categoryId): \(albumData.name)")
+        #endif
 
         // Make sure buttons are back to initial state
         if #unavailable(iOS 26.0) {
@@ -729,7 +743,9 @@ final class AlbumViewController: UIViewController
 
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
+        #if DEBUG
         debugPrint("••> AlbumViewController released memory")
+        #endif
     }
     
     
@@ -814,7 +830,9 @@ final class AlbumViewController: UIViewController
     @objc func refresh(_ refreshControl: UIRefreshControl?) {
         // Already being fetching album data?
         if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty == false {
+            #if DEBUG
             debugPrint("••> Still fetching data in albums with IDs: \(AlbumVars.shared.isFetchingAlbumData.debugDescription) (wanted \(categoryId))")
+            #endif
             // End animated refresh if needed
             self.collectionView?.refreshControl?.endRefreshing()
             return

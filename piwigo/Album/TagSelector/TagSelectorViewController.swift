@@ -103,7 +103,9 @@ final class TagSelectorViewController: UIViewController {
         do {
             try tags.performFetch()
         } catch {
+            #if DEBUG
             debugPrint("Failed to fetch tags: \(error)")
+            #endif
         }
         
         // Add button for returning to albums/images
@@ -328,28 +330,36 @@ extension TagSelectorViewController: NSFetchedResultsControllerDelegate
         case .delete:   // Action performed in priority
             guard let indexPath = indexPath else { return }
             updateOperations.append( BlockOperation { [weak self] in
+                #if DEBUG
                 debugPrint("••> Delete tag item at \(indexPath)")
+                #endif
                 self?.tagsTableView?.deleteRows(at: [indexPath], with: .automatic)
             })
             
         case .insert:
             guard let newIndexPath = newIndexPath else { return }
             updateOperations.append( BlockOperation { [weak self] in
+                #if DEBUG
                 debugPrint("••> Insert tag item at \(newIndexPath)")
+                #endif
                 self?.tagsTableView?.insertRows(at: [newIndexPath], with: .automatic)
             })
             
         case .move:
             guard let indexPath = indexPath,  let newIndexPath = newIndexPath else { return }
             updateOperations.append( BlockOperation { [weak self] in
+                #if DEBUG
                 debugPrint("••> Move tag item from \(indexPath) to \(newIndexPath)")
+                #endif
                 self?.tagsTableView?.moveRow(at: indexPath, to: newIndexPath)
             })
             
         case .update:
             guard let indexPath = indexPath else { return }
             updateOperations.append( BlockOperation { [weak self] in
+                #if DEBUG
                 debugPrint("••> Update tag item at \(indexPath)")
+                #endif
                 self?.tagsTableView?.reloadRows(at: [indexPath], with: .automatic)
             })
             

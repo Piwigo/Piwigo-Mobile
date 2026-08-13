@@ -99,7 +99,9 @@ class PhotosFetch {
             // Allowed to read and add photos with limitations or not
             doWithAccess()
         @unknown default:
+            #if DEBUG
             debugPrint("unknown Photo Library authorization status")
+            #endif
         }
     }
 

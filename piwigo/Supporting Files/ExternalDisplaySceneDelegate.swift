@@ -27,7 +27,9 @@ class ExternalDisplaySceneDelegate: UIResponder, UIWindowSceneDelegate {
      The recommended approach is for the SceneDelegate to retain the scene's window.
      */
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        #if DEBUG
         debugPrint("••> \(session.persistentIdentifier): Scene will connect to session.")
+        #endif
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
         
@@ -100,7 +102,9 @@ class ExternalDisplaySceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {
+        #if DEBUG
         debugPrint("••> \(scene.session.persistentIdentifier): Scene did disconnect.")
+        #endif
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.
         // Release any resources associated with this scene that can be re-created the next time the scene connects.
@@ -168,13 +172,17 @@ class ExternalDisplaySceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     // MARK: - Transitioning to the Background
     func sceneWillResignActive(_ scene: UIScene) {
+        #if DEBUG
         debugPrint("••> \(scene.session.persistentIdentifier): Scene will resign active.")
+        #endif
         // Called when the scene is about to resign the active state and stop responding to user events.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
+        #if DEBUG
         debugPrint("••> \(scene.session.persistentIdentifier): Scene did enter background.")
+        #endif
         // Called when the scene is running in the background and is no longer onscreen.
         // Use this method to save data, release shared resources, and store enough scene-specific state information to restore the scene back to its current state.
     }

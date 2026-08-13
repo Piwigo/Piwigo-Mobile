@@ -127,7 +127,9 @@ final class TagsViewController: UITableViewController {
             try selectedTags.performFetch()
             try nonSelectedTags.performFetch()
         } catch {
+            #if DEBUG
             debugPrint("Error: \(error)")
+            #endif
         }
                 
         // Title
@@ -320,7 +322,9 @@ final class TagsViewController: UITableViewController {
                 }
             }
             catch {
+                #if DEBUG
                 debugPrint("••> Could not perform fetch!!!")
+                #endif
             }
         case 1 /* Non-selected tags */:
             // Tapped non selected tag
@@ -350,7 +354,9 @@ final class TagsViewController: UITableViewController {
                 }
             }
             catch {
+                #if DEBUG
                 debugPrint("••> Could not perform fetch!!!")
+                #endif
             }
         default:
             fatalError("Unknown tableView section!")
@@ -399,14 +405,18 @@ extension TagsViewController: NSFetchedResultsControllerDelegate
             guard var newIndexPath = newIndexPath else { return }
             if hasTagsInSection1 { newIndexPath.section = 1 }
             updateOperations.append( BlockOperation { [weak self] in
+                #if DEBUG
                 debugPrint("••> Insert tag item at \(newIndexPath)")
+                #endif
                 self?.tagsTableView?.insertRows(at: [newIndexPath], with: .automatic)
             })
         case .update:
             guard var indexPath = indexPath else { return }
             if hasTagsInSection1 { indexPath.section = 1 }
             updateOperations.append( BlockOperation { [weak self] in
+                #if DEBUG
                 debugPrint("••> Update tag item at \(indexPath)")
+                #endif
                 self?.tagsTableView?.reloadRows(at: [indexPath], with: .automatic)
             })
         case .move:
@@ -416,14 +426,18 @@ extension TagsViewController: NSFetchedResultsControllerDelegate
                 newIndexPath.section = 1
             }
             updateOperations.append( BlockOperation { [weak self] in
+                #if DEBUG
                 debugPrint("••> Move tag item from \(indexPath) to \(newIndexPath)")
+                #endif
                 self?.tagsTableView?.moveRow(at: indexPath, to: newIndexPath)
             })
         case .delete:
             guard var indexPath = indexPath else { return }
             if hasTagsInSection1 { indexPath.section = 1 }
             updateOperations.append( BlockOperation { [weak self] in
+                #if DEBUG
                 debugPrint("••> Delete tag item at \(indexPath)")
+                #endif
                 self?.tagsTableView?.deleteRows(at: [indexPath], with: .automatic)
             })
         @unknown default:

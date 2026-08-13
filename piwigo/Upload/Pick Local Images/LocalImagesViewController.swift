@@ -149,7 +149,9 @@ final class LocalImagesViewController: UIViewController
         do {
             try uploads.performFetch()
         } catch {
+            #if DEBUG
             debugPrint("Error: \(error.localizedDescription)")
+            #endif
         }
         
         // Sort images in background
@@ -304,7 +306,9 @@ final class LocalImagesViewController: UIViewController
         
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
+        #if DEBUG
         debugPrint("••> LocalImagesViewController released memory")
+        #endif
     }
     
 

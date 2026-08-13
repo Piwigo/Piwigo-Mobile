@@ -173,7 +173,9 @@ class TroubleshootingViewController: UIViewController {
                     .sorted(by: {$0.lastPathComponent < $1.lastPathComponent})
             }
             catch {
+                #if DEBUG
                 debugPrint("!!! Could not retrieve content of temporary directory. !!!")
+                #endif
                 self.JSONfiles = []
             }
         }

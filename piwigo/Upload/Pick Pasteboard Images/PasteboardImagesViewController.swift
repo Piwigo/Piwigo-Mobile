@@ -125,7 +125,9 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
         do {
             try uploads.performFetch()
         } catch {
+            #if DEBUG
             debugPrint("Error: \(error.localizedDescription)")
+            #endif
         }
         
         // Navigation bar
@@ -228,7 +230,9 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
     deinit {
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
+        #if DEBUG
         debugPrint("••> PasteboardImagesViewController released memory")
+        #endif
     }
 
     

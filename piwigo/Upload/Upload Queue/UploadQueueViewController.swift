@@ -99,7 +99,9 @@ final class UploadQueueViewController: UIViewController {
             try uploads.performFetch()
         }
         catch {
+            #if DEBUG
             debugPrint("••> Could not fetch uploads: \(error.localizedDescription)")
+            #endif
         }
     }
     
@@ -238,7 +240,9 @@ final class UploadQueueViewController: UIViewController {
     deinit {
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
+        #if DEBUG
         debugPrint("••> UploadQueueViewController released memory")
+        #endif
     }
     
     
