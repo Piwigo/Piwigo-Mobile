@@ -17,7 +17,12 @@ extension UploadQueueViewController
     func configDataSource() -> DataSource {
         guard let queueTableView else { preconditionFailure("queueTableView should be set") }
         
-        let dataSource = DataSource(tableView: queueTableView) { [self] (tableView, indexPath, objectID) -> UITableViewCell? in
+        /// The data source is retained by this view controller, so its provider must not
+        /// retain it in return — this view controller would otherwise never be released.
+        let dataSource = DataSource(tableView: queueTableView) { [weak self] (tableView, indexPath, objectID) -> UITableViewCell? in
+            guard let self
+            else { return nil }
+
             // Get data source item
             guard let upload = try? self.mainContext.existingObject(with: objectID) as? Upload
             else {

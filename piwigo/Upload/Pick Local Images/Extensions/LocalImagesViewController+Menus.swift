@@ -243,9 +243,9 @@ extension LocalImagesViewController {
         
         // Propose option for deleting photos
         let delete = UIAction(title: String(localized: "localImages_deleteTitle", comment: "Remove from Camera Roll"),
-                              image: UIImage(systemName: "trash"), attributes: .destructive, handler: { _ in
+                              image: UIImage(systemName: "trash"), attributes: .destructive, handler: { [weak self] _ in
             // Delete uploaded photos from the camera roll
-            self.deleteUploadedImages()
+            self?.deleteUploadedImages()
         })
         let menuId = UIMenu.Identifier("org.piwigo.removeFromCameraRoll")
         return UIMenu(identifier: menuId, options: UIMenu.Options.displayInline, children: [delete])

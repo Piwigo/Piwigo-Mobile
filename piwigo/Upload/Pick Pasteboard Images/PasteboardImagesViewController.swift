@@ -230,6 +230,7 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
     deinit {
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
+        debugPrint("••> PasteboardImagesViewController released memory")
     }
 
     

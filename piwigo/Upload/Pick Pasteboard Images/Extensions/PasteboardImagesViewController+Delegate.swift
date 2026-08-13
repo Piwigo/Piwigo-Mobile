@@ -190,7 +190,8 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
             imageUpload = UIImage(named: "photo.badge.plus")
         }
         return UIAction(title: String(localized: "tabBar_upload", comment: "Upload"),
-                        image: imageUpload) { [self] action in
+                        image: imageUpload) { [weak self] action in
+            guard let self else { return }
             // Check that an upload request does not exist for that image (should never happen)
             if (self.uploads.fetchedObjects ?? []).filter({$0.md5Sum == cell.md5sum}).first != nil {
                 return

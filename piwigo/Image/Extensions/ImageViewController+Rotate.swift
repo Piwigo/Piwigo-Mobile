@@ -31,7 +31,8 @@ extension ImageViewController
         // Rotate image right
         let action = UIAction(title: String(localized: "rotateImage_right", comment: "Clockwise"),
                               image: UIImage(systemName: "rotate.right"),
-                              handler: { [self] _ in
+                              handler: { [weak self] _ in
+            guard let self else { return }
             // Edit image informations
             self.rotateImage(by: CGFloat(-.pi/2.0))
         })
@@ -44,7 +45,8 @@ extension ImageViewController
         // Rotate image left
         let action = UIAction(title: String(localized: "rotateImage_left", comment: "Counterclockwise"),
                               image: UIImage(systemName: "rotate.left"),
-                              handler: { [self] _ in
+                              handler: { [weak self] _ in
+            guard let self else { return }
             // Edit image informations
             self.rotateImage(by: CGFloat(.pi/2.0))
         })
