@@ -304,6 +304,7 @@ final class LocalImagesViewController: UIViewController
         
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
+        debugPrint("••> LocalImagesViewController released memory")
     }
     
 

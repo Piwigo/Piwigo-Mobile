@@ -225,6 +225,7 @@ final class ImageViewController: UIViewController {
     deinit {
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
+        debugPrint("••> ImageViewController released memory")
     }
     
     

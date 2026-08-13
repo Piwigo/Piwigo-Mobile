@@ -46,10 +46,16 @@ extension ImageViewController
             else { continue }
             
             // Create dynamic action
-            let dynamicElement = UIDeferredMenuElement { completion in
-                self.albumMenuIcon(album: album) { icon in
+            let dynamicElement = UIDeferredMenuElement { [weak self] completion in
+                /// The menu is retained by a bar button item, i.e. by this view controller
+                guard let self
+                else { return completion([]) }
+                /// The capture is explicit so that the weak capture of the action below,
+                /// which is retained by the menu, does not conflict with it.
+                self.albumMenuIcon(album: album) { [self] icon in
                     let action = UIAction(title: album.name, image: icon,
-                                          handler: { [self] _ in
+                                          handler: { [weak self] _ in
+                        guard let self else { return }
                         self.goToAlbumWithID(album.pwgID)
                     })
                     completion([action])
@@ -156,7 +162,8 @@ extension ImageViewController
 //        // Copy image to album
 //        let action = UIAction(title: String(localized: "goToPage_title", comment: "Go to page…"),
 //                              image: UIImage(systemName: "arrow.turn.down.right"),
-//                              handler: { [self] _ in
+//                              handler: { [weak self] _ in
+//            guard let self else { return }
 //            // Request page number
 //            self.goToPage()
 //        })

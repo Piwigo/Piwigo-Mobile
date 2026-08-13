@@ -21,8 +21,8 @@ extension PasteboardImagesViewController {
         
         // Propose option for re-uploading photos
         let reUpload = UIAction(title: String(localized: "localImages_reUploadTitle", comment: "Re-upload"),
-                                image: reUploadAllowed ? UIImage(systemName: "checkmark") : nil, handler: { _ in
-            self.swapReuploadOption()
+                                image: reUploadAllowed ? UIImage(systemName: "checkmark") : nil, handler: { [weak self] _ in
+            self?.swapReuploadOption()
         })
         reUpload.accessibilityIdentifier = "Re-upload"
 

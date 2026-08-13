@@ -18,7 +18,8 @@ extension ImageViewController
         // Copy image to album
         let action = UIAction(title: String(localized: "copyImage_title", comment: "Copy to Album"),
                               image: UIImage(systemName: "photo.on.rectangle"),
-                              handler: { [self] _ in
+                              handler: { [weak self] _ in
+            guard let self else { return }
             // Disable buttons during action
             setEnableStateOfButtons(false)
             // Present album selector for copying image
@@ -31,7 +32,8 @@ extension ImageViewController
     func moveAction() -> UIAction {
         let action = UIAction(title: String(localized: "moveImage_title", comment: "Move to Album"),
                               image: UIImage(systemName: "arrow.forward"),
-                              handler: { [self] _ in
+                              handler: { [weak self] _ in
+            guard let self else { return }
             // Disable buttons during action
             setEnableStateOfButtons(false)
             
