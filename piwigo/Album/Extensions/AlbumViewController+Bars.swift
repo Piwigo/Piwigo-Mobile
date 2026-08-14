@@ -318,10 +318,8 @@ extension AlbumViewController
             searchController?.searchBar.becomeFirstResponder()
         }
         else {
-            // Share button depends on Piwigo server version, user role and image data
+            // Below button depends on Piwigo server version, user role and image data
             shareBarButton = getShareBarButton()
-            
-            // Favorites button depends on Piwigo server version, user role and image data
             favoriteBarButton = getFavoriteBarButton()
             
             // Menu for activating the selection mode and changing the way images are sorted
@@ -346,7 +344,7 @@ extension AlbumViewController
             navigationController?.setToolbarHidden(true, animated: true)
         }
 
-        // No share/select buttons in root album
+        // No share/select buttons in root or search album
         if [0, pwgSmartAlbum.search.rawValue].contains(categoryId) {
             return
         }
