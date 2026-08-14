@@ -31,6 +31,15 @@ extension LocalImagesViewController: PHPhotoLibraryChangeObserver
             // Show HUD during update, preventing touches
             self.showHUD(withTitle: String(localized: "editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"))
 
+            // Fetch uploads before resetting the cache
+            do {
+                try self.uploads.performFetch()
+            } catch {
+                #if DEBUG
+                debugPrint("Error: \(error.localizedDescription)")
+                #endif
+            }
+            
             // Update fetched asset collection
             self.fetchedImages = changes.fetchResultAfterChanges
 
