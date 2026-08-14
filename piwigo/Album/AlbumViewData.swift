@@ -198,6 +198,8 @@ final class AlbumViewData: NSObject
     private lazy var fetchImagesRequest: NSFetchRequest = {
         let fetchRequest = Image.fetchRequest()
         fetchRequest.predicate = imagePredicate.withSubstitutionVariables(["catID" : albumData.pwgID])
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.shouldRefreshRefetchedObjects = true
         fetchRequest.fetchBatchSize = 20
         return fetchRequest
     }()
