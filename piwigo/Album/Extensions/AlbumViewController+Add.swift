@@ -16,14 +16,20 @@ import PwgUIKit
 extension AlbumViewController
 {
     // MARK: Toolbar Buttons (iOS 26+)
-    func getAddAlbumBarButton() -> UIBarButtonItem {
+    func getAddAlbumBarButton() -> UIBarButtonItem? {
+        guard userData.hasAlbumCreationRights(inCatID: categoryId)
+        else { return nil }
+        
         let image = UIImage(systemName: "rectangle.stack.badge.plus")!
         let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(didTapCreateAlbum))
         button.accessibilityIdentifier = "org.piwigo.addAlbum"
         return button
     }
     
-    func getAddImageBarButton() -> UIBarButtonItem {
+    func getAddImageBarButton() -> UIBarButtonItem? {
+        guard userData.hasUploadRights(forCatID: categoryId)
+        else { return nil }
+        
         let image = UIImage(systemName: "photo.badge.plus")!
         let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(checkPhotoLibraryAccess))
         button.accessibilityIdentifier = "org.piwigo.addImages"

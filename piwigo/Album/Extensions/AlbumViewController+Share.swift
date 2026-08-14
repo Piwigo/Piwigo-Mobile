@@ -18,14 +18,13 @@ extension AlbumViewController
     func getShareBarButton() -> UIBarButtonItem? {
         // Since Piwigo 14, pwg.categories.getImages method returns download_url if the user has download rights
         // For previous versions, we assume that all only registered users have download rights
-        if userData.canDownloadImages() {
-            let button = UIBarButtonItem(barButtonSystemItem: .action, target: self,
-                                         action: #selector(shareSelection))
-            button.tintColor = PwgColor.tintColor
-            return button
-        } else {
-            return nil
-        }
+        guard userData.canDownloadImages()
+        else { return nil }
+
+        let button = UIBarButtonItem(barButtonSystemItem: .action, target: self,
+                                     action: #selector(shareSelection))
+        button.tintColor = PwgColor.tintColor
+        return button
     }
 
 

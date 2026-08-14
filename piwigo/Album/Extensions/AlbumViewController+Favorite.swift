@@ -17,9 +17,8 @@ extension AlbumViewController
     // MARK: Favorite Button
     func getFavoriteBarButton() -> UIBarButtonItem? {
         // pwg.users.favorites… methods available from Piwigo version 2.10 for registered users
-        if userData.canManageFavorites() == false {
-            return nil
-        }
+        guard userData.canManageFavorites()
+        else { return nil }
         
         // Are the selected images favorites?
         let areFavorites = selectedImageIDs == selectedFavoriteIDs
