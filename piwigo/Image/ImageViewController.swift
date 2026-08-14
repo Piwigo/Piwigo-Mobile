@@ -124,8 +124,12 @@ final class ImageViewController: UIViewController {
                                                name: Notification.Name.pwgVideoPlaybackStatus, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didChangeMuteOption),
                                                name: Notification.Name.pwgVideoMutedOrNot, object: nil)
+        
+        // Register the Piwigo ID of the user, deduced after a first upload
+        NotificationCenter.default.addObserver(self, selector: #selector(didUpdateUserID(_:)),
+                                               name: Notification.Name.pwgUserIDdidChange, object: nil)
     }
-    
+        
     @MainActor
     @objc func applyColorPalette() {
         // Set background color according to navigation bar visibility
@@ -228,6 +232,24 @@ final class ImageViewController: UIViewController {
         #if DEBUG
         debugPrint("••> ImageViewController released memory")
         #endif
+    }
+    
+    
+    // MARK: - User Data
+    // The Piwigo ID of a Community user is deduced from the 'added_by' attribute
+    // of an image he/she has uploaded, i.e. it becomes known after a first upload.
+    // Until then, the app grants him/her the rights of an uploader (see UserProperties).
+    @MainActor
+    @objc func didUpdateUserID(_ notification: Notification) {
+        // Check notification data
+        guard let pwgID = notification.userInfo?["pwgID"] as? Int16,
+              notification.userInfo?["userURIstr"] as? String == userData?.URIstr,
+              userData.pwgID != pwgID
+        else { return }
+
+        // Adopt the ID returned by the server and review the rights granted to that user
+        userData.pwgID = pwgID
+        updateNavBar()
     }
     
     

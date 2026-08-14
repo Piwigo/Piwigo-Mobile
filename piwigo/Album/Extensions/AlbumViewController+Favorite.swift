@@ -112,7 +112,7 @@ extension AlbumViewController
                     // Next image
                     remainingIDs.remove(imageID)
                     if contextually == false {
-                        deselectImages(withIDs: Set([imageID]))
+                        deselectImages(withIDs: Set([imageData.pwgID]))
                     }
                     favorite(imagesWithID: remainingIDs, total: total, contextually: contextually)
                 }
@@ -242,7 +242,7 @@ extension AlbumViewController
                     // Next image
                     remainingIDs.removeFirst()
                     if contextually == false {
-                        deselectImages(withIDs: Set([imageID]))
+                        deselectImages(withIDs: Set([imageData.pwgID]))
                     }
                     unfavorite(imagesWithID: remainingIDs, total: total, contextually: contextually)
                 }

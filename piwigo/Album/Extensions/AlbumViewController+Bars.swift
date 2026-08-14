@@ -34,12 +34,12 @@ extension AlbumViewController
         }
         else {
             // Fallback on previous version
-            updateRightBarLegacyInPreviewMode()
+            updateRightBarInLegacyPreviewMode()
         }
     }
     
     
-    // MARK: - Preview Mode for iOS 26+
+    // MARK: Preview Mode for iOS 26+
     @MainActor @available(iOS 26.0, *)
     private func initBarsInModernPreviewMode() {
         // Left side of navigation bar
@@ -289,7 +289,7 @@ extension AlbumViewController
     }
     
     
-    // MARK: - Preview Mode before iOS 26
+    // MARK: Preview Mode before iOS 26
     @MainActor @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Specific to iOS 15 to 18")
     private func initNavBarsInLegacyPreviewMode() {
         // Left side of navigation bar
@@ -305,7 +305,7 @@ extension AlbumViewController
             navigationItem.setLeftBarButtonItems(nil, animated: true)
             navigationItem.hidesBackButton = false
         }
-
+        
         // Right side of navigation bar
         if categoryId == pwgSmartAlbum.root.rawValue {
             // Root album => Discover menu button
@@ -337,7 +337,7 @@ extension AlbumViewController
     }
     
     @MainActor @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Specific to iOS 15 to 18")
-    private func updateRightBarLegacyInPreviewMode() {
+    private func updateRightBarInLegacyPreviewMode() {
         // Hide toolbar unless it is displaying the image detail view
         if let displayedVC = navigationController?.viewControllers.last,
            !(displayedVC is ImageViewController) {
@@ -374,13 +374,11 @@ extension AlbumViewController
         // Interface depends on device and orientation
         let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
 
-        // User with admin or upload rights can do everything
-        // except may be downloading images (i.e. sharing images)
-        // User without admin rights cannot set album thumbnails, delete images
-        // WRONG =====> 'normal' user with upload access to the current category can copy, move, edit images
-        // SHOULD BE => 'normal' user having uploaded images can only edit their images.
-        //              This requires 'user_id' and 'added_by' values of images for checking rights
-        if userData.hasUploadRights(forCatID: categoryId) {
+        // Admin user can do everything except may be downloading images (i.e. sharing images)
+        // Community user can only be allowed to edit properties of images he/she has uploaded.
+        /// This requires 'user_id' and 'added_by' values of images for checking rights.
+        /// 'user_id' is deduced after a first upload, unknown before or after a clear of the data cache
+        if userData.hasEditRights(forImagesAddedToAlbum: categoryId, byUserWithIDs: selectedAddedByIDs) {
             initBarsInSelectModeForAdmin(orientation: orientation)
         } else {
             initBarsInSelectModeForStdUserOrGuest(orientation: orientation)
@@ -406,14 +404,14 @@ extension AlbumViewController
         actionBarButton?.accessibilityIdentifier = "actions"
 
         if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
+            // Left side of navigation bar
+            navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
+
+            // Right side of navigation bar
+            navigationItem.setRightBarButtonItems([actionBarButton].compactMap { $0 }, animated: true)
+
             // Remaining buttons in navigation toolbar
             if #available(iOS 26.0, *) {
-                // Left side of navigation bar
-                navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-
-                // Right side of navigation bar
-                navigationItem.setRightBarButtonItems([actionBarButton].compactMap { $0 }, animated: true)
-
                 // Toolbar
                 let toolbarItems: [UIBarButtonItem] = [shareBarButton, .space(),
                                                        favoriteBarButton, deleteBarButton].compactMap({ $0 })
@@ -422,12 +420,6 @@ extension AlbumViewController
             }
             else {
                 // Fallback on previous version
-                // Left side of navigation bar
-                navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-
-                // Right side of navigation bar
-                navigationItem.setRightBarButtonItems([actionBarButton].compactMap { $0 }, animated: true)
-
                 // Toolbar
                 /// We reset the bar button items which are not positioned correctly by iOS 15 after device rotation.
                 /// They also disappear when coming back to portrait orientation.
@@ -435,10 +427,10 @@ extension AlbumViewController
                 let toolBarItems = [shareBarButton, .space(),
                                     favoriteBarButton, favoriteBarButton == nil ? nil : .space(),
                                     deleteBarButton, shareBarButton == nil ? .space() : nil].compactMap { $0 }
-                navigationController?.setToolbarHidden(false, animated: true)
                 setToolbarItems(toolBarItems, animated: true)
+                navigationController?.setToolbarHidden(false, animated: true)
             }
-        } else {
+        } else {    // iPad
             // Left side of navigation bar
             navigationItem.setLeftBarButtonItems([cancelBarButton, deleteBarButton].compactMap { $0 }, animated: true)
 
@@ -457,36 +449,31 @@ extension AlbumViewController
         // Left side of navigation bar
         navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
 
-        // Right side and toolbar
+        // Right side of navigation bar
         if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
             // Remaining two buttons on the right side of the navigation bar
             navigationItem.setRightBarButtonItems([shareBarButton, favoriteBarButton].compactMap { $0 }, animated: true)
-
-            // Hide navigation toolbar
-            navigationController?.setToolbarHidden(true, animated: true)
         } else {
             // All buttons in navigation bar
             navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
             navigationItem.setRightBarButtonItems([shareBarButton, favoriteBarButton].compactMap { $0 }, animated: true)
-            
-            // Hide navigation toolbar
-            navigationController?.setToolbarHidden(true, animated: true)
         }
+
+        // Hide toolbar
+        navigationController?.setToolbarHidden(true, animated: true)
     }
     
     @MainActor
     func updateBarsInSelectMode() {
         setTitleViewFromAlbumData()
-        let hasImagesSelected = !selectedImageIDs.isEmpty
+        let hasImagesSelected = !selectedImages.isEmpty
         cancelBarButton.isEnabled = true
 
-        // User with admin or upload rights can do everything
-        // except may be downloading images (i.e. sharing images)
-        // User without admin rights cannot set album thumbnails, delete images
-        // WRONG =====> 'normal' user with upload access to the current category can copy, move, edit images
-        // SHOULD BE => 'normal' user having uploaded images can only edit their images.
-        //              This requires 'user_id' and 'added_by' values of images for checking rights
-        if userData.hasUploadRights(forCatID: categoryId) {
+        // Admin user can do everything except may be downloading images (i.e. sharing images)
+        // Community user can only be allowed to edit properties of images he/she has uploaded.
+        /// This requires 'user_id' and 'added_by' values of images for checking rights.
+        /// 'user_id' is deduced after a first upload, unknown before or after a clear of the data cache
+        if userData.hasEditRights(forImagesAddedToAlbum: categoryId, byUserWithIDs: selectedAddedByIDs) {
             selectBarButton?.isEnabled = hasImagesSelected
             actionBarButton?.isEnabled = hasImagesSelected
             shareBarButton?.isEnabled = hasImagesSelected
@@ -501,9 +488,9 @@ extension AlbumViewController
             let updatedMenu = actionBarButton?.menu?.replacingChildren(children)
             actionBarButton?.menu = updatedMenu
         } else {
-            // Right side of navigation bar
-            /// — guests can share photo of high-resolution or not
-            /// — non-guest users can set favorites in addition
+            selectBarButton?.isEnabled = false
+            actionBarButton?.isEnabled = false
+            deleteBarButton.isEnabled = false
             shareBarButton?.isEnabled = hasImagesSelected
             favoriteBarButton?.isEnabled = hasImagesSelected
             let areFavorites = selectedImageIDs == selectedFavoriteIDs
@@ -593,7 +580,7 @@ extension AlbumViewController
             }
         }
         else if inSelectionMode {
-            let nberPhotos = selectedImageIDs.count
+            let nberPhotos = selectedImages.count
             switch nberPhotos {
             case 0:
                 subTitle = String(localized: "selectImages", comment: "Select Photos")
@@ -668,7 +655,7 @@ extension AlbumViewController
                 }
             }
             else if inSelectionMode && !isAccessibilityCategory {
-                let nberPhotos = selectedImageIDs.count
+                let nberPhotos = selectedImages.count
                 switch nberPhotos {
                 case 0:
                     subtitle = String(localized: "selectImages", comment: "Select Photos")

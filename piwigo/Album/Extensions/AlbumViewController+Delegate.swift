@@ -39,7 +39,7 @@ extension AlbumViewController: UICollectionViewDelegate
                 else { return }
                 
                 // Selection mode active => add/remove image from selection
-                if !selectedImageIDs.contains(imageData.pwgID) {
+                if !selectedImages.keys.contains(imageData.pwgID) {
                     selectImage(imageData, isFavorite: selectedCell.isFavorite)
                     selectedCell.isSelection = true
                 } else {
@@ -274,7 +274,7 @@ extension AlbumViewController: UICollectionViewDelegate
             
             // Not all users can select/deselect images
             if canShareImages || userData.canManageFavorites() || userData.hasUploadRights(forCatID: categoryId) {
-                if self.selectedImageIDs.contains(imageID) {
+                if self.selectedImages.keys.contains(imageID) {
                     // Image not selected ► Propose to select it
                     children.append(deselectImageAction(forCell: cell, at: indexPath))
                 } else {
@@ -356,9 +356,9 @@ extension AlbumViewController: UICollectionViewDelegate
             guard let imageData = cell.imageData else { return }
             self.deselectImages(withIDs: Set([imageData.pwgID]))
             cell.isSelection = false
-            
+
             // Check if the selection mode should be disabled
-            if self.selectedImageIDs.isEmpty {
+            if self.selectedImages.isEmpty {
                 // Disable the selection mode
                 self.cancelSelect()
             } else {

@@ -62,7 +62,7 @@ extension AlbumViewController
                 else { preconditionFailure("Could not load ImageCollectionViewCell") }
                 
                 // Is this cell selected?
-                cell.isSelection = self.selectedImageIDs.contains(image.pwgID)
+                cell.isSelection = self.selectedImages.keys.contains(image.pwgID)
                 
                 // pwg.users.favorites… methods available from Piwigo version 2.10
                 if self.userData.canManageFavorites() {

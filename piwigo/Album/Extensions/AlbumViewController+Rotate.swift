@@ -138,7 +138,7 @@ extension AlbumViewController
 
                     // Next image
                     remainingIDs.removeFirst()
-                    deselectImages(withIDs: Set([imageID]))
+                    deselectImages(withIDs: Set([imageData.pwgID]))
                     rotateImages(withID: remainingIDs, by: angle, total: total)
                 }
             }

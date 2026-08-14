@@ -158,7 +158,7 @@ extension AlbumViewController
         
         // Clear array of selected images
         touchedImageIDs = []
-        selectedImageIDs = Set<Int64>()
+        selectedImages = [:]
         selectedFavoriteIDs = Set<Int64>()
         selectedVideosIDs = Set<Int64>()
         for key in selectedSections.keys {
@@ -179,7 +179,7 @@ extension AlbumViewController
     }
     
     func selectImage(_ imageData: Image, isFavorite: Bool) {
-        self.selectedImageIDs.insert(imageData.pwgID)
+        self.selectedImages[imageData.pwgID] = imageData.addedBy
         if isFavorite {
             selectedFavoriteIDs.insert(imageData.pwgID)
         }
@@ -189,7 +189,7 @@ extension AlbumViewController
     }
 
     func deselectImages(withIDs imageIDs: Set<Int64>) {
-        self.selectedImageIDs.subtract(imageIDs)
+        imageIDs.forEach { self.selectedImages.removeValue(forKey: $0) }
         self.selectedVideosIDs.subtract(imageIDs)
         self.selectedFavoriteIDs.subtract(imageIDs)
     }
@@ -218,7 +218,7 @@ extension AlbumViewController
         
         // All images in the section cannot be selected if fewer images are selected overall
         // (this avoids faulting every image of the section while the user is scrolling)
-        if selectedImageIDs.count < nberOfImagesInSection {
+        if selectedImages.count < nberOfImagesInSection {
             selectedSections[section] = SelectButtonState.select
             return .select
         }
@@ -227,7 +227,7 @@ extension AlbumViewController
         // stopping at the first one which is not selected
         for objectID in snapshot.itemIdentifiers(inSection: sectionID) {
             guard let image = try? self.mainContext.existingObject(with: objectID) as? Image,
-                  selectedImageIDs.contains(image.pwgID)
+                  selectedImages.keys.contains(image.pwgID)
             else {
                 // Not all images are selected
                 selectedSections[section] = SelectButtonState.select
@@ -312,7 +312,7 @@ extension AlbumViewController
             // Display or update HUD
             if navigationController?.isShowingHUD() ?? false {
                 navigationController?.updateHUD(title: Localized.loading, inMode: .indeterminate)
-            } else if selectedImageIDs.count > 200 {
+            } else if selectedImages.count > 200 {
                 navigationController?.showHUD(withTitle: Localized.loading, inMode: .indeterminate)
             }
             // Prepare items to share in background queue
@@ -339,11 +339,11 @@ extension AlbumViewController
                                       beforeAction action: pwgImageAction, contextually: Bool) {
         // Remove images from which we already have complete data
         var imageIDsToRetrieve = imageIDs
-        let selectedImages = (images.fetchedObjects ?? []).filter({imageIDs.contains($0.pwgID)})
+        let imagesToCheck = (images.fetchedObjects ?? []).filter({imageIDs.contains($0.pwgID)})
         for imageID in imageIDs {
-            guard let selectedImage = selectedImages.first(where: {$0.pwgID == imageID})
+            guard let imageToCheck = imagesToCheck.first(where: {$0.pwgID == imageID})
             else { continue }
-            if selectedImage.fileSize != Int64.zero {
+            if imageToCheck.fileSize != Int64.zero {
                 imageIDsToRetrieve.remove(imageID)
             }
         }
@@ -493,7 +493,7 @@ extension AlbumViewController: UIGestureRecognizerDelegate
                 touchedImageIDs.append(imageData.pwgID)
                 
                 // Update the selection state
-                if !selectedImageIDs.contains(imageData.pwgID) {
+                if !selectedImages.keys.contains(imageData.pwgID) {
                     selectImage(imageData, isFavorite: imageCell.isFavorite)
                     imageCell.isSelection = true
                 } else {

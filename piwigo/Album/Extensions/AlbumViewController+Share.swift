@@ -225,7 +225,7 @@ extension AlbumViewController
                             if contextually {
                                 setEnableStateOfButtons(true)
                             } else {
-                                if selectedImageIDs.isEmpty {
+                                if selectedImages.isEmpty {
                                     cancelSelect()
                                 } else {
                                     setEnableStateOfButtons(true)
@@ -273,7 +273,7 @@ extension AlbumViewController: @preconcurrency ShareImageActivityItemProviderDel
                                                         withTitle title: String) {
         // Show HUD to let the user know the image is being downloaded in the background.
         let total = presentedViewController?.view.tag ?? 1
-        let detail = total > 1 ? String(format: "%d / %d", total - selectedImageIDs.count + 1, total) : nil
+        let detail = total > 1 ? String(format: "%d / %d", total - selectedImages.count + 1, total) : nil
         if presentedViewController?.isShowingHUD() ?? false {
             presentedViewController?.updateHUD(title: title, detail: detail)
         } else {
@@ -299,13 +299,13 @@ extension AlbumViewController: @preconcurrency ShareImageActivityItemProviderDel
         // Close HUD
         if imageActivityItemProvider.isCancelled {
             presentedViewController?.hideHUD { }
-        } else if contextually == false, selectedImageIDs.contains(imageID) {
+        } else if contextually == false, selectedImages.keys.contains(imageID) {
             // Remove image from selection
             deselectImages(withIDs: Set([imageID]))
             updateBarsInSelectMode()
 
             // Close HUD if last image
-            if selectedImageIDs.count == 0 {
+            if selectedImages.isEmpty {
                 presentedViewController?.updateHUDwithSuccess { [self] in
                     self.presentedViewController?.hideHUD(afterDelay: pwgDelayHUD) { }
                 }

@@ -16,22 +16,18 @@ import PwgUIKit
 extension ImageViewController {
     @MainActor
     func updateNavBar() {
-        // Share button depends on Piwigo server version, user role and image data
+        // Below button depends on Piwigo server version, user role and image data
         shareBarButton = getShareButton()
-        
-        // Favorites button depends on Piwigo server version, user role and image data
         favoriteBarButton = getFavoriteBarButton()
         
         // Interface depends on device and orientation
         let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
         
-        // User with admin or upload rights can do everything
-        // except may be downloading images (i.e. sharing images)
-        // User without admin rights cannot set album thumbnails, delete images
-        // WRONG =====> 'normal' user with upload access to the current category can copy, move, edit images
-        // SHOULD BE => 'normal' user having uploaded images can only edit their images.
-        //              This requires 'user_id' and 'added_by' values of images for checking rights
-        if userData.hasUploadRights(forCatID: categoryId) {
+        // Admin user can do everything except may be downloading images (i.e. sharing images)
+        // Community user can only be allowed to edit properties of images he/she has uploaded.
+        /// This requires 'user_id' and 'added_by' values of images for checking rights.
+        /// 'user_id' is deduced after a first upload, unknown before or after a clear of the data cache
+        if userData.hasEditRights(forImagesAddedToAlbum: categoryId, byUserWithIDs: [imageData.addedBy]) {
             // The action button proposes:
             /// - to copy or move images to other albums
             /// - to set the image as album thumbnail

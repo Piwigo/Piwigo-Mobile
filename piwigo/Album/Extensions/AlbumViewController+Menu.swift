@@ -597,7 +597,7 @@ extension AlbumViewController: @MainActor ImageHeaderDelegate
             sectionItems.forEach { objectID in
                 // Retrieve image data
                 guard let image = try? self.mainContext.existingObject(with: objectID) as? Image,
-                      selectedImageIDs.contains(image.pwgID) == false
+                      selectedImages.keys.contains(image.pwgID) == false
                 else { return }
                 
                 // Select this image
@@ -621,9 +621,9 @@ extension AlbumViewController: @MainActor ImageHeaderDelegate
             sectionItems.forEach { objectID in
                 // Retrieve image data
                 guard let image = try? self.mainContext.existingObject(with: objectID) as? Image,
-                      selectedImageIDs.contains(image.pwgID)
+                      selectedImages.keys.contains(image.pwgID)
                 else { return }
-                
+
                 // Deselect this image
                 deselectImages(withIDs: Set([image.pwgID]))
                 if let indexPath = diffableDataSource.indexPath(for: objectID),

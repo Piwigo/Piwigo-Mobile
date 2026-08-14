@@ -118,10 +118,15 @@ final class AlbumViewController: UIViewController
     var indexOfImageToRestore = Int.min
     var inSelectionMode = false
     var touchedImageIDs = [Int64]()
-    var selectedImageIDs = Set<Int64>()
-    var selectedFavoriteIDs = Set<Int64>()
-    var selectedVideosIDs = Set<Int64>()
-    var selectedSections = [Int : SelectButtonState]()    // State of Select buttons
+    /// IDs of all selected images and IDs of the users who added them to the Piwigo server.
+    /// The uploader IDs are stored per image because several images may have been added
+    /// by the same user: a set of uploader IDs could not be maintained on deselection.
+    var selectedImages = [Int64 : Int16]()
+    var selectedImageIDs: Set<Int64> { Set(selectedImages.keys) }
+    var selectedAddedByIDs: Set<Int16> { Set(selectedImages.values) }
+    var selectedFavoriteIDs = Set<Int64>()                  // IDs of selected images which are favorites
+    var selectedVideosIDs = Set<Int64>()                    // IDs of images which are videos
+    var selectedSections = [Int : SelectButtonState]()      // State of Select buttons
     
     
     // MARK: - Cached Values
@@ -347,6 +352,12 @@ final class AlbumViewController: UIViewController
         // Register font changes
         NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
                                                name: UIContentSizeCategory.didChangeNotification, object: nil)
+        
+        // Register the Piwigo ID of the user, deduced after a first upload
+        /// Registered here and not in viewWillAppear() so that parent albums,
+        /// which are not visible, do also update the rights they grant.
+        NotificationCenter.default.addObserver(self, selector: #selector(didUpdateUserID(_:)),
+                                               name: Notification.Name.pwgUserIDdidChange, object: nil)
     }
     
     @MainActor
@@ -749,8 +760,32 @@ final class AlbumViewController: UIViewController
         debugPrint("••> AlbumViewController released memory")
         #endif
     }
-    
-    
+
+
+    // MARK: - User Data
+    /// The Piwigo ID of a Community user is deduced from the 'added_by' attribute
+    /// of an image he/she has uploaded, i.e. it becomes known after a first upload.
+    /// Until then, the app grants him/her the rights of an uploader (see UserProperties).
+    @MainActor
+    @objc func didUpdateUserID(_ notification: Notification) {
+        // Check notification data
+        guard let pwgID = notification.userInfo?["pwgID"] as? Int16,
+              notification.userInfo?["userURIstr"] as? String == userData.URIstr,
+              userData.pwgID != pwgID
+        else { return }
+
+        // Adopt the ID returned by the server
+        userData.pwgID = pwgID
+
+        // Review the rights granted to that user
+        if inSelectionMode {
+            updateBarsInSelectMode()
+        } else {
+            updateBarsInPreviewMode()
+        }
+    }
+
+
     // MARK: - Album Data
     func changeAlbumID() {
         // Add/remove search bar

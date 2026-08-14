@@ -18,7 +18,7 @@ import PwgUIKit
     func didRenameFileOfImage(_ imageData: Image)
 }
 
-class EditImageThumbTableViewCell: UITableViewCell, UICollectionViewDelegate
+final class EditImageThumbTableViewCell: UITableViewCell, UICollectionViewDelegate
 {
     weak var delegate: (any EditImageThumbnailCellDelegate)?
     

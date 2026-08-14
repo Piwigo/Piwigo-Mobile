@@ -110,4 +110,38 @@ extension UserProperties
             return false
         }
     }
+
+    public func hasEditRights(forImagesAddedToAlbum categoryID: Int32, byUserWithIDs addedByIDs: Set<Int16>) -> Bool {
+        // Admin user?
+        if self.hasAdminRights { return true }
+        // Guest user?
+        if self.role == .guest { return false }
+        // Community user (.generic or .normal) ?
+        if ServerVars.shared.usesCommunityPluginV29 == false { return false }
+        switch categoryID {
+        case Int32.min ... -1:  // Smart albums
+            return self.editRights(forImagesAddedToAlbum: categoryID, byUserWithIDs: addedByIDs)
+        case .zero:             // Root album
+            return false
+        case 1 ... Int32.max:   // Regular albums
+            return self.editRights(forImagesAddedToAlbum: categoryID, byUserWithIDs: addedByIDs)
+        default:
+            return false
+        }
+    }
+    
+    fileprivate func editRights(forImagesAddedToAlbum categoryID: Int32, byUserWithIDs addedByIDs: Set<Int16>) -> Bool {
+        // First check that the user has upload rights to that album
+        guard self.uploadRights.components(separatedBy: ",").contains(String(categoryID))
+        else { return false }
+        
+        // Because the 'addedBy' attribute of an image is known only after retrieving complete data,
+        // and because the user ID is known only after a first upload (if the cache is not cleared),
+        // we allow Community users to try to edit image properties or copy/move/delete images
+        // when we do not have enough information.
+        if addedByIDs.isEmpty || self.pwgID == 0 { return true }
+        // Images added by current user?
+        if addedByIDs == [self.pwgID] { return true }
+        return false
+    }
 }
