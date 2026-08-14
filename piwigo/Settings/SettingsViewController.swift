@@ -133,7 +133,7 @@ final class SettingsViewController: UIViewController {
         }
         
         // Retrieve data from server in the background
-        if userData.hasUploadRights {
+        if userData.hasAdminRights {
             Task.detached(priority: .background) { [self] in
                 do {
                     // Check session
