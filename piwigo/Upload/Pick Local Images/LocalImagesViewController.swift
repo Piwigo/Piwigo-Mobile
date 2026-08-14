@@ -44,6 +44,8 @@ final class LocalImagesViewController: UIViewController
         andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
         andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.shouldRefreshRefetchedObjects = true
         return fetchRequest
     }()
     
