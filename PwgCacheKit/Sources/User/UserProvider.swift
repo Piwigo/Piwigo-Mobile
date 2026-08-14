@@ -197,6 +197,42 @@ public final class UserProvider {
         catch let error { throw PwgKitError.otherError(innerError: error) }
     }
     
+    /// Stores the Piwigo ID of the user on its own,
+    /// for the same reason as updateDownloadRights(_:inContext:) above.
+    /// The ID is deduced from the 'added_by' attribute of an uploaded image,
+    /// i.e. after each upload, but it never changes once known.
+    public func updateID(_ ID: Int16, ofUserWithURIstr userURIstr: String,
+                         inContext taskContext: NSManagedObjectContext) throws(PwgKitError) {
+        // Nothing to do if the server did not return the ID of the user
+        guard ID != Int16.zero else { return }
+
+        // Do {} below is used to allow typed throws
+        do {
+            var didChangeID = false
+            try taskContext.performAndWait {
+                let user = try getUser(withURIstr: userURIstr, inContext: taskContext)
+                /// Setting an attribute always marks the object as updated,
+                /// even when the value is unchanged ► do it only if needed
+                guard user.pwgID == Int16.zero else { return }
+                user.pwgID = ID
+                didChangeID = true
+                taskContext.saveIfNeeded()
+            }
+            
+            // Tell the loaded views to review the rights granted to that user
+            if didChangeID {
+                DispatchQueue.main.async {
+                    let userInfo: [String : Any] = ["pwgID" : ID, "userURIstr" : userURIstr]
+                    NotificationCenter.default.post(name: Notification.Name.pwgUserIDdidChange,
+                                                    object: nil, userInfo: userInfo)
+                }
+            }
+        }
+        catch let error as PwgKitError { throw error }
+        catch let error as NSError { throw PwgKitError.CoreDataError(innerError: error)}
+        catch let error { throw PwgKitError.otherError(innerError: error) }
+    }
+    
     public func updateUser(withProperties properties: UserProperties,
                            inContext taskContext: NSManagedObjectContext) throws(PwgKitError) {
         // Do {} below is used to allow typed throws

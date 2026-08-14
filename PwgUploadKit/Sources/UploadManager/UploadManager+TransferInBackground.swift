@@ -314,27 +314,28 @@ extension UploadManager {
             }
             
             // Add uploaded image to cache and update UI if needed
-            if let userData = try? UserProvider().getPropertiesOfUser(withURIstr: uploadData.userURIstr,
-                                                                      inContext: uploadBckgContext) {
-                // Retrieve complete image data from the server now that the lounge is emptied.
-                // The pwg.images.uploadAsync response may carry derivatives whose files are not
-                // yet generated (empty/invalid thumbnail URLs), which would make the album show
-                // the placeholder image instead of the thumbnail (see foreground copy path).
-                if var imageData = try? await JSONManager.shared.getInfos(forID: imageId) {
-                    imageData.fixingUnknowns()
-                    await ImageProvider().didUploadImage(imageData, inAlbumId: uploadData.category)
+            // Retrieve complete image data from the server now that the lounge is emptied.
+            // The pwg.images.uploadAsync response may carry derivatives whose files are not
+            // yet generated (empty/invalid thumbnail URLs), which would make the album show
+            // the placeholder image instead of the thumbnail (see foreground copy path).
+            if var imageData = try? await JSONManager.shared.getInfos(forID: imageId) {
+                imageData.fixingUnknowns()
+                await ImageProvider().didUploadImage(imageData, inAlbumId: uploadData.category)
 
-                    // An upload is an occasion to retrieve the ID or a Community user
-                    storeCommunityUserIDIfNeeded(userData, from: imageData)
-                }
-                else {
-                    // Fall back on the data returned by the upload request
-                    getInfos.fixingUnknowns()
-                    await ImageProvider().didUploadImage(getInfos, inAlbumId: uploadData.category)
+                // An upload is an occasion to retrieve the ID of a Community user
+                try? UserProvider().updateID(imageData.addedBy?.int16Value ?? 0,
+                                             ofUserWithURIstr: uploadData.userURIstr,
+                                             inContext: uploadBckgContext)
+            }
+            else {
+                // Fall back on the data returned by the upload request
+                getInfos.fixingUnknowns()
+                await ImageProvider().didUploadImage(getInfos, inAlbumId: uploadData.category)
 
-                    // An upload is an occasion to retrieve the ID or a Community user
-                    storeCommunityUserIDIfNeeded(userData, from: getInfos)
-                }
+                // An upload is an occasion to retrieve the ID of a Community user
+                try? UserProvider().updateID(getInfos.addedBy?.int16Value ?? 0,
+                                             ofUserWithURIstr: uploadData.userURIstr,
+                                             inContext: uploadBckgContext)
             }
             
             // Delete remaining uploaded file
@@ -453,15 +454,5 @@ extension UploadManager {
         }
         let chunkFileName = imageFile + "." + numberFormatter.string(from: NSNumber(value: chunk))!
         deleteFilesInUploadsDirectory(withPrefix: chunkFileName)
-    }
-    
-    fileprivate func storeCommunityUserIDIfNeeded(_ userData: UserProperties, from imageData: ImageGetInfo) {
-        // An upload is an occasion to retrieve the ID or a Community user
-        if userData.hasAdminRights == false,
-           userData.pwgID == Int16.zero {
-            var newUserData = userData
-            newUserData.pwgID = imageData.addedBy?.int16Value ?? 0
-            try? UserProvider().updateUser(withProperties: newUserData, inContext: uploadBckgContext)
-        }
     }
 }
