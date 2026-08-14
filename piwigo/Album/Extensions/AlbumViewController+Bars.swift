@@ -252,8 +252,8 @@ extension AlbumViewController
         }
         else {
             // Below buttons depend on Piwigo server version, user role and image data
-            shareBarButton = getShareBarButton()        // depends on Piwigo server version, user role and image data
-            favoriteBarButton = getFavoriteBarButton()  // depends on Piwigo server version, user role and image data
+            shareBarButton = getShareBarButton()
+            favoriteBarButton = getFavoriteBarButton()
             
             // Menu for activating the selection mode or changing the way images are sorted
             var children = [sortMenu(), viewOptionsMenu(), settingsMenu()]
