@@ -49,7 +49,6 @@
 		AD10AF362FB9E31C000F0AB4 /* PwgCacheKit in Frameworks */ = {isa = PBXBuildFile; productRef = AD10AF352FB9E31C000F0AB4 /* PwgCacheKit */; };
 		AD12D6F62AA657080038BBFF /* VideoControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD12D6F52AA657080038BBFF /* VideoControlsView.swift */; };
 		AD13BF5529E9A77B0099DCF5 /* Device+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF3EC0B2516515500379E53 /* Device+Model.swift */; };
-		AD13C04F2FE5AE36000168D8 /* UploadSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD13C04E2FE5AE36000168D8 /* UploadSessionManager.swift */; };
 		AD13CD712B8E5A79001ACBE8 /* ImageViewController+Rotate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD13CD702B8E5A79001ACBE8 /* ImageViewController+Rotate.swift */; };
 		AD1477CD2A3BA3020010BD78 /* WhatsNewViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD1477CC2A3BA3020010BD78 /* WhatsNewViewController.storyboard */; };
 		AD1477D32A3BB23B0010BD78 /* WhatsNewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1477D22A3BB23B0010BD78 /* WhatsNewViewController.swift */; };
@@ -537,7 +536,6 @@
 		AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
 		AD11E45E24A930B000C8876F /* API Testing.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "API Testing.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD12D6F52AA657080038BBFF /* VideoControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoControlsView.swift; sourceTree = "<group>"; };
-		AD13C04E2FE5AE36000168D8 /* UploadSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSessionManager.swift; sourceTree = "<group>"; };
 		AD13CD702B8E5A79001ACBE8 /* ImageViewController+Rotate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Rotate.swift"; sourceTree = "<group>"; };
 		AD1477CC2A3BA3020010BD78 /* WhatsNewViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = WhatsNewViewController.storyboard; sourceTree = "<group>"; };
 		AD1477D22A3BB23B0010BD78 /* WhatsNewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewViewController.swift; sourceTree = "<group>"; };
@@ -3022,7 +3020,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 698;
+				CURRENT_PROJECT_VERSION = 700;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZEC3W885H6;
@@ -3081,7 +3079,7 @@
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 698;
+				CURRENT_PROJECT_VERSION = 700;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZU5THW8T5W;
 				ENABLE_DEBUG_DYLIB = NO;
@@ -3155,7 +3153,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 698;
+				CURRENT_PROJECT_VERSION = 700;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = ZU5THW8T5W;
@@ -3232,7 +3230,7 @@
 				CODE_SIGN_IDENTITY = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 698;
+				CURRENT_PROJECT_VERSION = 700;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = ZU5THW8T5W;
@@ -3278,7 +3276,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 698;
+				CURRENT_PROJECT_VERSION = 700;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZEC3W885H6;
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = ZEC3W885H6;
@@ -3294,6 +3292,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 4.3.1;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_SWIFT_FLAGS = "$(inherited) -Xfrontend -warn-long-function-bodies=300 -Xfrontend -warn-long-expression-type-checking=50";
@@ -3327,7 +3326,7 @@
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 698;
+				CURRENT_PROJECT_VERSION = 700;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZU5THW8T5W;
 				ENABLE_DEBUG_DYLIB = NO;
@@ -3342,6 +3341,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 4.3.1;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo;
