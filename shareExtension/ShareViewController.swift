@@ -190,6 +190,15 @@ final class ShareViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        // The Piwigo ID of a Community user is deduced from the 'added_by' attribute
+        // of an image he/she has uploaded, i.e. it becomes known after a first upload.
+        /// The app performs the uploads and cannot notify this process, whose properties
+        /// may date from a previous share ► re-read them while the ID remains unknown.
+        if userData?.pwgID == Int16.zero,
+           let updatedUserData = try? userProvider.getPropertiesOfCurrentUser(inContext: mainContext) {
+            userData = updatedUserData
+        }
+        
         // Did the user change system settings?
         UITools.shared.applyColorPalette(for: traitCollection.userInterfaceStyle)
         
