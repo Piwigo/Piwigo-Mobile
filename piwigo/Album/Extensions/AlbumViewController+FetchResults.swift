@@ -19,12 +19,7 @@ extension AlbumViewController: @MainActor NSFetchedResultsControllerDelegate
                     didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
         // Data source configured?
         guard let dataSource = collectionView?.dataSource as? DataSource
-        else {
-            #if DEBUG
-            debugPrint("The data source has not implemented snapshot support while it should.")
-            #endif
-            return
-        }
+        else { preconditionFailure("The data source has not implemented snapshot support while it should.") }
         
         // Album or Image controller?
         let snapshot = snapshot as Snapshot
