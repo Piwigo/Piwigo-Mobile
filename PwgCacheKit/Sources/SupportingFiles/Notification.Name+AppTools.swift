@@ -15,6 +15,11 @@ public extension Notification.Name {
     static let pwgMigrationProgressUpdated = Notification.Name("pwgNotificationMigrationProgressUpdated")
     
     
+    // MARK: - Users
+    /// - Notifies that the Piwigo ID of a user has become known
+    static let pwgUserIDdidChange = Notification.Name("pwgNotificationUserIDdidChange")
+    
+    
     // MARK: - Images
     /// - Notifies that place names are available
     static let pwgPlaceNamesAvailable = Notification.Name("pwgPlaceNamesAvailable")
