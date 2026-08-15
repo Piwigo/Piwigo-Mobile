@@ -38,9 +38,6 @@ extension AlbumViewController
     // MARK: - Button Management
     @MainActor @available(iOS 26.0, *)
     func setUploadQueueButton(withNberOfUploads nberOfUploads: Int) {
-        guard [0, AlbumVars.shared.defaultCategory].contains(categoryId),
-              nberOfUploads > 0
-        else { return }
         
         if (!ServerVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading) ||
             [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) ||
@@ -74,18 +71,20 @@ extension AlbumViewController
     @objc func updateNberOfUploads(_ notification: Notification?) {
         // Update main header if necessary
         setTableViewMainHeader()
-
-        // Update upload queue button only in default album
-        guard [0, AlbumVars.shared.defaultCategory].contains(categoryId),
-              let nberOfUploads = (notification?.userInfo?["nberOfUploadsToComplete"] as? Int)
-        else { return }
-
+        
         // Show/hide upload queue button
         if #available(iOS 26.0, *) {
+            // Update upload queue button only in root and regular albums
+            guard categoryId > 0
+            else { return }
             updateBarsInModernPreviewMode()
         }
         else {
             // Fallback on previous version
+            // Update upload queue button only in default album
+            guard [0, AlbumVars.shared.defaultCategory].contains(categoryId),
+                  let nberOfUploads = (notification?.userInfo?["nberOfUploadsToComplete"] as? Int)
+            else { return }
             if nberOfUploads <= 0 {
                 hideOldUploadQueueButton()
             } else {
