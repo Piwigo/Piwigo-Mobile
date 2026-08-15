@@ -504,7 +504,9 @@ final class AlbumViewController: UIViewController
         }
         
         // Set navigation bar and buttons
-        initBarsInPreviewMode()
+        /// Not animated because the view is not on screen yet: the bars have no width
+        /// and animating their content makes UIKit lay out the buttons at zero width.
+        initBarsInPreviewMode(animated: false)
         if #unavailable(iOS 26.0) {
             relocateButtons()
             updateButtons()

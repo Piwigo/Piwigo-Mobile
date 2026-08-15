@@ -15,14 +15,17 @@ import PwgUIKit
 extension AlbumViewController
 {
     // MARK: - Preview Mode
+    /// Bar changes should not be animated when the view is not on screen yet (e.g. in viewWillAppear):
+    /// the bars have no width at that time and animating their content makes UIKit lay out
+    /// the bar buttons at zero width, which produces unsatisfiable constraint warnings.
     @MainActor
-    func initBarsInPreviewMode() {
+    func initBarsInPreviewMode(animated: Bool = true) {
         if #available(iOS 26.0, *) {
-            initBarsInModernPreviewMode()
+            initBarsInModernPreviewMode(animated: animated)
         }
         else {
             // Fallback on previous version
-            initNavBarsInLegacyPreviewMode()
+            initNavBarsInLegacyPreviewMode(animated: animated)
         }
     }
     
@@ -41,15 +44,15 @@ extension AlbumViewController
     
     // MARK: Preview Mode for iOS 26+
     @MainActor @available(iOS 26.0, *)
-    private func initBarsInModernPreviewMode() {
+    private func initBarsInModernPreviewMode(animated: Bool) {
         // Left side of navigation bar
         if [0, AlbumVars.shared.defaultCategory, pwgSmartAlbum.search.rawValue].contains(categoryId) {
             // No button in root, search and default albums
-            navigationItem.setLeftBarButtonItems([], animated: true)
+            navigationItem.setLeftBarButtonItems([], animated: animated)
             navigationItem.hidesBackButton = true
         } else {
             // Back button to parent album
-            navigationItem.setLeftBarButtonItems(nil, animated: true)
+            navigationItem.setLeftBarButtonItems(nil, animated: animated)
             navigationItem.hidesBackButton = false
         }
         
@@ -74,29 +77,29 @@ extension AlbumViewController
             case .phone:
                 // Right side of the navigation bar
                 let items = [discoverBarButton]
-                navigationItem.setRightBarButtonItems(items, animated: true)
-                
+                navigationItem.setRightBarButtonItems(items, animated: animated)
+
                 // Toolbar
                 // Upload queue and Add album buttons
                 let nberOfUploads = UploadVars.shared.nberOfUploadsToComplete
                 if nberOfUploads > 0 {
                     // Prepare upload queue button
                     setUploadQueueButton(withNberOfUploads: nberOfUploads)
-                    
+
                     // Gather buttons in toolbar
                     navigationItem.preferredSearchBarPlacement = .integratedButton
                     let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
                     let toolBarItems = [uploadQueueBarButton, .space(), addAlbumBarButton, searchBarButton].compactMap { $0 }
-                    navigationController?.setToolbarHidden(false, animated: true)
-                    setToolbarItems(toolBarItems, animated: true)
+                    navigationController?.setToolbarHidden(false, animated: animated)
+                    setToolbarItems(toolBarItems, animated: animated)
                 }
                 else {
                     // Gather buttons in toolbar
                     navigationItem.preferredSearchBarPlacement = .integratedButton
                     let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
                     let toolBarItems = [.space(), addAlbumBarButton, searchBarButton].compactMap { $0 }
-                    setToolbarItems(toolBarItems, animated: true)
-                    navigationController?.setToolbarHidden(false, animated: true)
+                    navigationController?.setToolbarHidden(false, animated: animated)
+                    setToolbarItems(toolBarItems, animated: animated)
                 }
                 
             case .pad:
@@ -110,17 +113,17 @@ extension AlbumViewController
                     // Gather buttons in navigation bar
                     navigationItem.preferredSearchBarPlacement = .integrated
                     let items = [discoverBarButton, addAlbumBarButton, .fixedSpace(16.0), uploadQueueBarButton].compactMap { $0 }
-                    navigationItem.setRightBarButtonItems(items, animated: true)
+                    navigationItem.setRightBarButtonItems(items, animated: animated)
                 }
                 else {
                     // Gather buttons in navigation bar
                     navigationItem.preferredSearchBarPlacement = .integrated
                     let items = [discoverBarButton, addAlbumBarButton, .fixedSpace(16.0)].compactMap { $0 }
-                    navigationItem.setRightBarButtonItems(items, animated: true)
+                    navigationItem.setRightBarButtonItems(items, animated: animated)
                 }
-                
+
                 // No toolbar
-                navigationController?.setToolbarHidden(true, animated: true)
+                navigationController?.setToolbarHidden(true, animated: animated)
                 setToolbarItems(nil, animated: false)
 
             default:
@@ -148,31 +151,31 @@ extension AlbumViewController
             switch view.traitCollection.userInterfaceIdiom {
             case .phone:
                 // Right side of the navigation bar
-                navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
-                
+                navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: animated)
+
                 // Toolbar
                 if categoryId == pwgSmartAlbum.search.rawValue {
                     // Keep search bar integrated to toolbar
                     navigationItem.preferredSearchBarPlacement = .integrated
-                    setToolbarItems(nil, animated: true)
+                    setToolbarItems(nil, animated: animated)
                 }
                 else if categoryId > 0 {
                     addAlbumBarButton = getAddAlbumBarButton()
                     addImageBarButton = getAddImageBarButton()
                     let toolBarItems: [UIBarButtonItem?] = [.space(), addAlbumBarButton, addImageBarButton]
-                    navigationController?.setToolbarHidden(false, animated: true)
-                    setToolbarItems(toolBarItems.compactMap { $0 }, animated: true)
+                    navigationController?.setToolbarHidden(false, animated: animated)
+                    setToolbarItems(toolBarItems.compactMap { $0 }, animated: animated)
                 }
-                
+
             case .pad:
                 // Right side of the navigation bar
                 addAlbumBarButton = getAddAlbumBarButton()
                 addImageBarButton = getAddImageBarButton()
                 let barItems: [UIBarButtonItem?] = [selectBarButton, addImageBarButton, addAlbumBarButton]
-                navigationItem.setRightBarButtonItems(barItems.compactMap({ $0 }), animated: true)
-                
+                navigationItem.setRightBarButtonItems(barItems.compactMap({ $0 }), animated: animated)
+
                 // No toolbar
-                navigationController?.setToolbarHidden(true, animated: true)
+                navigationController?.setToolbarHidden(true, animated: animated)
                 setToolbarItems(nil, animated: false)
 
             default:
@@ -204,9 +207,9 @@ extension AlbumViewController
                 }
                 
                 // Gather buttons in toolbar
-                setToolbarItems(toolBarItems.compactMap { $0 }, animated: true)
                 navigationController?.setToolbarHidden(false, animated: true)
-                
+                setToolbarItems(toolBarItems.compactMap { $0 }, animated: true)
+
             case .pad:
                 // Right side of the navigation bar
                 addAlbumBarButton = getAddAlbumBarButton()
@@ -270,30 +273,30 @@ extension AlbumViewController
     
     // MARK: Preview Mode before iOS 26
     @MainActor @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Specific to iOS 15 to 18")
-    private func initNavBarsInLegacyPreviewMode() {
+    private func initNavBarsInLegacyPreviewMode(animated: Bool) {
         // Left side of navigation bar
         if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
             // Button for accessing settings
-            navigationItem.setLeftBarButtonItems([settingsBarButton].compactMap { $0 }, animated: true)
+            navigationItem.setLeftBarButtonItems([settingsBarButton].compactMap { $0 }, animated: animated)
             navigationItem.hidesBackButton = true
         } else if categoryId == pwgSmartAlbum.search.rawValue {
             // Search bar => No action button
-            navigationItem.setLeftBarButtonItems([], animated: true)
+            navigationItem.setLeftBarButtonItems([], animated: animated)
         } else {
             // Back button to parent album
-            navigationItem.setLeftBarButtonItems(nil, animated: true)
+            navigationItem.setLeftBarButtonItems(nil, animated: animated)
             navigationItem.hidesBackButton = false
         }
-        
+
         // Right side of navigation bar
         if categoryId == pwgSmartAlbum.root.rawValue {
             // Root album => Discover menu button
-            navigationItem.setRightBarButtonItems([discoverBarButton].compactMap { $0 }, animated: true)
+            navigationItem.setRightBarButtonItems([discoverBarButton].compactMap { $0 }, animated: animated)
         }
         else if categoryId == pwgSmartAlbum.search.rawValue {
             // Search mode => No action button and no toolbar
-            navigationItem.setRightBarButtonItems([], animated: true)
-            navigationController?.setToolbarHidden(true, animated: true)
+            navigationItem.setRightBarButtonItems([], animated: animated)
+            navigationController?.setToolbarHidden(true, animated: animated)
             searchController?.searchBar.becomeFirstResponder()
         }
         else {
@@ -312,7 +315,7 @@ extension AlbumViewController
             selectBarButton?.accessibilityLabel = String(localized: "categoryImageList_selectButton", comment: "Select")
             
             // Set right bar buttons
-            navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
+            navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: animated)
         }
     }
     
@@ -396,8 +399,8 @@ extension AlbumViewController
                 // Toolbar
                 let toolbarItems: [UIBarButtonItem] = [shareBarButton, .space(),
                                                        favoriteBarButton, deleteBarButton].compactMap({ $0 })
-                setToolbarItems(toolbarItems, animated: true)
                 navigationController?.setToolbarHidden(false, animated: true)
+                setToolbarItems(toolbarItems, animated: true)
             }
             else {
                 // Fallback on previous version
@@ -408,8 +411,8 @@ extension AlbumViewController
                 let toolBarItems = [shareBarButton, .space(),
                                     favoriteBarButton, favoriteBarButton == nil ? nil : .space(),
                                     deleteBarButton, shareBarButton == nil ? .space() : nil].compactMap { $0 }
-                setToolbarItems(toolBarItems, animated: true)
                 navigationController?.setToolbarHidden(false, animated: true)
+                setToolbarItems(toolBarItems, animated: true)
             }
         } else {    // iPad
             // Left side of navigation bar
