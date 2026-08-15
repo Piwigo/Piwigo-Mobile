@@ -1,3 +1,1 @@
-• Aggiunge un'estensione “Condividi” che consente di caricare foto, video e file PDF da altre app
-• Riproduce immagini GIF animate
-• Risolve alcuni bug e migliora l'interfaccia
+• Correzioni di bug

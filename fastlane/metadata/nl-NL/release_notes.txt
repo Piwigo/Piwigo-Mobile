@@ -1,3 +1,1 @@
-• Er is een ‘Delen’-extensie toegevoegd waarmee je foto’s, video’s en PDF-bestanden vanuit andere apps kunt uploaden
-• Speelt geanimeerde GIF-afbeeldingen af
-• Verhelpt bugs en verbetert de interface
+• Foutjes verbeterd

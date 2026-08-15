@@ -1,3 +1,1 @@
-• Se ha añadido una extensión para compartir que permite subir fotos, vídeos y archivos PDF desde otras aplicaciones
-• Reproduce imágenes GIF animadas
-• Se han corregido errores y se ha mejorado la interfaz
+• Corrección de errores
