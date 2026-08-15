@@ -151,7 +151,7 @@ extension AlbumViewController
     @MainActor
     private func rotateImagesInDatabaseError(_ error: PwgKitError) {
         // Session logout required?
-        if error.requiresLogout {
+        if error.requiresLogout, userData.pwgID != 0 {
             ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }

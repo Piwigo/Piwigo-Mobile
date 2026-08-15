@@ -545,7 +545,7 @@ final class SelectCategoryViewController: UIViewController {
     @MainActor
     func showError(_ error: PwgKitError) {
         // Session logout required?
-        if error.requiresLogout {
+        if error.requiresLogout, userData.pwgID != 0 {
             ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }

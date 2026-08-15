@@ -222,7 +222,7 @@ extension AlbumViewController
     private func removeImages(_ toRemove: Set<Image>, andThenDelete toDelete: Set<Image>,
                               total: Float, error: PwgKitError) {
         // Session logout required?
-        if error.requiresLogout {
+        if error.requiresLogout, userData.pwgID != 0 {
             ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }
@@ -296,7 +296,7 @@ extension AlbumViewController
     @MainActor
     private func dissociateImagesError(_ error: PwgKitError) {
         // Session logout required?
-        if error.requiresLogout {
+        if error.requiresLogout, userData.pwgID != 0 {
             ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }
@@ -387,7 +387,7 @@ extension AlbumViewController
     @MainActor
     private func deleteImagesError(_ error: PwgKitError) {
         // Session logout required?
-        if error.requiresLogout {
+        if error.requiresLogout, userData.pwgID != 0 {
             ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }

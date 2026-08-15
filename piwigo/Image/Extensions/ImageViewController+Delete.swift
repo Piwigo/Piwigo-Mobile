@@ -139,7 +139,7 @@ extension ImageViewController
     @MainActor
     private func removeImageFromAlbumError(_ error: PwgKitError) {
         // Session logout required?
-        if error.requiresLogout {
+        if error.requiresLogout, userData.pwgID != 0 {
             ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }
@@ -225,7 +225,7 @@ extension ImageViewController
     @MainActor
     private func deleteImageFromDatabaseError(_ error: PwgKitError) {
         // Session logout required?
-        if error.requiresLogout {
+        if error.requiresLogout, userData.pwgID != 0 {
             ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }
