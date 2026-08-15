@@ -63,8 +63,11 @@ extension AlbumViewController
         ///   This requires 'user_id' and 'added_by' values of images for checking rights.
         ///   'user_id' is deduced after a first upload, unknown before or after a clear of the data cache
         if categoryId == pwgSmartAlbum.root.rawValue {
-            // Root album ➜ Discover menu button in navigation bar including options and settings access
+            // Root album
+            /// - Discover menu button in navigation bar including options and settings access
+            /// - Create album button in toolbar if user has appropriate rights
             discoverBarButton = getDiscoverButton()
+            addAlbumBarButton = getAddAlbumBarButton()
             
             // What follows is user interface dependent
             switch view.traitCollection.userInterfaceIdiom {
@@ -74,60 +77,46 @@ extension AlbumViewController
                 navigationItem.setRightBarButtonItems(items, animated: true)
                 
                 // Toolbar
-                addAlbumBarButton = getAddAlbumBarButton()
-                if addAlbumBarButton != nil {
-                    // Upload queue and Add album buttons
-                    let nberOfUploads = UploadVars.shared.nberOfUploadsToComplete
-                    if nberOfUploads > 0 {
-                        // Prepare upload queue button
-                        setUploadQueueButton(withNberOfUploads: nberOfUploads)
-                        
-                        // Gather buttons in toolbar
-                        navigationItem.preferredSearchBarPlacement = .integratedButton
-                        let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
-                        let toolBarItems = [uploadQueueBarButton, .space(), addAlbumBarButton, searchBarButton].compactMap { $0 }
-                        navigationController?.setToolbarHidden(false, animated: true)
-                        setToolbarItems(toolBarItems, animated: true)
-                    }
-                    else {
-                        // Gather buttons in toolbar
-                        navigationItem.preferredSearchBarPlacement = .integratedButton
-                        let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
-                        let toolBarItems = [.space(), addAlbumBarButton, searchBarButton].compactMap { $0 }
-                        setToolbarItems(toolBarItems, animated: true)
-                        navigationController?.setToolbarHidden(false, animated: true)
-                    }
+                // Upload queue and Add album buttons
+                let nberOfUploads = UploadVars.shared.nberOfUploadsToComplete
+                if nberOfUploads > 0 {
+                    // Prepare upload queue button
+                    setUploadQueueButton(withNberOfUploads: nberOfUploads)
+                    
+                    // Gather buttons in toolbar
+                    navigationItem.preferredSearchBarPlacement = .integratedButton
+                    let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
+                    let toolBarItems = [uploadQueueBarButton, .space(), addAlbumBarButton, searchBarButton].compactMap { $0 }
+                    navigationController?.setToolbarHidden(false, animated: true)
+                    setToolbarItems(toolBarItems, animated: true)
                 }
                 else {
                     // Gather buttons in toolbar
                     navigationItem.preferredSearchBarPlacement = .integratedButton
                     let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
-                    let toolBarItems = [.space(), searchBarButton].compactMap { $0 }
-                    navigationController?.setToolbarHidden(false, animated: true)
+                    let toolBarItems = [.space(), addAlbumBarButton, searchBarButton].compactMap { $0 }
                     setToolbarItems(toolBarItems, animated: true)
+                    navigationController?.setToolbarHidden(false, animated: true)
                 }
                 
             case .pad:
                 // Right side of the navigation bar
-                addAlbumBarButton = getAddAlbumBarButton()
-                if addAlbumBarButton != nil {
-                    // Upload queue and Add album buttons
-                    let nberOfUploads = UploadVars.shared.nberOfUploadsToComplete
-                    if nberOfUploads > 0 {
-                        // Prepare upload queue button
-                        setUploadQueueButton(withNberOfUploads: nberOfUploads)
-                        
-                        // Gather buttons in navigation bar
-                        navigationItem.preferredSearchBarPlacement = .integrated
-                        let items = [discoverBarButton, addAlbumBarButton, .fixedSpace(16.0), uploadQueueBarButton].compactMap { $0 }
-                        navigationItem.setRightBarButtonItems(items, animated: true)
-                    }
-                    else {
-                        // Gather buttons in navigation bar
-                        navigationItem.preferredSearchBarPlacement = .integrated
-                        let items = [discoverBarButton, addAlbumBarButton, .fixedSpace(16.0)].compactMap { $0 }
-                        navigationItem.setRightBarButtonItems(items, animated: true)
-                    }
+                // Upload queue and Add album buttons
+                let nberOfUploads = UploadVars.shared.nberOfUploadsToComplete
+                if nberOfUploads > 0 {
+                    // Prepare upload queue button
+                    setUploadQueueButton(withNberOfUploads: nberOfUploads)
+                    
+                    // Gather buttons in navigation bar
+                    navigationItem.preferredSearchBarPlacement = .integrated
+                    let items = [discoverBarButton, addAlbumBarButton, .fixedSpace(16.0), uploadQueueBarButton].compactMap { $0 }
+                    navigationItem.setRightBarButtonItems(items, animated: true)
+                }
+                else {
+                    // Gather buttons in navigation bar
+                    navigationItem.preferredSearchBarPlacement = .integrated
+                    let items = [discoverBarButton, addAlbumBarButton, .fixedSpace(16.0)].compactMap { $0 }
+                    navigationItem.setRightBarButtonItems(items, animated: true)
                 }
                 
                 // No toolbar
@@ -199,53 +188,42 @@ extension AlbumViewController
             case .phone:
                 // Toolbar
                 addAlbumBarButton = getAddAlbumBarButton()
-                if addAlbumBarButton != nil {
-                    // Upload queue and Add album buttons
-                    let nberOfUploads = UploadVars.shared.nberOfUploadsToComplete
-                    if nberOfUploads > 0 {
-                        // Prepare upload queue button
-                        setUploadQueueButton(withNberOfUploads: nberOfUploads)
-                        
-                        // Gather buttons in toolbar
-                        navigationItem.preferredSearchBarPlacement = .integratedButton
-                        let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
-                        let toolBarItems = [uploadQueueBarButton, .space(), addAlbumBarButton, searchBarButton].compactMap { $0 }
-                        navigationController?.setToolbarHidden(false, animated: true)
-                        setToolbarItems(toolBarItems, animated: true)
-                    }
-                    else {
-                        // Gather buttons in toolbar
-                        navigationItem.preferredSearchBarPlacement = .integratedButton
-                        let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
-                        let toolBarItems = [.space(), addAlbumBarButton, searchBarButton].compactMap { $0 }
-                        setToolbarItems(toolBarItems, animated: true)
-                        navigationController?.setToolbarHidden(false, animated: true)
-                    }
+                
+                // Gather buttons in toolbar
+                // Upload queue and Add album buttons
+                navigationItem.preferredSearchBarPlacement = .integratedButton
+                let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
+                var toolBarItems: [UIBarButtonItem?] = [.space(), addAlbumBarButton, searchBarButton]
+                
+                let nberOfUploads = UploadVars.shared.nberOfUploadsToComplete
+                if nberOfUploads > 0 {
+                    // Add upload queue button
+                    setUploadQueueButton(withNberOfUploads: nberOfUploads)
+                    toolBarItems.insert(uploadQueueBarButton, at: 0)
                 }
+                
+                // Gather buttons in toolbar
+                setToolbarItems(toolBarItems.compactMap { $0 }, animated: true)
+                navigationController?.setToolbarHidden(false, animated: true)
                 
             case .pad:
                 // Right side of the navigation bar
                 addAlbumBarButton = getAddAlbumBarButton()
-                if addAlbumBarButton != nil {
-                    // Upload queue and Add album buttons
-                    let nberOfUploads = UploadVars.shared.nberOfUploadsToComplete
-                    if nberOfUploads > 0 {
-                        // Prepare upload queue button
-                        setUploadQueueButton(withNberOfUploads: nberOfUploads)
-                        
-                        // Gather buttons in navigation bar
-                        navigationItem.preferredSearchBarPlacement = .integrated
-                        let items = [discoverBarButton, addAlbumBarButton, .fixedSpace(16.0), uploadQueueBarButton].compactMap { $0 }
-                        navigationItem.setRightBarButtonItems(items, animated: true)
-                    }
-                    else {
-                        // Gather buttons in navigation bar
-                        navigationItem.preferredSearchBarPlacement = .integrated
-                        let items = [discoverBarButton, addAlbumBarButton, .fixedSpace(16.0)].compactMap { $0 }
-                        navigationItem.setRightBarButtonItems(items, animated: true)
-                    }
-                }
+                
+                // Gather buttons in navigation bar
+                navigationItem.preferredSearchBarPlacement = .integrated
+                var items: [UIBarButtonItem?] = [discoverBarButton, addAlbumBarButton, .fixedSpace(16.0)]
 
+                let nberOfUploads = UploadVars.shared.nberOfUploadsToComplete
+                if nberOfUploads > 0 {
+                    // Add upload queue button
+                    setUploadQueueButton(withNberOfUploads: nberOfUploads)
+                    items.append(uploadQueueBarButton)
+                }
+                
+                // Gather buttons in navigation bar
+                navigationItem.setRightBarButtonItems(items.compactMap { $0 }, animated: true)
+                
             default:
                 preconditionFailure("!!! Interface not managed !!!")
             }
