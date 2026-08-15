@@ -23,6 +23,7 @@ extension AlbumViewController
             button = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: discoverMenu())
         }
         button.accessibilityIdentifier = "discover"
+        button.accessibilityLabel = String(localized: "discoverMenu_title", comment: "Discover")
         return button
     }
 }

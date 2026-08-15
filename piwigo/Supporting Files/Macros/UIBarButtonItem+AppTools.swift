@@ -62,6 +62,7 @@ extension UIBarButtonItem {
         let button = UIBarButtonItem(image: UIImage(systemName: "arrow.turn.down.right"),
                                      style: .plain, target: target, action: action)
         button.accessibilityIdentifier = "goToPage"
+        button.accessibilityLabel = String(localized: "goToPage_title", comment: "Go to page…")
         button.tintColor = PwgColor.tintColor
         return button
     }
@@ -72,6 +73,7 @@ extension UIBarButtonItem {
         let button = UIBarButtonItem(image: UIImage(systemName: "rectangle.and.paperclip"),
                                      style: .plain, target: target, action: action)
         button.accessibilityIdentifier = "albumThumbnail"
+        button.accessibilityLabel = String(localized: "imageOptions_setAlbumImage", comment: "Set as Album Thumbnail")
         button.tintColor = PwgColor.tintColor
         return button
     }
@@ -89,8 +91,10 @@ extension UIBarButtonItem {
     func setFavoriteImage(for state: Bool) {
         if state {
             self.image = UIImage(systemName: "heart.fill")
+            self.accessibilityLabel = String(localized: "categoryImageList_unfavorite", comment: "Unfavorite")
         } else {
             self.image = UIImage(systemName: "heart")
+            self.accessibilityLabel = String(localized: "categoryImageList_favorite", comment: "Favorite")
         }
     }
     
@@ -107,6 +111,7 @@ extension UIBarButtonItem {
     func setBackImage() {
         let configuration = UIImage.SymbolConfiguration(pointSize: 22, weight: .medium, scale: .medium)
         self.image = UIImage(systemName: "chevron.backward", withConfiguration: configuration)
+        self.accessibilityLabel = String(localized: "backButton_title", comment: "Back")
     }
     
     
@@ -148,8 +153,10 @@ extension UIBarButtonItem {
         // to a movement of the icon when switching from one to the other.
         if isMuted {
             self.image = UIImage(systemName: "speaker.slash.fill")
+            self.accessibilityLabel = String(localized: "unmuteAudio_title", comment: "Unmute")
         } else {
             self.image = UIImage(systemName: "speaker.fill")
+            self.accessibilityLabel = String(localized: "muteAudio_title", comment: "Mute")
         }
     }
 }

@@ -23,6 +23,7 @@ extension AlbumViewController
         let image = UIImage(systemName: "rectangle.stack.badge.plus")!
         let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(didTapCreateAlbum))
         button.accessibilityIdentifier = "org.piwigo.addAlbum"
+        button.accessibilityLabel = String(localized: "createNewAlbum_title", comment: "New Album")
         return button
     }
     
@@ -33,6 +34,7 @@ extension AlbumViewController
         let image = UIImage(systemName: "photo.badge.plus")!
         let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(checkPhotoLibraryAccess))
         button.accessibilityIdentifier = "org.piwigo.addImages"
+        button.accessibilityLabel = String(localized: "tabBar_upload", comment: "Upload")
         return button
     }
     

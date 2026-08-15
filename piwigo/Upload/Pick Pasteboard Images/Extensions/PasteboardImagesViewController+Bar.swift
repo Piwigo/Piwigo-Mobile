@@ -170,6 +170,7 @@ extension PasteboardImagesViewController {
                 // Fallback on previous version
                 actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
             }
+            actionBarButton?.accessibilityLabel = String(localized: "moreOptions_title", comment: "More")
         } else {
             actionBarButton = nil
         }

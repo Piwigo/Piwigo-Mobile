@@ -60,6 +60,7 @@ final class UploadSwitchViewController: UIViewController {
             uploadBarButton = UIBarButtonItem(image: UIImage(named: "arrowshape.up.fill"),
                                               style: .plain, target: self, action: #selector(didTapUploadButton))
         }
+        uploadBarButton?.accessibilityLabel = String(localized: "tabBar_upload", comment: "Upload")
 
         // Segmented control (choice for presenting common image parameters or upload settings)
         switchViewSegmentedControl.addTarget(self, action: #selector(didSwitchView), for: .valueChanged)

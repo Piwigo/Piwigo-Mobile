@@ -158,6 +158,7 @@ extension AlbumViewController
     func getSettingsBarButton() -> UIBarButtonItem {
         let button = UIBarButtonItem(image: UIImage(systemName: "gear"), style: .plain, target: self, action: #selector(didTapSettingsButton))
         button.accessibilityIdentifier = "settings"
+        button.accessibilityLabel = String(localized: "tabBar_preferences", comment: "Settings")
         return button
     }
     

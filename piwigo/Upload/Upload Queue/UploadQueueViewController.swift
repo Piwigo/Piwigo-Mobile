@@ -88,6 +88,7 @@ final class UploadQueueViewController: UIViewController {
             // Fallback on previous version
             actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), landscapeImagePhone: UIImage(systemName: "ellipsis.circle"), style: .plain, target: self, action: #selector(didTapActionButton))
         }
+        actionBarButton?.accessibilityLabel = String(localized: "moreOptions_title", comment: "More")
         doneBarButton = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(quitUpload))
         doneBarButton?.accessibilityIdentifier = "Done"
         

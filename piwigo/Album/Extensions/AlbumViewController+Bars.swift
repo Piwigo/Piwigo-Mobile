@@ -142,6 +142,7 @@ extension AlbumViewController
             let menu = UIMenu(title: "", options: UIMenu.Options.displayInline, children: children.compactMap({$0}))
             selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
             selectBarButton?.accessibilityIdentifier = "select"
+            selectBarButton?.accessibilityLabel = String(localized: "categoryImageList_selectButton", comment: "Select")
             
             // What follows is user interface dependent
             switch view.traitCollection.userInterfaceIdiom {
@@ -308,6 +309,7 @@ extension AlbumViewController
             let menu = UIMenu(title: "", children: children.compactMap({$0}))
             selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
             selectBarButton?.accessibilityIdentifier = "select"
+            selectBarButton?.accessibilityLabel = String(localized: "categoryImageList_selectButton", comment: "Select")
             
             // Set right bar buttons
             navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
@@ -380,6 +382,7 @@ extension AlbumViewController
             actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle.fill"), menu: menu)
         }
         actionBarButton?.accessibilityIdentifier = "actions"
+        actionBarButton?.accessibilityLabel = String(localized: "moreOptions_title", comment: "More")
 
         if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
             // Left side of navigation bar

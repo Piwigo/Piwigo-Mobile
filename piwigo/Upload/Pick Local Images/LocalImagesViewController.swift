@@ -179,6 +179,7 @@ final class LocalImagesViewController: UIViewController
         }
         uploadBarButton?.isEnabled = false
         uploadBarButton?.accessibilityIdentifier = "Upload"
+        uploadBarButton?.accessibilityLabel = String(localized: "tabBar_upload", comment: "Upload")
         
         // The action button proposes:
         /// - to swap between ascending and descending sort orders,
@@ -199,6 +200,7 @@ final class LocalImagesViewController: UIViewController
             actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
         }
         actionBarButton?.accessibilityIdentifier = "Action"
+        actionBarButton?.accessibilityLabel = String(localized: "moreOptions_title", comment: "More")
 
         if view.traitCollection.userInterfaceIdiom == .pad {
             // The deletion of photos already uploaded to a Piwigo server is performed with this trash button.

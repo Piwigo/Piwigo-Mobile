@@ -41,6 +41,7 @@ extension ImageViewController {
                 actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
             }
             actionBarButton?.accessibilityIdentifier = "actions"
+            actionBarButton?.accessibilityLabel = String(localized: "moreOptions_title", comment: "More")
             
             // Configure the navigation bar and toolbar
             if #available(iOS 26.0, *) {
