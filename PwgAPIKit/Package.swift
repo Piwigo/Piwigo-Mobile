@@ -44,8 +44,9 @@ let package = Package(
             path: "Tests",
             resources: [
                 .process("community"),
+                .process("pwg"),
                 .process("reflection"),
-                .process("pwg")
+                .process("sharealbum")
             ]
         )
     ],

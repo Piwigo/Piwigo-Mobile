@@ -142,6 +142,7 @@
 		AD36C07F2DEA1F4800D30C8D /* RenameFileViewController+CounterFormatSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD36C07E2DEA1F4800D30C8D /* RenameFileViewController+CounterFormatSelector.swift */; };
 		AD36C0812DEA20E300D30C8D /* CounterFormatSelectorViewController+UITableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD36C0802DEA20E300D30C8D /* CounterFormatSelectorViewController+UITableViewDataSource.swift */; };
 		AD36C0832DEA258400D30C8D /* CounterPrefixSelectorTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD36C0822DEA258400D30C8D /* CounterPrefixSelectorTableViewCell.swift */; };
+		AD3941173030D44B007D2174 /* ShareAlbumGetInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3941163030D44B007D2174 /* ShareAlbumGetInfo.swift */; };
 		AD3B2C5B2A1D29380001B8B0 /* ExternalDisplayUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3B2C5A2A1D29380001B8B0 /* ExternalDisplayUtilities.swift */; };
 		AD3B2C5E2A250F300001B8B0 /* LaunchScreenExternal.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3B2C5C2A20F6AE0001B8B0 /* LaunchScreenExternal.storyboard */; };
 		AD3B2C622A2932110001B8B0 /* DataMigrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3B2C612A2932110001B8B0 /* DataMigrationViewController.swift */; };
@@ -652,6 +653,7 @@
 		AD36C07E2DEA1F4800D30C8D /* RenameFileViewController+CounterFormatSelector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RenameFileViewController+CounterFormatSelector.swift"; sourceTree = "<group>"; };
 		AD36C0802DEA20E300D30C8D /* CounterFormatSelectorViewController+UITableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CounterFormatSelectorViewController+UITableViewDataSource.swift"; sourceTree = "<group>"; };
 		AD36C0822DEA258400D30C8D /* CounterPrefixSelectorTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CounterPrefixSelectorTableViewCell.swift; sourceTree = "<group>"; };
+		AD3941163030D44B007D2174 /* ShareAlbumGetInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ShareAlbumGetInfo.swift; path = PwgKit/Sources/Enums/ShareAlbumGetInfo.swift; sourceTree = "<group>"; };
 		AD3B2C5A2A1D29380001B8B0 /* ExternalDisplayUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalDisplayUtilities.swift; sourceTree = "<group>"; };
 		AD3B2C5C2A20F6AE0001B8B0 /* LaunchScreenExternal.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = LaunchScreenExternal.storyboard; path = "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/piwigo/Resources/LaunchScreenExternal.storyboard"; sourceTree = "<absolute>"; };
 		AD3B2C612A2932110001B8B0 /* DataMigrationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataMigrationViewController.swift; sourceTree = "<group>"; };
@@ -1778,6 +1780,7 @@
 		D82B8CB21A67820A000E47CA = {
 			isa = PBXGroup;
 			children = (
+				AD3941163030D44B007D2174 /* ShareAlbumGetInfo.swift */,
 				D82B8CBD1A67820A000E47CA /* piwigo */,
 				ADADADEB2FB0AA6F003FB43F /* shareExtension */,
 				AD084E3C265984B000159FE1 /* Supporting Targets */,
@@ -2361,6 +2364,7 @@
 				AD9698242BE6548400520614 /* AlbumViewController+Discover.swift in Sources */,
 				ADC592662C0333A2002B6F82 /* ImageHeaderReusableView.swift in Sources */,
 				AD0B62FF2DEB5B13001E9684 /* UploadSettingsViewController+UITableViewDataSource.swift in Sources */,
+				AD3941173030D44B007D2174 /* ShareAlbumGetInfo.swift in Sources */,
 				AD6BA0F52BA5C00500755257 /* LocalImagesViewController+HeaderDelegate.swift in Sources */,
 				AD09E3032A92A05C00D8E134 /* SettingsViewController+Privacy.swift in Sources */,
 				ADBE0C2B2BE9635800F16A50 /* AlbumViewController+Share.swift in Sources */,

@@ -1,0 +1,19 @@
+{
+    "stat": "ok",
+    "result": {
+        "shared_albums": [{
+            "id": "2",
+            "category_id": "43",
+            "album_name": "People",
+            "uppercats": "43",
+            "creation_date": "2026-08-15 17:41:44",
+            "visits": "2",
+            "last_visit": "2026-08-15 17:20:11",
+            "created_by": "1",
+            "created_by_username": "Eddy",
+            "share_url": "https://piwigo.lelievre-berna.net/16.x/?xauth=ywurvkpypsce",
+            "album_path": "People"
+        }],
+        "count": 1
+    }
+}
