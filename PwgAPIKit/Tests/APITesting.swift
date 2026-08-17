@@ -799,6 +799,27 @@ final class PwgAPITesting: XCTestCase {
         XCTAssertEqual(result.data?.shareCode, "hvtEixyxCmqF")
     }
     
+    func testShareAlbumRenewDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle.module
+        guard let url = bundle.url(forResource: kShareAlbumRenew, withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(ShareAlbumRenewJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertEqual(result.data?.catID?.intValue, 23)
+        XCTAssertEqual(result.data?.shareCode, "nemaacwahggh")
+    }
+    
     func testShareAlbumCancelDecoding() {
         
         // Case of a successful request
