@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import PwgKit
 
 /**
  A struct for managing album data
@@ -15,8 +16,10 @@ public struct AlbumProperties: Sendable
 {
     public let pwgID: Int32                         // Piwigo album ID
     public var name: String                         // Album name
+    public var status: pwgAlbumStatus               // See pwgAlbumStatus enum
     public var comment: AttributedString            // Plain version of the description
     public var commentHTML: AttributedString        // HTML version of the description
+    public var pageUrl: URL?                        // Album page URL
     public var query: String                        // Search query
 
     public var upperIds: String                     // Parent album IDs
@@ -35,8 +38,9 @@ public struct AlbumProperties: Sendable
 extension AlbumProperties
 {
     public init(withID pwgID: Int32) {
-        self.init(pwgID: pwgID, name: "",
+        self.init(pwgID: pwgID, name: "", status: .publicStatus,
                   comment: AttributedString(), commentHTML: AttributedString(),
+                  pageUrl: nil,
                   query: "",
 
                   upperIds: "",

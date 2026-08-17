@@ -12,9 +12,10 @@ public struct CategoryGetInfo: Decodable, Sendable
     // The following data is returned by pwg.categories.getList
     public var id: Int32?                   // 32
     public let name: String?                // "Insects & Spiders"
+    //  public let nameRaw: String?             // ""
     public let comment: String?             // "…" i.e. text potentially containing HTML encoded characters, selected language
     public let commentRaw: String?          // "…" i.e. text potentially containing HTML encoded characters, all languages
-    //    public let status: String?              // "public"
+    public let status: String?              // "public"
     public let globalRank: String?          // "11.2.1" i.e. 11th album in root, 2nd sub-album, 1st sub-sub-album
     
     public let upperCat: String?            // "41"
@@ -26,7 +27,7 @@ public struct CategoryGetInfo: Decodable, Sendable
     public let nbCategories: Int32?         // 0
     
     //    public let permalink: String?           // "insects-spiders"
-    //    public let pageUrl: String?             // "https:…"
+    public let pageUrl: String?             // "https:…"
     public let thumbnailId: String?         // "236"
     public let thumbnailUrl: String?        // "https:…"
     
@@ -36,7 +37,9 @@ public struct CategoryGetInfo: Decodable, Sendable
     // The following data is returned by community.categories.getList
     //    public let id: Int?                     // 32
     //    public let name: String?                // "Insects & Spiders"
-    //    public let comment: String?             // "…"
+    //    public let nameRaw: String?             // ""
+    //    public let comment: String?             // "…" i.e. text potentially containing HTML encoded characters, selected language
+    //    public let commentRaw: String?          // "…" i.e. text potentially containing HTML encoded characters, all languages
     //    public let globalRank: String?          // "1"
     
     //    public let uppercats: String?           // "32"
@@ -46,6 +49,7 @@ public struct CategoryGetInfo: Decodable, Sendable
     //    public let nbCategories: Int?           // 0
     
     //    public let permalink: String?           // null
+    //    public let pageUrl: String?             // "https:…"
     
     //    public let dateLast: String?            // "yyyy-MM-dd HH:mm:ss"
     //    public let maxDateLast: String?         // "yyyy-MM-dd HH:mm:ss"
@@ -58,7 +62,7 @@ public struct CategoryGetInfo: Decodable, Sendable
         case name
         case comment
         case commentRaw = "comment_raw"
-        //        case status
+        case status
         case globalRank = "global_rank"
         
         case upperCat = "id_uppercat"
@@ -70,7 +74,7 @@ public struct CategoryGetInfo: Decodable, Sendable
         case nbCategories = "nb_categories"
         
         //        case permalink
-        //        case pageUrl = "url"
+        case pageUrl = "url"
         case thumbnailId = "representative_picture_id"
         case thumbnailUrl = "tn_url"
         
@@ -89,6 +93,7 @@ extension CategoryGetInfo {
         name = pwgSmartAlbum(rawValue: albumId)?.name ?? albumName ?? Localized.tabBar_albums
         comment = albumComment
         commentRaw = albumComment
+        status = "public"
         globalRank = albumId <= 0 ? "0" : (parentId == "0" ? "0" : albumRank + ".0")
         upperCat = parentId
         upperCats = parentIds
@@ -96,6 +101,7 @@ extension CategoryGetInfo {
         nbImages = nberImages
         totalNbImages = totalNberImages
         nbCategories = Int32.zero
+        pageUrl = ""
         thumbnailId = ""
         thumbnailUrl = ""
         dateLast = ""

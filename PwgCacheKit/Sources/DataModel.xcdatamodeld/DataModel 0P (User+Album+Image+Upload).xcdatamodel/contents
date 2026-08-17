@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="25219" systemVersion="25F84" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="DataModel">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24902" systemVersion="25G76" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="DataModel">
     <entity name="Album" representedClassName="Album" syncable="YES">
         <attribute name="comment" attributeType="Transformable" valueTransformerName="DescriptionValueTransformer" customClassName="NSAttributedString"/>
         <attribute name="commentHTML" attributeType="Transformable" valueTransformerName="DescriptionValueTransformer" customClassName="NSAttributedString"/>
@@ -13,9 +13,11 @@
         <attribute name="name" attributeType="String" defaultValueString=""/>
         <attribute name="nbImages" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="nbSubAlbums" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="pageUrl" optional="YES" attributeType="Transformable" valueTransformerName="RelativeURLValueTransformer" customClassName="NSURL"/>
         <attribute name="parentId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="pwgID" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="query" attributeType="String" defaultValueString=""/>
+        <attribute name="status" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="thumbnailId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="thumbnailUrl" optional="YES" attributeType="Transformable" valueTransformerName="RelativeURLValueTransformer" customClassName="NSURL"/>
         <attribute name="totalNbImages" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>

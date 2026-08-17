@@ -23,9 +23,10 @@ public final nonisolated class Album: NSManagedObject, Identifiable {
      */
     public func update(with albumData: CategoryGetInfo, userURIstr: String) throws {
         
-        // Update the album only if the Id and Name properties have values.
+        // Update the album only if the ID and name properties have values.
         guard let newPwgId = albumData.id,
-              let newName = albumData.name else {
+              let newName = albumData.name
+        else {
             throw PwgKitError.missingAlbumData
         }
         if uuid.isEmpty {
@@ -39,6 +40,22 @@ public final nonisolated class Album: NSManagedObject, Identifiable {
         let newNameUTF8 = newName.utf8mb4Encoded
         if name != newNameUTF8 {
             name = newNameUTF8
+        }
+        
+        // Album status
+        switch albumData.status {
+        case pwgAlbumStatus.publicStatus.argument:
+            if status != pwgAlbumStatus.publicStatus.rawValue {
+                status = pwgAlbumStatus.publicStatus.rawValue
+            }
+        case pwgAlbumStatus.privateStatus.argument:
+            if status != pwgAlbumStatus.privateStatus.rawValue {
+                status = pwgAlbumStatus.privateStatus.rawValue
+            }
+        default:
+            if status != pwgAlbumStatus.unknown.rawValue {
+                status = pwgAlbumStatus.unknown.rawValue
+            }
         }
         
         // Album description (required)
@@ -57,6 +74,13 @@ public final nonisolated class Album: NSManagedObject, Identifiable {
         let newCommentHTML = newCommentStr.attributedHTML
         if newCommentHTML != commentHTML {
             commentHTML = newCommentHTML
+        }
+        
+        // Album page URL
+        /// - Store relative URLs to save space and because the URL might changed in future
+        let newPageUrl = ImageGetInfo.encodedImageURL(albumData.pageUrl ?? "")
+        if pageUrl != newPageUrl {
+            pageUrl = newPageUrl
         }
         
         // Album rank (required)
@@ -169,10 +193,12 @@ extension Album
     public func getProperties() -> AlbumProperties {
         return AlbumProperties(
             pwgID: self.pwgID, name: self.name,
+            status: pwgAlbumStatus(rawValue: self.status) ?? .unknown,
             /// The bridge is lossless: every attribute produced by String.attributedHTML
             /// belongs to a registered AttributeScope. Only unregistered keys would be dropped.
             comment: AttributedString(self.comment),
             commentHTML: AttributedString(self.commentHTML),
+            pageUrl: self.pageUrl as? URL,
             query: self.query,
             
             upperIds: self.upperIds,

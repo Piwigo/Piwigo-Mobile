@@ -19,24 +19,29 @@ extension Album {
 
     @NSManaged public var uuid: String
     @NSManaged public var pwgID: Int32
+    @NSManaged public var name: String
+    @NSManaged public var status: Int16                     // See pwgAlbumStatus enum (.privateStatus, .publicStatus,…)
     @NSManaged public var commentRaw: String                // Potentially containing HTML encoded characters, selected language
     @NSManaged public var commentStr: String                // Potentially containing HTML encoded characters, all languages
     @NSManaged public var comment: NSAttributedString       // Plain version
     @NSManaged public var commentHTML: NSAttributedString   // HTML version
-    @NSManaged public var currentCounter: Int64
-    @NSManaged public var dateLast: TimeInterval
-    @NSManaged public var dateGetImages: TimeInterval
-    @NSManaged public var globalRank: String
-    @NSManaged public var name: String
-    @NSManaged public var imageSort: String
-    @NSManaged public var nbImages: Int64
-    @NSManaged public var nbSubAlbums: Int32
-    @NSManaged public var parentId: Int32
+    @NSManaged public var pageUrl: NSURL?                   // Album page URL
+    @NSManaged public var thumbnailId: Int64                // ID of the thumbnail
+    @NSManaged public var thumbnailUrl: NSURL?              // URL of the thumbnail
     @NSManaged public var query: String
-    @NSManaged public var thumbnailId: Int64
-    @NSManaged public var thumbnailUrl: NSURL?
-    @NSManaged public var totalNbImages: Int64
+
+    @NSManaged public var parentId: Int32
     @NSManaged public var upperIds: String
+    @NSManaged public var globalRank: String
+    @NSManaged public var nbSubAlbums: Int32
+
+    @NSManaged public var nbImages: Int64
+    @NSManaged public var totalNbImages: Int64
+    @NSManaged public var currentCounter: Int64
+    @NSManaged public var imageSort: String
+    @NSManaged public var dateGetImages: TimeInterval
+
+    @NSManaged public var dateLast: TimeInterval
     @NSManaged public var server: Server?
     @NSManaged public var user: User?
     @NSManaged public var images: Set<Image>?
