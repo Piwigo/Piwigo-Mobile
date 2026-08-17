@@ -34,7 +34,7 @@ public struct ShareAlbumCreateJSON: Decodable {
         {
             // Decodes shared album infos from the data and store them in the array
             do {
-                // Use ShareAlbumGetInfo struct
+                // Use ShareAlbumCreate struct
                 data = try rootContainer.decodeIfPresent(ShareAlbumCreate.self, forKey: .data)
             }
             catch {

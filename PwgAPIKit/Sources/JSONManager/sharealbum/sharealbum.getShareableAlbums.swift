@@ -1,5 +1,5 @@
 //
-//  sharealbum.getList.swift
+//  sharealbum.getShareableAlbums .swift
 //  PwgAPIKit
 //
 //  Created by Eddy Lelièvre-Berna on 15/08/2026.
@@ -9,13 +9,13 @@
 import Foundation
 import PwgKit
 
-public let kShareAlbumGetList = "sharealbum.getList"
+public let kShareAlbumGetShareable = "sharealbum.getShareableAlbums"
 
 // MARK: Piwigo JSON Structures
-public struct ShareAlbumGetListJSON: Decodable {
+public struct ShareAlbumGetShareableJSON: Decodable {
 
     public var status: String?
-    public var data = [ShareAlbumGetInfo]()
+    public var data = [ShareAlbumGetShareable]()
     
     private enum RootCodingKeys: String, CodingKey {
         case status = "stat"
@@ -25,7 +25,7 @@ public struct ShareAlbumGetListJSON: Decodable {
     }
 
     private enum ResultCodingKeys: String, CodingKey {
-        case shared_albums
+        case shareable_albums
     }
 
     public init(from decoder: any Decoder) throws
@@ -39,12 +39,12 @@ public struct ShareAlbumGetListJSON: Decodable {
         {
             // Result container keyed by ResultCodingKeys
             let resultContainer = try rootContainer.nestedContainer(keyedBy: ResultCodingKeys.self, forKey: .data)
-//            dump(resultContainer)
+            dump(resultContainer)
             
             // Decodes shared albums from the data and store them in the array
             do {
-                // Use ShareAlbumGetInfo struct
-                try data = resultContainer.decode([ShareAlbumGetInfo].self, forKey: .shared_albums)
+                // Use ShareAlbumGetShareable struct
+                try data = resultContainer.decode([ShareAlbumGetShareable].self, forKey: .shareable_albums)
             }
             catch {
                 // Returns an empty array => No shared album
@@ -69,36 +69,50 @@ public struct ShareAlbumGetListJSON: Decodable {
 }
 
 
-public struct ShareAlbumGetInfo: Decodable, Sendable
+public struct ShareAlbumGetShareable: Decodable, Sendable
 {
     // The following data is returned by sharealbum.getList
-    public var pwgID: StringOrInt?          // "2"
-    public var catID: StringOrInt?          // "43"
+    public let catID: StringOrInt?          // "5"
     public let name: String?                // "People"
-    public let upperCats: String?           // "43"
+//    public let comment: String?             // "Movies in different formats"
+//    public let dir: ?
+    public let status: String?              // "private"
+//    public rank: StringOrInt?               // "1"
+//    public globalRank: String?              // 22.1
+//    public siteID: ?
+    public let visible: Bool?               // true
+//    public commentable
     
-    public let creationDate: String?        // "2026-08-15 17:41:44"
-    public let visits: StringOrInt?         // "2"
-    public let lastVisit: String?           // "2026-08-15 17:20:11"
-    public let createdBy: StringOrInt?      // "1"
-    public let createdByName: String?       // "Eddy"
-    
-    public let shareUrl: String?            // "https://piwigo.lelievre-berna.net/16.x/?xauth=ywurvkpypsce"
-    public let path: String?                // "People"
-    
+//    public let parentID: StringOrInt?       // "4"
+//    public let upperCats: String?           // "43"
+//    public let thumbnailId: String?         // "166"
+
+//    public let imageSort: String?           // "date_creation ASC, file ASC, id ASC"
+//    public let permalink: String?
+//    public let lastModified: Strings?       // "2026-08-17 18:07:56"
+//    public let communityUSer: ?
+//    public let albumPath: String?
+
     public enum CodingKeys: String, CodingKey, Sendable {
-        case pwgID = "id"
-        case catID = "category_id"
-        case name = "album_name"
-        case upperCats = "uppercats"
-        
-        case creationDate = "creation_date"
-        case visits = "visits"
-        case lastVisit = "last_visit"
-        case createdBy = "created_by"
-        case createdByName = "created_by_username"
-        
-        case shareUrl = "share_url"
-        case path = "album_path"
+        case catID = "id"
+        case name = "name"
+//        case comment
+//        case dir
+        case status
+//        case rank
+//        case globalRank = "global_rank"
+//        case site_id
+        case visible
+//        case commentable
+
+//        case parentID = "id_uppercat"
+//        case upperCats = "uppercats"
+//        case thumbnailId = "representative_picture_id"
+
+//        case imageSort = "image_order"
+//        case permalink
+//        case lastModified = "lastmodified"
+//        case communityUser = "community_user"
+//        case albumPath = "album_path"
     }
 }

@@ -42,7 +42,7 @@ public struct ShareAlbumGetInfoJSON: Decodable {
             
             // Decodes shared albums from the data and store them in the array
             do {
-                // Use TagGetInfo struct
+                // Use ShareAlbumGetInfo struct
                 try data = resultContainer.decode(ShareAlbumGetInfo.self, forKey: .shared_album)
             }
             catch {
