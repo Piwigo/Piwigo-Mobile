@@ -127,7 +127,6 @@ extension SettingsViewController: MofifyFilenameDelegate {
         // Update cell
         let indexPath = IndexPath(row: 4 + (userData.hasAdminRights ? 1 : 0)
                                          + (UploadVars.shared.resizeImageOnUpload ? 2 : 0)
-                                         + (UIDevice.current.hasCellular ? 1 : 0)
                                          + (UploadVars.shared.compressImageOnUpload ? 1 : 0),
                                   section: SettingsSection.uploads.rawValue)
         if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
