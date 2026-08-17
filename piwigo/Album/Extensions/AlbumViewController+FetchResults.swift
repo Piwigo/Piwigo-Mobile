@@ -17,6 +17,13 @@ extension AlbumViewController: @MainActor NSFetchedResultsControllerDelegate
 {
     func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>,
                     didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
+        // View loaded?
+        /// An album restored in the navigation stack, or fetched in the background, has no view yet.
+        /// There is nothing to update: viewDidLoad() configures the data source before performing
+        /// the fetch which builds the first snapshot.
+        guard isViewLoaded
+        else { return }
+
         // Data source configured?
         guard let dataSource = collectionView?.dataSource as? DataSource
         else { preconditionFailure("The data source has not implemented snapshot support while it should.") }
