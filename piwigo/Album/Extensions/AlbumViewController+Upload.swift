@@ -75,7 +75,7 @@ extension AlbumViewController
         // Show/hide upload queue button
         if #available(iOS 26.0, *) {
             // Update upload queue button only in root and regular albums
-            guard categoryId > 0
+            guard categoryId >= pwgSmartAlbum.root.rawValue
             else { return }
             updateBarsInModernPreviewMode()
         }
