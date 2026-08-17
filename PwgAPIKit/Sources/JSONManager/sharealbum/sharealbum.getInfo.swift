@@ -1,5 +1,5 @@
 //
-//  sharealbum.renew.swift
+//  sharealbum.getInfo.swift
 //  PwgAPIKit
 //
 //  Created by Eddy Lelièvre-Berna on 17/08/2026.
@@ -8,13 +8,13 @@
 import Foundation
 import PwgKit
 
-public let kShareAlbumRenew = "sharealbum.renew"
+public let kShareAlbumgetInfo = "sharealbum.getInfo"
 
 // MARK: Piwigo JSON Structures
-public struct ShareAlbumRenewJSON: Decodable {
+public struct ShareAlbumGetInfoJSON: Decodable {
 
     public var status: String?
-    public var data: ShareAlbumCreate?
+    public var data: ShareAlbumGetInfo?
     
     private enum RootCodingKeys: String, CodingKey {
         case status = "stat"
@@ -23,6 +23,10 @@ public struct ShareAlbumRenewJSON: Decodable {
         case errorMessage = "message"
     }
     
+    private enum ResultCodingKeys: String, CodingKey {
+        case shared_album
+    }
+
     public init(from decoder: any Decoder) throws
     {
         // Root container keyed by RootCodingKeys
@@ -32,13 +36,17 @@ public struct ShareAlbumRenewJSON: Decodable {
         status = try rootContainer.decodeIfPresent(String.self, forKey: .status)
         if (status == "ok")
         {
-            // Decodes shared album infos from the data and store them in the array
+            // Result container keyed by ResultCodingKeys
+            let resultContainer = try rootContainer.nestedContainer(keyedBy: ResultCodingKeys.self, forKey: .data)
+//            dump(resultContainer)
+            
+            // Decodes shared albums from the data and store them in the array
             do {
-                // Use ShareAlbumGetInfo struct
-                data = try rootContainer.decodeIfPresent(ShareAlbumCreate.self, forKey: .data)
+                // Use TagGetInfo struct
+                try data = resultContainer.decode(ShareAlbumGetInfo.self, forKey: .shared_album)
             }
             catch {
-                // Returns a nil object
+                // Returns an empty array => No shared album
             }
         }
         else if (status == "fail")

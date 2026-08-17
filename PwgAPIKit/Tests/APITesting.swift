@@ -774,7 +774,7 @@ final class PwgAPITesting: XCTestCase {
         
         XCTAssertEqual(result.status, "ok")
         XCTAssertTrue(result.data.contains(where: { $0.pwgID?.int16Value == 2 }))
-        XCTAssertTrue(result.data.contains(where: { $0.catID?.intValue == 43 }))
+        XCTAssertTrue(result.data.contains(where: { $0.catID?.int32Value == 43 }))
         XCTAssertTrue(result.data.contains(where: { $0.name == "People" }))
     }
     
@@ -795,8 +795,30 @@ final class PwgAPITesting: XCTestCase {
         }
         
         XCTAssertEqual(result.status, "ok")
-        XCTAssertEqual(result.data?.catID?.intValue, 28)
+        XCTAssertEqual(result.data?.catID?.int32Value, 28)
         XCTAssertEqual(result.data?.shareCode, "hvtEixyxCmqF")
+    }
+    
+    func testShareAlbumGetInfoDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle.module
+        guard let url = bundle.url(forResource: kShareAlbumgetInfo, withExtension: "json"),
+              let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(ShareAlbumGetInfoJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertEqual(result.data?.catID?.int32Value, 28)
+        XCTAssertEqual(result.data?.name, "Artistics")
+        XCTAssertEqual(result.data?.createdBy?.int16Value, 1)
     }
     
     func testShareAlbumRenewDecoding() {
@@ -816,7 +838,7 @@ final class PwgAPITesting: XCTestCase {
         }
         
         XCTAssertEqual(result.status, "ok")
-        XCTAssertEqual(result.data?.catID?.intValue, 23)
+        XCTAssertEqual(result.data?.catID?.int32Value, 23)
         XCTAssertEqual(result.data?.shareCode, "nemaacwahggh")
     }
     
