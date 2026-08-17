@@ -39,7 +39,7 @@ public struct ShareAlbumGetListJSON: Decodable {
         {
             // Result container keyed by ResultCodingKeys
             let resultContainer = try rootContainer.nestedContainer(keyedBy: ResultCodingKeys.self, forKey: .data)
-            dump(resultContainer)
+//            dump(resultContainer)
             
             // Decodes shared albums from the data and store them in the array
             do {

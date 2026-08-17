@@ -167,6 +167,10 @@ public final class ServerVars: @unchecked Sendable {
     @UserDefault("usesSetCategory", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var usesSetCategory: Bool
     
+    /// - sharealbum.getList method available, false by default (available since version 16.1 of the plugin)
+    @UserDefault("usesShareAlbum", defaultValue: false, userDefaults: UserDefaults.dataSuite)
+    public var usesShareAlbum: Bool
+    
     
     // MARK: - Vars in Memory
     // Network variables kept in memory
