@@ -114,6 +114,16 @@ class UploadImageTableViewCell: UITableViewCell {
         // row (or vice-versa) keeps the stale mask, producing incorrect corner rendering.
         cellImage.layer.mask = nil
         cellImage.layer.cornerRadius = 0
+
+        // Forget which request this cell was displaying and empty the progress bar.
+        // configure(with:) leaves the bar untouched for a request being uploaded — the
+        // notifications drive it — so without this reset a recycled cell would keep showing
+        // the progress of the request it displayed before, until the next notification.
+        /// Noticeable when both halves of a Live Photo are uploaded, since that doubles the
+        /// number of rows and puts the two halves of a same asset next to each other.
+        fileKey = ""
+        objectID = nil
+        uploadingProgress?.setProgress(0.0, animated: false)
     }
 
 

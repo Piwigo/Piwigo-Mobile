@@ -37,6 +37,9 @@ final class LocalImagesViewController: UIViewController
         // Priority to uploads requested manually, oldest ones first
         var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
         sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
+        // Both halves of a Live Photo are requested at the very same date: this last descriptor
+        // gives them a defined order, as in the fetch request of the UploadProvider.
+        sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.assetPart), ascending: true))
         fetchRequest.sortDescriptors = sortDescriptors
         
         // Retrieves upload requests

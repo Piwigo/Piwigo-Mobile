@@ -147,7 +147,7 @@ extension LocalImagesViewController: UICollectionViewDataSource
            let fileKey =  notification.userInfo?["fileKey"] as? String, !fileKey.isEmpty ,
            let cell = visibleCells.first(where: {$0.localIdentifier == UploadProperties.assetIdentifier(from: fileKey)}),
            let progressFraction = notification.userInfo?["progressFraction"] as? Float {
-            cell.setProgress(progressFraction, withAnimation: true)
+            cell.setProgress(progressFraction, forFileKey: fileKey, withAnimation: true)
         }
     }
 }

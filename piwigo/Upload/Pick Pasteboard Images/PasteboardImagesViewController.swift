@@ -29,6 +29,9 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
         // Priority to uploads requested manually, oldest ones first
         var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
         sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
+        // Pasteboard objects never yield two halves, but this last descriptor keeps the order of
+        // requests sharing a date defined, as in the fetch request of the UploadProvider.
+        sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.assetPart), ascending: true))
         fetchRequest.sortDescriptors = sortDescriptors
 
         // Retrieves only non-completed upload requests

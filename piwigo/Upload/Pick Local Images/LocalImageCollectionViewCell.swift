@@ -20,7 +20,14 @@ final class LocalImageCollectionViewCell: UICollectionViewCell {
     var localIdentifier = ""
     var md5sum = ""
     private var currentProgress: Float = 0
-    
+
+    // A Live Photo uploaded as both halves produces two upload requests sharing this cell's
+    // localIdentifier, i.e. two independent progress streams for a single progress bar. Each
+    // half is tracked separately, keyed by the suffix its file key carries, and the bar shows
+    // their mean so that it fills once, smoothly, instead of twice.
+    private var expectedParts = 1
+    private var partProgress = [String: Float]()
+
     @IBOutlet weak var cellImage: UIImageView!
     @IBOutlet weak var playIcon: UIImageView!
     @IBOutlet weak var selectedIcon: UIImageView!
@@ -47,6 +54,10 @@ final class LocalImageCollectionViewCell: UICollectionViewCell {
         
         // Store local identifier
         localIdentifier = imageAsset.localIdentifier
+
+        // How many upload requests will this asset produce?
+        expectedParts = (imageAsset.mediaSubtypes.contains(.photoLive)
+                         && UploadVars.shared.uploadLivePhotoAs == .both) ? 2 : 1
 
         // Image: retrieve data of right size and crop image
         let retinaScale = Int(UIScreen.main.scale)
@@ -86,7 +97,10 @@ final class LocalImageCollectionViewCell: UICollectionViewCell {
         
         // Store local identifier
         localIdentifier = identifier
-        
+
+        // A pasteboard object is never a Live Photo, see PasteboardObject
+        expectedParts = 1
+
         // Image: retrieve data of right size and crop image
         changeCellImageIfNeeded(withImage: image)
         let isVideo = identifier.contains(kMovieSuffix)
@@ -115,8 +129,15 @@ final class LocalImageCollectionViewCell: UICollectionViewCell {
             waitingActivity?.isHidden = false
             waitingActivity?.startAnimating()
             uploadingProgress?.isHidden = false
-            currentProgress = 0
-            uploadingProgress?.setProgress(0, animated: false)
+            // The state reaching this cell is that of a single upload request, so when the asset
+            // yields two of them it says nothing about the other half: emptying the bar here
+            // would wipe the progress of the half already uploaded. The notifications empty it
+            // themselves, by reporting a null fraction when the preparation of a half starts.
+            if expectedParts == 1 {
+                currentProgress = 0
+                partProgress = [:]
+                uploadingProgress?.setProgress(0, animated: false)
+            }
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = true
         case .uploading:
@@ -133,8 +154,11 @@ final class LocalImageCollectionViewCell: UICollectionViewCell {
             waitingActivity?.isHidden = false
             waitingActivity?.startAnimating()
             uploadingProgress?.isHidden = false
-            currentProgress = 1.0
-            uploadingProgress?.setProgress(1.0, animated: false)
+            // Only one half is uploaded, see the .waiting case above
+            if expectedParts == 1 {
+                currentProgress = 1.0
+                uploadingProgress?.setProgress(1.0, animated: false)
+            }
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = true
         case .finished, .moderated:
@@ -157,9 +181,25 @@ final class LocalImageCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func setProgress(_ progressFraction: Float, withAnimation animate: Bool) {
-        guard progressFraction > currentProgress else { return }
-        currentProgress = progressFraction
+    func setProgress(_ progressFraction: Float, forFileKey fileKey: String, withAnimation animate: Bool) {
+        // Which half of the asset does this fraction describe?
+        let part = fileKey.hasSuffix(kLivePhotoMovieSuffix) ? kLivePhotoMovieSuffix : ""
+
+        // A null fraction is posted when the preparation of a half starts, i.e. it marks the
+        // beginning — or the restart, after a failure — of that half. Any other fraction only
+        // ever grows: transfers report bytes sent so far.
+        if progressFraction <= 0 {
+            partProgress[part] = 0
+        } else {
+            partProgress[part] = max(partProgress[part] ?? 0, progressFraction)
+        }
+
+        // Share the bar between the halves. Trust whichever count is the larger, so that the bar
+        // cannot overfill if the option changed after these requests were created.
+        let parts = max(expectedParts, partProgress.count)
+        let combined = partProgress.values.reduce(0, +) / Float(parts)
+        guard combined != currentProgress else { return }
+        currentProgress = combined
         uploadingProgress?.setProgress(currentProgress, animated: animate)
     }
     
@@ -171,7 +211,9 @@ final class LocalImageCollectionViewCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        
+
         currentProgress = 0
+        partProgress = [:]
+        expectedParts = 1
     }
 }

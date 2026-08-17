@@ -547,9 +547,21 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
             guard let upload:Upload = anObject as? Upload else { return }
 //            debugPrint("••> LocalImagesViewController: delete upload \(upload.localIdentifier) in state \(upload.stateLabel)")
 
+            // Both halves of a Live Photo share this localIdentifier, and the photo is uploaded
+            // before its video. The cell must therefore follow the half which is still on its way
+            // instead of adopting the completed state of this one, which would hide the progress
+            // bar and show the uploaded badge while the video half is still being uploaded.
+            /// The deleted request may still be among the fetched objects at this point.
+            let remainingHalf = (uploads.fetchedObjects ?? []).first(where: {
+                $0.localIdentifier == upload.localIdentifier && $0.objectID != upload.objectID })
+
             // Remove image from indexed upload queue
             if let index = indexedUploadsInQueue.firstIndex(where: {$0?.0 == upload.localIdentifier}) {
-                indexedUploadsInQueue[index] = nil
+                if let half = remainingHalf {
+                    indexedUploadsInQueue[index]?.1 = half.state
+                } else {
+                    indexedUploadsInQueue[index] = nil
+                }
             }
             // Remove image from selection if needed
             if let index = selectedImages.firstIndex(where: {$0?.localIdentifier == upload.localIdentifier}) {
@@ -557,7 +569,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
                 selectedImages[index] = nil
             }
             // Update corresponding cell
-            updateCellAndSectionHeader(for: upload)
+            updateCellAndSectionHeader(for: remainingHalf ?? upload)
         case .move:
             // User is trying re-uploading
             guard let upload:Upload = anObject as? Upload else { return }

@@ -40,6 +40,10 @@ final class UploadQueueViewController: UIViewController {
         var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.requestSectionKey), ascending: true)]
         sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true))
         sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
+        // Both halves of a Live Photo are requested at the very same date, so without this last
+        // descriptor their relative order is undefined: the fetched results controller may swap
+        // the two rows on any update and each cell then adopts the other half's progress.
+        sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.assetPart), ascending: true))
         fetchRequest.sortDescriptors = sortDescriptors
         
         // Retrieves non-completed upload requests:
