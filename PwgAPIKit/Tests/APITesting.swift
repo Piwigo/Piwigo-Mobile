@@ -21,7 +21,7 @@ final class PwgAPITesting: XCTestCase {
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: kCommunityCategoriesGetList, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -35,13 +35,13 @@ final class PwgAPITesting: XCTestCase {
         XCTAssertEqual(result.status, "ok")
         XCTAssertTrue(result.data.contains(where: { $0.id == 4 }))
     }
-
+    
     func testCommunityImagesUploadCompletedDecoding() {
         
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: kCommunityImagesUploadCompleted, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -55,13 +55,13 @@ final class PwgAPITesting: XCTestCase {
         XCTAssertEqual(result.status, "ok")
         XCTAssertTrue(result.data.contains(where: { $0.id == "51768" }))
     }
-
+    
     func testCommunitySessionGetStatusDecoding() {
         
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: kCommunitySessionGetStatus, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -77,14 +77,14 @@ final class PwgAPITesting: XCTestCase {
         XCTAssertEqual(result.uploadMethod, "pwg.categories.getAdminList")
         XCTAssertEqual(result.createAlbumRights, [5,43])
     }
-
-
+    
+    
     // MARK: - pwg.…
     func testPwgGetInfosDecoding() {
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgGetInfos, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -93,7 +93,7 @@ final class PwgAPITesting: XCTestCase {
         do {
             let decoder = JSONDecoder()
             let result = try decoder.decode(GetInfosJSON.self, from: data)
-
+            
             // Return decoded object
             XCTAssertEqual(result.status, "ok")
             XCTAssertEqual(result.data[0].name, "version")
@@ -109,15 +109,15 @@ final class PwgAPITesting: XCTestCase {
             }
         }
         catch let error as DecodingError {
-            #if DEBUG
+#if DEBUG
             debugPrint(error.localizedDescription)
-            #endif
+#endif
             XCTFail("Error returned is not a Piwigo error.")
         }
         catch let error {
-            #if DEBUG
+#if DEBUG
             debugPrint(error.localizedDescription)
-            #endif
+#endif
             XCTFail("Error returned is not a Piwigo error.")
         }
     }
@@ -129,7 +129,7 @@ final class PwgAPITesting: XCTestCase {
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgCategoriesGetList, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -144,13 +144,13 @@ final class PwgAPITesting: XCTestCase {
         XCTAssertTrue(result.data.contains(where: { $0.id == 38 }))
         XCTAssertTrue(result.data.contains(where: { $0.commentRaw == "Which are different as explained for example here: https://northamericannature.com/what-is-the-difference-between-insects-and-spiders/" }))
     }
-
+    
     func testPwgCategoriesAddDecoding() {
         
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgCategoriesAdd, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -160,7 +160,7 @@ final class PwgAPITesting: XCTestCase {
             XCTFail()
             return
         }
-
+        
         XCTAssertEqual(result.status, "ok")
         XCTAssertEqual(result.data.id, 587)
     }
@@ -170,7 +170,7 @@ final class PwgAPITesting: XCTestCase {
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgCategoriesSetInfo, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -180,7 +180,7 @@ final class PwgAPITesting: XCTestCase {
             XCTFail()
             return
         }
-
+        
         XCTAssertEqual(result.status, "ok")
         XCTAssertTrue(result.success)
     }
@@ -190,7 +190,7 @@ final class PwgAPITesting: XCTestCase {
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgCategoriesMove, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -200,7 +200,7 @@ final class PwgAPITesting: XCTestCase {
             XCTFail()
             return
         }
-
+        
         XCTAssertEqual(result.status, "ok")
         XCTAssertTrue(result.success)
     }
@@ -210,7 +210,7 @@ final class PwgAPITesting: XCTestCase {
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgCategoriesCalcOrphans, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -220,7 +220,7 @@ final class PwgAPITesting: XCTestCase {
             XCTFail()
             return
         }
-
+        
         XCTAssertEqual(result.status, "ok")
         XCTAssertEqual(result.data?.first?.nbImagesBecomingOrphan, 8)
     }
@@ -230,7 +230,7 @@ final class PwgAPITesting: XCTestCase {
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgCategoriesDelete, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -240,7 +240,7 @@ final class PwgAPITesting: XCTestCase {
             XCTFail()
             return
         }
-
+        
         XCTAssertEqual(result.status, "ok")
         XCTAssertTrue(result.success)
     }
@@ -250,7 +250,7 @@ final class PwgAPITesting: XCTestCase {
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgCategoriesSetRepresentative, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -260,7 +260,7 @@ final class PwgAPITesting: XCTestCase {
             XCTFail()
             return
         }
-
+        
         XCTAssertEqual(result.status, "ok")
         XCTAssertTrue(result.success)
     }
@@ -270,7 +270,7 @@ final class PwgAPITesting: XCTestCase {
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgCategoriesGetImages, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -290,14 +290,14 @@ final class PwgAPITesting: XCTestCase {
         XCTAssertEqual(result.data.first?.categories?.first?.id, 2)
         XCTAssertEqual(result.data.last?.derivatives.largeImage?.height?.intValue, 756)
     }
-
+    
     // MARK: - pwg.images…
     func testPwgImagesExist() {
         
         // Case of a list containing existing and non-existing images
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgImagesExist, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -316,7 +316,7 @@ final class PwgAPITesting: XCTestCase {
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgImagesGetInfo, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -332,13 +332,13 @@ final class PwgAPITesting: XCTestCase {
         XCTAssertEqual(result.data.derivatives.largeImage?.height?.intValue, 756)
         XCTAssertEqual(result.data.commentRaw, "<!DOCTYPE html><html lang=\"fr\"><head>    <meta charset=\"UTF-8\">    <title>Exemple avec police</title>    <style>        p {            font-family: 'Comic Sans MS', cursive;            font-size: 18px;            color: #0000FF;        }    </style></head><body>    <p>Great view from Pic du Midi! Visit Piwigo.org</p></body></html>")
     }
-
+    
     func testPwgImagesSetInfoDecoding() {
         
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgImagesSetInfo, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -352,13 +352,13 @@ final class PwgAPITesting: XCTestCase {
         XCTAssertEqual(result.status, "ok")
         XCTAssertTrue(result.success)
     }
-
+    
     func testPwgImagesSetCategoryDecoding() {
         
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgImagesSetCategory, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -372,13 +372,13 @@ final class PwgAPITesting: XCTestCase {
         XCTAssertEqual(result.status, "ok")
         XCTAssertTrue(result.success)
     }
-
+    
     func testPwgImagesUploadCompletedDecoding() {
         
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgImagesUploadCompleted, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -391,13 +391,13 @@ final class PwgAPITesting: XCTestCase {
         
         XCTAssertEqual(result.status, "ok")
     }
-
+    
     func testPwgImagesDeleteDecoding() {
         
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgImagesDelete, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -411,7 +411,7 @@ final class PwgAPITesting: XCTestCase {
         XCTAssertEqual(result.status, "ok")
         XCTAssertEqual(result.success, true)
     }
-
+    
     
     // MARK: - pwg.history.…
     func testPwgSessionHistoryLogDecoding() {
@@ -419,7 +419,7 @@ final class PwgAPITesting: XCTestCase {
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgHistoryLog, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -439,7 +439,7 @@ final class PwgAPITesting: XCTestCase {
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgSessionLogin, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -449,14 +449,14 @@ final class PwgAPITesting: XCTestCase {
             XCTFail()
             return
         }
-
+        
         XCTAssertEqual(result.status, "ok")
         XCTAssertEqual(result.success, true)
-
+        
         // Case of a non-successful request
         let nonSuccessfullLogin = "\(pwgSessionLogin)2"
         guard let url = bundle.url(forResource: nonSuccessfullLogin, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -474,15 +474,15 @@ final class PwgAPITesting: XCTestCase {
             }
         }
         catch let error as DecodingError {
-            #if DEBUG
+#if DEBUG
             debugPrint(error.localizedDescription)
-            #endif
+#endif
             XCTFail("Error returned is not a Piwigo error.")
         }
         catch let error {
-            #if DEBUG
+#if DEBUG
             debugPrint(error.localizedDescription)
-            #endif
+#endif
             XCTFail("Error returned is not a Piwigo error.")
         }
     }
@@ -492,7 +492,7 @@ final class PwgAPITesting: XCTestCase {
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgSessionGetStatus, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -509,12 +509,12 @@ final class PwgAPITesting: XCTestCase {
         XCTAssertTrue(result.data?.saveVisits ?? false)
         XCTAssertTrue((result.data?.imageSizes ?? []).contains("3xlarge"))
     }
-
+    
     func testPwgSessionLogoutDecoding() {
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgSessionLogout, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -522,43 +522,43 @@ final class PwgAPITesting: XCTestCase {
         let decoder = JSONDecoder()
         do {
             let result = try decoder.decode(SessionLogoutJSON.self, from: data)
-
+            
             XCTAssertEqual(result.status, "ok")
             XCTAssertEqual(result.success, true)
         }
         catch let DecodingError.dataCorrupted(context) {
             // Piwigo error?
             if let pwgError = context.underlyingError as? PwgKitError {
-                #if DEBUG
+#if DEBUG
                 debugPrint(pwgError.localizedDescription)
-                #endif
+#endif
             }
             else {
                 XCTFail("Error returned is not a Piwigo error.")
             }
         }
         catch let error as DecodingError {
-            #if DEBUG
+#if DEBUG
             debugPrint(error.localizedDescription)
-            #endif
+#endif
             XCTFail("Error returned is not a Piwigo error.")
         }
         catch let error {
-            #if DEBUG
+#if DEBUG
             debugPrint(error.localizedDescription)
-            #endif
+#endif
             XCTFail("Error returned is not a Piwigo error.")
         }
     }
-
-
+    
+    
     // MARK: - pwg.tags…
     func testPwgTagsGetListDecoding() {
         
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgTagsGetList, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -573,13 +573,13 @@ final class PwgAPITesting: XCTestCase {
         XCTAssertEqual(result.data[1].id?.intValue, 14)
         XCTAssertEqual(result.data[2].counter, 9)
     }
-
+    
     func testPwgTagsGetAdminListDecoding() {
         
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgTagsGetAdminList, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -594,13 +594,13 @@ final class PwgAPITesting: XCTestCase {
         XCTAssertEqual(result.data[0].id?.intValue, 1)
         XCTAssertEqual(result.data[2].name, "Piwigo")
     }
-
+    
     func testPwgTagsGetAdminList2Decoding() {
         
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: "pwg.tags.getAdminList2", withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -615,13 +615,13 @@ final class PwgAPITesting: XCTestCase {
         XCTAssertEqual(result.data[0].id?.intValue, 254)
         XCTAssertEqual(result.data[2].name, "Ahmet Akkaya")
     }
-
+    
     func testPwgTagsAddDecoding() {
         
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgTagsAdd, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -635,7 +635,7 @@ final class PwgAPITesting: XCTestCase {
         XCTAssertEqual(result.status, "ok")
         XCTAssertEqual(result.data.id, 26)
     }
-
+    
     
     // MARK: - pwg.users…
     func testPwgUsersGetList() {
@@ -647,7 +647,7 @@ final class PwgAPITesting: XCTestCase {
             XCTFail("Could not load resource file")
             return
         }
-
+        
         let decoder = JSONDecoder()
         guard let result = try? decoder.decode(UsersGetListJSON.self, from: data) else {
             XCTFail()
@@ -667,7 +667,7 @@ final class PwgAPITesting: XCTestCase {
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: pwgUsersFavoritesGetList, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -684,13 +684,13 @@ final class PwgAPITesting: XCTestCase {
         XCTAssertEqual(result.data.first?.datePosted, "2018-08-23 19:28:43")
         XCTAssertEqual(result.data.last?.derivatives.largeImage?.height?.intValue, 670)
     }
-
+    
     func testPwgUsersFavoritesAddDecoding() {
         
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: "pwg.users.favorites.addRemove", withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -703,7 +703,7 @@ final class PwgAPITesting: XCTestCase {
         
         XCTAssertEqual(result.status, "ok")
     }
-
+    
     
     // MARK: - pwg.groups…
     func testPwgGroupsGetList() {
@@ -715,7 +715,7 @@ final class PwgAPITesting: XCTestCase {
             XCTFail("Could not load resource file")
             return
         }
-
+        
         let decoder = JSONDecoder()
         guard let result = try? decoder.decode(GroupsGetListJSON.self, from: data) else {
             XCTFail()
@@ -731,13 +731,13 @@ final class PwgAPITesting: XCTestCase {
         XCTAssertEqual(result.groups.last?.lastModified, "2025-02-16 17:39:07")
     }
     
-
+    
     // MARK: - reflection.…
     func testReflectionGetMethodListDecoding() {
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: kReflectionGetMethodList, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -748,20 +748,20 @@ final class PwgAPITesting: XCTestCase {
             XCTFail()
             return
         }
-
+        
         XCTAssertEqual(result.status, "ok")
         XCTAssertEqual(result.data[0], kCommunityCategoriesGetList)
         XCTAssertEqual(result.data[1], kCommunityImagesUploadCompleted)
     }
-
-
+    
+    
     // MARK: - sharealbum.…
     func testShareAlbumGetListDecoding() {
         
         // Case of a successful request
         let bundle = Bundle.module
         guard let url = bundle.url(forResource: kShareAlbumGetList, withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
@@ -776,5 +776,24 @@ final class PwgAPITesting: XCTestCase {
         XCTAssertTrue(result.data.contains(where: { $0.pwgID?.int16Value == 2 }))
         XCTAssertTrue(result.data.contains(where: { $0.catID?.intValue == 43 }))
         XCTAssertTrue(result.data.contains(where: { $0.name == "People" }))
+    }
+    
+    func testShareAlbumCancelDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle.module
+        guard let url = bundle.url(forResource: kShareAlbumCancel, withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(ShareAlbumCancelJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "ok")
     }
 }
