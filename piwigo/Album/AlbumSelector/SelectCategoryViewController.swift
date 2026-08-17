@@ -173,14 +173,18 @@ final class SelectCategoryViewController: UIViewController {
             inputAlbum = album
             
         case .setAutoUploadAlbum:
-            guard let albumId = parameter as? Int32 else {
+            guard var albumId = parameter as? Int32 else {
                 #if DEBUG
                 debugPrint("Input parameter expected to be an Int32.")
                 #endif
                 return false
             }
             // Actual album in which photos are auto-uploaded
-            // to be replaced by the selected one
+            // to be replaced by the selected one.
+            // Use root album if unknown
+            if albumId < Int32.zero {
+                albumId = Int32.zero
+            }
             guard let album = AlbumProvider().getAlbum(withID: albumId, inContext: mainContext)
             else { return false }
             if album.isFault {

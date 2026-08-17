@@ -65,7 +65,7 @@ final class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         
         // Check existence of Piwigo album
         let categoryId = UploadVars.shared.autoUploadCategoryId
-        guard categoryId != Int32.min else {
+        guard categoryId > Int32.zero else {
             // Cannot access Piwigo album -> Reset album ID
             UploadVars.shared.autoUploadCategoryId = Int32.min    // Unknown destination Piwigo album
             
