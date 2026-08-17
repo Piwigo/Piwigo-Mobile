@@ -18,7 +18,12 @@ extension UploadManager {
     // MARK: - Transfer or Copy Image/Video
     public func transferOrCopyFileOfUpload(withID uploadID: NSManagedObjectID,
                                            inTaskType taskType: UploadTaskType) async {
-        
+
+        // A background task owns the requests it handles, see prepareUpload()
+        if taskType.isBackground {
+            await UploadManagerActor.shared.removeUploads(withIDs: [uploadID])
+        }
+
         // Retrieve upload request properties
         guard var uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID, inContext: self.uploadBckgContext)
         else {
@@ -118,7 +123,7 @@ extension UploadManager {
     {
         // Update UploadQueue cell and button shown in root album (or default album)
         await MainActor.run {
-            let uploadInfo: [String : Any] = ["localIdentifier" : properties.localIdentifier,
+            let uploadInfo: [String : Any] = ["fileKey" : properties.fileKey,
                                               "progressFraction" : 0.33]
             NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
         }
@@ -132,7 +137,7 @@ extension UploadManager {
         
         // Update UploadQueue cell and button shown in root album (or default album)
         await MainActor.run {
-            let uploadInfo: [String : Any] = ["localIdentifier" : properties.localIdentifier,
+            let uploadInfo: [String : Any] = ["fileKey" : properties.fileKey,
                                               "progressFraction" : 0.67]
             NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
         }
@@ -171,7 +176,7 @@ extension UploadManager {
         
         // Update UploadQueue cell and button shown in root album (or default album)
         await MainActor.run {
-            let uploadInfo: [String : Any] = ["localIdentifier" : properties.localIdentifier,
+            let uploadInfo: [String : Any] = ["fileKey" : properties.fileKey,
                                               "progressFraction" : 1.0]
             NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
         }

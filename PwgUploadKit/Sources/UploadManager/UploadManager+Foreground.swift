@@ -113,7 +113,9 @@ extension UploadManager
         // so a later trigger will pick up any assets left to delete.
         guard isDeletingAssets == false else { return }
         let (uploadIDs, localIdentifiers): ([NSManagedObjectID], [String]) = UploadProvider().getIDsOfUploadsToDeleteFromLibrary(inContext: self.uploadBckgContext)
-        UploadManager.logger.notice("Resuming uploads: \(uploadIDs.count) assets for deletion in the Photo Library")
+        /// Both halves of a Live Photo refer to the same asset, so the requests are more numerous
+        /// than the assets they will delete.
+        UploadManager.logger.notice("Resuming uploads: \(Set(localIdentifiers).count) asset(s) to delete from the Photo Library, referred to by \(uploadIDs.count) upload request(s)")
         let deadline = DateUtilities.nextDayAt4AM(after: UploadVars.shared.dateOfLastPhotoLibraryDeletion)
         if uploadIDs.isEmpty == false && (nberOfPendingUploads == 0 || Date.now > deadline) {
             // Store date of proposed deletion

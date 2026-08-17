@@ -104,10 +104,10 @@ extension UploadQueueViewController: UITableViewDelegate
     }
 
     @objc func applyUploadProgress(_ notification: Notification) {
-        if let localIdentifier =  notification.userInfo?["localIdentifier"] as? String, !localIdentifier.isEmpty ,
+        if let fileKey =  notification.userInfo?["fileKey"] as? String, !fileKey.isEmpty ,
            let progressFraction = notification.userInfo?["progressFraction"] as? Float,
            let visibleCells = queueTableView?.visibleCells as? [UploadImageTableViewCell],
-           let cell = visibleCells.first(where: {$0.localIdentifier == localIdentifier}) {
+           let cell = visibleCells.first(where: {$0.fileKey == fileKey}) {
             cell.uploadingProgress?.setProgress(progressFraction, animated: true)
         }
     }

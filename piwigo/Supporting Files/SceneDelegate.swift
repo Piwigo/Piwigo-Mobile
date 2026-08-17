@@ -21,7 +21,10 @@ import PwgUIKit
 import PwgUploadKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-    
+
+    // Logs the creation of upload requests from shared files
+    static let logger = PwgLogger(subsystem: "org.piwigo", category: String(describing: SceneDelegate.self))
+
     var window: UIWindow?
     private var privacyView: UIView?
     
@@ -677,12 +680,46 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
                             // Resolve the source Photo Library asset (unambiguous match only), so its
                             // original can be deleted after upload. Left nil when it cannot be matched.
+                            let mediaURL = DataDirectories.appUploadsDirectory.appendingPathComponent(identifier + kOriginalSuffix)
                             if canAccessLibrary {
-                                let mediaURL = DataDirectories.appUploadsDirectory.appendingPathComponent(identifier + kOriginalSuffix)
                                 uploadRequest.deleteAssetIdentifier = await ShareExtensionAssetMatcher
                                     .localIdentifier(forFileAt: mediaURL, originalFileName: fileName)
                             }
-                            uploadRequests.append(uploadRequest)
+
+                            // A share extension cannot reach the video half of a Live Photo, so the
+                            // request which uploads it is created here, from the resolved asset.
+                            // Without that asset, the shared file is not known to come from a Live
+                            // Photo and is simply uploaded as the image it is, e.g. a Live Photo
+                            // shared by Messages and not stored in the Photo Library.
+                            let livePhotoChoice = UploadVars.shared.uploadLivePhotoAs
+                            let sharedAsset = uploadRequest.deleteAssetIdentifier.flatMap({
+                                PHAsset.fetchAssets(withLocalIdentifiers: [$0], options: nil).firstObject })
+                            if livePhotoChoice != .photo {
+                                /// A shared file whose asset cannot be resolved is not known to come from
+                                /// a Live Photo, so it is uploaded as the image it is (see below).
+                                SceneDelegate.logger.notice("Shared \(fileName): asset resolved: \(sharedAsset != nil), Live Photo: \(sharedAsset?.mediaSubtypes.contains(.photoLive) ?? false)")
+                            }
+                            if livePhotoChoice != .photo, let assetID = uploadRequest.deleteAssetIdentifier,
+                               let asset = sharedAsset,
+                               asset.mediaSubtypes.contains(.photoLive) {
+                                // Upload the shared still unless only the video is wanted
+                                if livePhotoChoice == .movie {
+                                    // Discard the file copied by the share extension
+                                    try? FileManager.default.removeItem(at: mediaURL)
+                                } else {
+                                    uploadRequests.append(uploadRequest)
+                                }
+
+                                // Video half, prepared from the asset like any Live Photo picked in the app
+                                var movieRequest = UploadProperties(localIdentifier: assetID,
+                                                                    category: destinationAlbumID)
+                                movieRequest.assetPart = .pairedVideo
+                                movieRequest.fileType = pwgImageFileType.video.rawValue
+                                movieRequest.deleteAssetIdentifier = assetID
+                                uploadRequests.append(movieRequest)
+                            } else {
+                                uploadRequests.append(uploadRequest)
+                            }
 
                             // Delete JSON file
                             try? FileManager.default.removeItem(at: file)

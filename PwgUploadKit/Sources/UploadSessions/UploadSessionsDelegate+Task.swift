@@ -57,7 +57,7 @@ extension UploadSessionsDelegate: URLSessionTaskDelegate {
             
             // Update progress bar
             DispatchQueue.main.async {
-                let uploadInfo: [String : Any] = ["localIdentifier" : identifier,
+                let uploadInfo: [String : Any] = ["fileKey" : identifier,
                                                   "progressFraction" : progress]
                 NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
             }

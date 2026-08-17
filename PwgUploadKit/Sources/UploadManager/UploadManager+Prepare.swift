@@ -19,7 +19,16 @@ extension UploadManager
     // MARK: - Prepare Image/Video    
     public func prepareUpload(withID uploadID: NSManagedObjectID,
                               inTaskType taskType: UploadTaskType) async -> Void {
-        
+
+        // A background task owns the requests it handles, so they are dropped from the queues of
+        // the UploadManagerActor which resumeUploads() filled with every pending request. Without
+        // this, the actor later hands over requests already uploaded by the task.
+        /// The request remains in the persistent store, which is the source of truth: an
+        /// interrupted task leaves it 'waiting' and it is queued again on the next resume.
+        if taskType.isBackground {
+            await UploadManagerActor.shared.removeUploads(withIDs: [uploadID])
+        }
+
         // Retrieve upload request properties
         guard var uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID, inContext: self.uploadBckgContext)
         else {
@@ -59,9 +68,9 @@ extension UploadManager
         NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
         
         // Update progress bar
-        let localIdentifier = uploadData.localIdentifier
+        let fileKey = uploadData.fileKey
         DispatchQueue.main.async {
-            let uploadInfo: [String : Any] = ["localIdentifier" : localIdentifier,
+            let uploadInfo: [String : Any] = ["fileKey" : fileKey,
                                               "progressFraction" : 0.0]
             NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
         }
@@ -291,9 +300,45 @@ extension UploadManager
         
         // Get URL of image file to be stored into Piwigo/Uploads directory
         // and deletes temporary image file if exists (incomplete previous attempt?)
-        let fileURL = getUploadFileURL(from: uploadData.localIdentifier, withSuffix: kOriginalSuffix,
-                                       creationDate: uploadData.creationDate, deleted: true)
+        let fileURL = getUploadFileURL(for: uploadData, withSuffix: kOriginalSuffix, deleted: true)
         
+        // Case of the video half of a Live Photo
+        /// A Live Photo is an image asset, so this is decided before the media type is considered.
+        if uploadData.assetPart == .pairedVideo {
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Preparing the video half of a Live Photo")
+
+            // Create file from the paired video resource and get filename
+            let filename = try await writePairedVideoFromAsset(originalAsset, toFile: fileURL)
+
+            // Update upload request
+            uploadData.fileType = pwgImageFileType.video.rawValue
+            uploadData.fileName = filename
+
+            // Launch preparation job according to file format
+            let fileExt = (URL(fileURLWithPath: filename).pathExtension).lowercased()
+
+            // Check that the video format is accepted by the Piwigo server
+            /// NB: The paired video is a QuickTime movie, which most servers do not accept,
+            /// so it is usually converted to MP4 below.
+            if ServerVars.shared.serverFileTypes.contains(fileExt) {
+                // Launch preparation job
+                try await prepareVideo(atURL: fileURL, for: &uploadData)
+                return true
+            }
+
+            // Convert video if MP4 format is accepted by Piwigo server
+            if ServerVars.shared.serverFileTypes.contains("mp4"),
+               acceptedMovieExtensions.contains(fileExt) {
+                // Try conversion to MP4
+                try await convertVideo(atURL: fileURL, for: &uploadData)
+                return true
+            }
+
+            // Video file format cannot be accepted by the Piwigo server
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Video format '\(fileExt)' not accepted by the server")
+            throw PwgKitError.unacceptedVideoFormat
+        }
+
         // Preparation method depends on media type
         switch originalAsset.mediaType {
         case .image:
@@ -337,8 +382,7 @@ extension UploadManager
             let fileExt = (URL(fileURLWithPath: filename).pathExtension).lowercased()
             
             // File name of final video data to be stored into Piwigo/Uploads directory
-            let outputURL = getUploadFileURL(from: uploadData.localIdentifier,
-                                             creationDate: uploadData.creationDate)
+            let outputURL = getUploadFileURL(for: uploadData)
             
             // Chek that the video format is accepted by the Piwigo server
             /// NB: Not possible to extract AVAsset with async/await methods as of iOS 26.2
@@ -465,7 +509,7 @@ extension UploadManager
                               forFileAtURL originalFileURL: URL) throws(PwgKitError)
     {
         // File name of image data to be stored into Piwigo/Uploads directory
-        let fileURL = getUploadFileURL(from: uploadData.localIdentifier, creationDate: uploadData.creationDate)
+        let fileURL = getUploadFileURL(for: uploadData)
         
         // Should we rename the file to adopt the Upload Manager convention?
         if originalFileURL != fileURL {

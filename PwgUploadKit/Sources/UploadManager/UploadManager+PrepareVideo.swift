@@ -18,6 +18,68 @@ import UniformTypeIdentifiers
 @UploadManagerActor
 extension UploadManager {
     
+    // MARK: - Video of a Live Photo in the Photo Library
+    /// Writes the video half of a Live Photo to a file, i.e. the half which the still does not
+    /// contain. Its resources are those of an image asset, so the photo half is left untouched.
+    func writePairedVideoFromAsset(_ originalAsset: PHAsset, toFile fileURL: URL) async throws(PwgKitError) -> String {
+        // Retrieve asset resources
+        var resources = PHAssetResource.assetResources(for: originalAsset)
+        let options = PHAssetResourceRequestOptions()
+        options.isNetworkAccessAllowed = true
+        let edited = resources.first(where: { $0.type == .fullSizePairedVideo })
+        let original = resources.first(where: { $0.type == .pairedVideo })
+
+        // Priority to the edited video, then to the original version
+        /// Both are missing when the Live Photo was converted to a still after this request was created
+        guard let resource = edited ?? original
+        else {
+            // Release memory
+            resources.removeAll(keepingCapacity: false)
+            throw .missingAsset
+        }
+
+        // Name the video after the photo it is paired with, so that both halves are
+        // recognisable and named alike on the Piwigo server.
+        /// The paired video resource of an edited Live Photo is always named "FullSizeRender.mov",
+        /// which would give the same name to every uploaded video.
+        let photoName = resources.first(where: { $0.type == .photo })?.originalFilename ?? ""
+        let videoExt = URL(fileURLWithPath: resource.originalFilename).pathExtension
+
+        do {
+            // Store original data in file
+            try await PHAssetResourceManager.default().writeData(for: resource, toFile: fileURL, options: options)
+
+            // Release memory
+            resources.removeAll(keepingCapacity: false)
+
+            let bytes = (try? fileURL.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
+            UploadManager.logger.notice("Live Photos • Wrote the paired video '\(resource.originalFilename)' (\(bytes) bytes)")
+
+            /// A Live Photo is an image asset, so getFilename() adopted the extension of a photo,
+            /// whether it kept the name of the resource or built one from the creation date.
+            var fileName = getFilename(fromName: photoName, ofAsset: originalAsset)
+            fileName = URL(fileURLWithPath: fileName).deletingPathExtension()
+                .appendingPathExtension(videoExt.isEmpty ? "mov" : videoExt).lastPathComponent
+            return fileName
+        }
+        catch let error as NSError where error.domain == PHPhotosErrorDomain {
+            // Release memory
+            resources.removeAll(keepingCapacity: false)
+            throw .photoResourceError(innerError: error)
+        }
+        catch let error as PwgKitError {
+            // Release memory
+            resources.removeAll(keepingCapacity: false)
+            throw error
+        }
+        catch {
+            // Release memory
+            resources.removeAll(keepingCapacity: false)
+            throw .otherError(innerError: error)
+        }
+    }
+
+
     // MARK: - Prepare Video From File
     // Case of a video which is in a format accepted by the Piwigo server
     func prepareVideo(atURL originalFileURL: URL, for uploadData: inout UploadProperties) async throws(PwgKitError)
@@ -46,7 +108,7 @@ extension UploadManager {
             try await checkVideoExportability(of: originalVideo)
             
             // File name of final video data to be stored into Piwigo/Uploads directory
-            let outputURL = getUploadFileURL(from: uploadData.localIdentifier, creationDate: uploadData.creationDate)
+            let outputURL = getUploadFileURL(for: uploadData)
 
             // Export new video in MP4 format w/ or w/o private metadata
             try await export(videoAsset: originalVideo, to: outputURL, with: &uploadData)
@@ -82,7 +144,7 @@ extension UploadManager {
         try await checkVideoExportability(of: originalVideo)
         
         // File name of final video data to be stored into Piwigo/Uploads directory
-        let outputURL = getUploadFileURL(from: uploadData.localIdentifier, creationDate: uploadData.creationDate)
+        let outputURL = getUploadFileURL(for: uploadData)
 
         // Export new video in MP4 format w/ or w/o private metadata
         try await export(videoAsset: originalVideo, to: outputURL, with: &uploadData)

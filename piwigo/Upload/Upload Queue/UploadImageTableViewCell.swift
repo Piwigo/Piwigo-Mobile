@@ -18,7 +18,7 @@ import PwgUploadKit
 class UploadImageTableViewCell: UITableViewCell {
     
     // MARK: - Variables
-    var localIdentifier = ""
+    var fileKey = ""
     var objectID: NSManagedObjectID? = nil
     private let offset: CGFloat = 1.0
     private let playScale: CGFloat = 0.20
@@ -36,7 +36,7 @@ class UploadImageTableViewCell: UITableViewCell {
         // Background color and aspect
         backgroundColor = PwgColor.cellBackground
         playIcon?.layer.shadowColor = UIColor.black.cgColor
-        localIdentifier = upload.localIdentifier
+        fileKey = upload.fileKey
         objectID = upload.objectID
         
         // Upload info label
@@ -251,7 +251,8 @@ class UploadImageTableViewCell: UITableViewCell {
         })
         
         // Video icon?
-        playIcon.isHidden = (imageAsset.mediaType != .video)
+        // A Live Photo is an image asset, but this request may carry its video half
+        playIcon.isHidden = (imageAsset.mediaType != .video) && (upload.part != .pairedVideo)
     }
     
     private func getImageInfo(from imageAsset: PHAsset, for availableWidth: Int, maxSize: Int16) -> String {

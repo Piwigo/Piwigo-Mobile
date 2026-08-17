@@ -95,6 +95,7 @@ public actor UploadManagerActor {
             ProcessInfo.processInfo.isLowPowerModeEnabled ||
             [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) ||
             (UploadVars.shared.wifiOnlyUploading && !ServerVars.shared.isConnectedToWiFi) {
+            UploadManagerActor.logger.notice("Uploads postponed: paused: \(UploadVars.shared.isPaused), low-power: \(ProcessInfo.processInfo.isLowPowerModeEnabled), thermal: \(ProcessInfo.processInfo.thermalState.rawValue), Wi-Fi only: \(UploadVars.shared.wifiOnlyUploading), on Wi-Fi: \(ServerVars.shared.isConnectedToWiFi) — \(self.uploadIDsToPrepare.count) to prepare, \(self.uploadIDsToTransfer.count) to transfer")
             return
         }
         

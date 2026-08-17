@@ -118,16 +118,17 @@ extension SettingsViewController: UITableViewDelegate
         case .uploads /* Default Upload Settings */:
             var row = indexPath.row
             row += (!userData.hasAdminRights && (row > 0)) ? 1 : 0
-            row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
-            row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
-            row += (!UIDevice.current.hasCellular && (row > 8)) ? 1 : 0
+            row += (!UploadVars.shared.resizeImageOnUpload && (row > 4)) ? 2 : 0
+            row += (!UploadVars.shared.compressImageOnUpload && (row > 7)) ? 1 : 0
+            row += (!UIDevice.current.hasCellular && (row > 9)) ? 1 : 0
             switch row {
             case 1  /* Privacy Level */,
-                 4  /* Upload Photo Size */,
-                 5  /* Upload Video Size */,
-                 8  /* Rename Filename Before Upload */,
-                 10 /* Auto upload */,
-                 12 /* Advanced Settings */:
+                 2  /* Live Photos */,
+                 5  /* Upload Photo Size */,
+                 6  /* Upload Video Size */,
+                 9  /* Rename Filename Before Upload */,
+                 11 /* Auto upload */,
+                 13 /* Advanced Settings */:
                 result = true
             default:
                 result = false
@@ -286,9 +287,9 @@ extension SettingsViewController: UITableViewDelegate
         case .uploads /* Default upload Settings */:
             var row = indexPath.row
             row += (!userData.hasAdminRights && (row > 0)) ? 1 : 0
-            row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
-            row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
-            row += (!UIDevice.current.hasCellular && (row > 8)) ? 1 : 0
+            row += (!UploadVars.shared.resizeImageOnUpload && (row > 4)) ? 2 : 0
+            row += (!UploadVars.shared.compressImageOnUpload && (row > 7)) ? 1 : 0
+            row += (!UIDevice.current.hasCellular && (row > 9)) ? 1 : 0
             switch row {
             case 1 /* Default privacy selection */:
                 let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
@@ -298,7 +299,14 @@ extension SettingsViewController: UITableViewDelegate
                 privacyVC.privacy = pwgPrivacy(rawValue: UploadVars.shared.defaultPrivacyLevel) ?? .everybody
                 navigationController?.pushViewController(privacyVC, animated: true)
 
-            case 4 /* Upload Photo Size */:
+            case 2 /* Live Photos */:
+                let livePhotoSB = UIStoryboard(name: "UploadLivePhotoViewController", bundle: nil)
+                guard let livePhotoVC = livePhotoSB.instantiateViewController(withIdentifier: "UploadLivePhotoViewController") as? UploadLivePhotoViewController
+                else { preconditionFailure("Could not load UploadLivePhotoViewController") }
+                livePhotoVC.delegate = self
+                navigationController?.pushViewController(livePhotoVC, animated: true)
+
+            case 5 /* Upload Photo Size */:
                 let uploadPhotoSizeSB = UIStoryboard(name: "UploadPhotoSizeViewController", bundle: nil)
                 guard let uploadPhotoSizeVC = uploadPhotoSizeSB.instantiateViewController(withIdentifier: "UploadPhotoSizeViewController") as? UploadPhotoSizeViewController
                 else { preconditionFailure("Could not load UploadPhotoSizeViewController") }
@@ -306,7 +314,7 @@ extension SettingsViewController: UITableViewDelegate
                 uploadPhotoSizeVC.photoMaxSize = UploadVars.shared.photoMaxSize
                 navigationController?.pushViewController(uploadPhotoSizeVC, animated: true)
 
-            case 5 /* Upload Video Size */:
+            case 6 /* Upload Video Size */:
                 let uploadVideoSizeSB = UIStoryboard(name: "UploadVideoSizeViewController", bundle: nil)
                 guard let uploadVideoSizeVC = uploadVideoSizeSB.instantiateViewController(withIdentifier: "UploadVideoSizeViewController") as? UploadVideoSizeViewController
                 else { preconditionFailure("Could not load UploadVideoSizeViewController") }
@@ -314,7 +322,7 @@ extension SettingsViewController: UITableViewDelegate
                 uploadVideoSizeVC.videoMaxSize = UploadVars.shared.videoMaxSize
                 navigationController?.pushViewController(uploadVideoSizeVC, animated: true)
 
-            case 8 /* Rename Filename Before Upload */:
+            case 9 /* Rename Filename Before Upload */:
                 let filenameSB = UIStoryboard(name: "RenameFileViewController", bundle: nil)
                 guard let filenameVC = filenameSB.instantiateViewController(withIdentifier: "RenameFileViewController") as? RenameFileViewController
                 else { preconditionFailure("Could not load RenameFileViewController") }
@@ -330,14 +338,14 @@ extension SettingsViewController: UITableViewDelegate
                 filenameVC.caseOfFileExtension = FileExtCase(rawValue: UploadVars.shared.caseOfFileExtension) ?? .keep
                 navigationController?.pushViewController(filenameVC, animated: true)
 
-            case 10 /* Auto Upload */:
+            case 11 /* Auto Upload */:
                 let autoUploadSB = UIStoryboard(name: "AutoUploadViewController", bundle: nil)
                 guard let autoUploadVC = autoUploadSB.instantiateViewController(withIdentifier: "AutoUploadViewController") as? AutoUploadViewController
                 else { preconditionFailure("Could not load AutoUploadViewController") }
                 autoUploadVC.userData = userData
                 navigationController?.pushViewController(autoUploadVC, animated: true)
 
-            case 12 /* Advanced Options */:
+            case 13 /* Advanced Options */:
                 let advancedOptionsSB = UIStoryboard(name: "AdvancedOptionsViewController", bundle: nil)
                 guard let advancedOptionsVC = advancedOptionsSB.instantiateViewController(withIdentifier: "AdvancedOptionsViewController") as? AdvancedOptionsViewController
                 else { preconditionFailure("Could not load AdvancedOptionsViewController") }

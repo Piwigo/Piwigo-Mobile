@@ -23,7 +23,7 @@ extension UploadManager {
         
         // Get URL of file to upload
         /// This file will be deleted once the transfer is completed successfully
-        let fileURL = getUploadFileURL(from: uploadData.localIdentifier, creationDate: uploadData.creationDate)
+        let fileURL = getUploadFileURL(for: uploadData)
         
         // Get content of file to upload
         /// https://developer.apple.com/forums/thread/115401
@@ -81,8 +81,7 @@ extension UploadManager {
                 // File name of chunk data stored into Piwigo/Uploads directory
                 // This file will be deleted after a successful upload of the chunk
                 let suffix = "." + chunkFormatter.string(from: NSNumber(value: chunk))!
-                let fileURL = getUploadFileURL(from: uploadData.localIdentifier, withSuffix: suffix,
-                                               creationDate: uploadData.creationDate, deleted: true)
+                let fileURL = getUploadFileURL(for: uploadData, withSuffix: suffix, deleted: true)
                 
                 // Store chunk of image data into Piwigo/Uploads directory
                 do {
@@ -339,6 +338,7 @@ extension UploadManager {
             }
             
             // Delete remaining uploaded file
+            /// The identifier is the file key of the request (see pwgHTTPimageID).
             var imageFile = ""
             if #available(iOS 16.0, *) {
                 imageFile = identifier.replacing("/", with: "-")
@@ -346,7 +346,10 @@ extension UploadManager {
                 // Fallback on earlier versions
                 imageFile = identifier.replacingOccurrences(of: "/", with: "-")
             }
-            deleteFilesInUploadsDirectory(withPrefix: imageFile)
+            /// The files of the video half of a Live Photo are named after those of the photo half
+            /// plus a suffix, so the photo half must spare the files of its sibling.
+            let siblingFiles = uploadData.assetPart == .original ? imageFile + kLivePhotoMovieSuffix : ""
+            deleteFilesInUploadsDirectory(withPrefix: imageFile, excludingPrefix: siblingFiles)
             
             // Clear bytes and chunk counter
             removeCounter(withID: objectIDstr)
@@ -427,7 +430,7 @@ extension UploadManager {
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         request.setValue(uploadID.uriRepresentation().absoluteString, forHTTPHeaderField: pwgHTTPuploadID)
         request.setValue(uploadData.fileName, forHTTPHeaderField: "filename")
-        request.setValue(uploadData.localIdentifier, forHTTPHeaderField: pwgHTTPimageID)
+        request.setValue(uploadData.fileKey, forHTTPHeaderField: pwgHTTPimageID)
         request.setValue(chunkStr, forHTTPHeaderField: pwgHTTPchunk)
         request.setValue(chunksStr, forHTTPHeaderField: pwgHTTPchunks)
         request.setValue(uploadData.md5Sum, forHTTPHeaderField: pwgHTTPmd5sum)

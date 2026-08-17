@@ -115,8 +115,10 @@ extension UploadManager {
             }
         }
         
-        // Return properties of new upload requests
-        return uploadRequestsToAppend
+        // Return properties of new upload requests, both halves of the Live Photos if wanted
+        /// NB: An asset is skipped above as soon as one request refers to it, whichever half it
+        /// carries, so the halves are only ever created together, here.
+        return UploadProperties.expandingLivePhotos(in: uploadRequestsToAppend)
     }
     
     

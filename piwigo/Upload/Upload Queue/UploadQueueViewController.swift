@@ -191,46 +191,49 @@ final class UploadQueueViewController: UIViewController {
     
     @MainActor
     @objc func setTableViewMainHeader() {
-        // Anything to do?
-        guard let queueTableView, queueTableView.window != nil else { return }
-        
-        // No upload request in the queue?
-        if UploadVars.shared.nberOfUploadsToComplete == 0 {
-            queueTableView.tableHeaderView = nil
-            UIApplication.shared.isIdleTimerDisabled = false
-        }
-        else if !ServerVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading {
-            // No Wi-Fi and user wishes to upload only on Wi-Fi
-            let headerView = TableHeaderView(frame: .zero)
-            headerView.configure(width: queueTableView.frame.size.width,
-                                 text: String(localized: "uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
-            queueTableView.tableHeaderView = headerView
-            UIApplication.shared.isIdleTimerDisabled = false
-        }
-        else if ProcessInfo.processInfo.isLowPowerModeEnabled {
-            // Low Power mode enabled
-            let headerView = TableHeaderView(frame: .zero)
-            headerView.configure(width: queueTableView.frame.size.width,
-                                 text: String(localized: "uploadLowPowerMode", comment: "Low Power Mode enabled"))
-            queueTableView.tableHeaderView = headerView
-            UIApplication.shared.isIdleTimerDisabled = false
-        }
-        else if [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) {
-            // Reduce usage of system resources at higher thermal states
-            let headerView = TableHeaderView(frame: .zero)
-            headerView.configure(width: queueTableView.frame.size.width,
-                                 text: String(localized: "uploadThermalStateHigh", comment: "Thermal state high"))
-            queueTableView.tableHeaderView = headerView
-            UIApplication.shared.isIdleTimerDisabled = false
-        }
-        else {
-            // Uploads in progress
-            queueTableView.tableHeaderView = nil
-            if #unavailable(iOS 26.0) {
-                UIApplication.shared.isIdleTimerDisabled = true
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            // Anything to do?
+            guard let queueTableView, queueTableView.window != nil else { return }
+            
+            // No upload request in the queue?
+            if UploadVars.shared.nberOfUploadsToComplete == 0 {
+                queueTableView.tableHeaderView = nil
+                UIApplication.shared.isIdleTimerDisabled = false
             }
+            else if !ServerVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading {
+                // No Wi-Fi and user wishes to upload only on Wi-Fi
+                let headerView = TableHeaderView(frame: .zero)
+                headerView.configure(width: queueTableView.frame.size.width,
+                                     text: String(localized: "uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
+                queueTableView.tableHeaderView = headerView
+                UIApplication.shared.isIdleTimerDisabled = false
+            }
+            else if ProcessInfo.processInfo.isLowPowerModeEnabled {
+                // Low Power mode enabled
+                let headerView = TableHeaderView(frame: .zero)
+                headerView.configure(width: queueTableView.frame.size.width,
+                                     text: String(localized: "uploadLowPowerMode", comment: "Low Power Mode enabled"))
+                queueTableView.tableHeaderView = headerView
+                UIApplication.shared.isIdleTimerDisabled = false
+            }
+            else if [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) {
+                // Reduce usage of system resources at higher thermal states
+                let headerView = TableHeaderView(frame: .zero)
+                headerView.configure(width: queueTableView.frame.size.width,
+                                     text: String(localized: "uploadThermalStateHigh", comment: "Thermal state high"))
+                queueTableView.tableHeaderView = headerView
+                UIApplication.shared.isIdleTimerDisabled = false
+            }
+            else {
+                // Uploads in progress
+                queueTableView.tableHeaderView = nil
+                if #unavailable(iOS 26.0) {
+                    UIApplication.shared.isIdleTimerDisabled = true
+                }
+            }
+            self.viewWillLayoutSubviews()
         }
-        self.viewWillLayoutSubviews()
     }
     
     override func viewWillDisappear(_ animated: Bool) {

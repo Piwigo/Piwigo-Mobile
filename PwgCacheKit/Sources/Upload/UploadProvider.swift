@@ -19,6 +19,9 @@ public final class UploadProvider {
         // Priority to uploads requested manually, oldest ones first
         var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
         sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
+        // Both halves of a Live Photo are requested at the very same date:
+        // the photo (.original) is uploaded before its video (.pairedVideo).
+        sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.assetPart), ascending: true))
         return sortDescriptors
     }()
     
@@ -120,7 +123,10 @@ public final class UploadProvider {
                 let cachedUploads = try taskContext.fetch(fetchRequest)
                 for uploadData in uploadsBatch {
                     // Index of this new upload in cache
-                    if let index = cachedUploads.firstIndex( where: { $0.localIdentifier == uploadData.localIdentifier }) {
+                    /// Both halves of a Live Photo share the same identifier and are told apart
+                    /// by the part of the asset they carry.
+                    if let index = cachedUploads.firstIndex( where: { $0.localIdentifier == uploadData.localIdentifier
+                                                                      && $0.part == uploadData.assetPart }) {
                         // Get tag instances
                         let tags = try TagProvider().getTags(withIDs: uploadData.tagIds, taskContext: taskContext)
                         
@@ -426,6 +432,9 @@ public final class UploadProvider {
         The asset identifier is `deleteAssetIdentifier` when set (i.e. a photo shared via the share
         extension that the app resolved to a Photo Library asset), otherwise `localIdentifier`
         (i.e. a photo picked inside the app, whose localIdentifier already is a PHAsset identifier).
+        An asset which another request has still to upload is spared: both halves of a Live Photo
+        are uploaded separately, and deleting the asset as soon as the first one completes would
+        leave the second without anything to prepare.
      */
     public func getIDsOfUploadsToDeleteFromLibrary(inContext taskContext: NSManagedObjectContext) -> ([NSManagedObjectID], [String])
     {
@@ -444,6 +453,20 @@ public final class UploadProvider {
 
             // Keep only requests whose original should be deleted from the Photo Library
             completedUploads.removeAll(where: { $0.deleteImageAfterUpload == false })
+
+            // Collect the assets which are still to be uploaded by another request
+            let pendingRequest = Upload.fetchRequest()
+            pendingRequest.predicate = pendingPredicate.withSubstitutionVariables(variables)
+            pendingRequest.returnsObjectsAsFaults = false
+            let pendingUploads: [Upload] = (try? taskContext.fetch(pendingRequest) as [Upload]) ?? []
+            let assetsStillInUse = Set(pendingUploads.map({ $0.deleteAssetIdentifier ?? $0.localIdentifier }))
+
+            // Spare the assets whose other half is not uploaded yet
+            if assetsStillInUse.isEmpty == false {
+                completedUploads.removeAll(where: {
+                    assetsStillInUse.contains($0.deleteAssetIdentifier ?? $0.localIdentifier)
+                })
+            }
 
             // Return objectIDs and the asset identifiers to delete
             return (completedUploads.map(\.objectID),

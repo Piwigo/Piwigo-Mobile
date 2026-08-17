@@ -208,7 +208,9 @@ final class UploadSwitchViewController: UIViewController {
             do {
                 // Create upload requests in cache
                 /// Cells switch to the "waiting" upload state and are "automatically" deselected visually
-                let uploadIDs = try await UploadManager.shared.importUploads(from: self.uploadRequests)
+                /// A Live Photo produces one or two requests, see the option selected in Settings
+                let requests = UploadProperties.expandingLivePhotos(in: self.uploadRequests)
+                let uploadIDs = try await UploadManager.shared.importUploads(from: requests)
                 
                 // Add upload requests to queue
                 UploadVars.shared.isPaused = false

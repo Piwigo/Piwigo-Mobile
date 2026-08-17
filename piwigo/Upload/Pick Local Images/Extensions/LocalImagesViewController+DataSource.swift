@@ -144,8 +144,8 @@ extension LocalImagesViewController: UICollectionViewDataSource
 
     @objc func applyUploadProgress(_ notification: Notification) {
         if let visibleCells = localImagesCollection.visibleCells as? [LocalImageCollectionViewCell],
-           let localIdentifier =  notification.userInfo?["localIdentifier"] as? String, !localIdentifier.isEmpty ,
-           let cell = visibleCells.first(where: {$0.localIdentifier == localIdentifier}),
+           let fileKey =  notification.userInfo?["fileKey"] as? String, !fileKey.isEmpty ,
+           let cell = visibleCells.first(where: {$0.localIdentifier == UploadProperties.assetIdentifier(from: fileKey)}),
            let progressFraction = notification.userInfo?["progressFraction"] as? Float {
             cell.setProgress(progressFraction, withAnimation: true)
         }

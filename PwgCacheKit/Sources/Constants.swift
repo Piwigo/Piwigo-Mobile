@@ -29,3 +29,8 @@ public enum Localized {
 
 // Name extension of thumbnails optimised for the device
 public let optimisedImageNameExtension = "-opt"
+
+// Appended to the PHAsset identifier to name the upload files of the video half of a Live Photo,
+// so that both halves of the same asset get distinct files (see UploadProperties.fileKey).
+// Never used to look up a PHAsset: the identifier itself is stored unchanged.
+public let kLivePhotoMovieSuffix = "-livemov"

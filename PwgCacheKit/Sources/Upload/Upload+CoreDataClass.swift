@@ -91,6 +91,9 @@ public final nonisolated class Upload: NSManagedObject, Identifiable {
         if fileType != uploadProperties.fileType {
             fileType = uploadProperties.fileType
         }
+        if assetPart != uploadProperties.assetPart.rawValue {
+            assetPart = uploadProperties.assetPart.rawValue
+        }
         
         // Photo author name is empty if not provided
         if author != uploadProperties.author {
@@ -171,12 +174,16 @@ public final nonisolated class Upload: NSManagedObject, Identifiable {
         // Delete corresponding temporary files if any
         var prefix = ""
         if #available(iOS 16.0, *) {
-            prefix = self.localIdentifier.replacing("/", with: "-")
+            prefix = self.fileKey.replacing("/", with: "-")
         } else {
             // Fallback on earlier versions
-            prefix = self.localIdentifier.replacingOccurrences(of: "/", with: "-")
+            prefix = self.fileKey.replacingOccurrences(of: "/", with: "-")
         }
         if !prefix.isEmpty {
+            // Files of the video half of a Live Photo are named after those of the photo half
+            // plus a suffix, so the photo half must not delete the files of its sibling.
+            let siblingPrefix = self.part == .original ? prefix + kLivePhotoMovieSuffix : ""
+
             // Delete associated files stored in the Upload folder
             let fm = FileManager.default
             do {
@@ -186,6 +193,9 @@ public final nonisolated class Upload: NSManagedObject, Identifiable {
 
                 // Delete files whose filenames starts with the prefix
                 filesToDelete.removeAll(where: { !$0.lastPathComponent.hasPrefix(prefix) })
+                if siblingPrefix.isEmpty == false {
+                    filesToDelete.removeAll(where: { $0.lastPathComponent.hasPrefix(siblingPrefix) })
+                }
                 try filesToDelete.forEach({ try fm.removeItem(at: $0) })
             }
             catch let error {
@@ -212,6 +222,16 @@ extension Upload {
 
     public var isVideo: Bool {
         return pwgImageFileType(rawValue: self.fileType) == .video
+    }
+
+    public var part: pwgUploadAssetPart {
+        return pwgUploadAssetPart(rawValue: self.assetPart) ?? .original
+    }
+
+    // Identifies the files of this request in the Uploads directory,
+    // see UploadProperties.fileKey
+    public var fileKey: String {
+        return self.localIdentifier + self.part.fileKeySuffix
     }
     
     public func getProperties() -> UploadProperties {
@@ -251,6 +271,7 @@ extension Upload {
             compressImageOnUpload: self.compressImageOnUpload, photoQuality: self.photoQuality,
             deleteImageAfterUpload: self.deleteImageAfterUpload,
             markedForAutoUpload: self.markedForAutoUpload,
+            assetPart: self.part,
             deleteAssetIdentifier: self.deleteAssetIdentifier)
     }
     

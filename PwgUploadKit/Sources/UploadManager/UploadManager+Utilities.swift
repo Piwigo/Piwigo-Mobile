@@ -24,18 +24,20 @@ extension UploadManager {
     // * declared "nonisolated" because the compiler returns:
     // * Pattern that the region based isolation checker does not understand how to check. Please file a bug
     // ******************************************************************************************************
-    nonisolated func getUploadFileURL(from localIdentifier: String, withSuffix suffix: String = "",
-                                      creationDate: TimeInterval, deleted deleteIt: Bool = false) -> URL {
+    /// NB: The file name is derived from the file key, not from the localIdentifier, so that both
+    /// halves of a Live Photo — which share the same identifier — get their own files.
+    nonisolated func getUploadFileURL(for uploadData: UploadProperties, withSuffix suffix: String = "",
+                                      deleted deleteIt: Bool = false) -> URL {
         // File name of image data to be stored into Piwigo/Uploads directory
         var fileName = ""
         if #available(iOS 16.0, *) {
-            fileName = localIdentifier.replacing("/", with: "-")
+            fileName = uploadData.fileKey.replacing("/", with: "-")
         } else {
             // Fallback on earlier versions
-            fileName = localIdentifier.replacingOccurrences(of: "/", with: "-")
+            fileName = uploadData.fileKey.replacingOccurrences(of: "/", with: "-")
         }
         if fileName.isEmpty {
-            fileName = "file-".appending(String(Int64(creationDate)))
+            fileName = "file-".appending(String(Int64(uploadData.creationDate)))
         }
         fileName.append(suffix)
         let fileURL = DataDirectories.appUploadsDirectory.appendingPathComponent(fileName)
@@ -50,7 +52,10 @@ extension UploadManager {
     }
     
     /// - Delete Upload files w/ or w/o prefix
-    public func deleteFilesInUploadsDirectory(withPrefix prefix: String = "") {
+    /// The excluded prefix protects the files of the video half of a Live Photo, whose names
+    /// start with those of the photo half followed by kLivePhotoMovieSuffix.
+    public func deleteFilesInUploadsDirectory(withPrefix prefix: String = "",
+                                              excludingPrefix excluded: String = "") {
         let fileManager = FileManager.default
         do {
             // Get list of files
@@ -59,6 +64,10 @@ extension UploadManager {
             if prefix.isEmpty == false {
                 // Will delete files with given prefix only
                 filesToDelete.removeAll(where: { !$0.lastPathComponent.hasPrefix(prefix) })
+            }
+            if excluded.isEmpty == false {
+                // Will spare the files of the sibling upload request
+                filesToDelete.removeAll(where: { $0.lastPathComponent.hasPrefix(excluded) })
             }
             
             // Delete files
