@@ -55,8 +55,14 @@ struct DataMigrationStep {
     
     private static func customMappingModel(fromSourceModel sourceModel: NSManagedObjectModel,
                                            toDestinationModel destinationModel: NSManagedObjectModel) -> NSMappingModel? {
-        let mainBundle = Bundle(for: DataController.self)
-        return NSMappingModel(from: [mainBundle], forSourceModel: sourceModel,
+        // The compiled .cdm files are resources of this SPM target, so they live
+        // in PwgCacheKit_PwgCacheKit.bundle — i.e. Bundle.module, as do the
+        // .mom files loaded by managedObjectModel(forVersion:). Do not use
+        // Bundle(for:) here: it returns the bundle of the binary defining the
+        // class, which never holds the resources, and the lookup then only
+        // succeeds because NSMappingModel(from:) falls back to searching every
+        // bundle already loaded in the process.
+        return NSMappingModel(from: [Bundle.module], forSourceModel: sourceModel,
                               destinationModel: destinationModel)
     }
 }

@@ -331,6 +331,7 @@ final class PwgAPITesting: XCTestCase {
         XCTAssertEqual(result.data.md5checksum, "3175a7347fd5d6348935ec955f52a9e3")
         XCTAssertEqual(result.data.derivatives.largeImage?.height?.intValue, 756)
         XCTAssertEqual(result.data.commentRaw, "<!DOCTYPE html><html lang=\"fr\"><head>    <meta charset=\"UTF-8\">    <title>Exemple avec police</title>    <style>        p {            font-family: 'Comic Sans MS', cursive;            font-size: 18px;            color: #0000FF;        }    </style></head><body>    <p>Great view from Pic du Midi! Visit Piwigo.org</p></body></html>")
+        XCTAssertEqual(result.data.pageUrl, "https://.../picture.php?/2")
     }
     
     func testPwgImagesSetInfoDecoding() {

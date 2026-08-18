@@ -53,6 +53,13 @@ let package = Package(
                 .process("MigrationTools/MappingModel_0O_to_0P/Mapping_Model_0O_to_0P.xcmappingmodel")
             ]
         ),
+        .testTarget(
+            name: "PwgCacheKitTests",
+            dependencies: [
+                "PwgCacheKit"
+            ],
+            path: "Tests"
+        ),
     ],
 //    swiftLanguageModes: [.v5],
 )
