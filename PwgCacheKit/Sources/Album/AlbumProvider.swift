@@ -15,9 +15,9 @@ public final class AlbumProvider {
     public init() {}    // To make this class public
 
     // MARK: - Fetch Request
-    fileprivate func fetchRequestOfAlbum(withID pwgID: Int32,
-                                         ofUser username: String = ServerVars.shared.username,
-                                         onServerAtPath serverPath: String = ServerVars.shared.serverPath) -> NSFetchRequest<Album> {
+    fileprivate static func fetchRequestOfAlbum(withID pwgID: Int32,
+                                                ofUser username: String = ServerVars.shared.username,
+                                                onServerAtPath serverPath: String = ServerVars.shared.serverPath) -> NSFetchRequest<Album> {
         // Create a fetch request sorted by ID
         let fetchRequest = Album.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.pwgID), ascending: true)]
@@ -47,7 +47,7 @@ public final class AlbumProvider {
                          inContext taskContext: NSManagedObjectContext) -> Album? {
         // Synchronous execution
         return taskContext.performAndWait { () -> Album? in
-            let fetchRequest = fetchRequestOfAlbum(withID: pwgID)
+            let fetchRequest = Self.fetchRequestOfAlbum(withID: pwgID)
             return try? taskContext.fetch(fetchRequest).first
         }
     }
@@ -65,7 +65,7 @@ public final class AlbumProvider {
             // Synchronous execution
             return try taskContext.performAndWait { () -> Album in
                 // Create a fetch request for the Album entity
-                let fetchRequest = fetchRequestOfAlbum(withID: pwgID)
+                let fetchRequest = Self.fetchRequestOfAlbum(withID: pwgID)
                 
                 // Return the album if is exists
                 let album = try taskContext.fetch(fetchRequest).first
@@ -151,7 +151,7 @@ public final class AlbumProvider {
                   let serverPath = userData.server?.path
             else { return nil }
             
-            let fetchRequest = fetchRequestOfAlbum(withID: pwgID, ofUser: userData.username, onServerAtPath: serverPath)
+            let fetchRequest = Self.fetchRequestOfAlbum(withID: pwgID, ofUser: userData.username, onServerAtPath: serverPath)
             return try? taskContext.fetch(fetchRequest).first
         }
     }
@@ -356,16 +356,17 @@ public final class AlbumProvider {
                    albumToDeleteUUIDs.isEmpty == false {
                     // Select albums not returned by the fetch, i.e. albums deleted on the server
                     let albumsToDelete = cachedAlbums.filter({albumToDeleteUUIDs.contains($0.uuid)})
+                    let deletedAlbumIDs = albumsToDelete.map({ $0.pwgID })
                     
-                    // Check whether the auto-upload destination album was deleted on the server
-                    if cachedAlbums.first(where: { $0.pwgID == UploadVars.shared.autoUploadCategoryId }) == nil,
-                       albumsToDelete.first(where: { $0.pwgID == UploadVars.shared.autoUploadCategoryId }) != nil {
+                    // Check whether the auto-upload destination album, or one of its parent albums,
+                    // was deleted on the server
+                    if AlbumProvider.wasAutoUploadDestinationDeleted(amongAlbumsWithIDs: deletedAlbumIDs,
+                                                                     inContext: bckgContext) {
                         NotificationCenter.default.post(name: .pwgDisableAutoUpload, object: nil)
                     }
                     
                     // Inform that these albums were deleted on the server so that, for instance,
                     // the upload requests targeting them are deleted too (see UploadManager)
-                    let deletedAlbumIDs = albumsToDelete.map({ $0.pwgID })
                     if deletedAlbumIDs.isEmpty == false {
                         NotificationCenter.default.post(name: .pwgAlbumsDeletedOnServer, object: nil,
                                                         userInfo: ["albumIds" : deletedAlbumIDs])
@@ -403,6 +404,30 @@ public final class AlbumProvider {
         guard let importedUserProperties
         else { throw PwgKitError.userNotFound }
         return (albumToDeleteUUIDs, importedUserProperties)
+    }
+    
+    /// Returns whether the auto-upload destination album is one of the albums deleted on the
+    /// server, or a sub-album of one of them, i.e. whether auto-uploading should be disabled.
+    /// A non-recursive import only considers the albums of the parent album it fetched, so the
+    /// destination album may still be in cache while one of its parent albums was deleted.
+    /// This method is static so that the import closure does not capture self,
+    /// and must be called on the queue of the provided context.
+    fileprivate static func wasAutoUploadDestinationDeleted(amongAlbumsWithIDs albumIDs: [Int32],
+                                                            inContext taskContext: NSManagedObjectContext) -> Bool {
+        // Was the destination album itself deleted?
+        let autoUploadID = UploadVars.shared.autoUploadCategoryId
+        if albumIDs.contains(autoUploadID) { return true }
+        
+        // Is a destination album still expected? (the root album cannot be deleted)
+        if autoUploadID <= Int32.zero { return false }
+        
+        // Retrieve the destination album of the current user
+        guard let album = try? taskContext.fetch(fetchRequestOfAlbum(withID: autoUploadID)).first
+        else { return false }
+        
+        // Was one of its parent albums deleted?
+        return album.upperIds.components(separatedBy: ",").compactMap({ Int32($0) })
+            .contains(where: { albumIDs.contains($0) })
     }
     
     
