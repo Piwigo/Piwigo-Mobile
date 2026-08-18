@@ -363,6 +363,14 @@ public final class AlbumProvider {
                         NotificationCenter.default.post(name: .pwgDisableAutoUpload, object: nil)
                     }
                     
+                    // Inform that these albums were deleted on the server so that, for instance,
+                    // the upload requests targeting them are deleted too (see UploadManager)
+                    let deletedAlbumIDs = albumsToDelete.map({ $0.pwgID })
+                    if deletedAlbumIDs.isEmpty == false {
+                        NotificationCenter.default.post(name: .pwgAlbumsDeletedOnServer, object: nil,
+                                                        userInfo: ["albumIds" : deletedAlbumIDs])
+                    }
+                    
                     // Delete from the cache albums deleted on the server
                     albumsToDelete.forEach { album in
                         #if DEBUG

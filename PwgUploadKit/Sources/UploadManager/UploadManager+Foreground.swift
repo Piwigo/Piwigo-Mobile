@@ -213,6 +213,24 @@ extension UploadManager
         self.updateNberOfUploadsToComplete()
     }
     
+    /// Deletes the upload requests whose destination album was deleted on the Piwigo server
+    /// outside of the app, e.g. from the web UI. Called on reception of a pwgAlbumsDeletedOnServer
+    /// notification, i.e. once the album cache detected the deletion.
+    /// The server cannot keep a sub-album whose parent album was deleted, but a non-recursive
+    /// import only detects the deletion of the albums of the parent album it fetched, so the
+    /// sub-albums still in cache are collected here.
+    public func deleteUploads(ofAlbumsDeletedOnServerWithIDs albumIDs: [Int32]) async {
+        // Collect the IDs of the deleted albums and of their sub-albums
+        var deletedIDs = Set<Int32>()
+        for albumID in albumIDs {
+            deletedIDs.formUnion(AlbumProvider().getIDsOfAlbumAndSubAlbums(withID: albumID,
+                                                                           inContext: self.uploadBckgContext))
+        }
+        
+        // Delete the upload requests targeting these albums
+        await deleteUploads(ofDeletedAlbumsWithIDs: Array(deletedIDs))
+    }
+    
     /// Deletes the upload requests whose destination album was deleted on the Piwigo server.
     /// Pending requests can never complete anymore, and completed ones would keep presenting
     /// their photo as already uploaded, so both are deleted.

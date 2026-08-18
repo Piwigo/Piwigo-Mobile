@@ -28,4 +28,8 @@ public extension Notification.Name {
     // MARK: - Uploads
     /// - Notifies that auto-uploading should be disabled
     static let pwgDisableAutoUpload = Notification.Name("pwgNotificationDisableAutoUpload")
+    
+    /// - Notifies that albums were deleted on the Piwigo server, e.g. from the web UI.
+    /// - The IDs of these albums are provided in the "albumIds" key of the userInfo dictionary.
+    static let pwgAlbumsDeletedOnServer = Notification.Name("pwgNotificationAlbumsDeletedOnServer")
 }
