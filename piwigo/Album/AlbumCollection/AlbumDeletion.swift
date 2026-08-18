@@ -13,6 +13,7 @@ import PwgKit
 import PwgAPIKit
 import PwgCacheKit
 import PwgUIKit
+import PwgUploadKit
 
 final class AlbumDeletion: NSObject
 {
@@ -194,6 +195,11 @@ final class AlbumDeletion: NSObject
         // Delete the category
         Task {
             do throws(PwgKitError) {
+                // Collect the IDs of the albums which the server will delete, i.e. this album
+                // and its sub-albums, before the cache is updated below
+                let deletedIDs = AlbumProvider().getIDsOfAlbumAndSubAlbums(withID: album.pwgID,
+                                                                           inContext: DataController.shared.newTaskContext())
+                
                 // Check session
                 try await LoginUtilities().checkSessionOfCurrentUser()
                 
@@ -201,10 +207,15 @@ final class AlbumDeletion: NSObject
                 _ = try await JSONManager.shared.deleteCategory(withID: album.pwgID, inMode: deletionMode)
                 
                 // Auto-upload already disabled by AlbumProvider if necessary
-                // Also remove this album from the auto-upload destination
-                if UploadVars.shared.autoUploadCategoryId == album.pwgID {
+                // Also remove this album, or one of its sub-albums, from the auto-upload destination
+                if deletedIDs.contains(UploadVars.shared.autoUploadCategoryId) {
                     UploadVars.shared.autoUploadCategoryId = Int32.min
                 }
+                
+                // Delete the upload requests whose destination album was deleted:
+                // pending ones can never complete anymore and completed ones would keep
+                // presenting their photo as already uploaded
+                await UploadManager.shared.deleteUploads(ofDeletedAlbumsWithIDs: deletedIDs)
                 
                 // Update parent album data
                 let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium

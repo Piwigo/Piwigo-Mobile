@@ -103,6 +103,43 @@ public final class AlbumProvider {
         return try getOrCreateAlbum(withID: pwgID, name: name, inContext: taskContext).getProperties()
     }
 
+    /// Returns the IDs of the album and of all its sub-albums, i.e. the IDs of all the albums
+    /// which the Piwigo server deletes when it deletes this album.
+    /// The parent IDs stored in the upperIds attribute include the ID of the album itself,
+    /// so a sub-album is an album whose upperIds contains the ID of the requested album.
+    /// The ID of the requested album is always returned, even when it is not cached.
+    public func getIDsOfAlbumAndSubAlbums(withID pwgID: Int32,
+                                          inContext taskContext: NSManagedObjectContext) -> [Int32] {
+        // Synchronous execution
+        return taskContext.performAndWait { () -> [Int32] in
+            // Create a fetch request for the Album entity
+            let fetchRequest = Album.fetchRequest()
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.pwgID), ascending: true)]
+            
+            // Select albums:
+            /// — from the current server which is accessible to the current user
+            var andPredicates = [NSPredicate]()
+            andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
+            andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
+            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+            fetchRequest.returnsObjectsAsFaults = false
+            fetchRequest.shouldRefreshRefetchedObjects = true
+            
+            // Select the album and its sub-albums
+            let albums = (try? taskContext.fetch(fetchRequest)) ?? []
+            var albumIDs = albums.filter({ album in
+                album.pwgID == pwgID ||
+                album.upperIds.components(separatedBy: ",").compactMap({ Int32($0) }).contains(pwgID)
+            }).map(\.pwgID)
+            
+            // Return the ID of the requested album even if it is not in the cache
+            if albumIDs.contains(pwgID) == false {
+                albumIDs.insert(pwgID, at: 0)
+            }
+            return albumIDs
+        }
+    }
+
     
     // MARK: - Get Album of Other User
     /// Returns the requested album of the current user if it exists in the persistent store.

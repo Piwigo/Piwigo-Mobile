@@ -213,6 +213,38 @@ extension UploadManager
         self.updateNberOfUploadsToComplete()
     }
     
+    /// Deletes the upload requests whose destination album was deleted on the Piwigo server.
+    /// Pending requests can never complete anymore, and completed ones would keep presenting
+    /// their photo as already uploaded, so both are deleted.
+    /// The Piwigo server deletes an album together with its sub-albums, so the caller is
+    /// expected to provide the IDs of the deleted album and of all its sub-albums
+    /// (see AlbumProvider.getIDsOfAlbumAndSubAlbums(withID:inContext:)).
+    public func deleteUploads(ofDeletedAlbumsWithIDs albumIDs: [Int32]) async {
+        // Anything to do?
+        if albumIDs.isEmpty { return }
+        
+        // Collect the upload requests whose destination album no longer exists
+        let pendingIDs = UploadProvider().getIDsOfPendingUploads(onlyAlbums: albumIDs,
+                                                                 inContext: self.uploadBckgContext).0
+        let completedIDs = UploadProvider().getIDsOfCompletedUploads(onlyAlbums: albumIDs,
+                                                                     inContext: self.uploadBckgContext).0
+        let toDeleteIDs = pendingIDs + completedIDs
+        if toDeleteIDs.isEmpty { return }
+        
+        // Cancel the transfers in progress: their destination album no longer exists
+        let pendingURIstrs = Set(pendingIDs.map({ $0.uriRepresentation().absoluteString }))
+        await UploadSessionsDelegate.shared.cancelTasksOfUploads(withIDs: pendingURIstrs)
+        
+        // Remove the pending requests from the upload queue
+        await UploadManagerActor.shared.removeUploads(withIDs: pendingIDs)
+        
+        // Delete uploads
+        try? UploadProvider().deleteUploads(withID: toDeleteIDs, inContext: self.uploadBckgContext)
+        
+        // Update counter and app badge
+        self.updateNberOfUploadsToComplete()
+    }
+    
     
     // MARK: - Clean Photo Library
     func deleteAssets(associatedToUploads uploadIDs: [NSManagedObjectID], _ uploadLocalIDs: [String]) {

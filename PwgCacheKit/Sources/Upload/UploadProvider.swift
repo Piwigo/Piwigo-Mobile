@@ -333,6 +333,7 @@ public final class UploadProvider {
         Retrieve IDs of upload pending requests in given states on the PwgUploadKit private queue
      */
     public func getIDsOfPendingUploads(onlyInStates states: [pwgUploadState] = [], onlyImages: [Int64] = [],
+                                       onlyAlbums albums: [Int32] = [],
                                        onlyDeletable: Bool = false, markedForAutoUpload: Bool = false,
                                        inContext taskContext: NSManagedObjectContext) -> ([NSManagedObjectID], [String])
     {
@@ -372,6 +373,11 @@ public final class UploadProvider {
                 pendingUploads.removeAll(where: { !onlyImages.contains($0.imageId) })
             }
             
+            // Select those whose destination is one of the given Piwigo albums
+            if albums.isEmpty == false {
+                pendingUploads.removeAll(where: { !albums.contains($0.category) })
+            }
+            
             // Return objectIDs and localIdentifiers
             return (pendingUploads.map(\.objectID),
                     pendingUploads.map({ $0.localIdentifier }))
@@ -382,6 +388,7 @@ public final class UploadProvider {
         Retrieve IDs of completed upload requests marked for deletion on the PwgUploadKit private queue
      */
     public func getIDsOfCompletedUploads(onlyInStates states: [pwgUploadState] = [], onlyImages: [Int64] = [],
+                                         onlyAlbums albums: [Int32] = [],
                                          onlyDeletable: Bool = false, notAutoUploaded: Bool = false,
                                          inContext taskContext: NSManagedObjectContext) -> ([NSManagedObjectID], [String])
     {
@@ -419,6 +426,11 @@ public final class UploadProvider {
             // Select those related with given Piwigo images
             if onlyImages.isEmpty == false {
                 completedUploads.removeAll(where: { !onlyImages.contains($0.imageId) })
+            }
+            
+            // Select those whose destination is one of the given Piwigo albums
+            if albums.isEmpty == false {
+                completedUploads.removeAll(where: { !albums.contains($0.category) })
             }
             
             // Return objectIDs and localIdentifiers
