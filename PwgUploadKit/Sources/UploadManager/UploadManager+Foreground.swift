@@ -219,6 +219,9 @@ extension UploadManager
     /// The server cannot keep a sub-album whose parent album was deleted, but a non-recursive
     /// import only detects the deletion of the albums of the parent album it fetched, so the
     /// sub-albums still in cache are collected here.
+    /// What the server did with the photos of these albums is unknown, so completed requests are
+    /// kept: the photos which were deleted keep a request until the app browses an album which
+    /// no longer returns them (see deleteUploadsOfDeletedImages(withIDs:)).
     public func deleteUploads(ofAlbumsDeletedOnServerWithIDs albumIDs: [Int32]) async {
         // Collect the IDs of the deleted albums and of their sub-albums
         var deletedIDs = Set<Int32>()
@@ -232,21 +235,31 @@ extension UploadManager
     }
     
     /// Deletes the upload requests whose destination album was deleted on the Piwigo server.
-    /// Pending requests can never complete anymore, and completed ones would keep presenting
-    /// their photo as already uploaded, so both are deleted.
+    /// Pending requests are always deleted: they can never complete anymore.
+    /// Completed requests are only deleted when the photos were deleted from the server too,
+    /// i.e. when photosDeleted is true. A photo which still belongs to another album must keep
+    /// its request, otherwise the app would present it as never uploaded and propose it again.
     /// The Piwigo server deletes an album together with its sub-albums, so the caller is
     /// expected to provide the IDs of the deleted album and of all its sub-albums
     /// (see AlbumProvider.getIDsOfAlbumAndSubAlbums(withID:inContext:)).
-    public func deleteUploads(ofDeletedAlbumsWithIDs albumIDs: [Int32]) async {
+    public func deleteUploads(ofDeletedAlbumsWithIDs albumIDs: [Int32],
+                              photosDeleted: Bool = false) async {
         // Anything to do?
         if albumIDs.isEmpty { return }
         
-        // Collect the upload requests whose destination album no longer exists
+        // Collect the pending upload requests whose destination album no longer exists
         let pendingIDs = UploadProvider().getIDsOfPendingUploads(onlyAlbums: albumIDs,
                                                                  inContext: self.uploadBckgContext).0
-        let completedIDs = UploadProvider().getIDsOfCompletedUploads(onlyAlbums: albumIDs,
+        var toDeleteIDs = pendingIDs
+        
+        // Collect the completed upload requests whose photo was deleted from the server,
+        // but keep auto-upload requests so that their photo is not uploaded again
+        /// as done when images are deleted (see deleteUploadsOfDeletedImages(withIDs:))
+        if photosDeleted {
+            toDeleteIDs += UploadProvider().getIDsOfCompletedUploads(onlyAlbums: albumIDs,
+                                                                     notAutoUploaded: true,
                                                                      inContext: self.uploadBckgContext).0
-        let toDeleteIDs = pendingIDs + completedIDs
+        }
         if toDeleteIDs.isEmpty { return }
         
         // Cancel the transfers in progress: their destination album no longer exists

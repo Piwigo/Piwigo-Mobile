@@ -212,10 +212,12 @@ final class AlbumDeletion: NSObject
                     UploadVars.shared.autoUploadCategoryId = Int32.min
                 }
                 
-                // Delete the upload requests whose destination album was deleted:
-                // pending ones can never complete anymore and completed ones would keep
-                // presenting their photo as already uploaded
-                await UploadManager.shared.deleteUploads(ofDeletedAlbumsWithIDs: deletedIDs)
+                // Delete the upload requests whose destination album was deleted.
+                // Completed requests are only deleted when every photo of the album was deleted
+                // from the server: in the other modes a photo may still belong to another album,
+                // and the app would then propose it for upload again.
+                await UploadManager.shared.deleteUploads(ofDeletedAlbumsWithIDs: deletedIDs,
+                                                         photosDeleted: deletionMode == .all)
                 
                 // Update parent album data
                 let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
