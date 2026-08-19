@@ -145,6 +145,9 @@ final class VideoDetailViewController: UIViewController
         
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
+        #if DEBUG
+        debugPrint("••> VideoDetailViewController released memory")
+        #endif
     }
     
     

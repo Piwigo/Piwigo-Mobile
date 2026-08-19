@@ -131,6 +131,9 @@ class GifDetailViewController: UIViewController
         imageData = nil
         imageView.image = nil
         NotificationCenter.default.removeObserver(self)
+        #if DEBUG
+        debugPrint("••> GifDetailViewController released memory")
+        #endif
     }
 
 

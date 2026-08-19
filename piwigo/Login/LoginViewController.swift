@@ -162,6 +162,9 @@ final class LoginViewController: UIViewController {
         
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
+        #if DEBUG
+        debugPrint("••> LoginViewController released memory")
+        #endif
     }
 
     

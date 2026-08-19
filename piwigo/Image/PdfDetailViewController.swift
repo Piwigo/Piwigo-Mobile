@@ -139,6 +139,9 @@ class PdfDetailViewController: UIViewController
         // Unregister all observers
         imageData = nil
         NotificationCenter.default.removeObserver(self)
+        #if DEBUG
+        debugPrint("••> PdfDetailViewController released memory")
+        #endif
     }
     
     
