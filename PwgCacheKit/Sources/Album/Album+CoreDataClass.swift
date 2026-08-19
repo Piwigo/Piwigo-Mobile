@@ -79,10 +79,10 @@ public final nonisolated class Album: NSManagedObject, Identifiable {
         // Album page URL
         /// - Store relative URLs to save space and because the URL might changed in future
         let newPageUrl = ImageGetInfo.encodedImageURL(albumData.pageUrl ?? "")
-        if pageUrl != newPageUrl {
+        if newPageUrl != nil, pageUrl != newPageUrl {
             pageUrl = newPageUrl
         }
-        
+
         // Album rank (required)
         let newGlobalRank = albumData.globalRank ?? ""
         if globalRank != newGlobalRank {
