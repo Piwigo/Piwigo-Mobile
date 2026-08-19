@@ -124,23 +124,35 @@ class TroubleshootingViewController: UIViewController {
             debugPrint("••> Logs retrieved in \(duration.rounded()) ms")
             #endif
 
-            // Present known categories in the expected order,
+            // Present known categories in the alphabetical order,
             // with entries in chronological order in each category
             let orderedCategories: [String] = {
-                var categories = [
-                    // PwgAPIKit — Session Delegate
-                    String(describing: PwgSessionDelegate.self),
-                    String(describing: JSONManager.self),
-                    String(describing: ImageDownloader.self),
-                    // PwgCacheKit — Core Data
+                var categories: [String] = [
+                    String(describing: AppDelegate.self)
+                ]
+                if #available(iOS 16.4, *) {
+                    categories.append(String(describing: AutoUpload.self))
+                }
+                categories.append(String(describing: AutoUploadIntentHandler.self))
+                categories.append(contentsOf: [
                     String(describing: DataMigrator.self),
                     String(describing: Image.self),
-                    // PwgUploadKit — UploadManager
+                    String(describing: ImageDownloader.self),
+                    String(describing: JSONManager.self),
+                    "LivePhotos",
+                    String(describing: PlayerViewControllerCoordinator.self),
+                    String(describing: PwgSessionDelegate.self),
+                    String(describing: SceneDelegate.self),
                     String(describing: UploadManager.self),
                     String(describing: UploadManagerActor.self),
+                ])
+                if #available(iOS 16.0, *) {
+                    categories.append(String(describing: UploadPhotos.self))
+                }
+                categories.append(contentsOf: [
                     String(describing: UploadSessionManager.self),
-                    String(describing: UploadSessionsDelegate.self)
-                ]
+                    String(describing: UploadSessionsDelegate.self),
+                ])
                 #if DEBUG
                 // piwigo — App Metrics
                 categories.insert(String(describing: AppMetrics.self), at: 0)
