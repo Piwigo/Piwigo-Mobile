@@ -24,6 +24,11 @@ public extension Notification.Name {
     static let pwgVideoDuration = Notification.Name("pwgNotificationVideoDuration")
 
 
+    // MARK: - Display PDF files
+    /// - Number of pages known —> used to update the title view
+    static let pwgPdfPageCount = Notification.Name("pwgNotificationPdfPageCount")
+
+
     // MARK: - Share images & videos
     /// - Share completed
     static let pwgDidShare = Notification.Name("pwgNotificationDidShare")

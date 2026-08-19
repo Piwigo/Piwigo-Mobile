@@ -31454,6 +31454,30 @@
         }
       }
     },
+    "pdfPageCount": {
+      "comment": "%lld pages",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld page"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld pages"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "playVideo_title": {
       "comment": "Play",
       "extractionState": "manual",

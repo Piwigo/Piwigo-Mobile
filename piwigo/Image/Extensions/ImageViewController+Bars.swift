@@ -303,6 +303,9 @@ extension ImageViewController {
         if let duration = videoDurationString() {
             subTitle.append(duration)
         }
+        if let pageCount = pdfPageCountString() {
+            subTitle.append(pageCount)
+        }
         
         // Prepare title view
         navigationItem.titleView = getTitleView(withTitle: title, titleColor: .label,
@@ -349,6 +352,9 @@ extension ImageViewController {
         if let duration = videoDurationString() {
             subTitle.append(duration)
         }
+        if let pageCount = pdfPageCountString() {
+            subTitle.append(pageCount)
+        }
         
         // Prepare title view
         navigationItem.titleView = getTitleView(withTitle: title, titleColor: PwgColor.whiteCream,
@@ -373,6 +379,21 @@ extension ImageViewController {
         } else {
             return String(format: "%d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, seconds % 60)
         }
+    }
+    
+    /// Number of pages of the presented PDF. Returns nil for another kind of file, and
+    /// while the document is still being opened: like the duration of a video, the count is
+    /// not stored in cache, and .pwgPdfPageCount refreshes the subtitle when it is known.
+    @MainActor
+    func pdfPageCountString() -> String? {
+        guard let imageData = imageData, imageData.isPDF,
+              let pdfVC = pageViewController?.viewControllers?.first as? PdfDetailViewController,
+              pdfVC.imageData.pwgID == imageData.pwgID,
+              let pageCount = pdfVC.pdfView?.document?.pageCount, pageCount > 0
+        else { return nil }
+        
+        return String.localizedStringWithFormat(
+            String(localized: "pdfPageCount", comment: "%lld pages"), pageCount)
     }
     
     // The font size of the title is not updated automatically

@@ -304,6 +304,7 @@
 		ADAF43EF2FAE199700C8085F /* help11.png in Resources */ = {isa = PBXBuildFile; fileRef = ADAF43EE2FAE199700C8085F /* help11.png */; };
 		ADAF43F12FAE1AE400C8085F /* Help11ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAF43F02FAE1AE400C8085F /* Help11ViewController.swift */; };
 		ADB007D72D7B0A5F004A84A7 /* ImageViewController+Bars.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB007D62D7B0A5F004A84A7 /* ImageViewController+Bars.swift */; };
+		ADB253A930364CCB00154A24 /* ImageViewController+PDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB253A830364CCB00154A24 /* ImageViewController+PDF.swift */; };
 		ADB2E93A2DCBF737000F3F7C /* SeparatorSelectorTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB2E9392DCBF737000F3F7C /* SeparatorSelectorTableViewCell.swift */; };
 		ADB2E9422DD5A864000F3F7C /* TimeFormatSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB2E9412DD5A864000F3F7C /* TimeFormatSelectorViewController.swift */; };
 		ADB2E9442DD5A8DC000F3F7C /* TimeFormatSelectorViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADB2E9432DD5A8DC000F3F7C /* TimeFormatSelectorViewController.storyboard */; };
@@ -847,6 +848,7 @@
 		ADAF64A729B3AEE2005F3501 /* zh-Hant */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/About.strings"; sourceTree = "<group>"; };
 		ADAF64AB29B3AEE2005F3501 /* zh-Hant */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/PrivacyPolicy.strings"; sourceTree = "<group>"; };
 		ADB007D62D7B0A5F004A84A7 /* ImageViewController+Bars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Bars.swift"; sourceTree = "<group>"; };
+		ADB253A830364CCB00154A24 /* ImageViewController+PDF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+PDF.swift"; sourceTree = "<group>"; };
 		ADB2E9392DCBF737000F3F7C /* SeparatorSelectorTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeparatorSelectorTableViewCell.swift; sourceTree = "<group>"; };
 		ADB2E9412DD5A864000F3F7C /* TimeFormatSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeFormatSelectorViewController.swift; sourceTree = "<group>"; };
 		ADB2E9432DD5A8DC000F3F7C /* TimeFormatSelectorViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = TimeFormatSelectorViewController.storyboard; path = "piwigo/Settings/Upload/Rename File/TimeFormatSelector/TimeFormatSelectorViewController.storyboard"; sourceTree = SOURCE_ROOT; };
@@ -1766,6 +1768,7 @@
 				ADEA2699285F8D5F00B6C9A0 /* ImageViewController+Share.swift */,
 				ADEA269B285F8F2E00B6C9A0 /* ImageViewController+Favorites.swift */,
 				AD7DE08D2A843C1200C1424E /* ImageViewController+Video.swift */,
+				ADB253A830364CCB00154A24 /* ImageViewController+PDF.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2467,6 +2470,7 @@
 				ADA74B0D2C5D138600162BE0 /* LocalImagesViewController+Select.swift in Sources */,
 				AD18C74027F22A0D002CD05C /* LockOptionsViewController.swift in Sources */,
 				AD61B7B43032139100E29E00 /* UploadLivePhotoViewController.swift in Sources */,
+				ADB253A930364CCB00154A24 /* ImageViewController+PDF.swift in Sources */,
 				ADD210432440DE5A00DD79A6 /* SettingsViewController.swift in Sources */,
 				AD27B87325A7A91800528F5F /* ShareUtilities.swift in Sources */,
 				ADEE00022026080200000002 /* ShareOptionsViewController.swift in Sources */,

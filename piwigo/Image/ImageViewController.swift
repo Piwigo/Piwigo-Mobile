@@ -123,6 +123,10 @@ final class ImageViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(didKnowVideoDuration(_:)),
                                                name: Notification.Name.pwgVideoDuration, object: nil)
         
+        // Register the number of pages of a PDF, which also reaches the title view
+        NotificationCenter.default.addObserver(self, selector: #selector(didKnowPdfPageCount(_:)),
+                                               name: Notification.Name.pwgPdfPageCount, object: nil)
+        
         // Register the Piwigo ID of the user, deduced after a first upload
         NotificationCenter.default.addObserver(self, selector: #selector(didUpdateUserID(_:)),
                                                name: Notification.Name.pwgUserIDdidChange, object: nil)
