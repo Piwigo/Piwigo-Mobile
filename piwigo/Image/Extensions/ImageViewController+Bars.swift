@@ -21,7 +21,7 @@ extension ImageViewController {
         favoriteBarButton = getFavoriteBarButton()
         
         // Interface depends on device and orientation
-        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+        let orientation = view.currentInterfaceOrientation
         
         // Admin user can do everything except may be downloading images (i.e. sharing images)
         // Community user can only be allowed to edit properties of images he/she has uploaded.
@@ -417,7 +417,7 @@ extension ImageViewController {
         }
         
         // No subtitle when using acessibility category or on iPhone in landscape mode
-        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+        let orientation = view.currentInterfaceOrientation
         if traitCollection.preferredContentSizeCategory >= .accessibilityMedium ||
             (view.traitCollection.userInterfaceIdiom == .phone && orientation.isLandscape) {
             navigationItem.titleView = getTitleView(withTitle: title, titleColor: PwgColor.whiteCream,

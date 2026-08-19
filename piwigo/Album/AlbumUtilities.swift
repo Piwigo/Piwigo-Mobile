@@ -46,7 +46,7 @@ struct AlbumUtilities
     @MainActor
     static func viewWidth(for view: UIView, pageSize: CGSize) -> CGFloat {
         // Available width in portrait mode
-        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+        let orientation = view.currentInterfaceOrientation
         return orientation == .portrait ? pageSize.width : pageSize.height
     }
     

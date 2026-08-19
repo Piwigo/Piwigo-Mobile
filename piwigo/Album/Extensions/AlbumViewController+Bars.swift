@@ -371,7 +371,7 @@ extension AlbumViewController
         shareBarButton = getShareBarButton()
 
         // Interface depends on device and orientation
-        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+        let orientation = view.currentInterfaceOrientation
 
         // Admin user can do everything except may be downloading images (i.e. sharing images)
         // Community user can only be allowed to edit properties of images he/she has uploaded.
@@ -552,7 +552,7 @@ extension AlbumViewController
         view?.window?.windowScene?.title = title
         
         // No subtitle when using acessibility category or on iPhone in landscape mode
-        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+        let orientation = view.currentInterfaceOrientation
         let tooLargeFont = traitCollection.preferredContentSizeCategory >= .accessibilityMedium
         if (tooLargeFont && categoryId != AlbumVars.shared.defaultCategory) ||
             (view.traitCollection.userInterfaceIdiom == .phone && orientation.isLandscape) {
@@ -640,7 +640,7 @@ extension AlbumViewController
         // There is no subtitle in landscape mode on iPhone
         // nor when using acessibility category
         var subtitle = ""
-        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+        let orientation = view.currentInterfaceOrientation
         let isAccessibilityCategory = traitCollection.preferredContentSizeCategory.isAccessibilityCategory
         if !(view.traitCollection.userInterfaceIdiom == .phone && orientation.isLandscape) {
             if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) && !isAccessibilityCategory {

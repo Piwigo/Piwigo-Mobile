@@ -306,7 +306,7 @@ final class AppLockViewController: UIViewController {
         }
 
         // Get device orientation
-        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+        let orientation = view.currentInterfaceOrientation
 
         // Initialise constants
         let margin: CGFloat =  16

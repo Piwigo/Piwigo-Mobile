@@ -579,7 +579,7 @@ final class AlbumViewController: UIViewController
                     whatsNewVC.modalTransitionStyle = .coverVertical
                     whatsNewVC.modalPresentationStyle = .pageSheet
                     whatsNewVC.isModalInPresentation = true
-                    let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+                    let orientation = view.currentInterfaceOrientation
                     if let sheet = whatsNewVC.sheetPresentationController {
                         sheet.detents = [.medium(), .large()]
                         if orientation == .landscapeLeft || orientation == .landscapeRight {

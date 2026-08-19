@@ -11,6 +11,31 @@ import UIKit
 
 extension UIView {
     
+    // MARK: - Interface Orientation
+    /**
+     Orientation of the interface presenting this view.
+
+     Not simply `window?.windowScene?.interfaceOrientation`: `window` is nil until the view
+     enters the hierarchy, and a view controller presented with a custom transition is only
+     added to the container after `viewWillAppear` — so a bar laid out from there would
+     always be told the interface is in portrait. Falls back to the scene the app is showing.
+
+     The share extension keeps the previous behaviour: it cannot reach another scene, since
+     `UIApplication.shared` — which `UIWindowScene.current` relies on — is unavailable there.
+     */
+    @MainActor
+    var currentInterfaceOrientation: UIInterfaceOrientation {
+        if let orientation = window?.windowScene?.interfaceOrientation {
+            return orientation
+        }
+        #if EXTENSION
+        return .portrait
+        #else
+        return UIWindowScene.current?.interfaceOrientation ?? .portrait
+        #endif
+    }
+    
+    
     // MARK: - Shake UIView
     func shakeHorizontally(completion: @escaping () -> Void) {
         // Move digits to the left and right several times

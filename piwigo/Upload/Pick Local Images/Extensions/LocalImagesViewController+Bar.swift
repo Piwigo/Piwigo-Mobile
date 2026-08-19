@@ -113,7 +113,7 @@ extension LocalImagesViewController {
         
         // There is no subtitle in landscape mode on iPhone
         var subtitle = ""
-        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+        let orientation = view.currentInterfaceOrientation
         if !(view.traitCollection.userInterfaceIdiom == .phone && orientation.isLandscape) {
             let nberOfSelectedImages = count ?? selectedImages.compactMap{ $0 }.count
             switch nberOfSelectedImages {
