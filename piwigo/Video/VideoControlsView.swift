@@ -49,6 +49,22 @@ final class VideoControlsView: UIVisualEffectView {
         view.frame = bounds
         view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         contentView.addSubview(view)
+        
+        // Set the icons at once, so that they do not change size when the player reports
+        // its first status: the XIB carries them at their default size.
+        setPlaying(false)
+        setMuted(VideoVars.shared.isMuted)
+        
+        // Adopt Liquid Glass, replacing the blur effect set in the storyboard.
+        /// The bar is drawn as a pill: its shape is handed to the glass instead of being
+        /// imposed by a corner radius, so that it follows the height of the bar and the
+        /// glass is rendered with the right silhouette.
+        if #available(iOS 26.0, *) {
+            effect = UIGlassEffect(style: .regular)
+            cornerConfiguration = .capsule()
+            layer.cornerRadius = 0
+            view.layer.cornerRadius = 0
+        }
     }
     
     // Loads XIB file into a view and returns this view
@@ -64,10 +80,15 @@ final class VideoControlsView: UIVisualEffectView {
     func applyColorPalette() {
         playPauseButton.tintColor = PwgColor.tintColor
         muteButton.tintColor = PwgColor.tintColor
-        timeSlider.thumbTintColor = PwgColor.thumb
-        timeSlider.maximumTrackTintColor = PwgColor.thumb
-        playPauseButton.tintColor = PwgColor.tintColor
-        playPauseButton.tintColor = PwgColor.tintColor
+        if #available(iOS 26.0, *) {
+            // Leave the thumb and the remaining track to the system, whose translucent
+            // track is made to sit on glass.
+            timeSlider.thumbTintColor = nil
+            timeSlider.maximumTrackTintColor = nil
+        } else {
+            timeSlider.thumbTintColor = PwgColor.thumb
+            timeSlider.maximumTrackTintColor = PwgColor.thumb
+        }
     }
     
     @MainActor
@@ -129,13 +150,19 @@ final class VideoControlsView: UIVisualEffectView {
         }
     }
 
+    /// Icons are given the configuration used by the bar buttons of the app, so that the
+    /// controls of the video match them in size and weight. See UIBarButtonItem.setBackImage().
+    private static let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 22, weight: .medium,
+                                                                        scale: .medium)
+    
     @MainActor
     func setPlaying(_ isPlaying: Bool) {
+        let configuration = VideoControlsView.symbolConfiguration
         if isPlaying {
-            playPauseButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
+            playPauseButton.setImage(UIImage(systemName: "pause.fill", withConfiguration: configuration), for: .normal)
             playPauseButton.accessibilityLabel = String(localized: "pauseVideo_title", comment: "Pause")
         } else {
-            playPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
+            playPauseButton.setImage(UIImage(systemName: "play.fill", withConfiguration: configuration), for: .normal)
             playPauseButton.accessibilityLabel = String(localized: "playVideo_title", comment: "Play")
         }
     }
@@ -149,11 +176,12 @@ final class VideoControlsView: UIVisualEffectView {
     
     @MainActor
     func setMuted(_ isMuted: Bool) {
+        let configuration = VideoControlsView.symbolConfiguration
         if isMuted {
-            muteButton.setImage(UIImage(systemName: "speaker.slash.fill"), for: .normal)
+            muteButton.setImage(UIImage(systemName: "speaker.slash.fill", withConfiguration: configuration), for: .normal)
             muteButton.accessibilityLabel = String(localized: "unmuteAudio_title", comment: "Unmute")
         } else {
-            muteButton.setImage(UIImage(systemName: "speaker.fill"), for: .normal)
+            muteButton.setImage(UIImage(systemName: "speaker.fill", withConfiguration: configuration), for: .normal)
             muteButton.accessibilityLabel = String(localized: "muteAudio_title", comment: "Mute")
         }
     }

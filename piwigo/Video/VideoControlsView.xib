@@ -19,6 +19,9 @@
             <rect key="frame" x="0.0" y="0.0" width="420" height="40"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
+                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" insetsLayoutMarginsFromSafeArea="NO" animating="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="bX5-cP-mII">
+                    <rect key="frame" x="200" y="10" width="20" height="20"/>
+                </activityIndicatorView>
                 <button hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZBR-I9-W2y" userLabel="Play/Pause" customClass="ExpandedTouchButton" customModule="piwigo" customModuleProvider="target">
                     <rect key="frame" x="7.9999999999999982" y="9" width="21.333333333333329" height="22"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -48,9 +51,6 @@
                         <action selector="didTapMuteUnmute:" destination="-1" eventType="touchUpInside" id="mUt-ta-p02"/>
                     </connections>
                 </button>
-                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" insetsLayoutMarginsFromSafeArea="NO" animating="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="bX5-cP-mII">
-                    <rect key="frame" x="200" y="10" width="20" height="20"/>
-                </activityIndicatorView>
             </subviews>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>

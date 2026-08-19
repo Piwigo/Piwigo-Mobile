@@ -31,6 +31,7 @@ final class VideoDetailViewController: UIViewController
     @IBOutlet weak var videoContainerHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var descContainer: ImageDescriptionView!
     @IBOutlet weak var videoControls: VideoControlsView!
+    @IBOutlet weak var videoControlsHeight: NSLayoutConstraint!
     @IBOutlet weak var videoAirplay: UIImageView!
     
     // Variable used to dismiss the view when the scale is reduced
@@ -49,6 +50,14 @@ final class VideoDetailViewController: UIViewController
         
         // Initialise videoContainerView size with placeHolder size
         configVideoViews()
+        
+        // Initialise video controls
+        if #available(iOS 26.0, *) {
+            videoControlsHeight.constant = 44
+        } else {
+            // Fallback on previous version
+            videoControlsHeight.constant = 40
+        }
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
