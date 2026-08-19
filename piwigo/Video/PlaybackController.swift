@@ -46,6 +46,15 @@ final class PlaybackController {
         }
     }
     
+    /// Returns the duration of a video whose playback item already exists, nil otherwise.
+    /// Unlike coordinator(for:), this never creates a playback item.
+    func duration(ofVideoWithID pwgID: Int64) -> TimeInterval? {
+        guard let duration = playbackItems[pwgID]?.video.duration,
+              duration.isFinite
+        else { return nil }
+        return duration
+    }
+    
     func embed(contentOfVideo video: Video, in parentViewController: UIViewController, containerView: UIView) {
         coordinator(for: video).embedInline(in: parentViewController, container: containerView)
     }

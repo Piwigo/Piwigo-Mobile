@@ -372,31 +372,37 @@ extension ImageViewController {
             title = imageData.titleStr
         }
         
-        // No subtitle when using acessibility category or when the creation date is unknown
-        let tooLargeFont = traitCollection.preferredContentSizeCategory >= .accessibilityMedium
-        if tooLargeFont || (imageData.dateCreated < DateUtilities.weekAfterInterval) {
+        // No subtitle when using acessibility category
+        if traitCollection.preferredContentSizeCategory >= .accessibilityMedium {
             navigationItem.titleView = getTitleView(withTitle: title, titleColor: .label,
                                                     subtitle: "", subTitleColor: .label)
             return
         }
         
-        // Subtitle
-        var subTitle = String()
-        let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
-        let dateFormatter = DateUtilities.dateFormatter
-        if view.traitCollection.userInterfaceIdiom == .pad {
-            dateFormatter.dateStyle = .long
-            dateFormatter.timeStyle = .medium   // Without time zone (unknown)
-            subTitle = dateFormatter.string(from: dateCreated)
-        } else {
-            dateFormatter.dateStyle = .medium
-            dateFormatter.timeStyle = .medium
-            subTitle = dateFormatter.string(from: dateCreated)
+        // Subtitle: creation date, video duration, or both.
+        /// Either can be missing: the creation date may be unknown and the duration of a
+        /// video is only known once the player provides it.
+        var subTitle = [String]()
+        if imageData.dateCreated >= DateUtilities.weekAfterInterval {
+            let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
+            let dateFormatter = DateUtilities.dateFormatter
+            if view.traitCollection.userInterfaceIdiom == .pad {
+                dateFormatter.dateStyle = .long
+                dateFormatter.timeStyle = .medium   // Without time zone (unknown)
+            } else {
+                dateFormatter.dateStyle = .medium
+                dateFormatter.timeStyle = .medium
+            }
+            subTitle.append(dateFormatter.string(from: dateCreated))
+        }
+        if let duration = videoDurationString() {
+            subTitle.append(duration)
         }
         
         // Prepare title view
         navigationItem.titleView = getTitleView(withTitle: title, titleColor: .label,
-                                                subtitle: subTitle, subTitleColor: .label)
+                                                subtitle: subTitle.joined(separator: " · "),
+                                                subTitleColor: .label)
     }
     
     @MainActor @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Specific to iOS 15 to 18")
@@ -411,33 +417,57 @@ extension ImageViewController {
         }
         
         // No subtitle when using acessibility category or on iPhone in landscape mode
-        // or when the creation date is unknown
         let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-        let tooLargeFont = traitCollection.preferredContentSizeCategory >= .accessibilityMedium
-        if tooLargeFont || (imageData.dateCreated < DateUtilities.weekAfterInterval) ||
+        if traitCollection.preferredContentSizeCategory >= .accessibilityMedium ||
             (view.traitCollection.userInterfaceIdiom == .phone && orientation.isLandscape) {
-            navigationItem.titleView = getTitleView(withTitle: title, titleColor: .label,
-                                                    subtitle: "", subTitleColor: .label)
+            navigationItem.titleView = getTitleView(withTitle: title, titleColor: PwgColor.whiteCream,
+                                                    subtitle: "", subTitleColor: PwgColor.rightLabel)
             return
         }
         
-        // Subtitle
-        var subTitle = String()
-        let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
-        let dateFormatter = DateUtilities.dateFormatter
-        if view.traitCollection.userInterfaceIdiom == .pad {
-            dateFormatter.dateStyle = .long
-            dateFormatter.timeStyle = .medium   // Without time zone (unknown)
-            subTitle = dateFormatter.string(from: dateCreated)
-        } else {
-            dateFormatter.dateStyle = .medium
-            dateFormatter.timeStyle = .medium
-            subTitle = dateFormatter.string(from: dateCreated)
+        // Subtitle: creation date, video duration, or both.
+        /// Either can be missing: the creation date may be unknown and the duration of a
+        /// video is only known once the player provides it.
+        var subTitle = [String]()
+        if imageData.dateCreated >= DateUtilities.weekAfterInterval {
+            let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
+            let dateFormatter = DateUtilities.dateFormatter
+            if view.traitCollection.userInterfaceIdiom == .pad {
+                dateFormatter.dateStyle = .long
+                dateFormatter.timeStyle = .medium   // Without time zone (unknown)
+            } else {
+                dateFormatter.dateStyle = .medium
+                dateFormatter.timeStyle = .medium
+            }
+            subTitle.append(dateFormatter.string(from: dateCreated))
+        }
+        if let duration = videoDurationString() {
+            subTitle.append(duration)
         }
         
         // Prepare title view
         navigationItem.titleView = getTitleView(withTitle: title, titleColor: PwgColor.whiteCream,
-                                                subtitle: subTitle, subTitleColor: PwgColor.rightLabel)
+                                                subtitle: subTitle.joined(separator: " · "),
+                                                subTitleColor: PwgColor.rightLabel)
+    }
+    
+    /// Duration of the presented video as minutes:seconds, or hours:minutes:seconds when it
+    /// exceeds an hour. Returns nil for a photo, and while the duration is still unknown:
+    /// it is not stored in cache and only reaches the playback controller once the player
+    /// provides it, which posts .pwgVideoDuration so that the subtitle can be refreshed.
+    @MainActor
+    func videoDurationString() -> String? {
+        guard let imageData = imageData, imageData.isVideo,
+              let duration = PlaybackController.shared.duration(ofVideoWithID: imageData.pwgID),
+              duration > 0
+        else { return nil }
+        
+        let seconds = Int(duration.rounded())
+        if seconds < 3600 {
+            return String(format: "%d:%02d", seconds / 60, seconds % 60)
+        } else {
+            return String(format: "%d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, seconds % 60)
+        }
     }
     
     // The font size of the title is not updated automatically

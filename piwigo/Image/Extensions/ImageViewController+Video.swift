@@ -12,7 +12,24 @@ import UIKit
 // MARK: - Video Buttons
 extension ImageViewController
 {
-    // MARK: - Play/pause video
+    // MARK: - Video Duration
+    /// The duration of a video is not stored in cache and is often known only after the
+    /// video is presented, so the subtitle of the title view is refreshed on arrival.
+    @objc func didKnowVideoDuration(_ notification: Notification) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            // NOP unless the duration is the one of the presented video
+            guard let pwgID = notification.userInfo?["pwgID"] as? Int64,
+                  imageData?.pwgID == pwgID
+            else { return }
+
+            // The title view reads the duration from the playback controller
+            setTitleViewFromImageData()
+        }
+    }
+
+
+    // MARK: - Play/pause Video
     @objc func didChangePlaybackStatus(_ notification: Notification) {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
@@ -76,7 +93,7 @@ extension ImageViewController
     }
 
 
-    // MARK: - Mute/unmute video
+    // MARK: - Mute/unmute Video
     @objc func didChangeMuteOption(_ notification: Notification) {
         DispatchQueue.main.async { [weak self] in
             // NOP if pwgID or player status unknown

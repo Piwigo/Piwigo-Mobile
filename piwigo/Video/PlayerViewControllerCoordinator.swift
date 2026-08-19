@@ -195,6 +195,7 @@ final class PlayerViewControllerCoordinator: NSObject {
                         // Store video duration, configure slider and play video if possible
 //                        debugPrint("updatePlayerViewController.duration: \(duration), was \(self.video.duration)")
                         self.video.duration = duration
+                        self.postVideoDuration()
                         self.updatePlayerViewController(duration: duration)
                     })
                     
@@ -265,6 +266,7 @@ final class PlayerViewControllerCoordinator: NSObject {
                         self.status.insert(.readyForDisplay)
                         // Play video if possible
                         self.video.duration = playerViewController.player?.currentItem?.duration.seconds ?? .nan
+                        self.postVideoDuration()
                         self.video.frameSize = playerViewController.videoBounds.size == .zero ? nil : playerViewController.videoBounds.size
 //                        debugPrint("updatePlayerViewController.duration: \(playerViewController.player?.currentItem?.duration.seconds ?? .nan), was \(self.video.duration) AND .size: \(String(describing: playerViewController.videoBounds.size == .zero ? nil : playerViewController.videoBounds.size)), was \(String(describing: self.video.frameSize))")
                         updatePlayerViewController()
@@ -354,6 +356,17 @@ final class PlayerViewControllerCoordinator: NSObject {
                         "playing" : playerViewController.player?.rate != 0,
                         "muted"   : playerViewController.player?.isMuted as Any] as [String : Any]
         NotificationCenter.default.post(name: .pwgVideoPlaybackStatus,
+                                        object: nil, userInfo: userInfo)
+    }
+    
+    // The duration of a video is not stored in cache: it is only known once the player
+    // item provides it, which may happen after the video is presented. Notifies observers
+    // so that the title view can present it as soon as it becomes available.
+    private func postVideoDuration() {
+        guard video.duration.isFinite else { return }
+        let userInfo = ["pwgID"    : video.pwgID as Any,
+                        "duration" : video.duration] as [String : Any]
+        NotificationCenter.default.post(name: .pwgVideoDuration,
                                         object: nil, userInfo: userInfo)
     }
     
