@@ -72,6 +72,13 @@ public final nonisolated class Image: NSManagedObject, Identifiable {
             commentHTML = newCommentHTML
         }
         
+        // Image page URL not nil and modified?
+        /// - Store relative URLs to save space and because the URL might changed in future
+        let newPageUrl = ImageGetInfo.encodedImageURL(imageData.pageUrl ?? "")
+        if newPageUrl != nil, pageUrl != newPageUrl {
+            pageUrl = newPageUrl
+        }
+        
         // Image visits (returned by pwg.category.getImages)
         let newVisits = imageData.visits ?? Int32.zero
         if visits != newVisits {
@@ -307,6 +314,7 @@ public final nonisolated class Image: NSManagedObject, Identifiable {
         }
         
         // Download URL not nil and modified?
+        /// - Store relative URLs to save space and because the URL might changed in future
         let newDownloadUrl = ImageGetInfo.encodedImageURL(imageData.downloadUrl ?? "")
         if newDownloadUrl != nil, downloadUrl != newDownloadUrl {
             downloadUrl = newDownloadUrl
