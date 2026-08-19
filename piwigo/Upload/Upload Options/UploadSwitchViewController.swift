@@ -13,8 +13,11 @@ import PwgCacheKit
 import PwgUIKit
 import PwgUploadKit
 
-@objc protocol UploadSwitchDelegate: NSObjectProtocol {
+/// Not @objc: pwgUploadLivePhotoAs is a Swift enum. Nothing in Objective-C adopts this
+/// protocol, and NSObjectProtocol still makes it class-bound for a weak reference.
+protocol UploadSwitchDelegate: NSObjectProtocol {
     func didSelectCurrentCounter(value: Int64)
+    func didSelectUploadLivePhotoAs(_ option: pwgUploadLivePhotoAs)
     func uploadOptionsViewDidDisappear(withUploadsQueued: Bool)
 }
 
@@ -136,6 +139,10 @@ final class UploadSwitchViewController: UIViewController {
         // Show HUD during upload preparation
         self.navigationController?.showHUD(withTitle: Localized.preparingUploads, minWidth: 200)
         
+        // What to upload from a Live Photo, for this selection only. Defaults to the
+        // setting, which the upload settings view may override without changing it.
+        var uploadLivePhotoAs = UploadVars.shared.uploadLivePhotoAs
+        
         // Retrieve custom image parameters and upload settings from child views
         children.forEach { (child) in
             
@@ -196,6 +203,7 @@ final class UploadSwitchViewController: UIViewController {
                     updatedRequest.compressImageOnUpload = settingsCtrl.compressImageOnUpload
                     updatedRequest.photoQuality = settingsCtrl.photoQuality
                     updatedRequest.deleteImageAfterUpload = settingsCtrl.deleteImageAfterUpload
+                    uploadLivePhotoAs = settingsCtrl.uploadLivePhotoAs
 
                     // Store updated upload request
                     uploadRequests[index] = updatedRequest
@@ -203,13 +211,19 @@ final class UploadSwitchViewController: UIViewController {
             }
         }
         
+        // Tell the picker what a Live Photo will produce, so that it can follow the
+        // progress of the one or two upload requests each of them yields.
+        delegate?.didSelectUploadLivePhotoAs(uploadLivePhotoAs)
+        
         // Queue upload requests and start uploads
+        let livePhotoChoice = uploadLivePhotoAs
         Task(priority: .utility) { @UploadManagerActor in
             do {
                 // Create upload requests in cache
                 /// Cells switch to the "waiting" upload state and are "automatically" deselected visually
                 /// A Live Photo produces one or two requests, see the option selected in Settings
-                let requests = await UploadProperties.expandingLivePhotos(in: self.uploadRequests)
+                let requests = await UploadProperties.expandingLivePhotos(in: self.uploadRequests,
+                                                                          as: livePhotoChoice)
                 let uploadIDs = try await UploadManager.shared.importUploads(from: requests)
                 
                 // Add upload requests to queue

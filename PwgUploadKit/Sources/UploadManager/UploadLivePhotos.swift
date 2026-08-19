@@ -26,15 +26,18 @@ extension UploadProperties {
     }
 
     /**
-     Expands the requests of Live Photos into one or two requests, according to the option chosen
-     in Settings: the photo, the video, or both. Requests which do not refer to a Live Photo of
+     Expands the requests of Live Photos into one or two requests, according to the wanted
+     option: the photo, the video, or both. Requests which do not refer to a Live Photo of
      the Photo Library are returned unchanged.
      Called just before the requests are stored in the cache, so that a picker keeps handling
      one request per asset.
+     - Parameter choice: what to upload from a Live Photo. The caller provides it rather than
+       reading the settings, so that a selection can be uploaded with another option without
+       changing the default.
      */
-    public static func expandingLivePhotos(in requests: [UploadProperties]) -> [UploadProperties] {
+    public static func expandingLivePhotos(in requests: [UploadProperties],
+                                           as choice: pwgUploadLivePhotoAs) -> [UploadProperties] {
         // Nothing to do when the user only wants the photo, which is the default
-        let choice = UploadVars.shared.uploadLivePhotoAs
         if choice == .photo || requests.isEmpty { return requests }
 
         // Identify the Live Photos among the assets, in a single fetch

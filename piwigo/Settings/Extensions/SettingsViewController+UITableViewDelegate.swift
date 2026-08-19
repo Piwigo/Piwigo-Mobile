@@ -304,6 +304,7 @@ extension SettingsViewController: UITableViewDelegate
                 guard let livePhotoVC = livePhotoSB.instantiateViewController(withIdentifier: "UploadLivePhotoViewController") as? UploadLivePhotoViewController
                 else { preconditionFailure("Could not load UploadLivePhotoViewController") }
                 livePhotoVC.delegate = self
+                livePhotoVC.uploadLivePhotoAs = UploadVars.shared.uploadLivePhotoAs
                 navigationController?.pushViewController(livePhotoVC, animated: true)
 
             case 5 /* Upload Photo Size */:

@@ -21,6 +21,14 @@ final class UploadLivePhotoViewController: UIViewController {
 
     weak var delegate: (any UploadLivePhotoAsDelegate)?
     
+    /// Option presented and returned to the delegate. Set by the caller so that the upload
+    /// of a selection can adopt an option without changing the default stored in settings.
+    private var _uploadLivePhotoAs: pwgUploadLivePhotoAs?
+    var uploadLivePhotoAs: pwgUploadLivePhotoAs {
+        get { return _uploadLivePhotoAs ?? UploadVars.shared.uploadLivePhotoAs }
+        set { _uploadLivePhotoAs = newValue }
+    }
+    
     @IBOutlet var tableView: UITableView!
     
     
@@ -68,7 +76,7 @@ final class UploadLivePhotoViewController: UIViewController {
         super.viewDidDisappear(animated)
 
         // Return selected Live Photo upload mode
-        delegate?.didSelectUploadLivePhotoAs(UploadVars.shared.uploadLivePhotoAs)
+        delegate?.didSelectUploadLivePhotoAs(uploadLivePhotoAs)
     }
 
     deinit {
@@ -94,7 +102,7 @@ extension UploadLivePhotoViewController: UITableViewDataSource
         let choice = pwgUploadLivePhotoAs(rawValue: Int16(indexPath.row)) ?? .photo
         cell.configure(with: choice.name, detail: "")
         /// The effective option, not the stored one, which may not be applicable anymore
-        cell.accessoryType = choice == UploadVars.shared.uploadLivePhotoAs ? .checkmark : .none
+        cell.accessoryType = choice == uploadLivePhotoAs ? .checkmark : .none
 
         // Options uploading the video are proposed only when the server accepts videos
         let isSelectable = (choice == .photo) || UploadVars.shared.serverAcceptsVideos
@@ -150,12 +158,12 @@ extension UploadLivePhotoViewController: UITableViewDelegate
 
         // Did the user change the option?
         let newChoice = pwgUploadLivePhotoAs(rawValue: Int16(indexPath.row)) ?? .photo
-        let oldChoice = UploadVars.shared.uploadLivePhotoAs
+        let oldChoice = uploadLivePhotoAs
         if newChoice == oldChoice { return }
 
         // Update choice
         tableView.cellForRow(at: IndexPath(row: Int(oldChoice.rawValue), section: 0))?.accessoryType = .none
-        UploadVars.shared.uploadLivePhotoAs = newChoice
+        uploadLivePhotoAs = newChoice
         tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
     }
 }

@@ -47,7 +47,8 @@ final class LocalImageCollectionViewCell: UICollectionViewCell {
     }
 
     @MainActor  // Image from the Photos Library
-    func configure(with imageAsset: PHAsset, thumbnailSize: CGSize) {
+    func configure(with imageAsset: PHAsset, thumbnailSize: CGSize,
+                   uploadLivePhotoAs: pwgUploadLivePhotoAs) {
 //        debugPrint("••> Configure cell with ID: \(imageAsset.localIdentifier)")
         // Configure icons
         applyColorPalette()
@@ -56,8 +57,10 @@ final class LocalImageCollectionViewCell: UICollectionViewCell {
         localIdentifier = imageAsset.localIdentifier
 
         // How many upload requests will this asset produce?
+        /// The option is provided by the picker, which knows whether the upload being
+        /// prepared adopted the default or another one.
         expectedParts = (imageAsset.mediaSubtypes.contains(.photoLive)
-                         && UploadVars.shared.uploadLivePhotoAs == .both) ? 2 : 1
+                         && uploadLivePhotoAs == .both) ? 2 : 1
 
         // Image: retrieve data of right size and crop image
         let retinaScale = Int(UIScreen.main.scale)

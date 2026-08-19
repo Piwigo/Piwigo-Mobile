@@ -21,7 +21,7 @@ extension UploadSettingsViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4 + (resizeImageOnUpload ? 2 : 0)
+        return 5 + (resizeImageOnUpload ? 2 : 0)
                  + (compressImageOnUpload ? 1 : 0)
                  + (canDeleteImages ? 1 : 0)
     }
@@ -30,10 +30,22 @@ extension UploadSettingsViewController {
         var tableViewCell = UITableViewCell()
         let contentSizeCategory = traitCollection.preferredContentSizeCategory
         var row = indexPath.row
-        row += (!resizeImageOnUpload && (row > 1)) ? 2 : 0
-        row += (!compressImageOnUpload && (row > 4)) ? 1 : 0
+        row += (!resizeImageOnUpload && (row > 2)) ? 2 : 0
+        row += (!compressImageOnUpload && (row > 5)) ? 1 : 0
         switch row {
-        case 0 /* Strip private Metadata? */:
+        case 0 /* Live Photos */:
+            let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                ? "LabelTableViewCell"
+                : "LabelTableViewCell2"
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
+            else { preconditionFailure("Could not load a LabelTableViewCell!") }
+            cell.configure(with: String(localized: "settings_livePhoto", comment: "Live Photos"),
+                           detail: uploadLivePhotoAs.name)
+            cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+            cell.accessibilityIdentifier = "uploadLivePhotoAs"
+            tableViewCell = cell
+            
+        case 1 /* Strip private Metadata? */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
             else { preconditionFailure("Could not load a SwitchTableViewCell!") }
             // See https://iosref.com/res
@@ -45,7 +57,7 @@ extension UploadSettingsViewController {
             cell.accessibilityIdentifier = "stripMetadataBeforeUpload"
             tableViewCell = cell
             
-        case 1 /* Resize Before Upload? */:
+        case 2 /* Resize Before Upload? */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
             else { preconditionFailure("Could not load a SwitchTableViewCell!") }
             cell.configure(with: String(localized: "settings_photoResize", comment: "Downsize"))
@@ -54,8 +66,8 @@ extension UploadSettingsViewController {
                 // Number of rows will change accordingly
                 self.resizeImageOnUpload = switchState
                 // Position of the row that should be added/removed
-                let photoAtIndexPath = IndexPath(row: 2, section: 0)
-                let videoAtIndexPath = IndexPath(row: 3, section: 0)
+                let photoAtIndexPath = IndexPath(row: 3, section: 0)
+                let videoAtIndexPath = IndexPath(row: 4, section: 0)
                 if switchState {
                     // Insert row in existing table
                     self.settingsTableView?.insertRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
@@ -67,7 +79,7 @@ extension UploadSettingsViewController {
             cell.accessibilityIdentifier = "resizeBeforeUpload"
             tableViewCell = cell
             
-        case 2 /* Upload Photo Max Size */:
+        case 3 /* Upload Photo Max Size */:
             let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
                 ? "LabelTableViewCell"
                 : "LabelTableViewCell2"
@@ -79,7 +91,7 @@ extension UploadSettingsViewController {
             cell.accessibilityIdentifier = "uploadPhotoSize"
             tableViewCell = cell
 
-        case 3 /* Upload Max Video Size */:
+        case 4 /* Upload Max Video Size */:
             let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
                 ? "LabelTableViewCell"
                 : "LabelTableViewCell2"
@@ -91,7 +103,7 @@ extension UploadSettingsViewController {
             cell.accessibilityIdentifier = "defaultUploadVideoSize"
             tableViewCell = cell
             
-        case 4 /* Compress before Upload? */:
+        case 5 /* Compress before Upload? */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
             else { preconditionFailure("Could not load a SwitchTableViewCell!") }
             // See https://iosref.com/res
@@ -101,7 +113,7 @@ extension UploadSettingsViewController {
                 // Number of rows will change accordingly
                 self.compressImageOnUpload = switchState
                 // Position of the row that should be added/removed
-                let rowAtIndexPath = IndexPath(row: 3 + (self.resizeImageOnUpload ? 2 : 0), section: 0)
+                let rowAtIndexPath = IndexPath(row: 4 + (self.resizeImageOnUpload ? 2 : 0), section: 0)
                 if switchState {
                     // Insert row in existing table
                     self.settingsTableView?.insertRows(at: [rowAtIndexPath], with: .automatic)
@@ -113,7 +125,7 @@ extension UploadSettingsViewController {
             cell.accessibilityIdentifier = "compressBeforeUpload"
             tableViewCell = cell
             
-        case 5 /* Image Quality slider */:
+        case 6 /* Image Quality slider */:
             let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
                 ? "SliderTableViewCell"
                 : "SliderTableViewCell2"
@@ -132,7 +144,7 @@ extension UploadSettingsViewController {
             cell.accessibilityIdentifier = "compressionRatio"
             tableViewCell = cell
             
-        case 6 /* Rename Filename Before Upload */:
+        case 7 /* Rename Filename Before Upload */:
             let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
                 ? "LabelTableViewCell"
                 : "LabelTableViewCell2"
@@ -156,7 +168,7 @@ extension UploadSettingsViewController {
             cell.accessibilityIdentifier = "modifyFilename"
             tableViewCell = cell
 
-        case 7 /* Delete image after upload? */:
+        case 8 /* Delete image after upload? */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
             else { preconditionFailure("Could not load a SwitchTableViewCell!") }
             cell.configure(with: String(localized: "settings_deleteImage", comment: "Delete After"))

@@ -34,6 +34,12 @@ extension SettingsViewController: SelectPrivacyDelegate {
 // MARK: - UploadLivePhotoAsDelegate Methods
 extension SettingsViewController: UploadLivePhotoAsDelegate {
     func didSelectUploadLivePhotoAs(_ option: pwgUploadLivePhotoAs) {
+        // Do nothing if option is unchanged
+        if option == UploadVars.shared.uploadLivePhotoAs { return }
+        
+        // Save new choice, which the selector no longer stores itself
+        UploadVars.shared.uploadLivePhotoAs = option
+        
         // Refresh settings
         let indexPath = IndexPath(row: 2, section: SettingsSection.uploads.rawValue)
         if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),

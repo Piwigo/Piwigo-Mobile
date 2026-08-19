@@ -109,6 +109,12 @@ final class LocalImagesViewController: UIViewController
     
     
     // MARK: - View Lifecycle
+    /// Option adopted for the assets whose upload was requested, by local identifier.
+    /// A cell needs it to expect the right number of upload requests while its asset is
+    /// uploading, which may differ from the default when the user overrode it. Assets which
+    /// are not uploading are not listed and fall back to the default.
+    var livePhotoOptionByIdentifier = [String: pwgUploadLivePhotoAs]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         

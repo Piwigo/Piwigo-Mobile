@@ -16,6 +16,7 @@ class UploadSettingsViewController: UITableViewController {
     
     @IBOutlet var settingsTableView: UITableView!
     
+    lazy var uploadLivePhotoAs: pwgUploadLivePhotoAs = UploadVars.shared.uploadLivePhotoAs
     lazy var stripGPSdataOnUpload = UploadVars.shared.stripGPSdataOnUpload
     lazy var resizeImageOnUpload = UploadVars.shared.resizeImageOnUpload
     lazy var photoMaxSize: Int16 = UploadVars.shared.photoMaxSize
@@ -97,7 +98,7 @@ extension UploadSettingsViewController: UploadPhotoSizeDelegate {
             photoMaxSize = selectedSize
             
             // Refresh corresponding row
-            let indexPath = IndexPath(row: 2, section: 0)
+            let indexPath = IndexPath(row: 3, section: 0)
             settingsTableView.reloadRows(at: [indexPath], with: .automatic)
         }
         
@@ -105,14 +106,14 @@ extension UploadSettingsViewController: UploadPhotoSizeDelegate {
         if photoMaxSize == 0, videoMaxSize == 0 {
             resizeImageOnUpload = false
             // Position of the rows which should be removed
-            let photoAtIndexPath = IndexPath(row: 2, section: 0)
-            let videoAtIndexPath = IndexPath(row: 3, section: 0)
+            let photoAtIndexPath = IndexPath(row: 3, section: 0)
+            let videoAtIndexPath = IndexPath(row: 4, section: 0)
             
             // Remove row in existing table
             settingsTableView?.deleteRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
 
             // Refresh flag
-            let indexPath = IndexPath(row: 1, section: 0)
+            let indexPath = IndexPath(row: 2, section: 0)
             settingsTableView?.reloadRows(at: [indexPath], with: .automatic)
         }
     }
@@ -127,7 +128,7 @@ extension UploadSettingsViewController: UploadVideoSizeDelegate {
             videoMaxSize = selectedSize
             
             // Refresh corresponding row
-            let indexPath = IndexPath(row: 3, section: 0)
+            let indexPath = IndexPath(row: 4, section: 0)
             settingsTableView.reloadRows(at: [indexPath], with: .automatic)
         }
         
@@ -135,14 +136,14 @@ extension UploadSettingsViewController: UploadVideoSizeDelegate {
         if photoMaxSize == 0, videoMaxSize == 0 {
             resizeImageOnUpload = false
             // Position of the rows which should be removed
-            let photoAtIndexPath = IndexPath(row: 2, section: 0)
-            let videoAtIndexPath = IndexPath(row: 3, section: 0)
+            let photoAtIndexPath = IndexPath(row: 3, section: 0)
+            let videoAtIndexPath = IndexPath(row: 4, section: 0)
             
             // Remove row in existing table
             settingsTableView?.deleteRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
 
             // Refresh flag
-            let indexPath = IndexPath(row: 1, section: 0)
+            let indexPath = IndexPath(row: 2, section: 0)
             settingsTableView?.reloadRows(at: [indexPath], with: .automatic)
         }
     }
@@ -179,5 +180,21 @@ extension UploadSettingsViewController: MofifyFilenameDelegate {
                 cell.detailLabel.text = String(localized: "settings_autoUploadDisabled", comment: "Off")
             }
         }
+    }
+}
+
+
+// MARK: - UploadLivePhotoAsDelegate Methods
+extension UploadSettingsViewController: UploadLivePhotoAsDelegate {
+    func didSelectUploadLivePhotoAs(_ option: pwgUploadLivePhotoAs) {
+        // Was the option modified?
+        guard option != uploadLivePhotoAs else { return }
+        
+        // Adopt the new choice for this upload only, leaving the default untouched
+        uploadLivePhotoAs = option
+        
+        // Refresh corresponding row
+        let indexPath = IndexPath(row: 0, section: 0)
+        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
     }
 }

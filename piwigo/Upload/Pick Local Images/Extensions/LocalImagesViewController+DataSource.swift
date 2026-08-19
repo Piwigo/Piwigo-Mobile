@@ -133,7 +133,10 @@ extension LocalImagesViewController: UICollectionViewDataSource
         let imageAsset = fetchedImages[index]
 
         // Configure cell with image asset
-        cell.configure(with: imageAsset, thumbnailSize: imageCellSize)
+        let livePhotoOption = livePhotoOptionByIdentifier[imageAsset.localIdentifier]
+                              ?? UploadVars.shared.uploadLivePhotoAs
+        cell.configure(with: imageAsset, thumbnailSize: imageCellSize,
+                       uploadLivePhotoAs: livePhotoOption)
 
         // Get upload state from cell data
         let uploadState = getUploadStateOfImage(at: index, for: cell)

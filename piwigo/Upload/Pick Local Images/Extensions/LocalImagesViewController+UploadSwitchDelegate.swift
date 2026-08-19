@@ -16,6 +16,15 @@ import PwgUploadKit
 // MARK: UploadSwitchDelegate Methods
 extension LocalImagesViewController: UploadSwitchDelegate
 {
+    func didSelectUploadLivePhotoAs(_ option: pwgUploadLivePhotoAs) {
+        // Remember what a Live Photo will yield for the assets about to be uploaded, so
+        // that their cells expect the right number of upload requests. Recorded per asset:
+        // the next selection adopts the default again, even while these ones upload.
+        for request in uploadRequests {
+            livePhotoOptionByIdentifier[request.localIdentifier] = option
+        }
+    }
+    
     @objc func didSelectCurrentCounter(value: Int64) {
         albumDelegate?.didSelectCurrentCounter(value: value)
     }
@@ -26,6 +35,11 @@ extension LocalImagesViewController: UploadSwitchDelegate
         
         // Release memory
         self.uploadRequests = []
+        
+        // Forget the option of the assets which are no longer being uploaded
+        let stillUploading = Set((self.uploads.fetchedObjects ?? []).map(\.localIdentifier))
+        self.livePhotoOptionByIdentifier = self.livePhotoOptionByIdentifier
+            .filter { stillUploading.contains($0.key) }
         
         // Update the navigation bar
         updateNavBar()
