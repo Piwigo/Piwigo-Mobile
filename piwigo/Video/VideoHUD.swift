@@ -9,7 +9,7 @@
 import UIKit
 import PwgUIKit
 
-class VideoHUD: UIView {
+final class VideoHUD: UIView {
     
     var status: PlayerViewControllerCoordinator.Status = [] {
         didSet {
