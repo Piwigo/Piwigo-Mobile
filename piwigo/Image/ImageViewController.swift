@@ -44,11 +44,10 @@ final class ImageViewController: UIViewController {
         return UIBarButtonItem.backImageButton(target: self, action: #selector(returnToAlbum))
     }()
     lazy var deleteBarButton: UIBarButtonItem = getDeleteBarButton()
-    var shareBarButton: UIBarButtonItem?
+    var shareImageButton: UIBarButtonItem?
     var favoriteBarButton: UIBarButtonItem?
-    var playBarButton: UIBarButtonItem?
-    var muteBarButton: UIBarButtonItem?
     var goToPageButton: UIBarButtonItem?
+    var shareLinkButton: UIBarButtonItem?
     
     
     // MARK: - Rotate View & Buttons
@@ -119,11 +118,10 @@ final class ImageViewController: UIViewController {
         // Register font changes
         NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
                                                name: UIContentSizeCategory.didChangeNotification, object: nil)
-        // Register video player changes
-        NotificationCenter.default.addObserver(self, selector: #selector(didChangePlaybackStatus),
-                                               name: Notification.Name.pwgVideoPlaybackStatus, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(didChangeMuteOption),
-                                               name: Notification.Name.pwgVideoMutedOrNot, object: nil)
+        
+        // Register the duration of a video, which reaches the title view
+        NotificationCenter.default.addObserver(self, selector: #selector(didKnowVideoDuration(_:)),
+                                               name: Notification.Name.pwgVideoDuration, object: nil)
         
         // Register the Piwigo ID of the user, deduced after a first upload
         NotificationCenter.default.addObserver(self, selector: #selector(didUpdateUserID(_:)),
@@ -148,10 +146,9 @@ final class ImageViewController: UIViewController {
         if #available(iOS 26.0, *) {
             backButton.tintColor = PwgColor.tintColor
             deleteBarButton.tintColor = PwgColor.tintColor
-            shareBarButton?.tintColor = PwgColor.tintColor
+            shareImageButton?.tintColor = PwgColor.tintColor
+            shareLinkButton?.tintColor = PwgColor.tintColor
             favoriteBarButton?.tintColor = PwgColor.tintColor
-            playBarButton?.tintColor = PwgColor.tintColor
-            muteBarButton?.tintColor = PwgColor.tintColor
             goToPageButton?.tintColor = PwgColor.tintColor
         }
     }
@@ -645,9 +642,7 @@ extension ImageViewController: UIPageViewControllerDelegate
             indexPath = imageDVC.indexPath
             imageData = imageDVC.imageData
             
-            // Reset video player and PDF goToPage buttons
-            playBarButton = nil
-            muteBarButton = nil
+            // Reset PDF goToPage button
             goToPageButton = nil
         }
         else if let gifDVC = pageViewController.viewControllers?.first as? GifDetailViewController {
@@ -655,9 +650,7 @@ extension ImageViewController: UIPageViewControllerDelegate
             indexPath = gifDVC.indexPath
             imageData = gifDVC.imageData
 
-            // Reset video player and PDF goToPage buttons
-            playBarButton = nil
-            muteBarButton = nil
+            // Reset PDF goToPage button
             goToPageButton = nil
         }
         else if let videoDVC = pageViewController.viewControllers?.first as? VideoDetailViewController {
@@ -665,21 +658,14 @@ extension ImageViewController: UIPageViewControllerDelegate
             indexPath = videoDVC.indexPath
             imageData = videoDVC.imageData
             
-            // Reset PDF goToPage buttons
+            // Reset PDF goToPage button
+            /// A video is played, paused and muted from the controls presented below it
             goToPageButton = nil
-            
-            // Set video player buttons
-            playBarButton = UIBarButtonItem.playImageButton(self, action: #selector(playVideo))
-            muteBarButton = UIBarButtonItem.muteAudioButton(VideoVars.shared.isMuted, target: self, action: #selector(muteUnmuteAudio))
         }
         else if let pdfDVC = pageViewController.viewControllers?.first as? PdfDetailViewController {
             // Store index and image data of presented page
             indexPath = pdfDVC.indexPath
             imageData = pdfDVC.imageData
-            
-            // Reset video player and PDF reader buttons
-            playBarButton = nil
-            muteBarButton = nil
             
             // Set PDF goToPage button
             goToPageButton = UIBarButtonItem.goToPageButton(self, action: #selector(goToPage))

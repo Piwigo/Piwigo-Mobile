@@ -13,8 +13,8 @@ import PwgUIKit
 
 extension ImageViewController
 {
-    // MARK: - Share Image Bar Button
-    func getShareButton() -> UIBarButtonItem? {
+    // MARK: - Share Image
+    func getShareImageButton() -> UIBarButtonItem? {
         // Since Piwigo 14, pwg.categories.getImages method returns download_url if the user has download rights
         // For previous versions, we assume that all only registered users have download rights
         if userData.canDownloadImages() {
@@ -23,9 +23,7 @@ extension ImageViewController
             return nil
         }
     }
-
-
-    // MARK: - Share Image
+    
     @MainActor
     @objc func shareImage() {
         // Disable buttons during action
@@ -195,13 +193,69 @@ extension ImageViewController
         }
 
         // Present share image activity view controller
-        activityViewController.popoverPresentationController?.barButtonItem = shareBarButton
+        activityViewController.popoverPresentationController?.barButtonItem = shareImageButton
         present(activityViewController, animated: true)
     }
 
     @objc func cancelShareImage() {
         // Cancel file donwload
         NotificationCenter.default.post(name: .pwgCancelDownload, object: nil)
+    }
+    
+    
+    // MARK: - Share Image Page URL
+    func getShareLinkButton() -> UIBarButtonItem? {
+        // Sharing the page URL requires no download rights: the page redirects
+        // the recipient to a login page when access needs to be granted.
+        return UIBarButtonItem.shareLinkButton(self, action: #selector(ImageViewController.shareLink))
+    }
+
+    /// Bar button action, which cannot carry the argument of shareImageLink(from:).
+    @MainActor
+    @objc func shareLink() {
+        shareImageLink(from: shareLinkButton)
+    }
+
+    /**
+     Presents the share sheet with the URL of the image page on the Piwigo server,
+     so that the user can send it with Mail, Messages, AirDrop, copy it, etc.
+
+     Unlike sharing the image file, this neither downloads anything nor requires
+     download rights: the shared page redirects the recipient to a login page when
+     access needs to be granted.
+
+     - Parameter barButton: the bar button the share sheet is anchored to on iPad.
+     */
+    @MainActor
+    func shareImageLink(from barButton: UIBarButtonItem? = nil) {
+        // Check that the page URL of the current image is known.
+        guard let imageData = imageData,
+              let pageUrl = imageData.pageUrl as? URL
+        else { return }
+
+        // Disable buttons during action
+        setEnableStateOfButtons(false)
+
+        // Name of the image, used as the subject by Mail and other activities.
+        let subject = imageData.titleStr.isEmpty ? imageData.fileName : imageData.titleStr
+
+        // A single URL item is provided, so the share sheet proposes the activities
+        // which accept a link and nothing has to be excluded.
+        let itemSource = ImageLinkActivityItemSource(pageUrl: pageUrl, subject: subject)
+        let activityViewController = UIActivityViewController(activityItems: [itemSource],
+                                                              applicationActivities: nil)
+
+        activityViewController.completionWithItemsHandler = { [self] activityType, _, _, _ in
+            // Honour the user's "clear clipboard" delay when the link was copied
+            ShareUtilities.setClipboardExpiration(forActivityType: activityType)
+
+            // Enable buttons after action
+            setEnableStateOfButtons(true)
+        }
+
+        // Present the share sheet
+        activityViewController.popoverPresentationController?.barButtonItem = barButton ?? actionBarButton
+        present(activityViewController, animated: true)
     }
 }
 
@@ -239,5 +293,42 @@ extension ImageViewController: @preconcurrency ShareImageActivityItemProviderDel
             // Closes ActivityView
             presentedViewController?.dismiss(animated: true)
         }
+    }
+}
+
+
+// MARK: - Image Page URL Activity Item Source
+/**
+ Shares the URL of an image page on the Piwigo server and provides the name of that
+ image as the subject, which activities such as Mail use to pre-fill their subject field.
+
+ A plain UIActivityItemSource is used instead of the UIActivityItemProvider subclasses
+ of the other share paths: there is nothing to download or convert in the background,
+ the URL is already at hand.
+ */
+final class ImageLinkActivityItemSource: NSObject, UIActivityItemSource {
+
+    private let pageUrl: URL
+    private let subject: String
+
+    init(pageUrl: URL, subject: String) {
+        self.pageUrl = pageUrl
+        self.subject = subject
+        super.init()
+    }
+
+    func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {
+        // Returning a URL is what makes the share sheet propose the activities accepting a link
+        return pageUrl
+    }
+
+    func activityViewController(_ activityViewController: UIActivityViewController,
+                                itemForActivityType activityType: UIActivity.ActivityType?) -> Any? {
+        return pageUrl
+    }
+
+    func activityViewController(_ activityViewController: UIActivityViewController,
+                                subjectForActivityType activityType: UIActivity.ActivityType?) -> String {
+        return subject
     }
 }

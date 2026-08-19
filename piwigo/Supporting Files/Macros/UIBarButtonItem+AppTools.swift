@@ -26,6 +26,15 @@ extension UIBarButtonItem {
         return button
     }
     
+    static func shareLinkButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
+        let button = UIBarButtonItem(image: UIImage(systemName: "link"),
+                                     style: .plain, target: target, action: action)
+        button.accessibilityIdentifier = "link"
+        button.accessibilityLabel = String(localized: "imageOptions_shareLink", comment: "Share Link")
+        button.tintColor = PwgColor.tintColor
+        return button
+    }
+    
     static func moveImageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
         let button = UIBarButtonItem(barButtonSystemItem: .reply,
                                      target: target, action: action)
@@ -42,22 +51,6 @@ extension UIBarButtonItem {
         return button
     }
     
-    static func playImageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
-        let button = UIBarButtonItem(barButtonSystemItem: .play,
-                                     target: target, action: action)
-        button.accessibilityIdentifier = "play"
-        button.tintColor = PwgColor.tintColor
-        return button
-    }
-    
-    static func pauseImageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
-        let button = UIBarButtonItem(barButtonSystemItem: .pause,
-                                     target: target, action: action)
-        button.accessibilityIdentifier = "pause"
-        button.tintColor = PwgColor.tintColor
-        return button
-    }
-
     static func goToPageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
         let button = UIBarButtonItem(image: UIImage(systemName: "arrow.turn.down.right"),
                                      style: .plain, target: target, action: action)
@@ -132,31 +125,6 @@ extension UIBarButtonItem {
             self.image = UIImage(systemName: "questionmark")
         } else {
             self.image = UIImage(systemName: "questionmark.circle")
-        }
-    }
-    
-    
-    // MARK: - Mute Audio Playback
-    static let pwgMuted = 1
-    static let pwgNotMuted = 2
-    static func muteAudioButton(_ isMuted: Bool, target: Any?, action: Selector?) -> UIBarButtonItem {
-        let button = UIBarButtonItem(title: nil, style: .plain, target: target, action: action)
-        button.setMuteAudioImage(for: isMuted)
-        button.accessibilityIdentifier = "mute"
-        button.tag = isMuted ? pwgMuted : pwgNotMuted
-        button.tintColor = PwgColor.tintColor
-        return button
-    }
-    
-    func setMuteAudioImage(for isMuted: Bool) {
-        // NB: We do not use the SF symbols because their width difference leads
-        // to a movement of the icon when switching from one to the other.
-        if isMuted {
-            self.image = UIImage(systemName: "speaker.slash.fill")
-            self.accessibilityLabel = String(localized: "unmuteAudio_title", comment: "Unmute")
-        } else {
-            self.image = UIImage(systemName: "speaker.fill")
-            self.accessibilityLabel = String(localized: "muteAudio_title", comment: "Mute")
         }
     }
 }
