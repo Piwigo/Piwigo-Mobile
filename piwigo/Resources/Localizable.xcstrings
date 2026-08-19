@@ -21233,6 +21233,18 @@
         }
       }
     },
+    "imageOptions_shareLink": {
+      "comment": "Share Link",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share Link"
+          }
+        }
+      }
+    },
     "imageOptions_title": {
       "comment": "MARK: -- Image options (actions)",
       "extractionState": "manual",
@@ -31429,6 +31441,30 @@
         }
       },
       "shouldTranslate": false
+    },
+    "pauseVideo_title": {
+      "comment": "Pause",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pause"
+          }
+        }
+      }
+    },
+    "playVideo_title": {
+      "comment": "Play",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play"
+          }
+        }
+      }
     },
     "privacyLevel": {
       "comment": "Privacy Level",

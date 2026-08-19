@@ -73,7 +73,9 @@ final class PlaybackController {
     }
 
     func seek(contentOfVideo video: Video, toTimeFraction fraction: Double) {
-        coordinator(for: video).seekToTime(video.duration * fraction)
+        // The duration is taken from the coordinator, not from the provided Video struct.
+        let coordinator = coordinator(for: video)
+        coordinator.seekToTime(coordinator.video.duration * fraction)
     }
     
     func isPlayingVideo(_ video: Video) -> Bool {
