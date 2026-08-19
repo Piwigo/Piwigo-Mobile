@@ -20,7 +20,7 @@ protocol PdfDetailDelegate: NSObjectProtocol {
     func scrolled(_ height: Double, by offset: Double, max maxOffset: Double)
 }
 
-class PdfDetailViewController: UIViewController
+final class PdfDetailViewController: UIViewController
 {
     weak var pdfDetailDelegate: (any PdfDetailDelegate)?
     
