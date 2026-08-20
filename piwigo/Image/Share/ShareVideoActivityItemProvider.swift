@@ -85,6 +85,13 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
         }
 
+        // The item method downloads the video and waits for the export session to finish.
+        /// AVFoundation runs the export at the default quality of service, so waiting for it
+        /// from a user-initiated operation is a priority inversion which the Thread Performance
+        /// Checker reports. Asking for the same quality of service avoids it.
+        /// - The share sheet owns the queue running this operation and may still promote it.
+        qualityOfService = .default
+
         // Register image share methods to perform on completion
         NotificationCenter.default.addObserver(self, selector: #selector(didFinishSharingVideo),
                                                name: Notification.Name.pwgDidShare, object: nil)
@@ -199,20 +206,27 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         }
 
         // Must the video be exported?
-        /// - The export always produces an MP4 file whose metadata is filtered for sharing,
-        ///   so it is required as soon as the user asks for the most compatible format
+        /// - Unlike photos, videos have no derivative the app could download in the wanted
+        ///   size: they are downscaled by the export session. The export also produces an
+        ///   MP4 file whose metadata is filtered for sharing. It is therefore required as
+        ///   soon as the user asks for a smaller size, for the most compatible format,
         ///   or refuses to share some of the private metadata.
         /// - AVAssetExportSession filters the metadata as a whole: unlike photos, videos
         ///   cannot keep their author while dropping their location.
         let toStrip = options.metadataToStrip
         let needsConversion = (options.format == .mostCompatible)
                            && imageFileURL.pathExtension.lowercased() != "mp4"
-        if toStrip.isEmpty, needsConversion == false {
+        let maxResolution = options.maxSize(for: activityType, isVideo: true)
+        /// Videos of unknown resolution are exported so that they are never shared
+        /// larger than requested — the export never scales them up anyway.
+        let videoMaxSide = imageData.fullRes.map({ max($0.width, $0.height) }) ?? Int.max
+        let needsDownscaling = videoMaxSide > maxResolution
+        if toStrip.isEmpty, needsConversion == false, needsDownscaling == false {
             // Notify the delegate on the main thread to show how it makes progress.
             progressFraction = 1.0
             // Notify the delegate on the main thread that the processing has finished.
             preprocessingDidEnd()
-            // Nothing to remove nor to convert, share the file immediately
+            // Nothing to remove, to convert nor to downscale, share the file immediately
             return imageFileURL
         }
 
@@ -225,7 +239,8 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
 //        let allMetadata = asset.metadata
 //        debugPrint("===>> All Metadata: \(allMetadata)")
 
-        if needsConversion == false, !asset.metadata.containsPrivateMetadata() {
+        if needsConversion == false, needsDownscaling == false,
+           !asset.metadata.containsPrivateMetadata() {
             // Notify the delegate on the main thread to show how it makes progress.
             progressFraction = 1.0
             // Notify the delegate on the main thread that the processing has finished.
@@ -282,9 +297,6 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         imageFileURL = imageFileURL.deletingPathExtension().appendingPathExtension("mp4")
         try? FileManager.default.removeItem(at: imageFileURL)
 
-        // Get the maximum accepted resolution (infinity for largest)
-        let maxResolution = options.maxSize(for: activityType)
-
         // We select a resolution lower than the one required by the activity type
         /// - The export will not scale the video up from a smaller size.
         /// - Compression for video uses H.264; compression for audio uses AAC.
@@ -336,6 +348,9 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         }
     }
     
+    /// How often the export progress is polled, in seconds.
+    private let progressPollingInterval = 0.2
+
     private func exportSynchronously(originalAsset: AVAsset, with exportPreset: String) {
         let sema = DispatchSemaphore(value: 0)
         // Create export session
@@ -353,33 +368,44 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         session.shouldOptimizeForNetworkUse = true
         session.outputURL = imageFileURL
         session.metadataItemFilter = .forSharing()
+        // Report how the export makes progress, from 75% to 100%
+        /// The item method blocks the thread it runs on until the export is over, so a timer
+        /// cannot be scheduled on its run loop: a dispatch source drives the polling instead.
+        let progressPoller = DispatchSource.makeTimerSource(queue: DispatchQueue.global(qos: .default))
+        progressPoller.schedule(deadline: .now() + progressPollingInterval,
+                                repeating: progressPollingInterval)
+        progressPoller.setEventHandler { [weak self] in
+            self?.progressFraction = 0.75 + 0.25 * session.progress
+        }
+        progressPoller.resume()
+
         session.exportAsynchronously { [self] in
+            // Whatever the outcome, the item method must stop waiting for this export
+            progressPoller.cancel()
+            defer { sema.signal() }
+
             // Handle export results
+            /// The handler is called once the export is over, i.e. the status is never
+            /// .exporting nor .waiting here.
             switch session.status {
-            case .exporting, .waiting:
-                self.progressFraction = 0.75 + 0.25 * session.progress
-            
+            case .completed:
+                self.progressFraction = 1.0
+
             case .failed, .cancelled:
                 // Notify the delegate on the main thread that the processing is cancelled.
                 self.alertTitle = String(localized: "shareFailError_title", comment: "Share Fail")
                 self.alertMessage = PwgKitError.cannotStripPrivateMetadata.localizedDescription
-                sema.signal()
-            
-            case .completed:
-                self.progressFraction = 1.0
-                sema.signal()
-            
+
             default:
                 // Deletes temporary video files
                 do {
                     try FileManager.default.removeItem(at: session.outputURL!)
                 } catch {
                 }
-                
+
                 // Notify the delegate on the main thread that the processing is cancelled.
                 self.alertTitle = String(localized: "shareFailError_title", comment: "Share Fail")
                 self.alertMessage = PwgKitError.cannotStripPrivateMetadata.localizedDescription
-                sema.signal()
             }
         }
         _ = sema.wait(timeout: .distantFuture)

@@ -30,8 +30,8 @@ class ShareOptionsViewController: UIViewController {
     private var options = ShareOptions.lastUsed
     private var hasFormatSection = false
     private var hasSizeSection = false
-    private var originalResolution: Resolution?
-    private var optimisedResolution: Resolution?
+    private var originalResolution: CGSize?
+    private var optimisedResolution: CGSize?
     private var didShare = false
     
     
@@ -48,12 +48,16 @@ class ShareOptionsViewController: UIViewController {
         // Which sections can change something for this selection?
         let sections = ShareUtilities.optionsToPropose(for: images)
         hasFormatSection = sections.format
-        hasSizeSection = sections.size
-        
+
         // Dimensions shown in the Size section
         let resolutions = ShareUtilities.resolutions(of: images)
         originalResolution = resolutions.original
         optimisedResolution = resolutions.optimised
+
+        // The Size section is pointless when the optimised size is the original one
+        hasSizeSection = sections.size
+            && ShareUtilities.isOptimisedSizeWorthProposing(original: originalResolution,
+                                                            optimised: optimisedResolution)
         
         // Table view
         optionsTableView?.accessibilityIdentifier = "Share Options"
