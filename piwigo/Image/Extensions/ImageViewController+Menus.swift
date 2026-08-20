@@ -33,12 +33,14 @@ extension ImageViewController
 
     // MARK: - Image Preview
     /// - for going to another album containing that image
+    /// Returns nil when there is no other album to go to.
     @MainActor
-    func goToMenu() -> UIMenu {
+    func goToMenu() -> UIMenu? {
+        guard let goToAlbumMenu = goToAlbumMenu() else { return nil }
         return UIMenu(title: "", image: nil,
                       identifier: UIMenu.Identifier("org.piwigo.image.goToMenu"),
                       options: UIMenu.Options.displayInline,
-                      children: [goToAlbumMenu()].compactMap({$0}))
+                      children: [goToAlbumMenu])
     }
 
 
@@ -55,5 +57,16 @@ extension ImageViewController
                       identifier: UIMenu.Identifier("org.piwigo.image.editMenu"),
                       options: .displayInline,
                       children: children)
+    }
+
+
+    // MARK: - Image Sharing
+    /// - for sharing the URL of the page presenting the image on the Piwigo server
+    @MainActor
+    func shareMenu() -> UIMenu {
+        return UIMenu(title: "", image: nil,
+                      identifier: UIMenu.Identifier("org.piwigo.image.shareMenu"),
+                      options: .displayInline,
+                      children: [shareLinkAction()])
     }
 }

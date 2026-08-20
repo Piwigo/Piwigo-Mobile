@@ -47,7 +47,6 @@ final class ImageViewController: UIViewController {
     var shareImageButton: UIBarButtonItem?
     var favoriteBarButton: UIBarButtonItem?
     var goToPageButton: UIBarButtonItem?
-    var shareLinkButton: UIBarButtonItem?
     
     
     // MARK: - Rotate View & Buttons
@@ -151,7 +150,6 @@ final class ImageViewController: UIViewController {
             backButton.tintColor = PwgColor.tintColor
             deleteBarButton.tintColor = PwgColor.tintColor
             shareImageButton?.tintColor = PwgColor.tintColor
-            shareLinkButton?.tintColor = PwgColor.tintColor
             favoriteBarButton?.tintColor = PwgColor.tintColor
             goToPageButton?.tintColor = PwgColor.tintColor
         }

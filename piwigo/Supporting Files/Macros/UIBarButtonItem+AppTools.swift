@@ -26,15 +26,6 @@ extension UIBarButtonItem {
         return button
     }
     
-    static func shareLinkButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
-        let button = UIBarButtonItem(image: UIImage(systemName: "link"),
-                                     style: .plain, target: target, action: action)
-        button.accessibilityIdentifier = "link"
-        button.accessibilityLabel = String(localized: "imageOptions_shareLink", comment: "Share Link")
-        button.tintColor = PwgColor.tintColor
-        return button
-    }
-    
     static func moveImageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
         let button = UIBarButtonItem(barButtonSystemItem: .reply,
                                      target: target, action: action)

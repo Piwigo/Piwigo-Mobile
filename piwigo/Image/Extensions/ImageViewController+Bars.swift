@@ -18,7 +18,6 @@ extension ImageViewController {
     func updateNavBar() {
         // Below button depends on Piwigo server version, user role and image data
         shareImageButton = getShareImageButton()
-        shareLinkButton = getShareLinkButton()
         favoriteBarButton = getFavoriteBarButton()
         
         // Interface depends on device and orientation
@@ -34,15 +33,9 @@ extension ImageViewController {
             /// - to set the image as album thumbnail
             /// - to rotate a photo clockwise or counterclockwise,
             /// - to edit image parameters,
-            let menu = UIMenu(title: "", children: [albumMenu(), goToMenu(), editMenu()].compactMap({$0}))
-            if #available(iOS 26.0, *) {
-                actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
-            } else {
-                // Fallback on previous version
-                actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
-            }
-            actionBarButton?.accessibilityIdentifier = "actions"
-            actionBarButton?.accessibilityLabel = String(localized: "moreOptions_title", comment: "More")
+            /// - to share the URL of the page presenting the image
+            let menu = UIMenu(title: "", children: [albumMenu(), goToMenu(), editMenu(), shareMenu()].compactMap({$0}))
+            actionBarButton = getActionBarButton(with: menu)
             
             // Configure the navigation bar and toolbar
             if #available(iOS 26.0, *) {
@@ -52,6 +45,14 @@ extension ImageViewController {
                 updateLegacyNavBarForAdmin(orientation: orientation)
             }
         } else {
+            // The action button proposes:
+            /// - to go to another album containing that image
+            /// - to share the URL of the page presenting the image
+            /// Neither action requires admin, upload or download rights.
+            let menu = UIMenu(title: "", children: [goToMenu(), shareMenu()].compactMap({$0}))
+            actionBarButton = getActionBarButton(with: menu)
+            
+            // Configure the navigation bar and toolbar
             if #available(iOS 26.0, *) {
                 updateNavBarForStdUserOrGuest(orientation: orientation)
             } else {
@@ -61,25 +62,39 @@ extension ImageViewController {
         }
     }
     
+    @MainActor
+    private func getActionBarButton(with menu: UIMenu) -> UIBarButtonItem {
+        let button: UIBarButtonItem
+        if #available(iOS 26.0, *) {
+            button = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
+        } else {
+            // Fallback on previous version
+            button = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
+        }
+        button.accessibilityIdentifier = "actions"
+        button.accessibilityLabel = String(localized: "moreOptions_title", comment: "More")
+        return button
+    }
+    
     @MainActor @available(iOS 26.0, *)
     private func updateNavBarForAdmin(orientation: UIInterfaceOrientation) {
         // Case of users with admin or upload rights
         if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
             // Determine toolbar items
-            var toolbarItems: [UIBarButtonItem?] = [shareImageButton, shareLinkButton, .space()]
-            let type = pwgImageFileType(rawValue: imageData.fileType) ?? .image
-            switch type {
-            case .image, .video:
-                /// => [link - favorite delete] or [share link - favorite delete]
-                toolbarItems.append(contentsOf: [favoriteBarButton, deleteBarButton])
-            case .pdf:
-                /// PDF   => [link - goToPage - favorite delete] or [share link - goToPage - favorite delete]
-                toolbarItems.append(contentsOf: [goToPageButton, .space(), favoriteBarButton, deleteBarButton])
+            /// Image, Video => [share - favorite delete] or [favorite - delete] or [ - delete]
+            /// PDF          => [share goToPage - favorite delete] or [goToPage - favorite delete]
+            /// The goToPage button is only available for PDF files.
+            var leadingItems = [shareImageButton, goToPageButton].compactMap {$0}
+            var trailingItems = [favoriteBarButton, deleteBarButton].compactMap {$0}
+            if leadingItems.isEmpty, trailingItems.count > 1 {
+                /// Nothing to present on the left: spread the remaining buttons
+                leadingItems.append(trailingItems.removeFirst())
             }
+            let toolbarItems = leadingItems + [.space()] + trailingItems
             
             // Show toolbar
             isToolbarRequired = true
-            setToolbarItems(toolbarItems.compactMap({ $0 }), animated: false)
+            setToolbarItems(toolbarItems, animated: false)
             let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
             navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
             
@@ -94,9 +109,35 @@ extension ImageViewController {
             navigationController?.setToolbarHidden(true, animated: true)
             
             // All buttons gathered in the navigation bar
-            navigationItem.leftBarButtonItems = [backButton, .space(), shareImageButton, shareLinkButton].compactMap {$0}
-            navigationItem.rightBarButtonItems = [actionBarButton, deleteBarButton, favoriteBarButton, goToPageButton].compactMap { $0 }
+            navigationItem.leftBarButtonItems = [backButton, .space(), shareImageButton, goToPageButton].compactMap {$0}
+            navigationItem.rightBarButtonItems = [actionBarButton, deleteBarButton, favoriteBarButton].compactMap { $0 }
         }
+    }
+    
+    /// Gathers the buttons available to a user without admin or upload rights in the toolbar
+    /// of an iPhone in portrait orientation. None of them is presented in the navigation bar,
+    /// whose width is left to the title.
+    /// Image, Video => [share - favorite], [ - share - ] or [ - favorite - ]
+    /// PDF          => [share - goToPage - favorite], [share - goToPage],
+    ///                 [goToPage - favorite] or [ - goToPage - ]
+    @MainActor
+    private func getToolbarItemsForStdUserOrGuest() -> [UIBarButtonItem] {
+        // Buttons are presented from the left to the right of the toolbar
+        /// The goToPage button is only available for PDF files
+        let buttons = [shareImageButton, goToPageButton, favoriteBarButton].compactMap {$0}
+        
+        // No toolbar is presented when no button is available
+        guard buttons.isEmpty == false else { return [] }
+        
+        // A lone button is centered
+        guard buttons.count > 1 else { return [.space(), buttons[0], .space()] }
+        
+        // Several buttons are spread over the width of the toolbar
+        var toolbarItems = [buttons[0]]
+        for button in buttons.dropFirst() {
+            toolbarItems.append(contentsOf: [.space(), button])
+        }
+        return toolbarItems
     }
     
     @MainActor @available(iOS 26.0, *)
@@ -104,28 +145,23 @@ extension ImageViewController {
         // Case of users without admin or upload rights
         if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
             // Determine toolbar items
-            var toolbarItems: [UIBarButtonItem?] = [shareImageButton, shareLinkButton, .space()]
-            let type = pwgImageFileType(rawValue: imageData.fileType) ?? .image
-            switch type {
-            case .image, .video:
-                /// => [link - ] or [share link - ]
-                break
-            case .pdf:
-                /// PDF   => [link - ] or [share link - ] or [link - favorite] or [share link - favorite]
-                /// with the goToPage button at the top right of the navigation bar
-                toolbarItems.append(favoriteBarButton)
-            }
+            let toolbarItems = getToolbarItemsForStdUserOrGuest()
             
-            // Show toolbar
-            isToolbarRequired = true
-            setToolbarItems(toolbarItems.compactMap({ $0 }), animated: false)
-            let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-            navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
+            // Show toolbar?
+            if toolbarItems.isEmpty {
+                isToolbarRequired = false
+                setToolbarItems([], animated: false)
+                navigationController?.setToolbarHidden(true, animated: true)
+            } else {
+                isToolbarRequired = true
+                setToolbarItems(toolbarItems, animated: false)
+                let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
+                navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
+            }
             
             // Set buttons in the navigation bar
             navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
-            let barItems = [type == .pdf ? goToPageButton : favoriteBarButton]
-            navigationItem.rightBarButtonItems = barItems.compactMap {$0}
+            navigationItem.rightBarButtonItems = [actionBarButton].compactMap {$0}
         }
         else {      // iPad or iPhone in landscape orientation
             // No toolbar
@@ -135,7 +171,7 @@ extension ImageViewController {
             
             // All buttons gathered in the navigation bar
             navigationItem.leftBarButtonItems = [backButton, .space(), goToPageButton].compactMap {$0}
-            navigationItem.rightBarButtonItems = [favoriteBarButton, shareImageButton, shareLinkButton].compactMap { $0 }
+            navigationItem.rightBarButtonItems = [actionBarButton, favoriteBarButton, shareImageButton].compactMap { $0 }
         }
     }
     
@@ -144,15 +180,14 @@ extension ImageViewController {
         // Case of users with admin or upload rights
         if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
             // Determine toolbar items
-            /// Image => [link - favorite - delete] or [share - link - favorite - delete]
-            /// Video =>  [link - favorite - delete] or [share - link - favorite - delete]
-            /// PDF   => [link - goToPage - favorite - delete] or [link - share - goToPage - favorite - delete]
+            /// Image => [favorite - delete] or [share - favorite - delete]
+            /// Video =>  [favorite - delete] or [share -  favorite - delete]
+            /// PDF   => [goToPage - favorite - delete] or [share - goToPage - favorite - delete]
             var toolbarItems = [UIBarButtonItem?]()
-            toolbarItems.append(contentsOf: [shareImageButton == nil ? nil : shareImageButton])
-            toolbarItems.append(contentsOf: shareImageButton == nil ? [shareLinkButton] : [.space(), shareLinkButton])
-            toolbarItems.append(contentsOf: [goToPageButton == nil ? nil : .space(), goToPageButton])
-            toolbarItems.append(contentsOf: [favoriteBarButton == nil ? nil : .space(), favoriteBarButton])
-            toolbarItems.append(contentsOf: [.space(), deleteBarButton])
+            toolbarItems.append(contentsOf: shareImageButton == nil ? [nil] : [shareImageButton, .space()])
+            toolbarItems.append(contentsOf: goToPageButton == nil ? [nil] : [goToPageButton, .space()])
+            toolbarItems.append(contentsOf: favoriteBarButton == nil ? [nil] : [favoriteBarButton, .space()])
+            toolbarItems.append(deleteBarButton)
             
             // Show toolbar
             isToolbarRequired = true
@@ -171,8 +206,8 @@ extension ImageViewController {
             navigationController?.setToolbarHidden(true, animated: true)
             
             // All buttons gathered in the navigation bar
-            navigationItem.leftBarButtonItems = [backButton, .space(), shareImageButton, shareLinkButton].compactMap {$0}
-            navigationItem.rightBarButtonItems = [actionBarButton, deleteBarButton, favoriteBarButton, goToPageButton].compactMap { $0 }
+            navigationItem.leftBarButtonItems = [backButton, .space(), shareImageButton, goToPageButton].compactMap {$0}
+            navigationItem.rightBarButtonItems = [actionBarButton, deleteBarButton, favoriteBarButton].compactMap { $0 }
         }
     }
     
@@ -181,39 +216,8 @@ extension ImageViewController {
         // Case of users without admin or upload rights
         if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
             // Determine toolbar items
-            var toolbarItems = [UIBarButtonItem?]()
-            toolbarItems.append(contentsOf: [shareImageButton == nil ? nil : shareImageButton])
-            toolbarItems.append(contentsOf: shareImageButton == nil ? [shareLinkButton] : [.space(), shareLinkButton])
-            toolbarItems.append(contentsOf: [favoriteBarButton == nil ? nil : .space(), favoriteBarButton])
-            /// => [link] or [link - favorite] or [share - link] or [share - link - favorite]
-
-            // Image type?
-            var barItems: [UIBarButtonItem?] = []
-            let type = pwgImageFileType(rawValue: imageData.fileType) ?? .image
-            switch type {
-            case .image, .video:
-                if toolbarItems.count == 1 {
-                    /// [link] in navigation bar, no toolbar
-                    barItems.append(contentsOf: toolbarItems)
-                    toolbarItems.removeAll()
-                }
-                else if toolbarItems.count == 5 {
-                    /// [favorite] in navigation bar
-                    barItems.append(favoriteBarButton)
-                    toolbarItems.removeLast(2)
-                }
-                break
-            case .pdf:
-                if toolbarItems.count == 1 {
-                    /// [goToPage] in toolbar
-                    toolbarItems.append(contentsOf: [.space(), goToPageButton])
-                } else {
-                    /// [goToPage] in navigation bar
-                    barItems.append(goToPageButton)
-                }
-                break
-            }
-
+            let toolbarItems = getToolbarItemsForStdUserOrGuest()
+            
             // Show toolbar?
             if toolbarItems.isEmpty {
                 isToolbarRequired = false
@@ -221,14 +225,14 @@ extension ImageViewController {
                 navigationController?.setToolbarHidden(true, animated: true)
             } else {
                 isToolbarRequired = true
-                setToolbarItems(toolbarItems.compactMap {$0}, animated: false)
+                setToolbarItems(toolbarItems, animated: false)
                 let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
                 navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
             }
             
             // Set buttons in the navigation bar
             navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
-            navigationItem.rightBarButtonItems = barItems.compactMap {$0}
+            navigationItem.rightBarButtonItems = [actionBarButton].compactMap {$0}
         }
         else {      // iPad or iPhone in landscape orientation
             // No toolbar
@@ -237,8 +241,8 @@ extension ImageViewController {
             navigationController?.setToolbarHidden(true, animated: true)
             
             // All buttons gathered in the navigation bar
-            navigationItem.leftBarButtonItems = [backButton, .space(), shareImageButton, shareLinkButton].compactMap {$0}
-            navigationItem.rightBarButtonItems = [favoriteBarButton, goToPageButton].compactMap { $0 }
+            navigationItem.leftBarButtonItems = [backButton, .space(), shareImageButton].compactMap {$0}
+            navigationItem.rightBarButtonItems = [actionBarButton, favoriteBarButton, goToPageButton].compactMap { $0 }
         }
     }
     
@@ -248,7 +252,6 @@ extension ImageViewController {
     func setEnableStateOfButtons(_ state: Bool) {
         actionBarButton?.isEnabled = state
         shareImageButton?.isEnabled = state
-        shareLinkButton?.isEnabled = state
         deleteBarButton.isEnabled = state
         favoriteBarButton?.isEnabled = state
         goToPageButton?.isEnabled = state

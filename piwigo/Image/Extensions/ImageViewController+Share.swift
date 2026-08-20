@@ -204,18 +204,22 @@ extension ImageViewController
     
     
     // MARK: - Share Image Page URL
-    func getShareLinkButton() -> UIBarButtonItem? {
-        // Sharing the page URL requires no download rights: the page redirects
-        // the recipient to a login page when access needs to be granted.
-        return UIBarButtonItem.shareLinkButton(self, action: #selector(ImageViewController.shareLink))
-    }
-
-    /// Bar button action, which cannot carry the argument of shareImageLink(from:).
+    /// Menu action sharing the URL of the page presenting the image.
+    /// Requires no download rights: the page redirects the recipient to a login page
+    /// when access needs to be granted.
     @MainActor
-    @objc func shareLink() {
-        shareImageLink(from: shareLinkButton)
+    func shareLinkAction() -> UIAction {
+        let action = UIAction(title: String(localized: "imageOptions_shareLink", comment: "Share Link"),
+                              image: UIImage(systemName: "link"),
+                              handler: { [weak self] _ in
+            guard let self else { return }
+            // Present the share sheet anchored to the action button
+            self.shareImageLink(from: self.actionBarButton)
+        })
+        action.accessibilityIdentifier = "org.piwigo.image.shareLink"
+        return action
     }
-
+    
     /**
      Presents the share sheet with the URL of the image page on the Piwigo server,
      so that the user can send it with Mail, Messages, AirDrop, copy it, etc.
