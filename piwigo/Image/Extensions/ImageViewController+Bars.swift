@@ -117,9 +117,9 @@ extension ImageViewController {
     /// Gathers the buttons available to a user without admin or upload rights in the toolbar
     /// of an iPhone in portrait orientation. None of them is presented in the navigation bar,
     /// whose width is left to the title.
-    /// Image, Video => [share - favorite], [ - share - ] or [ - favorite - ]
-    /// PDF          => [share - goToPage - favorite], [share - goToPage],
-    ///                 [goToPage - favorite] or [ - goToPage - ]
+    /// Image, Video => [ - share - favorite - ], [ - share - ] or [ - favorite - ]
+    /// PDF          => [ - share - goToPage - favorite - ], [ - share - goToPage - ],
+    ///                 [ - goToPage - favorite - ] or [ - goToPage - ]
     @MainActor
     private func getToolbarItemsForStdUserOrGuest() -> [UIBarButtonItem] {
         // Buttons are presented from the left to the right of the toolbar
@@ -129,14 +129,12 @@ extension ImageViewController {
         // No toolbar is presented when no button is available
         guard buttons.isEmpty == false else { return [] }
         
-        // A lone button is centered
-        guard buttons.count > 1 else { return [.space(), buttons[0], .space()] }
-        
-        // Several buttons are spread over the width of the toolbar
-        var toolbarItems = [buttons[0]]
-        for button in buttons.dropFirst() {
+        // Buttons are evenly distributed, away from both sides of the toolbar
+        var toolbarItems = [UIBarButtonItem]()
+        for button in buttons {
             toolbarItems.append(contentsOf: [.space(), button])
         }
+        toolbarItems.append(.space())
         return toolbarItems
     }
     
