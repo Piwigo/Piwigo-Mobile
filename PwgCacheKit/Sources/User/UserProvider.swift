@@ -55,6 +55,15 @@ public final class UserProvider {
                 // Update or create the User instance
                 if let user = try taskContext.fetch(fetchRequest).first {
                     // Account exists, update it
+                    /// The provided properties are built from scratch by the login sequence,
+                    /// which has no way to know whether the user may download images:
+                    /// no session method returns that right — it is deduced from the presence
+                    /// of 'download_url' in the images returned by pwg.categories.getImages.
+                    /// The snapshot therefore always carries 'false' and would revoke the right
+                    /// stored in cache until the next batch of images is imported.
+                    /// ► Adopt the known right so that update() can do its full job.
+                    var userData = userData
+                    userData.downloadRights = user.downloadRights
                     try user.update(with: userData, onServer: server)
                 }
                 else {
