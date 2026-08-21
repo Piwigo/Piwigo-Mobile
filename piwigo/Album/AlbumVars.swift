@@ -119,4 +119,11 @@ final class AlbumVars: @unchecked Sendable {
     /// - To fetch all album data recursively when fetching the root album after a successful login
     ///   (keeps the album cache complete for e.g. the share extension)
     var fetchAlbumDataRecursively = false
+
+    /// - To remember whether the ShareAlbum plugin accepts this user, who must be an administrator
+    ///   or a member of the "sharealbum_powerusers" group. The plugin offers no method telling
+    ///   this beforehand, so the first sharealbum.getList of the session is the probe:
+    ///   nil until it has run, then true, or false when it was rejected with a 403 error.
+    ///   Not persisted because the right can be revoked on the server at any time.
+    var canShareAlbums: Bool? = nil
 }

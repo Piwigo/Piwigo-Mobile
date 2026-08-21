@@ -431,6 +431,71 @@ public final class AlbumProvider {
     }
     
     
+    // MARK: - Import Shared Album Data
+    /**
+     Stores in the albums of the current user the share data returned by sharealbum.getList.
+     
+     The ShareAlbum plugin returns every share of the server: shares of albums which are not
+     accessible to this user are not in the cache and are simply ignored. Conversely, albums
+     which are not in the list are not shared anymore — a share can be cancelled or created
+     from the web UI at any time — so their share data is cleared.
+     
+     Only the albums of the current user are considered: the plugin does not scope its list,
+     but the app only ever presents and shares the albums this user can access.
+     */
+    public func importShares(_ shares: [ShareAlbumGetInfo]) async throws(PwgKitError) {
+        // Get background context
+        let bckgContext = DataController.shared.newTaskContext()
+        
+        // Do {} below is used to allow typed throws
+        do {
+            try await bckgContext.perform { () throws -> Void in
+                // Create a fetch request for the Album entity
+                let fetchRequest = Album.fetchRequest()
+                fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.pwgID), ascending: true)]
+                
+                // Retrieve albums:
+                /// — from the current server which are accessible to the current user
+                /// — whose ID is positive, i.e. which are not smart albums
+                var andPredicates = [NSPredicate]()
+                andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
+                andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
+                andPredicates.append(NSPredicate(format: "pwgID > 0"))
+                fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+                fetchRequest.returnsObjectsAsFaults = false
+                fetchRequest.shouldRefreshRefetchedObjects = true
+                
+                // Perform the fetch.
+                let cachedAlbums: [Album] = try bckgContext.fetch(fetchRequest)
+                
+                // Loop over the cached albums so that the albums which are not shared
+                // anymore see their share data cleared.
+                for album in cachedAlbums {
+                    if let shareData = shares.first(where: { $0.catID?.int32Value == album.pwgID }) {
+                        album.update(with: shareData)
+                    } else {
+                        album.removeShareData()
+                    }
+                }
+                
+                // Save all changes from the context to the store.
+                bckgContext.saveIfNeeded()
+                
+                // Reset the taskContext to free the cache and lower the memory footprint.
+                bckgContext.reset()
+                
+                // Save cached data in the main thread
+                Task { @MainActor in
+                    DataController.shared.mainContext.saveIfNeeded()
+                }
+            }
+        }
+        catch let error as PwgKitError { throw error }
+        catch let error as NSError { throw PwgKitError.CoreDataError(innerError: error)}
+        catch let error { throw PwgKitError.otherError(innerError: error) }
+    }
+    
+    
     // MARK: - Update Albums
     public func updateAlbum(withProperties properties: AlbumProperties,
                             inContext taskContext: NSManagedObjectContext) throws(PwgKitError) {

@@ -43,10 +43,12 @@ final class ClearCache
             AlbumVars.shared.defaultCategory = 0
             CacheVars.shared.recentCategories = "0"
             AlbumVars.shared.isFetchingAlbumData = Set<Int32>()
+            AlbumVars.shared.canShareAlbums = nil
             
             // Back to default server properties
             ServerVars.shared.usesCommunityPluginV29 = false
             ServerVars.shared.usesSetCategory = false
+            ServerVars.shared.usesShareAlbum = false
             NetworkVars.shared.usesAPIkeys = false
                         
             // Disable Auto-Uploading and clear settings

@@ -20,3 +20,8 @@ public let kShareAlbumNotSharedError = 404
 /// This is a valid state, not an error, but sharealbum.create does not return the existing share:
 /// the share URL must then be retrieved with sharealbum.getInfo.
 public let kShareAlbumAlreadySharedError = 409
+
+/// Error code returned in the "err" field by every sharealbum method when the user is
+/// neither an administrator nor a member of the "sharealbum_powerusers" group.
+/// No method tells whether the user is allowed beforehand, so the first call is the probe.
+public let kShareAlbumForbiddenError = 403

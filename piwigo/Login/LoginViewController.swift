@@ -206,7 +206,9 @@ final class LoginViewController: UIViewController {
         isAlreadyTryingToLogin = true
         ServerVars.shared.usesCommunityPluginV29 = false
         ServerVars.shared.usesSetCategory = false
+        ServerVars.shared.usesShareAlbum = false
         NetworkVars.shared.usesAPIkeys = false
+        AlbumVars.shared.canShareAlbums = nil
         
         // Check server address and cancel login if address not provided
         if let serverURL = serverTextField.text, serverURL.isEmpty {

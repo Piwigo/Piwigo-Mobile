@@ -160,6 +160,60 @@ public final nonisolated class Album: NSManagedObject, Identifiable {
     }
     
     /**
+     Updates the share data of an Album instance with the values returned by the ShareAlbum plugin.
+     */
+    public func update(with shareData: ShareAlbumGetInfo) {
+        
+        // URL of the share (required — a nil URL marks an album which is not shared)
+        /// - Stored relative to the server address like the other URLs (see RelativeURLValueTransformer)
+        /// - The plugin builds the URL with get_absolute_root_url(), which derives the scheme and
+        ///   the host from the request headers, so it may differ from the address used to log in.
+        ///   encodedImageURL() rebuilds it on that address, as it does for image URLs.
+        let newShareUrl = ImageGetInfo.encodedImageURL(shareData.shareUrl)
+        if shareUrl != newShareUrl {
+            shareUrl = newShareUrl
+        }
+        
+        // When the share was created
+        if let newTimeInterval = DateUtilities.timeInterval(from: shareData.creationDate) {
+            if shareCreationDate != newTimeInterval {
+                shareCreationDate = newTimeInterval
+            }
+        } else {
+            shareCreationDate = DateUtilities.unknownDateInterval
+        }
+        
+        // Who created the share
+        /// - The username is null when the account was deleted since the share was created.
+        let newSharedByID = shareData.createdBy?.int16Value ?? Int16.zero
+        if sharedByID != newSharedByID {
+            sharedByID = newSharedByID
+        }
+        let newSharedByName = (shareData.createdByName ?? "").utf8mb4Encoded
+        if sharedByName != newSharedByName {
+            sharedByName = newSharedByName
+        }
+    }
+    
+    /**
+     Clears the share data of an Album instance which is not shared anymore.
+     */
+    public func removeShareData() {
+        if shareUrl != nil {
+            shareUrl = nil
+        }
+        if shareCreationDate != DateUtilities.unknownDateInterval {
+            shareCreationDate = DateUtilities.unknownDateInterval
+        }
+        if sharedByID != Int16.zero {
+            sharedByID = Int16.zero
+        }
+        if sharedByName.isEmpty == false {
+            sharedByName = ""
+        }
+    }
+    
+    /**
      Updates a User instance from UserProperties.
      */
     public func update(with albumData: AlbumProperties) throws {
