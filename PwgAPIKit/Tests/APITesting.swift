@@ -817,6 +817,7 @@ final class PwgAPITesting: XCTestCase {
         }
         
         XCTAssertEqual(result.status, "ok")
+        XCTAssertFalse(result.isAlreadyShared)
         XCTAssertEqual(result.data?.catID?.int32Value, 28)
         XCTAssertEqual(result.data?.shareCode, "hvtEixyxCmqF")
     }
@@ -838,6 +839,7 @@ final class PwgAPITesting: XCTestCase {
         }
         
         XCTAssertEqual(result.status, "ok")
+        XCTAssertTrue(result.isShared)
         XCTAssertEqual(result.data?.catID?.int32Value, 28)
         XCTAssertEqual(result.data?.name, "Artistics")
         XCTAssertEqual(result.data?.createdBy?.int16Value, 1)
@@ -860,6 +862,7 @@ final class PwgAPITesting: XCTestCase {
         }
         
         XCTAssertEqual(result.status, "ok")
+        XCTAssertTrue(result.isShared)
         XCTAssertEqual(result.data?.catID?.int32Value, 23)
         XCTAssertEqual(result.data?.shareCode, "nemaacwahggh")
     }
@@ -881,5 +884,95 @@ final class PwgAPITesting: XCTestCase {
         }
         
         XCTAssertEqual(result.status, "ok")
+        XCTAssertTrue(result.success)
+    }
+    
+    func testShareAlbumGetInfoOfAlbumNotShared() {
+        
+        // Case of an album which is not shared
+        let bundle = Bundle.module
+        guard let url = bundle.url(forResource: "sharealbum.notShared", withExtension: "json"),
+              let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        // An album which is not shared should not be reported as an error
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(ShareAlbumGetInfoJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "fail")
+        XCTAssertFalse(result.isShared)
+        XCTAssertNil(result.data)
+    }
+    
+    func testShareAlbumRenewOfAlbumNotShared() {
+        
+        // Case of an album which is not shared
+        let bundle = Bundle.module
+        guard let url = bundle.url(forResource: "sharealbum.notShared", withExtension: "json"),
+              let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        // An album which is not shared should not be reported as an error
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(ShareAlbumRenewJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "fail")
+        XCTAssertFalse(result.isShared)
+        XCTAssertNil(result.data)
+    }
+    
+    func testShareAlbumCancelOfAlbumNotShared() {
+        
+        // Case of an album which is not shared
+        let bundle = Bundle.module
+        guard let url = bundle.url(forResource: "sharealbum.notShared", withExtension: "json"),
+              let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        // An album which is not shared should not be reported as an error
+        /// The album is not shared any more, i.e. the expected result is achieved.
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(ShareAlbumCancelJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "fail")
+        XCTAssertTrue(result.success)
+    }
+    
+    func testShareAlbumCreateOfAlbumAlreadyShared() {
+        
+        // Case of an album which is already shared
+        let bundle = Bundle.module
+        guard let url = bundle.url(forResource: "sharealbum.alreadyShared", withExtension: "json"),
+              let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        // An album which is already shared should not be reported as an error
+        /// The share URL should then be retrieved with sharealbum.getInfo.
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(ShareAlbumCreateJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "fail")
+        XCTAssertTrue(result.isAlreadyShared)
+        XCTAssertNil(result.data)
     }
 }

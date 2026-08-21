@@ -14,6 +14,7 @@ public let kShareAlbumCreate = "sharealbum.create"
 public struct ShareAlbumCreateJSON: Decodable {
 
     public var status: String?
+    public var isAlreadyShared = false
     public var data: ShareAlbumCreate?
     
     private enum RootCodingKeys: String, CodingKey {
@@ -43,8 +44,20 @@ public struct ShareAlbumCreateJSON: Decodable {
         }
         else if (status == "fail")
         {
-            // Retrieve Piwigo server error
+            // Retrieve Piwigo server error code
             let errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
+            
+            // An album which is already shared is a valid state, not an error
+            /// (see kShareAlbumAlreadySharedError)
+            /// The existing share is not returned by this method: returns an object whose
+            /// isAlreadyShared property is true and data property is nil, so that the caller
+            /// retrieves the share URL with sharealbum.getInfo.
+            if errorCode == kShareAlbumAlreadySharedError {
+                isAlreadyShared = true
+                return
+            }
+            
+            // Retrieve Piwigo server error message
             let errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
             let pwgError = PwgKitError.pwgError(code: errorCode, msg: errorMessage)
             let context = DecodingError.Context(codingPath: [], debugDescription: reason, underlyingError: pwgError)

@@ -1,0 +1,5 @@
+{
+    "stat": "fail",
+    "err": 404,
+    "message": "Album is not shared"
+}

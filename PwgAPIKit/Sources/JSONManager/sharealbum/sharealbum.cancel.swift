@@ -15,11 +15,9 @@ public struct ShareAlbumCancelJSON: Decodable {
 
     public var status: String?
     public var success = false
-    public var result = 0
     
     private enum RootCodingKeys: String, CodingKey {
         case status = "stat"
-        case result
         case errorCode = "err"
         case errorMessage = "message"
     }
@@ -37,8 +35,18 @@ public struct ShareAlbumCancelJSON: Decodable {
         }
         else if status == "fail"
         {
-            // Retrieve Piwigo server error
+            // Retrieve Piwigo server error code
             let errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
+            
+            // An album which is not shared is a valid state, not an error
+            /// (see kShareAlbumNotSharedError)
+            /// The album is not shared any more, i.e. the expected result is achieved.
+            if errorCode == kShareAlbumNotSharedError {
+                success = true
+                return
+            }
+            
+            // Retrieve Piwigo server error message
             let errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
             let pwgError = PwgKitError.pwgError(code: errorCode, msg: errorMessage)
             let context = DecodingError.Context(codingPath: [], debugDescription: reason, underlyingError: pwgError)

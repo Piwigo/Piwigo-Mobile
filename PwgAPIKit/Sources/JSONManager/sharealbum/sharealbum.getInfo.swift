@@ -14,6 +14,7 @@ public let kShareAlbumgetInfo = "sharealbum.getInfo"
 public struct ShareAlbumGetInfoJSON: Decodable {
 
     public var status: String?
+    public var isShared = false
     public var data: ShareAlbumGetInfo?
     
     private enum RootCodingKeys: String, CodingKey {
@@ -44,15 +45,23 @@ public struct ShareAlbumGetInfoJSON: Decodable {
             do {
                 // Use ShareAlbumGetInfo struct
                 try data = resultContainer.decode(ShareAlbumGetInfo.self, forKey: .shared_album)
+                isShared = true
             }
             catch {
-                // Returns an empty array => No shared album
+                // Returns nil => No shared album
             }
         }
         else if (status == "fail")
         {
-            // Retrieve Piwigo server error
+            // Retrieve Piwigo server error code
             let errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
+            
+            // An album which is not shared is a valid state, not an error
+            /// (see kShareAlbumNotSharedError)
+            /// Returns an object whose isShared property is false and data property is nil.
+            if errorCode == kShareAlbumNotSharedError { return }
+            
+            // Retrieve Piwigo server error message
             let errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
             let pwgError = PwgKitError.pwgError(code: errorCode, msg: errorMessage)
             let context = DecodingError.Context(codingPath: [], debugDescription: reason, underlyingError: pwgError)
