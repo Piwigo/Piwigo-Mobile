@@ -28,15 +28,15 @@ public final nonisolated class Tag: NSManagedObject, Identifiable {
         // NB: Only the ID and the url are returned by pwg.categories.getImages
         guard let newId = tagData.id?.int32Value
         else { throw PwgKitError.missingTagData }
-        if tagId != newId {
-            tagId = newId
+        if pwgID != newId {
+            pwgID = newId
         }
         
         // Update name if prrovided
         if let newName = tagData.name, newName.isEmpty == false {
-            let newTagName = newName.utf8mb4Encoded
-            if tagName != newTagName {
-                tagName = newTagName
+            let newEncodedName = newName.utf8mb4Encoded
+            if name != newEncodedName {
+                name = newEncodedName
             }
         }
 

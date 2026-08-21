@@ -45,7 +45,7 @@ final class TagsViewController: UITableViewController {
     
     lazy var selectedTagsPredicate: NSPredicate = {
         var andPredicates = tagPredicates
-        andPredicates.append(NSPredicate(format: "tagId IN $tagIds"))
+        andPredicates.append(NSPredicate(format: "pwgID IN $tagIds"))
         return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
     }()
     
@@ -56,7 +56,7 @@ final class TagsViewController: UITableViewController {
     lazy var fetchSelectedTagsRequest: NSFetchRequest = {
         // Sort tags by name i.e. the order in which they are presented in the web UI
         let fetchRequest = Tag.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagName), ascending: true,
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.name), ascending: true,
                                                          selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
         fetchRequest.predicate = selectedTagsPredicate.withSubstitutionVariables(getSelectedVars())
         fetchRequest.fetchBatchSize = 20
@@ -74,8 +74,8 @@ final class TagsViewController: UITableViewController {
     var searchQuery = ""
     lazy var nonSelectedTagsPredicate: NSPredicate = {
         var andPredicates = tagPredicates
-        andPredicates.append(NSPredicate(format: "NOT (tagId IN $tagIds)"))
-        andPredicates.append(NSPredicate(format: "tagName LIKE[c] $query"))
+        andPredicates.append(NSPredicate(format: "NOT (pwgID IN $tagIds)"))
+        andPredicates.append(NSPredicate(format: "name LIKE[c] $query"))
         return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
     }()
     
@@ -87,7 +87,7 @@ final class TagsViewController: UITableViewController {
     lazy var fetchNonSelectedTagsRequest: NSFetchRequest = {
         // Sort tags by name i.e. the order in which they are presented in the web UI
         let fetchRequest = Tag.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagName), ascending: true,
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.name), ascending: true,
                                                          selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
         fetchRequest.predicate = nonSelectedTagsPredicate.withSubstitutionVariables(getNonSelectedVars())
         fetchRequest.fetchBatchSize = 20
@@ -300,7 +300,7 @@ final class TagsViewController: UITableViewController {
             let currentTag = selectedTags.object(at: indexPath)
             
             // Remove tag from list of selected tags
-            selectedTagIds.remove(currentTag.tagId)
+            selectedTagIds.remove(currentTag.pwgID)
             
             // Update fetch requests and perform fetches
             do {
@@ -310,7 +310,7 @@ final class TagsViewController: UITableViewController {
                 try nonSelectedTags.performFetch()
                 
                 // Determine new indexPath of deselected tag
-                if let indexOfTag = nonSelectedTags.fetchedObjects?.firstIndex(where: {$0.tagId == currentTag.tagId}) {
+                if let indexOfTag = nonSelectedTags.fetchedObjects?.firstIndex(where: {$0.pwgID == currentTag.pwgID}) {
                     let insertPath = IndexPath(row: indexOfTag, section: 1)
                     // Move cell from top to bottom section
                     tableView.moveRow(at: indexPath, to: insertPath)
@@ -332,7 +332,7 @@ final class TagsViewController: UITableViewController {
             let currentTag = nonSelectedTags.object(at: indexPath1)
             
             // Add tag to list of selected tags
-            selectedTagIds.insert(currentTag.tagId)
+            selectedTagIds.insert(currentTag.pwgID)
             
             // Update fetch requests and perform fetches
             do {
@@ -342,7 +342,7 @@ final class TagsViewController: UITableViewController {
                 try nonSelectedTags.performFetch()
                 
                 // Determine new indexPath of selected tag
-                if let indexOfTag = selectedTags.fetchedObjects?.firstIndex(where: {$0.tagId == currentTag.tagId}) {
+                if let indexOfTag = selectedTags.fetchedObjects?.firstIndex(where: {$0.pwgID == currentTag.pwgID}) {
                     let insertPath = IndexPath(row: indexOfTag, section: 0)
                     // Move cell from bottom to top section
                     tableView.moveRow(at: indexPath, to: insertPath)

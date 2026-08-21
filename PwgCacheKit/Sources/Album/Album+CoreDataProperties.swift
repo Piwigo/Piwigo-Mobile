@@ -42,6 +42,12 @@ extension Album {
     @NSManaged public var dateGetImages: TimeInterval
 
     @NSManaged public var dateLast: TimeInterval
+
+    @NSManaged public var shareUrl: NSURL?                  // URL of the share, nil when the album is not shared
+    @NSManaged public var shareCreationDate: TimeInterval   // When the share was created
+    @NSManaged public var sharedByID: Int16                 // Piwigo ID of the user who created the share
+    @NSManaged public var sharedByName: String              // Username of the user who created the share
+
     @NSManaged public var server: Server?
     @NSManaged public var user: User?
     @NSManaged public var images: Set<Image>?

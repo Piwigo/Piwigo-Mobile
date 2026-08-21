@@ -88,7 +88,7 @@ extension UploadParametersViewController {
             else { preconditionFailure("Could not load TagsViewController") }
             tagsVC.delegate = self
             tagsVC.userData = userData
-            tagsVC.setPreselectedTagIds(Set(commonTags.map({$0.tagId})))
+            tagsVC.setPreselectedTagIds(Set(commonTags.map({$0.pwgID})))
             navigationController?.pushViewController(tagsVC, animated: true)
             
         default:

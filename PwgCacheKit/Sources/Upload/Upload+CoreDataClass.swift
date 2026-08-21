@@ -236,7 +236,7 @@ extension Upload {
     
     public func getProperties() -> UploadProperties {
         let tags = self.tags?.compactMap({$0}) ?? []
-        let newTagIds = String(tags.map({"\($0.tagId),"}).reduce("", +).dropLast(1))
+        let newTagIds = String(tags.map({"\($0.pwgID),"}).reduce("", +).dropLast(1))
         return UploadProperties(
             localIdentifier: self.localIdentifier,
             // Category ID of the album to upload to

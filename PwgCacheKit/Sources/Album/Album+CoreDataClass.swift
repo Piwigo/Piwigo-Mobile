@@ -208,6 +208,11 @@ extension Album
             imageSort: self.imageSort,
             currentCounter: self.currentCounter,
             dateGetImages: self.dateGetImages,
+
+            shareUrl: self.shareUrl as? URL,
+            shareCreationDate: self.shareCreationDate,
+            sharedByID: self.sharedByID,
+            sharedByName: self.sharedByName,
             
             URIstr: self.objectID.uriRepresentation().absoluteString,
             userURIstr: self.user?.objectID.uriRepresentation().absoluteString ?? ""

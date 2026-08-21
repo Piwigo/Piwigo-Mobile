@@ -398,7 +398,7 @@ final class EditImageParamsViewController: UIViewController
             for tag in addedTags {
                 tags.insert(tag)
             }
-            let tagIDs: String = tags.map({"\($0.tagId),"}).reduce("", +)
+            let tagIDs: String = tags.map({"\($0.pwgID),"}).reduce("", +)
             paramsDict["tag_ids"] = String(tagIDs.dropLast(1))
         }
         
@@ -448,7 +448,7 @@ final class EditImageParamsViewController: UIViewController
                     tag.numberOfImagesUnderTag -= 1
                 }
                 // Remove image from album of tagged images
-                let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.tagId)
+                let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.pwgID)
                 if let albums = imageData.albums,
                    let albumData = albums.first(where: {$0.pwgID == catID}) {
                     imageData.removeFromAlbums(albumData)
@@ -466,7 +466,7 @@ final class EditImageParamsViewController: UIViewController
                     tag.numberOfImagesUnderTag += 1
                 }
                 // Add image to album of tagged images if it exists
-                let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.tagId)
+                let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.pwgID)
                 if let albumData = AlbumProvider().getAlbum(withID: catID,
                                                             inContext: mainContext) {
                     imageData.addToAlbums(albumData)

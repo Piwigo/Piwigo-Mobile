@@ -126,7 +126,7 @@ extension AutoUploadViewController: UITableViewDataSource
                 let title = String(localized: "editImageDetails_tags", comment: "Tags")
                 let tags = (try? TagProvider().getTags(withIDs: UploadVars.shared.autoUploadTagIds,
                                                        taskContext: mainContext)) ?? []
-                let tagList: String = tags.compactMap({"\($0.tagName), "}).reduce("", +)
+                let tagList: String = tags.compactMap({"\($0.name), "}).reduce("", +)
                 let detail = String(tagList.dropLast(2))
                 cell.configure(with: title, detail: detail)
                 cell.accessoryType = .disclosureIndicator

@@ -156,7 +156,7 @@ final class UploadSwitchViewController: UIViewController {
                     updatedRequest.imageTitle = paramsCtrl.commonTitle
                     updatedRequest.author = paramsCtrl.commonAuthor
                     updatedRequest.privacyLevel = paramsCtrl.commonPrivacyLevel
-                    let tagIDs: String = paramsCtrl.commonTags.map({"\($0.tagId),"}).reduce("", +)
+                    let tagIDs: String = paramsCtrl.commonTags.map({"\($0.pwgID),"}).reduce("", +)
                     updatedRequest.tagIds = String(tagIDs.dropLast(1))
                     updatedRequest.comment = paramsCtrl.commonComment
                     

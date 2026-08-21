@@ -48,7 +48,7 @@ final class TagSelectorViewController: UIViewController {
         andPredicates.append(NSPredicate(format: "server.path == %@", ServerVars.shared.serverPath))
         andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", 0))
         andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", Int64.max))
-        andPredicates.append(NSPredicate(format: "tagName LIKE[c] $query"))
+        andPredicates.append(NSPredicate(format: "name LIKE[c] $query"))
         return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
     }()
     
@@ -60,7 +60,7 @@ final class TagSelectorViewController: UIViewController {
     lazy var fetchRequest: NSFetchRequest = {
         // Create a fetch request for the Tag entity sorted by name.
         let fetchRequest = Tag.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagName), ascending: true,
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.name), ascending: true,
                                                          selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
         fetchRequest.predicate = predicate.withSubstitutionVariables(getQueryVar())
         fetchRequest.fetchBatchSize = 20
@@ -245,12 +245,12 @@ extension TagSelectorViewController: UITableViewDataSource
         let nber: Int64 = tag.numberOfImagesUnderTag
         if (nber == Int64.zero) || (nber == Int64.max) {
             // Unknown number of images
-            cell.configure(with: tag.tagName, detail: "")
+            cell.configure(with: tag.name, detail: "")
         } else {
             let numberFormatter = NumberFormatter()
             numberFormatter.numberStyle = .decimal
             let nberPhotos = (numberFormatter.string(from: NSNumber(value: nber)) ?? "0") as String
-            cell.configure(with: tag.tagName, detail: nberPhotos)
+            cell.configure(with: tag.name, detail: nberPhotos)
         }
         
         return cell
@@ -293,10 +293,10 @@ extension TagSelectorViewController: UITableViewDelegate
         
         // Determine selected tag before deactivating search bar
         let tag = tags.object(at: indexPath)
-        let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.tagId)
+        let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.pwgID)
         
         // Check that an album of tagged images exists in cache (create it if necessary)
-        guard let _ = try? AlbumProvider().getOrCreateProperties(ofAlbumWithID: catID, name: tag.tagName,
+        guard let _ = try? AlbumProvider().getOrCreateProperties(ofAlbumWithID: catID, name: tag.name,
                                                                  inContext: mainContext)
         else { return }
         

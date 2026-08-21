@@ -180,7 +180,7 @@ public final nonisolated class Image: NSManagedObject, Identifiable {
             if let tags = imageData.tags, let serverTags = user.server?.tags {
                 let tagIds = tags.compactMap { $0.id?.int32Value }
                 let imageTags = serverTags.filter({ tag in
-                    tagIds.contains(where: { $0 == tag.tagId }) == true
+                    tagIds.contains(where: { $0 == tag.pwgID }) == true
                 })
                 let oldTags = self.tags?.compactMap{ $0.objectID }
                 let newTags = imageTags.map { $0.objectID }

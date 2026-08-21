@@ -17,7 +17,7 @@ extension UserGroup {
         return NSFetchRequest<UserGroup>(entityName: "UserGroup")
     }
 
-    @NSManaged public var id: Int16
+    @NSManaged public var pwgID: Int16
     @NSManaged public var name: String?
     @NSManaged public var isDefault: Bool
     @NSManaged public var lastModified: TimeInterval

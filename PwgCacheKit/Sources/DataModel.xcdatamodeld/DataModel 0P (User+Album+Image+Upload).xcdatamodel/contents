@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24902" systemVersion="25G76" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="DataModel">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24902" systemVersion="25G83" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="DataModel">
     <entity name="Album" representedClassName="Album" syncable="YES">
         <attribute name="comment" attributeType="Transformable" valueTransformerName="DescriptionValueTransformer" customClassName="NSAttributedString"/>
         <attribute name="commentHTML" attributeType="Transformable" valueTransformerName="DescriptionValueTransformer" customClassName="NSAttributedString"/>
@@ -17,6 +17,10 @@
         <attribute name="parentId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="pwgID" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="query" attributeType="String" defaultValueString=""/>
+        <attribute name="shareCreationDate" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="YES"/>
+        <attribute name="sharedByID" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="sharedByName" attributeType="String" defaultValueString=""/>
+        <attribute name="shareUrl" optional="YES" attributeType="Transformable" valueTransformerName="RelativeURLValueTransformer" customClassName="NSURL"/>
         <attribute name="status" attributeType="Integer 16" defaultValueString="-1" usesScalarValueType="YES"/>
         <attribute name="thumbnailId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="thumbnailUrl" optional="YES" attributeType="Transformable" valueTransformerName="RelativeURLValueTransformer" customClassName="NSURL"/>
@@ -115,9 +119,9 @@
     </entity>
     <entity name="Tag" representedClassName="Tag" syncable="YES">
         <attribute name="lastModified" attributeType="Date" defaultDateTimeInterval="-3187296561" usesScalarValueType="YES"/>
+        <attribute name="name" renamingIdentifier="tagName" attributeType="String" defaultValueString=""/>
         <attribute name="numberOfImagesUnderTag" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="tagId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="tagName" attributeType="String" defaultValueString=""/>
+        <attribute name="pwgID" renamingIdentifier="tagId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Image" inverseName="tags" inverseEntity="Image"/>
         <relationship name="server" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Server" inverseName="tags" inverseEntity="Server"/>
         <relationship name="uploads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Upload" inverseName="tags" inverseEntity="Upload"/>
@@ -163,7 +167,7 @@
         <attribute name="lastUsed" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="YES"/>
         <attribute name="login" attributeType="String" defaultValueString=""/>
         <attribute name="name" attributeType="String" defaultValueString=""/>
-        <attribute name="pwgID" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="pwgID" renamingIdentifier="id" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="recentPeriod" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="registrationDate" attributeType="Date" defaultDateTimeInterval="-3187296561" usesScalarValueType="YES"/>
         <attribute name="status" attributeType="String" defaultValueString="guest"/>
@@ -179,10 +183,10 @@
         </uniquenessConstraints>
     </entity>
     <entity name="UserGroup" representedClassName="UserGroup" syncable="YES">
-        <attribute name="id" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="isDefault" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="lastModified" attributeType="Date" defaultDateTimeInterval="-3187296561" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String" defaultValueString=""/>
+        <attribute name="pwgID" renamingIdentifier="id" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="server" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Server" inverseName="groups" inverseEntity="Server"/>
         <relationship name="users" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="User" inverseName="groups" inverseEntity="User"/>
     </entity>

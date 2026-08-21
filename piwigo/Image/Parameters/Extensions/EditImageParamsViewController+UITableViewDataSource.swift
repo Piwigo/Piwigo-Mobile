@@ -145,7 +145,7 @@ extension EditImageParamsViewController: UITableViewDataSource
             else { preconditionFailure("Could not load LabelTableViewCell")}
             let title = String(localized: "editImageDetails_tags", comment: "Tags")
             // Retrieve tags and switch to old cache data format
-            let tagList: String = commonTags.compactMap({"\($0.tagName), "}).reduce("", +)
+            let tagList: String = commonTags.compactMap({"\($0.name), "}).reduce("", +)
             let tagString = String(tagList.dropLast(2))
             let detail = tagString.isEmpty ? String(localized: "none", comment: "none") : tagString
             cell.configure(with: title, detail: detail)

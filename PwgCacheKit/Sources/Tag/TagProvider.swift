@@ -90,7 +90,7 @@ public final class TagProvider {
                 
                 // Retrieve tags in persistent store
                 let fetchRequest = Tag.fetchRequest()
-                fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagName), ascending: true,
+                fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.name), ascending: true,
                                                                  selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
                 
                 // Look for tags belonging to the currently active server
@@ -104,7 +104,7 @@ public final class TagProvider {
                 // Initialise set of tag IDs during the first iteration
                 if tagIDs == nil {
                     // Store IDs of present list of tags
-                    tagToDeleteIDs = Set(cachedTags.map({$0.tagId}))
+                    tagToDeleteIDs = Set(cachedTags.map({$0.pwgID}))
                 } else {
                     // Resume IDs of tags to delete
                     tagToDeleteIDs = tagIDs ?? Set<Int32>()
@@ -115,7 +115,7 @@ public final class TagProvider {
                     
                     // Index of this new tag in cache
                     guard let ID = tagData.id?.int32Value else { continue }
-                    if let index = cachedTags.firstIndex(where: { $0.tagId == ID }) {
+                    if let index = cachedTags.firstIndex(where: { $0.pwgID == ID }) {
                         // Update the tag's properties using the raw data
                         try cachedTags[index].update(with: tagData, server: server)
                         
@@ -142,10 +142,10 @@ public final class TagProvider {
                 if tagsBatch.count < batchSize,
                    tagToDeleteIDs.isEmpty == false {
                     // Delete tags
-                    let tagToDelete = cachedTags.filter({tagToDeleteIDs.contains($0.tagId)})
+                    let tagToDelete = cachedTags.filter({tagToDeleteIDs.contains($0.pwgID)})
                     tagToDelete.forEach { tag in
                         #if DEBUG
-                        debugPrint("••> delete tag with ID:\(tag.tagId) and name:\(tag.tagName)")
+                        debugPrint("••> delete tag with ID:\(tag.pwgID) and name:\(tag.name)")
                         #endif
                         bckgContext.delete(tag)
                     }
@@ -177,7 +177,7 @@ public final class TagProvider {
         try taskContext.performAndWait {
             // Retrieve tags in persistent store
             let fetchRequest = Tag.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagName), ascending: true)]
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.name), ascending: true)]
             
             // Look for tags belonging to the currently active server
             fetchRequest.predicate = NSPredicate(format: "server.path == %@", ServerVars.shared.serverPath)
@@ -187,7 +187,7 @@ public final class TagProvider {
             // Tag selection
             let cachedTags:[Tag] = try taskContext.fetch(fetchRequest)
             let listOfIds = tagIds.components(separatedBy: ",").compactMap({ Int32($0) })
-            tagList = Set(cachedTags.filter({ listOfIds.contains($0.tagId)}))
+            tagList = Set(cachedTags.filter({ listOfIds.contains($0.pwgID)}))
         }
 
         return tagList

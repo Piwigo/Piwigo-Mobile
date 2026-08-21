@@ -30,7 +30,12 @@ public struct AlbumProperties: Sendable
     public var imageSort: String                    // How images are sorted on the server
     public var currentCounter: Int64                // Used to rename images before upload
     public var dateGetImages: TimeInterval          // When images were fetched
-        
+
+    public var shareUrl: URL?                       // URL of the share, nil when the album is not shared
+    public var shareCreationDate: TimeInterval      // When the share was created
+    public var sharedByID: Int16                    // Piwigo ID of the user who created the share
+    public var sharedByName: String                 // Username of the user who created the share
+
     public var URIstr: String                       // URI string representation
     public var userURIstr: String                   // URI string representation of the associated User instance
 }
@@ -48,7 +53,11 @@ extension AlbumProperties
                   nbImages: 0, totalNbImages: 0, images: [],
                   imageSort: "", currentCounter: Int64.zero,
                   dateGetImages: Date.distantPast.timeIntervalSinceReferenceDate,
-                  
+
+                  shareUrl: nil,
+                  shareCreationDate: DateUtilities.unknownDateInterval,
+                  sharedByID: Int16.zero, sharedByName: "",
+
                   URIstr: "",
                   userURIstr: ""
         )
