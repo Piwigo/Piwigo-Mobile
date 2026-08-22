@@ -496,6 +496,35 @@ public final class AlbumProvider {
     }
     
     
+    /**
+     Stores the share data of a single album, after creating, renewing or cancelling its share.
+     A nil shareData clears the share data, i.e. marks the album as not shared.
+     */
+    public func updateShare(_ shareData: ShareAlbumGetInfo?, ofAlbumWithID pwgID: Int32,
+                            inContext taskContext: NSManagedObjectContext) throws(PwgKitError) {
+        // Do {} below is used to allow typed throws
+        do {
+            // Synchronous execution
+            try taskContext.performAndWait {
+                // Retrieve Album instance
+                guard let album = getAlbum(withID: pwgID, inContext: taskContext)
+                else { throw PwgKitError.albumNotFound }
+                
+                // Update or clear the share data
+                if let shareData {
+                    album.update(with: shareData)
+                } else {
+                    album.removeShareData()
+                }
+                taskContext.saveIfNeeded()
+            }
+        }
+        catch let error as PwgKitError { throw error }
+        catch let error as NSError { throw PwgKitError.CoreDataError(innerError: error)}
+        catch let error { throw PwgKitError.otherError(innerError: error) }
+    }
+    
+    
     // MARK: - Update Albums
     public func updateAlbum(withProperties properties: AlbumProperties,
                             inContext taskContext: NSManagedObjectContext) throws(PwgKitError) {
