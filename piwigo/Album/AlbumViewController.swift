@@ -537,6 +537,24 @@ final class AlbumViewController: UIViewController
         // Hide the search bar when scrolling
         navigationItem.hidesSearchBarWhenScrolling = true
         
+        // Refresh the share of this album, which also tells whether this user
+        // may share albums after a restoration of the scene (see fetchShareOfAlbum)
+        Task {
+            do {
+                // Check session
+                /// Without a session, the plugin considers the user as a guest and rejects the
+                /// request with a 403 error, which fetchShareOfAlbum() would take for a definitive
+                /// "this user may not share albums" and remember for the rest of the session.
+                try await LoginUtilities().checkSessionOfCurrentUser()
+
+                // Fetch Share Album data
+                await fetchShareOfAlbum()
+            }
+            catch {
+                return
+            }
+        }
+        
         // Check conditions before loading album and image data
         let lastLoad = Date.timeIntervalSinceReferenceDate - albumData.dateGetImages
         let nbImages = nberOfImages()

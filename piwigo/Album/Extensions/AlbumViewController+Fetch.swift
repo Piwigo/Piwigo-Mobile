@@ -62,38 +62,6 @@ extension AlbumViewController
         }
     }
     
-    
-    // MARK: - Fetch Shared Albums
-    /// Retrieves the albums shared with users having no Piwigo account and stores
-    /// the share data in the albums of the current user.
-    ///
-    /// The share data only decorates albums and enables the Share Album command,
-    /// so a failure must neither interrupt the album fetch nor be reported to the user.
-    private func fetchSharedAlbums() async {
-        // Is the ShareAlbum plugin installed on the server?
-        /// Users rejected by the plugin during this session are not asked again.
-        guard ServerVars.shared.usesShareAlbum,
-              AlbumVars.shared.canShareAlbums != false
-        else { return }
-        
-        do throws(PwgKitError) {
-            // Fetch the shares of the server and store them in the albums of the current user
-            let pwgData = try await JSONManager.shared.getSharedAlbums()
-            try await albumProvider.importShares(pwgData)
-            AlbumVars.shared.canShareAlbums = true
-        }
-        catch {
-            // The plugin rejects users who are neither administrators
-            // nor members of the "sharealbum_powerusers" group.
-            if case .pwgError(let code, _) = error, code == kShareAlbumForbiddenError {
-                AlbumVars.shared.canShareAlbums = false
-            }
-            #if DEBUG
-            debugPrint("••> Could not fetch shared albums: \(error.localizedDescription)")
-            #endif
-        }
-    }
-    
     @concurrent
     private func fetchAlbums(forUserWithAdminRights hasAdminRights: Bool, recursively: Bool,
                              withInitialImageIds oldImageIDs: Set<Int64>, query: String) async {
@@ -191,6 +159,80 @@ extension AlbumViewController
                     self.showError(error)
                 }
             }
+        }
+    }
+    
+    
+    // MARK: - Fetch Shared Albums
+    /// Retrieves the albums shared with users having no Piwigo account and stores
+    /// the share data in the albums of the current user.
+    ///
+    /// The share data only decorates albums and enables the Share Album command,
+    /// so a failure must neither interrupt the album fetch nor be reported to the user.
+    private func fetchSharedAlbums() async {
+        // Is the ShareAlbum plugin installed on the server?
+        /// Users rejected by the plugin during this session are not asked again.
+        guard ServerVars.shared.usesShareAlbum,
+              AlbumVars.shared.canShareAlbums != false
+        else { return }
+        
+        do throws(PwgKitError) {
+            // Fetch the shares of the server and store them in the albums of the current user
+            let pwgData = try await JSONManager.shared.getSharedAlbums()
+            try await albumProvider.importShares(pwgData)
+            AlbumVars.shared.canShareAlbums = true
+        }
+        catch {
+            // The plugin rejects users who are neither administrators
+            // nor members of the "sharealbum_powerusers" group.
+            if case .pwgError(let code, _) = error, code == kShareAlbumForbiddenError {
+                AlbumVars.shared.canShareAlbums = false
+            }
+            #if DEBUG
+            debugPrint("••> Could not fetch shared albums: \(error.localizedDescription)")
+            #endif
+        }
+    }
+    
+    /// Refreshes the share of the displayed album with sharealbum.getInfo.
+    ///
+    /// Called each time the album appears because a share can be created, renewed or cancelled
+    /// from the web UI at any time, and because the album data restored with a scene knows
+    /// nothing about shares — the list fetched by fetchSharedAlbums() only lives for a session.
+    ///
+    /// This request is also the probe telling whether the plugin accepts this user, so it is
+    /// performed even when the album is not shared yet: without it, a restored scene would
+    /// propose no Share command until the root album is fetched again.
+    @MainActor
+    func fetchShareOfAlbum() async {
+        // Is the ShareAlbum plugin installed, does it accept this user, and can this album be shared?
+        /// Users rejected by the plugin during this session are not asked again.
+        guard ServerVars.shared.usesShareAlbum,
+              AlbumVars.shared.canShareAlbums != false,
+              categoryId > 0,
+              albumData.status == .privateStatus
+        else { return }
+        
+        do throws(PwgKitError) {
+            // Retrieve the share of this album, nil when it is not shared
+            let shareData = try await JSONManager.shared.getShare(ofAlbumWithID: categoryId)
+            try albumProvider.updateShare(shareData, ofAlbumWithID: categoryId, inContext: mainContext)
+            AlbumVars.shared.canShareAlbums = true
+            
+            // Propose the commands matching the refreshed state
+            if inSelectionMode == false {
+                updateBarsInPreviewMode()
+            }
+        }
+        catch {
+            // The plugin rejects users who are neither administrators
+            // nor members of the "sharealbum_powerusers" group.
+            if case .pwgError(let code, _) = error, code == kShareAlbumForbiddenError {
+                AlbumVars.shared.canShareAlbums = false
+            }
+            #if DEBUG
+            debugPrint("••> Could not refresh the share of album #\(categoryId): \(error.localizedDescription)")
+            #endif
         }
     }
     

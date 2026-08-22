@@ -165,10 +165,12 @@ extension AlbumViewController: UICollectionViewDelegate
     // MARK: - Album Context Menu
     private func albumContextMenu(_ indexPath: IndexPath) -> UIMenu {
         let addPhotos = self.addPhotosMenu(indexPath)
+        let share = self.shareAlbumMenu(forAlbumAt: indexPath)
         let rename = self.renameAlbumAction(indexPath)
         let move = self.moveAlbumAction(indexPath)
         let delete = self.deleteAlbumMenu(indexPath)
-        return UIMenu(title: "", children: [addPhotos, rename, move, delete])
+        let children: [UIMenuElement?] = [addPhotos, share, rename, move, delete]
+        return UIMenu(title: "", children: children.compactMap({$0}))
     }
     
     private func addPhotosMenu(_ indexPath: IndexPath) -> UIMenu {

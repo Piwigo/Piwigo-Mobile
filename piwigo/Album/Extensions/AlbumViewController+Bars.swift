@@ -120,7 +120,7 @@ extension AlbumViewController
         }
         else {
             // Initialise Select menu with options and settings
-            var children = [sortMenu(), viewOptionsMenu(), settingsMenu()]
+            var children = [shareAlbumMenu(forAlbumWithID: categoryId), viewOptionsMenu(), settingsMenu()]
             
             // Select command enabled?
             shareBarButton = getShareBarButton()        // depends on Piwigo server version, user role and image data
@@ -240,7 +240,7 @@ extension AlbumViewController
             addImageBarButton = getAddImageBarButton()
 
             // Menu for activating the selection mode or changing the way images are sorted
-            var children = [sortMenu(), viewOptionsMenu(), settingsMenu()]
+            var children = [shareAlbumMenu(forAlbumWithID: categoryId), viewOptionsMenu(), settingsMenu()]
             if shareBarButton != nil || favoriteBarButton != nil {
                 children.insert(selectMenu(enabled: albumData.nbImages != 0), at: 0)
             }
@@ -321,7 +321,7 @@ extension AlbumViewController
             favoriteBarButton = getFavoriteBarButton()
             
             // Menu for activating the selection mode and changing the way images are sorted
-            var children = [sortMenu(), viewOptionsMenu()]
+            var children = [shareAlbumMenu(forAlbumWithID: categoryId), viewOptionsMenu()]
             if shareBarButton != nil || favoriteBarButton != nil {
                 children.insert(selectMenu(enabled: albumData.nbImages != 0), at: 0)
             }
@@ -352,7 +352,7 @@ extension AlbumViewController
         shareBarButton = getShareBarButton()
         
         // Menu for activating the selection mode or change the way images are sorted
-        var children = [sortMenu(), viewOptionsMenu()]
+        var children = [shareAlbumMenu(forAlbumWithID: categoryId), viewOptionsMenu()]
         if shareBarButton != nil || favoriteBarButton != nil {
             children.insert(selectMenu(enabled: albumData.nbImages != 0), at: 0)
         }
