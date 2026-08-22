@@ -73,7 +73,13 @@ extension AlbumViewController
         optionsVC.images = selection
         optionsVC.completion = { [weak self] options in
             guard let options = options else {
-                // The user gave up: leave the selection mode untouched
+                // The user gave up: leave the selection mode untouched, but close the HUD
+                // presented while the data of the images was retrieved and re-enable the
+                // buttons disabled by initSelection(ofImagesWithIDs:beforeAction:).
+                /// Both are otherwise only undone once the share sheet is presented, which
+                /// never happens when this sheet is dismissed without choosing an option.
+                self?.navigationController?.hideHUD { }
+                self?.setEnableStateOfButtons(true)
                 return
             }
             self?.shareImages(withID: imageIDs, using: options,
@@ -220,6 +226,13 @@ extension AlbumViewController
                         if activityType == nil {
                             // User dismissed the view controller without making a selection.
                             setEnableStateOfButtons(true)
+
+                            // Cancel a download which is still running for a share that
+                            // no longer exists, before the providers unregister below.
+                            NotificationCenter.default.post(name: .pwgCancelDownload, object: nil)
+
+                            // Delete shared file & remove observers
+                            NotificationCenter.default.post(name: .pwgDidShare, object: nil)
                         } else {
                             // Check what to do with selection
                             if contextually {

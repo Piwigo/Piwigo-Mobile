@@ -42,6 +42,10 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
     private var cachedFileURL: URL?                     // URL of cached image file
     private var imageFileURL: URL                       // URL of shared image file
     private var isCancelledByUser = false               // Flag updated when pressing Cancel
+    /// Released either by the download, or by the user cancelling it: a cancelled download
+    /// reports nothing, so without this the operation would wait for ever and the HUD which
+    /// it asked to present would never be dismissed.
+    private let downloadSemaphore = DispatchSemaphore(value: 0)
     private var contextually = false
     private let options: ShareOptions                   // Options chosen by the user before sharing
     
@@ -143,7 +147,6 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         pwgImageURL = imageURL
 
         // Download image synchronously if not in cache
-        let sema = DispatchSemaphore(value: 0)
         Task {
             await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, type: .album, atURL: imageURL,
                                                   fromServer: serverID, fileSize: imageData.fileSize) { [weak self = self] fractionCompleted in
@@ -152,16 +155,23 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             }
             completion: { [unowned self = self] fileURL in
                 self.cachedFileURL = fileURL
-                sema.signal()
+                downloadSemaphore.signal()
             }
             failure: { [unowned self = self] error in
                 // Will notify the delegate on the main thread that the processing is cancelled
                 self.alertTitle = String(localized: "shareFailError_title", comment: "Share Fail")
                 self.alertMessage = String.localizedStringWithFormat(String(localized: "downloadImageFail_message", comment: "Failed to download image!\n%@"), error.localizedDescription)
-                sema.signal()
+                downloadSemaphore.signal()
             }
         }
-        _ = sema.wait(timeout: .distantFuture)
+        _ = downloadSemaphore.wait(timeout: .distantFuture)
+        
+        // Did the user cancel the download? End quietly, without reporting a failure.
+        if isCancelledByUser {
+            cancel()
+            preprocessingDidEnd()
+            return placeholderItem!
+        }
 
         // Cancel item task if image could not be retrieved
         if alertTitle != nil {
@@ -380,6 +390,9 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
     @objc func cancelDownloadImageTask() {
         // Will cancel share when operation starts
         isCancelledByUser = true
+        // Release the operation if it is waiting for the image being downloaded: a cancelled
+        // download calls neither its completion nor its failure handler.
+        downloadSemaphore.signal()
         // Cancel image file download
         Task { await ImageDownloader.shared.cancelDownload(atURL: pwgImageURL) }
     }

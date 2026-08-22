@@ -171,22 +171,22 @@ extension ImageViewController
             // Enable buttons after action
             setEnableStateOfButtons(true)
 
+            // Cancel the download of an abandoned share, whether the user dismissed the
+            // sheet or an activity failed. Posted before .pwgDidShare, which makes the item
+            // providers unregister: afterwards they no longer hear .pwgCancelDownload.
+            if !completed {
+                #if DEBUG
+                debugPrint(activityType == nil
+                           ? "User dismissed the view controller without making a selection."
+                           : "Activity was not performed.")
+                #endif
+                NotificationCenter.default.post(name: .pwgCancelDownload, object: nil)
+            }
+
             // Remove observers
             NotificationCenter.default.post(name: .pwgDidShare, object: nil)
 
-            if !completed {
-                if activityType == nil {
-                    #if DEBUG
-                    debugPrint("User dismissed the view controller without making a selection.");
-                    #endif
-                } else {
-                    #if DEBUG
-                    debugPrint("Activity was not performed.")
-                    #endif
-                    // Cancel download task
-                    NotificationCenter.default.post(name: .pwgCancelDownload, object: nil)
-                }
-            } else {
+            if completed {
                 // Update server statistics
                 logImageVisitIfNeeded(imageData.pwgID, asDownload: true)
             }
