@@ -36808,19 +36808,19 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مشاركة ألبوم خاص"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Del privat album"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Privates Album teilen"
           }
         },
@@ -36832,73 +36832,73 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Compartir álbum privado"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Partager l'album privé"
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Privát album megosztása"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Bagikan album pribadi"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Condividi album privato"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "非公開アルバムを共有"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Privéalbum delen"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Udostępnij album prywatny"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Поделиться приватным альбомом"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Dela privat album"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "共享私密相册"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "分享私人相簿"
           }
         }
@@ -36909,19 +36909,19 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مشاركة ألبوم عام"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Del offentligt album"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Öffentliches Album teilen"
           }
         },
@@ -36933,73 +36933,73 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Compartir álbum público"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Partager l'album public"
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nyilvános album megosztása"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Bagikan album publik"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Condividi album pubblico"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "公開アルバムを共有"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Openbaar album delen"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Udostępnij album publiczny"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Поделиться публичным альбомом"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Dela offentligt album"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "共享公开相册"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "分享公開相簿"
           }
         }
@@ -37010,19 +37010,19 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تجديد الرابط"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Forny link"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Link erneuern"
           }
         },
@@ -37034,73 +37034,73 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Renovar enlace"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Renouveler le lien"
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Hivatkozás megújítása"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Perbarui tautan"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Rinnova link"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "リンクを更新"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Link vernieuwen"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Odnów link"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Обновить ссылку"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Förnya länk"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "更新链接"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "更新連結"
           }
         }
@@ -37111,19 +37111,19 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "سيتوقف الرابط الحالي عن العمل. لن يتمكن الأشخاص الذين استلموه من فتح هذا الألبوم بعد الآن."
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Det nuværende link holder op med at virke. Personer, der allerede har modtaget det, vil ikke længere kunne åbne dette album."
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Der aktuelle Link funktioniert nicht mehr. Personen, die ihn bereits erhalten haben, können dieses Album nicht mehr öffnen."
           }
         },
@@ -37135,73 +37135,73 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "El enlace actual dejará de funcionar. Las personas que ya lo recibieron no podrán abrir este álbum."
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Le lien actuel cessera de fonctionner. Les personnes qui l'ont déjà reçu ne pourront plus ouvrir cet album."
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "A jelenlegi hivatkozás nem fog többé működni. Akik már megkapták, nem tudják megnyitni ezt az albumot."
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tautan saat ini akan berhenti berfungsi. Orang yang sudah menerimanya tidak akan bisa membuka album ini lagi."
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Il link attuale smetterà di funzionare. Chi lo ha già ricevuto non potrà più aprire questo album."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "現在のリンクは無効になります。すでに受け取った人はこのアルバムを開けなくなります。"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "De huidige link werkt niet meer. Personen die hem al hebben ontvangen, kunnen dit album niet meer openen."
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Bieżący link przestanie działać. Osoby, które już go otrzymały, nie będą mogły otworzyć tego albumu."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Текущая ссылка перестанет работать. Те, кто её уже получил, больше не смогут открыть этот альбом."
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Den nuvarande länken slutar fungera. Personer som redan fått den kan inte längre öppna albumet."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "当前链接将失效。已收到链接的人将无法再打开此相册。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "目前的連結將會失效。已收到連結的人將無法再開啟此相簿。"
           }
         }
@@ -37212,19 +37212,19 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مشاركة الرابط…"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Del link…"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Link teilen…"
           }
         },
@@ -37236,73 +37236,73 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Compartir enlace…"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Partager le lien…"
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Hivatkozás megosztása…"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Bagikan tautan…"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Condividi link…"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "リンクを共有…"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Link delen…"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Udostępnij link…"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Поделиться ссылкой…"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Dela länk…"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "共享链接…"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "分享連結…"
           }
         }
@@ -37313,19 +37313,19 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "إيقاف المشاركة"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Stop deling"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Freigabe beenden"
           }
         },
@@ -37337,73 +37337,73 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Dejar de compartir"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Arrêter le partage"
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Megosztás leállítása"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Hentikan berbagi"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Interrompi condivisione"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "共有を停止"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Delen stoppen"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Zatrzymaj udostępnianie"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Прекратить доступ"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Sluta dela"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "停止共享"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "停止分享"
           }
         }
@@ -37414,19 +37414,19 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "سيتوقف الرابط عن العمل. لن يتمكن الأشخاص الذين استلموه من فتح هذا الألبوم بعد الآن."
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Linket holder op med at virke. Personer, der allerede har modtaget det, vil ikke længere kunne åbne dette album."
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Der Link funktioniert nicht mehr. Personen, die ihn bereits erhalten haben, können dieses Album nicht mehr öffnen."
           }
         },
@@ -37438,73 +37438,73 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "El enlace dejará de funcionar. Las personas que ya lo recibieron no podrán abrir este álbum."
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Le lien cessera de fonctionner. Les personnes qui l'ont déjà reçu ne pourront plus ouvrir cet album."
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "A hivatkozás nem fog többé működni. Akik már megkapták, nem tudják megnyitni ezt az albumot."
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tautan akan berhenti berfungsi. Orang yang sudah menerimanya tidak akan bisa membuka album ini lagi."
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Il link smetterà di funzionare. Chi lo ha già ricevuto non potrà più aprire questo album."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "リンクは無効になります。すでに受け取った人はこのアルバムを開けなくなります。"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "De link werkt niet meer. Personen die hem al hebben ontvangen, kunnen dit album niet meer openen."
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Link przestanie działać. Osoby, które już go otrzymały, nie będą mogły otworzyć tego albumu."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ссылка перестанет работать. Те, кто её уже получил, больше не смогут открыть этот альбом."
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Länken slutar fungera. Personer som redan fått den kan inte längre öppna albumet."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "链接将失效。已收到链接的人将无法再打开此相册。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "連結將會失效。已收到連結的人將無法再開啟此相簿。"
           }
         }
@@ -55022,7 +55022,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Este servidor Piwigo no acepta vídeos, por lo que solo se puede subir la foto de una Live Photo."
+            "value" : "Este servidor Piwigo no acepta vídeos, por lo que sólo se puede subir la foto de una Live Photo."
           }
         },
         "fr" : {
@@ -55226,7 +55226,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Solo el vídeo"
+            "value" : "Sólo el vídeo"
           }
         },
         "fr" : {
@@ -55328,7 +55328,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Solo la foto"
+            "value" : "Sólo la foto"
           }
         },
         "fr" : {

@@ -5485,7 +5485,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cuenta de usuario ausente de la caché persistente."
+            "value" : "La cuenta de usuario no está en la caché persistente."
           }
         },
         "fr" : {
@@ -6899,7 +6899,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Objeto de servidor ausente de la caché persistente."
+            "value" : "El objeto de servidor no está en la caché persistente."
           }
         },
         "fr" : {
