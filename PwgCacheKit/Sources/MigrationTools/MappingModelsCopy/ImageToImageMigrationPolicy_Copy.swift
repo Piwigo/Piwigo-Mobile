@@ -10,6 +10,8 @@ import os
 import CoreData
 import Foundation
 
+let imageErrorDomain = "Image Migration"
+
 final class ImageToImageMigrationPolicy_Copy: NSEntityMigrationPolicy {
     // Constants
     let logPrefix = "Image ► Image (Copy)"

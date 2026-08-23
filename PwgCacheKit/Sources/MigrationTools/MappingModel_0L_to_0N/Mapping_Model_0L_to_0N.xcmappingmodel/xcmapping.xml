@@ -484,7 +484,7 @@ cxIAAYagXxAPTlNLZXllZEFyY2hpdmVy0QAIAAlUcm9vdIABrxEOcAALAAwAGQA1ADYANwBPAFAAUQBS
         <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z234"></relationship>
     </object>
     <object type="XDDEVENTITYMAPPING" id="z197">
-        <attribute name="migrationpolicyclassname" type="string">PwgCacheKit.AlbumToAlbumMigrationPolicy_0L_to_0M</attribute>
+        <attribute name="migrationpolicyclassname" type="string">PwgCacheKit.AlbumToAlbumMigrationPolicy_0L_to_0N</attribute>
         <attribute name="sourcename" type="string">Album</attribute>
         <attribute name="mappingtypename" type="string">Undefined</attribute>
         <attribute name="mappingnumber" type="int16">8</attribute>
@@ -656,7 +656,7 @@ cxIAAYagXxAPTlNLZXllZEFyY2hpdmVy0QAIAAlUcm9vdIABrxEOcAALAAwAGQA1ADYANwBPAFAAUQBS
         <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING" idrefs="z241 z168 z126"></relationship>
     </object>
     <object type="XDDEVENTITYMAPPING" id="z234">
-        <attribute name="migrationpolicyclassname" type="string">PwgCacheKit.ImageToImageMigrationPolicy_0L_to_0M</attribute>
+        <attribute name="migrationpolicyclassname" type="string">PwgCacheKit.ImageToImageMigrationPolicy_0L_to_0N</attribute>
         <attribute name="sourcename" type="string">Image</attribute>
         <attribute name="mappingtypename" type="string">Undefined</attribute>
         <attribute name="mappingnumber" type="int16">7</attribute>

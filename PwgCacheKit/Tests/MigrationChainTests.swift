@@ -148,6 +148,39 @@ final class MigrationChainTests: XCTestCase {
     }
 
     /// Regenerating a mapping model in Xcode drops its policy class names.
+    /**
+     Every policy class a mapping model names has to exist at runtime.
+
+     `entityMigrationPolicyClassName` is a plain string in the compiled mapping
+     model, so renaming or deleting a policy class leaves the mapping model
+     pointing at nothing and the step only fails when a user upgrades through
+     it. Includes the two mapping models still on disk that no chain step uses,
+     since they name the same shared policies.
+     */
+    func testDeclaredMigrationPoliciesResolve() {
+        let supersededSteps: [(DataMigrationVersion, DataMigrationVersion)] = [
+            (.version0J, .version0K),   // superseded by 0J → 0L
+            (.version0L, .version0M),   // superseded by 0L → 0N
+        ]
+        let steps = Self.chain.map { ($0.source, $0.destination) } + supersededSteps
+
+        for (source, destination) in steps {
+            guard let mappingModel = customMappingModel(from: source, to: destination) else { continue }
+            for name in mappingModel.entityMappings.compactMap(\.entityMigrationPolicyClassName) {
+                guard let policyClass = NSClassFromString(name) else {
+                    XCTFail("""
+                            Step \(Self.key(source, destination)) names migration \
+                            policy \(name), which does not exist. Rename it back or \
+                            update the mapping models naming it.
+                            """)
+                    continue
+                }
+                XCTAssertTrue(policyClass is NSEntityMigrationPolicy.Type,
+                              "\(name) is not an NSEntityMigrationPolicy subclass")
+            }
+        }
+    }
+
     func testMappingModelsKeepTheirMigrationPolicies() {
         for (source, destination) in Self.chain {
             let key = Self.key(source, destination)

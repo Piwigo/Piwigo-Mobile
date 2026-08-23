@@ -1,18 +1,19 @@
 //
-//  UploadToUploadMigrationPolicy_0N_to_0O.swift
+//  UploadToUploadMigrationPolicy_0J_to_0L.swift
 //  PwgCacheKit
 //
-//  Created by Eddy Lelièvre-Berna on 26 July 2026.
+//  Created by Eddy Lelièvre-Berna on 19 July 2025.
 //  Copyright © 2025 Piwigo.org. All rights reserved.
 //
 
 import os
 import CoreData
 import Foundation
+import UniformTypeIdentifiers
 
-final class UploadToUploadMigrationPolicy_0N_to_0O: NSEntityMigrationPolicy {
+final class UploadToUploadMigrationPolicy_0J_to_0L: NSEntityMigrationPolicy {
     // Constants
-    let logPrefix = "Upload 0N ► Upload 0O"
+    let logPrefix = "Upload 0J ► Upload 0L"
     let numberFormatter: NumberFormatter = {
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = NumberFormatter.Style.percent
@@ -36,65 +37,52 @@ final class UploadToUploadMigrationPolicy_0N_to_0O: NSEntityMigrationPolicy {
 
     /**
      UploadToUpload custom migration performed following these steps:
-     - Sets the values of the attributes from the source instance
-     - Sets the relationship from the source instance
-     - Associates the source instance with the destination instance
+     - Lets the mapping model create the destination instance, set the values of
+       its attributes and associate it with the source instance
+     - Sets 'fileType' from the old 'fileName' and 'isVideo'
     */
     override func createDestinationInstances(forSource sInstance: NSManagedObject, in mapping: NSEntityMapping, manager: NSMigrationManager) throws {
+        // Create the destination instance, set the attributes whose value expression
+        // is defined in the mapping model, and associate it with the source instance.
         try super.createDestinationInstances(forSource: sInstance, in: mapping, manager: manager)
-        
-        // Create destination instance
-        let description = NSEntityDescription.entity(forEntityName: "Upload", in: manager.destinationContext)
-        let newUpload = Upload(entity: description!, insertInto: manager.destinationContext)
 
-        // Function iterating over the property mappings if they are present in the migration
-        func traversePropertyMappings(block: (NSPropertyMapping, String) -> Void) throws {
-            // Retrieve attribute mappings
-            if let attributeMappings = mapping.attributeMappings {
-                // Loop over all property mappings
-                for propertyMapping in attributeMappings {
-                    // Check that there exists a destination of that name
-                    if let destinationName = propertyMapping.name {
-                        // Set destination attribute value
-                        block(propertyMapping, destinationName)
-                    } else {
-                        let message = "Attribute destination not configured properly!"
-                        DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
-                        let userInfo = [NSLocalizedFailureReasonErrorKey: message]
-                        throw NSError(domain: uploadErrorDomain, code: 0, userInfo: userInfo)
-                    }
+        // Retrieve the destination instance created above
+        guard let mappingName = mapping.name else {
+            let message = "Entity mapping not configured properly!"
+            DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
+            let userInfo = [NSLocalizedFailureReasonErrorKey: message]
+            throw NSError(domain: uploadErrorDomain, code: 0, userInfo: userInfo)
+        }
+        let newUploads = manager.destinationInstances(forEntityMappingName: mappingName,
+                                                      sourceInstances: [sInstance])
+
+        // Set 'fileType' from old 'fileName' to detect videos and already loaded PDF files
+        if let fileName = sInstance.value(forKey: "fileName") as? String {
+            let fileExt = URL(fileURLWithPath: fileName).pathExtension.lowercased()
+            let fileType: pwgImageFileType
+            if fileExt.isEmpty {
+                let isVideo = sInstance.value(forKey: "isVideo") as? Bool ?? false
+                fileType = isVideo ? .video : .image
+            } else if let uti = UTType(filenameExtension: fileExt) {
+                if uti.conforms(to: .movie) {
+                    fileType = .video
+                } else if uti.conforms(to: .pdf) {
+                    fileType = .pdf
+                } else {
+                    fileType = .image
                 }
             } else {
-                let message = "No Attribute Mappings found!"
-                DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
-                let userInfo = [NSLocalizedFailureReasonErrorKey: message]
-                throw NSError(domain: uploadErrorDomain, code: 0, userInfo: userInfo)
+                fileType = .image
             }
+            newUploads.forEach { $0.setValue(fileType.rawValue, forKey: "fileType") }
         }
 
-        // The attribute migrations are performed using the expressions defined in the mapping model.
-        try traversePropertyMappings { propertyMapping, destinationName in
-            // Retrieve source value expression
-            guard let valueExpression = propertyMapping.valueExpression else { return }
-            // Set destination value expression
-            let context: NSMutableDictionary = ["source": sInstance]
-            guard let destinationValue = valueExpression.expressionValue(with: sInstance, context: context) else { return }
-            // Set attribute value
-            newUpload.setValue(destinationValue, forKey: destinationName)
-        }
-        
-        // Add 'deleteAssetIdentifier'
-        newUpload.setValue(nil, forKey: "deleteAssetIdentifier")
-        
-        // Associate new Upload object to old one
-        manager.associate(sourceInstance: sInstance, withDestinationInstance: newUpload, for: mapping)
-        
         // Stop migration?
         if OperationQueue.current?.operations.first?.isCancelled ?? false {
             throw DataMigrationError.timeout
         }
     }
-    
+
     override func endInstanceCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
         // Logs
         let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""

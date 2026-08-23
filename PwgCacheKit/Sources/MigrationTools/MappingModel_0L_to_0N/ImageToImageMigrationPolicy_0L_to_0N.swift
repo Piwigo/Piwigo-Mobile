@@ -1,19 +1,19 @@
 //
-//  AlbumToAlbumMigrationPolicy_0F_to_0G.swift
+//  ImageToImageMigrationPolicy_0L_to_0N.swift
 //  PwgCacheKit
 //
-//  Created by Eddy Lelièvre-Berna on 02/03/2025.
+//  Created by Eddy Lelièvre-Berna on 14 December 2025.
 //  Copyright © 2025 Piwigo.org. All rights reserved.
 //
 
 import os
 import CoreData
+import Foundation
+import UniformTypeIdentifiers
 
-let albumErrorDomain = "Album Migration"
-
-final class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
+final class ImageToImageMigrationPolicy_0L_to_0N: NSEntityMigrationPolicy {
     // Constants
-    let logPrefix = "Album 0F ► Album 0G"
+    let logPrefix = "Image 0L ► Image 0N"
     let numberFormatter: NumberFormatter = {
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = NumberFormatter.Style.percent
@@ -33,11 +33,11 @@ final class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
             throw DataMigrationError.timeout
         }
     }
-    
+
     /**
-     AlbumToAlbum custom migration performed following these steps:
+     ImageToImage custom migration performed following these steps:
      - Sets the values of the attributes from the source instance
-     - Sets the value of the attribute 'comment' to NSAttributedString() if nil in source
+     - Sets the value of the attribute 'commentRaw' to ""
      - Sets the relationship from the source instance
      - Associates the source instance with the destination instance
     */
@@ -46,8 +46,8 @@ final class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
                                              manager: NSMigrationManager) throws {
 
         // Create destination instance
-        let description = NSEntityDescription.entity(forEntityName: "Album", in: manager.destinationContext)
-        let newAlbum = Album(entity: description!, insertInto: manager.destinationContext)
+        let description = NSEntityDescription.entity(forEntityName: "Image", in: manager.destinationContext)
+        let newImage = Image(entity: description!, insertInto: manager.destinationContext)
 
         // Function iterating over the property mappings if they are present in the migration
         func traversePropertyMappings(block: (NSPropertyMapping, String) -> Void) throws {
@@ -63,14 +63,14 @@ final class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
                         let message = "Attribute destination not configured properly!"
                         DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
                         let userInfo = [NSLocalizedFailureReasonErrorKey: message]
-                        throw NSError(domain: albumErrorDomain, code: 0, userInfo: userInfo)
+                        throw NSError(domain: imageErrorDomain, code: 0, userInfo: userInfo)
                     }
                 }
             } else {
                 let message = "No Attribute Mappings found!"
                 DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
                 let userInfo = [NSLocalizedFailureReasonErrorKey: message]
-                throw NSError(domain: albumErrorDomain, code: 0, userInfo: userInfo)
+                throw NSError(domain: imageErrorDomain, code: 0, userInfo: userInfo)
             }
         }
 
@@ -82,19 +82,14 @@ final class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
             let context: NSMutableDictionary = ["source": sInstance]
             guard let destinationValue = valueExpression.expressionValue(with: sInstance, context: context) else { return }
             // Set attribute value
-            newAlbum.setValue(destinationValue, forKey: destinationName)
+            newImage.setValue(destinationValue, forKey: destinationName)
         }
         
-        // Replace nil comments with NSAttributedString()
-        if newAlbum.value(forKey: "comment") == nil {
-            newAlbum.setValue(NSAttributedString(), forKey: "comment")
-//            if let albumId = sInstance.value(forKey: "pwgID") as? Int32 {
-//                DataMigrator.logger.notice("\(self.logPrefix): Empty comment for album #\(albumId)")
-//            }
-        }
-
-        // Associate new Album object to old one
-        manager.associate(sourceInstance: sInstance, withDestinationInstance: newAlbum, for: mapping)
+        // Initialise 'commentRaw' string (required since Piwigo 16)
+        newImage.setValue("", forKey: "commentRaw")
+        
+        // Associate new Image object to old one
+        manager.associate(sourceInstance: sInstance, withDestinationInstance: newImage, for: mapping)
         
         // Stop migration?
         if OperationQueue.current?.operations.first?.isCancelled ?? false {
@@ -129,7 +124,7 @@ final class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
         // Logs
         let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
         DataMigrator.logger.notice("\(self.logPrefix): Relationships created (\(percent))")
-        
+
         // Progress bar
         updateProgressBar(manager.migrationProgress)
         
@@ -143,7 +138,7 @@ final class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
         // Logs
         let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
         DataMigrator.logger.notice("\(self.logPrefix): Completed (\(percent))")
-        
+
         // Progress bar
         updateProgressBar(manager.migrationProgress)
         

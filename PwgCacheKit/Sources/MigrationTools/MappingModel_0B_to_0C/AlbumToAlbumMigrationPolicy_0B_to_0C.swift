@@ -1,5 +1,5 @@
 //
-//  ImageToImageMigrationPolicy_0F_to_0G.swift
+//  AlbumToAlbumMigrationPolicy_0B_to_0C.swift
 //  PwgCacheKit
 //
 //  Created by Eddy Lelièvre-Berna on 02/03/2025.
@@ -8,13 +8,12 @@
 
 import os
 import CoreData
-import Foundation
 
-let imageErrorDomain = "Image Migration"
+let albumErrorDomain = "Album Migration"
 
-final class ImageToImageMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
+final class AlbumToAlbumMigrationPolicy_0B_to_0C: NSEntityMigrationPolicy {
     // Constants
-    let logPrefix = "Image 0F ► Image 0G"
+    let logPrefix = "Album 0B ► Album 0C"
     let numberFormatter: NumberFormatter = {
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = NumberFormatter.Style.percent
@@ -34,11 +33,10 @@ final class ImageToImageMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
             throw DataMigrationError.timeout
         }
     }
-
+    
     /**
-     ImageToImage custom migration performed following these steps:
+     AlbumToAlbum custom migration performed following these steps:
      - Sets the values of the attributes from the source instance
-     - Sets the value of the attribute 'title' to NSAttributedString() if nil in source
      - Sets the value of the attribute 'comment' to NSAttributedString() if nil in source
      - Sets the relationship from the source instance
      - Associates the source instance with the destination instance
@@ -48,8 +46,8 @@ final class ImageToImageMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
                                              manager: NSMigrationManager) throws {
 
         // Create destination instance
-        let description = NSEntityDescription.entity(forEntityName: "Image", in: manager.destinationContext)
-        let newImage = Image(entity: description!, insertInto: manager.destinationContext)
+        let description = NSEntityDescription.entity(forEntityName: "Album", in: manager.destinationContext)
+        let newAlbum = Album(entity: description!, insertInto: manager.destinationContext)
 
         // Function iterating over the property mappings if they are present in the migration
         func traversePropertyMappings(block: (NSPropertyMapping, String) -> Void) throws {
@@ -65,14 +63,14 @@ final class ImageToImageMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
                         let message = "Attribute destination not configured properly!"
                         DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
                         let userInfo = [NSLocalizedFailureReasonErrorKey: message]
-                        throw NSError(domain: imageErrorDomain, code: 0, userInfo: userInfo)
+                        throw NSError(domain: albumErrorDomain, code: 0, userInfo: userInfo)
                     }
                 }
             } else {
                 let message = "No Attribute Mappings found!"
                 DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
                 let userInfo = [NSLocalizedFailureReasonErrorKey: message]
-                throw NSError(domain: imageErrorDomain, code: 0, userInfo: userInfo)
+                throw NSError(domain: albumErrorDomain, code: 0, userInfo: userInfo)
             }
         }
 
@@ -84,27 +82,19 @@ final class ImageToImageMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
             let context: NSMutableDictionary = ["source": sInstance]
             guard let destinationValue = valueExpression.expressionValue(with: sInstance, context: context) else { return }
             // Set attribute value
-            newImage.setValue(destinationValue, forKey: destinationName)
+            newAlbum.setValue(destinationValue, forKey: destinationName)
         }
         
-        // Replace nil title with NSAttributedString()
-        if newImage.value(forKey: "title") == nil {
-            newImage.setValue(NSAttributedString(), forKey: "title")
-//            if let imageId = sInstance.value(forKey: "pwgID") as? Int64 {
-//                DataMigrator.logger.notice("\(self.logPrefix): empty title for image #\(imageId)")
+        // Replace nil comments with NSAttributedString()
+        if newAlbum.value(forKey: "comment") == nil {
+            newAlbum.setValue(NSAttributedString(), forKey: "comment")
+//            if let albumId = sInstance.value(forKey: "pwgID") as? Int32 {
+//                DataMigrator.logger.notice("\(self.logPrefix): Empty comment for album #\(albumId)")
 //            }
         }
 
-        // Replace nil comments with NSAttributedString()
-        if newImage.value(forKey: "comment") == nil {
-            newImage.setValue(NSAttributedString(), forKey: "comment")
-//            if let imageId = sInstance.value(forKey: "pwgID") as? Int64 {
-//                DataMigrator.logger.notice("\(self.logPrefix): empty comment for image #\(imageId)")
-//            }
-        }
-        
-        // Associate new Image object to old one
-        manager.associate(sourceInstance: sInstance, withDestinationInstance: newImage, for: mapping)
+        // Associate new Album object to old one
+        manager.associate(sourceInstance: sInstance, withDestinationInstance: newAlbum, for: mapping)
         
         // Stop migration?
         if OperationQueue.current?.operations.first?.isCancelled ?? false {

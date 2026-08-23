@@ -722,7 +722,7 @@ D05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGvEBYLDBcYHR4mLDEyNTo7Pj9DSElMUFRWVSRudWxs1Q0O
         <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z240"></relationship>
     </object>
     <object type="XDDEVENTITYMAPPING" id="z240">
-        <attribute name="migrationpolicyclassname" type="string">PwgCacheKit.UploadToUploadMigrationPolicy_0N_to_0O</attribute>
+        <attribute name="migrationpolicyclassname" type="string">PwgCacheKit.UploadToUploadMigrationPolicy_Copy</attribute>
         <attribute name="sourcename" type="string">Upload</attribute>
         <attribute name="mappingtypename" type="string">Undefined</attribute>
         <attribute name="mappingnumber" type="int16">9</attribute>
