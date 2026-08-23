@@ -67,7 +67,7 @@ extension SettingsViewController: UITableViewDataSource
         case .about:
             nberOfRows = 6
         case .troubleshoot:
-            nberOfRows = 3
+            nberOfRows = 4
         default:
             break
         }
@@ -771,12 +771,12 @@ extension SettingsViewController: UITableViewDataSource
             guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
             else { preconditionFailure("Could not load LabelTableViewCell") }
             switch indexPath.row {
-            case 0 /* Logs */:
-                cell.configure(with: String(localized: "settings_logs", comment: "Logs"), detail: "")
+            case 0 /* Documentation */:
+                cell.configure(with: String(localized: "settings_supportDocumentation", comment: "Documentation"), detail: "")
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-                cell.accessibilityIdentifier = "errorLogs"
+                cell.accessibilityIdentifier = "documentation"
                 tableViewCell = cell
-
+                
             case 1 /* Support Forum */:
                 cell.configure(with: String(localized: "settings_supportForum", comment: "Support Forum"), detail: "")
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
@@ -792,10 +792,16 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "mailContact"
                 tableViewCell = cell
                 
+            case 3 /* Logs */:
+                cell.configure(with: String(localized: "settings_logs", comment: "Logs"), detail: "")
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "errorLogs"
+                tableViewCell = cell
+                
             default:
                 break
             }
-
+            
         default:
             break
         }

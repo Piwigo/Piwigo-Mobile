@@ -165,8 +165,9 @@ extension SettingsViewController: UITableViewDelegate
         // MARK: Troubleshoot
         case .troubleshoot /* Troubleshoot */:
             switch indexPath.row {
-            case 0 /* Error Logs */,
-                1 /* Support Forum */:
+            case 0 /* Documentation */,
+                 1 /* Support Forum */,
+                 3 /* Logs */:
                 result = true
             case 2 /* Contact Support */:
                 result = MFMailComposeViewController.canSendMail() ? true : false
@@ -484,15 +485,16 @@ extension SettingsViewController: UITableViewDelegate
         // MARK: Troubleshoot
         case .troubleshoot /* Troubleshoot */:
             switch indexPath.row {
-            case 0 /* Open Logs page */:
-                let errorLogsSB = UIStoryboard(name: "TroubleshootingViewController", bundle: nil)
-                guard let errorLogsVC = errorLogsSB.instantiateViewController(withIdentifier: "TroubleshootingViewController") as? TroubleshootingViewController
-                else { preconditionFailure("Could not load TroubleshootingViewController") }
-                navigationController?.pushViewController(errorLogsVC, animated: true)
-            case 1 /* Open Piwigo support forum webpage with default browser */:
-                if let url = URL(string: String(localized: "settings_pwgForumURL", comment: "http://piwigo.org/forum")) {
+            case 0 /* Open Piwigo documentation webpage with default browser */:
+                if let url = URL(string: "https://doc.piwigo.org") {
                     UIApplication.shared.open(url)
                 }
+
+            case 1 /* Open Piwigo support forum webpage with default browser */:
+                if let url = URL(string: "https://piwigo.org/forum") {
+                    UIApplication.shared.open(url)
+                }
+
             case 2 /* Prepare draft email */:
                 // Get mail composer if possible
                 guard let composeVC = SettingsUtilities.getMailComposer() else { return }
@@ -500,6 +502,13 @@ extension SettingsViewController: UITableViewDelegate
 
                 // Present the view controller modally.
                 present(composeVC, animated: true)
+
+            case 3 /* Open Logs page */:
+                let errorLogsSB = UIStoryboard(name: "TroubleshootingViewController", bundle: nil)
+                guard let errorLogsVC = errorLogsSB.instantiateViewController(withIdentifier: "TroubleshootingViewController") as? TroubleshootingViewController
+                else { preconditionFailure("Could not load TroubleshootingViewController") }
+                navigationController?.pushViewController(errorLogsVC, animated: true)
+
             default:
                 break
             }
