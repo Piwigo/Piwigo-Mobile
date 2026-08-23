@@ -82,7 +82,7 @@ extension SceneDelegate {
         
         guard restorableIDs.isEmpty == false
         else {
-            // Root album displayed (album data fetched if necessary)
+            // Root album displayed (album data fetched if not done for more than 60 min)
             return
         }
         
