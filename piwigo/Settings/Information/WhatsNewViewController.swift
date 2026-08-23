@@ -37,11 +37,13 @@ final class WhatsNewViewController: UIViewController {
         
         // What's new — 1st annoucement
         firstNewsImage.image = UIImage(systemName: "square.and.arrow.up")
+        firstNewsImage.tintColor = PwgColor.orange
         firstNewsTitle.text = String(localized: "whatsNew_shareAlbums", comment: "Share Private Albums")
         firstNewsDescription.text = String(localized: "whatsNew_shareAlbumsDescription", comment: "Allows to share private albums with people who do not have an account (requires the Share Album plugin).")
         
         // What's new — 2nd annoucement
         secondNewsImage.image = UIImage(systemName: "livephoto")
+        secondNewsImage.tintColor = PwgColor.orange
         secondNewsTitle.text = String(localized: "settings_livePhotos", comment: "Live Photos")
         secondNewsDescription.text = String(localized: "whatsNew_livePhotosImport", comment: "Imports Live Photos as photo, video or both.")
         
@@ -52,6 +54,7 @@ final class WhatsNewViewController: UIViewController {
             // Fallback on ealier version
             thirdNewsImage.image = UIImage(named: "ladybug.slash")
         }
+        thirdNewsImage.tintColor = PwgColor.orange
         thirdNewsTitle.text = String(localized: "whatsNew_improvements", comment: "Improvements")
         thirdNewsDescription.text = String(localized: "whatsNew_bugFixes", comment: "Bug fixes and improvement of the interface.")
         
