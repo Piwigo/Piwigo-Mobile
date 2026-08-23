@@ -48,7 +48,7 @@ extension ImageViewController
     /// - for rotating image (not video, nor EPS, PDF, and GIF whose animation would be lost)
     /// - for editing image parameters
     func editMenu() -> UIMenu {
-        var children = [UIMenuElement]()
+        var children = [UIMenuElement?]()
         if imageData.hasFullResThumbnail {
             children.append(rotateMenu())
         }
@@ -56,7 +56,7 @@ extension ImageViewController
         return UIMenu(title: "", image: nil,
                       identifier: UIMenu.Identifier("org.piwigo.image.editMenu"),
                       options: .displayInline,
-                      children: children)
+                      children: children.compactMap {$0} )
     }
 
 

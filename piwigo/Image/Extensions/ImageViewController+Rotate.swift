@@ -17,7 +17,9 @@ extension ImageViewController
 {
     // MARK: - Menu
     @MainActor
-    func rotateMenu() -> UIMenu {
+    func rotateMenu() -> UIMenu? {
+        // Check that the rotateImage plugin is installed and available
+        guard ServerVars.shared.usesImageRotate else { return nil }
         return UIMenu(title: String(localized: "rotateImage_rotate", comment: "Rotate 90°…"),
                       image: UIImage(systemName: ""),
                       identifier: UIMenu.Identifier("org.piwigo.piwigoImage.rotate"),
