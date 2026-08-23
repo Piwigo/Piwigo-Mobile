@@ -543,7 +543,15 @@ final class AlbumViewController: UIViewController
         let isSmartAlbum = self.categoryId < 0
         let expectedNbImages = self.albumData.nbImages
         let missingImages = (expectedNbImages > 0) && (nbImages < expectedNbImages / 2)
-        if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty,
+        if navigationController?.topViewController !== self {
+            // Only the album which is presented fetches data
+            /// Restoring a scene pushes every album of the restored path and each of them
+            /// appears, so this method runs once per restored album. The albums which are
+            /// not presented are refreshed when the user comes back to them, i.e. when they
+            /// appear again. Without this, they would all fetch data at once, and the
+            /// concurrent session checks would race each other (see SessionChecker).
+        }
+        else if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty,
            isSmartAlbum || missingImages ||
             (lastLoad > TimeInterval(3600) || AlbumVars.shared.fetchAlbumDataRecursively)
         {
