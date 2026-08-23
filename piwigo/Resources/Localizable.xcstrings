@@ -17703,19 +17703,19 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "إنشاء الألبومات وحذفها ونقلها وإعادة تسميتها ومشاركتها."
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Opret, slet, flyt, omdøb og del albums."
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Alben erstellen, löschen, verschieben, umbenennen und teilen."
           }
         },
@@ -17727,73 +17727,73 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Crear, eliminar, mover, renombrar y compartir álbumes."
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Créer, supprimer, déplacer, renommer et partager des albums."
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Albumok létrehozása, törlése, áthelyezése, átnevezése és megosztása."
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Buat, hapus, pindahkan, ubah nama, dan bagikan album."
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Creare, eliminare, spostare, rinominare e condividere gli album."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "アルバムを作成、削除、移動、名前変更、共有します。"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Maak, verwijder, verplaats, hernoem en deel albums."
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tworzenie, usuwanie, przenoszenie, zmiana nazwy i udostępnianie albumów."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Создавать, удалять, перемещать, переименовывать альбомы и делиться ими."
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Skapa, ta bort, flytta, döp om och dela album."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "创建、删除、移动、重命名和共享相册。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "建立、刪除、移動、重新命名和分享相簿。"
           }
         }
@@ -50675,7 +50675,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "El enlace actual dejará de funcionar. Las personas que ya lo recibieron no podrán abrir este álbum."
+            "value" : "El enlace actual dejará de funcionar. Las personas que ya lo hayan recibido no podrán abrir este álbum."
           }
         },
         "fr" : {
@@ -50978,7 +50978,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "El enlace dejará de funcionar. Las personas que ya lo recibieron no podrán abrir este álbum."
+            "value" : "El enlace dejará de funcionar. Las personas que ya lo hayan recibido no podrán abrir este álbum."
           }
         },
         "fr" : {
@@ -51994,7 +51994,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les numéros de série de l'appareil photo et des lentilles sont toujours supprimés. Tout le contenu du fichier n'est pas modifié."
+            "value" : "Les numéros de série de l'appareil photo et des lentilles sont toujours supprimés. Quand tout est conservé, le contenu du fichier n'est pas modifié."
           }
         },
         "hu" : {
