@@ -10713,98 +10713,199 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "الإصدار 4.3.1\n\n• اصلاحات الشوائب"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Version 4.3.1\n\n• Fejlrettelser"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Version 4.3.1\n\n• Fehlerbehebungen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.3.1\n\n• Bug fixes"
+            "value" : "Version 4.3.1\nAugust 22, 2026\n\n• Bug fixes"
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Versión 4.3.1\n\n• Corrección de errores"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Version 4.3.1\n\n• Correction de bugs"
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "4.3.1 verzió\n\n• Hibajavítások"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Versi 4.3.1\n\n• Perbaikan bug"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Versione 4.3.1\n\n• Correzioni di bug"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "バージョン 4.3.1\n\n• バグの修正"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Versie 4.3.1\n\n• Foutjes verbeterd"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Wersja 4.3.1\n\n• Poprawki błędów"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Версия 4.3.1\n\n• Исправления ошибок"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Version 4.3.1\n\n• Buggfixar"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "版本 4.3.1\n\n• 错误修复"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "版本 4.3.1\n\n• 錯誤修正"
+          }
+        }
+      }
+    },
+    "v4.4.0_text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "الإصدار 4.4\n\n• مشاركة الألبومات الخاصة مع أشخاص ليس لديهم حساب (يتطلب ملحق Share Album)\n• استيراد الصور الحية كصورة أو فيديو أو كليهما\n• تحسين إدارة مستخدمي Community\n• إصلاح الأخطاء"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Version 4.4\n\n• Gør det muligt at dele private album med personer, der ikke har en konto (kræver Share Album-pluginnet)\n• Importerer Live Photos som foto, video eller begge\n• Forbedrer administrationen af Community-brugere\n• Fejlrettelser"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Version 4.4\n\n• Ermöglicht das Teilen privater Alben mit Personen ohne Konto (erfordert das Share Album Plugin)\n• Importiert Live Photos als Foto, Video oder beides\n• Verbessert die Verwaltung von Community-Benutzern\n• Fehlerbehebungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.4\n\n• Allows to share private albums with people who do not have an account (requires the Share Album plugin)\n• Imports Live Photos as photo, video or both\n• Improves Community user management\n• Bug fixes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Versión 4.4\n\n• Permite compartir álbumes privados con personas que no tienen una cuenta (requiere el plugin Share Album)\n• Importa las Live Photos como foto, vídeo o ambos\n• Mejora la gestión de los usuarios de Community\n• Corrección de errores"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Version 4.4\n\n• Partage d'albums privés avec des personnes qui n'ont pas de compte (nécessite le plugin Share Album)\n• Import des Live Photos en tant que photo, vidéo ou les deux\n• Amélioration de la gestion des utilisateurs Community\n• Correction de bugs"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "4.4-es verzió\n\n• Privát albumok megosztása olyanokkal, akiknek nincs fiókjuk (a Share Album beépülő modult igényli)\n• Live Photók importálása fotóként, videóként vagy mindkettőként\n• A Community felhasználók kezelésének fejlesztése\n• Hibajavítások"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Versi 4.4\n\n• Memungkinkan membagikan album pribadi kepada orang yang tidak memiliki akun (memerlukan plugin Share Album)\n• Mengimpor Live Photos sebagai foto, video, atau keduanya\n• Meningkatkan pengelolaan pengguna Community\n• Perbaikan bug"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Versione 4.4\n\n• Consente di condividere album privati con chi non ha un account (richiede il plugin Share Album)\n• Importa le Live Photo come foto, video o entrambi\n• Migliora la gestione degli utenti Community\n• Correzioni di bug"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "バージョン 4.4\n\n• アカウントを持たない人と非公開アルバムを共有できるようになりました（Share Album プラグインが必要）\n• Live Photos を写真、動画、またはその両方としてインポート\n• Community ユーザー管理の改善\n• バグの修正"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Versie 4.4\n\n• Maakt het mogelijk privéalbums te delen met personen die geen account hebben (vereist de Share Album plugin)\n• Importeert Live Photos als foto, video of beide\n• Verbetert het beheer van Community-gebruikers\n• Foutjes verbeterd"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Wersja 4.4\n\n• Umożliwia udostępnianie albumów prywatnych osobom, które nie mają konta (wymaga wtyczki Share Album)\n• Importuje zdjęcia Live Photo jako zdjęcie, film lub oba\n• Ulepszono zarządzanie użytkownikami Community\n• Poprawki błędów"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Версия 4.4\n\n• Возможность делиться приватными альбомами с теми, у кого нет учётной записи (требуется плагин Share Album)\n• Импорт Live Photo как фото, видео или того и другого\n• Улучшено управление пользователями Community\n• Исправления ошибок"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Version 4.4\n\n• Gör det möjligt att dela privata album med personer som inte har ett konto (kräver Share Album-plugin)\n• Importerar Live Photo-bilder som foto, video eller båda\n• Förbättrar hanteringen av Community-användare\n• Buggfixar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "版本 4.4\n\n• 支持与没有账户的人共享私密相册（需要 Share Album 插件）\n• 可将实况照片导入为照片、视频或两者\n• 改进 Community 用户管理\n• 错误修复"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "版本 4.4\n\n• 可與沒有帳號的人分享私人相簿（需要「Share Album」外掛程式）\n• 將原況照片匯入為照片、影片或兩者\n• 改善 Community 使用者管理\n• 錯誤修正"
           }
         }
       }
