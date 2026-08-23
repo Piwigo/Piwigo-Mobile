@@ -206,7 +206,8 @@ public final class TableViewUtilities {
     }
     
     @MainActor
-    public static func viewOfFooter(withText text: String = "", alignment: NSTextAlignment = .left) -> UIView? {
+    public static func viewOfFooter(withText text: String = "", alignment: NSTextAlignment = .left,
+                                    link: URL? = nil, onText linkedText: String = "") -> UIView? {
         // Check header content
         if text.isEmpty { return nil }
 
@@ -218,7 +219,24 @@ public final class TableViewUtilities {
         textAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .footnote),
                                           range: NSRange(location: 0, length: text.count))
         footerAttributedString.append(textAttributedString)
-                
+        
+        // Should some text open a webpage when tapped?
+        /// A label cannot handle links, so a text view is presented instead.
+        if let link, linkedText.isEmpty == false {
+            let linkRange = (text as NSString).range(of: linkedText)
+            if linkRange.location != NSNotFound {
+                footerAttributedString.addAttribute(.link, value: link, range: linkRange)
+                return viewOfFooter(withLinkedText: footerAttributedString, alignment: alignment)
+            }
+        }
+        
+        return viewOfFooter(withPlainText: footerAttributedString, alignment: alignment)
+    }
+    
+    // Returns a footer presenting some text in a label.
+    @MainActor
+    private static func viewOfFooter(withPlainText attributedText: NSAttributedString,
+                                     alignment: NSTextAlignment) -> UIView? {
         // Create header label
         let footerLabel = UILabel()
         footerLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -228,16 +246,54 @@ public final class TableViewUtilities {
         footerLabel.adjustsFontForContentSizeCategory = true
         footerLabel.textAlignment = alignment
         footerLabel.lineBreakMode = .byWordWrapping
-        footerLabel.attributedText = footerAttributedString
+        footerLabel.attributedText = attributedText
 
         // Create header view
+        return viewOfFooter(embedding: footerLabel)
+    }
+    
+    // Returns a footer whose text contains a link, i.e. presented in a text view instead of a label.
+    @MainActor
+    private static func viewOfFooter(withLinkedText attributedText: NSAttributedString,
+                                     alignment: NSTextAlignment) -> UIView? {
+        // Adopt the color and alignment of footers
+        /// The alignment must be set in the attributed string because assigning attributedText
+        /// to the text view discards the alignment set with its textAlignment property.
+        let footerAttributedString = NSMutableAttributedString(attributedString: attributedText)
+        let wholeRange = NSRange(location: 0, length: footerAttributedString.length)
+        footerAttributedString.addAttribute(.foregroundColor, value: PwgColor.header, range: wholeRange)
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = alignment
+        paragraphStyle.lineBreakMode = .byWordWrapping
+        footerAttributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: wholeRange)
+
+        // Create footer text view
+        let footerTextView = UITextView()
+        footerTextView.translatesAutoresizingMaskIntoConstraints = false
+        footerTextView.isEditable = false
+        footerTextView.isScrollEnabled = false
+        footerTextView.backgroundColor = .clear
+        footerTextView.textContainerInset = .zero
+        footerTextView.textContainer.lineFragmentPadding = 0
+        footerTextView.adjustsFontForContentSizeCategory = true
+        footerTextView.linkTextAttributes = [.foregroundColor: PwgColor.orange]
+        footerTextView.attributedText = footerAttributedString
+
+        // Create footer view
+        return viewOfFooter(embedding: footerTextView)
+    }
+    
+    // Returns a footer presenting a label or a text view, so that the height returned
+    // by heightOfFooter(withText:width:) remains valid whichever is presented.
+    @MainActor
+    private static func viewOfFooter(embedding subview: UIView) -> UIView? {
         let footer = UIView()
-        footer.addSubview(footerLabel)
-        footer.addConstraint(NSLayoutConstraint.constraintView(fromTop: footerLabel, amount: 4)!)
+        footer.addSubview(subview)
+        footer.addConstraint(NSLayoutConstraint.constraintView(fromTop: subview, amount: 4)!)
         let metrics = ["margin": NSNumber(value: margin)]
         footer.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-(margin)-[footer]-(margin)-|",
                                                              options: [], metrics: metrics, views: [
-                                                                "footer": footerLabel
+                                                                "footer": subview
                                                              ]))
         return footer
     }

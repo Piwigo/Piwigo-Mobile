@@ -194,6 +194,13 @@ extension SettingsViewController: UITableViewDelegate
                     footer = "\(String(localized: "settingsFooter_formats", comment: "The server accepts the following file formats")): \(ServerVars.shared.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
                 }
             }
+        case .albums:
+            // Only an admin user can install the ShareAlbum plugin on the server
+            if userData.hasAdminRights, ServerVars.shared.usesShareAlbum == false {
+                footer = String(format: String(localized: "settingsFooter_shareAlbum",
+                                               comment: "Install the ShareAlbum plugin…"),
+                                pwgShareAlbumPluginName)
+            }
         case .about:
             footer = ServerVars.shared.pwgStatistics
         default:
@@ -205,12 +212,28 @@ extension SettingsViewController: UITableViewDelegate
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         let text = getContentOfFooter(inSection: section)
         return TableViewUtilities.heightOfFooter(withText: text,
-                                                        width: tableView.frame.width)
+                                                 width: tableView.frame.width)
+    }
+    
+    /// Returns the webpage which should be opened when tapping some text of the footer, if any.
+    private func getLinkOfFooter(inSection section: Int) -> (url: URL, text: String)? {
+        switch activeSection(section) {
+        case .albums:
+            // Propose to visit the page of the ShareAlbum plugin on piwigo.org
+            guard userData.hasAdminRights, ServerVars.shared.usesShareAlbum == false,
+                  let url = URL(string: pwgShareAlbumPluginURL)
+            else { return nil }
+            return (url, pwgShareAlbumPluginName)
+        default:
+            return nil
+        }
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let text = getContentOfFooter(inSection: section)
-        return TableViewUtilities.viewOfFooter(withText: text, alignment: .center)
+        let link = getLinkOfFooter(inSection: section)
+        return TableViewUtilities.viewOfFooter(withText: text, alignment: .center,
+                                               link: link?.url, onText: link?.text ?? "")
     }
     
     
