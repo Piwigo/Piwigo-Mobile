@@ -171,6 +171,10 @@ public final class ServerVars: @unchecked Sendable {
     @UserDefault("usesShareAlbum", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var usesShareAlbum: Bool
     
+    /// - pwg.image.rotate method available, false by default (available since version 11.0.a of the plugin)
+    @UserDefault("usesImageRotate", defaultValue: false, userDefaults: UserDefaults.dataSuite)
+    public var usesImageRotate: Bool
+    
     
     // MARK: - Vars in Memory
     // Network variables kept in memory

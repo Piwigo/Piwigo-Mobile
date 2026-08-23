@@ -51,6 +51,14 @@ public extension JSONManager {
             } else {
                 ServerVars.shared.usesShareAlbum = false
             }
+
+            // Check if the rotateImage plugin is available (since version 11.0.a of the plugin)
+            if pwgData.data.contains(pwgImageRotate) {
+                ServerVars.shared.usesImageRotate = true
+                JSONManager.logger.notice("rotateImage plugin available: \(ServerVars.shared.usesImageRotate)")
+            } else {
+                ServerVars.shared.usesImageRotate = false
+            }
         }
         catch let error {
             throw error
