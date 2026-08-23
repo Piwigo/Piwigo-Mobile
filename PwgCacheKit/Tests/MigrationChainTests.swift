@@ -215,6 +215,207 @@ final class MigrationChainTests: XCTestCase {
         }
     }
 
+    /**
+     Every constant a mapping model assigns must be storable in the attribute it
+     targets.
+
+     Xcode seeds the value expression of an attribute which is new in the
+     destination model from that attribute's default value, taken verbatim from
+     the `.xcdatamodel` XML — where every default is a string or a number. For a
+     `Date` attribute declared with `defaultDateTimeInterval`, that yields a
+     constant `NSNumber`, and Core Data throws
+     `NSInvalidArgumentException: Unacceptable type of value for attribute` from
+     `createDestinationInstancesForSourceInstance(…)` — mid-migration, on the
+     user's store, with no way to resume.
+
+     That happened on 2026-08-22 with `Album.shareCreationDate` in `0O → 0P`
+     (constant `-3600` for a `Date`), and it is invisible to every other test
+     here: the mapping model resolves, keeps its policies and matches the model
+     hashes. The fix is to clear that value expression so the destination keeps
+     the default it was given when Core Data inserted it.
+     */
+    func testMappingModelConstantsMatchTheirAttributeTypes() {
+        for (source, destination) in Self.chain {
+            let key = Self.key(source, destination)
+            guard let mappingModel = customMappingModel(from: source, to: destination) else { continue }
+            let destinationModel = NSManagedObjectModel.managedObjectModel(forVersion: destination)
+
+            for entityMapping in mappingModel.entityMappings {
+                guard let entityName = entityMapping.destinationEntityName,
+                      let entity = destinationModel.entitiesByName[entityName]
+                else { continue }
+
+                for propertyMapping in entityMapping.attributeMappings ?? [] {
+                    guard let name = propertyMapping.name,
+                          let attribute = entity.attributesByName[name],
+                          let expression = propertyMapping.valueExpression,
+                          expression.expressionType == .constantValue
+                    else { continue }
+
+                    guard let value = expression.constantValue else {
+                        XCTAssertTrue(attribute.isOptional,
+                                      """
+                                      \(key) assigns nil to the non-optional attribute \
+                                      \(entityName).\(name).
+                                      """)
+                        continue
+                    }
+                    XCTAssertTrue(Self.isAcceptable(value, for: attribute.attributeType),
+                                  """
+                                  \(key) assigns the constant \(value) of type \(type(of: value)) \
+                                  to \(entityName).\(name), which is not a \
+                                  \(Self.name(of: attribute.attributeType)). Core Data throws while \
+                                  creating the destination instances. Clear that value expression so \
+                                  the attribute keeps its default value.
+                                  """)
+                }
+            }
+        }
+    }
+
+    /**
+     Every `$source.<key>` a mapping model reads must exist in the source model.
+
+     Xcode has no record of a renamed attribute unless the destination model
+     carries a `renamingIdentifier`, so regenerating a mapping model makes it
+     guess the source key — and the guess can be wrong. On 2026-08-21 it wrote
+     `Tag.pwgID ← $source.id` while the `0O` attribute was `tagId`, which is a
+     KVC lookup for an undefined key on every cached tag.
+
+     Only the first segment of a key path is checked: deeper ones traverse
+     relationships whose destination entity this test does not resolve.
+     */
+    func testMappingModelKeyPathsExistInTheSourceModel() {
+        for (source, destination) in Self.chain {
+            let key = Self.key(source, destination)
+            guard let mappingModel = customMappingModel(from: source, to: destination) else { continue }
+            let sourceModel = NSManagedObjectModel.managedObjectModel(forVersion: source)
+
+            for entityMapping in mappingModel.entityMappings {
+                guard let entityName = entityMapping.sourceEntityName,
+                      let entity = sourceModel.entitiesByName[entityName]
+                else { continue }
+
+                for propertyMapping in entityMapping.attributeMappings ?? [] {
+                    guard let name = propertyMapping.name,
+                          let expression = propertyMapping.valueExpression,
+                          expression.description.hasPrefix("$source.")
+                    else { continue }
+
+                    let keyPath = expression.description.dropFirst("$source.".count)
+                    guard let first = keyPath.split(separator: ".").first.map(String.init)
+                    else { continue }
+                    XCTAssertTrue(entity.attributesByName[first] != nil
+                                  || entity.relationshipsByName[first] != nil,
+                                  """
+                                  \(key) reads $source.\(keyPath) for \(name), but \(entityName) \
+                                  has no '\(first)' in \(Self.shortName(source)). Xcode guesses the \
+                                  source of a renamed attribute when the destination model carries no \
+                                  renamingIdentifier for it.
+                                  """)
+                }
+            }
+        }
+    }
+
+    /// Whether a constant value can be stored in an attribute of that type.
+    /// Transformable and unhandled types are accepted: their value class is arbitrary.
+    private static func isAcceptable(_ value: Any, for type: NSAttributeType) -> Bool {
+        switch type {
+        case .dateAttributeType:        return value is Date
+        case .stringAttributeType:      return value is String
+        case .integer16AttributeType, .integer32AttributeType, .integer64AttributeType,
+             .doubleAttributeType, .floatAttributeType, .decimalAttributeType,
+             .booleanAttributeType:     return value is NSNumber
+        case .binaryDataAttributeType:  return value is Data
+        case .UUIDAttributeType:        return value is UUID
+        case .URIAttributeType:         return value is URL
+        default:                        return true
+        }
+    }
+
+    private static func name(of type: NSAttributeType) -> String {
+        switch type {
+        case .dateAttributeType:        return "Date"
+        case .stringAttributeType:      return "String"
+        case .integer16AttributeType:   return "Integer 16"
+        case .integer32AttributeType:   return "Integer 32"
+        case .integer64AttributeType:   return "Integer 64"
+        case .doubleAttributeType:      return "Double"
+        case .floatAttributeType:       return "Float"
+        case .decimalAttributeType:     return "Decimal"
+        case .booleanAttributeType:     return "Boolean"
+        case .binaryDataAttributeType:  return "Binary Data"
+        case .UUIDAttributeType:        return "UUID"
+        case .URIAttributeType:         return "URI"
+        case .transformableAttributeType: return "Transformable"
+        default:                        return "attribute of type \(type.rawValue)"
+        }
+    }
+
+    /**
+     An attribute which is new in the destination model must either be mapped or
+     be able to stand on its own once the destination instance is inserted.
+
+     `mapc` silently discards an attribute mapping object which the entity
+     mapping does not reference — `Album.shareCreationDate` is one, orphaned by
+     Xcode when it regenerated `0O → 0P` — so a *missing* mapping looks exactly
+     like a deliberately absent one, and the two other expression tests here can
+     say nothing about it. Absent is fine as long as Core Data can insert the
+     destination instance without it: the attribute is optional, or it carries a
+     default value.
+
+     Otherwise the migration inserts an instance with nothing in a mandatory
+     attribute and fails validation while saving, which surfaces far from its
+     cause.
+
+     Entities handled by a step-specific policy are exempt: that policy may set
+     the attribute itself, and only reading its code would tell.
+     */
+    func testNewAttributesAreMappedOrHaveADefault() {
+        for (source, destination) in Self.chain {
+            let key = Self.key(source, destination)
+            guard let mappingModel = customMappingModel(from: source, to: destination) else { continue }
+            let sourceModel = NSManagedObjectModel.managedObjectModel(forVersion: source)
+            let destinationModel = NSManagedObjectModel.managedObjectModel(forVersion: destination)
+
+            for entityMapping in mappingModel.entityMappings {
+                guard let sourceName = entityMapping.sourceEntityName,
+                      let sourceEntity = sourceModel.entitiesByName[sourceName],
+                      let destinationName = entityMapping.destinationEntityName,
+                      let destinationEntity = destinationModel.entitiesByName[destinationName]
+                else { continue }
+
+                // A step-specific policy may fill an attribute from its own code, which no
+                // inspection of the models can see: ImageToImageMigrationPolicy_0J_to_0L and
+                // AlbumToAlbumMigrationPolicy_0K_to_0L both set commentHTML that way. The
+                // shared …MigrationPolicy_Copy classes only wrap super with progress reporting
+                // and cancellation, so under them the mapping model is the whole truth.
+                let policy = entityMapping.entityMigrationPolicyClassName
+                guard policy == nil || policy!.hasSuffix("MigrationPolicy_Copy") else { continue }
+
+                let mapped = Set((entityMapping.attributeMappings ?? []).compactMap(\.name))
+                for (name, attribute) in destinationEntity.attributesByName {
+                    // Attributes carried over keep their value; transient ones are not stored
+                    guard sourceEntity.attributesByName[name] == nil,
+                          attribute.isTransient == false,
+                          mapped.contains(name) == false
+                    else { continue }
+
+                    XCTAssertTrue(attribute.isOptional || attribute.defaultValue != nil,
+                                  """
+                                  \(key) neither maps nor defaults \(destinationName).\(name), \
+                                  which is new in \(Self.shortName(destination)) and mandatory. \
+                                  Core Data inserts the destination instances before evaluating \
+                                  the attribute mappings, so this one stays empty and the save \
+                                  fails validation. Give it a default value in the model, or a \
+                                  value expression referenced by its entity mapping.
+                                  """)
+                }
+            }
+        }
+    }
+
     /// The chain must reach the newest model version from every entry point.
     func testChainReachesCurrentVersion() {
         for version in DataMigrationVersion.allCases {
