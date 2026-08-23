@@ -34,7 +34,7 @@ extension ImageViewController {
             /// - to rotate a photo clockwise or counterclockwise,
             /// - to edit image parameters,
             /// - to share the URL of the page presenting the image
-            let menu = UIMenu(title: "", children: [albumMenu(), goToMenu(), editMenu(), shareMenu()].compactMap({$0}))
+            let menu = UIMenu(title: "", children: [editMenu(), albumMenu(), shareMenu(), goToMenu()].compactMap({$0}))
             actionBarButton = getActionBarButton(with: menu)
             
             // Configure the navigation bar and toolbar
@@ -49,7 +49,7 @@ extension ImageViewController {
             /// - to go to another album containing that image
             /// - to share the URL of the page presenting the image
             /// Neither action requires admin, upload or download rights.
-            let menu = UIMenu(title: "", children: [goToMenu(), shareMenu()].compactMap({$0}))
+            let menu = UIMenu(title: "", children: [shareMenu(), goToMenu()].compactMap({$0}))
             actionBarButton = getActionBarButton(with: menu)
             
             // Configure the navigation bar and toolbar
