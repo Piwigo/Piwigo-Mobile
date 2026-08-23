@@ -390,10 +390,10 @@ extension AlbumViewController
     @MainActor
     private func initBarsInSelectModeForAdmin(orientation: UIInterfaceOrientation) {
         // The action button proposes:
-        /// - to copy or move images to other albums
-        /// - to rotate a photo clockwise or counterclockwise,
         /// - to edit image parameters
-        let menu = UIMenu(title: "", children: [albumMenu(), imagesMenu()])
+        /// - to rotate a photo clockwise or counterclockwise,
+        /// - to copy or move images to other albums
+        let menu = UIMenu(title: "", children: [imagesMenu(), albumMenu()])
         if #available(iOS 26.0, *) {
             actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
         } else {
@@ -484,7 +484,7 @@ extension AlbumViewController
             favoriteBarButton?.action = areFavorites ? #selector(unfavoriteSelection) : #selector(favoriteSelection)
 
             // Update menu
-            let children = [albumMenu(), imagesMenu()].compactMap({$0})
+            let children = [imagesMenu(), albumMenu()].compactMap({$0})
             let updatedMenu = actionBarButton?.menu?.replacingChildren(children)
             actionBarButton?.menu = updatedMenu
         } else {

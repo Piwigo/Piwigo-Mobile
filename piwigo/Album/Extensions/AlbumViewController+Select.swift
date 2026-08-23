@@ -52,6 +52,18 @@ extension AlbumViewController
     }
     
     
+    // MARK: - Images Menu
+    /// - for editing image parameters
+    func imagesMenu() -> UIMenu {
+        let menuId = UIMenu.Identifier("org.piwigo.images.imageMenu")
+        let menu = UIMenu(title: "", image: nil, identifier: menuId,
+                          options: UIMenu.Options.displayInline,
+                          children: [editParamsAction(),
+                                     rotateMenu()].compactMap({$0}))
+        return menu
+    }
+
+    
     // MARK: - Album Menu
     /// - for copying images to another album
     /// - for moving images to another album
@@ -61,18 +73,6 @@ extension AlbumViewController
                           options: UIMenu.Options.displayInline,
                           children: [imagesCopyAction(),
                                      imagesMoveAction()].compactMap({$0}))
-        return menu
-    }
-    
-    
-    // MARK: - Images Menu
-    /// - for editing image parameters
-    func imagesMenu() -> UIMenu {
-        let menuId = UIMenu.Identifier("org.piwigo.images.imageMenu")
-        let menu = UIMenu(title: "", image: nil, identifier: menuId,
-                          options: UIMenu.Options.displayInline,
-                          children: [rotateMenu(),
-                                     editParamsAction()].compactMap({$0}))
         return menu
     }
 }
