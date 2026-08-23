@@ -49,8 +49,9 @@ final class ClearCache
             ServerVars.shared.usesCommunityPluginV29 = false
             ServerVars.shared.usesSetCategory = false
             ServerVars.shared.usesShareAlbum = false
+            ServerVars.shared.usesImageRotate = false
             NetworkVars.shared.usesAPIkeys = false
-                        
+            
             // Disable Auto-Uploading and clear settings
             UploadVars.shared.isAutoUploadActive = false
             UploadVars.shared.autoUploadCategoryId = Int32.min

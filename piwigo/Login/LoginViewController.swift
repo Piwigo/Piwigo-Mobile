@@ -207,6 +207,7 @@ final class LoginViewController: UIViewController {
         ServerVars.shared.usesCommunityPluginV29 = false
         ServerVars.shared.usesSetCategory = false
         ServerVars.shared.usesShareAlbum = false
+        ServerVars.shared.usesImageRotate = false
         NetworkVars.shared.usesAPIkeys = false
         AlbumVars.shared.canShareAlbums = nil
         
