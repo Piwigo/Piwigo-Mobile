@@ -70,6 +70,17 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
         return Self.duration
     }
 
+    // Called by UIKit once the transition is over
+    func animationEnded(_ transitionCompleted: Bool) {
+        // A snapshot of the album view is worth several MB and the snapshots are taken again
+        // each time an image is presented ► release those of a completed dismissal.
+        guard type == .dismiss, transitionCompleted
+        else { return }
+        albumViewController.albumViewSnapshot = nil
+        albumViewController.cellImageViewSnapshot = nil
+        albumViewController.navBarSnapshot = nil
+    }
+
     // Transition logic and animation
     func animateTransition(using transitionContext: any UIViewControllerContextTransitioning) {
         autoreleasepool {

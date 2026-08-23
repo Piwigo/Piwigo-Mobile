@@ -62,7 +62,8 @@ extension AlbumViewController
         let actionId = UIAction.Identifier("Favorites")
         let action = UIAction(title: pwgSmartAlbum.favorites.name,
                               image: UIImage(systemName: "heart"),
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+            guard let self else { return }
             // Check that an album of favorites exists in cache (create it if necessary)
             guard let _ = try? AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) else {
                 return
@@ -82,7 +83,8 @@ extension AlbumViewController
         let actionId = UIAction.Identifier("Tagged")
         let action = UIAction(title: pwgSmartAlbum.tagged.name,
                               image: UIImage(systemName: "tag"),
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+            guard let self else { return }
             // Present tag selector
             discoverImagesByTag()
         })
@@ -94,7 +96,8 @@ extension AlbumViewController
         let actionId = UIAction.Identifier("Most visited")
         let action = UIAction(title: pwgSmartAlbum.visits.name,
                               image: UIImage(systemName: "person.3.fill"),
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+            guard let self else { return }
             // Present most visited images
             discoverImages(inCategoryId: pwgSmartAlbum.visits.rawValue)
         })
@@ -105,7 +108,8 @@ extension AlbumViewController
         let actionId = UIAction.Identifier("Best rated")
         let action = UIAction(title: pwgSmartAlbum.best.name,
                               image: UIImage(systemName: "star.leadinghalf.fill"),
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+            guard let self else { return }
             // Present best rated images
             discoverImages(inCategoryId: pwgSmartAlbum.best.rawValue)
         })
@@ -116,7 +120,8 @@ extension AlbumViewController
         let actionId = UIAction.Identifier("Recent")
         let action = UIAction(title: pwgSmartAlbum.recent.name,
                               image: UIImage(systemName: "sparkles"),
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+            guard let self else { return }
             // Present recent images
             discoverImages(inCategoryId: pwgSmartAlbum.recent.rawValue)
         })

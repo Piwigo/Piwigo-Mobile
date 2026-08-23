@@ -18,7 +18,13 @@ extension AlbumViewController
 {
     func configDataSource() -> DataSource {
         // Cell provider
-        let dataSource = DataSource(collectionView: collectionView) { [self] collectionView, indexPath, objectID in
+        /// The data source is retained by this view controller, so its providers must not
+        /// retain it in return — an album view controller would otherwise never be released
+        /// and its thumbnails would remain in memory after leaving the album.
+        let dataSource = DataSource(collectionView: collectionView) { [weak self] collectionView, indexPath, objectID in
+            guard let self
+            else { return nil }
+
             // Is this item an album or an image?
             if let album = try? self.mainContext.existingObject(with: objectID) as? Album {
                 // Configure album cell
@@ -74,7 +80,10 @@ extension AlbumViewController
         }
         
         // Header / footer provider
-        dataSource.supplementaryViewProvider = { collectionView, kind, indexPath in
+        dataSource.supplementaryViewProvider = { [weak self] collectionView, kind, indexPath in
+            guard let self
+            else { return nil }
+
             let emptyView = UICollectionReusableView(frame: CGRect.zero)
             // Album or image?
             if let index = self.currentSnapshot.indexOfSection(pwgAlbumGroup.none.sectionKey),

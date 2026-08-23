@@ -55,7 +55,8 @@ extension AlbumViewController
             helpIcon = UIImage(systemName: "book", withConfiguration: config)
         }
         let action = UIAction(title: String(localized: "settings_helpViews", comment: "Help Pages"),
-                              image: helpIcon, identifier: actionId, handler: { [self] action in
+                              image: helpIcon, identifier: actionId, handler: { [weak self] action in
+            guard let self else { return }
             // Present help views
             let helpVC = HelpUtilities.getHelpViewController()
             pushView(helpVC)
@@ -74,7 +75,8 @@ extension AlbumViewController
             releaseNotesIcon = UIImage(systemName: "doc.plaintext", withConfiguration: config)
         }
         let action = UIAction(title: String(localized: "settings_releaseNotes", comment: "Release Notes"),
-                              image: releaseNotesIcon, identifier: actionId, handler: { [self] _ in
+                              image: releaseNotesIcon, identifier: actionId, handler: { [weak self] _ in
+            guard let self else { return }
             // Present release notes in settings navigation controller
             let releaseNotesSB = UIStoryboard(name: "ReleaseNotesViewController", bundle: nil)
             guard let releaseNotesVC = releaseNotesSB.instantiateViewController(withIdentifier: "ReleaseNotesViewController") as? ReleaseNotesViewController
@@ -123,7 +125,8 @@ extension AlbumViewController
         let config = UIImage.SymbolConfiguration(weight: .regular)
         let action = UIAction(title: String(localized: "settings_contact", comment: "Contact Support"),
                               image: UIImage(systemName: "envelope", withConfiguration: config),
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+            guard let self else { return }
             // Get mail composer if possible
             guard let composeVC = SettingsUtilities.getMailComposer() else { return }
             composeVC.mailComposeDelegate = self
@@ -142,7 +145,8 @@ extension AlbumViewController
         let boldSettingsIcon = UIImage(systemName: "gear", withConfiguration: boldConfig)
         let action = UIAction(title: String(localized: "tabBar_preferences", comment: "Settings"),
                               image: boldSettingsIcon,
-                              identifier: actionId, handler: { [self] action in
+                              identifier: actionId, handler: { [weak self] action in
+            guard let self else { return }
             // Present settings
             didTapSettingsButton()
         })

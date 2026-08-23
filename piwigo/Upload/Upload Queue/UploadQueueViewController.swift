@@ -240,6 +240,7 @@ class UploadQueueViewController: UIViewController {
     deinit {
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
+        debugPrint("••> UploadQueueViewController released memory")
     }
     
     

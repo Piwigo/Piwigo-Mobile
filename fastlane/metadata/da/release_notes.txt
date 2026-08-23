@@ -1,3 +1,1 @@
-• Tilføjer en delingsudvidelse, der gør det muligt at uploade fotos, videoer og PDF-filer fra andre apps
-• Afspiller animerede GIF-billeder
-• Rette fejl og forbedrer brugergrænsefladen
+• Fejlrettelser

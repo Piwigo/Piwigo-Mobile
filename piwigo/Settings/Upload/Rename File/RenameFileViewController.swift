@@ -221,7 +221,7 @@ class RenameFileViewController: UIViewController {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        super .viewDidDisappear(animated)
+        super.viewWillDisappear(animated)
         
         // Inform parent view
         delegate?.didChangeRenameFileSettings(prefix: prefixBeforeUpload, prefixActions: prefixActions,

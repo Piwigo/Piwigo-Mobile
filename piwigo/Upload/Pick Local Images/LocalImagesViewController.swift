@@ -46,6 +46,8 @@ final class LocalImagesViewController: UIViewController
         andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
         andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.shouldRefreshRefetchedObjects = true
         return fetchRequest
     }()
     
@@ -306,6 +308,7 @@ final class LocalImagesViewController: UIViewController
         
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
+        debugPrint("••> LocalImagesViewController released memory")
     }
     
 

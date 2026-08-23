@@ -25,13 +25,13 @@ extension LocalImagesViewController {
         switch UploadVars.shared.localImagesSort {
         case .dateCreatedAscending:
             swapOrder = UIAction(title: String(localized: "Date", comment: "Date"),
-                                 image: UIImage(systemName: "arrow.up"), handler: { _ in self.swapSortOrder()})
+                                 image: UIImage(systemName: "arrow.up"), handler: { [weak self] _ in self?.swapSortOrder()})
         case .dateCreatedDescending:
             swapOrder = UIAction(title: String(localized: "Date", comment: "Date"),
-                                 image: UIImage(systemName: "arrow.down"), handler: { _ in self.swapSortOrder()})
+                                 image: UIImage(systemName: "arrow.down"), handler: { [weak self] _ in self?.swapSortOrder()})
         default:
             swapOrder = UIAction(title: String(localized: "Date", comment: "Date"),
-                                 image: nil, handler: { _ in self.swapSortOrder()})
+                                 image: nil, handler: { [weak self] _ in self?.swapSortOrder()})
         }
         swapOrder.accessibilityIdentifier = "Date"
         return swapOrder
@@ -78,7 +78,8 @@ extension LocalImagesViewController {
         let action = UIAction(title: String(localized: "Day", comment: "Day"),
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: UIAction.Identifier("org.piwigo.images.group.day"),
-                              handler: { [self] action in
+                              handler: { [weak self] action in
+            guard let self else { return }
             // Should image grouping be changed?
             if isActive { return }
             
@@ -95,7 +96,8 @@ extension LocalImagesViewController {
         let action = UIAction(title: String(localized: "Week", comment: "Week"),
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: UIAction.Identifier("org.piwigo.images.group.week"),
-                              handler: { [self] action in
+                              handler: { [weak self] action in
+            guard let self else { return }
             // Should image grouping be changed?
             if isActive { return }
             
@@ -112,7 +114,8 @@ extension LocalImagesViewController {
         let action = UIAction(title: String(localized: "Month", comment: "Month"),
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: UIAction.Identifier("org.piwigo.images.group.month"),
-                              handler: { [self] action in
+                              handler: { [weak self] action in
+            guard let self else { return }
             // Should sorting be changed?
             if isActive { return }
             
@@ -129,7 +132,8 @@ extension LocalImagesViewController {
         let action = UIAction(title: String(localized: "None", comment: "None"),
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: UIAction.Identifier("org.piwigo.images.group.none"),
-                              handler: { [self] action in
+                              handler: { [weak self] action in
+            guard let self else { return }
             // Should image grouping be changed?
             if isActive { return }
             
@@ -155,7 +159,8 @@ extension LocalImagesViewController {
         if PHPhotoLibrary.authorizationStatus(for: .readWrite) == .limited {
             // Proposes to change the Photo Library selection
             let selector = UIAction(title: String(localized: "localAlbums_accessible", comment: "Accessible Photos"),
-                                    image: UIImage(systemName: "camera"), handler: { _ in
+                                    image: UIImage(systemName: "camera"), handler: { [weak self] _ in
+                guard let self else { return }
                 // Proposes to change the Photo Library selection
                 PHPhotoLibrary.shared().presentLimitedLibraryPicker(from: self)
             })
@@ -175,8 +180,8 @@ extension LocalImagesViewController {
         
         // Propose option for re-uploading photos
         let reUpload = UIAction(title: String(localized: "localImages_reUploadTitle", comment: "Re-upload"),
-                                image: reUploadAllowed ? UIImage(systemName: "checkmark") : nil, handler: { _ in
-            self.swapReuploadOption()
+                                image: reUploadAllowed ? UIImage(systemName: "checkmark") : nil, handler: { [weak self] _ in
+            self?.swapReuploadOption()
         })
         reUpload.accessibilityIdentifier = "org.piwigo.reupload"
         return reUpload
@@ -243,9 +248,9 @@ extension LocalImagesViewController {
         
         // Propose option for deleting photos
         let delete = UIAction(title: String(localized: "localImages_deleteTitle", comment: "Remove from Camera Roll"),
-                              image: UIImage(systemName: "trash"), attributes: .destructive, handler: { _ in
+                              image: UIImage(systemName: "trash"), attributes: .destructive, handler: { [weak self] _ in
             // Delete uploaded photos from the camera roll
-            self.deleteUploadedImages()
+            self?.deleteUploadedImages()
         })
         let menuId = UIMenu.Identifier("org.piwigo.removeFromCameraRoll")
         return UIMenu(identifier: menuId, options: UIMenu.Options.displayInline, children: [delete])

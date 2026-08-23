@@ -542,10 +542,7 @@ class LoginViewController: UIViewController {
 
         // Fetch all album data recursively when fetching the root album
         // so that the share extension can present the whole album tree,
-        // unless all album data was already fetched less than a day ago
-        if Date.timeIntervalSinceReferenceDate > CacheVars.shared.dateOfLastAlbumRefresh + 24 * 3600 {
-            AlbumVars.shared.fetchAlbumDataRecursively = true
-        }
+        AlbumVars.shared.fetchAlbumDataRecursively = true
         
         // Present Album/Images view and resume uploads
         guard let window = self.view.window,

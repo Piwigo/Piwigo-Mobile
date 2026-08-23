@@ -228,6 +228,7 @@ class ImageViewController: UIViewController {
         //        debugPrint("••> ImageViewController is being deinitialized.")
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
+        debugPrint("••> ImageViewController released memory")
     }
     
     
