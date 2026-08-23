@@ -82,8 +82,7 @@ extension SceneDelegate {
         
         guard restorableIDs.isEmpty == false
         else {
-            // Root album displayed ► Fetch album data in the background
-            albumVC.startFetchingAlbumAndImages(withHUD: false)
+            // Root album displayed (album data fetched if necessary)
             return
         }
         

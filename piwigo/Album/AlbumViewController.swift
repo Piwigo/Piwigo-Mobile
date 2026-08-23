@@ -522,7 +522,7 @@ final class AlbumViewController: UIViewController
         // The user may have cleared the cached data
         // Display an empty root album in that case
         if categoryId == Int32.zero {
-            do {
+            do throws(PwgKitError) {
                 albumData = try albumProvider.getOrCreateProperties(ofAlbumWithID: pwgSmartAlbum.root.rawValue,
                                                                     inContext: mainContext)
             }
@@ -537,24 +537,6 @@ final class AlbumViewController: UIViewController
         // Hide the search bar when scrolling
         navigationItem.hidesSearchBarWhenScrolling = true
         
-        // Refresh the share of this album, which also tells whether this user
-        // may share albums after a restoration of the scene (see fetchShareOfAlbum)
-        Task {
-            do {
-                // Check session
-                /// Without a session, the plugin considers the user as a guest and rejects the
-                /// request with a 403 error, which fetchShareOfAlbum() would take for a definitive
-                /// "this user may not share albums" and remember for the rest of the session.
-                try await LoginUtilities().checkSessionOfCurrentUser()
-
-                // Fetch Share Album data
-                await fetchShareOfAlbum()
-            }
-            catch {
-                return
-            }
-        }
-        
         // Check conditions before loading album and image data
         let lastLoad = Date.timeIntervalSinceReferenceDate - albumData.dateGetImages
         let nbImages = nberOfImages()
@@ -566,7 +548,46 @@ final class AlbumViewController: UIViewController
             (lastLoad > TimeInterval(3600) || AlbumVars.shared.fetchAlbumDataRecursively)
         {
             // Fetch album/image data after checking session
+            // and refresh the list of shared albums if needed
             self.startFetchingAlbumAndImages(withHUD: isSmartAlbum || missingImages)
+        }
+        else {
+            // Refresh the share of this album, which also tells whether this user
+            // may share albums after a restoration of the scene (see fetchShareOfAlbum)
+            Task {
+                do throws(PwgKitError) {
+                    // Check session
+                    /// Without a session, the plugin considers the user as a guest and rejects the
+                    /// request with a 403 error, which fetchShareOfAlbum() would take for a definitive
+                    /// "this user may not share albums" and remember for the rest of the session.
+                    try await LoginUtilities().checkSessionOfCurrentUser()
+
+                    // Fetch Share Album data
+                    await fetchShareOfAlbum()
+                }
+                catch {
+                    await MainActor.run {
+                        // Could not check the session ► Remove current album
+                        // from list of albums being fetched
+                        AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
+
+                        // End refreshing if needed
+                        self.collectionView?.refreshControl?.endRefreshing()
+
+                        // Session logout required?
+                        if error.requiresLogout {
+                            ClearCache.closeSessionWithPwgError(from: self, error: error)
+                            return
+                        }
+                        
+                        // Report error
+                        self.navigationController?.hideHUD {
+                            let title = String(localized: "internetErrorGeneral_title", comment: "Connection Error")
+                            self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
+                        }
+                    }
+                }
+            }
         }
         
         // Display What's New in Piwigo if needed
