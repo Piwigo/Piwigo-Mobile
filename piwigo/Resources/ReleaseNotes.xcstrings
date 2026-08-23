@@ -6508,7 +6508,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2.11.2 verzió\n2022. június 21\n\n• Kijavít egy kompatibilitási problémát a Community beépülő modullal"
+            "value" : "2.11.2-es verzió\n2022. június 21\n\n• Kijavít egy kompatibilitási problémát a Community beépülő modullal"
           }
         },
         "id" : {
@@ -6710,7 +6710,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2.12.1 verzió\n2022 Július 10\n\n• Kijavítja az iOS 9–13 rendszeren előforduló összeomlást, amikor módosítja a fényképekhez rendelt címkéket"
+            "value" : "2.12.1-es verzió\n2022 Július 10\n\n• Kijavítja az iOS 9–13 rendszeren előforduló összeomlást, amikor módosítja a fényképekhez rendelt címkéket"
           }
         },
         "id" : {
@@ -6811,7 +6811,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2.12.2 verzió\n2022 Augusztus 2\n\n• Kijavítja az iOS 9–12 rendszeren előforduló összeomlást a feltöltési kéréssor megjelenítésekor\n• Kisebb hibajavítások és fejlesztések a felületen"
+            "value" : "2.12.2-es verzió\n2022 Augusztus 2\n\n• Kijavítja az iOS 9–12 rendszeren előforduló összeomlást a feltöltési kéréssor megjelenítésekor\n• Kisebb hibajavítások és fejlesztések a felületen"
           }
         },
         "id" : {
@@ -6912,7 +6912,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2.12.3 verzió\n2022 Augusztus 7\n\n• Hibajavítások"
+            "value" : "2.12.3-as verzió\n2022 Augusztus 7\n\n• Hibajavítások"
           }
         },
         "id" : {
@@ -7013,7 +7013,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2.12.4 verzió\n2022 Augusztus 16\n\n• Hibajavítások"
+            "value" : "2.12.4-es verzió\n2022 Augusztus 16\n\n• Hibajavítások"
           }
         },
         "id" : {
@@ -7114,7 +7114,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2.12.5 verzió\n2022 Augusztus 26\n\n• Hibajavítások"
+            "value" : "2.12.5-ös verzió\n2022 Augusztus 26\n\n• Hibajavítások"
           }
         },
         "id" : {
@@ -7215,7 +7215,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2.12.6 verzió\n2022 November 21\n\n• Hibajavítások"
+            "value" : "2.12.6-os verzió\n2022 November 21\n\n• Hibajavítások"
           }
         },
         "id" : {
@@ -7316,7 +7316,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2.12.7 verzió\n2022 December 19\n\n• Hibajavítások"
+            "value" : "2.12.7-es verzió\n2022 December 19\n\n• Hibajavítások"
           }
         },
         "id" : {
@@ -7417,7 +7417,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.0 verzió\n2023. június 27\n\n• A gyorsítótár-kezelés teljesen újraírva a felhasználói élmény javítása és az offline böngészés érdekében.\n• Néhány fordítás javítása"
+            "value" : "3.0-ás verzió\n2023. június 27\n\n• A gyorsítótár-kezelés teljesen újraírva a felhasználói élmény javítása és az offline böngészés érdekében.\n• Néhány fordítás javítása"
           }
         },
         "id" : {
@@ -7720,7 +7720,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.1 verzió\n2023 November 20\n\n• Az egyes fényképek vagy videók megtekintésekor a képet lefelé húzva vagy megcsípve visszatérhet az albumba.\n• Nézzen meg egy Piwigo-n tárolt videót, miközben más alkalmazásokat használ.\n• Hibajavítások"
+            "value" : "3.1-es verzió\n2023 November 20\n\n• Az egyes fényképek vagy videók megtekintésekor a képet lefelé húzva vagy megcsípve visszatérhet az albumba.\n• Nézzen meg egy Piwigo-n tárolt videót, miközben más alkalmazásokat használ.\n• Hibajavítások"
           }
         },
         "id" : {
@@ -7821,7 +7821,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.1.1 verzió\n2023 December 1\n\n• Szerver statisztikák frissítése (Piwigo 14 szükséges)\n• Hibajavítások"
+            "value" : "3.1.1-es verzió\n2023 December 1\n\n• Szerver statisztikák frissítése (Piwigo 14 szükséges)\n• Hibajavítások"
           }
         },
         "id" : {
@@ -7922,7 +7922,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.1.2 verzió\n2024 Február 1\n\n• Szükség esetén kéri a Piwigo szerver frissítését\n• Hibajavítások"
+            "value" : "3.1.2-es verzió\n2024 Február 1\n\n• Szükség esetén kéri a Piwigo szerver frissítését\n• Hibajavítások"
           }
         },
         "id" : {
@@ -8023,7 +8023,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.1.3-es verzió\n2024 Február 11\n\n• Hibajavítások"
+            "value" : "3.1.3-as verzió\n2024 Február 11\n\n• Hibajavítások"
           }
         },
         "id" : {
@@ -8124,7 +8124,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.1.4 verzió\n2024 Február 27\n\n• Kijavítja az iOS 12 rendszeren előforduló összeomlást"
+            "value" : "3.1.4-es verzió\n2024 Február 27\n\n• Kijavítja az iOS 12 rendszeren előforduló összeomlást"
           }
         },
         "id" : {
@@ -8528,7 +8528,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.2.3-es verzió\n2024 Október 17\n\n• Hibajavítások"
+            "value" : "3.2.3-as verzió\n2024 Október 17\n\n• Hibajavítások"
           }
         },
         "id" : {
@@ -8730,7 +8730,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.2.5-es verzió\n2025 Február 17\n\n• Kisebb hibajavítások és fejlesztések a felületen"
+            "value" : "3.2.5-ös verzió\n2025 Február 17\n\n• Kisebb hibajavítások és fejlesztések a felületen"
           }
         },
         "id" : {
@@ -8831,7 +8831,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.3 verzió\n2025 Március 26\n\n• Sokkal gyorsabban másolja és mozgatja a kiválasztott fényképeket\n• Az adatbázis-migráció jobb kezelése\n• Javítja a fényképek és videók megosztási jogainak kezelését\n• Hibák javítása és a kezelőfelület javítása"
+            "value" : "3.3-as verzió\n2025 Március 26\n\n• Sokkal gyorsabban másolja és mozgatja a kiválasztott fényképeket\n• Az adatbázis-migráció jobb kezelése\n• Javítja a fényképek és videók megosztási jogainak kezelését\n• Hibák javítása és a kezelőfelület javítása"
           }
         },
         "id" : {
@@ -8932,7 +8932,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.3.1 verzió\n2025 Március 28\n\n• Videó automatikus lejátszási és looping opciók hozzáadása\n• Hibajavítások és a kezelőfelület javítása"
+            "value" : "3.3.1-es verzió\n2025 Március 28\n\n• Videó automatikus lejátszási és looping opciók hozzáadása\n• Hibajavítások és a kezelőfelület javítása"
           }
         },
         "id" : {
@@ -9033,7 +9033,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.3.2 verzió\n2025 Április 14\n\n• Hibajavítások és a kezelőfelület javítása"
+            "value" : "3.3.2-es verzió\n2025 Április 14\n\n• Hibajavítások és a kezelőfelület javítása"
           }
         },
         "id" : {
@@ -9134,7 +9134,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.4 verzió\n2025 Június 30\n\n• Fájlnevek feltöltés előtti módosításának lehetőségei\n• Hibajavítások és a kezelőfelület javítása"
+            "value" : "3.4-es verzió\n2025 Június 30\n\n• Fájlnevek feltöltés előtti módosításának lehetőségei\n• Hibajavítások és a kezelőfelület javítása"
           }
         },
         "id" : {
@@ -9235,7 +9235,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.4.1 verzió\n2025. július 26.\n\n• Hozzáadja a kezdőképernyő gyors műveleteit\n• Hibák javítása és a felület javítása"
+            "value" : "3.4.1-es verzió\n2025. július 26.\n\n• Hozzáadja a kezdőképernyő gyors műveleteit\n• Hibák javítása és a felület javítása"
           }
         },
         "id" : {
@@ -9538,7 +9538,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4.0-as verzió\nSeptember 15, 2025\n\n• iOS 26 kompatibilitás\n• Kisebb hibajavítások és fejlesztések a felületen"
+            "value" : "4.0-ás verzió\nSeptember 15, 2025\n\n• iOS 26 kompatibilitás\n• Kisebb hibajavítások és fejlesztések a felületen"
           }
         },
         "id" : {
@@ -9740,7 +9740,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4.1.1 verzió\n2025 November 11\n\n• Hibajavítások és a kezelőfelület javítása"
+            "value" : "4.1.1-es verzió\n2025 November 11\n\n• Hibajavítások és a kezelőfelület javítása"
           }
         },
         "id" : {
@@ -9841,7 +9841,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4.1.2 verzió\n2025 December 12\n\n• API-kulcsok támogatása\n• Hibajavítások és a felület fejlesztése\n• Kód modernizálása"
+            "value" : "4.1.2-es verzió\n2025 December 12\n\n• API-kulcsok támogatása\n• Hibajavítások és a felület fejlesztése\n• Kód modernizálása"
           }
         },
         "id" : {
@@ -9942,7 +9942,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4.1.3 verzió\n2025 December 20\n\n• Piwigo 16 kompatibilitás\n• Hibajavítások és a kezelőfelület javítása"
+            "value" : "4.1.3-as verzió\n2025 December 20\n\n• Piwigo 16 kompatibilitás\n• Hibajavítások és a kezelőfelület javítása"
           }
         },
         "id" : {
@@ -10043,7 +10043,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4.1.4 verzió\n2026 Március 25\n\n• Hibajavítások"
+            "value" : "4.1.4-es verzió\n2026 Március 25\n\n• Hibajavítások"
           }
         },
         "id" : {
@@ -10447,7 +10447,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4.2.3 verzió\n2026 Május 29\n\n• Hibajavítások és a kezelőfelület javítása\n• Felfüggeszti a feltöltést, ha az eszköznek lehűlnie kell"
+            "value" : "4.2.3-as verzió\n2026 Május 29\n\n• Hibajavítások és a kezelőfelület javítása\n• Felfüggeszti a feltöltést, ha az eszköznek lehűlnie kell"
           }
         },
         "id" : {
@@ -10750,7 +10750,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "4.3.1 verzió\n\n• Hibajavítások"
+            "value" : "4.3.1-es verzió\n\n• Hibajavítások"
           }
         },
         "id" : {
