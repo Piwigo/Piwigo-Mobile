@@ -25,14 +25,15 @@ Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org), a **f
    - of modifiable size and quality,
    - with description, author, tags/keywords, EXIF metadata,
    - with or without GPS metadata,
-- Share photos and videos.
+- Share albums, photos and videos.
 
 [Piwigo Mobile](https://itunes.apple.com/us/app/piwigo/id472225196?mt=8) is compatible with the following [extensions](https://piwigo.org/ext/):
 
 - [Community](https://piwigo.org/ext/index.php?eid=303): allows users to create albums and add photos
-- [rotateImage](https://piwigo.org/ext/index.php?eid=578): enables the rotation of uploaded images
-- [piwigo-two_factor](https://piwigo.org/ext/index.php?eid=1052): adds two-factor authentication (2FA) for enhancing Piwigo security
-- [piwigo-videojs](http://piwigo.org/ext/index.php?eid=610): adds video support
+- [Rotate Image](https://piwigo.org/ext/index.php?eid=578): enables the rotation of uploaded images
+- [Share Album](https://piwigo.org/ext/extension_view.php?eid=865): allows to share private albums with people who do not have an account
+- [Two Factor Authentication](https://piwigo.org/ext/index.php?eid=1052): adds two-factor authentication (2FA) for enhancing Piwigo security
+- [VideoJS](http://piwigo.org/ext/index.php?eid=610): adds video support
 
 ## Videos 
 For uploading videos with your iOS device, make sure the [piwigo-videojs](http://piwigo.org/ext/extension_view.php?eid=610) plugin is installed on your Piwigo server. The wiki contains some [instructions](https://github.com/xbgmsharp/piwigo-videojs/wiki/How-to-add-videos) for installing it.
