@@ -475,8 +475,8 @@ D05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGjCwwTVSRudWxs0w0ODxARElYkY2xhc3NfEBBOU0V4cHJl
         <attribute name="destinationname" type="string">Album</attribute>
         <attribute name="autogenerateexpression" type="bool">1</attribute>
         <relationship name="mappingmodel" type="1/1" destination="XDDEVMAPPINGMODEL" idrefs="z147"></relationship>
-        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z204 z177 z217 z243 z183 z178 z215 z153 z182 z219 z120 z239 z238 z227 z234 z225 z141 z113 z198 z123 z202 z226 z119 z111 z210 z157"></relationship>
-        <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING" idrefs="z163 z209"></relationship>
+        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z226 z119 z111 z120 z157 z234 z225 z182 z219 z215 z113 z178 z227 z217 z123 z243 z210 z183 z239 z153 z141 z238 z204 z177 z198"></relationship>
+        <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING" idrefs="z209 z163"></relationship>
     </object>
     <object type="XDDEVRELATIONSHIPMAPPING" id="z189">
         <attribute name="autogenerateexpression" type="bool">1</attribute>
@@ -545,11 +545,8 @@ D05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGsCwwXGB0eJiswMTQ4VSRudWxs1Q0ODxAREhMUFRZZTlNP
         <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z158"></relationship>
     </object>
     <object type="XDDEVATTRIBUTEMAPPING" id="z202">
-        <attribute name="valueexpressiondata" type="binary">YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8Q
-D05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGkCwwTFFUkbnVsbNMNDg8QERJfEA9OU0NvbnN0YW50VmFsdWVfEBBOU0V4cHJlc3Npb25UeXBlViRjbGFzc4ACEACAAxP////////x8NIVFhcYWiRjbGFzc25hbWVYJGNsYXNzZXNfEBlOU0NvbnN0YW50VmFsdWVFeHByZXNzaW9uoxcZGlxOU0V4cHJlc3Npb25YTlNPYmplY3QIERokKTI3SUxRU1heZXeKkZOVl6ClsLnV2eYAAAAAAAABAQAAAAAAAAAbAAAAAAAAAAAAAAAAAAAA7w==
-</attribute>
         <attribute name="name" type="string">shareCreationDate</attribute>
-        <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z188"></relationship>
+        <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING"></relationship>
     </object>
     <object type="XDDEVATTRIBUTEMAPPING" id="z203">
         <attribute name="name" type="string">photoQuality</attribute>
