@@ -49129,6 +49129,107 @@
         }
       }
     },
+    "settingsFooter_rotateImage" : {
+      "comment" : "Install the rotateImage plugin…",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قم بتثبيت الملحق %@ على Piwigo لتتمكن من تدوير الصور من التطبيق."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installer %@ plugin på din Piwigo for at kunne rotere fotos med appen."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installieren Sie das %@ Plugin auf Ihrem Piwigo, um Fotos mit der App drehen zu können."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install the %@ plugin on your Piwigo to rotate photos with the app."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instale el plugin %@ en su Piwigo para poder girar las fotos desde la aplicación."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installez le plugin %@ sur votre Piwigo pour pouvoir faire pivoter les photos depuis l'app."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Telepítse a %@ beépülő modult a Piwigóra, hogy az alkalmazásból elforgathassa a fényképeket."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instal plugin %@ di Piwigo Anda untuk dapat memutar foto dari aplikasi."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installa il plugin %@ sul tuo Piwigo per poter ruotare le foto dall'app."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@プラグインをPiwigoにインストールすると、アプリから写真を回転できます。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installeer de %@ plugin op uw Piwigo om foto's met de app te kunnen draaien."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zainstaluj wtyczkę %@ w swoim Piwigo, aby móc obracać zdjęcia w aplikacji."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Установите плагин %@ на вашем Piwigo, чтобы поворачивать фотографии из приложения."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installera %@ plugin på din Piwigo för att kunna rotera foton med appen."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在您的 Piwigo 上安装 %@ 插件，即可在应用中旋转照片。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在您的 Piwigo 上安裝「%@」外掛程式，即可在 App 中旋轉照片。"
+          }
+        }
+      }
+    },
     "settingsFooter_shareAlbum" : {
       "comment" : "Install the ShareAlbum plugin…",
       "localizations" : {

@@ -201,6 +201,13 @@ extension SettingsViewController: UITableViewDelegate
                                                comment: "Install the ShareAlbum plugin…"),
                                 pwgShareAlbumPluginName)
             }
+        case .images:
+            // Only an admin user can install the rotateImage plugin on the server
+            if userData.hasAdminRights, ServerVars.shared.usesImageRotate == false {
+                footer = String(format: String(localized: "settingsFooter_rotateImage",
+                                               comment: "Install the rotateImage plugin…"),
+                                pwgRotateImagePluginName)
+            }
         case .about:
             footer = ServerVars.shared.pwgStatistics
         default:
@@ -224,6 +231,12 @@ extension SettingsViewController: UITableViewDelegate
                   let url = URL(string: pwgShareAlbumPluginURL)
             else { return nil }
             return (url, pwgShareAlbumPluginName)
+        case .images:
+            // Propose to visit the page of the rotateImage plugin on piwigo.org
+            guard userData.hasAdminRights, ServerVars.shared.usesImageRotate == false,
+                  let url = URL(string: pwgRotateImagePluginURL)
+            else { return nil }
+            return (url, pwgRotateImagePluginName)
         default:
             return nil
         }
