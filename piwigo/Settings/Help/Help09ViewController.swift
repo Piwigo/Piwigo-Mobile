@@ -34,7 +34,7 @@ class Help09ViewController: UIViewController {
         legendAttributedString.append(titleAttributedString)
 
         // Text
-        let textString = String(localized: "help03_text", comment: "Create, delete, move and rename albums.")
+        let textString = String(localized: "help03_text", comment: "Create, delete, move, rename and share albums.")
         let textAttributedString = NSMutableAttributedString(string: textString)
         let textRange = NSRange(location: 0, length: textString.count)
         textAttributedString.addAttribute(.font, value: textFont, range: textRange)

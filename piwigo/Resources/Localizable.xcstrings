@@ -17901,102 +17901,102 @@
       }
     },
     "help03_text" : {
-      "comment" : "Create, delete, move and rename albums.",
+      "comment" : "Create, delete, move, rename and share albums.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "إنشاء ألبومات وحذفها ونقلها وإعادة تسميتها."
+            "state" : "needs_review",
+            "value" : "إنشاء الألبومات وحذفها ونقلها وإعادة تسميتها ومشاركتها."
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Opret, slet, flyt og omdøb albums."
+            "state" : "needs_review",
+            "value" : "Opret, slet, flyt, omdøb og del albums."
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alben erstellen, löschen, verschieben und umbenennen."
+            "state" : "needs_review",
+            "value" : "Alben erstellen, löschen, verschieben, umbenennen und teilen."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Create, delete, move and rename albums."
+            "value" : "Create, delete, move, rename and share albums."
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Crear, eliminar, mover y renombrar álbumes."
+            "state" : "needs_review",
+            "value" : "Crear, eliminar, mover, renombrar y compartir álbumes."
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Créer, supprimer, déplacer et renommer des albums."
+            "state" : "needs_review",
+            "value" : "Créer, supprimer, déplacer, renommer et partager des albums."
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hozzatok létre, töröljetek, mozgassatok albumokat!"
+            "state" : "needs_review",
+            "value" : "Albumok létrehozása, törlése, áthelyezése, átnevezése és megosztása."
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Create, delete, move and rename albums."
+            "state" : "needs_review",
+            "value" : "Buat, hapus, pindahkan, ubah nama, dan bagikan album."
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Creare, eliminare, spostare e rinominare gli album."
+            "state" : "needs_review",
+            "value" : "Creare, eliminare, spostare, rinominare e condividere gli album."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "アルバムを作成、削除、移動、名前変更します。"
+            "state" : "needs_review",
+            "value" : "アルバムを作成、削除、移動、名前変更、共有します。"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Maak, verwijder, verplaats en hernoem albums."
+            "state" : "needs_review",
+            "value" : "Maak, verwijder, verplaats, hernoem en deel albums."
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tworzenie, usuwanie, przesuwanie i zmiana nazwy albumów."
+            "state" : "needs_review",
+            "value" : "Tworzenie, usuwanie, przenoszenie, zmiana nazwy i udostępnianie albumów."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Создавать, удалять, перемещать и переименовывать альбомы."
+            "state" : "needs_review",
+            "value" : "Создавать, удалять, перемещать, переименовывать альбомы и делиться ими."
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skapa, ta bort, flytta och döpa om album."
+            "state" : "needs_review",
+            "value" : "Skapa, ta bort, flytta, döp om och dela album."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "创建、删除、移动和重命名相册"
+            "state" : "needs_review",
+            "value" : "创建、删除、移动、重命名和共享相册。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "建立，刪除，移動或重新命名相簿"
+            "state" : "needs_review",
+            "value" : "建立、刪除、移動、重新命名和分享相簿。"
           }
         }
       }
