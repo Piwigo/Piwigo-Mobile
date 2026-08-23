@@ -765,9 +765,10 @@ extension AlbumViewController {
         return UIAction(title: title,
                         image: UIImage(systemName: "arrow.triangle.2.circlepath")) { [self] _ in
             // Renewing the code invalidates the link which was already sent to people
+            let message = String(localized: "shareAlbum_renewLink_message",
+                                 comment: "The current link will stop working…")
             confirmShareChange(title: title,
-                               message: String(localized: "shareAlbum_renewLink_message",
-                                               comment: "The current link will stop working…")) { [self] in
+                               message: message + visitsMessage(forAlbumWithID: pwgID)) { [self] in
                 // Renew the share code, then propose to send the new link
                 updateShare(ofAlbumWithID: pwgID) { catID in
                     try await JSONManager.shared.renewShare(ofAlbumWithID: catID)
@@ -786,9 +787,10 @@ extension AlbumViewController {
                         image: UIImage(systemName: "xmark.circle"),
                         attributes: .destructive) { [self] _ in
             // Cancelling the share invalidates the link which was already sent to people
+            let message = String(localized: "shareAlbum_stopSharing_message",
+                                 comment: "The link will stop working…")
             confirmShareChange(title: title,
-                               message: String(localized: "shareAlbum_stopSharing_message",
-                                               comment: "The link will stop working…")) { [self] in
+                               message: message + visitsMessage(forAlbumWithID: pwgID)) { [self] in
                 // Cancel the share, which clears the share data of the album in cache
                 updateShare(ofAlbumWithID: pwgID) { catID in
                     try await JSONManager.shared.cancelShare(ofAlbumWithID: catID)
@@ -800,6 +802,41 @@ extension AlbumViewController {
     
     
     // MARK: - Share Album Utilities
+    /// Returns a sentence telling how much a shared album was visited since it was shared,
+    /// to be appended to the message of a confirmation alert. Returns an empty string when
+    /// these data are unknown, i.e. when no sharealbum request was performed for this album
+    /// or when the server did not return the creation date of the share.
+    private func visitsMessage(forAlbumWithID pwgID: Int32) -> String {
+        guard let visits = AlbumVars.shared.shareVisits[pwgID],
+              let album = albumProvider.getAlbum(withID: pwgID, inContext: mainContext),
+              album.shareCreationDate > DateUtilities.unknownDateInterval
+        else { return "" }
+        
+        // Dates are presented relatively to now, e.g. "3 months ago"
+        let formatter = RelativeDateTimeFormatter()
+        formatter.dateTimeStyle = .named
+        let now = Date()
+        let sharedSince = formatter.localizedString(
+            for: Date(timeIntervalSinceReferenceDate: album.shareCreationDate), relativeTo: now)
+        
+        // The album was never visited
+        guard visits.count > Int64.zero, let lastVisit = visits.lastVisit
+        else {
+            return "\n\n" + String.localizedStringWithFormat(
+                String(localized: "shareAlbum_notVisited", comment: "This album was shared … not been visited"),
+                sharedSince)
+        }
+        
+        // The album was visited
+        let visitsStr = String.localizedStringWithFormat(
+            String(localized: "shareAlbum_visits", comment: "This album was shared … visited … times"),
+            sharedSince, visits.count)
+        let lastVisitStr = String.localizedStringWithFormat(
+            String(localized: "shareAlbum_lastVisit", comment: "The last visit was …"),
+            formatter.localizedString(for: Date(timeIntervalSinceReferenceDate: lastVisit), relativeTo: now))
+        return "\n\n" + visitsStr + " " + lastVisitStr
+    }
+    
     /// Asks the user to confirm an action which invalidates the link of a shared album,
     /// i.e. which prevents the people who already received it from opening the album.
     private func confirmShareChange(title: String, message: String,

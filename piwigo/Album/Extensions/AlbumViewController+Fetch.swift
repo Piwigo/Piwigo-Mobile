@@ -163,6 +163,17 @@ extension AlbumViewController
     }
     
     
+    /// Stores how much a shared album was visited, as returned by sharealbum.getList
+    /// or sharealbum.getInfo (see AlbumVars.shareVisits).
+    @MainActor
+    static func rememberVisits(from shareData: ShareAlbumGetInfo) {
+        guard let catID = shareData.catID?.int32Value else { return }
+        AlbumVars.shared.shareVisits[catID] =
+            ShareVisits(count: shareData.visits?.int64Value ?? Int64.zero,
+                        lastVisit: DateUtilities.timeInterval(from: shareData.lastVisit))
+    }
+    
+    
     // MARK: - Fetch Shared Albums
     /// Retrieves the albums shared with users having no Piwigo account and stores
     /// the share data in the albums of the current user.
@@ -181,6 +192,11 @@ extension AlbumViewController
             let pwgData = try await JSONManager.shared.getSharedAlbums()
             try await albumProvider.importShares(pwgData)
             AlbumVars.shared.canShareAlbums = true
+            
+            // Remember how much each shared album was visited
+            await MainActor.run {
+                pwgData.forEach { Self.rememberVisits(from: $0) }
+            }
         }
         catch {
             // The plugin rejects users who are neither administrators
@@ -218,6 +234,13 @@ extension AlbumViewController
             let shareData = try await JSONManager.shared.getShare(ofAlbumWithID: categoryId)
             try albumProvider.updateShare(shareData, ofAlbumWithID: categoryId, inContext: mainContext)
             AlbumVars.shared.canShareAlbums = true
+            
+            // Remember how much this album was visited, or forget it when it is not shared
+            if let shareData {
+                Self.rememberVisits(from: shareData)
+            } else {
+                AlbumVars.shared.shareVisits.removeValue(forKey: categoryId)
+            }
             
             // Propose the commands matching the refreshed state
             if inSelectionMode == false {

@@ -126,4 +126,17 @@ final class AlbumVars: @unchecked Sendable {
     ///   nil until it has run, then true, or false when it was rejected with a 403 error.
     ///   Not persisted because the right can be revoked on the server at any time.
     var canShareAlbums: Bool? = nil
+
+    /// - To remember how much the shared albums were visited, as returned by the last
+    ///   sharealbum.getList or sharealbum.getInfo. Only used to inform the user before he
+    ///   invalidates a link, so these counters are not stored in cache: they change on every
+    ///   anonymous visit and are refreshed each time an album appears (see fetchShareOfAlbum).
+    var shareVisits = [Int32: ShareVisits]()
+}
+
+
+/// How much a shared album was visited by people having no Piwigo account.
+struct ShareVisits: Sendable {
+    let count: Int64                    // Number of visits since the share was created
+    let lastVisit: TimeInterval?        // nil when the album was never visited
 }

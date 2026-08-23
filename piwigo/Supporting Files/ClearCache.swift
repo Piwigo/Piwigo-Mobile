@@ -44,6 +44,7 @@ final class ClearCache
             CacheVars.shared.recentCategories = "0"
             AlbumVars.shared.isFetchingAlbumData = Set<Int32>()
             AlbumVars.shared.canShareAlbums = nil
+            AlbumVars.shared.shareVisits = [:]
             
             // Back to default server properties
             ServerVars.shared.usesCommunityPluginV29 = false
