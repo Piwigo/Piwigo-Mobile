@@ -125,8 +125,20 @@ struct LoginUtilities
     
     
     // MARK: - Piwigo Session Management
-    // Re-login if session was closed
+    /// Re-login if the session was closed.
+    ///
+    /// Concurrent calls are joined instead of being performed in parallel: this method is
+    /// called from about thirty places and several of them can run at the same time — e.g.
+    /// restoring a scene pushes every album of the restored path and each of them checks the
+    /// session when it appears. Parallel calls all pass the 60 seconds short-circuit below,
+    /// because `lastUsed` is only stored once a re-login succeeded, so each of them logs in
+    /// again and every new session token invalidates the previous one. Requests already in
+    /// flight are then answered as if the user were a guest.
     public func checkSessionOfCurrentUser() async throws(PwgKitError) {
+        try await SessionChecker.shared.check()
+    }
+    
+    fileprivate func performSessionCheck() async throws(PwgKitError) {
         // Retrieve current user properties
         let bckgContext = DataController.shared.newTaskContext()
         var userData = try UserProvider().getPropertiesOfCurrentUser(inContext: bckgContext)
@@ -230,6 +242,55 @@ struct LoginUtilities
                 let name = Notification.Name.NSProcessInfoPowerStateDidChange
                 NotificationCenter.default.post(name: name, object: nil)
             }
+        }
+    }
+}
+
+/// Serialises the session checks performed by `LoginUtilities.checkSessionOfCurrentUser()`.
+/// The check which is already running is awaited by every caller arriving while it lasts,
+/// so a single re-login is performed and they all observe its outcome.
+private actor SessionChecker {
+    
+    static let shared = SessionChecker()
+    
+    /// The check being performed, if any. Its failure is reported to every caller which
+    /// joined it, so a caller never mistakes a shared failure for a successful session.
+    private var inFlight: Task<Result<Void, PwgKitError>, Never>?
+    
+    func check() async throws(PwgKitError) {
+        // Join the check which is already running, or start one
+        let task: Task<Result<Void, PwgKitError>, Never>
+        if let inFlight {
+            task = inFlight
+        } else {
+            task = Task {
+                do throws(PwgKitError) {
+                    try await LoginUtilities().performSessionCheck()
+                    return .success(())
+                }
+                catch {
+                    return .failure(error)
+                }
+            }
+            inFlight = task
+        }
+        
+        // Await its outcome
+        /// The actor is released while suspended here, so the callers which arrive
+        /// in the meantime join this very task instead of starting another one.
+        let result = await task.value
+        
+        // Forget it so that the next caller checks the session again
+        /// Another task may already have replaced it.
+        if inFlight == task {
+            inFlight = nil
+        }
+        
+        switch result {
+        case .success:
+            return
+        case .failure(let error):
+            throw error
         }
     }
 }
