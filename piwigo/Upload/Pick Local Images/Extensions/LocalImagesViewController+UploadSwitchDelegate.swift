@@ -68,9 +68,9 @@ extension LocalImagesViewController: UploadSwitchDelegate
         if (AppVars.shared.didWatchHelpViews & 0b00000000_00100000) == 0 {
             displayHelpPagesWithID.append(6)     // i.e. manage upload requests in queue
         }
-        if (AppVars.shared.didWatchHelpViews & 0b00000000_00000010) == 0 {
-            displayHelpPagesWithID.append(2)     // i.e. use background uploading
-        }
+//        if (AppVars.shared.didWatchHelpViews & 0b00000000_00000010) == 0 {
+//            displayHelpPagesWithID.append(2)     // i.e. use background uploading
+//        }
         if (AppVars.shared.didWatchHelpViews & 0b00000000_01000000) == 0 {
             displayHelpPagesWithID.append(7)     // i.e. use auto-uploading
         }

@@ -107,10 +107,8 @@
 		AD30FD3721316DA8009AA30E /* PwgScreenshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD30FD3621316DA8009AA30E /* PwgScreenshots.swift */; };
 		AD311FFA27CB7B730044AC5A /* LoginViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD311FF927CB7B730044AC5A /* LoginViewController.storyboard */; };
 		AD31A73F2C736A9800B37B19 /* ImagePreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD31A73E2C736A9800B37B19 /* ImagePreviewViewController.swift */; };
-		AD31E73C2EB106C100584ECB /* help02-top-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7312EB106C100584ECB /* help02-top-iOS18.png */; };
 		AD31E73F2EB106C100584ECB /* help05-top-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7352EB106C100584ECB /* help05-top-iOS18.png */; };
 		AD31E7402EB106C100584ECB /* help01-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E72F2EB106C100584ECB /* help01-iOS18.png */; };
-		AD31E7412EB106C100584ECB /* help02-bot-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7302EB106C100584ECB /* help02-bot-iOS18.png */; };
 		AD31E7422EB106C100584ECB /* help07-bot-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7372EB106C100584ECB /* help07-bot-iOS18.png */; };
 		AD31E7432EB106C100584ECB /* help08-top-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E73A2EB106C100584ECB /* help08-top-iOS18.png */; };
 		AD31E7442EB106C100584ECB /* help06-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7362EB106C100584ECB /* help06-iOS18.png */; };
@@ -120,12 +118,10 @@
 		AD31E7562EB106CD00584ECB /* help07-bot.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7512EB106CD00584ECB /* help07-bot.png */; };
 		AD31E7572EB106CD00584ECB /* help08-top.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7542EB106CD00584ECB /* help08-top.png */; };
 		AD31E7592EB106CD00584ECB /* help08-bot.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7532EB106CD00584ECB /* help08-bot.png */; };
-		AD31E75A2EB106CD00584ECB /* help02-bot.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E74A2EB106CD00584ECB /* help02-bot.png */; };
 		AD31E75B2EB106CD00584ECB /* help04.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E74D2EB106CD00584ECB /* help04.png */; };
 		AD31E75C2EB106CD00584ECB /* help06.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7502EB106CD00584ECB /* help06.png */; };
 		AD31E75D2EB106CD00584ECB /* help07-top.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7522EB106CD00584ECB /* help07-top.png */; };
 		AD31E75E2EB106CD00584ECB /* help01.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7492EB106CD00584ECB /* help01.png */; };
-		AD31E7612EB106CD00584ECB /* help02-top.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E74B2EB106CD00584ECB /* help02-top.png */; };
 		AD31E7622EB106CD00584ECB /* help05-top.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E74F2EB106CD00584ECB /* help05-top.png */; };
 		AD31E7642EB1082500584ECB /* help03-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7632EB1082500584ECB /* help03-iOS18.png */; };
 		AD31E7662EB1082D00584ECB /* help03.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7652EB1082D00584ECB /* help03.png */; };
@@ -400,7 +396,6 @@
 		ADE46684242F978F002FEDE5 /* AboutViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADE46683242F978E002FEDE5 /* AboutViewController.storyboard */; };
 		ADE4C22625754B420060A203 /* Help03ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE4C22525754B420060A203 /* Help03ViewController.swift */; };
 		ADE4C23425755E660060A203 /* Help01ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE4C23325755E660060A203 /* Help01ViewController.swift */; };
-		ADE4C23E25756BC80060A203 /* Help02ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE4C23D25756BC80060A203 /* Help02ViewController.swift */; };
 		ADE6ADB32DC5196500EAE9C8 /* AddActionTableViewFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE6ADB22DC5196500EAE9C8 /* AddActionTableViewFooterView.swift */; };
 		ADE920442FBCC7CD00CAF83A /* PwgUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = ADE920432FBCC7CD00CAF83A /* PwgUIKit */; };
 		ADE920462FBCD4D600CAF83A /* PwgUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = ADE920452FBCD4D600CAF83A /* PwgUIKit */; };
@@ -612,8 +607,6 @@
 		AD311FF927CB7B730044AC5A /* LoginViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LoginViewController.storyboard; sourceTree = "<group>"; };
 		AD31A73E2C736A9800B37B19 /* ImagePreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePreviewViewController.swift; sourceTree = "<group>"; };
 		AD31E72F2EB106C100584ECB /* help01-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help01-iOS18.png"; sourceTree = "<group>"; };
-		AD31E7302EB106C100584ECB /* help02-bot-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help02-bot-iOS18.png"; sourceTree = "<group>"; };
-		AD31E7312EB106C100584ECB /* help02-top-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help02-top-iOS18.png"; sourceTree = "<group>"; };
 		AD31E7332EB106C100584ECB /* help04-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help04-iOS18.png"; sourceTree = "<group>"; };
 		AD31E7352EB106C100584ECB /* help05-top-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help05-top-iOS18.png"; sourceTree = "<group>"; };
 		AD31E7362EB106C100584ECB /* help06-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help06-iOS18.png"; sourceTree = "<group>"; };
@@ -622,8 +615,6 @@
 		AD31E7392EB106C100584ECB /* help08-bot-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help08-bot-iOS18.png"; sourceTree = "<group>"; };
 		AD31E73A2EB106C100584ECB /* help08-top-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help08-top-iOS18.png"; sourceTree = "<group>"; };
 		AD31E7492EB106CD00584ECB /* help01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help01.png; sourceTree = "<group>"; };
-		AD31E74A2EB106CD00584ECB /* help02-bot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help02-bot.png"; sourceTree = "<group>"; };
-		AD31E74B2EB106CD00584ECB /* help02-top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help02-top.png"; sourceTree = "<group>"; };
 		AD31E74D2EB106CD00584ECB /* help04.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help04.png; sourceTree = "<group>"; };
 		AD31E74F2EB106CD00584ECB /* help05-top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help05-top.png"; sourceTree = "<group>"; };
 		AD31E7502EB106CD00584ECB /* help06.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help06.png; sourceTree = "<group>"; };
@@ -939,7 +930,7 @@
 		ADE46683242F978E002FEDE5 /* AboutViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AboutViewController.storyboard; sourceTree = "<group>"; };
 		ADE4C22525754B420060A203 /* Help03ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Help03ViewController.swift; sourceTree = "<group>"; };
 		ADE4C23325755E660060A203 /* Help01ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help01ViewController.swift; sourceTree = "<group>"; };
-		ADE4C23D25756BC80060A203 /* Help02ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help02ViewController.swift; sourceTree = "<group>"; };
+		ADE4C23D25756BC80060A203 /* Help02ViewController (available).swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Help02ViewController (available).swift"; sourceTree = "<group>"; };
 		ADE51942300B6C1900BBBD02 /* release.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = release.entitlements; sourceTree = "<group>"; };
 		ADE6ADB22DC5196500EAE9C8 /* AddActionTableViewFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddActionTableViewFooterView.swift; sourceTree = "<group>"; };
 		ADE920472FBCF85300CAF83A /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
@@ -1193,8 +1184,6 @@
 			isa = PBXGroup;
 			children = (
 				AD31E72F2EB106C100584ECB /* help01-iOS18.png */,
-				AD31E7302EB106C100584ECB /* help02-bot-iOS18.png */,
-				AD31E7312EB106C100584ECB /* help02-top-iOS18.png */,
 				AD31E7632EB1082500584ECB /* help03-iOS18.png */,
 				AD31E7332EB106C100584ECB /* help04-iOS18.png */,
 				AD31E7672EB109F400584ECB /* help05-bot-iOS18.png */,
@@ -1215,8 +1204,6 @@
 			isa = PBXGroup;
 			children = (
 				AD31E7492EB106CD00584ECB /* help01.png */,
-				AD31E74A2EB106CD00584ECB /* help02-bot.png */,
-				AD31E74B2EB106CD00584ECB /* help02-top.png */,
 				AD31E7652EB1082D00584ECB /* help03.png */,
 				AD31E74D2EB106CD00584ECB /* help04.png */,
 				AD31E7692EB10A3800584ECB /* help05-bot.png */,
@@ -1404,7 +1391,7 @@
 				ADCA7CF72E928A7F00EFC3C5 /* HelpUtilities.swift */,
 				AD61D3132571598000B8DEA0 /* HelpViewController.swift */,
 				ADE4C23325755E660060A203 /* Help01ViewController.swift */,
-				ADE4C23D25756BC80060A203 /* Help02ViewController.swift */,
+				ADE4C23D25756BC80060A203 /* Help02ViewController (available).swift */,
 				ADE4C22525754B420060A203 /* Help03ViewController.swift */,
 				AD8709AA259A8E66008C4E4C /* Help04ViewController.swift */,
 				ADC74CCD259C9E9C00581ADE /* Help05ViewController.swift */,
@@ -2193,12 +2180,10 @@
 				AD31E7562EB106CD00584ECB /* help07-bot.png in Resources */,
 				AD31E7572EB106CD00584ECB /* help08-top.png in Resources */,
 				AD31E7592EB106CD00584ECB /* help08-bot.png in Resources */,
-				AD31E75A2EB106CD00584ECB /* help02-bot.png in Resources */,
 				AD31E75B2EB106CD00584ECB /* help04.png in Resources */,
 				AD31E75C2EB106CD00584ECB /* help06.png in Resources */,
 				AD31E75D2EB106CD00584ECB /* help07-top.png in Resources */,
 				AD31E75E2EB106CD00584ECB /* help01.png in Resources */,
-				AD31E7612EB106CD00584ECB /* help02-top.png in Resources */,
 				AD31E7622EB106CD00584ECB /* help05-top.png in Resources */,
 				AD7D132C2DFF00FA00EEE90D /* In-AppIntents.xcstrings in Resources */,
 				ADAE3C382E19497100E1D634 /* Localizable.xcstrings in Resources */,
@@ -2235,10 +2220,8 @@
 				AD09B7A7303B437600E2BC15 /* help09.png in Resources */,
 				AD09B7AD303B46F600E2BC15 /* help10.png in Resources */,
 				AD3DB4112773957A00017542 /* ImageViewController.storyboard in Resources */,
-				AD31E73C2EB106C100584ECB /* help02-top-iOS18.png in Resources */,
 				AD31E73F2EB106C100584ECB /* help05-top-iOS18.png in Resources */,
 				AD31E7402EB106C100584ECB /* help01-iOS18.png in Resources */,
-				AD31E7412EB106C100584ECB /* help02-bot-iOS18.png in Resources */,
 				AD61B7B23032138300E29E00 /* UploadLivePhotoViewController.storyboard in Resources */,
 				AD31E7422EB106C100584ECB /* help07-bot-iOS18.png in Resources */,
 				AD31E7432EB106C100584ECB /* help08-top-iOS18.png in Resources */,
@@ -2402,7 +2385,6 @@
 				AD0F70222946262D008F1394 /* SettingsViewController+Albums.swift in Sources */,
 				ADD65C5C2BE777FF005AC3B8 /* AlbumViewController+Fetch.swift in Sources */,
 				ADE4C23425755E660060A203 /* Help01ViewController.swift in Sources */,
-				ADE4C23E25756BC80060A203 /* Help02ViewController.swift in Sources */,
 				AD24011B2BF0BC7D0039B416 /* AlbumViewData.swift in Sources */,
 				ADEA26A6285FA1EB00B6C9A0 /* ImageViewController+Delete.swift in Sources */,
 				ADE4C22625754B420060A203 /* Help03ViewController.swift in Sources */,

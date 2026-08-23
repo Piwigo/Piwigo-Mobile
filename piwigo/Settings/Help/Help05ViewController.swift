@@ -10,7 +10,7 @@ import UIKit
 import PwgKit
 import PwgUIKit
 
-class Help05ViewController: UIViewController {
+final class Help05ViewController: UIViewController {
     
     @IBOutlet weak var legendTop: UILabel!
     @IBOutlet weak var imageViewTop: UIImageView!

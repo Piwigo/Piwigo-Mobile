@@ -10,7 +10,7 @@ import UIKit
 import PwgKit
 import PwgUIKit
 
-class Help09ViewController: UIViewController {
+final class Help09ViewController: UIViewController {
     
     @IBOutlet weak var legend: UILabel!
     @IBOutlet weak var imageView: UIImageView!

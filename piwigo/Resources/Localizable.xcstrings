@@ -17498,6 +17498,7 @@
     },
     "help02_header" : {
       "comment" : "Background Uploading",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -17599,6 +17600,7 @@
     },
     "help02_text" : {
       "comment" : "Select photos/videos, tap Upload",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
