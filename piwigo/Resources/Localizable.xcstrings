@@ -43270,25 +43270,24 @@
         }
       }
     },
-    "settings_livePhoto" : {
+    "settings_livePhotos" : {
       "comment" : "Live Photos",
-      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "الصور الحية"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Live Photos"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Live Photos"
           }
         },
@@ -43300,73 +43299,73 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Live Photos"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Live Photos"
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Live Photók"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Live Photos"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Live Photo"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Live Photos"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Live Photos"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Zdjęcia Live Photo"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Фото Live Photo"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Live Photo-bilder"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "实况照片"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "原況照片"
           }
         }
@@ -57636,208 +57635,6 @@
         }
       }
     },
-    "whatsNew_gif" : {
-      "comment" : "GIF Images",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "صور GIF"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GIF-billeder"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GIF-Bilder"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GIF Images"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Imágenes GIF"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Images GIF"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GIF-képek"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gambar GIF"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Immagini GIF"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GIF画像"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GIF-afbeeldingen"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Obrazy GIF"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GIF-изображения"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GIF-bilder"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GIF 图片"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GIF 圖片"
-          }
-        }
-      }
-    },
-    "whatsNew_gifDescription" : {
-      "comment" : "Plays animated GIF images.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تشغيل صور GIF المتحركة."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Afspiller animerede GIF-billeder."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Spielt animierte GIF-Bilder ab."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Plays animated GIF images."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reproduce imágenes GIF animadas."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Joue des images GIF animées."
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Animált GIF-képeket játszik le."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Memutar gambar GIF animasi."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Riproduce immagini GIF animate."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アニメーションGIF画像を再生します。"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Speelt geanimeerde GIF-afbeeldingen af."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Odtwarza animowane obrazy GIF."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Воспроизводит анимированные GIF-изображения."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Spelar upp animerade GIF-bilder."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "播放动画 GIF 图片。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "播放動態 GIF 圖片。"
-          }
-        }
-      }
-    },
     "whatsNew_improvements" : {
       "comment" : "Improvements",
       "localizations" : {
@@ -57939,103 +57736,305 @@
         }
       }
     },
-    "whatsNew_shareExtension" : {
-      "comment" : "Adds a Share extension allowing to upload photos, videos and PDF files from other apps.",
+    "whatsNew_livePhotosImport" : {
+      "comment" : "Imports Live Photos as photo, video or both.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "يضيف ملحق «مشاركة» يتيح تحميل الصور ومقاطع الفيديو وملفات PDF من التطبيقات الأخرى."
+            "state" : "needs_review",
+            "value" : "يستورد الصور الحية كصورة أو فيديو أو كليهما."
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tilføjer en »Del«-udvidelse, der gør det muligt at uploade fotos, videoer og PDF-filer fra andre apps."
+            "state" : "needs_review",
+            "value" : "Importerer Live Photos som foto, video eller begge."
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fügt eine „Teilen“-Erweiterung hinzu, mit der Fotos, Videos und PDF-Dateien aus anderen Apps hochgeladen werden können."
+            "state" : "needs_review",
+            "value" : "Importiert Live Photos als Foto, Video oder beides."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Adds a Share extension allowing to upload photos, videos and PDF files from other apps."
+            "value" : "Imports Live Photos as photo, video or both."
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Añade una extensión de «Compartir» que permite subir fotos, vídeos y archivos PDF desde otras aplicaciones."
+            "state" : "needs_review",
+            "value" : "Importa Live Photos como foto, vídeo o ambos."
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajoute une extension de partage permettant de transférer des photos, des vidéos et des fichiers PDF depuis d'autres applications."
+            "state" : "needs_review",
+            "value" : "Importe les Live Photos sous forme de photo, de vidéo ou des deux."
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hozzáad egy „Megosztás” kiterjesztést, amely lehetővé teszi fényképek, videók és PDF-fájlok feltöltését más alkalmazásokból."
+            "state" : "needs_review",
+            "value" : "A Live Photókat fotóként, videóként vagy mindkettőként importálja."
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menambahkan ekstensi Bagikan yang memungkinkan pengguna mengunggah foto, video, dan berkas PDF dari aplikasi lain."
+            "state" : "needs_review",
+            "value" : "Mengimpor Live Photos sebagai foto, video, atau keduanya."
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aggiunge un'estensione “Condividi” che consente di caricare foto, video e file PDF da altre app."
+            "state" : "needs_review",
+            "value" : "Importa le Live Photo come foto, video o entrambi."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "他のアプリから写真、動画、PDFファイルをアップロードできる「共有」拡張機能を追加します。"
+            "state" : "needs_review",
+            "value" : "Live Photosを写真、動画、またはその両方としてインポートします。"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Voegt een Share-extensie toe waarmee je foto’s, video’s en PDF-bestanden vanuit andere apps kunt uploaden."
+            "state" : "needs_review",
+            "value" : "Importeert Live Photos als foto, video of beide."
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dodaje rozszerzenie „Udostępnij”, które umożliwia przesyłanie zdjęć, filmów i plików PDF z innych aplikacji."
+            "state" : "needs_review",
+            "value" : "Importuje zdjęcia Live Photo jako zdjęcie, film lub oba."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Добавляет расширение «Поделиться», позволяющее загружать фотографии, видео и файлы PDF из других приложений."
+            "state" : "needs_review",
+            "value" : "Импортирует Фото Live Photo как фотографию, видео или и то, и другое."
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lägger till ett delningstillägg som gör det möjligt att ladda upp foton, videor och PDF-filer från andra appar."
+            "state" : "needs_review",
+            "value" : "Importerar Live Photo-bilder som foto, video eller båda."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "添加了一个“分享”扩展，允许从其他应用上传照片、视频和PDF文件。"
+            "state" : "needs_review",
+            "value" : "将实况照片导入为照片、视频或两者。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "將原況照片匯入為照片、影片或兩者。"
+          }
+        }
+      }
+    },
+    "whatsNew_shareAlbums" : {
+      "comment" : "Share Private Albums",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "مشاركة الألبومات الخاصة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Del private album"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Private Alben teilen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
             "state" : "translated",
-            "value" : "新增一個「分享」擴充功能，可從其他應用程式上傳照片、影片和 PDF 檔案。"
+            "value" : "Share Private Albums"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Compartir álbumes privados"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Partager des albums privés"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Privát albumok megosztása"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Bagikan album pribadi"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Condividere album privati"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "非公開アルバムの共有"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Privéalbums delen"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Udostępnianie albumów prywatnych"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Общий доступ к приватным альбомам"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dela privata album"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "共享私密相册"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "分享私人相簿"
+          }
+        }
+      }
+    },
+    "whatsNew_shareAlbumsDescription" : {
+      "comment" : "Allows to share private albums with people who do not have an account (requires the Share Album plugin).",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "يتيح مشاركة الألبومات الخاصة مع أشخاص ليس لديهم حساب (يتطلب الملحق Share Album)."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Giver mulighed for at dele private album med personer, der ikke har en konto (kræver Share Album plugin)."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ermöglicht es, private Alben mit Personen ohne Konto zu teilen (erfordert das Share Album Plugin)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allows to share private albums with people who do not have an account (requires the Share Album plugin)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Permite compartir álbumes privados con personas que no tienen una cuenta (requiere el plugin Share Album)."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Permet de partager des albums privés avec des personnes qui n'ont pas de compte (nécessite le plugin Share Album)."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lehetővé teszi privát albumok megosztását olyanokkal, akiknek nincs fiókjuk (a Share Album beépülő modul szükséges)."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Memungkinkan membagikan album pribadi kepada orang yang tidak memiliki akun (memerlukan plugin Share Album)."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Permette di condividere album privati con chi non ha un account (richiede il plugin Share Album)."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "アカウントを持たない人と非公開アルバムを共有できます（Share Albumプラグインが必要です）。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Maakt het mogelijk privéalbums te delen met personen die geen account hebben (vereist de Share Album plugin)."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Umożliwia udostępnianie albumów prywatnych osobom, które nie mają konta (wymaga wtyczki Share Album)."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Позволяет делиться приватными альбомами с теми, у кого нет учётной записи (требуется плагин Share Album)."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gör det möjligt att dela privata album med personer som inte har ett konto (kräver Share Album plugin)."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "可与没有账户的人共享私密相册（需要 Share Album 插件）。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "可與沒有帳號的人分享私人相簿（需要「Share Album」外掛程式）。"
           }
         }
       }

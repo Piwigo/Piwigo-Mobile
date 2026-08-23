@@ -10839,7 +10839,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versión 4.4\n\n• Permite compartir álbumes privados con personas que no tienen una cuenta (requiere el plugin Share Album)\n• Importa las Live Photos como foto, vídeo o ambos\n• Mejora la gestión de los usuarios de Community\n• Corrección de errores"
+            "value" : "Versión 4.4\n\n• Permite compartir álbumes privados con personas que no tengan una cuenta (requiere el plugin Share Album)\n• Importa las Live Photos como foto, vídeo o ambos\n• Mejora la gestión de los usuarios de Community\n• Corrección de errores"
           }
         },
         "fr" : {

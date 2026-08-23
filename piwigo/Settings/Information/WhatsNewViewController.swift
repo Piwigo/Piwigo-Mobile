@@ -36,19 +36,14 @@ final class WhatsNewViewController: UIViewController {
         titleLabel.text = String(localized: "whatsNew_title", comment: "What's New in Piwigo")
         
         // What's new — 1st annoucement
-        if #available(iOS 17.0, *) {
-            secondNewsImage.image = UIImage(systemName: "photo.badge.plus")
-        } else {
-            // Fallback on ealier version
-            secondNewsImage.image = UIImage(named: "photo.badge.plus")
-        }
-        firstNewsTitle.text = String(localized: "UploadRequests_cache", comment: "Uploads")
-        firstNewsDescription.text = String(localized: "whatsNew_shareExtension", comment: "Adds a Share extension allowing to upload photos, videos and PDF files from other apps.")
+        firstNewsImage.image = UIImage(systemName: "square.and.arrow.up")
+        firstNewsTitle.text = String(localized: "whatsNew_shareAlbums", comment: "Share Private Albums")
+        firstNewsDescription.text = String(localized: "whatsNew_shareAlbumsDescription", comment: "Allows to share private albums with people who do not have an account (requires the Share Album plugin).")
         
         // What's new — 2nd annoucement
-        secondNewsImage.image = UIImage(systemName: "square.stack.3d.forward.dottedline")
-        secondNewsTitle.text = String(localized: "whatsNew_gif", comment: "GIF Images")
-        secondNewsDescription.text = String(localized: "whatsNew_gifDescription", comment: "Plays animated GIF images.")
+        secondNewsImage.image = UIImage(systemName: "livephoto")
+        secondNewsTitle.text = String(localized: "settings_livePhotos", comment: "Live Photos")
+        secondNewsDescription.text = String(localized: "whatsNew_livePhotosImport", comment: "Imports Live Photos as photo, video or both.")
         
         // What's new — 3rd annoucement
         if #available(iOS 18.0, *) {

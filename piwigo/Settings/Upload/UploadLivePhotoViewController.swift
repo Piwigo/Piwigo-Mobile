@@ -118,7 +118,7 @@ extension UploadLivePhotoViewController: UITableViewDelegate
 {
     // MARK: - Header
     private func getContentOfHeader() -> (String, String) {
-        let title = String(format: "%@\n", String(localized: "settings_livePhoto", comment: "Live Photos"))
+        let title = String(format: "%@\n", String(localized: "settings_livePhotos", comment: "Live Photos"))
         let text = String(localized: "UploadLivePhotoAs_header", comment: "Please select what to upload from a Live Photo.")
         return (title, text)
     }

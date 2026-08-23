@@ -39,7 +39,7 @@ extension UploadSettingsViewController {
                 : "LabelTableViewCell2"
             guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
             else { preconditionFailure("Could not load a LabelTableViewCell!") }
-            cell.configure(with: String(localized: "settings_livePhoto", comment: "Live Photos"),
+            cell.configure(with: String(localized: "settings_livePhotos", comment: "Live Photos"),
                            detail: uploadLivePhotoAs.name)
             cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
             cell.accessibilityIdentifier = "uploadLivePhotoAs"

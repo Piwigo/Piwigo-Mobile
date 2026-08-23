@@ -606,7 +606,7 @@ final class AlbumViewController: UIViewController
 //}
 #endif
         if let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
-            if AppVars.shared.didShowWhatsNewAppVersion.compare("4.3", options: .numeric) == .orderedAscending,
+            if AppVars.shared.didShowWhatsNewAppVersion.compare("4.4", options: .numeric) == .orderedAscending,
                appVersionString.compare(AppVars.shared.didShowWhatsNewAppVersion, options: .numeric) == .orderedDescending {
                 // Display What's New in Piwigo
                 let whatsNewSB = UIStoryboard(name: "WhatsNewViewController", bundle: nil)

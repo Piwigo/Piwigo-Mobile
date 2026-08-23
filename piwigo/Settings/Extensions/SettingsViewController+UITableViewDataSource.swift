@@ -361,7 +361,7 @@ extension SettingsViewController: UITableViewDataSource
                     : "LabelTableViewCell2"
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
-                cell.configure(with: String(localized: "settings_livePhoto", comment: "Live Photos"),
+                cell.configure(with: String(localized: "settings_livePhotos", comment: "Live Photos"),
                                detail: UploadVars.shared.uploadLivePhotoAs.name)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "uploadLivePhotoAs"
