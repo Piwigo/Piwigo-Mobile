@@ -771,31 +771,31 @@ extension SettingsViewController: UITableViewDataSource
             guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
             else { preconditionFailure("Could not load LabelTableViewCell") }
             switch indexPath.row {
-            case 0 /* Documentation */:
+            case 0 /* Logs */:
+                cell.configure(with: String(localized: "settings_logs", comment: "Logs"), detail: "")
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "errorLogs"
+                tableViewCell = cell
+                
+            case 1 /* Documentation */:
                 cell.configure(with: String(localized: "settings_supportDocumentation", comment: "Documentation"), detail: "")
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "documentation"
                 tableViewCell = cell
                 
-            case 1 /* Support Forum */:
+            case 2 /* Support Forum */:
                 cell.configure(with: String(localized: "settings_supportForum", comment: "Support Forum"), detail: "")
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "supportForum"
                 tableViewCell = cell
                 
-            case 2 /* Contact Support */:
+            case 3 /* Contact Support */:
                 cell.configure(with: String(localized: "settings_contact", comment: "Contact Support"), detail: "")
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 if !MFMailComposeViewController.canSendMail() {
                     cell.titleLabel.textColor = PwgColor.rightLabel
                 }
                 cell.accessibilityIdentifier = "mailContact"
-                tableViewCell = cell
-                
-            case 3 /* Logs */:
-                cell.configure(with: String(localized: "settings_logs", comment: "Logs"), detail: "")
-                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-                cell.accessibilityIdentifier = "errorLogs"
                 tableViewCell = cell
                 
             default:
