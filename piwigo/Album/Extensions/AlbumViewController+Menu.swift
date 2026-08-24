@@ -45,10 +45,39 @@ extension AlbumViewController {
         selectBarButton?.menu = updatedMenu
     }
     
+
+    // MARK: - Album View Options
+    // Menu presenting vew options
+    func viewOptionsMenu() -> UIMenu {
+        // The sub-menus are rebuilt each time the menu is presented so that the
+        // selected sort and group options always reflect the current settings,
+        // even when the menu itself is not rebuilt after a change
+        // (e.g. in the root album, or after using the segmented control of a section header).
+        let deferred = UIDeferredMenuElement.uncached { [weak self] completion in
+            guard let self else { completion([]); return }
+            completion([sortMenu(), groupMenu(), showMenu()].compactMap({$0}))
+        }
+        let options: UIMenu.Options
+        if #available(iOS 26.0, *) {
+            options = []
+        } else {
+            // Fallback on previous version
+            options = .displayInline
+        }
+        return UIMenu(title: String(localized: "categoryView_options", comment: "View Options"),
+                      image: nil,
+                      identifier: UIMenu.Identifier("org.piwigo.view.options"),
+                      options: options,
+                      children: [deferred])
+    }
+    
     
     // MARK: - Sort Image
     /// - for selecting image sort options
     func sortMenu() -> UIMenu? {
+        // No images in root album
+        guard categoryId != pwgSmartAlbum.root.rawValue else { return nil }
+        
         let options: UIMenu.Options = [.singleSelection]
         let menuId = UIMenu.Identifier("org.piwigo.images.sort")
         return UIMenu(title: String(localized: "categorySort_sort", comment: "Sort Images By…"),
@@ -70,8 +99,8 @@ extension AlbumViewController {
         let actionId = UIAction.Identifier("org.piwigo.images.sort.default")
         let isActive = sortOption == .albumDefault
         let action = UIAction(title: pwgImageSort.albumDefault.name,
-                              image: isActive ? UIImage(systemName: "checkmark") : nil,
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: isActive ? .on : .off, handler: { [weak self] action in
             guard let self else { return }
             // Should sorting be changed?
             if isActive { return }
@@ -99,8 +128,8 @@ extension AlbumViewController {
         switch sortOption {
         case .nameAscending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
-                              image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: .on, handler: { [weak self] action in
                 guard let self else { return }
                 sortOption = .nameDescending
                 images.delegate = nil
@@ -110,8 +139,8 @@ extension AlbumViewController {
             })
         case .nameDescending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
-                              image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: .on, handler: { [weak self] action in
                 guard let self else { return }
                 sortOption = .nameAscending
                 images.delegate = nil
@@ -147,8 +176,8 @@ extension AlbumViewController {
         switch sortOption {
         case .dateCreatedAscending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
-                              image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: .on, handler: { [weak self] action in
                 guard let self else { return }
                 sortOption = .dateCreatedDescending
                 images.delegate = nil
@@ -158,8 +187,8 @@ extension AlbumViewController {
             })
         case .dateCreatedDescending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
-                              image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: .on, handler: { [weak self] action in
                 guard let self else { return }
                 sortOption = .dateCreatedAscending
                 images.delegate = nil
@@ -195,8 +224,8 @@ extension AlbumViewController {
         switch sortOption {
         case .datePostedAscending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
-                              image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: .on, handler: { [weak self] action in
                 guard let self else { return }
                 sortOption = .datePostedDescending
                 images.delegate = nil
@@ -206,8 +235,8 @@ extension AlbumViewController {
             })
         case .datePostedDescending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
-                              image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: .on, handler: { [weak self] action in
                 guard let self else { return }
                 sortOption = .datePostedAscending
                 images.delegate = nil
@@ -243,8 +272,8 @@ extension AlbumViewController {
         switch sortOption {
         case .ratingScoreAscending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
-                              image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: .on, handler: { [weak self] action in
                 guard let self else { return }
                 sortOption = .ratingScoreDescending
                 images.delegate = nil
@@ -254,8 +283,8 @@ extension AlbumViewController {
             })
         case .ratingScoreDescending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
-                              image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: .on, handler: { [weak self] action in
                 guard let self else { return }
                 sortOption = .ratingScoreAscending
                 images.delegate = nil
@@ -291,8 +320,8 @@ extension AlbumViewController {
         switch sortOption {
         case .visitsAscending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
-                              image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: .on, handler: { [weak self] action in
                 guard let self else { return }
                 sortOption = .visitsDescending
                 images.delegate = nil
@@ -302,8 +331,8 @@ extension AlbumViewController {
             })
         case .visitsDescending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
-                              image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: .on, handler: { [weak self] action in
                 guard let self else { return }
                 sortOption = .visitsAscending
                 images.delegate = nil
@@ -336,8 +365,8 @@ extension AlbumViewController {
         let actionId = UIAction.Identifier("org.piwigo.images.sort.manual")
         let isActive = sortOption == .rankAscending
         let action = UIAction(title: pwgImageSort.rankAscending.name,
-                              image: isActive ? UIImage(systemName: "checkmark") : nil,
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: isActive ? .on : .off, handler: { [weak self] action in
             guard let self else { return }
             // Should sorting be changed?
             if isActive { return }
@@ -364,8 +393,8 @@ extension AlbumViewController {
         let actionId = UIAction.Identifier("org.piwigo.images.sort.random")
         let isActive = sortOption == .random
         let action = UIAction(title: String(localized: "categorySort_randomly", comment: "Randomly"),
-                              image: isActive ? UIImage(systemName: "checkmark") : nil,
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: isActive ? .on : .off, handler: { [weak self] action in
             guard let self else { return }
             // Should sorting be changed?
             if isActive { return }
@@ -382,17 +411,13 @@ extension AlbumViewController {
         return action
     }
     
-    
-    // MARK: - View Options
+
+    // MARK: - Group Images Options
     /// - for choosing how to group images
-    func viewOptionsMenu() -> UIMenu {
-        return UIMenu(title: String(localized: "categoryView_options", comment: "View Options"),
-                      image: nil,
-                      identifier: UIMenu.Identifier("org.piwigo.view.options"),
-                      children: [sortMenu(), groupMenu(), showMenu()].compactMap({$0}))
-    }
-    
     func groupMenu() -> UIMenu? {
+        // No images in root album
+        guard categoryId != pwgSmartAlbum.root.rawValue else { return nil }
+        
         // Only available when images are sorted by date
         guard let sortKey = images.fetchRequest.sortDescriptors?.first?.key,
               [#keyPath(Image.dateCreated), #keyPath(Image.datePosted)].contains(sortKey)
@@ -410,9 +435,9 @@ extension AlbumViewController {
     
     func byDayAction() -> UIAction? {
         let isActive = AlbumVars.shared.defaultGroup == .day
-        let action = UIAction(title: String(localized: "Day", comment: "Day"),
-                              image: isActive ? UIImage(systemName: "checkmark") : nil,
+        let action = UIAction(title: String(localized: "Day", comment: "Day"), image: nil,
                               identifier: UIAction.Identifier("org.piwigo.images.group.day"),
+                              state: isActive ? .on : .off,
                               handler: { [weak self] action in
             guard let self else { return }
             // Should image grouping be changed?
@@ -430,9 +455,9 @@ extension AlbumViewController {
     
     func byWeekAction() -> UIAction? {
         let isActive = AlbumVars.shared.defaultGroup == .week
-        let action = UIAction(title: String(localized: "Week", comment: "Week"),
-                              image: isActive ? UIImage(systemName: "checkmark") : nil,
+        let action = UIAction(title: String(localized: "Week", comment: "Week"), image: nil,
                               identifier: UIAction.Identifier("org.piwigo.images.group.week"),
+                              state: isActive ? .on : .off,
                               handler: { [weak self] action in
             guard let self else { return }
             // Should image grouping be changed?
@@ -450,9 +475,9 @@ extension AlbumViewController {
     
     func byMonthAction() -> UIAction? {
         let isActive = AlbumVars.shared.defaultGroup == .month
-        let action = UIAction(title: String(localized: "Month", comment: "Month"),
-                              image: isActive ? UIImage(systemName: "checkmark") : nil,
+        let action = UIAction(title: String(localized: "Month", comment: "Month"), image: nil,
                               identifier: UIAction.Identifier("org.piwigo.images.group.month"),
+                              state: isActive ? .on : .off,
                               handler: { [weak self] action in
             guard let self else { return }
             // Should sorting be changed?
@@ -470,9 +495,9 @@ extension AlbumViewController {
     
     func byNoneAction() -> UIAction? {
         let isActive = AlbumVars.shared.defaultGroup == .none
-        let action = UIAction(title: String(localized: "None", comment: "None"),
-                              image: isActive ? UIImage(systemName: "checkmark") : nil,
+        let action = UIAction(title: String(localized: "None", comment: "None"), image: nil,
                               identifier: UIAction.Identifier("org.piwigo.images.group.none"),
+                              state: isActive ? .on : .off,
                               handler: { [weak self] action in
             guard let self else { return }
             // Should image grouping be changed?
@@ -488,16 +513,45 @@ extension AlbumViewController {
         return action
     }
     
+
+    // MARK: - Show Options
+    /// - for choosing whether to show image titles and album descriptions
     func showMenu() -> UIMenu? {
         // Create a menu for selecting what to show
         let children = [showHideTitlesAction(), showHideDescriptionsAction()].compactMap({$0})
         return UIMenu(title: String(localized: "categoryView_show", comment: "Show…"),
                       image: nil,
                       identifier: UIMenu.Identifier("org.piwigo.images.show.main"),
-                      options: [],
+                      options: categoryId == Int32.zero ? .displayInline : [],
                       children: children)
     }
-    
+
+    func showHideTitlesAction() -> UIAction? {
+        // No images in root album
+        guard categoryId != pwgSmartAlbum.root.rawValue else { return nil }
+        
+        let isActive = AlbumVars.shared.displayImageTitles
+        let action = UIAction(title: String(localized: "settings_displayTitles", comment: "Image Titles"),
+                              image: isActive ? UIImage(systemName: "checkmark") : nil,
+                              identifier: UIAction.Identifier("org.piwigo.images.show.titles"),
+                              handler: { [weak self] action in
+            guard let self else { return }
+            // Show or hide image titles
+            AlbumVars.shared.displayImageTitles = !isActive
+            // Update menu
+            if categoryId == Int32.zero {
+                let children = [smartAlbumsMenu(), viewOptionsMenu(), settingsMenu()].compactMap({$0})
+                let updatedMenu = discoverBarButton.menu?.replacingChildren(children)
+                discoverBarButton.menu = updatedMenu
+            } else {
+                updateCollectionAndMenu()
+            }
+            updateCollectionAndMenu()
+        })
+        action.accessibilityIdentifier = "showHideImageTitles"
+        return action
+    }
+
     func showHideDescriptionsAction() -> UIAction? {
         let isActive = AlbumVars.shared.displayAlbumDescriptions
         let action = UIAction(title: String(localized: "settings_displayDescriptions", comment: "Album Descriptions"),
@@ -522,29 +576,6 @@ extension AlbumViewController {
             }
         })
         action.accessibilityIdentifier = "showHideAlbumDescriptions"
-        return action
-    }
-
-    func showHideTitlesAction() -> UIAction? {
-        let isActive = AlbumVars.shared.displayImageTitles
-        let action = UIAction(title: String(localized: "settings_displayTitles", comment: "Image Titles"),
-                              image: isActive ? UIImage(systemName: "checkmark") : nil,
-                              identifier: UIAction.Identifier("org.piwigo.images.show.titles"),
-                              handler: { [weak self] action in
-            guard let self else { return }
-            // Show or hide image titles
-            AlbumVars.shared.displayImageTitles = !isActive
-            // Update menu
-            if categoryId == Int32.zero {
-                let children = [smartAlbumsMenu(), viewOptionsMenu(), settingsMenu()].compactMap({$0})
-                let updatedMenu = discoverBarButton.menu?.replacingChildren(children)
-                discoverBarButton.menu = updatedMenu
-            } else {
-                updateCollectionAndMenu()
-            }
-            updateCollectionAndMenu()
-        })
-        action.accessibilityIdentifier = "showHideImageTitles"
         return action
     }
 }
