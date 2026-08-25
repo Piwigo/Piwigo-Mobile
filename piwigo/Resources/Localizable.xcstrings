@@ -43275,19 +43275,19 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الصور الحية"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Live Photos"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Live Photos"
           }
         },
@@ -43299,73 +43299,73 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Live Photos"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Live Photos"
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Live Photók"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Live Photos"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Live Photo"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Live Photos"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Live Photos"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Zdjęcia Live Photo"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Фото Live Photo"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Live Photo-bilder"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "实况照片"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "原況照片"
           }
         }
@@ -48022,19 +48022,19 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الدليل"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Dokumentation"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Dokumentation"
           }
         },
@@ -48046,73 +48046,73 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Documentación"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Documentation"
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Dokumentáció"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Dokumentasi"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Documentazione"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "ドキュメント"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Documentatie"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Dokumentacja"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Документация"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Dokumentation"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "文档"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "文件說明"
           }
         }
@@ -49057,7 +49057,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Instale el plugin %@ en su Piwigo para compartir álbumes privados con personas que no tienen una cuenta."
+            "value" : "Instale el plugin %@ en su Piwigo para compartir álbumes privados con personas que no tengan una cuenta."
           }
         },
         "fr" : {
@@ -50346,19 +50346,19 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "آخر زيارة: %@."
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Seneste besøg: %@."
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Letzter Besuch: %@."
           }
         },
@@ -50370,73 +50370,73 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Última visita: %@."
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Dernière visite : %@."
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Utolsó megnyitás: %@."
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Kunjungan terakhir: %@."
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ultima visita: %@."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "最終閲覧: %@。"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Laatste bezoek: %@."
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ostatnia wizyta: %@."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Последнее посещение: %@."
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Senaste besök: %@."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "最近访问：%@。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "最近造訪：%@。"
           }
         }
@@ -50447,19 +50447,19 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "تمت مشاركة هذا الألبوم %@ ولم تتم زيارته بعد."
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Dette album blev delt %@ og er endnu ikke blevet besøgt."
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Dieses Album wurde %@ geteilt und noch nicht besucht."
           }
         },
@@ -50471,73 +50471,73 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Este álbum se compartió %@ y aún no se ha visitado."
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Cet album a été partagé %@ et n'a pas encore été visité."
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ezt az albumot %@ osztották meg, és még senki nem nyitotta meg."
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Album ini dibagikan %@ dan belum dikunjungi."
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Questo album è stato condiviso %@ e non è ancora stato visitato."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "このアルバムは%@に共有され、まだ閲覧されていません。"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Dit album is %@ gedeeld en is nog niet bezocht."
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ten album udostępniono %@ i nikt go jeszcze nie odwiedził."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Этот альбом опубликован %@ и пока не был посещён."
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Det här albumet delades %@ och har ännu inte besökts."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "此相册于%@共享，尚未被访问。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "此相簿於%@分享，尚未被造訪。"
           }
         }
@@ -50864,7 +50864,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Der aktuelle Link funktioniert nicht mehr. Personen, die ihn bereits erhalten haben, können dieses Album nicht mehr öffnen."
+            "value" : "Der aktuelle Link wird nicht mehr funktionieren. Leute, die ihn bereits erhalten haben, werden dieses Album nicht mehr öffnen können."
           }
         },
         "en" : {
@@ -51066,7 +51066,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Freigabe beenden"
+            "value" : "Teilen beenden"
           }
         },
         "en" : {
@@ -51167,7 +51167,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Der Link funktioniert nicht mehr. Personen, die ihn bereits erhalten haben, können dieses Album nicht mehr öffnen."
+            "value" : "Der Link wird nicht mehr funktionieren. Leute, die ihn bereits erhalten haben, werden dieses Album nicht mehr öffnen können."
           }
         },
         "en" : {
@@ -51258,37 +51258,37 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "تمت مشاركة هذا الألبوم %@ وتمت زيارته %lld مرات."
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "تمت مشاركة هذا الألبوم %@ وتمت زيارته %lld مرة."
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "تمت مشاركة هذا الألبوم %@ وتمت زيارته مرة واحدة."
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "تمت مشاركة هذا الألبوم %@ وتمت زيارته %lld مرة."
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "تمت مشاركة هذا الألبوم %@ وتمت زيارته مرتين."
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "تمت مشاركة هذا الألبوم %@ ولم تتم زيارته."
                 }
               }
@@ -51300,13 +51300,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Dette album blev delt %@ og er blevet besøgt én gang."
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Dette album blev delt %@ og er blevet besøgt %lld gange."
                 }
               }
@@ -51318,13 +51318,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Dieses Album wurde %@ geteilt und einmal besucht."
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Dieses Album wurde %@ geteilt und %lld Mal besucht."
                 }
               }
@@ -51354,13 +51354,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Este álbum se compartió %@ y se ha visitado una vez."
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Este álbum se compartió %@ y se ha visitado %lld veces."
                 }
               }
@@ -51372,13 +51372,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Cet album a été partagé %@ et a été visité une fois."
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Cet album a été partagé %@ et a été visité %lld fois."
                 }
               }
@@ -51390,13 +51390,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Ezt az albumot %@ osztották meg, és egyszer nyitották meg."
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Ezt az albumot %@ osztották meg, és %lld alkalommal nyitották meg."
                 }
               }
@@ -51408,7 +51408,7 @@
             "plural" : {
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Album ini dibagikan %@ dan telah dikunjungi %lld kali."
                 }
               }
@@ -51420,13 +51420,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Questo album è stato condiviso %@ ed è stato visitato una volta."
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Questo album è stato condiviso %@ ed è stato visitato %lld volte."
                 }
               }
@@ -51438,7 +51438,7 @@
             "plural" : {
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "このアルバムは%@に共有され、%lld回閲覧されました。"
                 }
               }
@@ -51450,13 +51450,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Dit album is %@ gedeeld en is één keer bezocht."
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Dit album is %@ gedeeld en is %lld keer bezocht."
                 }
               }
@@ -51468,25 +51468,25 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Ten album udostępniono %@ i odwiedzono go %lld razy."
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Ten album udostępniono %@ i odwiedzono go %lld razy."
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Ten album udostępniono %@ i odwiedzono go raz."
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Ten album udostępniono %@ i odwiedzono go %lld razy."
                 }
               }
@@ -51498,25 +51498,25 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Этот альбом опубликован %@ и был посещён %lld раза."
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Этот альбом опубликован %@ и был посещён %lld раз."
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Этот альбом опубликован %@ и был посещён один раз."
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Этот альбом опубликован %@ и был посещён %lld раза."
                 }
               }
@@ -51528,13 +51528,13 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Det här albumet delades %@ och har besökts en gång."
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "Det här albumet delades %@ och har besökts %lld gånger."
                 }
               }
@@ -51546,7 +51546,7 @@
             "plural" : {
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "此相册于%@共享，已被访问 %lld 次。"
                 }
               }
@@ -51558,7 +51558,7 @@
             "plural" : {
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "此相簿於%@分享，已被造訪 %lld 次。"
                 }
               }
@@ -57741,19 +57741,19 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يستورد الصور الحية كصورة أو فيديو أو كليهما."
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Importerer Live Photos som foto, video eller begge."
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Importiert Live Photos als Foto, Video oder beides."
           }
         },
@@ -57765,73 +57765,73 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Importa Live Photos como foto, vídeo o ambos."
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Importe les Live Photos sous forme de photo, de vidéo ou des deux."
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "A Live Photókat fotóként, videóként vagy mindkettőként importálja."
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Mengimpor Live Photos sebagai foto, video, atau keduanya."
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Importa le Live Photo come foto, video o entrambi."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Live Photosを写真、動画、またはその両方としてインポートします。"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Importeert Live Photos als foto, video of beide."
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Importuje zdjęcia Live Photo jako zdjęcie, film lub oba."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Импортирует Фото Live Photo как фотографию, видео или и то, и другое."
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Importerar Live Photo-bilder som foto, video eller båda."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "将实况照片导入为照片、视频或两者。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "將原況照片匯入為照片、影片或兩者。"
           }
         }
@@ -57842,19 +57842,19 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "مشاركة الألبومات الخاصة"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Del private album"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Private Alben teilen"
           }
         },
@@ -57866,73 +57866,73 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Compartir álbumes privados"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Partager des albums privés"
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Privát albumok megosztása"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Bagikan album pribadi"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Condividere album privati"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "非公開アルバムの共有"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Privéalbums delen"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Udostępnianie albumów prywatnych"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Общий доступ к приватным альбомам"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Dela privata album"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "共享私密相册"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "分享私人相簿"
           }
         }
@@ -57943,19 +57943,19 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "يتيح مشاركة الألبومات الخاصة مع أشخاص ليس لديهم حساب (يتطلب الملحق Share Album)."
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Giver mulighed for at dele private album med personer, der ikke har en konto (kræver Share Album plugin)."
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ermöglicht es, private Alben mit Personen ohne Konto zu teilen (erfordert das Share Album Plugin)."
           }
         },
@@ -57967,73 +57967,73 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Permite compartir álbumes privados con personas que no tienen una cuenta (requiere el plugin Share Album)."
+            "state" : "translated",
+            "value" : "Permite compartir álbumes privados con personas que no tengan una cuenta (requiere el plugin Share Album)."
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Permet de partager des albums privés avec des personnes qui n'ont pas de compte (nécessite le plugin Share Album)."
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Lehetővé teszi privát albumok megosztását olyanokkal, akiknek nincs fiókjuk (a Share Album beépülő modul szükséges)."
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Memungkinkan membagikan album pribadi kepada orang yang tidak memiliki akun (memerlukan plugin Share Album)."
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Permette di condividere album privati con chi non ha un account (richiede il plugin Share Album)."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "アカウントを持たない人と非公開アルバムを共有できます（Share Albumプラグインが必要です）。"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Maakt het mogelijk privéalbums te delen met personen die geen account hebben (vereist de Share Album plugin)."
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Umożliwia udostępnianie albumów prywatnych osobom, które nie mają konta (wymaga wtyczki Share Album)."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Позволяет делиться приватными альбомами с теми, у кого нет учётной записи (требуется плагин Share Album)."
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Gör det möjligt att dela privata album med personer som inte har ett konto (kräver Share Album plugin)."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "可与没有账户的人共享私密相册（需要 Share Album 插件）。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "可與沒有帳號的人分享私人相簿（需要「Share Album」外掛程式）。"
           }
         }
