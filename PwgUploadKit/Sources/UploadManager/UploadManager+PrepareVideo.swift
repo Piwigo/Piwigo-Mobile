@@ -344,6 +344,7 @@ extension UploadManager {
                         return
                     }
                 }
+                return
             }
             
             // Copy video file into Piwigo/Uploads directory
