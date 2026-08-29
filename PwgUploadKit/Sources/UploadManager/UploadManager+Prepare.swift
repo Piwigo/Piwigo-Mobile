@@ -375,7 +375,7 @@ extension UploadManager
             let filename = getVideoFileName(from: originalAsset)
             
             // Update upload request
-            uploadData.fileType = pwgImageFileType.image.rawValue
+            uploadData.fileType = pwgImageFileType.video.rawValue
             uploadData.fileName = filename
             
             // Launch preparation job according to file format
