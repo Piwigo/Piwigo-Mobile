@@ -102,8 +102,10 @@ extension UploadManager {
         // Check if the user wants to:
         /// - reduce the frame size
         /// - remove the private metadata
+        let hasPrivateMetadata = metadata.containsPrivateMetadata()
+        UploadManager.logger.notice("Prepare video \(uploadData.fileName) from file — \(originalFileURL.fileSize) bytes, private metadata: \(hasPrivateMetadata ? "yes" : "no")")
         if (uploadData.resizeImageOnUpload && uploadData.videoMaxSize != 0) ||
-            (uploadData.stripGPSdataOnUpload && originalVideo.metadata.containsPrivateMetadata()) {
+            (uploadData.stripGPSdataOnUpload && hasPrivateMetadata) {
             // Check that the video can be exported
             try await checkVideoExportability(of: originalVideo)
             
@@ -290,8 +292,10 @@ extension UploadManager {
             /// - reduce the frame size
             /// - remove the private metadata
             // Also follow this route if the AVAsset has no URL.
+            let hasPrivateMetadata = originalVideo.metadata.containsPrivateMetadata()
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • AVAsset file: \(originalFileURL?.lastPathComponent ?? "none (composition)"), \(originalFileURL?.fileSize ?? 0) bytes, private metadata: \(hasPrivateMetadata ? "yes" : "no")")
             if (uploadProperties.resizeImageOnUpload && uploadProperties.videoMaxSize != 0) ||
-                (uploadProperties.stripGPSdataOnUpload && originalVideo.metadata.containsPrivateMetadata()) ||
+                (uploadProperties.stripGPSdataOnUpload && hasPrivateMetadata) ||
                 (originalFileURL == nil) {
                 Task(priority: .utility) { @UploadManagerActor in
                     do {
@@ -348,6 +352,16 @@ extension UploadManager {
             }
             
             // Copy video file into Piwigo/Uploads directory
+            /// The branch above returns, so the AVAsset does have a URL at this point.
+            guard let originalFileURL else {
+                Task(priority: .utility) { @UploadManagerActor in
+                    var uploadData = uploadProperties
+                    uploadData.requestState = .preparingError
+                    uploadData.requestError = PwgKitError.missingAsset.localizedDescription
+                    await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
+                }
+                return
+            }
             Task(priority: .utility) { @UploadManagerActor in
                 do {
                     // Get creation date from metadata if possible
@@ -356,14 +370,14 @@ extension UploadManager {
                     if let dateFromMetadata = metadata.creationDate() {
                         uploadData.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
                     } else {
-                        uploadData.creationDate = (originalFileURL?.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+                        uploadData.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
                     }
                     
                     // Rename file according to user's demand from date/time/counter/etc.
                     self.renamedFile(for: &uploadData)
                     
                     // Get MD5 checksum and MIME type, change URL
-                    try self.setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: originalFileURL!)
+                    try self.setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: originalFileURL)
                     
                     // Upload video with tags and properties
                     uploadData.requestState = .prepared
@@ -675,7 +689,9 @@ extension UploadManager {
         var exportPreset = AVAssetExportPresetHighestQuality
         
         // Determine video size
-        let videoSize = videoAsset.tracks(withMediaType: .video).first?.naturalSize ?? CGSize(width: 640, height: 480)
+        /// A missing video track falls back to 640x480, i.e. to the smallest export preset.
+        let videoTrack = videoAsset.tracks(withMediaType: .video).first
+        let videoSize = videoTrack?.naturalSize ?? CGSize(width: 640, height: 480)
         var maxPixels = Int(max(videoSize.width, videoSize.height))
         
         // Resize frames
@@ -696,10 +712,12 @@ extension UploadManager {
         } else if (maxPixels <= 1920) && presets.contains(AVAssetExportPreset1920x1080) {
             // Encode in 1920x1080 pixels — metadata will be lost
             exportPreset = AVAssetExportPreset1920x1080
-        } else if (maxPixels <= 3840) && presets.contains(AVAssetExportPreset1920x1080) {
+        } else if (maxPixels <= 3840) && presets.contains(AVAssetExportPreset3840x2160) {
             // Encode in 3840x2160 pixels — metadata will be lost
             exportPreset = AVAssetExportPreset3840x2160
         }
+
+        UploadManager.logger.notice("Exporting \(uploadData.fileName) — track: \(videoTrack == nil ? "none!" : "\(Int(videoSize.width))x\(Int(videoSize.height))"), preset: \(exportPreset)")
 
         // Get export session
         guard let exportSession = AVAssetExportSession(asset: videoAsset,
@@ -753,6 +771,7 @@ extension UploadManager {
         do {
             // Export temporary video for upload
             try await exportSession.export(to: outputURL, as: .mp4)
+            UploadManager.logger.notice("Exported \(uploadData.fileName) — \(outputURL.fileSize) bytes")
         }
         catch let error as AVError {
             // Deletes temporary video file if any

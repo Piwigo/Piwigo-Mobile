@@ -554,5 +554,7 @@ extension UploadManager
         else {
             throw .missingAsset
         }
+
+        UploadManager.logger.notice("Upload file ready: \(uploadData.fileName) — \(fileURL.fileSize) bytes, MIME \(uploadData.mimeType)")
     }
 }
