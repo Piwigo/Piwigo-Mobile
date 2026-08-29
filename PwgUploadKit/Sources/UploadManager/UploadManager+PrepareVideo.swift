@@ -309,7 +309,9 @@ extension UploadManager {
                             uploadData.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
                         }
                         else {
-                            uploadData.creationDate = DateUtilities.unknownDate.timeIntervalSinceReferenceDate
+                            // Case of a composition (slow-motion, edited video): it carries no
+                            // metadata and has no file, so adopt the Photo Library's own date.
+                            uploadData.creationDate = (assetCreationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
                         }
                         
                         // Rename file according to user's demand from date/time/counter/etc.
