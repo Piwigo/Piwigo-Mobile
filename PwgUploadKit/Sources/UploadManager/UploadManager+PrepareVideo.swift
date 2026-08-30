@@ -80,13 +80,14 @@ extension UploadManager {
     }
 
 
-    // MARK: - Prepare Video From File
+    // MARK: - Prepare Video from File
     // Case of a video which is in a format accepted by the Piwigo server
     func prepareVideo(atURL originalFileURL: URL, for uploadData: inout UploadProperties) async throws(PwgKitError)
     {
         // Retrieve video data (via a typed URL so AVFoundation can parse the extensionless shared file)
         let (originalVideo, tempVideoURL) = self.readableVideoAsset(at: originalFileURL, fileName: uploadData.fileName)
         defer { if let tempVideoURL { try? FileManager.default.removeItem(at: tempVideoURL) } }
+        let trackInfo = await videoTrackInfo(of: UncheckedSendable(originalVideo))
         
         // Get creation date from metadata if possible
         let metadata = originalVideo.metadata
@@ -103,9 +104,11 @@ extension UploadManager {
         /// - reduce the frame size
         /// - remove the private metadata
         let hasPrivateMetadata = metadata.containsPrivateMetadata()
-        UploadManager.logger.notice("Prepare video \(uploadData.fileName) from file — \(originalFileURL.fileSize) bytes, private metadata: \(hasPrivateMetadata ? "yes" : "no")")
+        /// An HDR video is tone-mapped to SDR, which requires the server to accept MP4 files.
+        let shouldToneMapHDR = uploadData.serverFileTypes.contains("mp4") && (trackInfo?.isHDR ?? false)
+        UploadManager.logger.notice("Prepare video \(uploadData.fileName) from file — \(originalFileURL.fileSize) bytes, \(trackInfo?.description ?? "no video track"), private metadata: \(hasPrivateMetadata ? "yes" : "no"), tone-map: \(shouldToneMapHDR ? "yes" : "no")")
         if (uploadData.resizeImageOnUpload && uploadData.videoMaxSize != 0) ||
-            (uploadData.stripGPSdataOnUpload && hasPrivateMetadata) {
+            (uploadData.stripGPSdataOnUpload && hasPrivateMetadata) || shouldToneMapHDR {
             // Check that the video can be exported
             try await checkVideoExportability(of: originalVideo)
             
@@ -193,7 +196,7 @@ extension UploadManager {
     }
 
     
-    // MARK: - Prepare Video From Photo Library Asset
+    // MARK: - Prepare Video from Photo Library Asset
     // Case of a video from the Photo Library which is in a format accepted by the Piwigo server
     /// NB: Not possible to extract AVAsset with async/await methods as of iOS 26.2
 //    func prepareVideo(ofAsset imageAsset: PHAsset, atURL outputURL: URL, for upload: Upload) async throws(PwgKitError) {
@@ -249,6 +252,8 @@ extension UploadManager {
         UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Prepare video \(uploadProperties.fileName) from Asset")
 
         // Retrieve video data
+        /// The date is captured here because a composition carries no metadata to derive it from.
+        let assetCreationDate = imageAsset.creationDate
         let options = getVideoRequestOptions()
         retrieveVideo(from: imageAsset, with: options) { (avasset, error) in
             UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Returned AVAsset")
@@ -285,115 +290,77 @@ extension UploadManager {
                 return
             }
             
-            // Get original fileURL if any
-            let originalFileURL = (originalVideo as? AVURLAsset)?.url
-            
-            // Check if the user wants to:
-            /// - reduce the frame size
-            /// - remove the private metadata
-            // Also follow this route if the AVAsset has no URL.
-            let hasPrivateMetadata = originalVideo.metadata.containsPrivateMetadata()
-            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • AVAsset file: \(originalFileURL?.lastPathComponent ?? "none (composition)"), \(originalFileURL?.fileSize ?? 0) bytes, private metadata: \(hasPrivateMetadata ? "yes" : "no")")
-            if (uploadProperties.resizeImageOnUpload && uploadProperties.videoMaxSize != 0) ||
-                (uploadProperties.stripGPSdataOnUpload && hasPrivateMetadata) ||
-                (originalFileURL == nil) {
-                Task(priority: .utility) { @UploadManagerActor in
-                    do {
-                        // Get creation date from metadata if possible
-                        var uploadData = uploadProperties
-                        let metadata = originalVideo.metadata
-                        if let dateFromMetadata = metadata.creationDate() {
-                            uploadData.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
-                        }
-                        else if let originalFileURL = (originalVideo as? AVURLAsset)?.url {
-                            uploadData.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
-                        }
-                        else {
-                            // Case of a composition (slow-motion, edited video): it carries no
-                            // metadata and has no file, so adopt the Photo Library's own date.
-                            uploadData.creationDate = (assetCreationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
-                        }
-                        
-                        // Rename file according to user's demand from date/time/counter/etc.
-                        self.renamedFile(for: &uploadData)
-                        
-                        // Check that the video can be exported
-                        try await self.checkVideoExportability(of: originalVideo)
-                        
-                        // Export new video in MP4 format w/ or w/o private metadata
-                        try await self.export(videoAsset: originalVideo, to: outputURL, with: &uploadData)
-                        
-                        // Get MD5 checksum and MIME type
-                        try self.setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: outputURL)
-                        
-                        // Job done
-                        uploadData.requestState = .prepared
-                        await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
-                        return
-                    }
-                    catch let error as PwgKitError {
-                        Task(priority: .utility) { @UploadManagerActor in
-                            var uploadData = uploadProperties
-                            uploadData.requestState = .preparingError
-                            uploadData.requestError = error.localizedDescription
-                            await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
-                        }
-                        return
-                    }
-                    catch {
-                        Task(priority: .utility) { @UploadManagerActor in
-                            var uploadData = uploadProperties
-                            uploadData.requestState = .preparingError
-                            uploadData.requestError = PwgKitError.otherError(innerError: error).localizedDescription
-                            await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
-                        }
-                        return
-                    }
-                }
-                return
-            }
-            
-            // Copy video file into Piwigo/Uploads directory
-            /// The branch above returns, so the AVAsset does have a URL at this point.
-            guard let originalFileURL else {
-                Task(priority: .utility) { @UploadManagerActor in
-                    var uploadData = uploadProperties
-                    uploadData.requestState = .preparingError
-                    uploadData.requestError = PwgKitError.missingAsset.localizedDescription
-                    await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
-                }
-                return
-            }
+            // Prepare the video on the actor: the asset properties must be loaded before the
+            // synchronous accessors below are read, and loading is asynchronous.
             Task(priority: .utility) { @UploadManagerActor in
+                var uploadData = uploadProperties
                 do {
+                    let trackInfo = await self.videoTrackInfo(of: UncheckedSendable(originalVideo))
+
+                    // Get original fileURL if any
+                    let originalFileURL = (originalVideo as? AVURLAsset)?.url
+
+                    // Check if the user wants to:
+                    /// - reduce the frame size
+                    /// - remove the private metadata
+                    let hasPrivateMetadata = originalVideo.metadata.containsPrivateMetadata()
+                    /// An HDR video is tone-mapped to SDR, which requires the server to accept MP4 files.
+                    let shouldToneMapHDR = uploadProperties.serverFileTypes.contains("mp4")
+                                        && (trackInfo?.isHDR ?? false)
+                    UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • AVAsset file: \(originalFileURL?.lastPathComponent ?? "none (composition)"), \(originalFileURL?.fileSize ?? 0) bytes, \(trackInfo?.description ?? "no video track"), private metadata: \(hasPrivateMetadata ? "yes" : "no"), tone-map: \(shouldToneMapHDR ? "yes" : "no")")
+
                     // Get creation date from metadata if possible
-                    var uploadData = uploadProperties
                     let metadata = originalVideo.metadata
                     if let dateFromMetadata = metadata.creationDate() {
                         uploadData.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
-                    } else {
+                    }
+                    else if let originalFileURL {
                         uploadData.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
                     }
-                    
+                    else {
+                        // Case of a composition (slow-motion, edited video): it carries no
+                        // metadata and has no file, so adopt the Photo Library's own date.
+                        uploadData.creationDate = (assetCreationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+                    }
+
                     // Rename file according to user's demand from date/time/counter/etc.
                     self.renamedFile(for: &uploadData)
-                    
-                    // Get MD5 checksum and MIME type, change URL
-                    try self.setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: originalFileURL)
-                    
+
+                    // Export when a modification is requested, when the asset has no file to copy,
+                    // or when the capture is HDR; otherwise upload the original file as is.
+                    if (uploadProperties.resizeImageOnUpload && uploadProperties.videoMaxSize != 0) ||
+                        (uploadProperties.stripGPSdataOnUpload && hasPrivateMetadata) ||
+                        (originalFileURL == nil) || shouldToneMapHDR {
+                        // Check that the video can be exported
+                        try await self.checkVideoExportability(of: originalVideo)
+
+                        // Export new video in MP4 format w/ or w/o private metadata
+                        try await self.export(videoAsset: originalVideo, to: outputURL, with: &uploadData)
+
+                        // Get MD5 checksum and MIME type
+                        try self.setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: outputURL)
+                    }
+                    else if let originalFileURL {
+                        // Copy video file into Piwigo/Uploads directory
+                        // Get MD5 checksum and MIME type, change URL
+                        try self.setMD5sumAndMIMEtype(using: &uploadData, forFileAtURL: originalFileURL)
+                    }
+                    else {
+                        throw PwgKitError.missingAsset
+                    }
+
                     // Upload video with tags and properties
                     uploadData.requestState = .prepared
                     await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
                 }
                 catch let error as PwgKitError {
-                    var uploadData = uploadProperties
+                    uploadData = uploadProperties
                     uploadData.requestState = .preparingError
                     uploadData.requestError = error.localizedDescription
                     await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
                 }
                 catch {
-                    // Could not copy the video file
-                    var uploadData = uploadProperties
+                    uploadData = uploadProperties
                     uploadData.requestState = .preparingError
                     uploadData.requestError = PwgKitError.otherError(innerError: error).localizedDescription
                     await self.didPrepareVideo(using: uploadData, withID: uploadID, inTaskType: taskType)
@@ -447,6 +414,8 @@ extension UploadManager {
         UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Convert video \(uploadProperties.fileName) from Asset")
 
         // Retrieve video data
+        /// The date is captured here because a composition carries no metadata to derive it from.
+        let assetCreationDate = imageAsset.creationDate
         let options = getVideoRequestOptions()
         retrieveVideo(from: imageAsset, with: options) { [self] (avasset, error) in
             UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Returned AVAsset")
@@ -496,7 +465,9 @@ extension UploadManager {
                         uploadData.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
                     }
                     else {
-                        uploadData.creationDate = DateUtilities.unknownDate.timeIntervalSinceReferenceDate
+                        // Case of a composition (slow-motion, edited video): it carries no
+                        // metadata and has no file, so adopt the Photo Library's own date.
+                        uploadData.creationDate = (assetCreationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
                     }
                     
                     // Rename file according to user's demand from date/time/counter/etc.
@@ -560,6 +531,43 @@ extension UploadManager {
     }
     
     
+    // MARK: - Video Track Description
+    /// Reads the properties of the video track.
+    /// The asynchronous loader does not populate the deprecated synchronous accessors, so every
+    /// reader goes through this: reading `tracks(withMediaType:)` on an asset that the legacy path
+    /// has not already loaded silently reports no track, which would hide an HDR capture and
+    /// collapse the export preset to 640x480.
+    nonisolated func videoTrackInfo(of boxedAsset: UncheckedSendable<AVAsset>) async -> VideoTrackInfo? {
+        let videoAsset = boxedAsset.value
+        let size: CGSize, frameRate: Float, dataRate: Float, formats: [CMFormatDescription]
+        if #available(iOS 16.0, *) {
+            guard let track = try? await videoAsset.loadTracks(withMediaType: .video).first,
+                  let loaded = try? await track.load(.naturalSize, .nominalFrameRate,
+                                                     .estimatedDataRate, .formatDescriptions)
+            else { return nil }
+            (size, frameRate, dataRate, formats) = loaded
+        } else {
+            // Fallback on earlier versions, where the synchronous accessors block and load
+            guard let track = videoAsset.tracks(withMediaType: .video).first
+            else { return nil }
+            size = track.naturalSize
+            frameRate = track.nominalFrameRate
+            dataRate = track.estimatedDataRate
+            formats = (track.formatDescriptions as? [CMFormatDescription]) ?? []
+        }
+        return VideoTrackInfo(size: size, frameRate: frameRate, dataRate: dataRate, formats: formats)
+    }
+
+    /// Reads the properties of the video track of a file on disk.
+    /// The upload files are named after the file key and carry no extension, so the asset is typed
+    /// from the upload file name — without it AVFoundation cannot parse the container at all.
+    func videoTrackInfo(ofFileAt url: URL, named fileName: String) async -> VideoTrackInfo? {
+        let (videoAsset, tempVideoURL) = self.readableVideoAsset(at: url, fileName: fileName)
+        defer { if let tempVideoURL { try? FileManager.default.removeItem(at: tempVideoURL) } }
+        return await videoTrackInfo(of: UncheckedSendable(videoAsset))
+    }
+
+
     // MARK: - Retrieve Video Asset
     /// Used to retrieve video data from the PhotoLibrary
     func getVideoFileName(from originalAsset: PHAsset) -> String {
@@ -682,6 +690,9 @@ extension UploadManager {
     // Export the video in MP4 format w/ or w/o private metadata
     private func export(videoAsset: AVAsset, to outputURL: URL, with uploadData: inout UploadProperties) async throws(PwgKitError)
     {
+        // Read the track once: the preset and the HDR test below both depend on it
+        let trackInfo = await videoTrackInfo(of: UncheckedSendable(videoAsset))
+
         // Determine available export options (highest quality for device by default)
         let presets = AVAssetExportSession.exportPresets(compatibleWith: videoAsset)
         
@@ -692,8 +703,7 @@ extension UploadManager {
         
         // Determine video size
         /// A missing video track falls back to 640x480, i.e. to the smallest export preset.
-        let videoTrack = videoAsset.tracks(withMediaType: .video).first
-        let videoSize = videoTrack?.naturalSize ?? CGSize(width: 640, height: 480)
+        let videoSize = trackInfo?.size ?? CGSize(width: 640, height: 480)
         var maxPixels = Int(max(videoSize.width, videoSize.height))
         
         // Resize frames
@@ -719,7 +729,23 @@ extension UploadManager {
             exportPreset = AVAssetExportPreset3840x2160
         }
 
-        UploadManager.logger.notice("Exporting \(uploadData.fileName) — track: \(videoTrack == nil ? "none!" : "\(Int(videoSize.width))x\(Int(videoSize.height))"), preset: \(exportPreset)")
+        // Tone-map an HDR capture to SDR
+        /// The size-bucketed presets encode H.264, which carries no HDR, but the highest-quality
+        /// preset may preserve it — so an HDR source is pinned to the largest bucket it fits in.
+        /// NB: an AVMutableVideoComposition stating the output colour explicitly was tried here.
+        /// It tone-mapped correctly, but it also rebuilt the frame: the composition that the Photo
+        /// Library returns for a slow-motion clip lost its rotation and was exported landscape,
+        /// with the portrait picture pillarboxed. The preset alone is relied upon instead.
+        let isHDR = trackInfo?.isHDR ?? false
+        if isHDR, exportPreset == AVAssetExportPresetHighestQuality {
+            if presets.contains(AVAssetExportPreset3840x2160) {
+                exportPreset = AVAssetExportPreset3840x2160
+            } else if presets.contains(AVAssetExportPreset1920x1080) {
+                exportPreset = AVAssetExportPreset1920x1080
+            }
+        }
+
+        UploadManager.logger.notice("Exporting \(uploadData.fileName) — track: \(trackInfo?.description ?? "none!"), preset: \(exportPreset), HDR: \(isHDR ? "yes" : "no")")
 
         // Get export session
         guard let exportSession = AVAssetExportSession(asset: videoAsset,
@@ -773,7 +799,8 @@ extension UploadManager {
         do {
             // Export temporary video for upload
             try await exportSession.export(to: outputURL, as: .mp4)
-            UploadManager.logger.notice("Exported \(uploadData.fileName) — \(outputURL.fileSize) bytes")
+            let exported = await videoTrackInfo(ofFileAt: outputURL, named: uploadData.fileName)
+            UploadManager.logger.notice("Exported \(uploadData.fileName) — \(outputURL.fileSize) bytes, \(exported?.description ?? "no video track")")
         }
         catch let error as AVError {
             // Deletes temporary video file if any
@@ -914,4 +941,71 @@ extension UploadManager {
 //            }
 //        }
 //    }
+}
+
+
+
+// MARK: - Video Track Properties
+/// The properties of a video track, read once and carried as values so that they can cross
+/// isolation boundaries — AVAssetTrack cannot.
+struct VideoTrackInfo: Sendable {
+    let size: CGSize
+    let frameRate: Float
+    let dataRate: Float
+    let formats: [String]
+    let primaries: String
+    let transfer: String
+    let matrix: String
+
+    init(size: CGSize, frameRate: Float, dataRate: Float, formats: [CMFormatDescription]) {
+        self.size = size
+        self.frameRate = frameRate
+        self.dataRate = dataRate
+        /// A composition reports one format description per segment, so the repeats are dropped.
+        var uniqueFormats = [String]()
+        for desc in formats {
+            // Media type and subtype as strings, e.g. "vide/hvc1"
+            let type = CMFormatDescriptionGetMediaType(desc).toString()
+            let subType = CMFormatDescriptionGetMediaSubType(desc).toString()
+            let format = "\(type)/\(subType)"
+            if uniqueFormats.contains(format) == false {
+                uniqueFormats.append(format)
+            }
+        }
+        self.formats = uniqueFormats
+        func extensionValue(_ key: CFString) -> String {
+            guard let desc = formats.first,
+                  let value = CMFormatDescriptionGetExtension(desc, extensionKey: key) as? String
+            else { return "—" }
+            return value
+        }
+        self.primaries = extensionValue(kCMFormatDescriptionExtension_ColorPrimaries)
+        self.transfer = extensionValue(kCMFormatDescriptionExtension_TransferFunction)
+        self.matrix = extensionValue(kCMFormatDescriptionExtension_YCbCrMatrix)
+    }
+
+    /// Whether the track carries an HDR transfer function. Such a video looks washed out wherever
+    /// the HLG/PQ curve is ignored, which is what the Piwigo server and most web players do, so it
+    /// is tone-mapped to SDR before being uploaded — exactly what Photos does for the shared file.
+    var isHDR: Bool {
+        return [kCMFormatDescriptionTransferFunction_ITU_R_2100_HLG as String,
+                kCMFormatDescriptionTransferFunction_SMPTE_ST_2084_PQ as String].contains(transfer)
+    }
+
+    /// An HDR capture reports Rec.2020 primaries with an HLG or PQ transfer function,
+    /// an SDR one reports Rec.709 throughout.
+    var description: String {
+        return "\(Int(size.width))x\(Int(size.height)) \(formats.joined(separator: ",")) @ "
+            + "\(String(format: "%.0f", frameRate)) fps, \(Int(dataRate / 1000)) kbps, "
+            + "colour \(primaries)/\(transfer)/\(matrix)"
+    }
+}
+
+
+// MARK: - Sendable Box
+/// AVFoundation objects are safe to load properties on from any thread but are not marked
+/// Sendable, so they are boxed to be handed to an asynchronous loader.
+struct UncheckedSendable<Value>: @unchecked Sendable {
+    let value: Value
+    init(_ value: Value) { self.value = value }
 }
