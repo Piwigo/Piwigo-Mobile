@@ -17,7 +17,7 @@ import PwgCacheKit
 import PwgUIKit
 import PwgUploadKit
 
-class LoginViewController: UIViewController {
+final class LoginViewController: UIViewController {
 
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var contentView: UIView!
@@ -42,14 +42,9 @@ class LoginViewController: UIViewController {
     }
 
     
-    // MARK: - Core Data Object Contexts
-    lazy var mainContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.mainContext
-        return context
-    }()
-
-
-    // MARK: - Core Data Providers
+    // MARK: - Core Data Objects
+    @MainActor
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
     private lazy var userProvider: UserProvider = {
         let provider : UserProvider = UserProvider()
         return provider
@@ -68,14 +63,14 @@ class LoginViewController: UIViewController {
 
         // Username text field
         userTextField.placeholder = String(localized: "login_userPlaceholder", comment: "Username (optional)")
-        userTextField.text = ServerVars.shared.username
+        userTextField.text = ServerVars.shared.login
         userTextField.textContentType = .username
         userTextField.layer.cornerRadius = TableViewUtilities.rowCornerRadius
         
         // Password text field
         passwordTextField.placeholder = String(localized: "login_passwordPlaceholder", comment: "Password (optional)")
         passwordTextField.text = KeychainUtilities.password(forService: ServerVars.shared.serverPath,
-                                                            account: ServerVars.shared.username)
+                                                            account: ServerVars.shared.login)
         passwordTextField.textContentType = .password
         passwordTextField.layer.cornerRadius = TableViewUtilities.rowCornerRadius
         
@@ -93,6 +88,9 @@ class LoginViewController: UIViewController {
         
         // Website not secure info
         websiteNotSecure.text = String(localized: "settingsHeader_notSecure", comment: "Website Not Secure!")
+
+        // Piwigo URL button
+        piwigoURL.titleLabel?.adjustsFontForContentSizeCategory = true
                 
         // Keyboard
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard)))
@@ -167,6 +165,9 @@ class LoginViewController: UIViewController {
         
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
+        #if DEBUG
+        debugPrint("••> LoginViewController released memory")
+        #endif
     }
 
     
@@ -206,10 +207,12 @@ class LoginViewController: UIViewController {
 
         // Default settings
         isAlreadyTryingToLogin = true
-        ServerVars.shared.userStatus = pwgUserStatus.guest
         ServerVars.shared.usesCommunityPluginV29 = false
         ServerVars.shared.usesSetCategory = false
+        ServerVars.shared.usesShareAlbum = false
+        ServerVars.shared.usesImageRotate = false
         NetworkVars.shared.usesAPIkeys = false
+        AlbumVars.shared.canShareAlbums = nil
         
         // Check server address and cancel login if address not provided
         if let serverURL = serverTextField.text, serverURL.isEmpty {
@@ -399,7 +402,22 @@ class LoginViewController: UIViewController {
         // Perform login if username exists
         let username = userTextField.text ?? ""
         let password = passwordTextField.text ?? ""
-        if username.isEmpty == false {
+        
+        if username.isEmpty {
+            // Access the server as guest
+            ServerVars.shared.username = ""
+            ServerVars.shared.login = ""
+            
+            // Reset keychain and credentials
+            KeychainUtilities.deletePassword(forService: ServerVars.shared.serverPath,
+                                             account: username)
+
+            // Check Piwigo version, get token, available sizes, etc.
+            let userData = UserProperties.init(withStatus: .guest)
+            self.getCommunityStatus(forUser: userData)
+        }
+        else {
+            // Try logging in
             // Update HUD during login
             updateHUD(detail: String(localized: "login_newSession", comment: "Opening Session"))
 
@@ -407,12 +425,20 @@ class LoginViewController: UIViewController {
                 do throws(PwgKitError) {
                     // Perform login
                     try await JSONManager.shared.sessionLogin(withUsername: username, password: password)
-                    // Session now opened
-                    ServerVars.shared.username = username
 
+                    // Session now opened
                     await MainActor.run { [self] in
+                        // Remember username for future
+                        ServerVars.shared.username = username
+                        ServerVars.shared.login = username
+                        
+                        // Prepare user account
+                        var userData = UserProperties.init(withStatus: .guest)
+                        userData.login = username
+                        userData.username = username
+                        
                         // First determine user rights if Community extension installed
-                        self.getCommunityStatus()
+                        self.getCommunityStatus(forUser: userData)
                     }
                 }
                 catch {
@@ -425,45 +451,26 @@ class LoginViewController: UIViewController {
                     }
                 }
             }
-        } else {
-            // Reset keychain and credentials
-            KeychainUtilities.deletePassword(forService: ServerVars.shared.serverPath,
-                                             account: username)
-            ServerVars.shared.user = ""
-            ServerVars.shared.username = ""
-            ServerVars.shared.userStatus = .guest
-            
-            // Create/update guest account in persistent cache, create Server if necessary.
-            do {
-                // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
-                _ = try self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
-                
-                // Check Piwigo version, get token, available sizes, etc.
-                self.getCommunityStatus()
-            }
-            catch {
-                // Login request failed
-                logging(inConnectionError: error)
-            }
         }
     }
-
+    
     // Determine true user rights when Community extension installed
     @MainActor
-    func getCommunityStatus() {
+    func getCommunityStatus(forUser userProperties: UserProperties) {
         // Community plugin installed?
         if ServerVars.shared.usesCommunityPluginV29 {
             // Update HUD during login
             updateHUD(detail: String(localized: "login_communityParameters", comment: "Community Parameters"))
 
+            var userData = userProperties
             Task.detached {
                 do throws(PwgKitError) {
                     // Community extension installed, get real user's status
-                    try await JSONManager.shared.communityGetStatus()
+                    try await JSONManager.shared.communityGetStatus(&userData)
                     
                     await MainActor.run { [self] in
                         // Check Piwigo version, get token, available sizes, etc.
-                        self.getSessionStatus()
+                        self.getSessionStatus(forUser: userData)
                     }
                 }
                 catch {
@@ -477,39 +484,55 @@ class LoginViewController: UIViewController {
         } else {
             // Community extension not installed
             // Check Piwigo version, get token, available sizes, etc.
-            self.getSessionStatus()
+            self.getSessionStatus(forUser: userProperties)
         }
     }
-
+    
     // Check Piwigo version, get username, token, available sizes, etc.
     @MainActor
-    func getSessionStatus() {
+    func getSessionStatus(forUser userProperties: UserProperties) {
         // Update HUD during login
         updateHUD(detail: String(localized: "login_serverParameters", comment: "Piwigo Parameters"))
 
+        var userData = userProperties
         Task.detached {
             do throws(PwgKitError) {
-                // Update Piwigo username (≠ credential)
-                ServerVars.shared.user = try await JSONManager.shared.sessionGetStatus()
-
+                // Get session status
+                /// The username is not the login name when using API keys
+                /// User rights are determined by the Community extension (if installed)
+                try await JSONManager.shared.sessionGetStatus(&userData)
+                
+                // Username may be diffrent from login name
+                ServerVars.shared.username = userData.username
+                
+                // Get admin user info (no API method available for non-admins)
+                if userData.hasAdminRights {
+                    let data = try? await JSONManager.shared.getUserInfo(.all, forUserName: userData.username)
+                    userData.pwgID = data?.id ?? 0
+                    userData.email = data?.email ?? ""
+                    userData.recentPeriod = data?.recentPeriod?.int16Value ?? 7
+                }
+                
                 await MainActor.run { [self] in
+                    
                     // Should this server be updated?
-                    let now: Double = Date().timeIntervalSinceReferenceDate
+                    let now: Double = Date.timeIntervalSinceReferenceDate
                     if now > ServerVars.shared.dateOfLastUpdateRequest + AppVars.shared.pwgOneMonth,
                        ServerVars.shared.pwgVersion.compare(pwgRecentVersion, options: .numeric) == .orderedAscending {
                         // Store date of last upgrade request
                         ServerVars.shared.dateOfLastUpdateRequest = now
                         
                         // Piwigo server update recommanded ► Inform user
+                        let userProperties = userData
                         self.hideHUD() {
                             self.dismissPiwigoError(withTitle: String(localized: "serverVersionOld_title", comment: "Server Update Available"), message: String.localizedStringWithFormat(String(localized: "serverVersionOld_message", comment: "Your Piwigo server version is %@. Please ask the administrator to update it."), ServerVars.shared.pwgVersion), completion: {
                                     // Piwigo server version is still appropriate.
-                                    self.launchApp()
+                                    self.launchApp(forUser: userProperties)
                             })
                         }
                     } else {
                         // Piwigo server version is appropriate.
-                        self.launchApp()
+                        self.launchApp(forUser: userData)
                     }
                 }
             }
@@ -524,18 +547,21 @@ class LoginViewController: UIViewController {
     }
 
     @MainActor
-    func launchApp() {
+    func launchApp(forUser userProperties: UserProperties) {
         isAlreadyTryingToLogin = false
-
+        
         // Create/update User account in persistent cache, create Server if necessary.
         do {
-            // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
-            _ = try self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
+            // Performed in main thread to avoid concurrency issue with AlbumViewController initialisation
+            try self.userProvider.createOrUpdateAccount(withProperties: userProperties, inContext: mainContext)
         }
         catch {
+            // Without a user account in cache, no album data can be loaded
+            // ► Remain on the login view
             logging(inConnectionError: error)
+            return
         }
-        
+
         // Check image size availabilities
         let scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))
         LoginUtilities.checkAvailableSizes(forScale: scale)

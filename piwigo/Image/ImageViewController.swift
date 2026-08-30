@@ -18,7 +18,7 @@ protocol ImageDetailDelegate: NSObjectProtocol {
     func didSelectImage(atIndexPath indexPath: IndexPath)
 }
 
-class ImageViewController: UIViewController {
+final class ImageViewController: UIViewController {
     
     weak var imgDetailDelegate: (any ImageDetailDelegate)?
     var images: NSFetchedResultsController<Image>!
@@ -31,13 +31,9 @@ class ImageViewController: UIViewController {
     let playbackController = PlaybackController.shared
     
     // MARK: - Core Data Objects
-    var user: User!
-    lazy var mainContext: NSManagedObjectContext = {
-        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
-            fatalError("!!! Missing Managed Object Context !!!")
-        }
-        return context
-    }()
+    @MainActor
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
+    var userData: UserProperties!
     
     
     // MARK: - Navigation Bar & Toolbar Buttons
@@ -48,16 +44,16 @@ class ImageViewController: UIViewController {
         return UIBarButtonItem.backImageButton(target: self, action: #selector(returnToAlbum))
     }()
     lazy var deleteBarButton: UIBarButtonItem = getDeleteBarButton()
-    var shareBarButton: UIBarButtonItem?
+    var shareImageButton: UIBarButtonItem?
     var favoriteBarButton: UIBarButtonItem?
-    var playBarButton: UIBarButtonItem?
-    var muteBarButton: UIBarButtonItem?
     var goToPageButton: UIBarButtonItem?
+    
     
     // MARK: - Rotate View & Buttons
     var rotateView: UIView?
     var rotateLeftButton: UIButton?
     var rotateRightButton: UIButton?
+    
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -121,13 +117,20 @@ class ImageViewController: UIViewController {
         // Register font changes
         NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
                                                name: UIContentSizeCategory.didChangeNotification, object: nil)
-        // Register video player changes
-        NotificationCenter.default.addObserver(self, selector: #selector(didChangePlaybackStatus),
-                                               name: Notification.Name.pwgVideoPlaybackStatus, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(didChangeMuteOption),
-                                               name: Notification.Name.pwgVideoMutedOrNot, object: nil)
+        
+        // Register the duration of a video, which reaches the title view
+        NotificationCenter.default.addObserver(self, selector: #selector(didKnowVideoDuration(_:)),
+                                               name: Notification.Name.pwgVideoDuration, object: nil)
+        
+        // Register the number of pages of a PDF, which also reaches the title view
+        NotificationCenter.default.addObserver(self, selector: #selector(didKnowPdfPageCount(_:)),
+                                               name: Notification.Name.pwgPdfPageCount, object: nil)
+        
+        // Register the Piwigo ID of the user, deduced after a first upload
+        NotificationCenter.default.addObserver(self, selector: #selector(didUpdateUserID(_:)),
+                                               name: Notification.Name.pwgUserIDdidChange, object: nil)
     }
-    
+        
     @MainActor
     @objc func applyColorPalette() {
         // Set background color according to navigation bar visibility
@@ -146,10 +149,8 @@ class ImageViewController: UIViewController {
         if #available(iOS 26.0, *) {
             backButton.tintColor = PwgColor.tintColor
             deleteBarButton.tintColor = PwgColor.tintColor
-            shareBarButton?.tintColor = PwgColor.tintColor
+            shareImageButton?.tintColor = PwgColor.tintColor
             favoriteBarButton?.tintColor = PwgColor.tintColor
-            playBarButton?.tintColor = PwgColor.tintColor
-            muteBarButton?.tintColor = PwgColor.tintColor
             goToPageButton?.tintColor = PwgColor.tintColor
         }
     }
@@ -225,10 +226,29 @@ class ImageViewController: UIViewController {
     }
     
     deinit {
-        //        debugPrint("••> ImageViewController is being deinitialized.")
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
+        #if DEBUG
         debugPrint("••> ImageViewController released memory")
+        #endif
+    }
+    
+    
+    // MARK: - User Data
+    // The Piwigo ID of a Community user is deduced from the 'added_by' attribute
+    // of an image he/she has uploaded, i.e. it becomes known after a first upload.
+    // Until then, the app grants him/her the rights of an uploader (see UserProperties).
+    @MainActor
+    @objc func didUpdateUserID(_ notification: Notification) {
+        // Check notification data
+        guard let pwgID = notification.userInfo?["pwgID"] as? Int16,
+              notification.userInfo?["userURIstr"] as? String == userData?.URIstr,
+              userData.pwgID != pwgID
+        else { return }
+
+        // Adopt the ID returned by the server and review the rights granted to that user
+        userData.pwgID = pwgID
+        updateNavBar()
     }
     
     
@@ -308,14 +328,14 @@ class ImageViewController: UIViewController {
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Get complete image data
                 let pwgData = try await JSONManager.shared.getInfos(forID: imageID)
                 
                 // Update image data in cache
                 // The provided sort option will not change the rankManual/rankRandom values.
-                try ImageProvider().importImages([pwgData], inAlbum: self.categoryId, sort: .albumDefault)
+                try await ImageProvider().importImages([pwgData], inAlbum: self.categoryId, sort: .albumDefault)
                 
                 // Update UI and cache
                 await MainActor.run { [self] in
@@ -410,7 +430,7 @@ class ImageViewController: UIViewController {
         Task.detached {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID, lastConnected: self.user.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Update server statistics
                 try await JSONManager.shared.logVisitOfImage(withID: imageID, asDownload: asDownload)
@@ -483,7 +503,7 @@ class ImageViewController: UIViewController {
     
     // Display/hide status bar
     override var prefersStatusBarHidden: Bool {
-        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+        let orientation = view.currentInterfaceOrientation
         let phoneInLandscape = view.traitCollection.userInterfaceIdiom == .phone && orientation.isLandscape
         return phoneInLandscape || navigationController?.isNavigationBarHidden ?? false
     }
@@ -561,7 +581,7 @@ class ImageViewController: UIViewController {
         
         // Display help views less than once a day
         let dateOfLastHelpView = AppVars.shared.dateOfLastHelpView
-        let diff = Date().timeIntervalSinceReferenceDate - dateOfLastHelpView
+        let diff = Date.timeIntervalSinceReferenceDate - dateOfLastHelpView
         if diff > TimeInterval(86400) { return }
         
         // Determine which help pages should be presented
@@ -624,9 +644,7 @@ extension ImageViewController: UIPageViewControllerDelegate
             indexPath = imageDVC.indexPath
             imageData = imageDVC.imageData
             
-            // Reset video player and PDF goToPage buttons
-            playBarButton = nil
-            muteBarButton = nil
+            // Reset PDF goToPage button
             goToPageButton = nil
         }
         else if let gifDVC = pageViewController.viewControllers?.first as? GifDetailViewController {
@@ -634,9 +652,7 @@ extension ImageViewController: UIPageViewControllerDelegate
             indexPath = gifDVC.indexPath
             imageData = gifDVC.imageData
 
-            // Reset video player and PDF goToPage buttons
-            playBarButton = nil
-            muteBarButton = nil
+            // Reset PDF goToPage button
             goToPageButton = nil
         }
         else if let videoDVC = pageViewController.viewControllers?.first as? VideoDetailViewController {
@@ -644,21 +660,14 @@ extension ImageViewController: UIPageViewControllerDelegate
             indexPath = videoDVC.indexPath
             imageData = videoDVC.imageData
             
-            // Reset PDF goToPage buttons
+            // Reset PDF goToPage button
+            /// A video is played, paused and muted from the controls presented below it
             goToPageButton = nil
-            
-            // Set video player buttons
-            playBarButton = UIBarButtonItem.playImageButton(self, action: #selector(playVideo))
-            muteBarButton = UIBarButtonItem.muteAudioButton(VideoVars.shared.isMuted, target: self, action: #selector(muteUnmuteAudio))
         }
         else if let pdfDVC = pageViewController.viewControllers?.first as? PdfDetailViewController {
             // Store index and image data of presented page
             indexPath = pdfDVC.indexPath
             imageData = pdfDVC.imageData
-            
-            // Reset video player and PDF reader buttons
-            playBarButton = nil
-            muteBarButton = nil
             
             // Set PDF goToPage button
             goToPageButton = UIBarButtonItem.goToPageButton(self, action: #selector(goToPage))
@@ -730,7 +739,7 @@ extension ImageViewController: UIPageViewControllerDataSource
         else { return nil }
 
         // Create video detail view
-        videoDVC.user = user
+        videoDVC.userData = userData
         videoDVC.indexPath = indexPath
         videoDVC.imageData = imageData
         return videoDVC

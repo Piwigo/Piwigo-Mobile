@@ -13,14 +13,12 @@ import PwgCacheKit
 import PwgUIKit
 import PwgUploadKit
 
-class UploadQueueViewController: UIViewController {
+final class UploadQueueViewController: UIViewController {
     
     // MARK: - Core Data Object Contexts
-    lazy var mainContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.mainContext
-        return context
-    }()
-    
+    @MainActor
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
+
     
     // MARK: - Core Data Source
     typealias DataSource = UITableViewDiffableDataSource<String, NSManagedObjectID>
@@ -42,12 +40,16 @@ class UploadQueueViewController: UIViewController {
         var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.requestSectionKey), ascending: true)]
         sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true))
         sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
+        // Both halves of a Live Photo are requested at the very same date, so without this last
+        // descriptor their relative order is undefined: the fetched results controller may swap
+        // the two rows on any update and each cell then adopts the other half's progress.
+        sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.assetPart), ascending: true))
         fetchRequest.sortDescriptors = sortDescriptors
         
         // Retrieves non-completed upload requests:
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
+        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
         var unwantedStates: [pwgUploadState] = [.finished, .moderated]
         andPredicates.append(NSPredicate(format: "NOT (requestState IN %@)", unwantedStates.map({$0.rawValue})))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
@@ -90,6 +92,7 @@ class UploadQueueViewController: UIViewController {
             // Fallback on previous version
             actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), landscapeImagePhone: UIImage(systemName: "ellipsis.circle"), style: .plain, target: self, action: #selector(didTapActionButton))
         }
+        actionBarButton?.accessibilityLabel = String(localized: "moreOptions_title", comment: "More")
         doneBarButton = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(quitUpload))
         doneBarButton?.accessibilityIdentifier = "Done"
         
@@ -101,7 +104,9 @@ class UploadQueueViewController: UIViewController {
             try uploads.performFetch()
         }
         catch {
+            #if DEBUG
             debugPrint("••> Could not fetch uploads: \(error.localizedDescription)")
+            #endif
         }
     }
     
@@ -190,46 +195,49 @@ class UploadQueueViewController: UIViewController {
     
     @MainActor
     @objc func setTableViewMainHeader() {
-        // Anything to do?
-        guard let queueTableView, queueTableView.window != nil else { return }
-        
-        // No upload request in the queue?
-        if UploadVars.shared.nberOfUploadsToComplete == 0 {
-            queueTableView.tableHeaderView = nil
-            UIApplication.shared.isIdleTimerDisabled = false
-        }
-        else if !ServerVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading {
-            // No Wi-Fi and user wishes to upload only on Wi-Fi
-            let headerView = TableHeaderView(frame: .zero)
-            headerView.configure(width: queueTableView.frame.size.width,
-                                 text: String(localized: "uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
-            queueTableView.tableHeaderView = headerView
-            UIApplication.shared.isIdleTimerDisabled = false
-        }
-        else if ProcessInfo.processInfo.isLowPowerModeEnabled {
-            // Low Power mode enabled
-            let headerView = TableHeaderView(frame: .zero)
-            headerView.configure(width: queueTableView.frame.size.width,
-                                 text: String(localized: "uploadLowPowerMode", comment: "Low Power Mode enabled"))
-            queueTableView.tableHeaderView = headerView
-            UIApplication.shared.isIdleTimerDisabled = false
-        }
-        else if [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) {
-            // Reduce usage of system resources at higher thermal states
-            let headerView = TableHeaderView(frame: .zero)
-            headerView.configure(width: queueTableView.frame.size.width,
-                                 text: String(localized: "uploadThermalStateHigh", comment: "Thermal state high"))
-            queueTableView.tableHeaderView = headerView
-            UIApplication.shared.isIdleTimerDisabled = false
-        }
-        else {
-            // Uploads in progress
-            queueTableView.tableHeaderView = nil
-            if #unavailable(iOS 26.0) {
-                UIApplication.shared.isIdleTimerDisabled = true
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            // Anything to do?
+            guard let queueTableView, queueTableView.window != nil else { return }
+            
+            // No upload request in the queue?
+            if UploadVars.shared.nberOfUploadsToComplete == 0 {
+                queueTableView.tableHeaderView = nil
+                UIApplication.shared.isIdleTimerDisabled = false
             }
+            else if !ServerVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading {
+                // No Wi-Fi and user wishes to upload only on Wi-Fi
+                let headerView = TableHeaderView(frame: .zero)
+                headerView.configure(width: queueTableView.frame.size.width,
+                                     text: String(localized: "uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
+                queueTableView.tableHeaderView = headerView
+                UIApplication.shared.isIdleTimerDisabled = false
+            }
+            else if ProcessInfo.processInfo.isLowPowerModeEnabled {
+                // Low Power mode enabled
+                let headerView = TableHeaderView(frame: .zero)
+                headerView.configure(width: queueTableView.frame.size.width,
+                                     text: String(localized: "uploadLowPowerMode", comment: "Low Power Mode enabled"))
+                queueTableView.tableHeaderView = headerView
+                UIApplication.shared.isIdleTimerDisabled = false
+            }
+            else if [.serious, .critical].contains(ProcessInfo.processInfo.thermalState) {
+                // Reduce usage of system resources at higher thermal states
+                let headerView = TableHeaderView(frame: .zero)
+                headerView.configure(width: queueTableView.frame.size.width,
+                                     text: String(localized: "uploadThermalStateHigh", comment: "Thermal state high"))
+                queueTableView.tableHeaderView = headerView
+                UIApplication.shared.isIdleTimerDisabled = false
+            }
+            else {
+                // Uploads in progress
+                queueTableView.tableHeaderView = nil
+                if #unavailable(iOS 26.0) {
+                    UIApplication.shared.isIdleTimerDisabled = true
+                }
+            }
+            self.viewWillLayoutSubviews()
         }
-        self.viewWillLayoutSubviews()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -240,7 +248,9 @@ class UploadQueueViewController: UIViewController {
     deinit {
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
+        #if DEBUG
         debugPrint("••> UploadQueueViewController released memory")
+        #endif
     }
     
     

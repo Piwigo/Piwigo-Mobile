@@ -18,13 +18,12 @@ import PwgUIKit
     func didRenameFileOfImage(_ imageData: Image)
 }
 
-class EditImageThumbTableViewCell: UITableViewCell, UICollectionViewDelegate
+final class EditImageThumbTableViewCell: UITableViewCell, UICollectionViewDelegate
 {
     weak var delegate: (any EditImageThumbnailCellDelegate)?
     
     @IBOutlet private var editImageThumbCollectionView: UICollectionView!
 
-    var user: User!
     private var images: [Image]?
     private var startingScrollingOffset = CGPoint.zero
 
@@ -67,7 +66,9 @@ extension EditImageThumbTableViewCell: UICollectionViewDataSource
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EditImageThumbCollectionViewCell", for: indexPath) as? EditImageThumbCollectionViewCell else {
+            #if DEBUG
             debugPrint("Error: collectionView.dequeueReusableCell does not return a EditImageThumbCollectionViewCell!")
+            #endif
             return EditImageThumbCollectionViewCell()
         }
         cell.config(withImage: images?[indexPath.row], removeOption: ((images?.count ?? 0) > 1))

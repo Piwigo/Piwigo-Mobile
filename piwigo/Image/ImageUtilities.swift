@@ -15,6 +15,61 @@ import PwgCacheKit
 
 struct ImageUtilities
 {
+    // MARK: - Optimised Image Cache
+    private static let saveQueue = OptimisedImageSaveQueue()
+
+    /// Optimised images are saved outside of the calling thread so that encoding and writing
+    /// a file never delays the display of an image — some views do downsample images on the
+    /// main thread. The number of concurrent saves is limited so that a backlog built while
+    /// scrolling a large album drains quickly without competing with the images being displayed.
+    private final class OptimisedImageSaveQueue: @unchecked Sendable {
+        private let queue: OperationQueue = {
+            let queue = OperationQueue()
+            queue.name = "org.piwigo.saveOptimisedImage"
+            queue.maxConcurrentOperationCount = 4
+            queue.qualityOfService = .utility
+            return queue
+        }()
+
+        /// Files being saved, i.e. queued or being written.
+        private let lock = NSLock()
+        private var filePaths = Set<String>()
+
+        init() {
+            // Optimised images only benefit future displays and each pending save retains
+            // a decoded image ► drop the backlog as soon as memory becomes scarce.
+            NotificationCenter.default.addObserver(forName: UIApplication.didReceiveMemoryWarningNotification,
+                                                   object: nil, queue: nil) { [weak self] _ in
+                self?.queue.cancelAllOperations()
+            }
+        }
+
+        /// Saves the optimised version of an image, unless that file is already being saved.
+        /// The same image can indeed be downsampled at the same time by several views, e.g. by an
+        /// album cell and by an image cell when album and image thumbnails have the same size.
+        func save(_ image: UIImage, atPath filePath: String) {
+            lock.lock()
+            let isPending = filePaths.insert(filePath).inserted == false
+            lock.unlock()
+            guard isPending == false
+            else { return }
+
+            let operation = BlockOperation {
+                image.saveInOptimumFormat(atPath: filePath)
+            }
+            /// The completion block is called whether the operation did run or was cancelled,
+            /// so that a cancelled file can be saved again on the next display of that image.
+            operation.completionBlock = { [weak self] in
+                guard let self else { return }
+                self.lock.lock()
+                self.filePaths.remove(filePath)
+                self.lock.unlock()
+            }
+            queue.addOperation(operation)
+        }
+    }
+
+
     // MARK: - Image Downsampling
     // Downsampling large images for display at smaller size
     /// WWDC 2018 - Session 219 - Image and Graphics Best practices
@@ -107,9 +162,7 @@ struct ImageUtilities
         // Save the downsampled image in cache if it does not belong to the app,
         // without delaying the display of the image (only benefits future displays)
         if shouldBeSavedInCache, [.album, .image].contains(type) {
-            DispatchQueue.global(qos: .utility).async {
-                downsampledImage.saveInOptimumFormat(atPath: filePath)
-            }
+            saveQueue.save(downsampledImage, atPath: filePath)
         }
         return downsampledImage
     }

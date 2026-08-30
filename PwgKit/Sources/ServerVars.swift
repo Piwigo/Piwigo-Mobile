@@ -34,18 +34,29 @@ public final class ServerVars: @unchecked Sendable {
 //        if let _ = UserDefaults.standard.object(forKey: "test") {
 //            UserDefaults.standard.removeObject(forKey: "test")
 //        }
-        if let _ = UserDefaults.dataSuite.object(forKey: "usesUploadAsync") {
-            UserDefaults.dataSuite.removeObject(forKey: "usesUploadAsync")
+        let deprecatedKeys = ["usesUploadAsync",
+                              "usesCalcOrphans",
+                              "userStatusRaw"]
+        for key in deprecatedKeys {
+            if UserDefaults.dataSuite.object(forKey: key) != nil {
+                UserDefaults.dataSuite.removeObject(forKey: key)
+            }
         }
-        if let _ = UserDefaults.dataSuite.object(forKey: "usesCalcOrphans") {
-            UserDefaults.dataSuite.removeObject(forKey: "usesCalcOrphans")
+        // Rename username and user as login and username
+        /// - username was the username or the API public key ➜ login
+        /// - user was the username of the account ➜ username
+        if let user = UserDefaults.dataSuite.object(forKey: "user"),
+           let username = UserDefaults.dataSuite.object(forKey: "username") {
+            UserDefaults.dataSuite.removeObject(forKey: "user")
+            UserDefaults.dataSuite.set(username, forKey: "login")
+            UserDefaults.dataSuite.set(user, forKey: "username")
         }
     }
     
     // MARK: - Vars in UserDefaults / Standard
     // Server variables stored in UserDefaults / Standard
     /// - Request server update once a month max
-    @UserDefault("dateOfLastUpdateRequest", defaultValue: Date().timeIntervalSinceReferenceDate)
+    @UserDefault("dateOfLastUpdateRequest", defaultValue: Date.timeIntervalSinceReferenceDate)
     public var dateOfLastUpdateRequest: TimeInterval
 
     /// - Recent period in number of days
@@ -108,19 +119,19 @@ public final class ServerVars: @unchecked Sendable {
     public var username: String
     
     /// - Username returned by the Piwigo server, introduced in v4.1.2 for correcting user attribution in persistent cache
-    @UserDefault("user", defaultValue: "", userDefaults: UserDefaults.dataSuite)
-    public var user: String
+    @UserDefault("login", defaultValue: "", userDefaults: UserDefaults.dataSuite)
+    public var login: String
     
     /// - Tells whether
     @UserDefault("fixUserIsAPIKeyV412", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var fixUserIsAPIKeyV412: Bool
     public func createPiwigoUsernameAccountIfNeeded() {
         // 'user' added in v4.1.2 for dissociating persistent cache data from credentials
-        if ServerVars.shared.user.isEmpty,
-           ServerVars.shared.username.isEmpty == false &&
-            ServerVars.shared.username.lowercased() != "guest" {
-            // Adopts login username, i.e. Piwigo username or API key
-            ServerVars.shared.user = ServerVars.shared.username
+        if ServerVars.shared.username.isEmpty,
+           ServerVars.shared.login.isEmpty == false &&
+            ServerVars.shared.login.lowercased() != "guest" {
+            // Adopts login name, i.e. Piwigo username or API key
+            ServerVars.shared.username = ServerVars.shared.login
             // If the user is using an API key:
             /// - 1. Call API method to retrieve the Piwigo user
             /// - 2. Attribute 'API key' upload requests to 'Piwigo user' in persistent cache
@@ -131,22 +142,6 @@ public final class ServerVars: @unchecked Sendable {
             }
         }
     }
-    
-    /// - Status of the user accessing the Piwigo server
-    @UserDefault("userStatusRaw", defaultValue: pwgUserStatus.guest.rawValue, userDefaults: UserDefaults.dataSuite)
-    private var userStatusRaw: String
-    public var userStatus: pwgUserStatus {
-        get { return pwgUserStatus(rawValue: userStatusRaw) ?? pwgUserStatus.guest }
-        set (value) {
-            if pwgUserStatus.allCases.contains(value) {
-                userStatusRaw = value.rawValue
-            }
-        }
-    }
-    
-    /// - IDs of albums in which a Community user can create sub-albums (Int32.min if unknown, i.e. Piwigo version before 16.4)
-//    @UserDefault("createAlbumRights", defaultValue: "\(Int32.min)", userDefaults: UserDefaults.dataSuite)
-//    public var createAlbumRights: String
     
     /// - Library/Caches/Piwigo/Thumbnail folder size
     @UserDefault("thumbFolderSize", defaultValue: 0, userDefaults: UserDefaults.dataSuite)
@@ -171,6 +166,14 @@ public final class ServerVars: @unchecked Sendable {
     /// - pwg.images.setCategory method available, false by default (available since Piwigo 14)
     @UserDefault("usesSetCategory", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var usesSetCategory: Bool
+    
+    /// - sharealbum.getList method available, false by default (available since version 16.1 of the plugin)
+    @UserDefault("usesShareAlbum", defaultValue: false, userDefaults: UserDefaults.dataSuite)
+    public var usesShareAlbum: Bool
+    
+    /// - pwg.image.rotate method available, false by default (available since version 11.0.a of the plugin)
+    @UserDefault("usesImageRotate", defaultValue: false, userDefaults: UserDefaults.dataSuite)
+    public var usesImageRotate: Bool
     
     
     // MARK: - Vars in Memory

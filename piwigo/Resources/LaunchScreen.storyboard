@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24093.7" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24765" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24053.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24743"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -44,22 +44,27 @@
                                     </mask>
                                 </variation>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="piwigo.org" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Owz-oH-9TO">
-                                <rect key="frame" x="165" y="765.33333333333337" width="63.333333333333343" height="15.666666666666629"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EFq-B8-4Sx">
+                                <rect key="frame" x="130" y="751" width="133" height="33"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                <color key="tintColor" systemColor="darkTextColor"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="https://piwigo.org"/>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="1cY-dd-xU8"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="1cY-dd-xU8" firstAttribute="bottom" secondItem="Owz-oH-9TO" secondAttribute="bottom" constant="3" id="1Km-tK-OBM"/>
                             <constraint firstItem="1cY-dd-xU8" firstAttribute="trailing" secondItem="tRi-ye-f0P" secondAttribute="trailing" constant="80" id="4Gk-NX-elf"/>
-                            <constraint firstItem="Owz-oH-9TO" firstAttribute="centerX" secondItem="1cY-dd-xU8" secondAttribute="centerX" id="9WW-j0-MVr"/>
+                            <constraint firstItem="EFq-B8-4Sx" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="1cY-dd-xU8" secondAttribute="leading" constant="20" id="P8L-nT-x78"/>
                             <constraint firstItem="tRi-ye-f0P" firstAttribute="leading" secondItem="1cY-dd-xU8" secondAttribute="leading" constant="80" id="R6W-s0-Fh5"/>
                             <constraint firstItem="tRi-ye-f0P" firstAttribute="centerX" secondItem="1cY-dd-xU8" secondAttribute="centerX" id="Tcr-7U-hfi"/>
                             <constraint firstItem="tRi-ye-f0P" firstAttribute="top" secondItem="1cY-dd-xU8" secondAttribute="top" constant="40" id="c7l-Dq-xIR"/>
+                            <constraint firstItem="EFq-B8-4Sx" firstAttribute="centerX" secondItem="1cY-dd-xU8" secondAttribute="centerX" id="cto-cH-0Ro"/>
+                            <constraint firstItem="1cY-dd-xU8" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="EFq-B8-4Sx" secondAttribute="trailing" constant="20" id="hfg-bc-Ku2"/>
+                            <constraint firstItem="1cY-dd-xU8" firstAttribute="bottom" secondItem="EFq-B8-4Sx" secondAttribute="bottom" id="zzo-fz-New"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -82,6 +87,9 @@
     </scenes>
     <resources>
         <image name="piwigoText" width="300" height="74.333335876464844"/>
+        <systemColor name="darkTextColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

@@ -81,7 +81,7 @@ extension SelectCategoryViewController: UITableViewDataSource
                    catIds.count > indexPath.row {
                     catId = catIds[indexPath.row]
                 }
-                guard let selectedAlbum = try? AlbumProvider().getAlbum(ofUser: user, withId: catId)
+                guard let selectedAlbum = AlbumProvider().getAlbum(withID: catId, inContext: mainContext)
                 else { return cell }
                 albumData = selectedAlbum
             } else if hasRecentAlbums {
@@ -106,7 +106,7 @@ extension SelectCategoryViewController: UITableViewDataSource
         
         // No button if the user does not have upload rights
         var buttonState: pwgCategoryCellButtonState = .none
-        if user.hasAdminRights || userUploadRights.contains(albumData.pwgID) {
+        if userData.hasAdminRights || userData.hasUploadRights(forCatID: albumData.pwgID) {
             buttonState = albumsShowingSubAlbums.contains(albumData.pwgID) ? .hideSubAlbum : .showSubAlbum
         }
         

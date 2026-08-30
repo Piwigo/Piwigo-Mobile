@@ -21,7 +21,7 @@ extension SettingsViewController: UITableViewDataSource
         // — admin rights
         // — normal rights with upload access to some categories with Community
         var rawSection = section
-        if !userHasUploadRights, rawSection > SettingsSection.videos.rawValue {
+        if !userData.hasUploadRights, rawSection > SettingsSection.videos.rawValue {
             rawSection += 1
         }
         guard let activeSection = SettingsSection(rawValue: rawSection)
@@ -31,7 +31,7 @@ extension SettingsViewController: UITableViewDataSource
     
     func numberOfSections(in tableView: UITableView) -> Int {
         var nberSections = SettingsSection.count.rawValue
-        nberSections -= (userHasUploadRights ? 0 : 1)
+        nberSections -= (userData.hasUploadRights ? 0 : 1)
         return nberSections
     }
     
@@ -52,22 +52,22 @@ extension SettingsViewController: UITableViewDataSource
         case .videos:
             nberOfRows = 2
         case .uploads:
-            nberOfRows = 8 + (user.hasAdminRights ? 1 : 0)
+            nberOfRows = 9 + (userData.hasAdminRights ? 1 : 0)
             nberOfRows += (UploadVars.shared.resizeImageOnUpload ? 2 : 0)
             nberOfRows += (UploadVars.shared.compressImageOnUpload ? 1 : 0)
             nberOfRows += UIDevice.current.hasCellular ? 1 : 0
         case .privacy:
-            nberOfRows = 3
+            nberOfRows = 2
         case .appearance:
             nberOfRows = 1
         case .cache:
-            nberOfRows = 4 + (userHasUploadRights ? 1 : 0)
+            nberOfRows = 4 + (userData.hasUploadRights ? 1 : 0)
         case .clear:
             nberOfRows = 1
         case .about:
             nberOfRows = 6
         case .troubleshoot:
-            nberOfRows = 3
+            nberOfRows = 4
         default:
             break
         }
@@ -95,7 +95,7 @@ extension SettingsViewController: UITableViewDataSource
             
             case 1:
                 let title = String(localized: "settings_username", comment: "Username")
-                let detail = ServerVars.shared.user.isEmpty ? String(localized: "settings_notLoggedIn", comment: " - Not Logged In - ") : ServerVars.shared.user
+                let detail = ServerVars.shared.username.isEmpty ? String(localized: "settings_notLoggedIn", comment: " - Not Logged In - ") : ServerVars.shared.username
                 cell.configure(with: title, detail: detail)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
                 cell.accessibilityIdentifier = "user"
@@ -108,7 +108,7 @@ extension SettingsViewController: UITableViewDataSource
         case .logout /* Login/Logout Button */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "ButtonTableViewCell", for: indexPath) as? ButtonTableViewCell
             else { preconditionFailure("Could not load ButtonTableViewCell") }
-            if ServerVars.shared.user.isEmpty {
+            if ServerVars.shared.username.isEmpty {
                 cell.configure(with: String(localized: "login", comment: "Login"))
             } else {
                 cell.configure(with: String(localized: "settings_logout", comment: "Logout"))
@@ -312,10 +312,10 @@ extension SettingsViewController: UITableViewDataSource
         // MARK: Uploads
         case .uploads /* Default Upload Settings */:
             var row = indexPath.row
-            row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
-            row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
-            row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
-            row += (!UIDevice.current.hasCellular && (row > 8)) ? 1 : 0
+            row += (!userData.hasAdminRights && (row > 0)) ? 1 : 0
+            row += (!UploadVars.shared.resizeImageOnUpload && (row > 4)) ? 2 : 0
+            row += (!UploadVars.shared.compressImageOnUpload && (row > 7)) ? 1 : 0
+            row += (!UIDevice.current.hasCellular && (row > 9)) ? 1 : 0
             switch row {
             case 0 /* Author Name? */:
                 let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
@@ -355,7 +355,19 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "defaultPrivacyLevel"
                 tableViewCell = cell
                 
-            case 2 /* Strip private Metadata? */:
+            case 2 /* Live Photos */:
+                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                    ? "LabelTableViewCell"
+                    : "LabelTableViewCell2"
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
+                cell.configure(with: String(localized: "settings_livePhotos", comment: "Live Photos"),
+                               detail: UploadVars.shared.uploadLivePhotoAs.name)
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "uploadLivePhotoAs"
+                tableViewCell = cell
+
+            case 3 /* Strip private Metadata? */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 // See https://iosref.com/res
@@ -371,7 +383,7 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "stripMetadataBeforeUpload"
                 tableViewCell = cell
                 
-            case 3 /* Resize Before Upload? */:
+            case 4 /* Resize Before Upload? */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 if view.bounds.size.width > 440 {
@@ -384,9 +396,9 @@ extension SettingsViewController: UITableViewDataSource
                     // Number of rows will change accordingly
                     UploadVars.shared.resizeImageOnUpload = switchState
                     // Position of the row that should be added/removed
-                    let photoAtIndexPath = IndexPath(row: 3 + (self.user.hasAdminRights ? 1 : 0),
+                    let photoAtIndexPath = IndexPath(row: 4 + (self.userData.hasAdminRights ? 1 : 0),
                                                    section: SettingsSection.uploads.rawValue)
-                    let videoAtIndexPath = IndexPath(row: 4 + (self.user.hasAdminRights ? 1 : 0),
+                    let videoAtIndexPath = IndexPath(row: 5 + (self.userData.hasAdminRights ? 1 : 0),
                                                    section: SettingsSection.uploads.rawValue)
                     if switchState {
                         // Insert row in existing table
@@ -399,7 +411,7 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "resizeBeforeUpload"
                 tableViewCell = cell
                 
-            case 4 /* Upload Photo Size */:
+            case 5 /* Upload Photo Size */:
                 let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
                     ? "LabelTableViewCell"
                     : "LabelTableViewCell2"
@@ -411,7 +423,7 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "defaultUploadPhotoSize"
                 tableViewCell = cell
                 
-            case 5 /* Upload Video Size */:
+            case 6 /* Upload Video Size */:
                 let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
                     ? "LabelTableViewCell"
                     : "LabelTableViewCell2"
@@ -423,7 +435,7 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "defaultUploadVideoSize"
                 tableViewCell = cell
                 
-            case 6 /* Compress before Upload? */:
+            case 7 /* Compress before Upload? */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 // See https://iosref.com/res
@@ -437,7 +449,7 @@ extension SettingsViewController: UITableViewDataSource
                     // Number of rows will change accordingly
                     UploadVars.shared.compressImageOnUpload = switchState
                     // Position of the row that should be added/removed
-                    let rowAtIndexPath = IndexPath(row: 4 + (self.user.hasAdminRights ? 1 : 0)
+                    let rowAtIndexPath = IndexPath(row: 5 + (self.userData.hasAdminRights ? 1 : 0)
                                                           + (UploadVars.shared.resizeImageOnUpload ? 2 : 0),
                                                    section: SettingsSection.uploads.rawValue)
                     if switchState {
@@ -451,7 +463,7 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "compressBeforeUpload"
                 tableViewCell = cell
                 
-            case 7 /* Image Quality slider */:
+            case 8 /* Image Quality slider */:
                 let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
                     ? "SliderTableViewCell"
                     : "SliderTableViewCell2"
@@ -470,7 +482,7 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "compressionRatio"
                 tableViewCell = cell
                 
-            case 8 /* Rename Filename Before Upload */:
+            case 9 /* Rename Filename Before Upload */:
                 let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
                     ? "LabelTableViewCell"
                     : "LabelTableViewCell2"
@@ -494,7 +506,7 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "modifyFilename"
                 tableViewCell = cell
 
-            case 9 /* Wi-Fi Only? */:
+            case 10 /* Wi-Fi Only? */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 cell.configure(with: String(localized: "settings_wifiOnly", comment: "Wi-Fi Only"))
@@ -507,7 +519,7 @@ extension SettingsViewController: UITableViewDataSource
                         // Resume upload operations in background queue
                         UploadVars.shared.isPaused = false
                         Task(priority: .utility) { @UploadManagerActor in
-                            #if os(iOS) && !targetEnvironment(macCatalyst)
+                            #if os(iOS) && !targetEnvironment(macCatalyst) && !targetEnvironment(simulator)
                             if #available(iOS 26.0, *) {
                                 // Launch new continued upload task if possible
                                 if UploadVars.shared.isContinuedProcessingTaskActive == false {
@@ -518,7 +530,7 @@ extension SettingsViewController: UITableViewDataSource
                                 // Process next uploads if possible
                                 await UploadManagerActor.shared.processNextUpload()
                             }
-                            #elseif targetEnvironment(macCatalyst)
+                            #elseif targetEnvironment(macCatalyst) || targetEnvironment(simulator)
                             // Process next uploads if possible
                             await UploadManagerActor.shared.processNextUpload()
                             #endif
@@ -528,7 +540,7 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "wifiOnly"
                 tableViewCell = cell
 
-            case 10 /* Auto-upload */:
+            case 11 /* Auto-upload */:
                 let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
                     ? "LabelTableViewCell"
                     : "LabelTableViewCell2"
@@ -551,7 +563,7 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "autoUpload"
                 tableViewCell = cell
 
-            case 11 /* Delete image after upload? */:
+            case 12 /* Delete image after upload? */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 // See https://iosref.com/res
@@ -567,7 +579,7 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "deleteAfterUpload"
                 tableViewCell = cell
                 
-            case 12 /* Advanced Options */:
+            case 13 /* Advanced Options */:
                 let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
                     ? "LabelTableViewCell"
                     : "LabelTableViewCell3"
@@ -617,18 +629,6 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "clearClipboard"
                 tableViewCell = cell
                 
-            case 2 /* Share Image Metadata Options */:
-                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                    ? "LabelTableViewCell"
-                    : "LabelTableViewCell3"
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
-                else { preconditionFailure("Could not load LabelTableViewCell") }
-                // See https://iosref.com/res
-                cell.configure(with: String(localized: "settings_shareGPSdata", comment: "Share Private Metadata"), detail: "")
-                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-                cell.accessibilityIdentifier = "defaultShareOptions"
-                tableViewCell = cell
-
             default:
                 break
             }
@@ -776,14 +776,20 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "errorLogs"
                 tableViewCell = cell
-
-            case 1 /* Support Forum */:
+                
+            case 1 /* Documentation */:
+                cell.configure(with: String(localized: "settings_supportDocumentation", comment: "Documentation"), detail: "")
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "documentation"
+                tableViewCell = cell
+                
+            case 2 /* Support Forum */:
                 cell.configure(with: String(localized: "settings_supportForum", comment: "Support Forum"), detail: "")
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "supportForum"
                 tableViewCell = cell
                 
-            case 2 /* Contact Support */:
+            case 3 /* Contact Support */:
                 cell.configure(with: String(localized: "settings_contact", comment: "Contact Support"), detail: "")
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 if !MFMailComposeViewController.canSendMail() {
@@ -795,7 +801,7 @@ extension SettingsViewController: UITableViewDataSource
             default:
                 break
             }
-
+            
         default:
             break
         }

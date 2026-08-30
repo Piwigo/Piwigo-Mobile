@@ -165,21 +165,24 @@ extension UIImage {
     // Save downsampled images in HEIC or JPEG format
     public func saveInOptimumFormat(atPath filePath: String) {
         autoreleasepool {
-            let fm = FileManager.default
-            try? fm.removeItem(atPath: filePath)
+            /// An atomic write replaces the file at that path, if any.
             if #available(iOS 17, *) {
                 if let data = self.heicData() as? NSData {
                     do {
                         try data.write(toFile: filePath, options: .atomic)
                     } catch {
+                        #if DEBUG
                         debugPrint(error.localizedDescription)
+                        #endif
                     }
                 }
             } else if let data = self.jpegData(compressionQuality: 1.0) as? NSData {
                 do {
                     try data.write(toFile: filePath, options: .atomic)
                 } catch {
+                    #if DEBUG
                     debugPrint(error.localizedDescription)
+                    #endif
                 }
             }
         }

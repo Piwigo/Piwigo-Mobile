@@ -10,7 +10,7 @@ import UIKit
 import PwgKit
 import PwgUIKit
 
-class Help04ViewController: UIViewController {
+final class Help04ViewController: UIViewController {
     
     @IBOutlet weak var legend: UILabel!
     @IBOutlet weak var imageView: UIImageView!
@@ -55,7 +55,7 @@ class Help04ViewController: UIViewController {
         
         // Remember that this view was watched and when
         AppVars.shared.didWatchHelpViews = AppVars.shared.didWatchHelpViews | helpID
-        AppVars.shared.dateOfLastHelpView = Date().timeIntervalSinceReferenceDate
+        AppVars.shared.dateOfLastHelpView = Date.timeIntervalSinceReferenceDate
     }
 
     @MainActor

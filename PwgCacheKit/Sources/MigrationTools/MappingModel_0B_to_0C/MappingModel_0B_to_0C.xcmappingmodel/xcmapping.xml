@@ -219,7 +219,7 @@ D05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGsCwwXGB0eJiswMTQ4VSRudWxs1Q0ODxAREhMUFRZZTlNP
         <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING" idrefs="z103 z151 z194 z159"></relationship>
     </object>
     <object type="XDDEVENTITYMAPPING" id="z136">
-        <attribute name="migrationpolicyclassname" type="string">PwgCacheKit.AlbumToAlbumMigrationPolicy_0F_to_0G</attribute>
+        <attribute name="migrationpolicyclassname" type="string">PwgCacheKit.AlbumToAlbumMigrationPolicy_0B_to_0C</attribute>
         <attribute name="sourcename" type="string">Album</attribute>
         <attribute name="mappingtypename" type="string">Undefined</attribute>
         <attribute name="mappingnumber" type="int16">5</attribute>

@@ -113,11 +113,13 @@ extension UploadManager
         // so a later trigger will pick up any assets left to delete.
         guard isDeletingAssets == false else { return }
         let (uploadIDs, localIdentifiers): ([NSManagedObjectID], [String]) = UploadProvider().getIDsOfUploadsToDeleteFromLibrary(inContext: self.uploadBckgContext)
-        UploadManager.logger.notice("Resuming uploads: \(uploadIDs.count) assets for deletion in the Photo Library")
+        /// Both halves of a Live Photo refer to the same asset, so the requests are more numerous
+        /// than the assets they will delete.
+        UploadManager.logger.notice("Resuming uploads: \(Set(localIdentifiers).count) asset(s) to delete from the Photo Library, referred to by \(uploadIDs.count) upload request(s)")
         let deadline = DateUtilities.nextDayAt4AM(after: UploadVars.shared.dateOfLastPhotoLibraryDeletion)
         if uploadIDs.isEmpty == false && (nberOfPendingUploads == 0 || Date.now > deadline) {
             // Store date of proposed deletion
-            UploadVars.shared.dateOfLastPhotoLibraryDeletion = Date().timeIntervalSinceReferenceDate
+            UploadVars.shared.dateOfLastPhotoLibraryDeletion = Date.timeIntervalSinceReferenceDate
             
             // Suggest to delete assets from the Photo Library
             deleteAssets(associatedToUploads: uploadIDs, localIdentifiers)
@@ -151,7 +153,7 @@ extension UploadManager
         }
 
         // Process next uploads if possible
-        #if os(iOS) && !targetEnvironment(macCatalyst)
+        #if os(iOS) && !targetEnvironment(macCatalyst) && !targetEnvironment(simulator)
         if #available(iOS 26.0, *) {
             // Launch new continued upload task if possible
             if UploadVars.shared.isContinuedProcessingTaskActive == false {
@@ -162,7 +164,7 @@ extension UploadManager
             // Process next uploads if possible
             await UploadManagerActor.shared.processNextUpload()
         }
-        #elseif targetEnvironment(macCatalyst)
+        #elseif targetEnvironment(macCatalyst) || targetEnvironment(simulator)
         // Process next uploads if possible
         await UploadManagerActor.shared.processNextUpload()
         #endif
@@ -203,6 +205,69 @@ extension UploadManager
         // Collect upload requests of deleted images
         // but keep auto-upload requests so that they are not re-uploaded
         let toDeleteIDs = UploadProvider().getIDsOfCompletedUploads(onlyImages: imageIDs, notAutoUploaded: true, inContext: self.uploadBckgContext).0
+        
+        // Delete uploads
+        try? UploadProvider().deleteUploads(withID: toDeleteIDs, inContext: self.uploadBckgContext)
+        
+        // Update counter and app badge
+        self.updateNberOfUploadsToComplete()
+    }
+    
+    /// Deletes the upload requests whose destination album was deleted on the Piwigo server
+    /// outside of the app, e.g. from the web UI. Called on reception of a pwgAlbumsDeletedOnServer
+    /// notification, i.e. once the album cache detected the deletion.
+    /// The server cannot keep a sub-album whose parent album was deleted, but a non-recursive
+    /// import only detects the deletion of the albums of the parent album it fetched, so the
+    /// sub-albums still in cache are collected here.
+    /// What the server did with the photos of these albums is unknown, so completed requests are
+    /// kept: the photos which were deleted keep a request until the app browses an album which
+    /// no longer returns them (see deleteUploadsOfDeletedImages(withIDs:)).
+    public func deleteUploads(ofAlbumsDeletedOnServerWithIDs albumIDs: [Int32]) async {
+        // Collect the IDs of the deleted albums and of their sub-albums
+        var deletedIDs = Set<Int32>()
+        for albumID in albumIDs {
+            deletedIDs.formUnion(AlbumProvider().getIDsOfAlbumAndSubAlbums(withID: albumID,
+                                                                           inContext: self.uploadBckgContext))
+        }
+        
+        // Delete the upload requests targeting these albums
+        await deleteUploads(ofDeletedAlbumsWithIDs: Array(deletedIDs))
+    }
+    
+    /// Deletes the upload requests whose destination album was deleted on the Piwigo server.
+    /// Pending requests are always deleted: they can never complete anymore.
+    /// Completed requests are only deleted when the photos were deleted from the server too,
+    /// i.e. when photosDeleted is true. A photo which still belongs to another album must keep
+    /// its request, otherwise the app would present it as never uploaded and propose it again.
+    /// The Piwigo server deletes an album together with its sub-albums, so the caller is
+    /// expected to provide the IDs of the deleted album and of all its sub-albums
+    /// (see AlbumProvider.getIDsOfAlbumAndSubAlbums(withID:inContext:)).
+    public func deleteUploads(ofDeletedAlbumsWithIDs albumIDs: [Int32],
+                              photosDeleted: Bool = false) async {
+        // Anything to do?
+        if albumIDs.isEmpty { return }
+        
+        // Collect the pending upload requests whose destination album no longer exists
+        let pendingIDs = UploadProvider().getIDsOfPendingUploads(onlyAlbums: albumIDs,
+                                                                 inContext: self.uploadBckgContext).0
+        var toDeleteIDs = pendingIDs
+        
+        // Collect the completed upload requests whose photo was deleted from the server,
+        // but keep auto-upload requests so that their photo is not uploaded again
+        /// as done when images are deleted (see deleteUploadsOfDeletedImages(withIDs:))
+        if photosDeleted {
+            toDeleteIDs += UploadProvider().getIDsOfCompletedUploads(onlyAlbums: albumIDs,
+                                                                     notAutoUploaded: true,
+                                                                     inContext: self.uploadBckgContext).0
+        }
+        if toDeleteIDs.isEmpty { return }
+        
+        // Cancel the transfers in progress: their destination album no longer exists
+        let pendingURIstrs = Set(pendingIDs.map({ $0.uriRepresentation().absoluteString }))
+        await UploadSessionsDelegate.shared.cancelTasksOfUploads(withIDs: pendingURIstrs)
+        
+        // Remove the pending requests from the upload queue
+        await UploadManagerActor.shared.removeUploads(withIDs: pendingIDs)
         
         // Delete uploads
         try? UploadProvider().deleteUploads(withID: toDeleteIDs, inContext: self.uploadBckgContext)

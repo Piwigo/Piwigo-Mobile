@@ -31,32 +31,21 @@ final class ShareViewController: UIViewController {
     }()
     
     
-    // MARK: - Core Data Object Contexts
-    lazy var mainContext: NSManagedObjectContext = {
-        return DataController.shared.mainContext
-    }()
-    
-    
-    // MARK: - Core Data Providers
+    // MARK: - Core Data Objects
+    @MainActor
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
     private lazy var userProvider: UserProvider = {
         return UserProvider()
     }()
-    
-    
-    // MARK: - Core Data Source
-    var user: User!
+    var userData: UserProperties!
     var migrationRequired: Bool = false
-    lazy var userUploadRights: [Int32] = {
-        // Case of Community user?
-        if ServerVars.shared.userStatus != .normal { return [] }
-        let userUploadRights = user.uploadRights
-        return userUploadRights.components(separatedBy: ",").compactMap({ Int32($0) })
-    }()
+
     
+    // MARK: - Core Data Source    
     lazy var predicates: [NSPredicate] = {
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
+        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
         return andPredicates
     }()
     
@@ -150,14 +139,14 @@ final class ShareViewController: UIViewController {
         
         // Retrieve user and check that a root album exists in cache (create it if necessary)
         // When this fails, the user is asked to log in and create a first album when the view appears.
-        guard let user = try? userProvider.getUserAccount(inContext: mainContext),
-              let _ = try? AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.root.rawValue),
+        guard let userData = try? userProvider.getPropertiesOfCurrentUser(inContext: mainContext),
+              let _ = AlbumProvider().getAlbum(withID: pwgSmartAlbum.root.rawValue, inContext: mainContext),
               AlbumProvider().getObjectCount(inContext: mainContext) > 0
         else {
             logger.notice("No albums in cache")
             return
         }
-        self.user = user
+        self.userData = userData
         
         // Initialise data source
         do {
@@ -201,6 +190,15 @@ final class ShareViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        // The Piwigo ID of a Community user is deduced from the 'added_by' attribute
+        // of an image he/she has uploaded, i.e. it becomes known after a first upload.
+        /// The app performs the uploads and cannot notify this process, whose properties
+        /// may date from a previous share ► re-read them while the ID remains unknown.
+        if userData?.pwgID == Int16.zero,
+           let updatedUserData = try? userProvider.getPropertiesOfCurrentUser(inContext: mainContext) {
+            userData = updatedUserData
+        }
+        
         // Did the user change system settings?
         UITools.shared.applyColorPalette(for: traitCollection.userInterfaceStyle)
         
@@ -238,7 +236,7 @@ final class ShareViewController: UIViewController {
         }
         
         // Ask the user to log in and create an album
-        if user == nil {
+        if userData == nil {
             let message = String(localized: "shareFailError_noAlbum",
                                  comment: "Please open the Piwigo app and create an album before sharing photos or videos.")
             presentShareFailAlert(withMessage: message)

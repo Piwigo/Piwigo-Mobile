@@ -13,8 +13,11 @@ import PwgCacheKit
 import PwgUIKit
 import PwgUploadKit
 
-@objc protocol UploadSwitchDelegate: NSObjectProtocol {
+/// Not @objc: pwgUploadLivePhotoAs is a Swift enum. Nothing in Objective-C adopts this
+/// protocol, and NSObjectProtocol still makes it class-bound for a weak reference.
+protocol UploadSwitchDelegate: NSObjectProtocol {
     func didSelectCurrentCounter(value: Int64)
+    func didSelectUploadLivePhotoAs(_ option: pwgUploadLivePhotoAs)
     func uploadOptionsViewDidDisappear(withUploadsQueued: Bool)
 }
 
@@ -42,7 +45,7 @@ final class UploadSwitchViewController: UIViewController {
     
     
     // MARK: - Core Data Objects
-    var user: User!
+    var userData: UserProperties!
 
 
     // MARK: - View Lifecycle
@@ -60,6 +63,7 @@ final class UploadSwitchViewController: UIViewController {
             uploadBarButton = UIBarButtonItem(image: UIImage(named: "arrowshape.up.fill"),
                                               style: .plain, target: self, action: #selector(didTapUploadButton))
         }
+        uploadBarButton?.accessibilityLabel = String(localized: "tabBar_upload", comment: "Upload")
 
         // Segmented control (choice for presenting common image parameters or upload settings)
         switchViewSegmentedControl.addTarget(self, action: #selector(didSwitchView), for: .valueChanged)
@@ -135,6 +139,10 @@ final class UploadSwitchViewController: UIViewController {
         // Show HUD during upload preparation
         self.navigationController?.showHUD(withTitle: Localized.preparingUploads, minWidth: 200)
         
+        // What to upload from a Live Photo, for this selection only. Defaults to the
+        // setting, which the upload settings view may override without changing it.
+        var uploadLivePhotoAs = UploadVars.shared.uploadLivePhotoAs
+        
         // Retrieve custom image parameters and upload settings from child views
         children.forEach { (child) in
             
@@ -148,7 +156,7 @@ final class UploadSwitchViewController: UIViewController {
                     updatedRequest.imageTitle = paramsCtrl.commonTitle
                     updatedRequest.author = paramsCtrl.commonAuthor
                     updatedRequest.privacyLevel = paramsCtrl.commonPrivacyLevel
-                    let tagIDs: String = paramsCtrl.commonTags.map({"\($0.tagId),"}).reduce("", +)
+                    let tagIDs: String = paramsCtrl.commonTags.map({"\($0.pwgID),"}).reduce("", +)
                     updatedRequest.tagIds = String(tagIDs.dropLast(1))
                     updatedRequest.comment = paramsCtrl.commonComment
                     
@@ -195,6 +203,7 @@ final class UploadSwitchViewController: UIViewController {
                     updatedRequest.compressImageOnUpload = settingsCtrl.compressImageOnUpload
                     updatedRequest.photoQuality = settingsCtrl.photoQuality
                     updatedRequest.deleteImageAfterUpload = settingsCtrl.deleteImageAfterUpload
+                    uploadLivePhotoAs = settingsCtrl.uploadLivePhotoAs
 
                     // Store updated upload request
                     uploadRequests[index] = updatedRequest
@@ -202,16 +211,24 @@ final class UploadSwitchViewController: UIViewController {
             }
         }
         
+        // Tell the picker what a Live Photo will produce, so that it can follow the
+        // progress of the one or two upload requests each of them yields.
+        delegate?.didSelectUploadLivePhotoAs(uploadLivePhotoAs)
+        
         // Queue upload requests and start uploads
+        let livePhotoChoice = uploadLivePhotoAs
         Task(priority: .utility) { @UploadManagerActor in
             do {
                 // Create upload requests in cache
                 /// Cells switch to the "waiting" upload state and are "automatically" deselected visually
-                let uploadIDs = try await UploadManager.shared.importUploads(from: self.uploadRequests)
+                /// A Live Photo produces one or two requests, see the option selected in Settings
+                let requests = await UploadProperties.expandingLivePhotos(in: self.uploadRequests,
+                                                                          as: livePhotoChoice)
+                let uploadIDs = try await UploadManager.shared.importUploads(from: requests)
                 
                 // Add upload requests to queue
                 UploadVars.shared.isPaused = false
-                #if os(iOS) && !targetEnvironment(macCatalyst)
+                #if os(iOS) && !targetEnvironment(macCatalyst) && !targetEnvironment(simulator)
                 if #available(iOS 26.0, *) {
                     // Launch new continued upload task if possible
                     UploadManager.shared.runContinuedUploadTask()
@@ -223,7 +240,7 @@ final class UploadSwitchViewController: UIViewController {
                     // Process next uploads if possible
                     await UploadManagerActor.shared.processNextUpload()
                 }
-                #elseif targetEnvironment(macCatalyst)
+                #elseif targetEnvironment(macCatalyst) || targetEnvironment(simulator)
                 // Queue uploads to prepare
                 await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
                 
@@ -251,7 +268,7 @@ final class UploadSwitchViewController: UIViewController {
                             // Resume upload operations in background queue
                             UploadVars.shared.isPaused = false
                             Task(priority: .utility) { @UploadManagerActor in
-                                #if os(iOS) && !targetEnvironment(macCatalyst)
+                                #if os(iOS) && !targetEnvironment(macCatalyst) && !targetEnvironment(simulator)
                                 if #available(iOS 26.0, *) {
                                     // Launch new continued upload task if possible
                                     UploadManager.shared.runContinuedUploadTask()
@@ -260,7 +277,7 @@ final class UploadSwitchViewController: UIViewController {
                                     // Process next uploads if possible
                                     await UploadManagerActor.shared.processNextUpload()
                                 }
-                                #elseif targetEnvironment(macCatalyst)
+                                #elseif targetEnvironment(macCatalyst) || targetEnvironment(simulator)
                                 // Process next uploads if possible
                                 await UploadManagerActor.shared.processNextUpload()
                                 #endif

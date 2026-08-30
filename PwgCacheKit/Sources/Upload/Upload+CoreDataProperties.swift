@@ -27,6 +27,7 @@ extension Upload {
     @NSManaged public var fileNamePrefixEncodedActions: String
     @NSManaged public var fileNameReplaceEncodedActions: String
     @NSManaged public var fileNameSuffixEncodedActions: String
+    @NSManaged public var assetPart: Int16
     @NSManaged public var fileType: Int16
     @NSManaged public var imageId: Int64
     @NSManaged public var imageName: String

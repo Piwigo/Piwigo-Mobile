@@ -1,0 +1,5 @@
+{
+    "stat": "fail",
+    "err": 409,
+    "message": "Album is already shared"
+}

@@ -50,7 +50,9 @@ public enum DataDirectories
             }
         }
         
+        #if DEBUG
         debugPrint("••> appGroupDirectory: \(piwigoURL)")
+        #endif
         return piwigoURL
     }()
     
@@ -71,7 +73,9 @@ public enum DataDirectories
             }
         }
         
+        #if DEBUG
         debugPrint("••> uploadsDirectory: \(uploadURL)")
+        #endif
         return uploadURL
     }()
     
@@ -88,7 +92,9 @@ public enum DataDirectories
             try? fm.createDirectory(at: logsURL, withIntermediateDirectories: true, attributes: nil)
         }
         
+        #if DEBUG
         debugPrint("••> logsDirectory: \(logsURL)")
+        #endif
         return logsURL
     }()
     
@@ -109,7 +115,9 @@ public enum DataDirectories
                 try fm.createDirectory(at: pwgDirectory, withIntermediateDirectories: true, attributes: nil)
             }
             
+            #if DEBUG
             debugPrint("••> cacheDirectory: \(pwgDirectory)")
+            #endif
             return pwgDirectory
         } catch {
             fatalError("Unable to create the \"Caches/Piwgo\" directory (\(error.localizedDescription)")
@@ -140,7 +148,9 @@ public enum DataDirectories
             }
         }
         
+        #if DEBUG
         debugPrint("••> appSupportDirectory: \(piwigoURL)")
+        #endif
         return piwigoURL
     }()
     
@@ -150,7 +160,9 @@ public enum DataDirectories
         let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         let appDocumentsDirectory = urls[urls.count-1]
         
+        #if DEBUG
         debugPrint("••> appDocumentsDirectory: \(appDocumentsDirectory)")
+        #endif
         return appDocumentsDirectory
     }()
     
@@ -170,7 +182,9 @@ public enum DataDirectories
             }
         }
 
+        #if DEBUG
         debugPrint("••> incompatibleDirectory: \(incompatibleURL)")
+        #endif
         return incompatibleURL
     }()
 
@@ -190,7 +204,9 @@ public enum DataDirectories
             }
         }
 
+        #if DEBUG
         debugPrint("••> backupDirectory: \(backupURL)")
+        #endif
         return backupURL
     }()
 }

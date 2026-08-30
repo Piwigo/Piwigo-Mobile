@@ -14,32 +14,27 @@ import PwgCacheKit
 import PwgUploadKit
 import PwgUIKit
 
-class AutoUploadViewController: UIViewController {
+final class AutoUploadViewController: UIViewController {
 
     @IBOutlet var autoUploadTableView: UITableView!
     
     var oldContentOffset = CGPoint.zero
     
     // MARK: - Core Data Objects
-    var user: User!
-    lazy var mainContext: NSManagedObjectContext = {
-        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
-            preconditionFailure("!!! Missing Managed Object Context !!!")
-        }
-        return context
-    }()
-
+    @MainActor
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
+    var userData: UserProperties!
+    
     private lazy var hasTagCreationRights: Bool = {
         // Depends on the user's rights
-        switch ServerVars.shared.userStatus {
+        switch pwgUserStatus(rawValue: userData.status) ?? .guest {
         case .guest, .generic:
             return false
         case .admin, .webmaster:
             return true
         case .normal:
             // Community user with upload rights?
-            if user.uploadRights.components(separatedBy: ",")
-                .contains(String(UploadVars.shared.autoUploadCategoryId)) {
+            if userData.hasUploadRights(forCatID: UploadVars.shared.autoUploadCategoryId) {
                 return true
             }
         }
@@ -119,7 +114,7 @@ class AutoUploadViewController: UIViewController {
         // Resume upload operations in background queue
         UploadVars.shared.isPaused = false
         Task(priority: .utility) { @UploadManagerActor in
-            #if os(iOS) && !targetEnvironment(macCatalyst)
+            #if os(iOS) && !targetEnvironment(macCatalyst) && !targetEnvironment(simulator)
             if #available(iOS 26.0, *) {
                 // Launch new continued upload task if possible
                 if UploadVars.shared.isContinuedProcessingTaskActive == false {
@@ -130,7 +125,7 @@ class AutoUploadViewController: UIViewController {
                 // Process next uploads if possible
                 await UploadManagerActor.shared.processNextUpload()
             }
-            #elseif targetEnvironment(macCatalyst)
+            #elseif targetEnvironment(macCatalyst) || targetEnvironment(simulator)
             // Process next uploads if possible
             await UploadManagerActor.shared.processNextUpload()
             #endif

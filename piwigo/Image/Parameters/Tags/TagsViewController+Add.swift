@@ -54,9 +54,9 @@ extension TagsViewController
     }
 
     @MainActor
-    func addTag(withName tagName: String?) {
+    func addTag(withName name: String?) {
         // Check tag name
-        guard let tagName = tagName, tagName.count != 0
+        guard let name, name.count != 0
         else { return }
         
         // Display HUD during the update
@@ -66,10 +66,10 @@ extension TagsViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Add tag on server
-                let tagData = try await JSONManager.shared.addTag(with: tagName)
+                let tagData = try await JSONManager.shared.addTag(with: name)
                 
                 // Add tag to cache
                 let _ = try TagProvider().importOneBatch([tagData], asAdmin: true, tagIDs: Set<Int32>())
@@ -101,8 +101,8 @@ extension TagsViewController: UITextFieldDelegate
 {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         // Initialise tag name list
-        allTagNames = Set((selectedTags.fetchedObjects ?? []).map({$0.tagName}))
-        allTagNames.formUnion(Set(nonSelectedTags.fetchedObjects ?? []).map({$0.tagName}))
+        allTagNames = Set((selectedTags.fetchedObjects ?? []).map({$0.name}))
+        allTagNames.formUnion(Set(nonSelectedTags.fetchedObjects ?? []).map({$0.name}))
 
         // Disable Add action
         addAction?.isEnabled = false

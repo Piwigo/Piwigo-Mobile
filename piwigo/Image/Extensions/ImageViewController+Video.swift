@@ -9,109 +9,22 @@
 import Foundation
 import UIKit
 
-// MARK: - Video Buttons
+// MARK: - Video
 extension ImageViewController
 {
-    // MARK: - Play/pause video
-    @objc func didChangePlaybackStatus(_ notification: Notification) {
+    // MARK: - Video Duration
+    /// The duration of a video is not stored in cache and is often known only after the
+    /// video is presented, so the subtitle of the title view is refreshed on arrival.
+    @objc func didKnowVideoDuration(_ notification: Notification) {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
-            // NOP if pwgID or player status unknown
+            // NOP unless the duration is the one of the presented video
             guard let pwgID = notification.userInfo?["pwgID"] as? Int64,
-                  let videoPVC = pageViewController?.viewControllers?.first as? VideoDetailViewController,
-                  videoPVC.imageData.pwgID == pwgID
-            else {
-                return
-            }
+                  imageData?.pwgID == pwgID
+            else { return }
 
-            // Set button according to status if needed
-            var didChangeButton = false
-            if let isPlaying = notification.userInfo?["playing"] as? Bool {
-                // Set play/pause button according to player status
-                if isPlaying {
-                    if playBarButton?.accessibilityIdentifier ?? "" != "pause" {
-                        playBarButton = UIBarButtonItem.pauseImageButton(self, action: #selector(pauseVideo))
-                        didChangeButton = true
-                    }
-                } else {
-                    if playBarButton?.accessibilityIdentifier ?? "" != "play" {
-                        playBarButton = UIBarButtonItem.playImageButton(self, action: #selector(playVideo))
-                        didChangeButton = true
-                    }
-                }
-            }
-            if let isMuted = notification.userInfo?["muted"] as? Bool {
-                // Set mute/unmute button according to player status
-                if setMuteButtonItem(isMuted) {
-                    didChangeButton = true
-                }
-            }
-            if didChangeButton {
-                updateNavBar()
-            }
-        }
-    }
-    
-    @objc func playVideo() {
-        DispatchQueue.main.async { [weak self] in
-            guard let self,
-                  let videoPVC = pageViewController?.viewControllers?.first as? VideoDetailViewController,
-                  let video = videoPVC.video
-            else {
-                return
-            }
-            playbackController.play(contentOfVideo: video)
-        }
-    }
-    
-    @objc func pauseVideo() {
-        DispatchQueue.main.async { [weak self] in
-            guard let self,
-                  let videoPVC = pageViewController?.viewControllers?.first as? VideoDetailViewController,
-                  let video = videoPVC.video else {
-                return
-            }
-            playbackController.pause(contentOfVideo: video)
-        }
-    }
-
-
-    // MARK: - Mute/unmute video
-    @objc func didChangeMuteOption(_ notification: Notification) {
-        DispatchQueue.main.async { [weak self] in
-            // NOP if pwgID or player status unknown
-            guard let self,
-                  let pwgID = notification.userInfo?["pwgID"] as? Int64,
-                  let videoDVC = pageViewController?.viewControllers?.first as? VideoDetailViewController,
-                  videoDVC.imageData.pwgID == pwgID,
-                  let isMuted = notification.userInfo?["muted"] as? Bool
-            else {
-                return
-            }
-            
-            // Set mute/unmute button according to player observer if needed
-            if setMuteButtonItem(isMuted) {
-                updateNavBar()
-            }
-        }
-    }
-    
-    @MainActor
-    private func setMuteButtonItem(_ isMuted: Bool) -> Bool {
-        let wantedTag = isMuted ? UIBarButtonItem.pwgMuted : UIBarButtonItem.pwgNotMuted
-        if wantedTag == muteBarButton?.tag ?? 0 { return false }
-        muteBarButton = UIBarButtonItem.muteAudioButton(isMuted, target: self, action: #selector(muteUnmuteAudio))
-        return true
-    }
-    
-    @objc func muteUnmuteAudio() {
-        DispatchQueue.main.async { [weak self] in
-            guard let self,
-                  let videoPVC = pageViewController?.viewControllers?.first as? VideoDetailViewController,
-                  let video = videoPVC.video else {
-                return
-            }
-            playbackController.muteUnmute(contentOfVideo: video)
+            // The title view reads the duration from the playback controller
+            setTitleViewFromImageData()
         }
     }
 }

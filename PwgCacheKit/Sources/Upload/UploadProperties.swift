@@ -49,6 +49,10 @@ public struct UploadProperties: Sendable
     public var deleteImageAfterUpload: Bool
     public var markedForAutoUpload: Bool
 
+    // Half of the asset carried by this request. Both halves of a Live Photo uploaded
+    // as .both share the same localIdentifier and are told apart by this value.
+    public var assetPart: pwgUploadAssetPart = .original
+
     // PHAsset localIdentifier resolved (in the main app) for a photo shared via the
     // share extension, so that the original can be deleted after a successful upload.
     // nil when the shared item could not be matched to a Photo Library asset.
@@ -92,11 +96,11 @@ extension UploadProperties {
             serverFileTypes: ServerVars.shared.serverFileTypes,
             
             // Upload request date is now and state is waiting
-            requestDate: Date().timeIntervalSinceReferenceDate,
+            requestDate: Date.timeIntervalSinceReferenceDate,
             requestState: .waiting, requestError: "",
             
             // Photo creation date and filename
-            creationDate: Date().timeIntervalSinceReferenceDate,
+            creationDate: Date.timeIntervalSinceReferenceDate,
             fileName: fileName ?? "",
             fileNameExtensionCase: fileNameExtensionCase,
             fileNamePrefixEncodedActions: prefixFileNameActionList,
@@ -128,5 +132,26 @@ extension UploadProperties {
     // Return string corresponding to the state
     public var stateLabel: String {
         return requestState.stateInfo
+    }
+
+    /**
+     Identifies the files of this request in the Uploads directory and, through the HTTP header,
+     the transfer tasks which carry them. Both halves of a Live Photo share the same
+     localIdentifier, so the file key is what tells their files apart.
+     NB: Never pass a file key to the Photos framework, use the localIdentifier.
+    */
+    public var fileKey: String {
+        return localIdentifier + assetPart.fileKeySuffix
+    }
+
+    /**
+     Returns the identifier of the asset a file key was built from, i.e. the identifier which
+     the Photos framework and the pickers know. The only place aware of how a file key is
+     composed, besides fileKey itself.
+    */
+    public static func assetIdentifier(from fileKey: String) -> String {
+        guard fileKey.hasSuffix(kLivePhotoMovieSuffix)
+        else { return fileKey }
+        return String(fileKey.dropLast(kLivePhotoMovieSuffix.count))
     }
 }

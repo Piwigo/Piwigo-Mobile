@@ -31,7 +31,7 @@ extension UploadManager {
         
         // Check existence of Piwigo album
         let categoryId = UploadVars.shared.autoUploadCategoryId
-        guard categoryId != Int32.min
+        guard categoryId > Int32.zero
         else {
             // Cannot access Piwigo album -> Reset album ID
             UploadVars.shared.autoUploadCategoryId = Int32.min    // Unknown destination Piwigo album
@@ -115,8 +115,11 @@ extension UploadManager {
             }
         }
         
-        // Return properties of new upload requests
-        return uploadRequestsToAppend
+        // Return properties of new upload requests, both halves of the Live Photos if wanted
+        /// NB: An asset is skipped above as soon as one request refers to it, whichever half it
+        /// carries, so the halves are only ever created together, here.
+        return UploadProperties.expandingLivePhotos(in: uploadRequestsToAppend,
+                                                    as: UploadVars.shared.uploadLivePhotoAs)
     }
     
     

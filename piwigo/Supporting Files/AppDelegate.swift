@@ -37,11 +37,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var didCancelBiometricsAuthentication = false
     var networkMonitor: NetworkMonitor?
 
-    // MARK: - Core Data Object Contexts
-    private lazy var mainContext: NSManagedObjectContext = {
-        return DataController.shared.mainContext
-    }()
-    
+    // MARK: - Core Data Objects
+    @MainActor
+    private lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
+
 
     // MARK: - App Initialisation
     func application(_ application: UIApplication, didFinishLaunchingWithOptions
@@ -96,7 +95,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Register launch handlers for tasks
         /// All launch handlers must be registered before application finishes launching.
         /// Will have to check if pwg.images.uploadAsync is available
+        #if !targetEnvironment(simulator)
         registerBgTasks()
+        #endif
 
         // Register network connection changes
         Task { @MainActor in
@@ -164,7 +165,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 activity = currentActivity ?? ActivityType.external
 
             default:
+                #if DEBUG
                 debugPrint("••> Un-managed scene session role!")
+                #endif
                 activity = currentActivity ?? ActivityType.album
             }
         } else {
@@ -179,7 +182,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 activity = currentActivity ?? ActivityType.external
 
             default:
+                #if DEBUG
                 debugPrint("••> Un-managed scene session role!")
+                #endif
                 activity = currentActivity ?? ActivityType.album
             }
         }
@@ -211,13 +216,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: any Error) {
+        #if DEBUG
         debugPrint("Did fail to register notifications.")
+        #endif
     }
     
 
     // MARK: - Transitioning to the Background
     func applicationWillTerminate(_ application: UIApplication) {
+        #if DEBUG
         debugPrint("••> App will terminate.")
+        #endif
         // Called when the application is about to terminate.
         // Save data if appropriate. See also applicationDidEnterBackground:.
         
@@ -247,7 +256,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - Background Task | Uploads
     func application(_ application: UIApplication, handleEventsForBackgroundURLSession
                         identifier: String, completionHandler: @escaping () -> Void) {
+        #if DEBUG
         debugPrint("    > Handle events for background session with ID: \(identifier)");
+        #endif
         
         // Upload session of the app?
         if identifier.hasPrefix(pwgUploadBckgSessionID) {
@@ -259,7 +270,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 Task { @MainActor in
                     // Store the handler under this identifier
                     uploadSessionCompletionHandlers[identifier] = completionHandler
+                    #if DEBUG
                     debugPrint("••> Rejoining session with CompletionHandler.")
+                    #endif
                 }
             }
         }
@@ -360,7 +373,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             }
             catch {
+                #if DEBUG
                 debugPrint("••> Could not clean up the temporary directory")
+                #endif
             }
         }
     }
@@ -376,7 +391,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([any UIUserActivityRestoring]?) -> Void) -> Bool {
+        #if DEBUG
         debugPrint(userActivity)
+        #endif
         return true
     }
     
@@ -490,7 +507,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         case .authenticationFailed, .systemCancel, .appCancel, .passcodeNotSet:
                             fallthrough
                         default:
+                            #if DEBUG
                             debugPrint(error.localizedDescription)
+                            #endif
+                            break
                         }
                     }
                     DispatchQueue.main.async {
@@ -568,7 +588,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private func resumeUploads() {
         Task(priority: .utility) { @UploadManagerActor in
-            #if os(iOS) && !targetEnvironment(macCatalyst)
+            #if os(iOS) && !targetEnvironment(macCatalyst) && !targetEnvironment(simulator)
             if #available(iOS 26.0, *) {
                 UploadManager.shared.runContinuedUploadTask()
             }
@@ -576,7 +596,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 UploadVars.shared.didResumeUploads = false
                 await UploadManager.shared.resumeInForeground()
             }
-            #elseif targetEnvironment(macCatalyst)
+            #elseif targetEnvironment(macCatalyst) || targetEnvironment(simulator)
             UploadVars.shared.didResumeUploads = false
             await UploadManager.shared.resumeInForeground()
             #endif
@@ -614,14 +634,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Resume upload operations in background queue
         // and update badge, upload button of album navigator
         Task(priority: .utility) { @UploadManagerActor in
-            #if os(iOS) && !targetEnvironment(macCatalyst)
+            #if os(iOS) && !targetEnvironment(macCatalyst) && !targetEnvironment(simulator)
             if #available(iOS 26.0, *) {
                 UploadManager.shared.runContinuedUploadTask()
             }
             else {
                 await UploadManager.shared.resumeInForeground()
             }
-            #elseif targetEnvironment(macCatalyst)
+            #elseif targetEnvironment(macCatalyst) || targetEnvironment(simulator)
             await UploadManager.shared.resumeInForeground()
             #endif
         }
@@ -666,7 +686,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // may not be suggested or other may be deleted, we store more than 10, say 20.
         let nberExtraCats: Int = max(0, recentAlbumsStr.count - 20)
         CacheVars.shared.recentCategories = recentAlbumsStr.dropLast(nberExtraCats).joined(separator: ",")
+        #if DEBUG
         debugPrint("••> Added album \(categoryId); Recent albums: \(CacheVars.shared.recentCategories) (max: \(CacheVars.shared.maxNberRecentCategories))")
+        #endif
     }
 
     @objc func removeRecentAlbumWithAlbumId(_ notification: Notification) {
@@ -694,7 +716,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Update list
         CacheVars.shared.recentCategories = recentAlbumsStr.joined(separator: ",")
+        #if DEBUG
         debugPrint("••> Removed album \(categoryIdStr); Recent albums: \(CacheVars.shared.recentCategories) (max: \(CacheVars.shared.maxNberRecentCategories))")
+        #endif
     }
 }
 
@@ -709,7 +733,7 @@ extension AppDelegate: AppLockDelegate {
         if let rootVC = self.window?.rootViewController,
             let child = rootVC.children.first, child is LoginViewController {
             // Look for credentials if server address provided
-            let username = ServerVars.shared.username
+            let username = ServerVars.shared.login
             let service = ServerVars.shared.serverPath
             var password = ""
 
@@ -720,7 +744,9 @@ extension AppDelegate: AppLockDelegate {
 
             // Login?
             if service.count > 0 || (username.count > 0 && password.count > 0) {
+                #if DEBUG
                 debugPrint("••> Call launchLogin() from AppDelegate.")
+                #endif
                 loginVC.launchLogin()
             }
             return

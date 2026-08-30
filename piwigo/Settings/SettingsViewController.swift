@@ -42,7 +42,7 @@ let kHelpUsTranslatePiwigo: String = "Piwigo is only partially translated in you
     func didChangeRecentPeriod()
 }
 
-class SettingsViewController: UIViewController {
+final class SettingsViewController: UIViewController {
     
     enum TextFieldTag : Int {
         case author
@@ -105,13 +105,11 @@ class SettingsViewController: UIViewController {
     
     
     // MARK: - Core Data Objects
-    var user: User!
-    lazy var userHasUploadRights = user?.hasUploadRights ?? false
-    lazy var mainContext: NSManagedObjectContext = {
-        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
-            fatalError("!!! Missing Managed Object Context !!!")
-        }
-        return context
+    @MainActor
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
+    var userData: UserProperties!
+    lazy var userProvider: UserProvider = {
+        return UserProvider()
     }()
     
     
@@ -120,40 +118,32 @@ class SettingsViewController: UIViewController {
         super.viewDidLoad()
         
         // Calculate cache sizes
-        guard let server = self.user?.server
+        guard let server = try? ServerProvider().getCurrentServer(inContext: mainContext)
         else { preconditionFailure("!!! User not provided !!!!") }
-        if server.isFault {
-            // user is not fired yet.
-            server.willAccessValue(forKey: nil)
-            server.didAccessValue(forKey: nil)
-        }
         var sizes = self.getThumbnailSizes()
         self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
         sizes = self.getPhotoSizes()
         self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
         self.videoCacheSize = server.getCacheSizeOfVideos()
         self.dataCacheSize = server.getAlbumImageCount(inContext: mainContext)
-        if userHasUploadRights {
+        if userData.hasUploadRights {
             let uploadsDirectory = DataDirectories.appUploadsDirectory
             let uploadsDirectorySize = ByteCountFormatter.string(fromByteCount: Int64(uploadsDirectory.folderSize), countStyle: .file)
             self.uploadCacheSize = server.getUploadCount(inContext: mainContext) + " | " + uploadsDirectorySize
         }
         
         // Retrieve data from server in the background
-        if userHasUploadRights {
-            let userID = user.objectID
-            let lastUsed = self.user.lastUsed
-            let username = user.username
+        if userData.hasAdminRights {
             Task.detached(priority: .background) { [self] in
                 do {
                     // Check session
-                    try await LoginUtilities().checkSession(ofUserWithID: userID, lastConnected: lastUsed)
+                    try await LoginUtilities().checkSessionOfCurrentUser()
                     
                     // Collect stats from server and store them in cache
                     try await JSONManager.shared.getInfos()
                     
-                    // Collect recentPeriod chosen by user
-                    let usersData = try await JSONManager.shared.getUsersInfo(forUserName: username)
+                    // Collect recentPeriod chosen by user (no API method available for non admins)
+                    let usersData = try await JSONManager.shared.getUserInfo(.recent_period, forUserName: userData.username)
                     
                     // Update current index and reload corresponding cell
                     await MainActor.run { [self] in
@@ -163,15 +153,16 @@ class SettingsViewController: UIViewController {
                               index != self.oldRecentPeriodIndex
                         else { return }
                         
-                        // Update data
-                        self.user.id = usersData.id ?? Int16.zero
-                        self.user.managedObjectContext?.saveIfNeeded()
+                        // Update user's recent period parameter
+                        self.userData.recentPeriod = Int16(nberOfDays)
+                        try? self.userProvider.updateRecentPeriod(self.userData.recentPeriod,
+                                                                  pwgID: self.userData.pwgID,
+                                                                  inContext: self.mainContext)
                         self.oldRecentPeriodIndex = index
                         ServerVars.shared.recentPeriodIndex = index
                         let indexPath = IndexPath(row: 3, section: SettingsSection.albums.rawValue)
-                        if let cell = self.settingsTableView.cellForRow(at: indexPath) as? SliderTableViewCell {
-                            cell.updateDisplayedValue(Float(index))
-                        }
+                        let cell = self.settingsTableView.cellForRow(at: indexPath) as? SliderTableViewCell
+                        cell?.updateDisplayedValue(Float(index))
                     }
                 }
                 catch {
@@ -255,7 +246,7 @@ class SettingsViewController: UIViewController {
         
         // Invite user to translate the app
         let langCode: String = NSLocale.current.languageCode ?? "en"
-        let now: Double = Date().timeIntervalSinceReferenceDate
+        let now: Double = Date.timeIntervalSinceReferenceDate
         // Comment the below line and uncomment the next one for debugging
         let dueDate: Double = AppVars.shared.dateOfLastTranslationRequest + 3 * AppVars.shared.pwgOneMonth
         //        let dueDate: Double = AppVars.shared.dateOfLastTranslationRequest
@@ -293,16 +284,16 @@ class SettingsViewController: UIViewController {
         }
         // Did the user change the recent period?
         let recentPeriodIndex = ServerVars.shared.recentPeriodIndex
-        if userHasUploadRights, oldRecentPeriodIndex != recentPeriodIndex {
+        if userData.hasUploadRights, oldRecentPeriodIndex != recentPeriodIndex {
             // Update recent period on Piwigo server
             Task.detached {
                 do {
                     // Check session
-                    try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID, lastConnected: self.user.lastUsed)
+                    try await LoginUtilities().checkSessionOfCurrentUser()
                     
                     // Update server data
                     let periodInDays = ServerVars.shared.recentPeriodList[recentPeriodIndex]
-                    try await JSONManager.shared.setRecentPeriod(periodInDays, forUserWithID: self.user.id)
+                    try await JSONManager.shared.setRecentPeriod(periodInDays)
                 }
                 catch {
                     // No reporting
@@ -339,7 +330,7 @@ class SettingsViewController: UIViewController {
     
     @objc func updateAutoUpload(_ notification: Notification) {
         // NOP if the option is not available
-        if !userHasUploadRights { return }
+        if !userData.hasUploadRights { return }
         
         // Reload section instead of row because user's rights may have changed after logout/login
         children.forEach {
@@ -359,13 +350,13 @@ class SettingsViewController: UIViewController {
     @MainActor
     func loginLogout() {
         // Set date of use of server and user
-        let now = Date.timeIntervalSinceReferenceDate
-        user?.lastUsed = now
-        user?.server?.lastUsed = now
-        mainContext.saveIfNeeded()
+        /// Only that attribute: the album IDs in which the user may upload images
+        /// belong to the album import
+        userData.lastUsed = Date.timeIntervalSinceReferenceDate
+        try? userProvider.updateLastUsed(userData.lastUsed, inContext: mainContext)
         
         // Guest user?
-        if ServerVars.shared.user.isEmpty || ServerVars.shared.user.lowercased() == "guest" {
+        if ServerVars.shared.username.isEmpty || ServerVars.shared.username.lowercased() == "guest" {
             ClearCache.closeSession()
             return
         }

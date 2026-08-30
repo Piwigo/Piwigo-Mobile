@@ -83,7 +83,7 @@ extension ShareViewController: UITableViewDataSource
         
         // No button if the user does not have upload rights
         var buttonState: pwgShareCellButtonState = .none
-        if user.hasAdminRights || userUploadRights.contains(albumData.pwgID) {
+        if userData.hasAdminRights || userData.hasUploadRights(forCatID: albumData.pwgID) {
             buttonState = albumsShowingSubAlbums.contains(albumData.pwgID) ? .hideSubAlbum : .showSubAlbum
         }
         

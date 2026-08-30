@@ -20,14 +20,13 @@ final class AppVars: @unchecked Sendable {
     // Remove deprecated stored objects if needed
     init() {
         // Deprecated data?
-        if let _ = UserDefaults.standard.object(forKey: "memoryCache") {
-            UserDefaults.standard.removeObject(forKey: "memoryCache")
-        }
-        if let _ = UserDefaults.standard.object(forKey: "diskCache") {
-            UserDefaults.standard.removeObject(forKey: "diskCache")
-        }
-        if let _ = UserDefaults.standard.object(forKey: "switchPaletteThreshold") {
-            UserDefaults.standard.removeObject(forKey: "switchPaletteThreshold")
+        let deprecatedKeys = ["memoryCache",
+                              "diskCache",
+                              "switchPaletteThreshold"]
+        for key in deprecatedKeys {
+            if UserDefaults.standard.object(forKey: key) != nil {
+                UserDefaults.standard.removeObject(forKey: key)
+            }
         }
 //        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
 //            UserDefaults.dataSuite.removeObject(forKey: "test")
@@ -50,7 +49,7 @@ final class AppVars: @unchecked Sendable {
     
     /// - Request help for translating Piwigo once a month max
     let pwgOneMonth: TimeInterval = 31.0 * 24.0 * 60.0 * 60.0     // i.e. 31 days
-    @UserDefault("dateOfLastTranslationRequest", defaultValue: Date().timeIntervalSinceReferenceDate)
+    @UserDefault("dateOfLastTranslationRequest", defaultValue: Date.timeIntervalSinceReferenceDate)
     var dateOfLastTranslationRequest: TimeInterval
     
     /// - Remember for which version the What's New in Piwigo view was presented

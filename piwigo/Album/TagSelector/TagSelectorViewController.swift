@@ -19,7 +19,7 @@ protocol TagSelectorViewDelegate: NSObjectProtocol {
     func pushTaggedImagesView(_ viewController: UIViewController)
 }
 
-class TagSelectorViewController: UIViewController {
+final class TagSelectorViewController: UIViewController {
     
     weak var tagSelectedDelegate: (any TagSelectorViewDelegate)?
     
@@ -29,16 +29,12 @@ class TagSelectorViewController: UIViewController {
     
     
     // MARK: - Core Data Objects
-    var user: User!
-    private lazy var mainContext: NSManagedObjectContext = {
-        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
-            fatalError("!!! Missing Managed Object Context !!!")
-        }
-        return context
-    }()
+    @MainActor
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
+    var userData: UserProperties!
     
     
-    // MARK: - Fetched Results Controller
+    // MARK: - Core Data source
     lazy var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)
         searchController.searchResultsUpdater = self
@@ -46,16 +42,17 @@ class TagSelectorViewController: UIViewController {
         searchController.hidesNavigationBarDuringPresentation = false
         return searchController
     }()
-    var searchQuery = ""
+    
     lazy var predicate: NSPredicate = {
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "server.path == %@", ServerVars.shared.serverPath))
         andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", 0))
         andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", Int64.max))
-        andPredicates.append(NSPredicate(format: "tagName LIKE[c] $query"))
+        andPredicates.append(NSPredicate(format: "name LIKE[c] $query"))
         return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
     }()
     
+    var searchQuery = ""
     func getQueryVar() -> [String : Any] {
         return ["query"  : "*" + (searchQuery.isEmpty ? "" : searchQuery + "*")]
     }
@@ -63,7 +60,7 @@ class TagSelectorViewController: UIViewController {
     lazy var fetchRequest: NSFetchRequest = {
         // Create a fetch request for the Tag entity sorted by name.
         let fetchRequest = Tag.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagName), ascending: true,
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.name), ascending: true,
                                                          selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
         fetchRequest.predicate = predicate.withSubstitutionVariables(getQueryVar())
         fetchRequest.fetchBatchSize = 20
@@ -106,7 +103,9 @@ class TagSelectorViewController: UIViewController {
         do {
             try tags.performFetch()
         } catch {
+            #if DEBUG
             debugPrint("Failed to fetch tags: \(error)")
+            #endif
         }
         
         // Add button for returning to albums/images
@@ -163,8 +162,7 @@ class TagSelectorViewController: UIViewController {
         Task.detached {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID,
-                                                        lastConnected: self.user.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 // Fetch tag data
                 let tagData = try await JSONManager.shared.fetchTags(asAdmin: false)
                 
@@ -247,12 +245,12 @@ extension TagSelectorViewController: UITableViewDataSource
         let nber: Int64 = tag.numberOfImagesUnderTag
         if (nber == Int64.zero) || (nber == Int64.max) {
             // Unknown number of images
-            cell.configure(with: tag.tagName, detail: "")
+            cell.configure(with: tag.name, detail: "")
         } else {
             let numberFormatter = NumberFormatter()
             numberFormatter.numberStyle = .decimal
             let nberPhotos = (numberFormatter.string(from: NSNumber(value: nber)) ?? "0") as String
-            cell.configure(with: tag.tagName, detail: nberPhotos)
+            cell.configure(with: tag.name, detail: nberPhotos)
         }
         
         return cell
@@ -295,12 +293,12 @@ extension TagSelectorViewController: UITableViewDelegate
         
         // Determine selected tag before deactivating search bar
         let tag = tags.object(at: indexPath)
-        let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.tagId)
+        let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.pwgID)
         
         // Check that an album of tagged images exists in cache (create it if necessary)
-        guard let _ = try? AlbumProvider().getAlbum(ofUser: user, withId: catID, name: tag.tagName) else {
-            return
-        }
+        guard let _ = try? AlbumProvider().getOrCreateProperties(ofAlbumWithID: catID, name: tag.name,
+                                                                 inContext: mainContext)
+        else { return }
         
         // Deactivate search bar
         searchController.isActive = false
@@ -332,28 +330,36 @@ extension TagSelectorViewController: NSFetchedResultsControllerDelegate
         case .delete:   // Action performed in priority
             guard let indexPath = indexPath else { return }
             updateOperations.append( BlockOperation { [weak self] in
+                #if DEBUG
                 debugPrint("••> Delete tag item at \(indexPath)")
+                #endif
                 self?.tagsTableView?.deleteRows(at: [indexPath], with: .automatic)
             })
             
         case .insert:
             guard let newIndexPath = newIndexPath else { return }
             updateOperations.append( BlockOperation { [weak self] in
+                #if DEBUG
                 debugPrint("••> Insert tag item at \(newIndexPath)")
+                #endif
                 self?.tagsTableView?.insertRows(at: [newIndexPath], with: .automatic)
             })
             
         case .move:
             guard let indexPath = indexPath,  let newIndexPath = newIndexPath else { return }
             updateOperations.append( BlockOperation { [weak self] in
+                #if DEBUG
                 debugPrint("••> Move tag item from \(indexPath) to \(newIndexPath)")
+                #endif
                 self?.tagsTableView?.moveRow(at: indexPath, to: newIndexPath)
             })
             
         case .update:
             guard let indexPath = indexPath else { return }
             updateOperations.append( BlockOperation { [weak self] in
+                #if DEBUG
                 debugPrint("••> Update tag item at \(indexPath)")
+                #endif
                 self?.tagsTableView?.reloadRows(at: [indexPath], with: .automatic)
             })
             

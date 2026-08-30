@@ -16,51 +16,64 @@ import PwgUIKit
 extension ImageViewController {
     @MainActor
     func updateNavBar() {
-        // Share button depends on Piwigo server version, user role and image data
-        shareBarButton = getShareButton()
-        
-        // Favorites button depends on Piwigo server version, user role and image data
+        // Below button depends on Piwigo server version, user role and image data
+        shareImageButton = getShareImageButton()
         favoriteBarButton = getFavoriteBarButton()
         
         // Interface depends on device and orientation
-        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+        let orientation = view.currentInterfaceOrientation
         
-        // User with admin or upload rights can do everything
-        // except may be downloading images (i.e. sharing images)
-        // User without admin rights cannot set album thumbnails, delete images
-        // WRONG =====> 'normal' user with upload access to the current category can copy, move, edit images
-        // SHOULD BE => 'normal' user having uploaded images can only edit their images.
-        //              This requires 'user_id' and 'added_by' values of images for checking rights
-        if user.hasUploadRights(forCatID: categoryId) {
+        // Admin user can do everything except may be downloading images (i.e. sharing images)
+        // Community user can only be allowed to edit properties of images he/she has uploaded.
+        /// This requires 'user_id' and 'added_by' values of images for checking rights.
+        /// 'user_id' is deduced after a first upload, unknown before or after a clear of the data cache
+        if userData.hasEditRights(forImagesAddedToAlbum: categoryId, byUserWithIDs: [imageData.addedBy]) {
             // The action button proposes:
             /// - to copy or move images to other albums
             /// - to set the image as album thumbnail
             /// - to rotate a photo clockwise or counterclockwise,
             /// - to edit image parameters,
-            let menu = UIMenu(title: "", children: [albumMenu(), goToMenu(), editMenu()].compactMap({$0}))
-            if #available(iOS 26.0, *) {
-                actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
-            } else {
-                // Fallback on previous version
-                actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
-            }
-            actionBarButton?.accessibilityIdentifier = "actions"
+            /// - to share the URL of the page presenting the image
+            let menu = UIMenu(title: "", children: [editMenu(), albumMenu(), shareMenu(), goToMenu()].compactMap({$0}))
+            actionBarButton = getActionBarButton(with: menu)
             
             // Configure the navigation bar and toolbar
             if #available(iOS 26.0, *) {
                 updateNavBarForAdmin(orientation: orientation)
             } else {
                 // Fallback on previous version
-                updateNavBarOldForAdmin(orientation: orientation)
+                updateLegacyNavBarForAdmin(orientation: orientation)
             }
         } else {
+            // The action button proposes:
+            /// - to go to another album containing that image
+            /// - to share the URL of the page presenting the image
+            /// Neither action requires admin, upload or download rights.
+            let menu = UIMenu(title: "", children: [shareMenu(), goToMenu()].compactMap({$0}))
+            actionBarButton = getActionBarButton(with: menu)
+            
+            // Configure the navigation bar and toolbar
             if #available(iOS 26.0, *) {
                 updateNavBarForStdUserOrGuest(orientation: orientation)
             } else {
                 // Fallback on previous version
-                updateNavBarOldForStdUserOrGuest(orientation: orientation)
+                updateLegacyNavBarForStdUserOrGuest(orientation: orientation)
             }
         }
+    }
+    
+    @MainActor
+    private func getActionBarButton(with menu: UIMenu) -> UIBarButtonItem {
+        let button: UIBarButtonItem
+        if #available(iOS 26.0, *) {
+            button = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
+        } else {
+            // Fallback on previous version
+            button = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
+        }
+        button.accessibilityIdentifier = "actions"
+        button.accessibilityLabel = String(localized: "moreOptions_title", comment: "More")
+        return button
     }
     
     @MainActor @available(iOS 26.0, *)
@@ -68,46 +81,26 @@ extension ImageViewController {
         // Case of users with admin or upload rights
         if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
             // Determine toolbar items
-            var toolbarItems: [UIBarButtonItem?] = [shareBarButton, .space()]
-            let type = pwgImageFileType(rawValue: imageData.fileType) ?? .image
-            switch type {
-            case .image:
-                /// => [- delete] or [share - delete] or [- favorite delete] or [share - favorite delete]
-                toolbarItems.append(contentsOf: [favoriteBarButton, deleteBarButton])
-                
-            case .video:
-                /// => [- play mute - delete] or [- play favorite mute - delete] or [share - play mute - delete] or [share - play favorite mute - delete]
-                toolbarItems.append(contentsOf: [playBarButton, favoriteBarButton, muteBarButton, .space(),
-                                                 deleteBarButton])
-                
-            case .pdf:
-                /// PDF   => [- goToPage delete] or [- goToPage favorite delete] or [share - goToPage delete] or [share - goToPage favorite - delete]
-                toolbarItems.append(contentsOf: [goToPageButton, favoriteBarButton, deleteBarButton])
+            /// Image, Video => [share - favorite delete] or [favorite - delete] or [ - delete]
+            /// PDF          => [share goToPage - favorite delete] or [goToPage - favorite delete]
+            /// The goToPage button is only available for PDF files.
+            var leadingItems = [shareImageButton, goToPageButton].compactMap {$0}
+            var trailingItems = [favoriteBarButton, deleteBarButton].compactMap {$0}
+            if leadingItems.isEmpty, trailingItems.count > 1 {
+                /// Nothing to present on the left: spread the remaining buttons
+                leadingItems.append(trailingItems.removeFirst())
             }
+            let toolbarItems = leadingItems + [.space()] + trailingItems
             
-            // We present the toolbar only if it contains at least two buttons
-            let finalToolbarItems: [UIBarButtonItem] = toolbarItems.compactMap({ $0 })
-            if finalToolbarItems.count > 2 {
-                // Show toolbar
-                isToolbarRequired = true
-                setToolbarItems(finalToolbarItems, animated: false)
-                let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-                navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
-                
-                // Set buttons in the navigation bar
-                navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
-                navigationItem.rightBarButtonItems = [actionBarButton].compactMap {$0}
-            }
-            else {
-                // No toolbar
-                isToolbarRequired = false
-                setToolbarItems([], animated: false)
-                navigationController?.setToolbarHidden(true, animated: true)
-                
-                // Remaining buttons gathered in the navigation bar
-                navigationItem.leftBarButtonItems = [backButton, playBarButton, muteBarButton, goToPageButton].compactMap {$0}
-                navigationItem.rightBarButtonItems = [actionBarButton, deleteBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
-            }
+            // Show toolbar
+            isToolbarRequired = true
+            setToolbarItems(toolbarItems, animated: false)
+            let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
+            navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
+            
+            // Set buttons in the navigation bar
+            navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
+            navigationItem.rightBarButtonItems = [actionBarButton].compactMap {$0}
         }
         else {      // iPad or iPhone in landscape orientation
             // No toolbar
@@ -116,9 +109,33 @@ extension ImageViewController {
             navigationController?.setToolbarHidden(true, animated: true)
             
             // All buttons gathered in the navigation bar
-            navigationItem.leftBarButtonItems = [backButton, playBarButton, muteBarButton, goToPageButton].compactMap {$0}
-            navigationItem.rightBarButtonItems = [actionBarButton, deleteBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
+            navigationItem.leftBarButtonItems = [backButton, .space(), shareImageButton, goToPageButton].compactMap {$0}
+            navigationItem.rightBarButtonItems = [actionBarButton, deleteBarButton, favoriteBarButton].compactMap { $0 }
         }
+    }
+    
+    /// Gathers the buttons available to a user without admin or upload rights in the toolbar
+    /// of an iPhone in portrait orientation. None of them is presented in the navigation bar,
+    /// whose width is left to the title.
+    /// Image, Video => [ - share - favorite - ], [ - share - ] or [ - favorite - ]
+    /// PDF          => [ - share - goToPage - favorite - ], [ - share - goToPage - ],
+    ///                 [ - goToPage - favorite - ] or [ - goToPage - ]
+    @MainActor
+    private func getToolbarItemsForStdUserOrGuest() -> [UIBarButtonItem] {
+        // Buttons are presented from the left to the right of the toolbar
+        /// The goToPage button is only available for PDF files
+        let buttons = [shareImageButton, goToPageButton, favoriteBarButton].compactMap {$0}
+        
+        // No toolbar is presented when no button is available
+        guard buttons.isEmpty == false else { return [] }
+        
+        // Buttons are evenly distributed, away from both sides of the toolbar
+        var toolbarItems = [UIBarButtonItem]()
+        for button in buttons {
+            toolbarItems.append(contentsOf: [.space(), button])
+        }
+        toolbarItems.append(.space())
+        return toolbarItems
     }
     
     @MainActor @available(iOS 26.0, *)
@@ -126,122 +143,23 @@ extension ImageViewController {
         // Case of users without admin or upload rights
         if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
             // Determine toolbar items
-            let toolbarItems: [UIBarButtonItem?] = [goToPageButton, playBarButton, favoriteBarButton, muteBarButton]
-            // We get:
-            /// Image => [] or [favorite]
-            /// Video => [play mute] or [play favorite mute]
-            /// PDF   => [goToPage] or [goToPage favorite]
-            var finalToolbarItems = toolbarItems.compactMap { $0 }
-            if finalToolbarItems.count == 1 { finalToolbarItems.insert(.space(), at: 0) }
+            let toolbarItems = getToolbarItemsForStdUserOrGuest()
             
-            // Share button at right bar button?
-            if shareBarButton != nil {
-                // Present the toolbar if we have enough buttons
-                if finalToolbarItems.count > 1 {
-                    // Show toolbar with
-                    isToolbarRequired = true
-                    setToolbarItems(finalToolbarItems, animated: false)
-                    let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-                    navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
-                    
-                    // Buttons not related to video player or PDF viewer in the navigation bar
-                    navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
-                    navigationItem.rightBarButtonItems = [shareBarButton].compactMap { $0 }
-                }
-                else {
-                    // goToPage or favorite alone —> No toolbar
-                    isToolbarRequired = false
-                    setToolbarItems([], animated: false)
-                    navigationController?.setToolbarHidden(true, animated: true)
-                    
-                    // Navigation bar
-                    navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
-                    navigationItem.rightBarButtonItems = [shareBarButton, goToPageButton, favoriteBarButton].compactMap { $0 }
-                }
-            }
-            else {
-                // We present the toolbar only if it contains player controls or a PDF viewer
-                if imageData.isVideo || imageData.isPDF {
-                    // Show toolbar with player controls
-                    isToolbarRequired = true
-                    setToolbarItems(finalToolbarItems, animated: false)
-                    let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-                    navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
-                    
-                    // Buttons w/o player controls in the navigation bar
-                    navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
-                    navigationItem.rightBarButtonItems = [goToPageButton, favoriteBarButton].compactMap { $0 }
-                }
-                else {
-                    // No toolbar
-                    isToolbarRequired = false
-                    setToolbarItems([], animated: false)
-                    navigationController?.setToolbarHidden(true, animated: true)
-                    
-                    // Buttons w/o player controls in the navigation bar
-                    navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
-                    navigationItem.rightBarButtonItems = [goToPageButton, favoriteBarButton].compactMap { $0 }
-                }
-            }
-        } else {      // iPad or iPhone in landscape orientation
-            // No toolbar
-            isToolbarRequired = false
-            setToolbarItems([], animated: false)
-            navigationController?.setToolbarHidden(true, animated: true)
-            
-            // All buttons gathered in the navigation bar
-            navigationItem.leftBarButtonItems = [backButton, playBarButton, muteBarButton, goToPageButton].compactMap {$0}
-            navigationItem.rightBarButtonItems = [shareBarButton, favoriteBarButton].compactMap { $0 }
-        }
-    }
-    
-    @MainActor @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Specific to iOS 15 to 18")
-    private func updateNavBarOldForAdmin(orientation: UIInterfaceOrientation) {
-        // Case of users with admin or upload rights
-        if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
-            // Determine toolbar items
-            var toolbarItems = [UIBarButtonItem?]()
-            toolbarItems.append(contentsOf: [shareBarButton == nil ? nil : .space(), shareBarButton])
-            toolbarItems.append(contentsOf: [goToPageButton == nil ? nil : .space(), goToPageButton])
-            toolbarItems.append(contentsOf: [playBarButton == nil ? nil : .space(), playBarButton])
-            toolbarItems.append(contentsOf: [favoriteBarButton == nil ? nil : .space(), favoriteBarButton])
-            toolbarItems.append(contentsOf: [muteBarButton == nil ? nil : .space(), muteBarButton])
-            toolbarItems.append(contentsOf: [.space(), deleteBarButton])
-            // We get:
-            /// Image => [- delete] or [- share - delete] or [- share - favorite - delete]
-            /// Video => [- share - play - mute - delete] or [- share - play - favorite - mute - delete]
-            /// PDF   => [- share - goToPage - delete] or [- share - goToPage - favorite - delete]
-            
-            var finalToolbarItems = toolbarItems.compactMap { $0 }
-            if finalToolbarItems.count == 4 { finalToolbarItems.append(.space()) }
-            if finalToolbarItems.count >= 6 { finalToolbarItems.remove(at: 0) }
-            // We finally get:
-            /// Image => [- delete] or [- share - delete -] or [share - favorite - delete]
-            /// Video => [share - play - mute - delete] or [share - play - favorite - mute - delete]
-            /// PDF   => [share - goToPage - delete] or [share - goToPage - favorite - delete]
-            
-            // We present the toolbar only if it contains at least two buttons
-            if finalToolbarItems.count > 2 {
-                // Show toolbar
-                isToolbarRequired = true
-                setToolbarItems(finalToolbarItems, animated: false)
-                let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-                navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
-                
-                // Set buttons in the navigation bar
-                navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
-                navigationItem.rightBarButtonItems = [actionBarButton].compactMap {$0}
-            }
-            else {
-                // No toolbar
+            // Show toolbar?
+            if toolbarItems.isEmpty {
                 isToolbarRequired = false
                 setToolbarItems([], animated: false)
                 navigationController?.setToolbarHidden(true, animated: true)
-                
-                // Remaining buttons gathered in the navigation bar
-                navigationItem.leftBarButtonItems = [backButton, playBarButton, muteBarButton].compactMap {$0}
-                navigationItem.rightBarButtonItems = [actionBarButton, deleteBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
+            } else {
+                isToolbarRequired = true
+                setToolbarItems(toolbarItems, animated: false)
+                let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
+                navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
             }
+            
+            // Set buttons in the navigation bar
+            navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
+            navigationItem.rightBarButtonItems = [actionBarButton].compactMap {$0}
         }
         else {      // iPad or iPhone in landscape orientation
             // No toolbar
@@ -250,92 +168,79 @@ extension ImageViewController {
             navigationController?.setToolbarHidden(true, animated: true)
             
             // All buttons gathered in the navigation bar
-            navigationItem.leftBarButtonItems = [backButton, playBarButton, muteBarButton].compactMap {$0}
-            navigationItem.rightBarButtonItems = [actionBarButton, deleteBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
+            navigationItem.leftBarButtonItems = [backButton, .space(), goToPageButton].compactMap {$0}
+            navigationItem.rightBarButtonItems = [actionBarButton, favoriteBarButton, shareImageButton].compactMap { $0 }
         }
     }
     
     @MainActor @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Specific to iOS 15 to 18")
-    private func updateNavBarOldForStdUserOrGuest(orientation: UIInterfaceOrientation) {
-        // Case of users without admin or upload rights
+    private func updateLegacyNavBarForAdmin(orientation: UIInterfaceOrientation) {
+        // Case of users with admin or upload rights
         if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
             // Determine toolbar items
+            /// Image => [favorite - delete] or [share - favorite - delete]
+            /// Video =>  [favorite - delete] or [share -  favorite - delete]
+            /// PDF   => [goToPage - favorite - delete] or [share - goToPage - favorite - delete]
             var toolbarItems = [UIBarButtonItem?]()
-            toolbarItems.append(contentsOf: [goToPageButton == nil ? nil : .space(), goToPageButton])
-            toolbarItems.append(contentsOf: [playBarButton == nil ? nil : .space(), playBarButton])
-            toolbarItems.append(contentsOf: [favoriteBarButton == nil ? nil : .space(), favoriteBarButton])
-            toolbarItems.append(contentsOf: [muteBarButton == nil ? nil : .space(), muteBarButton])
-            // We get:
-            /// Image => [] or [- favorite]
-            /// Video => [- play - mute] or [- play - favorite - mute]
-            /// PDF   => [- goToPage] or [- goToPage - favorite]
+            toolbarItems.append(contentsOf: shareImageButton == nil ? [nil] : [shareImageButton, .space()])
+            toolbarItems.append(contentsOf: goToPageButton == nil ? [nil] : [goToPageButton, .space()])
+            toolbarItems.append(contentsOf: favoriteBarButton == nil ? [nil] : [favoriteBarButton, .space()])
+            toolbarItems.append(deleteBarButton)
             
-            var finalToolbarItems = toolbarItems.compactMap { $0 }
-            if finalToolbarItems.count == 4 { finalToolbarItems.append(.space()) }
-            if finalToolbarItems.count == 6 { finalToolbarItems.remove(at: 0) }
-            // We finally get:
-            /// Image => [] or [- favorite]
-            /// Video => [- play - mute -] or [play - favorite - mute]
-            /// PDF   => [- goToPage] or [- goToPage - favorite -]
+            // Show toolbar
+            isToolbarRequired = true
+            setToolbarItems(toolbarItems.compactMap {$0}, animated: false)
+            let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
+            navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
             
-            // Share button at right bar button?
-            if shareBarButton != nil {
-                // Present the toolbar if we have enough buttons
-                if finalToolbarItems.count == 5 {
-                    // Show toolbar with
-                    isToolbarRequired = true
-                    setToolbarItems(finalToolbarItems, animated: false)
-                    let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-                    navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
-                    
-                    // Buttons not related to video player or PDF viewer in the navigation bar
-                    navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
-                    navigationItem.rightBarButtonItems = [shareBarButton].compactMap { $0 }
-                }
-                else {
-                    // goToPage or favorite alone —> No toolbar
-                    isToolbarRequired = false
-                    setToolbarItems([], animated: false)
-                    navigationController?.setToolbarHidden(true, animated: true)
-                    
-                    // Navigation bar
-                    navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
-                    navigationItem.rightBarButtonItems = [shareBarButton, goToPageButton, favoriteBarButton].compactMap { $0 }
-                }
-            }
-            else {
-                // We present the toolbar only if it contains player controls
-                if imageData.isVideo {
-                    // Show toolbar with player controls
-                    isToolbarRequired = true
-                    setToolbarItems(finalToolbarItems, animated: false)
-                    let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-                    navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
-                    
-                    // Buttons w/o player controls in the navigation bar
-                    navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
-                    navigationItem.rightBarButtonItems = [goToPageButton, favoriteBarButton].compactMap { $0 }
-                }
-                else {
-                    // No toolbar
-                    isToolbarRequired = false
-                    setToolbarItems([], animated: false)
-                    navigationController?.setToolbarHidden(true, animated: true)
-                    
-                    // Buttons w/o player controls in the navigation bar
-                    navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
-                    navigationItem.rightBarButtonItems = [goToPageButton, favoriteBarButton].compactMap { $0 }
-                }
-            }
-        } else {      // iPad or iPhone in landscape orientation
+            // Set buttons in the navigation bar
+            navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
+            navigationItem.rightBarButtonItems = [actionBarButton].compactMap {$0}
+        }
+        else {      // iPad or iPhone in landscape orientation
             // No toolbar
             isToolbarRequired = false
             setToolbarItems([], animated: false)
             navigationController?.setToolbarHidden(true, animated: true)
             
             // All buttons gathered in the navigation bar
-            navigationItem.leftBarButtonItems = [backButton, playBarButton, muteBarButton, goToPageButton].compactMap {$0}
-            navigationItem.rightBarButtonItems = [shareBarButton, favoriteBarButton].compactMap { $0 }
+            navigationItem.leftBarButtonItems = [backButton, .space(), shareImageButton, goToPageButton].compactMap {$0}
+            navigationItem.rightBarButtonItems = [actionBarButton, deleteBarButton, favoriteBarButton].compactMap { $0 }
+        }
+    }
+    
+    @MainActor @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Specific to iOS 15 to 18")
+    private func updateLegacyNavBarForStdUserOrGuest(orientation: UIInterfaceOrientation) {
+        // Case of users without admin or upload rights
+        if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
+            // Determine toolbar items
+            let toolbarItems = getToolbarItemsForStdUserOrGuest()
+            
+            // Show toolbar?
+            if toolbarItems.isEmpty {
+                isToolbarRequired = false
+                setToolbarItems([], animated: false)
+                navigationController?.setToolbarHidden(true, animated: true)
+            } else {
+                isToolbarRequired = true
+                setToolbarItems(toolbarItems, animated: false)
+                let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
+                navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
+            }
+            
+            // Set buttons in the navigation bar
+            navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
+            navigationItem.rightBarButtonItems = [actionBarButton].compactMap {$0}
+        }
+        else {      // iPad or iPhone in landscape orientation
+            // No toolbar
+            isToolbarRequired = false
+            setToolbarItems([], animated: false)
+            navigationController?.setToolbarHidden(true, animated: true)
+            
+            // All buttons gathered in the navigation bar
+            navigationItem.leftBarButtonItems = [backButton, .space(), shareImageButton].compactMap {$0}
+            navigationItem.rightBarButtonItems = [actionBarButton, favoriteBarButton, goToPageButton].compactMap { $0 }
         }
     }
     
@@ -344,11 +249,9 @@ extension ImageViewController {
     @MainActor
     func setEnableStateOfButtons(_ state: Bool) {
         actionBarButton?.isEnabled = state
-        shareBarButton?.isEnabled = state
+        shareImageButton?.isEnabled = state
         deleteBarButton.isEnabled = state
         favoriteBarButton?.isEnabled = state
-        playBarButton?.isEnabled = state
-        muteBarButton?.isEnabled = state
         goToPageButton?.isEnabled = state
     }
     
@@ -375,31 +278,40 @@ extension ImageViewController {
             title = imageData.titleStr
         }
         
-        // No subtitle when using acessibility category or when the creation date is unknown
-        let tooLargeFont = traitCollection.preferredContentSizeCategory >= .accessibilityMedium
-        if tooLargeFont || (imageData.dateCreated < DateUtilities.weekAfterInterval) {
+        // No subtitle when using acessibility category
+        if traitCollection.preferredContentSizeCategory >= .accessibilityMedium {
             navigationItem.titleView = getTitleView(withTitle: title, titleColor: .label,
                                                     subtitle: "", subTitleColor: .label)
             return
         }
         
-        // Subtitle
-        var subTitle = String()
-        let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
-        let dateFormatter = DateUtilities.dateFormatter
-        if view.traitCollection.userInterfaceIdiom == .pad {
-            dateFormatter.dateStyle = .long
-            dateFormatter.timeStyle = .medium   // Without time zone (unknown)
-            subTitle = dateFormatter.string(from: dateCreated)
-        } else {
-            dateFormatter.dateStyle = .medium
-            dateFormatter.timeStyle = .medium
-            subTitle = dateFormatter.string(from: dateCreated)
+        // Subtitle: creation date, video duration, or both.
+        /// Either can be missing: the creation date may be unknown and the duration of a
+        /// video is only known once the player provides it.
+        var subTitle = [String]()
+        if imageData.dateCreated >= DateUtilities.weekAfterInterval {
+            let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
+            let dateFormatter = DateUtilities.dateFormatter
+            if view.traitCollection.userInterfaceIdiom == .pad {
+                dateFormatter.dateStyle = .long
+                dateFormatter.timeStyle = .medium   // Without time zone (unknown)
+            } else {
+                dateFormatter.dateStyle = .medium
+                dateFormatter.timeStyle = .medium
+            }
+            subTitle.append(dateFormatter.string(from: dateCreated))
+        }
+        if let duration = videoDurationString() {
+            subTitle.append(duration)
+        }
+        if let pageCount = pdfPageCountString() {
+            subTitle.append(pageCount)
         }
         
         // Prepare title view
         navigationItem.titleView = getTitleView(withTitle: title, titleColor: .label,
-                                                subtitle: subTitle, subTitleColor: .label)
+                                                subtitle: subTitle.joined(separator: " · "),
+                                                subTitleColor: .label)
     }
     
     @MainActor @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Specific to iOS 15 to 18")
@@ -414,33 +326,75 @@ extension ImageViewController {
         }
         
         // No subtitle when using acessibility category or on iPhone in landscape mode
-        // or when the creation date is unknown
-        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-        let tooLargeFont = traitCollection.preferredContentSizeCategory >= .accessibilityMedium
-        if tooLargeFont || (imageData.dateCreated < DateUtilities.weekAfterInterval) ||
+        let orientation = view.currentInterfaceOrientation
+        if traitCollection.preferredContentSizeCategory >= .accessibilityMedium ||
             (view.traitCollection.userInterfaceIdiom == .phone && orientation.isLandscape) {
-            navigationItem.titleView = getTitleView(withTitle: title, titleColor: .label,
-                                                    subtitle: "", subTitleColor: .label)
+            navigationItem.titleView = getTitleView(withTitle: title, titleColor: PwgColor.whiteCream,
+                                                    subtitle: "", subTitleColor: PwgColor.rightLabel)
             return
         }
         
-        // Subtitle
-        var subTitle = String()
-        let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
-        let dateFormatter = DateUtilities.dateFormatter
-        if view.traitCollection.userInterfaceIdiom == .pad {
-            dateFormatter.dateStyle = .long
-            dateFormatter.timeStyle = .medium   // Without time zone (unknown)
-            subTitle = dateFormatter.string(from: dateCreated)
-        } else {
-            dateFormatter.dateStyle = .medium
-            dateFormatter.timeStyle = .medium
-            subTitle = dateFormatter.string(from: dateCreated)
+        // Subtitle: creation date, video duration, or both.
+        /// Either can be missing: the creation date may be unknown and the duration of a
+        /// video is only known once the player provides it.
+        var subTitle = [String]()
+        if imageData.dateCreated >= DateUtilities.weekAfterInterval {
+            let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
+            let dateFormatter = DateUtilities.dateFormatter
+            if view.traitCollection.userInterfaceIdiom == .pad {
+                dateFormatter.dateStyle = .long
+                dateFormatter.timeStyle = .medium   // Without time zone (unknown)
+            } else {
+                dateFormatter.dateStyle = .medium
+                dateFormatter.timeStyle = .medium
+            }
+            subTitle.append(dateFormatter.string(from: dateCreated))
+        }
+        if let duration = videoDurationString() {
+            subTitle.append(duration)
+        }
+        if let pageCount = pdfPageCountString() {
+            subTitle.append(pageCount)
         }
         
         // Prepare title view
         navigationItem.titleView = getTitleView(withTitle: title, titleColor: PwgColor.whiteCream,
-                                                subtitle: subTitle, subTitleColor: PwgColor.rightLabel)
+                                                subtitle: subTitle.joined(separator: " · "),
+                                                subTitleColor: PwgColor.rightLabel)
+    }
+    
+    /// Duration of the presented video as minutes:seconds, or hours:minutes:seconds when it
+    /// exceeds an hour. Returns nil for a photo, and while the duration is still unknown:
+    /// it is not stored in cache and only reaches the playback controller once the player
+    /// provides it, which posts .pwgVideoDuration so that the subtitle can be refreshed.
+    @MainActor
+    func videoDurationString() -> String? {
+        guard let imageData = imageData, imageData.isVideo,
+              let duration = PlaybackController.shared.duration(ofVideoWithID: imageData.pwgID),
+              duration > 0
+        else { return nil }
+        
+        let seconds = Int(duration.rounded())
+        if seconds < 3600 {
+            return String(format: "%d:%02d", seconds / 60, seconds % 60)
+        } else {
+            return String(format: "%d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, seconds % 60)
+        }
+    }
+    
+    /// Number of pages of the presented PDF. Returns nil for another kind of file, and
+    /// while the document is still being opened: like the duration of a video, the count is
+    /// not stored in cache, and .pwgPdfPageCount refreshes the subtitle when it is known.
+    @MainActor
+    func pdfPageCountString() -> String? {
+        guard let imageData = imageData, imageData.isPDF,
+              let pdfVC = pageViewController?.viewControllers?.first as? PdfDetailViewController,
+              pdfVC.imageData.pwgID == imageData.pwgID,
+              let pageCount = pdfVC.pdfView?.document?.pageCount, pageCount > 0
+        else { return nil }
+        
+        return String.localizedStringWithFormat(
+            String(localized: "pdfPageCount", comment: "%lld pages"), pageCount)
     }
     
     // The font size of the title is not updated automatically

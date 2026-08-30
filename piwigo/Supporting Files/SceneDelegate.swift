@@ -21,7 +21,10 @@ import PwgUIKit
 import PwgUploadKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-    
+
+    // Logs the creation of upload requests from shared files
+    static let logger = PwgLogger(subsystem: "org.piwigo", category: String(describing: SceneDelegate.self))
+
     var window: UIWindow?
     private var privacyView: UIView?
     
@@ -33,11 +36,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var savedShortCutItem: UIApplicationShortcutItem!
     var savedUrlContexts: Set<UIOpenURLContext> = []
     
-    // MARK: - Core Data Object Contexts
-    private lazy var mainContext: NSManagedObjectContext = {
-        return DataController.shared.mainContext
-    }()
-    
+    // MARK: - Core Data Objects
+    @MainActor
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
+
     
     // MARK: - Connecting and Disconnecting scenes
     /** Apps configure their UIWindow and attach it to the provided UIWindowScene scene.
@@ -64,7 +66,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             savedUrlContexts = connectionOptions.urlContexts
         }
         
+        #if DEBUG
         debugPrint("••> \(session.persistentIdentifier): Scene will connect to session.")
+        #endif
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate,
               let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
@@ -139,7 +143,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     // Blur views if the App Lock is enabled
                     addPrivacyProtection(toFirstScene: true)
                 } else {
+                    #if DEBUG
                     debugPrint("••> Failed to restore scene from \(userActivity)")
+                    #endif
                 }
             }
         } else {
@@ -155,7 +161,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     // Blur views if the App is locked
                     addPrivacyProtection(toFirstScene: false)
                 } else {
+                    #if DEBUG
                     debugPrint("••> Failed to restore scene from \(userActivity)")
+                    #endif
                 }
             } else {
                 // Tell user to wait until migration is completed
@@ -207,7 +215,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {
+        #if DEBUG
         debugPrint("••> \(scene.session.persistentIdentifier): Scene did disconnect.")
+        #endif
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.
         // Release any resources associated with this scene that can be re-created the next time the scene connects.
@@ -217,7 +227,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     // MARK: - Transitioning to the Foreground
     func sceneWillEnterForeground(_ scene: UIScene) {
+        #if DEBUG
         debugPrint("••> \(scene.session.persistentIdentifier): Scene will enter foreground.")
+        #endif
         // Called as the scene is about to begin running in the foreground and become visible to the user.
         // Use this method to undo the changes made on entering the background.
         
@@ -232,13 +244,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // - stop the network monitoring when ending the background continued processing upload task,
         // - resume upload activities after the completion iof a background task.
         UploadVars.shared.isApplicationActive = true
-        
-        // Flag used to force relogin at start
-        ServerVars.shared.applicationShouldRelogin = true
     }
     
     func sceneDidBecomeActive(_ scene: UIScene) {
+        #if DEBUG
         debugPrint("••> \(scene.session.persistentIdentifier): Scene did become active.")
+        #endif
         // Called when the scene has become active and is now responding to user events.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
         
@@ -308,7 +319,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     // MARK: - Transitioning to the Background
     func sceneWillResignActive(_ scene: UIScene) {
+        #if DEBUG
         debugPrint("••> \(scene.session.persistentIdentifier): Scene will resign active.")
+        #endif
         // Called when the scene is about to resign the active state and stop responding to user events.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
         
@@ -379,7 +392,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func sceneDidEnterBackground(_ scene: UIScene) {
+        #if DEBUG
         debugPrint("••> \(scene.session.persistentIdentifier): Scene did enter background.")
+        #endif
         // Called when the scene is running in the background and is no longer onscreen.
         // Use this method to save data, release shared resources, and store enough scene-specific state information to restore the scene back to its current state.
         
@@ -404,14 +419,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         // Schedule background tasks after cancelling pending onces
+        #if !targetEnvironment(simulator)
         BGTaskScheduler.shared.cancelAllTaskRequests()
         Task(priority: .utility) { @UploadManagerActor in
             UploadManager.shared.scheduleNextUpload()
         }
+        #endif
         
         // Schedule the daily refresh of the album data exploited by the share extension
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        #if !targetEnvironment(simulator)
         appDelegate?.scheduleAlbumRefresh()
+        #endif
         
         // Clean up /tmp directory
         appDelegate?.cleanUpTemporaryDirectory(immediately: false)
@@ -436,7 +455,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     // MARK: - Privacy & Passcode
     func addPrivacyProtection() {
+        #if DEBUG
         debugPrint("••> \(window?.windowScene?.session.persistentIdentifier ?? "UNKNOWN"): Scene shows privacy protection window.")
+        #endif
         // Blur views if the App Lock is enabled
         /// The passcode window is not presented now so that the app
         /// does not request the passcode until it is put into the background.
@@ -491,8 +512,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     navController.popToRootViewController(animated: false)
                     
                     // Check that an album of favorites exists in cache (create it if necessary)
-                    guard let albumVC = navController.viewControllers.first as? AlbumViewController,
-                          let _ = try? AlbumProvider().getAlbum(ofUser: albumVC.user, withId: pwgSmartAlbum.favorites.rawValue)
+                    guard let _ = try? AlbumProvider().getOrCreateAlbum(withID: pwgSmartAlbum.favorites.rawValue,
+                                                                        inContext: mainContext)
                     else { return false }
                     
                     // Present favorite images
@@ -553,7 +574,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func handleUrlContext(_ url: URL) {
         // Get enum from URL
+        #if DEBUG
         debugPrint("••> \(window?.windowScene?.session.persistentIdentifier ?? "UNKNOWN"): Scene received URL: \(url)")
+        #endif
         guard let link = DeepLink(url: url) else { return }
         
         // What should be done?
@@ -576,8 +599,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 
                 // Get source and destination albums
                 guard let destinationAlbumID = albumIDs.last,
-                      let sourceAlbum = try? AlbumProvider().getAlbum(ofUser: defaultAlbum.user, withId: defaultAlbum.categoryId),
-                      let destinationAlbum = try? AlbumProvider().getAlbum(ofUser: defaultAlbum.user, withId: destinationAlbumID)
+                      let sourceAlbum = AlbumProvider().getAlbum(withID: defaultAlbum.categoryId, inContext: self.mainContext),
+                      let destinationAlbum = AlbumProvider().getAlbum(withID: destinationAlbumID, inContext: self.mainContext)
                 else { return }
                 
                 // Get common path (don't use Set() which does not retain the order)
@@ -624,9 +647,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     files.removeAll(where: { $0.lastPathComponent.hasSuffix(".json") == false })
                 }
                 catch {
+                    #if DEBUG
                     debugPrint("••> Could not retrieve files in Uploads directory: \(error.localizedDescription)")
+                    #endif
                 }
+                #if DEBUG
                 files.forEach({ debugPrint("••> \($0.lastPathComponent)") })
+                #endif
                 
                 // Prepare upload requests
                 // When Piwigo has full access to the Photo Library, try to resolve each shared file
@@ -653,18 +680,54 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
                             // Resolve the source Photo Library asset (unambiguous match only), so its
                             // original can be deleted after upload. Left nil when it cannot be matched.
+                            let mediaURL = DataDirectories.appUploadsDirectory.appendingPathComponent(identifier + kOriginalSuffix)
                             if canAccessLibrary {
-                                let mediaURL = DataDirectories.appUploadsDirectory.appendingPathComponent(identifier + kOriginalSuffix)
                                 uploadRequest.deleteAssetIdentifier = await ShareExtensionAssetMatcher
                                     .localIdentifier(forFileAt: mediaURL, originalFileName: fileName)
                             }
-                            uploadRequests.append(uploadRequest)
+
+                            // A share extension cannot reach the video half of a Live Photo, so the
+                            // request which uploads it is created here, from the resolved asset.
+                            // Without that asset, the shared file is not known to come from a Live
+                            // Photo and is simply uploaded as the image it is, e.g. a Live Photo
+                            // shared by Messages and not stored in the Photo Library.
+                            let livePhotoChoice = UploadVars.shared.uploadLivePhotoAs
+                            let sharedAsset = uploadRequest.deleteAssetIdentifier.flatMap({
+                                PHAsset.fetchAssets(withLocalIdentifiers: [$0], options: nil).firstObject })
+                            if livePhotoChoice != .photo {
+                                /// A shared file whose asset cannot be resolved is not known to come from
+                                /// a Live Photo, so it is uploaded as the image it is (see below).
+                                SceneDelegate.logger.notice("Shared \(fileName): asset resolved: \(sharedAsset != nil), Live Photo: \(sharedAsset?.mediaSubtypes.contains(.photoLive) ?? false)")
+                            }
+                            if livePhotoChoice != .photo, let assetID = uploadRequest.deleteAssetIdentifier,
+                               let asset = sharedAsset,
+                               asset.mediaSubtypes.contains(.photoLive) {
+                                // Upload the shared still unless only the video is wanted
+                                if livePhotoChoice == .movie {
+                                    // Discard the file copied by the share extension
+                                    try? FileManager.default.removeItem(at: mediaURL)
+                                } else {
+                                    uploadRequests.append(uploadRequest)
+                                }
+
+                                // Video half, prepared from the asset like any Live Photo picked in the app
+                                var movieRequest = UploadProperties(localIdentifier: assetID,
+                                                                    category: destinationAlbumID)
+                                movieRequest.assetPart = .pairedVideo
+                                movieRequest.fileType = pwgImageFileType.video.rawValue
+                                movieRequest.deleteAssetIdentifier = assetID
+                                uploadRequests.append(movieRequest)
+                            } else {
+                                uploadRequests.append(uploadRequest)
+                            }
 
                             // Delete JSON file
                             try? FileManager.default.removeItem(at: file)
                         }
                         catch {
+                            #if DEBUG
                             debugPrint("••> Could not decode upload info: \(error.localizedDescription)")
+                            #endif
                         }
                     }
 
@@ -675,7 +738,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
                     // Prepare upload options selector
                     uploadSwitchVC.delegate = nil
-                    uploadSwitchVC.user = albumVC.user
+                    uploadSwitchVC.userData = albumVC.userData
                     uploadSwitchVC.categoryId = albumVC.categoryId
                     uploadSwitchVC.categoryCurrentCounter = destinationAlbum.currentCounter
                     // Offer to delete originals only for photos matched to a Photo Library asset
@@ -697,7 +760,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 // MARK: - AppLockDelegate Methods
 extension SceneDelegate: AppLockDelegate {
     func loginOrReloginAndResumeUploads() {
+        #if DEBUG
         debugPrint("••> \(window?.windowScene?.session.persistentIdentifier ?? "UNKNOWN"): Scene presents the login view or resume uploads.")
+        #endif
         // Remove privacy view
         privacyView?.removeFromSuperview()
         
@@ -742,14 +807,14 @@ extension SceneDelegate: AppLockDelegate {
         // Resume upload operations in background queue
         // and update badge and upload button of album navigator
         Task(priority: .utility) { @UploadManagerActor in
-            #if os(iOS) && !targetEnvironment(macCatalyst)
+            #if os(iOS) && !targetEnvironment(macCatalyst) && !targetEnvironment(simulator)
             if #available(iOS 26.0, *) {
                 UploadManager.shared.runContinuedUploadTask()
             }
             else {
                 await UploadManager.shared.resumeInForeground()
             }
-            #elseif targetEnvironment(macCatalyst)
+            #elseif targetEnvironment(macCatalyst) || targetEnvironment(simulator)
             await UploadManager.shared.resumeInForeground()
             #endif
         }

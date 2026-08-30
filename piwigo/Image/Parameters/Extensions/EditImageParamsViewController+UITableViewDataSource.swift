@@ -19,7 +19,7 @@ extension EditImageParamsViewController: UITableViewDataSource
         var row = indexPath.row
         row += (!hasDatePicker && (row > EditImageParamsOrder.date.rawValue)) ? 1 : 0
         row += (!hasTimePicker && (row > EditImageParamsOrder.time.rawValue)) ? 1 : 0
-        row += (!user.hasAdminRights && (row > EditImageParamsOrder.tags.rawValue)) ? 1 : 0
+        row += (!userData.hasAdminRights && (row > EditImageParamsOrder.tags.rawValue)) ? 1 : 0
         return row
     }
     
@@ -27,7 +27,7 @@ extension EditImageParamsViewController: UITableViewDataSource
         var nberOfRows = EditImageParamsOrder.count.rawValue
         nberOfRows -= hasDatePicker ? 0 : 1
         nberOfRows -= hasTimePicker ? 0 : 1
-        nberOfRows -= user.hasAdminRights ? 0 : 1
+        nberOfRows -= userData.hasAdminRights ? 0 : 1
         return nberOfRows
     }
     
@@ -39,7 +39,6 @@ extension EditImageParamsViewController: UITableViewDataSource
         case .thumbnails:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "EditImageThumbTableViewCell", for: indexPath) as? EditImageThumbTableViewCell
             else { preconditionFailure("Could not load a EditImageThumbTableViewCell") }
-            cell.user = user
             cell.config(withImages: images)
             cell.delegate = self
             tableViewCell = cell
@@ -146,7 +145,7 @@ extension EditImageParamsViewController: UITableViewDataSource
             else { preconditionFailure("Could not load LabelTableViewCell")}
             let title = String(localized: "editImageDetails_tags", comment: "Tags")
             // Retrieve tags and switch to old cache data format
-            let tagList: String = commonTags.compactMap({"\($0.tagName), "}).reduce("", +)
+            let tagList: String = commonTags.compactMap({"\($0.name), "}).reduce("", +)
             let tagString = String(tagList.dropLast(2))
             let detail = tagString.isEmpty ? String(localized: "none", comment: "none") : tagString
             cell.configure(with: title, detail: detail)

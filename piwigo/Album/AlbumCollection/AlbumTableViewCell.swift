@@ -14,7 +14,7 @@ import PwgAPIKit
 import PwgCacheKit
 import PwgUIKit
 
-class AlbumTableViewCell: UITableViewCell {
+final class AlbumTableViewCell: UITableViewCell {
     
     var imageURL: URL?
 
@@ -27,7 +27,7 @@ class AlbumTableViewCell: UITableViewCell {
     @IBOutlet weak var binding2: UIView!
     @IBOutlet weak var handle: UIView!
     
-    func config(withAlbumData albumData: Album?) {
+    func config(withAlbum album: Album?) {
         // General settings
         selectionStyle = UITableViewCell.SelectionStyle.none
         contentView.backgroundColor = PwgColor.cellBackground
@@ -35,22 +35,22 @@ class AlbumTableViewCell: UITableViewCell {
         binding2?.backgroundColor = PwgColor.background
 
         // Album name (Piwigo orange colour)
-        albumName?.text = albumData?.name ?? "—?—"
+        albumName?.text = album?.name ?? "—?—"
         
         // Album description (colour depends on text content)
-        albumComment?.attributedText = getDescription(fromAlbumData: albumData)
+        albumComment?.attributedText = getDescription(fromAlbumData: album)
 
         // Number of images and sub-albums
-        numberOfImages?.text = getNberOfImages(fromAlbumData: albumData)
+        numberOfImages?.text = getNberOfImages(fromAlbumData: album)
         numberOfImages?.textColor = PwgColor.rightLabel
 
         // Add renaming, moving and deleting capabilities when user has admin rights
-        if let album = albumData, let hasAdminRights = album.user?.hasAdminRights {
+        if let album, let hasAdminRights = album.user?.getProperties().hasAdminRights {
             handle?.isHidden = !hasAdminRights
         }
         
         // If requested, display recent icon when images have been uploaded recently
-        let timeSinceLastUpload = Date.timeIntervalSinceReferenceDate - (albumData?.dateLast ?? TimeInterval(-3187296000))
+        let timeSinceLastUpload = Date.timeIntervalSinceReferenceDate - (album?.dateLast ?? TimeInterval(-3187296000))
         var indexOfPeriod: Int = ServerVars.shared.recentPeriodIndex
         indexOfPeriod = min(indexOfPeriod, ServerVars.shared.recentPeriodList.count - 1)
         indexOfPeriod = max(0, indexOfPeriod)
@@ -62,12 +62,12 @@ class AlbumTableViewCell: UITableViewCell {
         self.recentlyModified?.layer.shadowOpacity = 1.0
 
         // Can we add a representative if needed?
-        if albumData?.thumbnailUrl == nil || albumData?.thumbnailId == Int64.zero,
-           let images = albumData?.images, let firstImage = images.first {
+        if album?.thumbnailUrl == nil || album?.thumbnailId == Int64.zero,
+           let images = album?.images, let firstImage = images.first {
             // Set representative (case where images were uploaded recently)
-            albumData?.thumbnailId = firstImage.pwgID
+            album?.thumbnailId = firstImage.pwgID
             let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-            albumData?.thumbnailUrl = firstImage.url(forMaxSize: thumnailSize) as NSURL?
+            album?.thumbnailUrl = firstImage.url(forMaxSize: thumnailSize) as NSURL?
         }
         
         // Retrieve image from cache or download it
@@ -75,11 +75,11 @@ class AlbumTableViewCell: UITableViewCell {
         let scale = max(self.albumThumbnail?.traitCollection.displayScale ?? 1.0, 1.0)
         let cellSize = CGSizeMake(self.albumThumbnail.bounds.size.width * scale, self.albumThumbnail.bounds.size.height * scale)
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-        imageURL = albumData?.thumbnailUrl as? URL
+        imageURL = album?.thumbnailUrl as? URL
         Task {
             let expectedURL = imageURL
-            await ImageDownloader.shared.getImage(withID: albumData?.thumbnailId, ofSize: thumbSize, type: .album,
-                                                  atURL: imageURL, fromServer: albumData?.user?.server?.uuid) { [weak self = self] cachedImageURL in
+            await ImageDownloader.shared.getImage(withID: album?.thumbnailId, ofSize: thumbSize, type: .album,
+                                                  atURL: imageURL, fromServer: album?.user?.server?.uuid) { [weak self = self] cachedImageURL in
                 // Downsample image in cache
                 let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .album)
                 
@@ -116,7 +116,7 @@ class AlbumTableViewCell: UITableViewCell {
             ]
             desc.addAttributes(attributes, range: wholeRange)
         }
-        else if albumData?.user?.hasAdminRights ?? false {
+        else if albumData?.user?.getProperties().hasAdminRights ?? false {
             let noDesc = String(localized: "createNewAlbumDescription_noDescription", comment: "no description")
             desc = NSMutableAttributedString(string: noDesc)
             let wholeRange = NSRange(location: 0, length: desc.string.count)

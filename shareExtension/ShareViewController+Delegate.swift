@@ -231,7 +231,7 @@ extension ShareViewController: UITableViewDelegate
         
         // The user just unlocked the extension —> don't ask again in the main app
         if UIVars.shared.isAppLockActive {
-            UIVars.shared.dateOfLastUnlock = Date().timeIntervalSinceReferenceDate
+            UIVars.shared.dateOfLastUnlock = Date.timeIntervalSinceReferenceDate
         }
         
         // Send album IDs and date of share to main app

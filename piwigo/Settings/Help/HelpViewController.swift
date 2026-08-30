@@ -10,7 +10,7 @@ import UIKit
 import PwgKit
 import PwgUIKit
 
-class HelpViewController: UIViewController {
+final class HelpViewController: UIViewController {
     
     @IBOutlet weak var pageControl: UIPageControl!
     @IBOutlet weak var closeButton: UIButton!
@@ -34,6 +34,7 @@ class HelpViewController: UIViewController {
 
         // Initialise pages
         for i in displayHelpPagesWithID {
+            if i == 2 { continue }
             // Loop over the storyboards
             let pageIDstr = String(format: "help%02ld", i)
             if let page = storyboard?.instantiateViewController(withIdentifier: pageIDstr) {

@@ -32,7 +32,7 @@ extension AutoUploadViewController: SelectCategoryDelegate {
     // Collect chosen Piwigo category
     func didSelectCategory(withId categoryId: Int32) -> Void {
         // Check selection
-        if categoryId == Int32.min {
+        if categoryId <= Int32.zero {
             // Did not select a Piwigo album
             UploadVars.shared.autoUploadCategoryId = Int32.min
             UploadVars.shared.isAutoUploadActive = false

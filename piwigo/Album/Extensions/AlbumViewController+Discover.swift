@@ -23,6 +23,7 @@ extension AlbumViewController
             button = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: discoverMenu())
         }
         button.accessibilityIdentifier = "discover"
+        button.accessibilityLabel = String(localized: "discoverMenu_title", comment: "Discover")
         return button
     }
 }
@@ -48,8 +49,8 @@ extension AlbumViewController
     func smartAlbumsMenu() -> UIMenu {
         let menuId = UIMenu.Identifier("org.piwigo.discover.smart")
         var children = [taggedAction(), mostVisitedAction(), bestRatedAction(), recentAction()]
-        if ServerVars.shared.user.isEmpty == false,
-           ServerVars.shared.user.lowercased() != "guest" {
+        if ServerVars.shared.username.isEmpty == false,
+           ServerVars.shared.username.lowercased() != "guest" {
             children.insert(favoritesAction(), at: 0)
         }
         let menu = UIMenu(title: "", image: nil, identifier: menuId,
@@ -65,9 +66,9 @@ extension AlbumViewController
                               identifier: actionId, handler: { [weak self] action in
             guard let self else { return }
             // Check that an album of favorites exists in cache (create it if necessary)
-            guard let _ = try? AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) else {
-                return
-            }
+            guard let _ = try? AlbumProvider().getOrCreateAlbum(withID: pwgSmartAlbum.favorites.rawValue,
+                                                                inContext: mainContext)
+            else { return }
             
             // Present favorite images
             guard let favoritesVC = storyboard?.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
@@ -135,9 +136,8 @@ extension AlbumViewController
 {
     func discoverImages(inCategoryId categoryId: Int32) {
         // Check that a discover album exists in cache (create it if necessary)
-        guard let _ = try? AlbumProvider().getAlbum(ofUser: user, withId: categoryId) else {
-            return
-        }
+        guard let _ = try? albumProvider.getOrCreateAlbum(withID: categoryId, inContext: mainContext)
+        else { return }
         
         // Create and push Discover view
         guard let discoverVC = storyboard?.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
@@ -145,13 +145,13 @@ extension AlbumViewController
         discoverVC.categoryId = categoryId
         self.navigationController?.pushViewController(discoverVC, animated: true)
     }
-
+    
     func discoverImagesByTag() {
         // Push tag select view
         let tagSelectorSB = UIStoryboard(name: "TagSelectorViewController", bundle: nil)
         guard let tagSelectorVC = tagSelectorSB.instantiateViewController(withIdentifier: "TagSelectorViewController") as? TagSelectorViewController
         else { preconditionFailure("Could not load TagSelectorViewController") }
-        tagSelectorVC.user = user
+        tagSelectorVC.userData = userData
         tagSelectorVC.tagSelectedDelegate = self
         pushView(tagSelectorVC)
     }

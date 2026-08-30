@@ -12,21 +12,19 @@ import PwgKit
 import PwgCacheKit
 
 @MainActor
-class AlbumViewData: NSObject
+final class AlbumViewData: NSObject
 {
-    private var albumData: Album
+    private var albumData: AlbumProperties
 
-    init(withAlbum albumData: Album) {
+    init(withData albumData: AlbumProperties) {
         self.albumData = albumData
         super.init()
     }
     
 
-    // MARK: - Core Data Object Contexts
-    private lazy var mainContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.mainContext
-        return context
-    }()
+    // MARK: - Core Data Objects
+    @MainActor
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
 
 
     // MARK: - Sub-Albums
@@ -34,7 +32,7 @@ class AlbumViewData: NSObject
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "parentId == $catID"))
         andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
+        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
         return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
     }()
     
@@ -44,6 +42,8 @@ class AlbumViewData: NSObject
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true,
                                                          selector: #selector(NSString.localizedStandardCompare(_:)))]
         fetchRequest.predicate = albumPredicate.withSubstitutionVariables(["catID" : albumData.pwgID])
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.shouldRefreshRefetchedObjects = true
         fetchRequest.fetchBatchSize = 20
         return fetchRequest
     }()
@@ -62,7 +62,7 @@ class AlbumViewData: NSObject
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "server.path == %@", ServerVars.shared.serverPath))
         andPredicates.append(NSPredicate(format: "ANY albums.pwgID == $catID"))
-        andPredicates.append(NSPredicate(format: "ANY albums.user.username == %@", ServerVars.shared.user))
+        andPredicates.append(NSPredicate(format: "ANY albums.user.username == %@", ServerVars.shared.username))
         return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
     }()
 
@@ -198,6 +198,8 @@ class AlbumViewData: NSObject
     private lazy var fetchImagesRequest: NSFetchRequest = {
         let fetchRequest = Image.fetchRequest()
         fetchRequest.predicate = imagePredicate.withSubstitutionVariables(["catID" : albumData.pwgID])
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.shouldRefreshRefetchedObjects = true
         fetchRequest.fetchBatchSize = 20
         return fetchRequest
     }()

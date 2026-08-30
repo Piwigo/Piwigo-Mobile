@@ -18,7 +18,7 @@ extension ImageViewController
     @MainActor
     func getFavoriteBarButton() -> UIBarButtonItem? {
         // pwg.users.favorites… methods available from Piwigo version 2.10 for registered users
-        if user.canManageFavorites() == false {
+        if userData.canManageFavorites() == false {
             return nil
         }
         
@@ -42,26 +42,35 @@ extension ImageViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Add image to favorites
                 try await JSONManager.shared.addToFavorites(imageWithID: imageData.pwgID)
                 
                 // Update cache and UI
                 await MainActor.run {
-                    // Update Favorite smart album
-                    if let favAlbum = try? AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) {
+                    // Image added to favorites ► Add it to the cached album
+                    if let favAlbum = try? AlbumProvider().getOrCreateAlbum(withID: pwgSmartAlbum.favorites.rawValue,
+                                                                            inContext: mainContext) {
                         // Add image to favorites album
                         favAlbum.addToImages(imageData)
-                        // Update favorites album data
-                        try? AlbumProvider().updateAlbums(addingImages: 1, toAlbum: favAlbum, inContext: self.mainContext)
+                        
+                        // Add images to album
+                        favAlbum.nbImages += 1
+                        favAlbum.totalNbImages += 1
+                        
+                        // Keep 'date_last' set as expected by the server
+                        favAlbum.dateLast = max(Date.timeIntervalSinceReferenceDate, favAlbum.dateLast)
+                        
                         // Save changes
-                        self.mainContext.saveIfNeeded()
-                        // Set button
-                        favoriteBarButton?.setFavoriteImage(for: true)
-                        favoriteBarButton?.action = #selector(self.removeFromFavorites)
-                        favoriteBarButton?.isEnabled = true
+                        mainContext.saveIfNeeded()
                     }
+
+                    // Set button
+                    favoriteBarButton?.setFavoriteImage(for: true)
+                    favoriteBarButton?.action = #selector(self.removeFromFavorites)
+                    favoriteBarButton?.isEnabled = true
+
                     // Update thumbnails if needed
                     if let children = presentingViewController?.children {
                         let albumVCs = children.compactMap({$0 as? AlbumViewController}).filter({$0.categoryId != Int32.zero})
@@ -106,32 +115,54 @@ extension ImageViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Remove image from favorites
                 try await JSONManager.shared.removeFromFavorites(imageWithID: imageData.pwgID)
                 
                 // Update cache and UI
                 await MainActor.run {
-                    // Update Favorite smart album
-                    if let favAlbum = try? AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) {
+                    // Image removed from favorites ► Remove it from the cached album
+                    if let favAlbum = try? AlbumProvider().getOrCreateAlbum(withID: pwgSmartAlbum.favorites.rawValue,
+                                                                            inContext: mainContext) {
                         // Remove image from favorites album
                         favAlbum.removeFromImages(imageData)
-                        // Update favorites album data
-                        try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: favAlbum, inContext: self.mainContext)
-                        // Save changes
-                        self.mainContext.saveIfNeeded()
-                        // Back to favorites album or set favorite button?
-                        if self.categoryId == pwgSmartAlbum.favorites.rawValue {
-                            // Return to favorites album
-                            navigationController?.dismiss(animated: true)
-                        } else {
-                            // Update favorite button
-                            self.favoriteBarButton?.setFavoriteImage(for: false)
-                            self.favoriteBarButton?.action = #selector(self.addToFavorites)
-                            self.favoriteBarButton?.isEnabled = true
+                        
+                        // Removes image from album
+                        favAlbum.nbImages = max(0, favAlbum.nbImages - 1)
+                        favAlbum.totalNbImages = max(0, favAlbum.totalNbImages - 1)
+                        
+                        // Keep 'date_last' set as expected by the server
+                        var dateLast = DateUtilities.unknownDateInterval    // i.e. unknown date
+                        for keptImage in favAlbum.images ?? Set<Image>() {
+                            if dateLast < keptImage.datePosted {
+                                dateLast = keptImage.datePosted
+                            }
                         }
+                        favAlbum.dateLast = dateLast
+                        
+                        // Reset source album thumbnail if necessary
+                        if favAlbum.nbImages == 0 {
+                            favAlbum.thumbnailId = Int64.zero
+                            favAlbum.thumbnailUrl = nil
+                        }
+                        
+                        // Save changes
+                        mainContext.saveIfNeeded()
                     }
+                    
+                    // Back to favorites album or set favorite button?
+                    if self.categoryId == pwgSmartAlbum.favorites.rawValue {
+                        // Return to favorites album
+                        navigationController?.dismiss(animated: true)
+                    }
+                    else {
+                        // Update favorite button
+                        self.favoriteBarButton?.setFavoriteImage(for: false)
+                        self.favoriteBarButton?.action = #selector(self.addToFavorites)
+                        self.favoriteBarButton?.isEnabled = true
+                    }
+
                     // Update thumbnails if needed
                     if let children = presentingViewController?.children {
                         let albumVCs = children.compactMap({$0 as? AlbumViewController}).filter({$0.categoryId != Int32.zero})

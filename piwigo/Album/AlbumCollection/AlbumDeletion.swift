@@ -13,19 +13,24 @@ import PwgKit
 import PwgAPIKit
 import PwgCacheKit
 import PwgUIKit
+import PwgUploadKit
 
 final class AlbumDeletion: NSObject
 {
     // Initialisation
-    init(albumData: Album, user: User, nbOrphans: Int64, topViewController: UIViewController) {
-        self.albumData = albumData
-        self.user = user
+    init(album: Album, nbOrphans: Int64,
+         topViewController: UIViewController) {
+        self.album = album
         self.nbOrphans = nbOrphans
         self.topViewController = topViewController
     }
     
-    var albumData: Album
-    var user: User
+    var album: Album
+    lazy var userData: UserProperties = {
+        guard let user = album.user?.getProperties()
+        else { preconditionFailure("Album has no User instance") }
+        return user
+    }()
     var topViewController: UIViewController
     
     private var deleteAction: UIAlertAction?
@@ -36,7 +41,7 @@ final class AlbumDeletion: NSObject
     {
         let alert = UIAlertController(
             title: String(localized: "deleteCategory_title", comment: "DELETE ALBUM"),
-            message: String.localizedStringWithFormat(String(localized: "deleteCategory_message", comment: "ARE YOU SURE YOU WANT TO DELETE THE ALBUM \"%@\" AND ALL %lld IMAGES?"), albumData.name, albumData.totalNbImages),
+            message: String.localizedStringWithFormat(String(localized: "deleteCategory_message", comment: "ARE YOU SURE YOU WANT TO DELETE THE ALBUM \"%@\" AND ALL %lld IMAGES?"), album.name, album.totalNbImages),
             preferredStyle: .alert)
         
         let cancelAction = UIAlertAction(title: Localized.cancel,
@@ -46,7 +51,7 @@ final class AlbumDeletion: NSObject
         })
         alert.addAction(cancelAction)
         
-        if albumData.totalNbImages == 0 {
+        if album.totalNbImages == 0 {
             // Empty album
             let emptyCategoryAction = UIAlertAction(
                 title: String(localized: "deleteCategory_empty", comment: "Delete Empty Album"),
@@ -68,7 +73,7 @@ final class AlbumDeletion: NSObject
                         deleteAlbum(withDeletionMode: .none, completion: completion)
                     } else {
                         // There will be orphans, ask confirmation
-                        confirmAlbumDeletion(withNumberOfImages: albumData.totalNbImages,
+                        confirmAlbumDeletion(withNumberOfImages: album.totalNbImages,
                                              deletionMode: .none, completion: completion)
                     }
                 })
@@ -79,7 +84,7 @@ final class AlbumDeletion: NSObject
                     title: String(localized: "deleteCategory_orphanedImages", comment: "Delete Orphans"),
                     style: .destructive,
                     handler: { [self] action in
-                        confirmAlbumDeletion(withNumberOfImages: albumData.totalNbImages,
+                        confirmAlbumDeletion(withNumberOfImages: album.totalNbImages,
                                              deletionMode: .orphaned, completion: completion)
                     })
                 alert.addAction(orphanImagesAction)
@@ -89,18 +94,18 @@ final class AlbumDeletion: NSObject
                     title: String.localizedStringWithFormat(String(localized: "deleteCategory_severalOrphanedImages", comment: "Delete %lld Orphans"), self.nbOrphans),
                     style: .destructive,
                     handler: { [self] action in
-                        confirmAlbumDeletion(withNumberOfImages: albumData.totalNbImages,
+                        confirmAlbumDeletion(withNumberOfImages: album.totalNbImages,
                                              deletionMode: .orphaned, completion: completion)
                     })
                 alert.addAction(orphanImagesAction)
             }
             
-            if nbOrphans != albumData.totalNbImages {
+            if nbOrphans != album.totalNbImages {
                 let allImagesAction = UIAlertAction(
-                    title: String.localizedStringWithFormat(String(localized: "deleteSeveralImages_title", comment: "Delete %@ Photos/Videos"), NSNumber(value: albumData.totalNbImages)),
+                    title: String.localizedStringWithFormat(String(localized: "deleteSeveralImages_title", comment: "Delete %@ Photos/Videos"), NSNumber(value: album.totalNbImages)),
                     style: .destructive,
                     handler: { [self] action in
-                        confirmAlbumDeletion(withNumberOfImages: albumData.totalNbImages,
+                        confirmAlbumDeletion(withNumberOfImages: album.totalNbImages,
                                              deletionMode: .all, completion: completion)
                     })
                 allImagesAction.accessibilityIdentifier = "DeleteAll"
@@ -125,11 +130,11 @@ final class AlbumDeletion: NSObject
         // Are you sure?
         let alert = UIAlertController(
             title: String(localized: "deleteCategoryConfirm_title", comment: "Are you sure?"),
-            message: String.localizedStringWithFormat(String(localized: "deleteCategoryConfirm_message", comment: "Please enter the number of images in order to delete this album\nNumber of images: %@"), NSNumber(value: albumData.totalNbImages)),
+            message: String.localizedStringWithFormat(String(localized: "deleteCategoryConfirm_message", comment: "Please enter the number of images in order to delete this album\nNumber of images: %@"), NSNumber(value: album.totalNbImages)),
             preferredStyle: .alert)
         
         alert.addTextField(configurationHandler: { [self] textField in
-            textField.placeholder = "\(NSNumber(value: albumData.nbImages))"
+            textField.placeholder = "\(NSNumber(value: album.nbImages))"
             textField.keyboardAppearance = UIVars.shared.isDarkPaletteActive ? .dark : .default
             textField.clearButtonMode = .always
             textField.keyboardType = .numberPad
@@ -168,7 +173,7 @@ final class AlbumDeletion: NSObject
     private func checkDeletion(withNumberOfImages number: Int, deletionMode: pwgAlbumDeletionMode,
                                completion: @escaping (Bool) -> Void) {
         // Check provided number of images
-        if number != albumData.totalNbImages {
+        if number != album.totalNbImages {
             topViewController.dismissPiwigoError(withTitle: String(localized: "deleteCategoryMatchError_title", comment: "Number Doesn't Match"), message: String(localized: "deleteCategoryMatchError_message", comment: "The number of images you entered doesn't match the number of images in the category. Please try again if you desire to delete this album"), errorMessage: "") {
             }
             return
@@ -184,24 +189,35 @@ final class AlbumDeletion: NSObject
     private func deleteAlbum(withDeletionMode deletionMode: pwgAlbumDeletionMode,
                              completion: @escaping (Bool) -> Void) {
         // Prepare set of parent IDs before deleting album (including root album)
-        let hasAdminRights = user.hasAdminRights
-        let parentIDs = Set(albumData.upperIds.components(separatedBy: ",")
-            .compactMap({Int32($0)})).filter({$0 != albumData.pwgID}).union(Set([pwgSmartAlbum.root.rawValue]))
+        let parentIDs = Set(album.upperIds.components(separatedBy: ",")
+            .compactMap({Int32($0)})).filter({$0 != album.pwgID}).union(Set([pwgSmartAlbum.root.rawValue]))
         
         // Delete the category
         Task {
             do throws(PwgKitError) {
+                // Collect the IDs of the albums which the server will delete, i.e. this album
+                // and its sub-albums, before the cache is updated below
+                let deletedIDs = AlbumProvider().getIDsOfAlbumAndSubAlbums(withID: album.pwgID,
+                                                                           inContext: DataController.shared.newTaskContext())
+                
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Delete album
-                _ = try await JSONManager.shared.deleteCategory(withID: albumData.pwgID, inMode: deletionMode)
+                _ = try await JSONManager.shared.deleteCategory(withID: album.pwgID, inMode: deletionMode)
                 
                 // Auto-upload already disabled by AlbumProvider if necessary
-                // Also remove this album from the auto-upload destination
-                if UploadVars.shared.autoUploadCategoryId == albumData.pwgID {
+                // Also remove this album, or one of its sub-albums, from the auto-upload destination
+                if deletedIDs.contains(UploadVars.shared.autoUploadCategoryId) {
                     UploadVars.shared.autoUploadCategoryId = Int32.min
                 }
+                
+                // Delete the upload requests whose destination album was deleted.
+                // Completed requests are only deleted when every photo of the album was deleted
+                // from the server: in the other modes a photo may still belong to another album,
+                // and the app would then propose it for upload again.
+                await UploadManager.shared.deleteUploads(ofDeletedAlbumsWithIDs: deletedIDs,
+                                                         photosDeleted: deletionMode == .all)
                 
                 // Update parent album data
                 let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
@@ -209,18 +225,17 @@ final class AlbumDeletion: NSObject
                     // Don't fetch an album already being fetched
                     if AlbumVars.shared.isFetchingAlbumData.contains(parentID) { continue }
                     
-                    // Remember that the app is fetching album data
+                    // Remember that the app is fetching all album data
+                    // until the fetch completes or the fetch or the import below throws an error
                     AlbumVars.shared.isFetchingAlbumData.insert(parentID)
-
+                    defer { AlbumVars.shared.isFetchingAlbumData.remove(parentID) }
+                    
                     // Fetch album data
-                    let pwgData = try await JSONManager.shared.fetchAlbums(forUserWithAdminRights: hasAdminRights,
+                    let pwgData = try await JSONManager.shared.fetchAlbums(forUserWithAdminRights: userData.hasAdminRights,
                                                                            inParentWithId: parentID,
                                                                            thumbnailSize: thumnailSize)
                     // Update cache
-                    try AlbumProvider().importAlbums(pwgData, inParent: parentID)
-                    
-                    // Remove album from list of albums being fetched
-                    AlbumVars.shared.isFetchingAlbumData.remove(parentID)
+                    try await AlbumProvider().importAlbums(pwgData, inParent: parentID)
                 }
                 
                 // Work completed ► Hide HUD, update UI
@@ -228,7 +243,7 @@ final class AlbumDeletion: NSObject
                     self.topViewController.updateHUDwithSuccess() { [self] in
                         self.topViewController.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                             // Album successfully deleted ▶ Remove category ID from list of recently used albums
-                            let userInfo = ["categoryId" : NSNumber.init(value: albumData.pwgID)]
+                            let userInfo = ["categoryId" : NSNumber.init(value: album.pwgID)]
                             NotificationCenter.default.post(name: Notification.Name.pwgRemoveRecentAlbum,
                                                             object: nil, userInfo: userInfo)
                             // Hide swipe buttons

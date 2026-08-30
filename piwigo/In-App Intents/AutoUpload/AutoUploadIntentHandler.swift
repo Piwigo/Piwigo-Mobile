@@ -20,12 +20,11 @@ final class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
     static let logger = PwgLogger(subsystem: "org.piwigo", category: String(describing: AutoUploadIntentHandler.self))
     
-    // MARK: - Core Data Object Contexts
+
+    // MARK: - Core Data Objects
     @MainActor
-    private lazy var mainContext: NSManagedObjectContext = {
-        return DataController.shared.mainContext
-    }()
-    
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
+
     
     // MARK: - Handle Intent
     func handle(intent: AutoUploadIntent, completion: @escaping (AutoUploadIntentResponse) -> Void) {
@@ -66,7 +65,7 @@ final class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         
         // Check existence of Piwigo album
         let categoryId = UploadVars.shared.autoUploadCategoryId
-        guard categoryId != Int32.min else {
+        guard categoryId > Int32.zero else {
             // Cannot access Piwigo album -> Reset album ID
             UploadVars.shared.autoUploadCategoryId = Int32.min    // Unknown destination Piwigo album
             
@@ -99,13 +98,13 @@ final class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                 
                 // Add upload requests to queue
                 UploadVars.shared.isPaused = false
-                #if os(iOS) && !targetEnvironment(macCatalyst)
+                #if os(iOS) && !targetEnvironment(macCatalyst) && !targetEnvironment(simulator)
                 // Queue uploads to prepare
                 await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
                 
                 // Process next uploads if possible
                 await UploadManagerActor.shared.processNextUpload()
-                #elseif targetEnvironment(macCatalyst)
+                #elseif targetEnvironment(macCatalyst) || targetEnvironment(simulator)
                 // Queue uploads to prepare
                 await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
                 

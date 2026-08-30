@@ -4,14 +4,64 @@
 <dict>
 	<key>AppIdentifierPrefix</key>
 	<string>$(AppIdentifierPrefix)</string>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>org.piwigo.uploadManager</string>
+		<string>org.piwigo.uploadManagerContinued</string>
+		<string>net.lelievre-berna.piwigo.uploadManager</string>
+		<string>net.lelievre-berna.piwigo.uploadManagerContinued</string>
+		<string>org.piwigo.albumRefresh</string>
+		<string>net.lelievre-berna.piwigo.albumRefresh</string>
+	</array>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>Piwigo</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Piwigo</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>piwigo-debug</string>
+			</array>
+		</dict>
+	</array>
+	<key>CFBundleVersion</key>
+	<string>704</string>
+	<key>INIntentsSupported</key>
+	<array>
+		<string>AutoUploadIntent</string>
+	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
-	<key>LSRequiresIPhoneOS</key>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Use Face ID instead of a passcode to access your albums.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Piwigo uses the local network to access your Piwigo server.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>so that it will be able to download images to Photos and upload images to your Piwigo.</string>
+	<key>NSSiriUsageDescription</key>
+	<string>so that Piwigo will be able to upload images with Siri.</string>
+	<key>PHPhotoLibraryPreventAutomaticLimitedAccessAlert</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
@@ -43,54 +93,13 @@
 			</array>
 		</dict>
 	</dict>
-	<key>CFBundleDisplayName</key>
-	<string>Piwigo</string>
-	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-	<key>CFBundleName</key>
-	<string>Piwigo</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleVersion</key>
-	<string>701</string>
-	<key>CFBundleShortVersionString</key>
-	<string>$(MARKETING_VERSION)</string>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>en</string>
-	<key>CFBundleExecutable</key>
-	<string>$(EXECUTABLE_NAME)</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>INIntentsSupported</key>
-	<array>
-		<string>AutoUploadIntent</string>
-	</array>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<key>BGTaskSchedulerPermittedIdentifiers</key>
-	<array>
-		<string>org.piwigo.uploadManager</string>
-		<string>org.piwigo.uploadManagerContinued</string>
-		<string>net.lelievre-berna.piwigo.uploadManager</string>
-		<string>net.lelievre-berna.piwigo.uploadManagerContinued</string>
-		<string>org.piwigo.albumRefresh</string>
-		<string>net.lelievre-berna.piwigo.albumRefresh</string>
-	</array>
-	<key>PHPhotoLibraryPreventAutomaticLimitedAccessAlert</key>
-	<true/>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Use Face ID instead of a passcode to access your albums.</string>
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>Piwigo uses the local network to access your Piwigo server.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>so that it will be able to download images to Photos and upload images to your Piwigo.</string>
-	<key>NSSiriUsageDescription</key>
-	<string>so that Piwigo will be able to upload images with Siri.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
 		<string>processing</string>
 	</array>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
@@ -110,29 +119,20 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>piwigo-debug</string>
-			</array>
-		</dict>
-	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 	<key>UTImportedTypeDeclarations</key>
 	<array>
 		<dict>
-			<key>UTTypeIdentifier</key>
-			<string>com.adobe.encapsulated-postscript</string>
-			<key>UTTypeDescription</key>
-			<string>Encapsulated PostScript</string>
 			<key>UTTypeConformsTo</key>
 			<array>
 				<string>public.data</string>
 				<string>public.content</string>
 			</array>
+			<key>UTTypeDescription</key>
+			<string>Encapsulated PostScript</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.adobe.encapsulated-postscript</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>

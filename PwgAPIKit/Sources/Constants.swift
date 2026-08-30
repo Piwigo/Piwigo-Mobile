@@ -38,6 +38,14 @@ public let pwgMinVersion = "12.0.0"
 // At login, invites to update the Piwigo server if version is lower than:
 public let pwgRecentVersion = "15.0.0"
 
+// Name and page of the ShareAlbum plugin on piwigo.org, suggested to admin users when not installed
+public let pwgShareAlbumPluginName = "ShareAlbum"
+public let pwgShareAlbumPluginURL = "https://piwigo.org/ext/index.php?eid=865"
+
+// Name and page of the rotateImage plugin on piwigo.org, suggested to admin users when not installed
+public let pwgRotateImagePluginName = "rotateImage"
+public let pwgRotateImagePluginURL = "https://piwigo.org/ext/index.php?eid=578"
+
 // Custom HTTP headers
 public let HTTPCatID = "X-PWG-categoryID"       // Header for cancelling tasks related with a specific album
 public let HTTPAPIKey = "X-PIWIGO-API"          // Header used by API keys

@@ -50,6 +50,16 @@ public final class UploadManager {
                 await self?.disableAutoUpload(inBckgTask: false)
             }
         }
+        
+        // Delete the upload requests of albums deleted on the Piwigo server, e.g. from the web UI
+        /// The album IDs are extracted here so that the Notification does not cross the actor boundary.
+        NotificationCenter.default.addObserver(forName: Notification.Name.pwgAlbumsDeletedOnServer, object: nil, queue: nil) { [weak self] notification in
+            guard let albumIDs = notification.userInfo?["albumIds"] as? [Int32]
+            else { return }
+            Task(priority: .utility) { @UploadManagerActor in
+                await self?.deleteUploads(ofAlbumsDeletedOnServerWithIDs: albumIDs)
+            }
+        }
     }
     
     deinit {

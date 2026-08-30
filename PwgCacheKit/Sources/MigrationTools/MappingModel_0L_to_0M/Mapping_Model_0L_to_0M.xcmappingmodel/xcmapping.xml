@@ -249,7 +249,7 @@
         <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z199"></relationship>
     </object>
     <object type="XDDEVENTITYMAPPING" id="z146">
-        <attribute name="migrationpolicyclassname" type="string">PwgCacheKit.ImageToImageMigrationPolicy_0L_to_0M</attribute>
+        <attribute name="migrationpolicyclassname" type="string">PwgCacheKit.ImageToImageMigrationPolicy_0L_to_0N</attribute>
         <attribute name="sourcename" type="string">Image</attribute>
         <attribute name="mappingtypename" type="string">Undefined</attribute>
         <attribute name="mappingnumber" type="int16">7</attribute>
@@ -491,7 +491,7 @@
         <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z117"></relationship>
     </object>
     <object type="XDDEVENTITYMAPPING" id="z199">
-        <attribute name="migrationpolicyclassname" type="string">PwgCacheKit.AlbumToAlbumMigrationPolicy_0L_to_0M</attribute>
+        <attribute name="migrationpolicyclassname" type="string">PwgCacheKit.AlbumToAlbumMigrationPolicy_0L_to_0N</attribute>
         <attribute name="sourcename" type="string">Album</attribute>
         <attribute name="mappingtypename" type="string">Undefined</attribute>
         <attribute name="mappingnumber" type="int16">8</attribute>

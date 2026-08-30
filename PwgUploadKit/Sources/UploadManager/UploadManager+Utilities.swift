@@ -24,18 +24,20 @@ extension UploadManager {
     // * declared "nonisolated" because the compiler returns:
     // * Pattern that the region based isolation checker does not understand how to check. Please file a bug
     // ******************************************************************************************************
-    nonisolated func getUploadFileURL(from localIdentifier: String, withSuffix suffix: String = "",
-                                      creationDate: TimeInterval, deleted deleteIt: Bool = false) -> URL {
+    /// NB: The file name is derived from the file key, not from the localIdentifier, so that both
+    /// halves of a Live Photo — which share the same identifier — get their own files.
+    nonisolated func getUploadFileURL(for uploadData: UploadProperties, withSuffix suffix: String = "",
+                                      deleted deleteIt: Bool = false) -> URL {
         // File name of image data to be stored into Piwigo/Uploads directory
         var fileName = ""
         if #available(iOS 16.0, *) {
-            fileName = localIdentifier.replacing("/", with: "-")
+            fileName = uploadData.fileKey.replacing("/", with: "-")
         } else {
             // Fallback on earlier versions
-            fileName = localIdentifier.replacingOccurrences(of: "/", with: "-")
+            fileName = uploadData.fileKey.replacingOccurrences(of: "/", with: "-")
         }
         if fileName.isEmpty {
-            fileName = "file-".appending(String(Int64(creationDate)))
+            fileName = "file-".appending(String(Int64(uploadData.creationDate)))
         }
         fileName.append(suffix)
         let fileURL = DataDirectories.appUploadsDirectory.appendingPathComponent(fileName)
@@ -50,7 +52,10 @@ extension UploadManager {
     }
     
     /// - Delete Upload files w/ or w/o prefix
-    public func deleteFilesInUploadsDirectory(withPrefix prefix: String = "") {
+    /// The excluded prefix protects the files of the video half of a Live Photo, whose names
+    /// start with those of the photo half followed by kLivePhotoMovieSuffix.
+    public func deleteFilesInUploadsDirectory(withPrefix prefix: String = "",
+                                              excludingPrefix excluded: String = "") {
         let fileManager = FileManager.default
         do {
             // Get list of files
@@ -59,6 +64,10 @@ extension UploadManager {
             if prefix.isEmpty == false {
                 // Will delete files with given prefix only
                 filesToDelete.removeAll(where: { !$0.lastPathComponent.hasPrefix(prefix) })
+            }
+            if excluded.isEmpty == false {
+                // Will spare the files of the sibling upload request
+                filesToDelete.removeAll(where: { $0.lastPathComponent.hasPrefix(excluded) })
             }
             
             // Delete files
@@ -80,91 +89,85 @@ extension UploadManager {
     
     // MARK: - Piwigo Session Management
     // Re-login if session was closed
-    public func checkSession(ofUserWithID objectID: NSManagedObjectID,
-                             lastConnected lastUsed: TimeInterval) async throws(PwgKitError) {
-                
-        // Check if the session is still active and update the server status
-        // every 60 seconds or more
-        let secondsSinceLastCheck = Date.timeIntervalSinceReferenceDate - lastUsed
+    public func checkSession(ofUser userData: inout UserProperties) async throws(PwgKitError) {
+        
+        // Check if the session is still active and re-login every 60 seconds or more
+        let secondsSinceLastCheck = Date.timeIntervalSinceReferenceDate - userData.lastUsed
         if ServerVars.shared.hasNetworkConnectionChanged == false,
-           ServerVars.shared.applicationShouldRelogin == false,
            secondsSinceLastCheck < 60 {
             return
         }
         
         // Determine if the session is still active
         ServerVars.shared.hasNetworkConnectionChanged = false
+        #if DEBUG
         debugPrint("Session: starting checking… \(ServerVars.shared.isConnectedToWiFi ? "WiFi" : "Cellular")")
+        #endif
         let oldToken = ServerVars.shared.pwgToken
-        let pwgUser = try await JSONManager.shared.sessionGetStatus()
+        var sessionData = userData
+        try await JSONManager.shared.sessionGetStatus(&sessionData)
 #if DEBUG
-        debugPrint("Session: \"\(ServerVars.shared.user)\" vs \"\(pwgUser)\", \"\(oldToken)\" vs \"\(ServerVars.shared.pwgToken)\"")
+        debugPrint("Session: \"\(ServerVars.shared.username)\" vs \"\(sessionData.username)\", \"\(oldToken)\" vs \"\(ServerVars.shared.pwgToken)\"")
 #endif
-        if pwgUser != ServerVars.shared.user || oldToken.isEmpty || ServerVars.shared.pwgToken != oldToken {
+        let bckgContext = DataController.shared.newTaskContext()
+        if sessionData.username != ServerVars.shared.username || oldToken.isEmpty || ServerVars.shared.pwgToken != oldToken {
             // Collect list of methods supplied by Piwigo server
             // => Determine if Community extension 2.9a or later is installed and active
             try await JSONManager.shared.getMethods()
             
-            // Known methods, perform re-login
             // Perform login
-            let username = ServerVars.shared.username
+            let username = ServerVars.shared.login
             let password = KeychainUtilities.password(forService: ServerVars.shared.serverPath, account: username)
             try await JSONManager.shared.sessionLogin(withUsername: username, password: password)
 #if DEBUG
-            debugPrint("Session: logged as \(ServerVars.shared.username)")
+            debugPrint("Session: logged as \(ServerVars.shared.login)")
 #endif
-            // Session now opened
-            try await getPiwigoConfigForUser(withID: objectID)
-            
+            // Check Piwigo version, get token, available sizes, etc.
+            if ServerVars.shared.usesCommunityPluginV29 {
+                try await JSONManager.shared.communityGetStatus(&userData)
+            }
+            else {
+                userData.createAlbumRights = nil
+            }
+            try await getPiwigoStatusForUser(&userData)
+
             // Update date of accesss to the server by guest
-            updateUser(withID: objectID, includingStatus: true)
-            ServerVars.shared.applicationShouldRelogin = false
-        }
-        else {
-            updateUser(withID: objectID, includingStatus: false)
+            userData.lastUsed = Date.timeIntervalSinceReferenceDate
+            try UserProvider().updateUser(withProperties: userData, inContext: bckgContext)
         }
     }
-    
-    fileprivate func updateUser(withID objectID: NSManagedObjectID, includingStatus status: Bool) {
-        let bckgContext = DataController.shared.newTaskContext()
-        UserProvider().updateUser(withID: objectID,status: status, inContext: bckgContext)
-    }
-    
-    fileprivate func getPiwigoConfigForUser(withID objectID: NSManagedObjectID) async throws(PwgKitError) {
-        // Check Piwigo version, get token, available sizes, etc.
-        if ServerVars.shared.usesCommunityPluginV29 {
-            try await JSONManager.shared.communityGetStatus()
-        }
-        try await getPiwigoStatusForUser(withID: objectID)
-    }
-    
-    fileprivate func getPiwigoStatusForUser(withID objectID: NSManagedObjectID) async throws(PwgKitError)
+            
+    fileprivate func getPiwigoStatusForUser(_ userData: inout UserProperties) async throws(PwgKitError)
     {
         // Retrieve the username
-        let userName = try await JSONManager.shared.sessionGetStatus()
-        
-        // Set Piwigo user
-        ServerVars.shared.user = userName
-        
+        try await JSONManager.shared.sessionGetStatus(&userData)
+                
         // Are cached data associated to an API public key?
         // (pursue logging in without waiting for the fix to complete)
         if ServerVars.shared.fixUserIsAPIKeyV412 {
+            let userURIstr = userData.URIstr
             DispatchQueue.global(qos: .background).async {
                 // Retrieve background context
                 let bckgContext = DataController.shared.newTaskContext()
                 
                 // Attribute upload requests to appropriate user if necessary
+                #if DEBUG
                 debugPrint("Session: attributing API Key upload requests to user…")
-                UploadProvider().attributeAPIKeyUploadRequests(toUserWithID: objectID,
+                #endif
+                UploadProvider().attributeAPIKeyUploadRequests(toUserWithID: userURIstr,
                                                                inContext: bckgContext)
                 
                 // Delete API Key user (and albums in cascade)
+                #if DEBUG
                 debugPrint("Session: deleting API Key user…")
-                UserProvider().deleteUser(withUsername: ServerVars.shared.username,
+                #endif
+                UserProvider().deleteUser(withUsername: ServerVars.shared.login,
                                           inContext: bckgContext)
                 
                 // Job completed
+                #if DEBUG
                 debugPrint("Session: API Key user deleted")
+                #endif
                 ServerVars.shared.fixUserIsAPIKeyV412 = false
                 
                 // Try to resume upload requests if the low power mode is not enabled

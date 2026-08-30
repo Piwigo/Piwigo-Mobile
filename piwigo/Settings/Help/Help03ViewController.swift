@@ -10,7 +10,7 @@ import UIKit
 import PwgKit
 import PwgUIKit
 
-class Help03ViewController: UIViewController {
+final class Help03ViewController: UIViewController {
     
     @IBOutlet weak var legend: UILabel!
     @IBOutlet weak var imageView: UIImageView!
@@ -34,7 +34,7 @@ class Help03ViewController: UIViewController {
         legendAttributedString.append(titleAttributedString)
 
         // Text
-        let textString = String(localized: "help03_text", comment: "Create, delete, move and rename albums.")
+        let textString = String(localized: "help03_text", comment: "Create, delete, move, rename and share albums.")
         let textAttributedString = NSMutableAttributedString(string: textString)
         let textRange = NSRange(location: 0, length: textString.count)
         textAttributedString.addAttribute(.font, value: textFont, range: textRange)
@@ -55,7 +55,7 @@ class Help03ViewController: UIViewController {
         
         // Remember that this view was watched and when
         AppVars.shared.didWatchHelpViews = AppVars.shared.didWatchHelpViews | helpID
-        AppVars.shared.dateOfLastHelpView = Date().timeIntervalSinceReferenceDate
+        AppVars.shared.dateOfLastHelpView = Date.timeIntervalSinceReferenceDate
     }
 
     @MainActor

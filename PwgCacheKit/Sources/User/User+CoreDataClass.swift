@@ -21,45 +21,90 @@ import PwgKit
 public final nonisolated class User: NSManagedObject, Identifiable {
     
     /**
-     Updates the attributes of a User Account instance.
+     Updates a User instance from UserProperties.
      */
-    func update(username: String, ofServer server: Server,
-                userStatus: pwgUserStatus = ServerVars.shared.userStatus,
-                withName name: String = "", lastUsed: Date = Date()) throws {
+    public func update(with userProperties: UserProperties,
+                       onServer server: Server) throws {
+        
         // Check user's status
-        guard pwgUserStatus.allCases.contains(userStatus) else {
-            throw PwgKitError.unknownUserStatus
+        guard pwgUserStatus.allCases.contains(userProperties.role)
+        else { throw PwgKitError.unknownUserStatus }
+        if self.status != userProperties.status {
+            self.status = userProperties.status
         }
         
-        // Server
-        if self.server == nil {
-            self.server = server
+        // Piwigo ID
+        if userProperties.pwgID != self.pwgID {
+            self.pwgID = userProperties.pwgID
+        }
+        
+        // Login, i.e. username or API public key (empty for guest)
+        if self.login != userProperties.login {
+            self.login = userProperties.login
         }
         
         // Username
-        if self.username != username {
-            self.username = username
+        if self.username != userProperties.username {
+            self.username = userProperties.username
         }
         
-        // User status
-        if self.status != userStatus.rawValue {
-            self.status = userStatus.rawValue
-        }
-
-        // When the name is not provided, build name from the path
-        let login = username.isEmpty ? pwgUserStatus.guest.rawValue : username
-        let newName = name.isEmpty ? login + " @ " + server.path : name
+        // When the name is not provided, build name from path
+        let login = userProperties.username.isEmpty ? pwgUserStatus.guest.rawValue : username
+        let newName = userProperties.name.isEmpty ? login + " @ " + server.path : userProperties.name
         if self.name != newName {
             self.name = newName
         }
         
-        // Last time the user used this account
-        let lastUsedInterval = lastUsed.timeIntervalSinceReferenceDate
-        if self.lastUsed != lastUsedInterval {
-            self.lastUsed = lastUsedInterval
+        // Email
+        if self.email != userProperties.email {
+            self.email = userProperties.email
+        }
+        
+        // Recent period
+        if self.recentPeriod != userProperties.recentPeriod {
+            self.recentPeriod = userProperties.recentPeriod
+        }
+        
+        // Registration date
+        if self.registrationDate != userProperties.registrationDate {
+            self.registrationDate = userProperties.registrationDate
+        }
+        
+        // Last time the user accessed this account
+        if self.lastUsed < userProperties.lastUsed {
+            self.lastUsed = userProperties.lastUsed
+        }
+        
+        // IDs of albums in which the user can create sub-albums
+        // Returned by community.session.getStatus
+        if self.createAlbumRights != userProperties.createAlbumRights {
+            self.createAlbumRights = userProperties.createAlbumRights
+        }
+        
+        // IDs of albums in which the user can upload images
+        // i.e. for which the Community user has 'admin' access
+        if self.uploadRights != userProperties.uploadRights {
+            self.uploadRights = userProperties.uploadRights
+        }
+        
+        // User has download rights or not
+        // Since Piwigo 14, pwg.categories.getImages method returns download_url if the user has download rights
+        // For previous versions, we assumed that all only registered users have download rights
+        // The download right is reset each time a batch of images is imported.
+        if self.downloadRights != userProperties.downloadRights {
+            self.downloadRights = userProperties.downloadRights
+        }
+        
+        // Server to which the user account belongs to
+        if let knownServer = self.server {
+            if knownServer.lastUsed < userProperties.lastUsed {
+                self.server?.lastUsed = userProperties.lastUsed
+            }
+        } else {
+            self.server = server
         }
     }
-    
+        
     public func addUploadRightsToAlbum(withID ID: Int32) {
         var setOfIDs = Set(self.uploadRights.components(separatedBy: ",").compactMap({Int32($0)}))
         if setOfIDs.insert(ID) == (true, ID) {
@@ -86,7 +131,7 @@ public final nonisolated class User: NSManagedObject, Identifiable {
 }
 
 
-extension User {
+extension User {    
     public var role: pwgUserStatus {
         return pwgUserStatus(rawValue: self.status) ?? .guest
     }
@@ -95,56 +140,25 @@ extension User {
         return [.webmaster, .admin].contains(self.role)
     }
     
-    public var hasUploadRights: Bool {
-        // Admin user?
-        if self.hasAdminRights { return true }
-        // Guest user?
-        if self.role == .guest { return false }
-        // Community user (.generic or .normal) ?
-        return ServerVars.shared.usesCommunityPluginV29
-    }
-    
-    public func hasUploadRights(forCatID categoryId: Int32) -> Bool {
-        // Admin user?
-        if self.hasAdminRights { return true }
-        // Guest user?
-        if self.role == .guest { return false }
-        // Community user (.generic or .normal) ?
-        if ServerVars.shared.usesCommunityPluginV29 == false { return false }
-        switch categoryId {
-        case .zero:
-            return self.uploadRights.isEmpty == false
-        case 1...Int32.max:
-            return self.uploadRights.components(separatedBy: ",").contains(String(categoryId))
-        default:
-            return false
-        }
-    }
-    
-    public func canManageFavorites() -> Bool {
-        return !(self.role == .guest)
-    }
-    
-    public func canDownloadImages() -> Bool {
-        // Since Piwigo 14, pwg.categories.getImages method returns download_url if the user has download rights
-        // For previous versions, we assumed that all only registered users have download rights
-        // The download right is reset each time a batch of images is imported.
-        let versionTooOld = ServerVars.shared.pwgVersion.compare("14.0", options: .numeric) == .orderedAscending
-        if versionTooOld, self.role == .guest {
-            return false
-        }
-        if versionTooOld == false, self.downloadRights == false {
-            return false
-        }
-        return true
-    }
-    
     public func getProperties() -> UserProperties {
-        return UserProperties(
-            pwgID: self.id,
-            username: self.username, name: self.name, email: self.email, status: self.status,
-            recentPeriod: self.recentPeriod,
-            registrationDate: self.registrationDate, lastUsed: self.lastUsed,
-            uploadRights: self.uploadRights, downloadRights: self.downloadRights)
+        let userStatus = pwgUserStatus(rawValue: self.status) ?? .guest
+        var userData = UserProperties(withStatus: userStatus)
+        
+        userData.pwgID = self.pwgID
+        userData.login = self.login
+        userData.username = self.username
+        userData.name = self.name
+        userData.email = self.email
+        
+        userData.recentPeriod = self.recentPeriod
+        userData.registrationDate = self.registrationDate
+        userData.lastUsed = self.lastUsed
+        
+        userData.createAlbumRights = self.createAlbumRights
+        userData.uploadRights = self.uploadRights
+        userData.downloadRights = self.downloadRights
+        
+        userData.URIstr = self.objectID.uriRepresentation().absoluteString
+        return userData
     }
 }

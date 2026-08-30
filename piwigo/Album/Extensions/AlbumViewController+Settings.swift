@@ -91,8 +91,24 @@ extension AlbumViewController
         let menuId = UIMenu.Identifier("org.piwigo.help.contact.menu")
         let menu = UIMenu(title: "", image: nil, identifier: menuId,
                           options: UIMenu.Options.displayInline,
-                          children: [supportForumAction(), contactAction()].compactMap({ $0 }))
+                          children: [documentationAction(), supportForumAction(), contactAction()].compactMap({ $0 }))
         return menu
+    }
+    
+    private func documentationAction() -> UIAction? {
+        // Create action
+        let actionId = UIAction.Identifier("org.piwigo.help.documentation.action")
+        let config = UIImage.SymbolConfiguration(weight: .regular)
+        let forumIcon = UIImage(systemName: "text.book.closed", withConfiguration: config)
+        let action = UIAction(title: String(localized: "settings_supportDocumentation", comment: "Documentation"),
+                              image: forumIcon, identifier: actionId, handler: { action in
+            // Open Piwigo support forum webpage with default browser
+            if let url = URL(string: "https://doc.piwigo.org") {
+                UIApplication.shared.open(url)
+            }
+        })
+        action.accessibilityIdentifier = "documentation"
+        return action
     }
     
     private func supportForumAction() -> UIAction? {
@@ -108,7 +124,7 @@ extension AlbumViewController
         let action = UIAction(title: String(localized: "settings_supportForum", comment: "Support Forum"),
                               image: forumIcon, identifier: actionId, handler: { action in
             // Open Piwigo support forum webpage with default browser
-            if let url = URL(string: String(localized: "settings_pwgForumURL", comment: "http://piwigo.org/forum")) {
+            if let url = URL(string: "https://piwigo.org/forum") {
                 UIApplication.shared.open(url)
             }
         })
@@ -158,6 +174,7 @@ extension AlbumViewController
     func getSettingsBarButton() -> UIBarButtonItem {
         let button = UIBarButtonItem(image: UIImage(systemName: "gear"), style: .plain, target: self, action: #selector(didTapSettingsButton))
         button.accessibilityIdentifier = "settings"
+        button.accessibilityLabel = String(localized: "tabBar_preferences", comment: "Settings")
         return button
     }
     
@@ -166,7 +183,7 @@ extension AlbumViewController
         guard let settingsVC = settingsSB.instantiateViewController(withIdentifier: "SettingsViewController") as? SettingsViewController
         else { preconditionFailure("Could not load SettingsViewController") }
         settingsVC.settingsDelegate = self
-        settingsVC.user = user
+        settingsVC.userData = userData
         let navController = UINavigationController(rootViewController: settingsVC)
         navController.modalTransitionStyle = .coverVertical
         navController.modalPresentationStyle = .formSheet

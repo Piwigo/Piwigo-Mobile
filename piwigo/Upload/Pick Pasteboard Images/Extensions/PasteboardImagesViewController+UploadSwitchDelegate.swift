@@ -15,6 +15,10 @@ import PwgUploadKit
 // MARK: - UploadSwitchDelegate Methods
 extension PasteboardImagesViewController: UploadSwitchDelegate
 {
+    func didSelectUploadLivePhotoAs(_ option: pwgUploadLivePhotoAs) {
+        // Nothing to do: images of the pasteboard are never Live Photos.
+    }
+    
     @objc func didSelectCurrentCounter(value: Int64) {
         albumDelegate?.didSelectCurrentCounter(value: value)
     }

@@ -44,15 +44,12 @@ final class SelectCategoryViewController: UIViewController {
     var wantedAction: pwgCategorySelectAction = .none  // Action to perform after category selection
     var selectedCategoryId = Int32.min
     var updateOperations = [BlockOperation]()
+    var userData: UserProperties!
 
-    // MARK: - MARK: - Core Data Object Contexts
-    var user: User!
-    lazy var mainContext: NSManagedObjectContext = {
-        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
-            fatalError("!!! Missing Managed Object Context !!!")
-        }
-        return context
-    }()
+
+    // MARK: - Core Data Objects
+    @MainActor
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
 
     
     // MARK: - Core Data Source
@@ -67,18 +64,11 @@ final class SelectCategoryViewController: UIViewController {
 //        }
 //        return _diffableDataSource as! DataSource
 //    }
-
-    lazy var userUploadRights: [Int32] = {
-        // Case of Community user?
-        if ServerVars.shared.userStatus != .normal { return [] }
-        let userUploadRights = user.uploadRights
-        return userUploadRights.components(separatedBy: ",").compactMap({ Int32($0) })
-    }()
     
     lazy var predicates: [NSPredicate] = {
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
+        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
         return andPredicates
     }()
 
@@ -109,7 +99,7 @@ final class SelectCategoryViewController: UIViewController {
 
     lazy var recentAlbums: NSFetchedResultsController<Album> = {
         let albums = NSFetchedResultsController(fetchRequest: fetchRecentAlbumsRequest,
-                                                managedObjectContext: self.mainContext,
+                                                managedObjectContext: mainContext,
                                                 sectionNameKeyPath: nil, cacheName: nil)
         albums.delegate = self
         return albums
@@ -167,11 +157,13 @@ final class SelectCategoryViewController: UIViewController {
         switch action {
         case .setDefaultAlbum:
             guard let albumId = parameter as? Int32, albumId >= Int32.zero else {
+                #if DEBUG
                 debugPrint("Input parameter expected to be a positive album ID.")
+                #endif
                 return false
             }
             // Actual default album to be replaced by the selected one
-            guard let album = try?  AlbumProvider().getAlbum(ofUser: user, withId: albumId)
+            guard let album = AlbumProvider().getAlbum(withID: albumId, inContext: mainContext)
             else { return false }
             if album.isFault {
                 // The album is not fired yet.
@@ -181,13 +173,19 @@ final class SelectCategoryViewController: UIViewController {
             inputAlbum = album
             
         case .setAutoUploadAlbum:
-            guard let albumId = parameter as? Int32 else {
+            guard var albumId = parameter as? Int32 else {
+                #if DEBUG
                 debugPrint("Input parameter expected to be an Int32.")
+                #endif
                 return false
             }
             // Actual album in which photos are auto-uploaded
-            // to be replaced by the selected one
-            guard let album = try?  AlbumProvider().getAlbum(ofUser: user, withId: albumId)
+            // to be replaced by the selected one.
+            // Use root album if unknown
+            if albumId < Int32.zero {
+                albumId = Int32.zero
+            }
+            guard let album = AlbumProvider().getAlbum(withID: albumId, inContext: mainContext)
             else { return false }
             if album.isFault {
                 // The album is not fired yet.
@@ -198,7 +196,9 @@ final class SelectCategoryViewController: UIViewController {
             
         case .moveAlbum:
             guard let albumData = parameter as? Album else {
+                #if DEBUG
                 debugPrint("Input parameter expected to be of Album type.")
+                #endif
                 return false
             }
             // Album which will be moved into the selected one
@@ -208,7 +208,9 @@ final class SelectCategoryViewController: UIViewController {
             guard let array = parameter as? [Any],
                   let imageData = array[0] as? Image,
                   let albumId = array[1] as? Int32 else {
+                #if DEBUG
                 debugPrint("Input parameter expected to be of type [Image, Int32].")
+                #endif
                 return false
             }
             // Image which will be set as thumbnail of the selected album
@@ -216,9 +218,8 @@ final class SelectCategoryViewController: UIViewController {
             commonCatIDs = Set((imageData.albums ?? Set<Album>()).map({$0.pwgID}))
             inputImages = Set([imageData])
             // Album from which the image has been selected
-            guard let album = try? AlbumProvider().getAlbum(ofUser: user, withId: albumId) else {
-                return false
-            }
+            guard let album = AlbumProvider().getAlbum(withID: albumId, inContext: mainContext)
+            else { return false }
             if album.isFault {
                 // The album is not fired yet.
                 album.willAccessValue(forKey: nil)
@@ -231,25 +232,30 @@ final class SelectCategoryViewController: UIViewController {
                   let imageIDs = array[0] as? Set<Int64>,
                   let images = try? ImageProvider().getImages(inContext: mainContext, withIds: imageIDs),
                   let albumId = array[1] as? Int32 else {
+                #if DEBUG
                 debugPrint("Input parameter expected to be of type [[NSNumber], Int32]")
+                #endif
                 return false
             }
             // IDs of the selected images which will be copied/moved to the selected album
             inputImageIds = imageIDs
             if inputImageIds.isEmpty {
+                #if DEBUG
                 debugPrint("List of image IDs should not be empty")
+                #endif
                 return false
             }
             inputImages = images
             nberOfImages = Int64(inputImages.count)
             if inputImages.isEmpty {
+                #if DEBUG
                 debugPrint("No image in cache with these IDs: \(inputImageIds)")
+                #endif
                 return false
             }
             // Album from which the images have been selected
-            guard let album = try? AlbumProvider().getAlbum(ofUser: user, withId: albumId) else {
-                return false
-            }
+            guard let album = AlbumProvider().getAlbum(withID: albumId, inContext: mainContext)
+            else { return false }
             if album.isFault {
                 // The album is not fired yet.
                 album.willAccessValue(forKey: nil)
@@ -267,7 +273,9 @@ final class SelectCategoryViewController: UIViewController {
             }
 
         default:
+            #if DEBUG
             debugPrint("Called setParameter before setting wanted action")
+            #endif
             return false
         }
         
@@ -295,7 +303,8 @@ final class SelectCategoryViewController: UIViewController {
         categoriesTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
 
         // Check that a root album exists in cache (create it if necessary)
-        guard let _ = try? AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.root.rawValue)
+        guard let _ = AlbumProvider().getAlbum(withID: pwgSmartAlbum.root.rawValue,
+                                               inContext: mainContext)
         else { return }
         
         // Initialise data source
@@ -303,7 +312,9 @@ final class SelectCategoryViewController: UIViewController {
             try recentAlbums.performFetch()
             try albums.performFetch()
         } catch {
+            #if DEBUG
             debugPrint("Error: \(error)")
+            #endif
         }
 
         // Button for returning to albums/images collections
@@ -382,27 +393,24 @@ final class SelectCategoryViewController: UIViewController {
         
         // Fetch album data recursively. On completion,
         // handle general UI updates and error alerts on the main queue.
-        let hasAdminRights = user.hasAdminRights
         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID,
-                                                        lastConnected: self.user.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
-                // Remember that the app is fetching album data recursively
+                // Remember that the app is fetching all album data
+                // until the fetch completes or the fetch or the import below throws an error
                 AlbumVars.shared.isFetchingAlbumData.insert(pwgSmartAlbum.root.rawValue)
-
+                defer { AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.root.rawValue) }
+                
                 // Fetch album data recursively
-                let pwgData = try await JSONManager.shared.fetchAlbums(forUserWithAdminRights: hasAdminRights,
+                let pwgData = try await JSONManager.shared.fetchAlbums(forUserWithAdminRights: userData.hasAdminRights,
                                                                        inParentWithId: pwgSmartAlbum.root.rawValue,
                                                                        recursively: true, thumbnailSize: thumnailSize)
                 // Update cache
-                try AlbumProvider().importAlbums(pwgData, recursively: true, inParent: pwgSmartAlbum.root.rawValue)
-                
-                // Remove current album from list of album being fetched
-                AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.root.rawValue)
-                
+                try await AlbumProvider().importAlbums(pwgData, recursively: true, inParent: pwgSmartAlbum.root.rawValue)
+
                 // Remember when album data was fetched recursively
                 AppVars.shared.dateOfLatestRecursiveAlbumDataFetch = Date()
 
@@ -541,7 +549,7 @@ final class SelectCategoryViewController: UIViewController {
     @MainActor
     func showError(_ error: PwgKitError) {
         // Session logout required?
-        if error.requiresLogout {
+        if error.requiresLogout, userData.pwgID != 0 {
             ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }
@@ -577,7 +585,7 @@ final class SelectCategoryViewController: UIViewController {
             // Forget the choice
             self.selectedCategoryId = Int32.min
             // Save changes if any
-            self.mainContext.saveIfNeeded()
+            mainContext.saveIfNeeded()
             // Dismiss the view
             self.dismiss(animated: true, completion: {})
         }

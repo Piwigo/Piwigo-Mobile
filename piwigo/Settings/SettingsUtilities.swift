@@ -50,7 +50,7 @@ struct SettingsUtilities
         composeVC.setSubject("[Ticket#\(ticketDate)]: \(String(localized: "settings_appName", comment: "Piwigo Mobile")) \(String(localized: "settings_feedback", comment: "Feedback"))")
         
         // Initialise message body
-        var msg = "\n\n\n__________________\n"
+        var msg = "\n\n\n____________________\n"
 
         // Version and build numbers
         let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
@@ -60,12 +60,16 @@ struct SettingsUtilities
         // Device and system info
         msg += "\(UIDevice.current.modelName) — \(UIDevice.current.systemName) \(UIDevice.current.systemVersion)\n"
         
+        // User status
+        let bckgContext = DataController.shared.newTaskContext()
+        let userData = try? UserProvider().getPropertiesOfCurrentUser(inContext: bckgContext)
+        
         // App settings
         msg += "\n— Piwigo App —\n"
         msg += "• switchPaletteAutomatically: \(UIVars.shared.switchPaletteAutomatically ? "Yes" : "No")\n"
         msg += "• isAppLockActive: \(UIVars.shared.isAppLockActive ? "Yes" : "No")\n"
         msg += "• isBiometricsEnabled: \(UIVars.shared.isBiometricsEnabled ? "Yes" : "No")\n"
-        msg += "• userStatusRaw: \(ServerVars.shared.userStatus)\n"
+        msg += "• userStatus: \(pwgUserStatus(rawValue: userData?.status ?? pwgUserStatus.guest.rawValue) ?? .guest)\n"
         msg += "• displayAlbumDescriptions: \(AlbumVars.shared.displayAlbumDescriptions ? "Yes" : "No")\n"
         msg += "• defaultAlbumThumbnailSize: \((pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize)?.name ?? "?"))\n"
         msg += "• displayImageTitles: \(AlbumVars.shared.displayImageTitles ? "Yes" : "No")\n"
@@ -87,9 +91,11 @@ struct SettingsUtilities
             // Fallback on earlier versions
             msg += "• serverFileTypes: \(ServerVars.shared.serverFileTypes.replacingOccurrences(of: ",", with: ", "))\n"
         }
-        msg += "• usesCommunityPluginV29: \(ServerVars.shared.usesCommunityPluginV29 ? "Yes" : "No")\n"
         msg += "• usesAPIkeys: \(NetworkVars.shared.usesAPIkeys ? "Yes" : "No")\n"
         msg += "• usesSetCategory: \(ServerVars.shared.usesSetCategory ? "Yes" : "No")\n"
+        msg += "• usesCommunityPlugin: \(ServerVars.shared.usesCommunityPluginV29 ? "Yes" : "No")\n"
+        msg += "• usesRotateImagePlugin: \(ServerVars.shared.usesImageRotate ? "Yes" : "No")\n"
+        msg += "• usesShareAlbumPlugin: \(ServerVars.shared.usesShareAlbum ? "Yes" : "No")\n"
         
         composeVC.setMessageBody(msg, isHTML: false)
         return composeVC

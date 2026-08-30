@@ -60,7 +60,7 @@ extension AppDelegate
     func scheduleAlbumRefresh() {
         // NOP until the user establishes a connection to a Piwigo server
         guard ServerVars.shared.serverPath.isEmpty == false,
-              ServerVars.shared.username.isEmpty == false
+              ServerVars.shared.login.isEmpty == false
         else { return }
 
         // Schedule album data refresh one day after the last refresh
@@ -106,19 +106,16 @@ extension AppDelegate
             }
 
             do {
-                // Retrieve the current user account
+                // Retrieve the current user account data
                 let bckgContext = DataController.shared.newTaskContext()
-                guard let user = try UserProvider().getUserAccount(inContext: bckgContext)
+                guard var userData = try? UserProvider().getPropertiesOfCurrentUser(inContext: bckgContext)
                 else {
                     AppDelegate.logger.notice("Background task '\(pwgBackgroundAlbumRefreshTask)' stopped: no user account.")
                     return
                 }
-                let userID = user.objectID
-                let userData = try UserProvider().getPropertiesOfUser(withURIstr: userID.uriRepresentation().absoluteString,
-                                                                      inContext: bckgContext)
-
+                
                 // Re-login if the session was closed
-                try await UploadManager.shared.checkSession(ofUserWithID: userID, lastConnected: userData.lastUsed)
+                try await UploadManager.shared.checkSession(ofUser: &userData)
                 if Task.isCancelled { return }
 
                 // Fetch data of all albums at once
@@ -129,10 +126,10 @@ extension AppDelegate
                 if Task.isCancelled { return }
 
                 // Import the album data into the cache
-                try AlbumProvider().importAlbums(pwgData, recursively: true, inParent: 0)
+                try await AlbumProvider().importAlbums(pwgData, recursively: true, inParent: 0)
 
-                // Remember when all album data was last refreshed
-                CacheVars.shared.dateOfLastAlbumRefresh = Date().timeIntervalSinceReferenceDate
+                // Remember when all album data was last refreshed with success
+                CacheVars.shared.dateOfLastAlbumRefresh = Date.timeIntervalSinceReferenceDate
 
                 // Inform that the task is completed with success
                 /// 1.7 s to retrieve the data of 582 albums with the Piwigo 16.4 test server

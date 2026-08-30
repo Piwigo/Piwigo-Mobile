@@ -5455,6 +5455,107 @@
         }
       }
     },
+    "CoreDataFetch_UserUnknown" : {
+      "comment" : "User account not in persistent cache.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حساب المستخدم غير موجود في ذاكرة التخزين المؤقت الدائمة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brugerkontoen findes ikke i den permanente cache."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benutzerkonto nicht im permanenten Cache."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "User account not in persistent cache."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La cuenta de usuario no está en la caché persistente."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compte utilisateur absent du cache persistant."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A felhasználói fiók nincs az állandó gyorsítótárban."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akun pengguna tidak ada di cache persisten."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Account utente non presente nella cache persistente."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ユーザアカウントが永続キャッシュにありません。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gebruikersaccount niet in de permanente cache."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brak konta użytkownika w pamięci podręcznej."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Учётная запись пользователя отсутствует в постоянном кэше."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Användarkontot finns inte i den beständiga cachen."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用户账户不在持久缓存中。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用者帳號不在持久快取中。"
+          }
+        }
+      }
+    },
     "CoreDataFetch_UserUnknownStatus" : {
       "comment" : "Failed to get Community extension parameters.\nTry logging in again.",
       "localizations" : {
@@ -5754,6 +5855,107 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "上傳的圖片處理失敗。"
+          }
+        }
+      }
+    },
+    "epsNotAccepted" : {
+      "comment" : "This Piwigo server does not accept EPS files.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خادم Piwigo هذا لا يقبل ملفات EPS."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denne Piwigo-server accepterer ikke EPS-filer."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieser Piwigo-Server akzeptiert keine EPS-Dateien."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This Piwigo server does not accept EPS files."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este servidor de Piwigo no admite archivos EPS."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce serveur Piwigo n'accepte pas les fichiers EPS."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ez a Piwigo-kiszolgáló nem fogadja el a EPS-fájlokat."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Server Piwigo ini tidak menerima berkas EPS."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questo server Piwigo non accetta file EPS."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この Piwigo サーバーは EPS ファイルを受け付けません。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deze Piwigo-server accepteert geen EPS-bestanden."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ten serwer Piwigo nie akceptuje plików EPS."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Этот сервер Piwigo не принимает файлы в формате EPS."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denna Piwigo-server accepterar inte EPS-filer."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 Piwigo 服务器不接受 EPS 文件。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 Piwigo 伺服器不接受 EPS 檔案。"
           }
         }
       }
@@ -6364,107 +6566,6 @@
         }
       }
     },
-    "epsNotAccepted" : {
-      "comment" : "This Piwigo server does not accept EPS files.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "خادم Piwigo هذا لا يقبل ملفات EPS."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Denne Piwigo-server accepterer ikke EPS-filer."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dieser Piwigo-Server akzeptiert keine EPS-Dateien."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "This Piwigo server does not accept EPS files."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Este servidor de Piwigo no admite archivos EPS."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ce serveur Piwigo n'accepte pas les fichiers EPS."
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ez a Piwigo-kiszolgáló nem fogadja el a EPS-fájlokat."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Server Piwigo ini tidak menerima berkas EPS."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Questo server Piwigo non accetta file EPS."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "この Piwigo サーバーは EPS ファイルを受け付けません。"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deze Piwigo-server accepteert geen EPS-bestanden."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ten serwer Piwigo nie akceptuje plików EPS."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Этот сервер Piwigo не принимает файлы в формате EPS."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Denna Piwigo-server accepterar inte EPS-filer."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "此 Piwigo 服务器不接受 EPS 文件。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "此 Piwigo 伺服器不接受 EPS 檔案。"
-          }
-        }
-      }
-    },
     "PiwigoServer_emptyJSONobject" : {
       "comment" : "Piwigo server did return an empty JSON object.",
       "localizations" : {
@@ -6764,6 +6865,107 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Piwigo 伺服器未傳回有效的回應。"
+          }
+        }
+      }
+    },
+    "PiwigoServer_notFound" : {
+      "comment" : "Server object not in persistent cache.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كائن الخادم غير موجود في ذاكرة التخزين المؤقت الدائمة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serverobjektet findes ikke i den permanente cache."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serverobjekt nicht im permanenten Cache."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Server object not in persistent cache."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El objeto de servidor no está en la caché persistente."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Objet serveur absent du cache persistant."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A kiszolgálóobjektum nincs az állandó gyorsítótárban."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Objek server tidak ada di cache persisten."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oggetto server non presente nella cache persistente."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サーバオブジェクトが永続キャッシュにありません。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serverobject niet in de permanente cache."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brak obiektu serwera w pamięci podręcznej."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Объект сервера отсутствует в постоянном кэше."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serverobjektet finns inte i den beständiga cachen."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "服务器对象不在持久缓存中。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "伺服器物件不在持久快取中。"
           }
         }
       }

@@ -53,6 +53,30 @@ public final class UploadSessionsDelegate: NSObject, Sendable {
             task.cancel()
         }
     }
+    
+    /// This method cancels all the tasks related to the given upload requests,
+    /// e.g. when their destination album was deleted on the Piwigo server.
+    func cancelTasksOfUploads(withIDs uploadIDStrs: Set<String>) async {
+        // Anything to do?
+        if uploadIDStrs.isEmpty { return }
+        
+        // Get all remaining tasks related to the upload IDs
+        let uploadTasks: [URLSessionTask] = await UploadSessionManager.shared.allTasks()
+        let tasksToCancel = uploadTasks.filter({
+            guard let uploadIDStr = $0.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID)
+            else { return false }
+            return uploadIDStrs.contains(uploadIDStr)
+        })
+        
+        // Cancel remaining tasks related with these upload requests
+        tasksToCancel.forEach { task in
+            let uploadIDStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID) ?? "Unknown"
+            UploadSessionsDelegate.logger.notice("\(uploadIDStr) • Task \(task.taskIdentifier) cancelled")
+            // Remember that this task was cancelled
+            task.taskDescription = "\(pwgUploadBckgSessionID) \(pwgHTTPCancelled)"
+            task.cancel()
+        }
+    }
 }
 
 

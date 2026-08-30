@@ -25,7 +25,9 @@ final class PlaybackController {
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback)
         } catch {
+            #if DEBUG
             debugPrint(error.localizedDescription)
+            #endif
         }
     }
     
@@ -42,6 +44,15 @@ final class PlaybackController {
             playbackItems[video.pwgID] = playbackItem
             return playbackItem
         }
+    }
+    
+    /// Returns the duration of a video whose playback item already exists, nil otherwise.
+    /// Unlike coordinator(for:), this never creates a playback item.
+    func duration(ofVideoWithID pwgID: Int64) -> TimeInterval? {
+        guard let duration = playbackItems[pwgID]?.video.duration,
+              duration.isFinite
+        else { return nil }
+        return duration
     }
     
     func embed(contentOfVideo video: Video, in parentViewController: UIViewController, containerView: UIView) {
@@ -62,7 +73,9 @@ final class PlaybackController {
     }
 
     func seek(contentOfVideo video: Video, toTimeFraction fraction: Double) {
-        coordinator(for: video).seekToTime(video.duration * fraction)
+        // The duration is taken from the coordinator, not from the provided Video struct.
+        let coordinator = coordinator(for: video)
+        coordinator.seekToTime(coordinator.video.duration * fraction)
     }
     
     func isPlayingVideo(_ video: Video) -> Bool {

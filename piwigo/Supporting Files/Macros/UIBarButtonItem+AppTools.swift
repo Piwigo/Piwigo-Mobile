@@ -42,26 +42,11 @@ extension UIBarButtonItem {
         return button
     }
     
-    static func playImageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
-        let button = UIBarButtonItem(barButtonSystemItem: .play,
-                                     target: target, action: action)
-        button.accessibilityIdentifier = "play"
-        button.tintColor = PwgColor.tintColor
-        return button
-    }
-    
-    static func pauseImageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
-        let button = UIBarButtonItem(barButtonSystemItem: .pause,
-                                     target: target, action: action)
-        button.accessibilityIdentifier = "pause"
-        button.tintColor = PwgColor.tintColor
-        return button
-    }
-
     static func goToPageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
         let button = UIBarButtonItem(image: UIImage(systemName: "arrow.turn.down.right"),
                                      style: .plain, target: target, action: action)
         button.accessibilityIdentifier = "goToPage"
+        button.accessibilityLabel = String(localized: "goToPage_title", comment: "Go to page…")
         button.tintColor = PwgColor.tintColor
         return button
     }
@@ -72,6 +57,7 @@ extension UIBarButtonItem {
         let button = UIBarButtonItem(image: UIImage(systemName: "rectangle.and.paperclip"),
                                      style: .plain, target: target, action: action)
         button.accessibilityIdentifier = "albumThumbnail"
+        button.accessibilityLabel = String(localized: "imageOptions_setAlbumImage", comment: "Set as Album Thumbnail")
         button.tintColor = PwgColor.tintColor
         return button
     }
@@ -89,8 +75,10 @@ extension UIBarButtonItem {
     func setFavoriteImage(for state: Bool) {
         if state {
             self.image = UIImage(systemName: "heart.fill")
+            self.accessibilityLabel = String(localized: "categoryImageList_unfavorite", comment: "Unfavorite")
         } else {
             self.image = UIImage(systemName: "heart")
+            self.accessibilityLabel = String(localized: "categoryImageList_favorite", comment: "Favorite")
         }
     }
     
@@ -107,6 +95,7 @@ extension UIBarButtonItem {
     func setBackImage() {
         let configuration = UIImage.SymbolConfiguration(pointSize: 22, weight: .medium, scale: .medium)
         self.image = UIImage(systemName: "chevron.backward", withConfiguration: configuration)
+        self.accessibilityLabel = String(localized: "backButton_title", comment: "Back")
     }
     
     
@@ -127,29 +116,6 @@ extension UIBarButtonItem {
             self.image = UIImage(systemName: "questionmark")
         } else {
             self.image = UIImage(systemName: "questionmark.circle")
-        }
-    }
-    
-    
-    // MARK: - Mute Audio Playback
-    static let pwgMuted = 1
-    static let pwgNotMuted = 2
-    static func muteAudioButton(_ isMuted: Bool, target: Any?, action: Selector?) -> UIBarButtonItem {
-        let button = UIBarButtonItem(title: nil, style: .plain, target: target, action: action)
-        button.setMuteAudioImage(for: isMuted)
-        button.accessibilityIdentifier = "mute"
-        button.tag = isMuted ? pwgMuted : pwgNotMuted
-        button.tintColor = PwgColor.tintColor
-        return button
-    }
-    
-    func setMuteAudioImage(for isMuted: Bool) {
-        // NB: We do not use the SF symbols because their width difference leads
-        // to a movement of the icon when switching from one to the other.
-        if isMuted {
-            self.image = UIImage(systemName: "speaker.slash.fill")
-        } else {
-            self.image = UIImage(systemName: "speaker.fill")
         }
     }
 }

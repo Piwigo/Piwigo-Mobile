@@ -15,6 +15,11 @@ public extension Notification.Name {
     static let pwgMigrationProgressUpdated = Notification.Name("pwgNotificationMigrationProgressUpdated")
     
     
+    // MARK: - Users
+    /// - Notifies that the Piwigo ID of a user has become known
+    static let pwgUserIDdidChange = Notification.Name("pwgNotificationUserIDdidChange")
+    
+    
     // MARK: - Images
     /// - Notifies that place names are available
     static let pwgPlaceNamesAvailable = Notification.Name("pwgPlaceNamesAvailable")
@@ -23,4 +28,8 @@ public extension Notification.Name {
     // MARK: - Uploads
     /// - Notifies that auto-uploading should be disabled
     static let pwgDisableAutoUpload = Notification.Name("pwgNotificationDisableAutoUpload")
+    
+    /// - Notifies that albums were deleted on the Piwigo server, e.g. from the web UI.
+    /// - The IDs of these albums are provided in the "albumIds" key of the userInfo dictionary.
+    static let pwgAlbumsDeletedOnServer = Notification.Name("pwgNotificationAlbumsDeletedOnServer")
 }

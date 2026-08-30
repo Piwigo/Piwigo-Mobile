@@ -10,7 +10,7 @@ import Foundation
 import PwgKit
 
 public let kCommunitySessionGetStatus = "community.session.getStatus"
-public let kCommunitySessionGetStatusBytes: Int64 = 2100
+public let kCommunitySessionGetStatusBytes: Int64 = 2400
 
 // MARK: Piwigo JSON Structures
 public struct CommunitySessionGetStatusJSON: Decodable

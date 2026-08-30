@@ -18,6 +18,8 @@ protocol PlayerViewControllerCoordinatorDelegate: AnyObject {
 // See WWDC 2019 session 503: Delivering Intuitive Media Playback with AVKit
 final class PlayerViewControllerCoordinator: NSObject {
     
+    static let logger = PwgLogger(subsystem: "org.piwigo", category: String(describing: PlayerViewControllerCoordinator.self))
+    
     // MARK: - Properties
     weak var delegate: (any PlayerViewControllerCoordinatorDelegate)?
     
@@ -75,9 +77,10 @@ final class PlayerViewControllerCoordinator: NSObject {
     
     private weak var fullScreenViewController: UIViewController?
     private var playerStatusObservation: NSKeyValueObservation?
+    private var playerRetryStatusObservation: NSKeyValueObservation?
     private var playerDurationObservation: NSKeyValueObservation?
     private var playerSizeObservation: NSKeyValueObservation?
-    private var playerRateObservation: NSKeyValueObservation?
+    private var playerTimeControlObservation: NSKeyValueObservation?
     private var playerMuteObservation: NSKeyValueObservation?
     private var playbackReadyObservation: NSKeyValueObservation?
     private var timeObserverToken: Any?
@@ -89,12 +92,14 @@ final class PlayerViewControllerCoordinator: NSObject {
             // and status for the original player view controller.
             playerStatusObservation?.invalidate()
             playerStatusObservation = nil
+            playerRetryStatusObservation?.invalidate()
+            playerRetryStatusObservation = nil
             playerDurationObservation?.invalidate()
             playerDurationObservation = nil
             playerSizeObservation?.invalidate()
             playerSizeObservation = nil
-            playerRateObservation?.invalidate()
-            playerRateObservation = nil
+            playerTimeControlObservation?.invalidate()
+            playerTimeControlObservation = nil
             playerMuteObservation?.invalidate()
             playerMuteObservation = nil
             playbackReadyObservation?.invalidate()
@@ -172,18 +177,33 @@ final class PlayerViewControllerCoordinator: NSObject {
                     // In case the cached video file is not playable, delete it and replace item
                     playerStatusObservation = playerItem.observe(\.status,
                                                                   changeHandler: { [weak self] item, _ in
-                        guard let self else { return }
-                        if item.status == .failed,
-                           asset.url == self.video.cacheURL {
-                            // Delete cached file
-                            try? FileManager.default.removeItem(at: asset.url)
-                            // Create new resource loader
-                            let pwgAsset = AVURLAsset(url: self.video.pwgURL, options: nil)
-                            let loader = pwgAsset.resourceLoader
-                            loader.setDelegate(self, queue: DispatchQueue(label: "org.piwigo.resourceLoader"))
-                            let playerItem = AVPlayerItem(asset: pwgAsset)
-                            playerViewController.player?.replaceCurrentItem(with: playerItem)
-                        }
+                        guard let self, item.status == .failed else { return }
+                        
+                        // Report the failure: the AVError which the system logs while
+                        // looking for its localised description carries no detail.
+                        PlayerViewControllerCoordinator.logger.error(self.playbackFailure(of: item, ofAsset: asset))
+                        
+                        // Only a cached file can be replaced by a stream from the server
+                        guard asset.url == self.video.cacheURL else { return }
+                        
+                        // Delete cached file
+                        try? FileManager.default.removeItem(at: asset.url)
+                        // Create new resource loader
+                        let pwgAsset = AVURLAsset(url: self.video.pwgURL, options: nil)
+                        let loader = pwgAsset.resourceLoader
+                        loader.setDelegate(self, queue: DispatchQueue(label: "org.piwigo.resourceLoader"))
+                        let playerItem = AVPlayerItem(asset: pwgAsset)
+                        playerViewController.player?.replaceCurrentItem(with: playerItem)
+                        
+                        // Keep observing: until now, a failure of the streamed item which
+                        // replaces the cached file was reported nowhere. A separate observation
+                        // is used so that this one is not reassigned while it is being called,
+                        // and the stream is not replaced in turn: there is nothing left to try.
+                        self.playerRetryStatusObservation = playerItem.observe(\.status,
+                                                                              changeHandler: { [weak self] item, _ in
+                            guard let self, item.status == .failed else { return }
+                            PlayerViewControllerCoordinator.logger.error(self.playbackFailure(of: item, ofAsset: pwgAsset))
+                        })
                     })
                     
                     // Observe video duration (the player may be ready before knowing the duration)
@@ -195,6 +215,7 @@ final class PlayerViewControllerCoordinator: NSObject {
                         // Store video duration, configure slider and play video if possible
 //                        debugPrint("updatePlayerViewController.duration: \(duration), was \(self.video.duration)")
                         self.video.duration = duration
+                        self.postVideoDuration()
                         self.updatePlayerViewController(duration: duration)
                     })
                     
@@ -210,12 +231,23 @@ final class PlayerViewControllerCoordinator: NSObject {
                         self.updatePlayerViewController(frameSize: controller.videoBounds.size)
                     })
                     
-                    // Observe playback rate
-                    playerRateObservation = player.observe(\.rate, changeHandler: { [weak self] player, _ in
+                    // Observe playback status
+                    /// Not the rate: because automaticallyWaitsToMinimizeStalling is enabled,
+                    /// the rate is set as soon as playback is requested, i.e. seconds before
+                    /// the first frame is presented. timeControlStatus tells them apart.
+                    playerTimeControlObservation = player.observe(\.timeControlStatus,
+                                                                  changeHandler: { [weak self] player, _ in
                         guard let self else { return }
-                        // Update play/pause button
-                        let userInfo = ["pwgID"   : self.video.pwgID as Any,
-                                        "playing" : player.rate != 0] as [String : Any]
+                        
+                        // Explain a wait which the user sees but nothing else reports
+                        if player.timeControlStatus == .waitingToPlayAtSpecifiedRate {
+                            PlayerViewControllerCoordinator.logger.notice("Video \(self.video.pwgID) is waiting to play: \(self.reasonForWaiting(of: player))")
+                        }
+                        
+                        // Update play/pause button and loading indicator
+                        let userInfo = ["pwgID"     : self.video.pwgID as Any,
+                                        "playing"   : player.timeControlStatus == .playing,
+                                        "buffering" : player.timeControlStatus == .waitingToPlayAtSpecifiedRate] as [String : Any]
                         NotificationCenter.default.post(name: .pwgVideoPlaybackStatus,
                                                         object: nil, userInfo: userInfo)
                     })
@@ -265,6 +297,7 @@ final class PlayerViewControllerCoordinator: NSObject {
                         self.status.insert(.readyForDisplay)
                         // Play video if possible
                         self.video.duration = playerViewController.player?.currentItem?.duration.seconds ?? .nan
+                        self.postVideoDuration()
                         self.video.frameSize = playerViewController.videoBounds.size == .zero ? nil : playerViewController.videoBounds.size
 //                        debugPrint("updatePlayerViewController.duration: \(playerViewController.player?.currentItem?.duration.seconds ?? .nan), was \(self.video.duration) AND .size: \(String(describing: playerViewController.videoBounds.size == .zero ? nil : playerViewController.videoBounds.size)), was \(String(describing: self.video.frameSize))")
                         updatePlayerViewController()
@@ -350,11 +383,55 @@ final class PlayerViewControllerCoordinator: NSObject {
         }
         
         // Hide image and show play button when ready
-        let userInfo = ["pwgID"   : self.video.pwgID as Any,
-                        "playing" : playerViewController.player?.rate != 0,
-                        "muted"   : playerViewController.player?.isMuted as Any] as [String : Any]
+        let status = playerViewController.player?.timeControlStatus
+        let userInfo = ["pwgID"     : self.video.pwgID as Any,
+                        "playing"   : status == .playing,
+                        "buffering" : status == .waitingToPlayAtSpecifiedRate,
+                        "muted"     : playerViewController.player?.isMuted as Any] as [String : Any]
         NotificationCenter.default.post(name: .pwgVideoPlaybackStatus,
                                         object: nil, userInfo: userInfo)
+    }
+    
+    // The duration of a video is not stored in cache: it is only known once the player
+    // item provides it, which may happen after the video is presented. Notifies observers
+    // so that the title view can present it as soon as it becomes available.
+    private func postVideoDuration() {
+        guard video.duration.isFinite else { return }
+        let userInfo = ["pwgID"    : video.pwgID as Any,
+                        "duration" : video.duration] as [String : Any]
+        NotificationCenter.default.post(name: .pwgVideoDuration,
+                                        object: nil, userInfo: userInfo)
+    }
+    
+    /// Names why the player waits instead of playing, which explains the delay between
+    /// the moment playback is requested and the moment the first frame is presented.
+    private func reasonForWaiting(of player: AVPlayer) -> String {
+        switch player.reasonForWaitingToPlay {
+        case .some(.toMinimizeStalls):          return "to minimise stalls"
+        case .some(.evaluatingBufferingRate):   return "evaluating the buffering rate"
+        case .some(.noItemToPlay):              return "no item to play"
+        case .some(let other):                  return other.rawValue
+        case .none:                             return "reason unknown"
+        }
+    }
+    
+    /// Describes why a player item failed, including the underlying error which usually
+    /// carries the real cause (a truncated file, an HTTP status, a network error…).
+    private func playbackFailure(of item: AVPlayerItem, ofAsset asset: AVURLAsset) -> String {
+        var message = "Video \(video.pwgID) failed to play from \(asset.url.lastPathComponent)"
+        if let error = item.error as NSError? {
+            message += ": \(error.domain) \(error.code) \(error.localizedDescription)"
+            if let underlying = error.userInfo[NSUnderlyingErrorKey] as? NSError {
+                message += " | underlying: \(underlying.domain) \(underlying.code) \(underlying.localizedDescription)"
+            }
+        } else {
+            message += ": no error reported by the player item"
+        }
+        if let log = item.errorLog()?.extendedLogData(),
+           let text = String(data: log, encoding: .isoLatin1), text.isEmpty == false {
+            message += " | error log: \(text.replacingOccurrences(of: "\n", with: " "))"
+        }
+        return message
     }
     
     private func addVideoHUDToPlayerViewControllerIfNeeded() {
@@ -424,7 +501,9 @@ final class PlayerViewControllerCoordinator: NSObject {
                 let fm = FileManager.default
                 let dirURL = self.video.cacheURL.deletingLastPathComponent()
                 if fm.fileExists(atPath: dirURL.path) == false {
+                    #if DEBUG
                     debugPrint("••> Create directory \(dirURL.path)")
+                    #endif
                     try? fm.createDirectory(at: dirURL, withIntermediateDirectories: true,
                                                 attributes: nil)
                 }
@@ -436,11 +515,19 @@ final class PlayerViewControllerCoordinator: NSObject {
                 exportSession.exportAsynchronously { [self] in
                     switch exportSession.status {
                     case .waiting:
+                        #if DEBUG
                         debugPrint("••> Video waiting to export more data… ;-)")
+                        #endif
+                        break
                     case .exporting:
+                        #if DEBUG
                         debugPrint("••> Video export is in progress… ;-)")
+                        #endif
+                        break
                     case .completed:
+                        #if DEBUG
                         debugPrint("••> Video stored in cache ;-)")
+                        #endif
                         // Replace player item
                         DispatchQueue.main.async {
                             if let playerViewController = self.playerViewControllerIfLoaded {
@@ -456,9 +543,13 @@ final class PlayerViewControllerCoordinator: NSObject {
                             }
                         }
                     case .unknown, .failed, .cancelled:
+                        #if DEBUG
                         debugPrint("••> Video not stored in cache: \(String(describing: exportSession.error)) — \(exportSession.outputURL?.absoluteString ?? "—?—")")
+                        #endif
                     @unknown default:
+                        #if DEBUG
                         debugPrint("••> Video not stored in cache: Unknown error")
+                        #endif
                     }
                 }
            }
@@ -554,12 +645,20 @@ final class PlayerViewControllerCoordinator: NSObject {
     
     func isPlayingVideo() -> Bool {
         guard let player = playerViewControllerIfLoaded?.player else { return false }
-        return player.rate != 0
+        // A video which is still buffering is not paused: tapping the button has to stop it
+        return player.timeControlStatus != .paused
     }
     
     func seekToTime(_ time: Double) {
         // Complete player controller settings
         guard let player = playerViewControllerIfLoaded?.player else {
+            return
+        }
+        
+        // Refuse a time which is not a number: CMTime(seconds:preferredTimescale:) turns
+        // NaN into a perfectly valid zero, i.e. seeks back to the start of the video.
+        guard time.isFinite, time >= 0 else {
+            PlayerViewControllerCoordinator.logger.notice("Ignoring a seek to \(time) seconds of video \(self.video.pwgID)")
             return
         }
         
@@ -751,7 +850,9 @@ extension PlayerViewControllerCoordinator: AVAssetResourceLoaderDelegate
         }
         else {
             // Other type: username password, client trust...
+            #if DEBUG
             debugPrint("Other type: username password, client trust...")
+            #endif
         }
         return true
     }

@@ -426,21 +426,34 @@ private extension DataMigrationVersion {
     static func compatibleVersionForStoreMetadata(_ metadata: [String : Any]) -> DataMigrationVersion? {
         let compatibleVersion = DataMigrationVersion.allCases.first {
             let model = NSManagedObjectModel.managedObjectModel(forVersion: $0)
-
+            
             // For debugging
+//            #if DEBUG
 //            let modelEntities = model.entityVersionHashesByName.mapValues({ $0 })
 //            debugPrint("\($0.rawValue)")
-//            debugPrint("••> Tag (model)     : \(Array(arrayLiteral: modelEntities["Tag"]?.base64EncodedString()))")
-//            debugPrint("••> Location (model): \(Array(arrayLiteral: modelEntities["Location"]?.base64EncodedString()))")
-//            debugPrint("••> Upload (model)  : \(Array(arrayLiteral: modelEntities["Upload"]?.base64EncodedString()))")
-
+//            debugPrint("••> Album (model)    : \(Array(arrayLiteral: modelEntities["Album"]?.base64EncodedString()))")
+//            debugPrint("••> Image (model)    : \(Array(arrayLiteral: modelEntities["Image"]?.base64EncodedString()))")
+//            debugPrint("••> Location (model) : \(Array(arrayLiteral: modelEntities["Location"]?.base64EncodedString()))")
+//            debugPrint("••> Server (model)   : \(Array(arrayLiteral: modelEntities["Server"]?.base64EncodedString()))")
+//            debugPrint("••> Size (model)     : \(Array(arrayLiteral: modelEntities["Size"]?.base64EncodedString()))")
+//            debugPrint("••> Tag (model)      : \(Array(arrayLiteral: modelEntities["Tag"]?.base64EncodedString()))")
+//            debugPrint("••> Upload (model)   : \(Array(arrayLiteral: modelEntities["Upload"]?.base64EncodedString()))")
+//            debugPrint("••> User (model)     : \(Array(arrayLiteral: modelEntities["User"]?.base64EncodedString()))")
+//            debugPrint("••> UserGroup (model): \(Array(arrayLiteral: modelEntities["UserGroup"]?.base64EncodedString()))")
+//
 //            let metadataEntities = metadata[NSStoreModelVersionHashesKey] as! [String : Data]
 //            let metaEntities = metadataEntities.mapValues({ $0 })
-//            debugPrint("••> Tag (meta)      : \(Array(arrayLiteral: metaEntities["Tag"]?.base64EncodedString()))")
+//            debugPrint("••> Album (meta)    : \(Array(arrayLiteral: metaEntities["Album"]?.base64EncodedString()))")
+//            debugPrint("••> Image (meta)    : \(Array(arrayLiteral: metaEntities["Image"]?.base64EncodedString()))")
 //            debugPrint("••> Location (meta) : \(Array(arrayLiteral: metaEntities["Location"]?.base64EncodedString()))")
+//            debugPrint("••> Server (meta)   : \(Array(arrayLiteral: metaEntities["Server"]?.base64EncodedString()))")
+//            debugPrint("••> Size (meta)     : \(Array(arrayLiteral: metaEntities["Size"]?.base64EncodedString()))")
+//            debugPrint("••> Tag (meta)      : \(Array(arrayLiteral: metaEntities["Tag"]?.base64EncodedString()))")
 //            debugPrint("••> Upload (meta)   : \(Array(arrayLiteral: metaEntities["Upload"]?.base64EncodedString()))")
-//            debugPrint("……")
-
+//            debugPrint("••> User (meta)     : \(Array(arrayLiteral: metaEntities["User"]?.base64EncodedString()))")
+//            debugPrint("••> UserGroup (meta): \(Array(arrayLiteral: metaEntities["UserGroup"]?.base64EncodedString()))")
+//            #endif
+            
             return model.isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata)
         }
         
@@ -500,7 +513,11 @@ private extension DataMigrationVersion {
                     DataMigrator.logger.error("\(logPrefix) 4.3")
                     return .version0N
                 }
-                return .version0O
+                else if appVersion.compare("4.4", options: .numeric) == .orderedAscending {
+                    DataMigrator.logger.error("\(logPrefix) 4.4")
+                    return .version0O
+                }
+                return .version0P
             }
         }
         return compatibleVersion
@@ -518,11 +535,7 @@ extension DataMigrator {
                                             object: nil, userInfo: userInfo)
         }
     }
-    
-    //    private static func logError(_ message: String, file: String = #file, function: String = #function, line: UInt = #line) {
-    //        DataMigrator.logger.debug("\(file):\(function):\(line): \(message)")
-    //    }
-    
+        
     func queueName() -> String {
         if let currentOperationQueue = OperationQueue.current {
             if let currentDispatchQueue = currentOperationQueue.underlyingQueue {

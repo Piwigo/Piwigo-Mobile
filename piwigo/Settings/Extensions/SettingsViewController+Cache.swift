@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgCacheKit
 import PwgUIKit
 import PwgUploadKit
 
@@ -34,7 +35,7 @@ extension SettingsViewController
     
     // MARK: - Update Cache Cells
     func updateDataCacheCell() {
-        let section = SettingsSection.cache.rawValue - (userHasUploadRights ? 0 : 1)
+        let section = SettingsSection.cache.rawValue - (userData.hasUploadRights ? 0 : 1)
         let indexPath = IndexPath(row: 0, section: section)
         if let cell = self.settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
             cell.detailLabel.text = self.dataCacheSize
@@ -42,7 +43,7 @@ extension SettingsViewController
     }
     
     func updateThumbCacheCell() {
-        let section = SettingsSection.cache.rawValue - (userHasUploadRights ? 0 : 1)
+        let section = SettingsSection.cache.rawValue - (userData.hasUploadRights ? 0 : 1)
         let indexPath = IndexPath(row: 1, section: section)
         if let cell = self.settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
             cell.detailLabel.text = self.thumbCacheSize
@@ -50,7 +51,7 @@ extension SettingsViewController
     }
     
     func updatePhotoCacheCell() {
-        let section = SettingsSection.cache.rawValue - (userHasUploadRights ? 0 : 1)
+        let section = SettingsSection.cache.rawValue - (userData.hasUploadRights ? 0 : 1)
         let indexPath = IndexPath(row: 2, section: section)
         if let cell = self.settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
             cell.detailLabel.text = self.photoCacheSize
@@ -58,7 +59,7 @@ extension SettingsViewController
     }
     
     func updateVideoCacheCell() {
-        let section = SettingsSection.cache.rawValue - (userHasUploadRights ? 0 : 1)
+        let section = SettingsSection.cache.rawValue - (userData.hasUploadRights ? 0 : 1)
         let indexPath = IndexPath(row: 3, section: section)
         if let cell = self.settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
             cell.detailLabel.text = self.videoCacheSize
@@ -66,7 +67,7 @@ extension SettingsViewController
     }
     
     func updateUploadCacheCell() {
-        let section = SettingsSection.cache.rawValue - (userHasUploadRights ? 0 : 1)
+        let section = SettingsSection.cache.rawValue - (userData.hasUploadRights ? 0 : 1)
         let indexPath = IndexPath(row: 4, section: section)
         if let cell = self.settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
             cell.detailLabel.text = self.uploadCacheSize
@@ -89,18 +90,18 @@ extension SettingsViewController
             ClearCache.clearData() { [self] in
                 DispatchQueue.main.async {
                     // Get server instance
-                    guard let server = self.user.server else {
-                        assert(self.user?.server != nil, "••> User not provided!")
-                        return
+                    if let server = try? ServerProvider().getCurrentServer(inContext: self.mainContext) {
+                        // Save cleared cache
+                        self.mainContext.saveIfNeeded()
+
+                        // Refresh Settings cell related with data
+                        self.dataCacheSize = server.getAlbumImageCount(inContext: self.mainContext)
                     }
-                    self.mainContext.saveIfNeeded()
-                    
-                    // Refresh Settings cell related with data
-                    self.dataCacheSize = server.getAlbumImageCount(inContext: self.mainContext)
                     
                     // Will fetch all album data recursively when fetching the root album
                     // so that the share extension can present the whole album tree
                     // if user launches a refresh
+                    AlbumVars.shared.isFetchingAlbumData = []
                     AlbumVars.shared.fetchAlbumDataRecursively = true
                     
                     // Hide HUD on completion
@@ -118,15 +119,13 @@ extension SettingsViewController
             self.navigationController?.showHUD(withTitle: hudTitle)
             
             // Delete album and photo thumbnails in foreground queue
-            guard let server = self.user?.server else {
-                assert(self.user?.server != nil, "••> User not provided!")
-                return
+            if let server = try? ServerProvider().getCurrentServer(inContext: self.mainContext) {
+                let sizes = self.getThumbnailSizes()
+                server.clearCachedImages(ofSizes: sizes, exceptVideos: true)
+                
+                // Refresh Settings cell
+                self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
             }
-            let sizes = self.getThumbnailSizes()
-            server.clearCachedImages(ofSizes: sizes, exceptVideos: true)
-            
-            // Refresh Settings cell
-            self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
             
             // Hide HUD on completion
             self.navigationController?.hideHUD { }
@@ -139,15 +138,13 @@ extension SettingsViewController
             self.navigationController?.showHUD(withTitle: hudTitle)
             
             // Delete high-resolution images in foreground queue
-            guard let server = self.user.server else {
-                assert(self.user?.server != nil, "••> User not provided!")
-                return
+            if let server = try? ServerProvider().getCurrentServer(inContext: self.mainContext) {
+                let sizes = self.getPhotoSizes()
+                server.clearCachedImages(ofSizes: sizes, exceptVideos: true)
+                
+                // Refresh photo cache cell
+                self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
             }
-            let sizes = self.getPhotoSizes()
-            server.clearCachedImages(ofSizes: sizes, exceptVideos: true)
-            
-            // Refresh photo cache cell
-            self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
             
             // Hide HUD on completion
             self.navigationController?.hideHUD { }
@@ -160,21 +157,19 @@ extension SettingsViewController
             self.navigationController?.showHUD(withTitle: hudTitle)
             
             // Delete high-resolution images in foreground queue
-            guard let server = self.user.server else {
-                assert(self.user?.server != nil, "••> User not provided!")
-                return
+            if let server = try? ServerProvider().getCurrentServer(inContext: self.mainContext) {
+                server.clearCachedVideos()
+                
+                // Refresh video cache cell
+                self.videoCacheSize = server.getCacheSizeOfVideos()
             }
-            server.clearCachedVideos()
-            
-            // Refresh video cache cell
-            self.videoCacheSize = server.getCacheSizeOfVideos()
             
             // Hide HUD on completion
             self.navigationController?.hideHUD { }
         })
         alert.addAction(clearVideoCacheAction)
         
-        if userHasUploadRights {
+        if userData.hasUploadRights {
             title = String(format: "%@ (%@)", String(localized: "UploadRequests_cache", comment: "Uploads"), uploadCacheSize)
             let clearUploadCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
                 // Display HUD during deletion
@@ -184,16 +179,15 @@ extension SettingsViewController
                 ClearCache.clearUploads() {
                     DispatchQueue.main.async {
                         // Get server instance
-                        guard let server = self.user.server else {
-                            assert(self.user?.server != nil, "••> User not provided!")
-                            return
+                        if let server = try? ServerProvider().getCurrentServer(inContext: self.mainContext) {
+                            // Save cleared cache
+                            self.mainContext.saveIfNeeded()
+                            
+                            // Refresh upload cache cell
+                            let uploadsDirectory = DataDirectories.appUploadsDirectory
+                            let uploadsDirectorySize = ByteCountFormatter.string(fromByteCount: Int64(uploadsDirectory.folderSize), countStyle: .file)
+                            self.uploadCacheSize = server.getUploadCount(inContext: self.mainContext) + " | " + uploadsDirectorySize
                         }
-                        self.mainContext.saveIfNeeded()
-                        
-                        // Refresh upload cache cell
-                        let uploadsDirectory = DataDirectories.appUploadsDirectory
-                        let uploadsDirectorySize = ByteCountFormatter.string(fromByteCount: Int64(uploadsDirectory.folderSize), countStyle: .file)
-                        self.uploadCacheSize = server.getUploadCount(inContext: self.mainContext) + " | " + uploadsDirectorySize
                         
                         // Hide HUD on completion
                         self.navigationController?.hideHUD { }
@@ -212,27 +206,27 @@ extension SettingsViewController
             ClearCache.clearData() {
                 DispatchQueue.main.async {
                     // Get server instance
-                    guard let server = self.user.server else {
-                        assert(self.user?.server != nil, "••> User not provided!")
-                        return
+                    if let server = try? ServerProvider().getCurrentServer(inContext: self.mainContext) {
+                        // Save cleared cache
+                        self.mainContext.saveIfNeeded()
+                        
+                        // Clear all image files
+                        server.clearCachedImages(ofSizes: Set(pwgImageSize.allCases), exceptVideos: false)
+                        
+                        // Refresh variables and cells
+                        self.dataCacheSize = server.getAlbumImageCount(inContext: self.mainContext)
+                        var sizes = self.getThumbnailSizes()
+                        self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
+                        sizes = self.getPhotoSizes()
+                        self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
+                        self.videoCacheSize = server.getCacheSizeOfVideos()
+                        self.uploadCacheSize = server.getUploadCount(inContext: self.mainContext)
                     }
-                    self.mainContext.saveIfNeeded()
-                    
-                    // Clear all image files
-                    server.clearCachedImages(ofSizes: Set(pwgImageSize.allCases), exceptVideos: false)
-                    
-                    // Refresh variables and cells
-                    self.dataCacheSize = server.getAlbumImageCount(inContext: self.mainContext)
-                    var sizes = self.getThumbnailSizes()
-                    self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
-                    sizes = self.getPhotoSizes()
-                    self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
-                    self.videoCacheSize = server.getCacheSizeOfVideos()
-                    self.uploadCacheSize = server.getUploadCount(inContext: self.mainContext)
                     
                     // Will fetch all album data recursively when fetching the root album
                     // so that the share extension can present the whole album tree
                     // if the user refreshes the empty root album
+                    AlbumVars.shared.isFetchingAlbumData = []
                     AlbumVars.shared.fetchAlbumDataRecursively = true
                     
                     // Hide HUD on completion

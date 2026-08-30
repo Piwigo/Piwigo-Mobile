@@ -146,6 +146,9 @@ final class ImageDetailViewController: UIViewController
         imageData = nil
         imageView.image = nil
         NotificationCenter.default.removeObserver(self)
+        #if DEBUG
+        debugPrint("••> ImageDetailViewController released memory")
+        #endif
     }
     
     

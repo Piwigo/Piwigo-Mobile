@@ -34,8 +34,8 @@ class UploadParametersViewController: UITableViewController {
     var shouldUpdateTags = false
     var commonComment = ""
     var shouldUpdateComment = false
-    var user: User? {
-        return (parent as? UploadSwitchViewController)?.user
+    var userData: UserProperties? {
+        return (parent as? UploadSwitchViewController)?.userData
     }
     
     // MARK: - View Lifecycle

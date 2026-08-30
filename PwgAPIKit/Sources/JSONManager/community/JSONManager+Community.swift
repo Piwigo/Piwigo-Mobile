@@ -14,7 +14,9 @@ public extension JSONManager {
     @concurrent
     func getCommunityAlbums(inParentWithId parentId: Int32,
                             recursively: Bool = false) async throws(PwgKitError) -> [CategoryGetInfo] {
+        #if DEBUG
         debugPrint("••> Fetch Community albums in parent with ID: \(parentId)")
+        #endif
         // Prepare parameters
         let paramsDict: [String : Any] = ["cat_id"    : parentId,
                                           "recursive" : recursively]
@@ -26,26 +28,28 @@ public extension JSONManager {
     }
     
     @concurrent
-    func communityGetStatus() async throws(PwgKitError) {
+    func communityGetStatus(_ userData: inout UserProperties) async throws(PwgKitError) {
         JSONManager.logger.notice("Session: getting Community status…")
         // Launch request
         let pwgData = try await postRequest(withMethod: kCommunitySessionGetStatus, paramDict: [:],
                                             jsonObjectClientExpectsToReceive: CommunitySessionGetStatusJSON.self,
                                             countOfBytesClientExpectsToReceive: kCommunitySessionGetStatusBytes)
-        // Update user's status
+        // User's status
         guard pwgData.realUser.isEmpty == false,
               let userStatus = pwgUserStatus(rawValue: pwgData.realUser)
         else {
             throw .unknownUserStatus
         }
-        ServerVars.shared.userStatus = userStatus
+        userData.status = userStatus.rawValue
         
-//        // Update user's album list in which he/she can create albums
-//        if let createAlbumRights = pwgData.createAlbumRights {
-//            ServerVars.shared.createAlbumRights = createAlbumRights.compactMap({"\($0)"}).joined(separator: ",")
-//        } else {
-//            ServerVars.shared.createAlbumRights = "\(Int32.min)"
-//        }
+        // IDs of albums in which the user can create sub-albums
+        if let createAlbumRights = pwgData.createAlbumRights {
+            let albumIDs = createAlbumRights.compactMap({"\($0)"}).joined(separator: ",")
+            userData.createAlbumRights = albumIDs
+        }
+        else {
+            userData.createAlbumRights = nil
+        }
     }
     
     /**

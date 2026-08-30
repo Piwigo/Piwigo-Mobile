@@ -194,7 +194,7 @@ struct UploadPhotos: AppIntent {
             
             // Add upload requests to queue
             UploadVars.shared.isPaused = false
-            #if os(iOS) && !targetEnvironment(macCatalyst)
+            #if os(iOS) && !targetEnvironment(macCatalyst) && !targetEnvironment(simulator)
             if #available(iOS 26.0, *) {
                 // Launch new continued upload task if possible
                 if UploadVars.shared.isContinuedProcessingTaskActive == false {
@@ -207,7 +207,7 @@ struct UploadPhotos: AppIntent {
                 // Process next uploads if possible
                 await UploadManagerActor.shared.processNextUpload()
             }
-            #elseif targetEnvironment(macCatalyst)
+            #elseif targetEnvironment(macCatalyst) || targetEnvironment(simulator)
             // Queue uploads to prepare
             await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
 

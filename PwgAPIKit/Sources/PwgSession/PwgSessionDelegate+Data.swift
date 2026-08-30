@@ -32,7 +32,7 @@ extension PwgSessionDelegate: URLSessionDataDelegate {
         // Without HTTP credentials available, tries Piwigo credentials
         if account.isEmpty || password.isEmpty {
             // Retrieve Piwigo credentials
-            account = ServerVars.shared.username
+            account = ServerVars.shared.login
             password = KeychainUtilities.password(forService: ServerVars.shared.serverPath, account: account)
             
             // Adopt Piwigo credentials as HTTP basic authentification credentials

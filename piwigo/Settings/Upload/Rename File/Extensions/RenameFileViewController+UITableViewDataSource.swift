@@ -374,7 +374,9 @@ extension RenameFileViewController: UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        #if DEBUG
         debugPrint("Commit editingStyle: \(editingStyle) forRowAt: \(indexPath) where isEditing: \(tableView.isEditing)")
+        #endif
         switch RenameSection(rawValue: indexPath.section) {
         case .prefix:
             // Remove action and corresponding row

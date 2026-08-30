@@ -72,6 +72,13 @@ public final nonisolated class Image: NSManagedObject, Identifiable {
             commentHTML = newCommentHTML
         }
         
+        // Image page URL not nil and modified?
+        /// - Store relative URLs to save space and because the URL might changed in future
+        let newPageUrl = ImageGetInfo.encodedImageURL(imageData.pageUrl ?? "")
+        if newPageUrl != nil, pageUrl != newPageUrl {
+            pageUrl = newPageUrl
+        }
+        
         // Image visits (returned by pwg.category.getImages)
         let newVisits = imageData.visits ?? Int32.zero
         if visits != newVisits {
@@ -89,7 +96,7 @@ public final nonisolated class Image: NSManagedObject, Identifiable {
         let newSize = 1024 * (imageData.fileSize ?? Int64.zero)
         if newSize != Int64.zero {
             // Remember when pwg.images.getInfos was called
-            dateGetInfos = Date().timeIntervalSinceReferenceDate
+            dateGetInfos = Date.timeIntervalSinceReferenceDate
             // Check if the value has changed
             if fileSize != newSize {
                 fileSize = newSize
@@ -129,6 +136,12 @@ public final nonisolated class Image: NSManagedObject, Identifiable {
             }
         }
         
+        // Remembers who added the image
+        if let newAddedBy = imageData.addedBy?.int16Value, newAddedBy != 0,
+            addedBy != newAddedBy {
+            addedBy = newAddedBy
+        }
+        
         // Update date only if new date is after 00:00:00 UTC on 8 January 1900
         if let newPostedInterval = DateUtilities.timeInterval(from: imageData.datePosted) {
             if newPostedInterval != datePosted {
@@ -165,9 +178,9 @@ public final nonisolated class Image: NSManagedObject, Identifiable {
         // Add tags (Attention: pwg.categories.getImages returns only one tag)
         if imageData.title != nil {
             if let tags = imageData.tags, let serverTags = user.server?.tags {
-                let tagIds = tags.map { $0.id?.int32Value }
+                let tagIds = tags.compactMap { $0.id?.int32Value }
                 let imageTags = serverTags.filter({ tag in
-                    tagIds.contains(where: { $0 == tag.tagId }) == true
+                    tagIds.contains(where: { $0 == tag.pwgID }) == true
                 })
                 let oldTags = self.tags?.compactMap{ $0.objectID }
                 let newTags = imageTags.map { $0.objectID }
@@ -301,6 +314,7 @@ public final nonisolated class Image: NSManagedObject, Identifiable {
         }
         
         // Download URL not nil and modified?
+        /// - Store relative URLs to save space and because the URL might changed in future
         let newDownloadUrl = ImageGetInfo.encodedImageURL(imageData.downloadUrl ?? "")
         if newDownloadUrl != nil, downloadUrl != newDownloadUrl {
             downloadUrl = newDownloadUrl
@@ -580,7 +594,9 @@ public final nonisolated class Image: NSManagedObject, Identifiable {
                     do {
                         try data.write(toFile: filePath, options: .atomic)
                     } catch {
+                        #if DEBUG
                         debugPrint(error.localizedDescription)
+                        #endif
                     }
                 }
                 

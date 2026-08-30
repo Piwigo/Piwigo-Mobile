@@ -26,25 +26,26 @@ enum SectionType: Int {
 final class LocalImagesViewController: UIViewController
 {
     // MARK: - Core Data Objects
-    var user: User!
-    lazy var mainContext: NSManagedObjectContext = {
-        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
-            fatalError("!!! Missing Managed Object Context !!!")
-        }
-        return context
-    }()
+    @MainActor
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
+    var userData: UserProperties!
     
+    
+    // MARK: - Core Data Source
     lazy var fetchUploadRequest: NSFetchRequest = {
         let fetchRequest = Upload.fetchRequest()
         // Priority to uploads requested manually, oldest ones first
         var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
         sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
+        // Both halves of a Live Photo are requested at the very same date: this last descriptor
+        // gives them a defined order, as in the fetch request of the UploadProvider.
+        sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.assetPart), ascending: true))
         fetchRequest.sortDescriptors = sortDescriptors
         
         // Retrieves upload requests
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
+        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         fetchRequest.returnsObjectsAsFaults = false
         fetchRequest.shouldRefreshRefetchedObjects = true
@@ -108,6 +109,12 @@ final class LocalImagesViewController: UIViewController
     
     
     // MARK: - View Lifecycle
+    /// Option adopted for the assets whose upload was requested, by local identifier.
+    /// A cell needs it to expect the right number of upload requests while its asset is
+    /// uploading, which may differ from the default when the user overrode it. Assets which
+    /// are not uploading are not listed and fall back to the default.
+    var livePhotoOptionByIdentifier = [String: pwgUploadLivePhotoAs]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -153,7 +160,9 @@ final class LocalImagesViewController: UIViewController
         do {
             try uploads.performFetch()
         } catch {
+            #if DEBUG
             debugPrint("Error: \(error.localizedDescription)")
+            #endif
         }
         
         // Sort images in background
@@ -179,6 +188,7 @@ final class LocalImagesViewController: UIViewController
         }
         uploadBarButton?.isEnabled = false
         uploadBarButton?.accessibilityIdentifier = "Upload"
+        uploadBarButton?.accessibilityLabel = String(localized: "tabBar_upload", comment: "Upload")
         
         // The action button proposes:
         /// - to swap between ascending and descending sort orders,
@@ -199,6 +209,7 @@ final class LocalImagesViewController: UIViewController
             actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
         }
         actionBarButton?.accessibilityIdentifier = "Action"
+        actionBarButton?.accessibilityLabel = String(localized: "moreOptions_title", comment: "More")
 
         if view.traitCollection.userInterfaceIdiom == .pad {
             // The deletion of photos already uploaded to a Piwigo server is performed with this trash button.
@@ -283,7 +294,7 @@ final class LocalImagesViewController: UIViewController
         if UploadVars.shared.isPaused {
             UploadVars.shared.isPaused = false
             Task(priority: .utility) { @UploadManagerActor in
-                #if os(iOS) && !targetEnvironment(macCatalyst)
+                #if os(iOS) && !targetEnvironment(macCatalyst) && !targetEnvironment(simulator)
                 if #available(iOS 26.0, *) {
                     // Launch new continued upload task if possible
                     if UploadVars.shared.isContinuedProcessingTaskActive == false {
@@ -294,7 +305,7 @@ final class LocalImagesViewController: UIViewController
                     // Process next uploads if possible
                     await UploadManagerActor.shared.processNextUpload()
                 }
-                #elseif targetEnvironment(macCatalyst)
+                #elseif targetEnvironment(macCatalyst) || targetEnvironment(simulator)
                 // Process next uploads if possible
                 await UploadManagerActor.shared.processNextUpload()
                 #endif
@@ -308,7 +319,9 @@ final class LocalImagesViewController: UIViewController
         
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
+        #if DEBUG
         debugPrint("••> LocalImagesViewController released memory")
+        #endif
     }
     
 

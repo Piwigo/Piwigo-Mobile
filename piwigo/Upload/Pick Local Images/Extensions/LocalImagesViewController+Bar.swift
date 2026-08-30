@@ -113,7 +113,7 @@ extension LocalImagesViewController {
         
         // There is no subtitle in landscape mode on iPhone
         var subtitle = ""
-        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+        let orientation = view.currentInterfaceOrientation
         if !(view.traitCollection.userInterfaceIdiom == .phone && orientation.isLandscape) {
             let nberOfSelectedImages = count ?? selectedImages.compactMap{ $0 }.count
             switch nberOfSelectedImages {
@@ -250,7 +250,7 @@ extension LocalImagesViewController {
         else { preconditionFailure("could not load UploadSwitchViewController") }
         
         uploadSwitchVC.delegate = self
-        uploadSwitchVC.user = self.user
+        uploadSwitchVC.userData = self.userData
         uploadSwitchVC.categoryId = self.categoryId
         uploadSwitchVC.categoryCurrentCounter = self.categoryCurrentCounter
         uploadSwitchVC.uploadRequests = self.uploadRequests

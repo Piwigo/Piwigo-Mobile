@@ -16,6 +16,15 @@ import PwgUploadKit
 // MARK: UploadSwitchDelegate Methods
 extension LocalImagesViewController: UploadSwitchDelegate
 {
+    func didSelectUploadLivePhotoAs(_ option: pwgUploadLivePhotoAs) {
+        // Remember what a Live Photo will yield for the assets about to be uploaded, so
+        // that their cells expect the right number of upload requests. Recorded per asset:
+        // the next selection adopts the default again, even while these ones upload.
+        for request in uploadRequests {
+            livePhotoOptionByIdentifier[request.localIdentifier] = option
+        }
+    }
+    
     @objc func didSelectCurrentCounter(value: Int64) {
         albumDelegate?.didSelectCurrentCounter(value: value)
     }
@@ -26,6 +35,11 @@ extension LocalImagesViewController: UploadSwitchDelegate
         
         // Release memory
         self.uploadRequests = []
+        
+        // Forget the option of the assets which are no longer being uploaded
+        let stillUploading = Set((self.uploads.fetchedObjects ?? []).map(\.localIdentifier))
+        self.livePhotoOptionByIdentifier = self.livePhotoOptionByIdentifier
+            .filter { stillUploading.contains($0.key) }
         
         // Update the navigation bar
         updateNavBar()
@@ -40,7 +54,7 @@ extension LocalImagesViewController: UploadSwitchDelegate
         
         // Display help views less than once a day
         let dateOfLastHelpView = AppVars.shared.dateOfLastHelpView
-        let diff = Date().timeIntervalSinceReferenceDate - dateOfLastHelpView
+        let diff = Date.timeIntervalSinceReferenceDate - dateOfLastHelpView
         if diff > TimeInterval(86400) { return }
             
         // Determine which help pages should be presented
@@ -54,9 +68,9 @@ extension LocalImagesViewController: UploadSwitchDelegate
         if (AppVars.shared.didWatchHelpViews & 0b00000000_00100000) == 0 {
             displayHelpPagesWithID.append(6)     // i.e. manage upload requests in queue
         }
-        if (AppVars.shared.didWatchHelpViews & 0b00000000_00000010) == 0 {
-            displayHelpPagesWithID.append(2)     // i.e. use background uploading
-        }
+//        if (AppVars.shared.didWatchHelpViews & 0b00000000_00000010) == 0 {
+//            displayHelpPagesWithID.append(2)     // i.e. use background uploading
+//        }
         if (AppVars.shared.didWatchHelpViews & 0b00000000_01000000) == 0 {
             displayHelpPagesWithID.append(7)     // i.e. use auto-uploading
         }

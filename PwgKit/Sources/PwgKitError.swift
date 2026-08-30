@@ -36,11 +36,13 @@ public enum PwgKitError: Error, Sendable {
     case invalidCredentials
     case invalidJSONobject
     case operationFailed
+    case serverNotFound
     
     // User errors
     case emptyUsername
-    case unknownUserStatus
     case userCreationError
+    case userNotFound
+    case unknownUserStatus
     
     // Album errors
     case fetchAlbumFailed
@@ -401,17 +403,23 @@ extension PwgKitError: LocalizedError {
         case .operationFailed:
             return String(localized: "PiwigoServer_operationFailed", bundle: .pwgKit,
                           comment: "The Piwigo server was unable to complete the requested operation.")
-
+        case .serverNotFound:
+            return String(localized: "PiwigoServer_notFound", bundle: .pwgKit,
+                          comment: "Server object not in persistent cache.")
+        
         // User errors
         case .emptyUsername:
             return String(localized: "CoreDataFetch_UserMissingData", bundle: .pwgKit,
                           comment: "Will discard a user account missing a valid username.")
-        case .unknownUserStatus:
-            return String(localized: "CoreDataFetch_UserUnknownStatus", bundle: .pwgKit,
-                          comment: "Failed to get Community extension parameters.\nTry logging in again.")
         case .userCreationError:
             return String(localized: "CoreData_UserCreateFailed", bundle: .pwgKit,
                           comment: "Failed to create a new User object.")
+        case .userNotFound:
+            return String(localized: "CoreDataFetch_UserUnknown", bundle: .pwgKit,
+                          comment: "User account not in persistent cache.")
+        case .unknownUserStatus:
+            return String(localized: "CoreDataFetch_UserUnknownStatus", bundle: .pwgKit,
+                          comment: "Failed to get Community extension parameters.\nTry logging in again.")
         
         // Album errors
         case .fetchAlbumFailed:

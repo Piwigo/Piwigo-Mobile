@@ -18,8 +18,11 @@ public class CacheVars: @unchecked Sendable {
     // Remove deprecated stored objects if needed
     init() {
         // Deprecated data?
-        if let _ = UserDefaults.standard.object(forKey: "couldNotMigrateCoreDataStore") {
-            UserDefaults.standard.removeObject(forKey: "couldNotMigrateCoreDataStore")
+        let deprecatedKeys = ["couldNotMigrateCoreDataStore"]
+        for key in deprecatedKeys {
+            if UserDefaults.standard.object(forKey: key) != nil {
+                UserDefaults.standard.removeObject(forKey: key)
+            }
         }
 //        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
 //            UserDefaults.dataSuite.removeObject(forKey: "test")

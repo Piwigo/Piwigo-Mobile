@@ -20,7 +20,7 @@ public extension JSONManager {
                                                 jsonObjectClientExpectsToReceive: ReflectionGetMethodListJSON.self,
                                                 countOfBytesClientExpectsToReceive: kReflectionGetMethodListBytes)
             
-            // Check if the Community extension is installed and active (since Piwigo 2.9a)
+            // Check if the Community plugin is installed and active (since version 2.9 of the plugin)
             if pwgData.data.contains(kCommunitySessionGetStatus) {
                 ServerVars.shared.usesCommunityPluginV29 = true
                 JSONManager.logger.notice("Community plugin installed")
@@ -42,6 +42,22 @@ public extension JSONManager {
                 JSONManager.logger.notice("API keys management available: \(NetworkVars.shared.usesAPIkeys)")
             } else {
                 NetworkVars.shared.usesAPIkeys = false
+            }
+            
+            // Check if the ShareAlbum plugin is available (since version 16.1 of the plugin)
+            if pwgData.data.contains(kShareAlbumGetList) {
+                ServerVars.shared.usesShareAlbum = true
+                JSONManager.logger.notice("ShareAlbum plugin available: \(ServerVars.shared.usesShareAlbum)")
+            } else {
+                ServerVars.shared.usesShareAlbum = false
+            }
+
+            // Check if the rotateImage plugin is available (since version 11.0.a of the plugin)
+            if pwgData.data.contains(pwgImageRotate) {
+                ServerVars.shared.usesImageRotate = true
+                JSONManager.logger.notice("rotateImage plugin available: \(ServerVars.shared.usesImageRotate)")
+            } else {
+                ServerVars.shared.usesImageRotate = false
             }
         }
         catch let error {

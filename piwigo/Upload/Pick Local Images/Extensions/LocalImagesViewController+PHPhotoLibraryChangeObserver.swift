@@ -20,7 +20,9 @@ extension LocalImagesViewController: PHPhotoLibraryChangeObserver
 
         // This method may be called on a background queue; use the main queue to update the UI.
         DispatchQueue.main.async {
+            #if DEBUG
             debugPrint(changes.fetchResultAfterChanges.count, self.fetchedImages.count)
+            #endif
             // Any new photo inserted? or delete? or added to selection?
             if changes.insertedObjects.isEmpty,
                changes.removedObjects.isEmpty,

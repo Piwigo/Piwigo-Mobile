@@ -34,12 +34,13 @@ extension UploadSettingsViewController {
     // MARK: - UITableView - Rows
     override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         var row = indexPath.row
-        row += (!resizeImageOnUpload && (row > 1)) ? 2 : 0
-        row += (!compressImageOnUpload && (row > 3)) ? 1 : 0
+        row += (!resizeImageOnUpload && (row > 2)) ? 2 : 0
+        row += (!compressImageOnUpload && (row > 5)) ? 1 : 0
         switch row {
-        case 2 /* Upload Photo Size */,
-             3 /* Upload Video Size */,
-             6 /* Rename Filename Before Upload */:
+        case 0 /* Live Photos */,
+             3 /* Upload Photo Size */,
+             4 /* Upload Video Size */,
+             7 /* Rename Filename Before Upload */:
             return true
         default:
             return false
@@ -49,10 +50,19 @@ extension UploadSettingsViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         var row = indexPath.row
-        row += (!resizeImageOnUpload && (row > 1)) ? 2 : 0
-        row += (!compressImageOnUpload && (row > 3)) ? 1 : 0
+        row += (!resizeImageOnUpload && (row > 2)) ? 2 : 0
+        row += (!compressImageOnUpload && (row > 5)) ? 1 : 0
         switch row {
-        case 2 /* Upload Photo Size */:
+        case 0 /* Live Photos */:
+            // Present the Live Photo option selector
+            let livePhotoSB = UIStoryboard(name: "UploadLivePhotoViewController", bundle: nil)
+            guard let livePhotoVC = livePhotoSB.instantiateViewController(withIdentifier: "UploadLivePhotoViewController") as? UploadLivePhotoViewController
+            else { preconditionFailure("Could not load UploadLivePhotoViewController") }
+            livePhotoVC.delegate = self
+            livePhotoVC.uploadLivePhotoAs = uploadLivePhotoAs
+            navigationController?.pushViewController(livePhotoVC, animated: true)
+        
+        case 3 /* Upload Photo Size */:
             // Present the Upload Photo Size selector
             let uploadPhotoSizeSB = UIStoryboard(name: "UploadPhotoSizeViewController", bundle: nil)
             guard let uploadPhotoSizeVC = uploadPhotoSizeSB.instantiateViewController(withIdentifier: "UploadPhotoSizeViewController") as? UploadPhotoSizeViewController
@@ -61,7 +71,7 @@ extension UploadSettingsViewController {
             uploadPhotoSizeVC.photoMaxSize = photoMaxSize
             navigationController?.pushViewController(uploadPhotoSizeVC, animated: true)
         
-        case 3 /* Upload Video Size */:
+        case 4 /* Upload Video Size */:
             // Present the Upload Photo Size selector
             let uploadVideoSizeSB = UIStoryboard(name: "UploadVideoSizeViewController", bundle: nil)
             guard let uploadVideoSizeVC = uploadVideoSizeSB.instantiateViewController(withIdentifier: "UploadVideoSizeViewController") as? UploadVideoSizeViewController
@@ -70,7 +80,7 @@ extension UploadSettingsViewController {
             uploadVideoSizeVC.videoMaxSize = videoMaxSize
             navigationController?.pushViewController(uploadVideoSizeVC, animated: true)
         
-        case 6 /* Rename Filename Before Upload */:
+        case 7 /* Rename Filename Before Upload */:
             // Present the Rename File selector
             let filenameSB = UIStoryboard(name: "RenameFileViewController", bundle: nil)
             guard let filenameVC = filenameSB.instantiateViewController(withIdentifier: "RenameFileViewController") as? RenameFileViewController

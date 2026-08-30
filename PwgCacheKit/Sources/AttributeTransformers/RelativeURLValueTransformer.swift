@@ -32,7 +32,7 @@ public class RelativeURLValueTransformer: NSSecureUnarchiveFromDataTransformer {
             return nil
         }
 
-        // Return absolute URL from data containing relative URL
+        // Return absolute NSURL from data containing relative NSURL
         if relativeURL.scheme == nil, relativeURL.host == nil,
            let path = relativeURL.absoluteString, path.isEmpty == false,
            let absoluteURL = NSURL(string: ServerVars.shared.service + path) {
@@ -46,7 +46,7 @@ public class RelativeURLValueTransformer: NSSecureUnarchiveFromDataTransformer {
             preconditionFailure("Wrong data type: value must be a NSURL object; received \(type(of: value))")
         }
         
-        // Store relative URL as Data to save space and because the scheme and host might changed in future
+        // Store relative NSURL as Data to save space and because the scheme and host might changed in future
         if var path = absoluteURL.absoluteString, path.hasPrefix(ServerVars.shared.service) {
             path.removeFirst(ServerVars.shared.service.count)
             let relativeURL = NSURL(string: path) ?? absoluteURL

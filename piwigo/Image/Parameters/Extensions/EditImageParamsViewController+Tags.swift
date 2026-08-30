@@ -24,7 +24,7 @@ extension EditImageParamsViewController: TagsViewControllerDelegate
         // Build list of added tags
         addedTags = []
         for tag in selectedTags {
-            if commonTags.contains(where: { $0.tagId == tag.tagId }) == false {
+            if commonTags.contains(where: { $0.pwgID == tag.pwgID }) == false {
                 addedTags.insert(tag)
             }
         }
@@ -32,7 +32,7 @@ extension EditImageParamsViewController: TagsViewControllerDelegate
         // Build list of removed tags
         removedTags = []
         for tag in commonTags {
-            if !selectedTags.contains(where: { $0.tagId == tag.tagId }) {
+            if !selectedTags.contains(where: { $0.pwgID == tag.pwgID }) {
                 removedTags.insert(tag)
             }
         }

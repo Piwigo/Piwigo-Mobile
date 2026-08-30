@@ -17,8 +17,8 @@ extension Tag {
 
     @NSManaged public var lastModified: TimeInterval
     @NSManaged public var numberOfImagesUnderTag: Int64
-    @NSManaged public var tagId: Int32
-    @NSManaged public var tagName: String
+    @NSManaged public var pwgID: Int32
+    @NSManaged public var name: String
     @NSManaged public var server: Server?
     @NSManaged public var uploads: Set<Upload>?
     @NSManaged public var images: Set<Image>?
@@ -65,6 +65,6 @@ extension Array where Element == Tag {
         if query.isEmpty { return self }
         
         // Return filtered list
-        return self.filter { $0.tagName.lowercased().contains(query.lowercased())}
+        return self.filter { $0.name.lowercased().contains(query.lowercased())}
     }
 }

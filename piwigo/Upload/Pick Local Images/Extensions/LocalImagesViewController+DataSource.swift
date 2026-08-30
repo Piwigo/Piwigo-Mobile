@@ -133,7 +133,10 @@ extension LocalImagesViewController: UICollectionViewDataSource
         let imageAsset = fetchedImages[index]
 
         // Configure cell with image asset
-        cell.configure(with: imageAsset, thumbnailSize: imageCellSize)
+        let livePhotoOption = livePhotoOptionByIdentifier[imageAsset.localIdentifier]
+                              ?? UploadVars.shared.uploadLivePhotoAs
+        cell.configure(with: imageAsset, thumbnailSize: imageCellSize,
+                       uploadLivePhotoAs: livePhotoOption)
 
         // Get upload state from cell data
         let uploadState = getUploadStateOfImage(at: index, for: cell)
@@ -144,10 +147,10 @@ extension LocalImagesViewController: UICollectionViewDataSource
 
     @objc func applyUploadProgress(_ notification: Notification) {
         if let visibleCells = localImagesCollection.visibleCells as? [LocalImageCollectionViewCell],
-           let localIdentifier =  notification.userInfo?["localIdentifier"] as? String, !localIdentifier.isEmpty ,
-           let cell = visibleCells.first(where: {$0.localIdentifier == localIdentifier}),
+           let fileKey =  notification.userInfo?["fileKey"] as? String, !fileKey.isEmpty ,
+           let cell = visibleCells.first(where: {$0.localIdentifier == UploadProperties.assetIdentifier(from: fileKey)}),
            let progressFraction = notification.userInfo?["progressFraction"] as? Float {
-            cell.setProgress(progressFraction, withAnimation: true)
+            cell.setProgress(progressFraction, forFileKey: fileKey, withAnimation: true)
         }
     }
 }

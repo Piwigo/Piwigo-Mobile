@@ -80,7 +80,9 @@ final class RingProgressView: UIView {
     }
     
     private func setProgress(duration: TimeInterval = 3, to newProgress: Float) -> Void{
-        debugPrint("setProgress(duration: \(duration), from: \(progressLayer.strokeEnd), to: \(newProgress)")
+        #if DEBUG
+//        debugPrint("setProgress(duration: \(duration), from: \(progressLayer.strokeEnd), to: \(newProgress)")
+        #endif
         let animation = CABasicAnimation(keyPath: "strokeEnd")
         animation.duration = duration
 

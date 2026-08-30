@@ -31,6 +31,25 @@ extension SettingsViewController: SelectPrivacyDelegate {
 }
 
 
+// MARK: - UploadLivePhotoAsDelegate Methods
+extension SettingsViewController: UploadLivePhotoAsDelegate {
+    func didSelectUploadLivePhotoAs(_ option: pwgUploadLivePhotoAs) {
+        // Do nothing if option is unchanged
+        if option == UploadVars.shared.uploadLivePhotoAs { return }
+        
+        // Save new choice, which the selector no longer stores itself
+        UploadVars.shared.uploadLivePhotoAs = option
+        
+        // Refresh settings
+        let indexPath = IndexPath(row: 2, section: SettingsSection.uploads.rawValue)
+        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
+           let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
+            cell.detailLabel.text = option.name
+        }
+    }
+}
+
+
 // MARK: - UploadPhotoSizeDelegate Methods
 extension SettingsViewController: UploadPhotoSizeDelegate {
     func didSelectUploadPhotoSize(_ newSize: Int16) {
@@ -40,7 +59,7 @@ extension SettingsViewController: UploadPhotoSizeDelegate {
             UploadVars.shared.photoMaxSize = newSize
             
             // Refresh corresponding row
-            let photoAtIndexPath = IndexPath(row: 3 + (user.hasAdminRights ? 1 : 0),
+            let photoAtIndexPath = IndexPath(row: 4 + (userData.hasAdminRights ? 1 : 0),
                                              section: SettingsSection.uploads.rawValue)
             if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(photoAtIndexPath),
                let cell = settingsTableView.cellForRow(at: photoAtIndexPath) as? LabelTableViewCell {
@@ -52,9 +71,9 @@ extension SettingsViewController: UploadPhotoSizeDelegate {
         if UploadVars.shared.photoMaxSize == 0, UploadVars.shared.videoMaxSize == 0 {
             UploadVars.shared.resizeImageOnUpload = false
             // Position of the rows which should be removed
-            let photoAtIndexPath = IndexPath(row: 3 + (user.hasAdminRights ? 1 : 0),
+            let photoAtIndexPath = IndexPath(row: 4 + (userData.hasAdminRights ? 1 : 0),
                                              section: SettingsSection.uploads.rawValue)
-            let videoAtIndexPath = IndexPath(row: 4 + (user.hasAdminRights ? 1 : 0),
+            let videoAtIndexPath = IndexPath(row: 5 + (userData.hasAdminRights ? 1 : 0),
                                              section: SettingsSection.uploads.rawValue)
             // Remove row in existing table
             settingsTableView?.deleteRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
@@ -77,7 +96,7 @@ extension SettingsViewController: UploadVideoSizeDelegate {
             UploadVars.shared.videoMaxSize = newSize
 
             // Refresh corresponding row
-            let videoAtIndexPath = IndexPath(row: 4 + (user.hasAdminRights ? 1 : 0),
+            let videoAtIndexPath = IndexPath(row: 5 + (userData.hasAdminRights ? 1 : 0),
                                              section: SettingsSection.uploads.rawValue)
             if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(videoAtIndexPath),
                let cell = settingsTableView.cellForRow(at: videoAtIndexPath) as? LabelTableViewCell {
@@ -90,9 +109,9 @@ extension SettingsViewController: UploadVideoSizeDelegate {
         if UploadVars.shared.photoMaxSize == 0, UploadVars.shared.videoMaxSize == 0 {
             UploadVars.shared.resizeImageOnUpload = false
             // Position of the rows which should be removed
-            let photoAtIndexPath = IndexPath(row: 3 + (user.hasAdminRights ? 1 : 0),
+            let photoAtIndexPath = IndexPath(row: 4 + (userData.hasAdminRights ? 1 : 0),
                                              section: SettingsSection.uploads.rawValue)
-            let videoAtIndexPath = IndexPath(row: 4 + (user.hasAdminRights ? 1 : 0),
+            let videoAtIndexPath = IndexPath(row: 5 + (userData.hasAdminRights ? 1 : 0),
                                              section: SettingsSection.uploads.rawValue)
             // Remove rows in existing table
             settingsTableView?.deleteRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
@@ -125,7 +144,7 @@ extension SettingsViewController: MofifyFilenameDelegate {
         UploadVars.shared.caseOfFileExtension = caseOfExtension.rawValue
         
         // Update cell
-        let indexPath = IndexPath(row: 4 + (user.hasAdminRights ? 1 : 0)
+        let indexPath = IndexPath(row: 5 + (userData.hasAdminRights ? 1 : 0)
                                          + (UploadVars.shared.resizeImageOnUpload ? 2 : 0)
                                          + (UploadVars.shared.compressImageOnUpload ? 1 : 0),
                                   section: SettingsSection.uploads.rawValue)

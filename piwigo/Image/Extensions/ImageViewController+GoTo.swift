@@ -17,12 +17,15 @@ import PwgUIKit
 extension ImageViewController
 {    
     // MARK: - Menu
+    /// Returns nil when the image belongs to no other album than the one being browsed:
+    /// a submenu without children would be presented as a dead, greyed out row.
     @MainActor
-    func goToAlbumMenu() -> UIMenu {
+    func goToAlbumMenu() -> UIMenu? {
+        guard let actions = goToAlbumActions() else { return nil }
         return UIMenu(title: String(localized: "imageOptions_goToAlbum", comment: "Go To Album…"),
                       image: nil,
                       identifier: UIMenu.Identifier("org.piwigo.image.goToAlbum"),
-                      children: [goToAlbumActions()].compactMap({$0}))
+                      children: [actions])
     }
     
     
@@ -42,7 +45,7 @@ extension ImageViewController
         var children: [UIMenuElement] = []
         for albumId in albumIDs {
             // Get album in cache
-            guard let album = try? AlbumProvider().getAlbum(ofUser: user, withId: albumId)
+            guard let album = AlbumProvider().getAlbum(withID: albumId,inContext: mainContext)
             else { continue }
             
             // Create dynamic action
@@ -100,8 +103,8 @@ extension ImageViewController
         setEnableStateOfButtons(false)
         
         // Get source and destination albums
-        guard let sourceAlbum = try? AlbumProvider().getAlbum(ofUser: user, withId: categoryId),
-              let destinationAlbum = try? AlbumProvider().getAlbum(ofUser: user, withId: albumId)
+        guard let sourceAlbum = AlbumProvider().getAlbum(withID: categoryId, inContext: mainContext),
+              let destinationAlbum = AlbumProvider().getAlbum(withID: albumId, inContext: mainContext)
         else { return }
         
         // Get common path (don't use Set() which does not retain the order)

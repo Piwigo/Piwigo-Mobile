@@ -56,8 +56,8 @@ extension EditImageParamsViewController: UITableViewDelegate
             guard let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController
             else { preconditionFailure("Could not load TagsViewController") }
             tagsVC.delegate = self
-            tagsVC.user = user
-            let tagList: [Int32] = commonTags.compactMap { Int32($0.tagId) }
+            tagsVC.userData = userData
+            let tagList: [Int32] = commonTags.compactMap { Int32($0.pwgID) }
             tagsVC.setPreselectedTagIds(Set(tagList))
             navigationController?.pushViewController(tagsVC, animated: true)
             

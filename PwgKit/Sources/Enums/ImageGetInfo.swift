@@ -15,9 +15,11 @@ public struct ImageGetInfo: Decodable, Sendable
     public var commentRaw: String?              // "…" i.e. text potentially containing HTML encoded characters, all languages
     public var visits: Int32?                   // 0
     public var fileName: String?                // "Image.jpg"
+    public var addedBy: StringOrInt?            // "1"
     public var datePosted: String?              // "yyyy-MM-dd HH:mm:ss"
     public var dateCreated: String?             // "yyyy-MM-dd HH:mm:ss"
     public var isFavorite: Bool?                // false (since Piwigo 13.0)
+    public var pageUrl: String?                 // "https://…/picture.php?/459"
     public var downloadUrl: String?             // "https://…action.php?id=2&part=e&download" (since Piwigo 14.0)
  
     public let fullResWidth: Int?               // 4092
@@ -43,9 +45,11 @@ public struct ImageGetInfo: Decodable, Sendable
         case commentRaw = "comment_raw"
         case visits = "hit"
         case fileName = "file"
+        case addedBy = "added_by"
         case datePosted = "date_available"
         case dateCreated = "date_creation"
         case isFavorite = "is_favorite"
+        case pageUrl = "page_url"
         case downloadUrl = "download_url"
 
         case fullResWidth = "width"
@@ -80,8 +84,9 @@ extension ImageGetInfo {
         
         self.init(id: id, title: title,
                   comment: "", commentRaw: "", visits: 0,
-                  fileName: fileName, datePosted: posted, dateCreated: created,
-                  isFavorite: false, downloadUrl: "",
+                  fileName: fileName, addedBy: .integer(0),
+                  datePosted: posted, dateCreated: created,
+                  isFavorite: false, pageUrl: "", downloadUrl: "",
                   fullResWidth: 0, fullResHeight: 0, fullResPath: "",
                   author: author, privacyLevel: privacyLevel,
                   tags: nil, ratingScore: nil,
@@ -97,6 +102,7 @@ extension ImageGetInfo {
         if self.commentRaw == nil { self.commentRaw = "" }
         if self.visits == nil { self.visits = 0 }
         if self.fileName == nil { self.fileName = "" }
+        if self.addedBy == nil { self.addedBy = .integer(0) }
         if self.datePosted == nil {
             // Adopts now
             let dateFormatter = DateFormatter()
@@ -107,6 +113,7 @@ extension ImageGetInfo {
             // Adopts the oldest date when the creation date is unknown.
             self.dateCreated = "1900-01-01 00:00:00"    // see DataModel
         }
+        if self.pageUrl == nil { self.pageUrl = "" }
         if self.downloadUrl == nil { self.downloadUrl = "" }
         if self.privacyLevel == nil { self.privacyLevel = "0" }
         if self.tags == nil { self.tags = [TagGetInfo]() }

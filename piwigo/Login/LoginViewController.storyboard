@@ -272,14 +272,13 @@
                                     <constraint firstItem="iQo-u1-AhM" firstAttribute="top" secondItem="0Pp-XO-zb1" secondAttribute="top" id="ql2-mC-fEk"/>
                                 </constraints>
                             </scrollView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xbk-p6-MG3">
-                                <rect key="frame" x="180.66666666666666" y="857" width="78.999999999999972" height="28"/>
+                            <button opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xbk-p6-MG3">
+                                <rect key="frame" x="153.66666666666666" y="855" width="132.99999999999997" height="33"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                 <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="piwigo.org" titleAlignment="center">
-                                    <fontDescription key="titleFontDescription" style="UICTFontTextStyleCaption2"/>
-                                </buttonConfiguration>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="https://piwigo.org"/>
                                 <connections>
                                     <action selector="openPiwigoURL:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="zRp-bP-mrx"/>
                                 </connections>
@@ -288,9 +287,11 @@
                         <viewLayoutGuide key="safeArea" id="dhF-9h-VBH"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="xbk-p6-MG3" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="dhF-9h-VBH" secondAttribute="leading" constant="20" id="Ab1-Dy-nLd"/>
+                            <constraint firstItem="dhF-9h-VBH" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="xbk-p6-MG3" secondAttribute="trailing" constant="20" id="Ab2-Dy-nTr"/>
                             <constraint firstItem="0Pp-XO-zb1" firstAttribute="trailing" secondItem="dhF-9h-VBH" secondAttribute="trailing" id="BOD-k9-pV1"/>
                             <constraint firstItem="0Pp-XO-zb1" firstAttribute="leading" secondItem="dhF-9h-VBH" secondAttribute="leading" id="DA2-W6-Gqs"/>
-                            <constraint firstItem="dhF-9h-VBH" firstAttribute="bottom" secondItem="xbk-p6-MG3" secondAttribute="bottom" constant="3" id="Jzs-VV-3Qa"/>
+                            <constraint firstItem="dhF-9h-VBH" firstAttribute="bottom" secondItem="xbk-p6-MG3" secondAttribute="bottom" id="Jzs-VV-3Qa"/>
                             <constraint firstItem="dhF-9h-VBH" firstAttribute="bottom" secondItem="0Pp-XO-zb1" secondAttribute="bottom" id="KWH-Lz-LH3"/>
                             <constraint firstItem="0Pp-XO-zb1" firstAttribute="top" secondItem="dhF-9h-VBH" secondAttribute="top" id="Sdh-v9-b4O"/>
                             <constraint firstItem="xbk-p6-MG3" firstAttribute="centerX" secondItem="dhF-9h-VBH" secondAttribute="centerX" id="zNm-zJ-ye2"/>

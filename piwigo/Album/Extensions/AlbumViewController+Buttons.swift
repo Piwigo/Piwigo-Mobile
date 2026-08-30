@@ -57,11 +57,16 @@ extension AlbumViewController
     }
     
     func updateButtons() {
-        // User can upload images/videos if he/she has:
-        // — admin rights
-        // — normal rights and upload access to the current category
+        // Admin user can do everything except may be downloading images (i.e. sharing images)
+        // Community user may have or not:
+        /// - album creation rights in some albums
+        /// - upload rights in some albums
+        /// - download rights (i.e. sharing images)
+        /// - can only be allowed to edit properties of images he/she has uploaded.
+        ///   This requires 'user_id' and 'added_by' values of images for checking rights.
+        ///   'user_id' is deduced after a first upload, unknown before or after a clear of the data cache
         if [0, AlbumVars.shared.defaultCategory].contains(categoryId),
-           user.hasUploadRights(forCatID: categoryId) {
+           (userData.hasAlbumCreationRights(inCatID: categoryId) || userData.hasUploadRights(forCatID: categoryId)) {
             // Show Add Album button
             if addButton.isHidden {
                 // Show Add button
@@ -73,8 +78,8 @@ extension AlbumViewController
                                                     object: nil, userInfo: userInfo)
                 }
             }
-        } else if categoryId > 0,
-                  user.hasUploadRights(forCatID: categoryId) {
+        } else if categoryId > pwgSmartAlbum.root.rawValue,
+                  (userData.hasAlbumCreationRights(inCatID: categoryId) || userData.hasUploadRights(forCatID: categoryId)) {
             // Show Upload button if needed
             if addButton.isHidden {
                 // Show Add button
@@ -192,25 +197,45 @@ extension AlbumViewController
     }
     
     func getAddButtonImage() -> UIImage? {
-        if categoryId == 0 {
+        if categoryId == pwgSmartAlbum.root.rawValue,
+           (userData.hasAdminRights || userData.hasAlbumCreationRights(inCatID: categoryId)) {
+            // Add album
             let imageConfig = UIImage.SymbolConfiguration(pointSize: 17, weight: .semibold)
             return UIImage(systemName: "rectangle.stack.badge.plus", withConfiguration: imageConfig)
-        } else {
+        }
+        
+        if userData.hasAdminRights || userData.hasAlbumCreationRights(inCatID: categoryId) {
+            // Generic [+] button which presents Add album and Upload images buttons
             let imageConfig = UIImage.SymbolConfiguration(pointSize: 23, weight: .medium)
             return UIImage(systemName: "plus", withConfiguration: imageConfig)
+        }
+        
+        // Add images button
+        if #available(iOS 17.0, *) {
+            let imageConfig = UIImage.SymbolConfiguration(pointSize: 17, weight: .semibold)
+            return UIImage(systemName: "photo.badge.plus", withConfiguration: imageConfig)
+        } else {
+            return UIImage(named: "photo.badge.plus")
         }
     }
 
     @objc func didTapAddButton() {
         // Create album if root album shown
-        if categoryId == 0 {
+        if categoryId == pwgSmartAlbum.root.rawValue,
+           userData.hasAdminRights || userData.hasUploadRights(forCatID: categoryId) {
             // User in root album => Create album
             hideAddButton { [self] in
                 showCreateCategoryDialog()
             }
             return
         }
-
+        
+        if userData.hasAlbumCreationRights(inCatID: categoryId) == false {
+            // User can only upload photos
+            didTapUploadImagesButton()
+            return
+        }
+        
         // Hide Home button behind Add button if needed
         if homeAlbumButton.isHidden {
             // Show CreateAlbum and UploadImages albums
@@ -465,7 +490,7 @@ extension AlbumViewController
         // Position of Home Album button depends on user's rights
         // — webmaster or admin rights
         // — normal rights and upload access to the current category
-        if categoryId > 0, user.hasUploadRights(forCatID: categoryId) {
+        if categoryId > 0, userData.hasUploadRights(forCatID: categoryId) {
             let xPos = addButton.frame.origin.x
             let yPos = addButton.frame.origin.y
             return CGRect(x: xPos - 3 * kRadius, y: yPos,

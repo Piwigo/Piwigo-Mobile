@@ -15,29 +15,34 @@ extension SettingsViewController: DefaultAlbumThumbnailSizeDelegate {
     func didSelectAlbumDefaultThumbnailSize(_ thumbnailSize: pwgImageSize) {
         // Do nothing if size is unchanged
         guard let oldThumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize),
-              thumbnailSize != oldThumbnailSize else {
-            return
-        }
+              thumbnailSize != oldThumbnailSize
+                else { return }
         
         // Delete album thumbnails in foreground queue if not used anymore
-        DispatchQueue.global(qos: .userInitiated).async {
-            guard let server = self.user.server else {
-                fatalError("••> User not provided!")
-            }
-            if oldThumbnailSize.rawValue != AlbumVars.shared.defaultThumbnailSize,
-               oldThumbnailSize.rawValue != ImageVars.shared.defaultImagePreviewSize,
-               oldThumbnailSize != .fullRes {
+        if oldThumbnailSize.rawValue != AlbumVars.shared.defaultThumbnailSize,
+           oldThumbnailSize.rawValue != ImageVars.shared.defaultImagePreviewSize,
+           oldThumbnailSize != .fullRes {
+            DispatchQueue.global(qos: .userInitiated).async {
+                // Get server instance
+                let bckgContext = DataController.shared.newTaskContext()
+                guard let server = try? ServerProvider().getCurrentServer(inContext: bckgContext)
+                else { preconditionFailure("••> Server is not in cache!") }
+
+                // Delete useless thumbnails
                 server.clearCachedImages(ofSizes: [oldThumbnailSize], exceptVideos: true)
-            }
-            
-            DispatchQueue.main.async {
-                // Refresh Settings cell
+
+                // Recalculate cache size
                 let sizes = self.getThumbnailSizes()
-                self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
-                self.updateThumbCacheCell()
+                let cacheSize = server.getCacheSize(forImageSizes: sizes)
+                
+                DispatchQueue.main.async {
+                    // Refresh Settings cell
+                    self.thumbCacheSize = cacheSize
+                    self.updateThumbCacheCell()
+                }
             }
         }
-
+        
         // Save new choice
         AlbumVars.shared.defaultAlbumThumbnailSize = thumbnailSize.rawValue
 
@@ -88,7 +93,8 @@ extension SettingsViewController: SelectCategoryDelegate {
         }
         
         // Default album…
-        if let album = try? AlbumProvider().getAlbum(ofUser: user, withId: AlbumVars.shared.defaultCategory),
+        if let album = AlbumProvider().getProperties(ofAlbumWithID: AlbumVars.shared.defaultCategory,
+                                                     inContext: mainContext),
            album.name.isEmpty == false {
             return album.name
         } else {

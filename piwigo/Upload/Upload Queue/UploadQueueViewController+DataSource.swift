@@ -26,7 +26,9 @@ extension UploadQueueViewController
             // Get data source item
             guard let upload = try? self.mainContext.existingObject(with: objectID) as? Upload
             else {
+                #if DEBUG
                 debugPrint("Managed item should be available")
+                #endif
                 return nil
             }
             // Configure cell

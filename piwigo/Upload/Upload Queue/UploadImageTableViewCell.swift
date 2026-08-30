@@ -18,7 +18,7 @@ import PwgUploadKit
 class UploadImageTableViewCell: UITableViewCell {
     
     // MARK: - Variables
-    var localIdentifier = ""
+    var fileKey = ""
     var objectID: NSManagedObjectID? = nil
     private let offset: CGFloat = 1.0
     private let playScale: CGFloat = 0.20
@@ -36,7 +36,7 @@ class UploadImageTableViewCell: UITableViewCell {
         // Background color and aspect
         backgroundColor = PwgColor.cellBackground
         playIcon?.layer.shadowColor = UIColor.black.cgColor
-        localIdentifier = upload.localIdentifier
+        fileKey = upload.fileKey
         objectID = upload.objectID
         
         // Upload info label
@@ -114,6 +114,16 @@ class UploadImageTableViewCell: UITableViewCell {
         // row (or vice-versa) keeps the stale mask, producing incorrect corner rendering.
         cellImage.layer.mask = nil
         cellImage.layer.cornerRadius = 0
+
+        // Forget which request this cell was displaying and empty the progress bar.
+        // configure(with:) leaves the bar untouched for a request being uploaded — the
+        // notifications drive it — so without this reset a recycled cell would keep showing
+        // the progress of the request it displayed before, until the next notification.
+        /// Noticeable when both halves of a Live Photo are uploaded, since that doubles the
+        /// number of rows and puts the two halves of a same asset next to each other.
+        fileKey = ""
+        objectID = nil
+        uploadingProgress?.setProgress(0.0, animated: false)
     }
 
 
@@ -144,7 +154,9 @@ class UploadImageTableViewCell: UITableViewCell {
             }
             catch let error {
                 // Could not find the file to upload!
+                #if DEBUG
                 debugPrint(error.localizedDescription)
+                #endif
                 image = pwgImageType.image.placeHolder
             }
         }
@@ -236,7 +248,9 @@ class UploadImageTableViewCell: UITableViewCell {
             DispatchQueue.main.async {
                 guard let image = result else {
                     if let error = info?[PHImageErrorKey] as? (any Error) {
+                        #if DEBUG
                         debugPrint("••> Error : \(error.localizedDescription)")
+                        #endif
                     }
                     self.changeCellImageIfNeeded(withImage: pwgImageType.image.placeHolder)
                     return
@@ -247,7 +261,8 @@ class UploadImageTableViewCell: UITableViewCell {
         })
         
         // Video icon?
-        playIcon.isHidden = (imageAsset.mediaType != .video)
+        // A Live Photo is an image asset, but this request may carry its video half
+        playIcon.isHidden = (imageAsset.mediaType != .video) && (upload.part != .pairedVideo)
     }
     
     private func getImageInfo(from imageAsset: PHAsset, for availableWidth: Int, maxSize: Int16) -> String {

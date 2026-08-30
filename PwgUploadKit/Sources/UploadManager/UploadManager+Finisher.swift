@@ -17,12 +17,14 @@ import PwgCacheKit
 extension UploadManager {
     
     // MARK: - Tasks Executed after Uploading
-    func finishTransferOfUpload(withIDs uploadIDs: [NSManagedObjectID], inTaskType taskType: UploadTaskType) async {
+    func finishTransferOfUpload(withIDs uploadIDs: [NSManagedObjectID],
+                                inTaskType taskType: UploadTaskType) async {
         
         // Retrieve upload request properties
         var uploadDataArray: [NSManagedObjectID : UploadProperties] = [:]
         for uploadID in uploadIDs {
-            guard let uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID, inContext: self.uploadBckgContext)
+            guard let uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID,
+                                                                               inContext: self.uploadBckgContext)
             else {
                 UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Could not retrieve upload request for finsihing!")
                 continue
@@ -46,7 +48,8 @@ extension UploadManager {
             uploadData.requestState = .finishing
             uploadData.requestError = ""
             UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • The transfer is now being finalised…")
-            try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
+            try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData,
+                                               inContext: self.uploadBckgContext)
         }
         
         // Uploaded with pwg.images.uploadAsync -> Empty lounge
@@ -57,7 +60,8 @@ extension UploadManager {
             guard var uploadData = uploadDataArray[uploadID] else { return }
             uploadData.requestState = .finished
             uploadData.requestError = ""
-            try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
+            try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData,
+                                               inContext: self.uploadBckgContext)
         }
         
         // Update number of uploads to complete, badge and default album view button
@@ -100,19 +104,10 @@ extension UploadManager {
             let uploadDataArrayForAlbum = uploadDataArray.filter({ $0.category == albumId })
             if uploadDataArrayForAlbum.isEmpty { continue }
             
-            // Get user properties
-            guard let userURI = URL(string: uploadDataArrayForAlbum[0].userURIstr),
-                  let userID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: userURI)
-            else {
-                // Should never happen
-                // ► The lounge will be emptied later by the server
-                // ► Continue upload tasks without returning error
-                return
-            }
-            
             // Check session
-            let userData = try UserProvider().getPropertiesOfUser(withURIstr: uploadDataArrayForAlbum[0].userURIstr, inContext: self.uploadBckgContext)
-            try await checkSession(ofUserWithID: userID, lastConnected: userData.lastUsed)
+            var userData = try UserProvider().getPropertiesOfUser(withURIstr: uploadDataArrayForAlbum[0].userURIstr,
+                                                                  inContext: self.uploadBckgContext)
+            try await checkSession(ofUser: &userData)
             
             // Empty lounge
             let imageIds = uploadDataArrayForAlbum.map({ $0.imageId })
@@ -124,36 +119,38 @@ extension UploadManager {
     // MARK: - Moderate Images Uploaded by Community User
     func moderateUploadedImagesIfNeeded() async throws(PwgKitError) -> Void
     {
-        // Normal user?
-        if (ServerVars.shared.usesCommunityPluginV29
-            && ServerVars.shared.userStatus == .normal) == false {
-            return
-        }
-        
         // Are there uploaded images to moderate?
         // Considers only uploads to the server to which the user is logged in
-        let (finishedID, _) = UploadProvider().getIDsOfCompletedUploads(onlyInStates: [.finished], inContext: self.uploadBckgContext)
+        let (finishedID, _) = UploadProvider().getIDsOfCompletedUploads(onlyInStates: [.finished],
+                                                                        inContext: self.uploadBckgContext)
         if finishedID.isEmpty { return }
         
         // Get user properties
         guard let firstUploadID = finishedID.first,
-              let firstUploadData = try? UploadProvider().getPropertiesOfUpload(withID: firstUploadID, inContext: self.uploadBckgContext),
-              let userURI = URL(string: firstUploadData.userURIstr),
-              let userID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: userURI)
+              let firstUploadData = try? UploadProvider().getPropertiesOfUpload(withID: firstUploadID,
+                                                                                inContext: self.uploadBckgContext)
         else {
             // Should never happen
             // ► The moderator will be informed later
             return
         }
         
+        // Community user?
+        var userData = try UserProvider().getPropertiesOfUser(withURIstr: firstUploadData.userURIstr,
+                                                              inContext: self.uploadBckgContext)
+        if (ServerVars.shared.usesCommunityPluginV29
+            && pwgUserStatus(rawValue: userData.status) == .normal) == false {
+            return
+        }
+        
         // Check session
-        let userData = try UserProvider().getPropertiesOfUser(withURIstr: firstUploadData.userURIstr, inContext: self.uploadBckgContext)
-        try await checkSession(ofUserWithID: userID, lastConnected: userData.lastUsed)
+        try await checkSession(ofUser: &userData)
 
         // Get properties of upload requests
         var allUploadData: [(NSManagedObjectID, UploadProperties)] = []
         finishedID.forEach { uploadID in
-            if let uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID, inContext: self.uploadBckgContext) {
+            if let uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID,
+                                                                            inContext: self.uploadBckgContext) {
                 allUploadData.append((uploadID, uploadData))
             }
         }
@@ -170,7 +167,8 @@ extension UploadManager {
             let imageIDs = String(categoryUploadData.map({ "\($1.imageId)," }).reduce("", +).dropLast())
             
             // Moderate updated images
-            let validatedImageIDs = try await JSONManager.shared.moderateImages(withIds: imageIDs, inCategory: categoryId)
+            let validatedImageIDs = try await JSONManager.shared.moderateImages(withIds: imageIDs,
+                                                                                inCategory: categoryId)
             
             // Update upload requests
             let uploadDataToUpdate = categoryUploadData.filter({ validatedImageIDs.contains($1.imageId) })
@@ -178,7 +176,8 @@ extension UploadManager {
                 var newUploadData = uploadData
                 newUploadData.requestState = .moderated
                 newUploadData.requestError = ""
-                try? UploadProvider().updateUpload(withID: uploadID, properties: newUploadData, inContext: self.uploadBckgContext)
+                try? UploadProvider().updateUpload(withID: uploadID, properties: newUploadData,
+                                                   inContext: self.uploadBckgContext)
             }
         }
     }

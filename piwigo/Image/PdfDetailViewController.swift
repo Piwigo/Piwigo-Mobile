@@ -20,7 +20,7 @@ protocol PdfDetailDelegate: NSObjectProtocol {
     func scrolled(_ height: Double, by offset: Double, max maxOffset: Double)
 }
 
-class PdfDetailViewController: UIViewController
+final class PdfDetailViewController: UIViewController
 {
     weak var pdfDetailDelegate: (any PdfDetailDelegate)?
     
@@ -139,6 +139,9 @@ class PdfDetailViewController: UIViewController
         // Unregister all observers
         imageData = nil
         NotificationCenter.default.removeObserver(self)
+        #if DEBUG
+        debugPrint("••> PdfDetailViewController released memory")
+        #endif
     }
     
     
@@ -208,6 +211,15 @@ class PdfDetailViewController: UIViewController
     private func setPdfView(with document: PDFDocument) {
         // Initialiase the PDF view
         pdfView?.document = document
+        
+        // The number of pages is not stored in cache: it is known only once the document
+        // is opened, which may happen after the title view was set.
+        if document.pageCount > 0 {
+            let userInfo = ["pwgID" : imageData.pwgID as Any,
+                            "pages" : document.pageCount] as [String : Any]
+            NotificationCenter.default.post(name: .pwgPdfPageCount,
+                                            object: nil, userInfo: userInfo)
+        }
         pdfView?.autoScales = true
         pdfView?.displayMode = .singlePageContinuous
         pdfView?.displaysPageBreaks = true

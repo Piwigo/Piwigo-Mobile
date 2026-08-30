@@ -74,14 +74,16 @@ final class AlbumViewController: UIViewController
     // Bar buttons for root album
     lazy var settingsBarButton: UIBarButtonItem = getSettingsBarButton()            // before iOS 26
     lazy var discoverBarButton: UIBarButtonItem = getDiscoverButton()
-    lazy var addAlbumBarButton: UIBarButtonItem = getAddAlbumBarButton()            // since iOS 26
-    lazy var addImageBarButton: UIBarButtonItem = getAddImageBarButton()            // since iOS 26
+    var addAlbumBarButton: UIBarButtonItem?                                         // since iOS 26
+    var addImageBarButton: UIBarButtonItem?                                         // since iOS 26
     var uploadQueueBarButton: UIBarButtonItem?                                      // since iOS 26
+    
     // Bar buttons for other albums
     var actionBarButton: UIBarButtonItem?
     lazy var deleteBarButton: UIBarButtonItem = getDeleteBarButton()
     var shareBarButton: UIBarButtonItem?
     var favoriteBarButton: UIBarButtonItem?
+    
     // Bar buttons for image selection mode
     var selectBarButton: UIBarButtonItem?
     lazy var cancelBarButton: UIBarButtonItem = getCancelBarButton()
@@ -116,10 +118,15 @@ final class AlbumViewController: UIViewController
     var indexOfImageToRestore = Int.min
     var inSelectionMode = false
     var touchedImageIDs = [Int64]()
-    var selectedImageIDs = Set<Int64>()
-    var selectedFavoriteIDs = Set<Int64>()
-    var selectedVideosIDs = Set<Int64>()
-    var selectedSections = [Int : SelectButtonState]()    // State of Select buttons
+    /// IDs of all selected images and IDs of the users who added them to the Piwigo server.
+    /// The uploader IDs are stored per image because several images may have been added
+    /// by the same user: a set of uploader IDs could not be maintained on deselection.
+    var selectedImages = [Int64 : Int16]()
+    var selectedImageIDs: Set<Int64> { Set(selectedImages.keys) }
+    var selectedAddedByIDs: Set<Int16> { Set(selectedImages.values) }
+    var selectedFavoriteIDs = Set<Int64>()                  // IDs of selected images which are favorites
+    var selectedVideosIDs = Set<Int64>()                    // IDs of images which are videos
+    var selectedSections = [Int : SelectButtonState]()      // State of Select buttons
     
     
     // MARK: - Cached Values
@@ -136,20 +143,18 @@ final class AlbumViewController: UIViewController
     lazy var imageHeaderHeight: CGFloat = defaultImageHeaderHeight
     
     var updateOperations = [BlockOperation]()
-    lazy var hasFavorites: Bool = {
-        // pwg.users.favorites… methods available from Piwigo version 2.10
-        return user.canManageFavorites()
-    }()
+    
     /// Album of favorites, used to determine whether images are favorites.
     /// Checking Image.albums fires a Core Data fault per image, whereas the images of the favorites album are fetched in a single request.
     /// NB: This property is accessed by the cell provider, i.e. while a snapshot may be being applied, so the album is fetched without being created when
     /// it is missing — creating it would save the context and trigger a nested snapshot apply, i.e. a deadlock (case of a cleared cache).
-    var _favAlbum: Album? = nil
-    var favAlbum: Album? {
-        guard hasFavorites else { return nil }
+    var _favAlbum: AlbumProperties? = nil
+    var favAlbum: AlbumProperties? {
+        guard userData.canManageFavorites() else { return nil }
         // Fetch or re-fetch the album if needed (e.g. after clearing the cache)
-        if _favAlbum == nil || _favAlbum?.isDeleted == true || _favAlbum?.managedObjectContext == nil {
-            _favAlbum = albumProvider.fetchAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue)
+        if _favAlbum == nil {
+            _favAlbum = albumProvider.getProperties(ofAlbumWithID: pwgSmartAlbum.favorites.rawValue,
+                                                    inContext: mainContext)
         }
         return _favAlbum
     }
@@ -179,8 +184,10 @@ final class AlbumViewController: UIViewController
     }()
     
     
-    // MARK: - Core Data Providers
-    private lazy var userProvider: UserProvider = {
+    // MARK: - Core Data Objects
+    @MainActor
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
+    lazy var userProvider: UserProvider = {
         return UserProvider()
     }()
     lazy var albumProvider: AlbumProvider = {
@@ -188,13 +195,6 @@ final class AlbumViewController: UIViewController
     }()
     lazy var imageProvider: ImageProvider = {
         return ImageProvider()
-    }()
-    
-    
-    // MARK: - Core Data Object Contexts
-    @MainActor
-    lazy var mainContext: NSManagedObjectContext = {
-        return DataController.shared.mainContext
     }()
     
     
@@ -215,73 +215,47 @@ final class AlbumViewController: UIViewController
     /// which is too costly for methods called repeatedly during scrolling and layout.
     var currentSnapshot = Snapshot()
     
-    lazy var user: User = {
-        do {
-            guard let user = try userProvider.getUserAccount(inContext: mainContext) else {
-                // Unknown user instance! ► Back to login view
-                ClearCache.closeSession()
-                return User()
-            }
-            // User available ► Job done
-            if user.isFault {
-                // The user is not fired yet.
-                user.willAccessValue(forKey: nil)
-                user.didAccessValue(forKey: nil)
-            }
-            return user
+    // User properties
+    lazy var userData: UserProperties = {
+        // Get properties from User instance associated to album
+        if let userData = try? userProvider.getPropertiesOfCurrentUser(inContext: mainContext) {
+            return userData
         }
-        catch {
-            ClearCache.closeSession()
-            return User()
-        }
+        // Unknown user instance! ► Back to login view
+        ClearCache.closeSession()
+        return UserProperties.init(withStatus: .guest)
     }()
     
-    lazy var albumData: Album = {
+    lazy var albumData: AlbumProperties = {
         return currentAlbumData()
     }()
-    func currentAlbumData() -> Album {
-        do {
-            // Did someone delete this album?
-            if let album = try albumProvider.getAlbum(ofUser: user, withId: categoryId) {
-                // Album available ► Job done
-                if album.isFault {
-                    // The album is not fired yet.
-                    album.willAccessValue(forKey: nil)
-                    album.didAccessValue(forKey: nil)
-                }
-                return album
-            }
-            
-            // Album not available anymore ► Back to default album?
-            categoryId = AlbumVars.shared.defaultCategory
-            if let defaultAlbum = try albumProvider.getAlbum(ofUser: user, withId: categoryId) {
-                if defaultAlbum.isFault {
-                    // The default album is not fired yet.
-                    defaultAlbum.willAccessValue(forKey: nil)
-                    defaultAlbum.didAccessValue(forKey: nil)
-                }
-                changeAlbumID()
-                return defaultAlbum
-            }
-            
-            // Default album deleted ► Back to root album
-            categoryId = Int32.zero
-            if let rootAlbum = try albumProvider.getAlbum(ofUser: user, withId: Int32.zero) {
-                if rootAlbum.isFault {
-                    // The root album is not fired yet.
-                    rootAlbum.willAccessValue(forKey: nil)
-                    rootAlbum.didAccessValue(forKey: nil)
-                }
-                changeAlbumID()
-                return rootAlbum
-            }
+    func currentAlbumData() -> AlbumProperties {
+        // Get properties of album with given ID
+        if let albumData = try? albumProvider.getOrCreateProperties(ofAlbumWithID: categoryId,
+                                                                    inContext: mainContext) {
+            return albumData
         }
-        catch { }
+        
+        // Album not available anymore ► Back to default album?
+        categoryId = AlbumVars.shared.defaultCategory
+        if let albumData = try? albumProvider.getOrCreateProperties(ofAlbumWithID: categoryId,
+                                                                    inContext: mainContext) {
+            return albumData
+        }
+        
+        // Default album deleted ► Back to root album?
+        categoryId = pwgSmartAlbum.root.rawValue
+        if let albumData = try? albumProvider.getOrCreateProperties(ofAlbumWithID: categoryId,
+                                                                    inContext: mainContext) {
+            return albumData
+        }
+        
+        // No album data ► Return to login view
         ClearCache.closeSession()
-        return Album()
+        return AlbumProperties.init(withID: Int32.zero)
     }
     
-    lazy var data = AlbumViewData(withAlbum: albumData)
+    lazy var data = AlbumViewData(withData: albumData)
     lazy var albums: NSFetchedResultsController<Album> = {
         let albums: NSFetchedResultsController<Album> = data.albums
         albums.delegate = self
@@ -297,7 +271,9 @@ final class AlbumViewController: UIViewController
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        #if DEBUG
         debugPrint("••> viewDidLoad — Album #\(categoryId): \(albumData.name)")
+        #endif
         
         // Initialise album width and height
         updateContentSizes(for: traitCollection.preferredContentSizeCategory)
@@ -359,11 +335,13 @@ final class AlbumViewController: UIViewController
             }
             try images.performFetch()
         } catch {
+            #if DEBUG
             debugPrint("Error: \(error)")
+            #endif
         }
         
         // Place search bar in navigation bar of root album, reset fetching album flags
-        if categoryId == 0 {
+        if categoryId == pwgSmartAlbum.root.rawValue {
             initSearchBar()
             AlbumVars.shared.isFetchingAlbumData = Set<Int32>()
         }
@@ -374,6 +352,12 @@ final class AlbumViewController: UIViewController
         // Register font changes
         NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
                                                name: UIContentSizeCategory.didChangeNotification, object: nil)
+        
+        // Register the Piwigo ID of the user, deduced after a first upload
+        /// Registered here and not in viewWillAppear() so that parent albums,
+        /// which are not visible, do also update the rights they grant.
+        NotificationCenter.default.addObserver(self, selector: #selector(didUpdateUserID(_:)),
+                                               name: Notification.Name.pwgUserIDdidChange, object: nil)
     }
     
     @MainActor
@@ -479,7 +463,9 @@ final class AlbumViewController: UIViewController
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        #if DEBUG
         debugPrint("••> viewWillAppear — Album #\(categoryId): \(albumData.name)")
+        #endif
         
         // Always open this view with a navigation bar
         // (might have been hidden during Image Previewing)
@@ -518,7 +504,9 @@ final class AlbumViewController: UIViewController
         }
         
         // Set navigation bar and buttons
-        initBarsInPreviewMode()
+        /// Not animated because the view is not on screen yet: the bars have no width
+        /// and animating their content makes UIKit lay out the buttons at zero width.
+        initBarsInPreviewMode(animated: false)
         if #unavailable(iOS 26.0) {
             relocateButtons()
             updateButtons()
@@ -527,12 +515,20 @@ final class AlbumViewController: UIViewController
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        #if DEBUG
         debugPrint("••> viewDidAppear — Album #\(categoryId): \(albumData.name)")
+        #endif
         
         // The user may have cleared the cached data
         // Display an empty root album in that case
-        if categoryId == Int32.zero, albumData.isFault {
-            return
+        if categoryId == Int32.zero {
+            do throws(PwgKitError) {
+                albumData = try albumProvider.getOrCreateProperties(ofAlbumWithID: pwgSmartAlbum.root.rawValue,
+                                                                    inContext: mainContext)
+            }
+            catch {
+                ClearCache.closeSession()
+            }
         }
         
         // Header informing user on network status
@@ -547,12 +543,59 @@ final class AlbumViewController: UIViewController
         let isSmartAlbum = self.categoryId < 0
         let expectedNbImages = self.albumData.nbImages
         let missingImages = (expectedNbImages > 0) && (nbImages < expectedNbImages / 2)
-        if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty,
+        if navigationController?.topViewController !== self {
+            // Only the album which is presented fetches data
+            /// Restoring a scene pushes every album of the restored path and each of them
+            /// appears, so this method runs once per restored album. The albums which are
+            /// not presented are refreshed when the user comes back to them, i.e. when they
+            /// appear again. Without this, they would all fetch data at once, and the
+            /// concurrent session checks would race each other (see SessionChecker).
+        }
+        else if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty,
            isSmartAlbum || missingImages ||
             (lastLoad > TimeInterval(3600) || AlbumVars.shared.fetchAlbumDataRecursively)
         {
             // Fetch album/image data after checking session
+            // and refresh the list of shared albums if needed
             self.startFetchingAlbumAndImages(withHUD: isSmartAlbum || missingImages)
+        }
+        else {
+            // Refresh the share of this album, which also tells whether this user
+            // may share albums after a restoration of the scene (see fetchShareOfAlbum)
+            Task {
+                do throws(PwgKitError) {
+                    // Check session
+                    /// Without a session, the plugin considers the user as a guest and rejects the
+                    /// request with a 403 error, which fetchShareOfAlbum() would take for a definitive
+                    /// "this user may not share albums" and remember for the rest of the session.
+                    try await LoginUtilities().checkSessionOfCurrentUser()
+
+                    // Fetch Share Album data
+                    await fetchShareOfAlbum()
+                }
+                catch {
+                    await MainActor.run {
+                        // Could not check the session ► Remove current album
+                        // from list of albums being fetched
+                        AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
+
+                        // End refreshing if needed
+                        self.collectionView?.refreshControl?.endRefreshing()
+
+                        // Session logout required?
+                        if error.requiresLogout {
+                            ClearCache.closeSessionWithPwgError(from: self, error: error)
+                            return
+                        }
+                        
+                        // Report error
+                        self.navigationController?.hideHUD {
+                            let title = String(localized: "internetErrorGeneral_title", comment: "Connection Error")
+                            self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
+                        }
+                    }
+                }
+            }
         }
         
         // Display What's New in Piwigo if needed
@@ -563,7 +606,7 @@ final class AlbumViewController: UIViewController
 //}
 #endif
         if let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
-            if AppVars.shared.didShowWhatsNewAppVersion.compare("4.3", options: .numeric) == .orderedAscending,
+            if AppVars.shared.didShowWhatsNewAppVersion.compare("4.4", options: .numeric) == .orderedAscending,
                appVersionString.compare(AppVars.shared.didShowWhatsNewAppVersion, options: .numeric) == .orderedDescending {
                 // Display What's New in Piwigo
                 let whatsNewSB = UIStoryboard(name: "WhatsNewViewController", bundle: nil)
@@ -583,7 +626,7 @@ final class AlbumViewController: UIViewController
                     whatsNewVC.modalTransitionStyle = .coverVertical
                     whatsNewVC.modalPresentationStyle = .pageSheet
                     whatsNewVC.isModalInPresentation = true
-                    let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+                    let orientation = view.currentInterfaceOrientation
                     if let sheet = whatsNewVC.sheetPresentationController {
                         sheet.detents = [.medium(), .large()]
                         if orientation == .landscapeLeft || orientation == .landscapeRight {
@@ -609,7 +652,7 @@ final class AlbumViewController: UIViewController
         // Display help views only when showing regular albums
         // and less than once a day
         let dateOfLastHelpView = AppVars.shared.dateOfLastHelpView
-        let diff = Date().timeIntervalSinceReferenceDate - dateOfLastHelpView
+        let diff = Date.timeIntervalSinceReferenceDate - dateOfLastHelpView
         if categoryId <= 0 || diff > TimeInterval(86400) { return }
         
         // Determine which help pages should be presented
@@ -618,7 +661,7 @@ final class AlbumViewController: UIViewController
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000001) == 0 {
             displayHelpPagesWithID.append(1) // i.e. multiple selection of images
         }
-        if nberOfAlbums() > 2, user.hasAdminRights {
+        if nberOfAlbums() > 2, userData.hasAdminRights {
             if (AppVars.shared.didWatchHelpViews & 0b00000000_00000100) == 0 {
                 displayHelpPagesWithID.append(3) // i.e. management of albums w/ description
             }
@@ -711,7 +754,9 @@ final class AlbumViewController: UIViewController
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        #if DEBUG
         debugPrint("••> viewWillDisappear — Album #\(categoryId): \(albumData.name)")
+        #endif
 
         // Cancel remaining tasks
         let catIDstr = String(self.categoryId)
@@ -721,7 +766,9 @@ final class AlbumViewController: UIViewController
                 .value(forHTTPHeaderField: HTTPCatID) == catIDstr })
             // Cancel remaining tasks related with this completed upload request
             tasksToCancel.forEach({
+                #if DEBUG
                 debugPrint("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel task \($0.taskIdentifier) related with album \(catIDstr)")
+                #endif
                 $0.cancel()
             })
         }
@@ -737,7 +784,9 @@ final class AlbumViewController: UIViewController
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        #if DEBUG
         debugPrint("••> viewDidDisappear — Album #\(categoryId): \(albumData.name)")
+        #endif
 
         // Make sure buttons are back to initial state
         if #unavailable(iOS 26.0) {
@@ -756,10 +805,36 @@ final class AlbumViewController: UIViewController
 
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
+        #if DEBUG
         debugPrint("••> AlbumViewController released memory")
+        #endif
     }
-    
-    
+
+
+    // MARK: - User Data
+    /// The Piwigo ID of a Community user is deduced from the 'added_by' attribute
+    /// of an image he/she has uploaded, i.e. it becomes known after a first upload.
+    /// Until then, the app grants him/her the rights of an uploader (see UserProperties).
+    @MainActor
+    @objc func didUpdateUserID(_ notification: Notification) {
+        // Check notification data
+        guard let pwgID = notification.userInfo?["pwgID"] as? Int16,
+              notification.userInfo?["userURIstr"] as? String == userData.URIstr,
+              userData.pwgID != pwgID
+        else { return }
+
+        // Adopt the ID returned by the server
+        userData.pwgID = pwgID
+
+        // Review the rights granted to that user
+        if inSelectionMode {
+            updateBarsInSelectMode()
+        } else {
+            updateBarsInPreviewMode()
+        }
+    }
+
+
     // MARK: - Album Data
     func changeAlbumID() {
         // Add/remove search bar
@@ -809,16 +884,19 @@ final class AlbumViewController: UIViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: self.user.objectID,
-                                                        lastConnected: self.user.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 // Fetch album and image data
                 await self.fetchAlbumsAndImages()
             }
             catch {
                 await MainActor.run {
+                    // Could not check the session ► Remove current album
+                    // from list of albums being fetched
+                    AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
+
                     // End refreshing if needed
                     self.collectionView?.refreshControl?.endRefreshing()
-                    
+
                     // Session logout required?
                     if error.requiresLogout {
                         ClearCache.closeSessionWithPwgError(from: self, error: error)
@@ -838,7 +916,9 @@ final class AlbumViewController: UIViewController
     @objc func refresh(_ refreshControl: UIRefreshControl?) {
         // Already being fetching album data?
         if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty == false {
+            #if DEBUG
             debugPrint("••> Still fetching data in albums with IDs: \(AlbumVars.shared.isFetchingAlbumData.debugDescription) (wanted \(categoryId))")
+            #endif
             // End animated refresh if needed
             self.collectionView?.refreshControl?.endRefreshing()
             return
@@ -847,7 +927,14 @@ final class AlbumViewController: UIViewController
         // Check that the root album exists
         // (might have been deleted with a clear of the cache)
         if categoryId == Int32.zero {
-            albumData = currentAlbumData()
+            do {
+                albumData = try albumProvider.getOrCreateProperties(ofAlbumWithID: pwgSmartAlbum.root.rawValue,
+                                                                    inContext: mainContext)
+            }
+            catch {
+                ClearCache.closeSession()
+                return
+            }
         }
         
         // Fetch album/image data after checking session
@@ -855,6 +942,10 @@ final class AlbumViewController: UIViewController
     }
     
     @objc func fetchCompleted() async {
+        // Done fetching album and image data
+        // ► Remove current album from list of albums being fetched
+        AlbumVars.shared.isFetchingAlbumData.remove(categoryId)
+
         DispatchQueue.main.async { [self] in
             // Hide HUD if needed
             self.navigationController?.hideHUD { }
@@ -877,19 +968,17 @@ final class AlbumViewController: UIViewController
         }
 
         // Fetch favorites in the background if needed
-        do {
-            if hasFavorites, categoryId != pwgSmartAlbum.favorites.rawValue,
-               "2.10.0".compare(ServerVars.shared.pwgVersion, options: .numeric) != .orderedDescending,
-               ServerVars.shared.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending,
-               AlbumVars.shared.isFetchingAlbumData.contains(pwgSmartAlbum.favorites.rawValue) == false,
-               let favAlbum = try AlbumProvider().getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue),
-               Date.timeIntervalSinceReferenceDate - favAlbum.dateGetImages > TimeInterval(86400) { // i.e. a day
-                // Remember that the app is fetching favorites
-                AlbumVars.shared.isFetchingAlbumData.insert(pwgSmartAlbum.favorites.rawValue)
-                // Fetch favorites in the background
-                await self.loadFavoritesInBckg()
-            }
-        } catch { }
+        if userData.canManageFavorites(), categoryId != pwgSmartAlbum.favorites.rawValue,
+           "2.10.0".compare(ServerVars.shared.pwgVersion, options: .numeric) != .orderedDescending,
+           ServerVars.shared.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending,
+           AlbumVars.shared.isFetchingAlbumData.contains(pwgSmartAlbum.favorites.rawValue) == false,
+           let favAlbum,
+           Date.timeIntervalSinceReferenceDate - favAlbum.dateGetImages > TimeInterval(86400) { // i.e. a day
+            // Remember that the app is fetching favorites
+            AlbumVars.shared.isFetchingAlbumData.insert(pwgSmartAlbum.favorites.rawValue)
+            // Fetch favorites in the background
+            await self.loadFavoritesInBckg()
+        }
     }
 
 

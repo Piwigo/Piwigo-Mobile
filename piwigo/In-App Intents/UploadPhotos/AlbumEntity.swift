@@ -38,21 +38,26 @@ struct AlbumEntity: AppEntity, Sendable {
 @available(iOS 16.0, *)
 struct AlbumQuery: EntityStringQuery {
 
+    // MARK: - Core Data Objects
     @MainActor
-    private func currentUser() -> User? {
-        try? UserProvider().getUserAccount(inContext: DataController.shared.mainContext)
+    private let mainContext = DataController.shared.mainContext
+    @MainActor
+    private func currentUser() -> UserProperties? {
+        try? UserProvider().getPropertiesOfCurrentUser(inContext: mainContext)
     }
 
+    
+    // MARK: - Exposed Entities
     /// Only exposes albums the current user is allowed to upload to, matching the rules
     /// the share extension applies (see `ShareViewController+DataSource.swift`).
     @MainActor
     private func uploadableAlbums(matching predicate: NSPredicate?) -> [AlbumEntity] {
-        guard let user = currentUser()
+        guard let userData = currentUser()
         else { return [] }
 
         var andPredicates = [
             NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath),
-            NSPredicate(format: "user.username == %@", ServerVars.shared.user),
+            NSPredicate(format: "user.username == %@", ServerVars.shared.username),
             NSPredicate(format: "pwgID > 0")   // Exclude the root and smart albums.
         ]
         if let predicate { andPredicates.append(predicate) }
@@ -62,17 +67,17 @@ struct AlbumQuery: EntityStringQuery {
         request.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true,
                                                     selector: #selector(NSString.localizedStandardCompare(_:)))]
 
-        let albums = (try? DataController.shared.mainContext.fetch(request)) ?? []
+        let albums = (try? mainContext.fetch(request)) ?? []
         
         // User with admin rights?
         let serverPath = ServerVars.shared.serverPath
-        if user.hasAdminRights {
+        if userData.hasAdminRights {
             return albums.map { AlbumEntity(pwgID: $0.pwgID, serverPath: serverPath, name: $0.name) }
         }
 
         // User with normal rights?
-        if ServerVars.shared.userStatus != .normal { return [] }
-        let uploadRights = user.uploadRights.components(separatedBy: ",").compactMap { Int32($0) }
+        if pwgUserStatus(rawValue: userData.status) != .normal { return [] }
+        let uploadRights = userData.uploadRights.components(separatedBy: ",").compactMap { Int32($0) }
         return albums
             .filter { uploadRights.contains($0.pwgID) }
             .map { AlbumEntity(pwgID: $0.pwgID, serverPath: serverPath, name: $0.name) }

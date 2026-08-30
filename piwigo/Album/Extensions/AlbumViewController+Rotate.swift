@@ -102,7 +102,7 @@ extension AlbumViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Rotate thumbnails on server
                 try await JSONManager.shared.rotateImage(withID: imageData.pwgID, by: angle)
@@ -138,7 +138,7 @@ extension AlbumViewController
 
                     // Next image
                     remainingIDs.removeFirst()
-                    deselectImages(withIDs: Set([imageID]))
+                    deselectImages(withIDs: Set([imageData.pwgID]))
                     rotateImages(withID: remainingIDs, by: angle, total: total)
                 }
             }
@@ -151,7 +151,7 @@ extension AlbumViewController
     @MainActor
     private func rotateImagesInDatabaseError(_ error: PwgKitError) {
         // Session logout required?
-        if error.requiresLogout {
+        if error.requiresLogout, userData.pwgID != 0 {
             ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }

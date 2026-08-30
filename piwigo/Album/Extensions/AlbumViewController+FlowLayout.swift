@@ -25,7 +25,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
     
     // MARK: - Headers
     func getAlbumDescriptionSize() -> CGSize {
-        guard !albumData.comment.string.isEmpty
+        guard !albumData.comment.characters.isEmpty
         else { return CGSize.zero }
         
         let desc = attributedComment()

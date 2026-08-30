@@ -6508,7 +6508,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2.11.2 verzió\n2022. június 21\n\n• Kijavít egy kompatibilitási problémát a Community beépülő modullal"
+            "value" : "2.11.2-es verzió\n2022. június 21\n\n• Kijavít egy kompatibilitási problémát a Community beépülő modullal"
           }
         },
         "id" : {
@@ -6710,7 +6710,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2.12.1 verzió\n2022 Július 10\n\n• Kijavítja az iOS 9–13 rendszeren előforduló összeomlást, amikor módosítja a fényképekhez rendelt címkéket"
+            "value" : "2.12.1-es verzió\n2022 Július 10\n\n• Kijavítja az iOS 9–13 rendszeren előforduló összeomlást, amikor módosítja a fényképekhez rendelt címkéket"
           }
         },
         "id" : {
@@ -6811,7 +6811,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2.12.2 verzió\n2022 Augusztus 2\n\n• Kijavítja az iOS 9–12 rendszeren előforduló összeomlást a feltöltési kéréssor megjelenítésekor\n• Kisebb hibajavítások és fejlesztések a felületen"
+            "value" : "2.12.2-es verzió\n2022 Augusztus 2\n\n• Kijavítja az iOS 9–12 rendszeren előforduló összeomlást a feltöltési kéréssor megjelenítésekor\n• Kisebb hibajavítások és fejlesztések a felületen"
           }
         },
         "id" : {
@@ -6912,7 +6912,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2.12.3 verzió\n2022 Augusztus 7\n\n• Hibajavítások"
+            "value" : "2.12.3-as verzió\n2022 Augusztus 7\n\n• Hibajavítások"
           }
         },
         "id" : {
@@ -7013,7 +7013,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2.12.4 verzió\n2022 Augusztus 16\n\n• Hibajavítások"
+            "value" : "2.12.4-es verzió\n2022 Augusztus 16\n\n• Hibajavítások"
           }
         },
         "id" : {
@@ -7114,7 +7114,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2.12.5 verzió\n2022 Augusztus 26\n\n• Hibajavítások"
+            "value" : "2.12.5-ös verzió\n2022 Augusztus 26\n\n• Hibajavítások"
           }
         },
         "id" : {
@@ -7215,7 +7215,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2.12.6 verzió\n2022 November 21\n\n• Hibajavítások"
+            "value" : "2.12.6-os verzió\n2022 November 21\n\n• Hibajavítások"
           }
         },
         "id" : {
@@ -7316,7 +7316,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2.12.7 verzió\n2022 December 19\n\n• Hibajavítások"
+            "value" : "2.12.7-es verzió\n2022 December 19\n\n• Hibajavítások"
           }
         },
         "id" : {
@@ -7417,7 +7417,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.0 verzió\n2023. június 27\n\n• A gyorsítótár-kezelés teljesen újraírva a felhasználói élmény javítása és az offline böngészés érdekében.\n• Néhány fordítás javítása"
+            "value" : "3.0-ás verzió\n2023. június 27\n\n• A gyorsítótár-kezelés teljesen újraírva a felhasználói élmény javítása és az offline böngészés érdekében.\n• Néhány fordítás javítása"
           }
         },
         "id" : {
@@ -7720,7 +7720,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.1 verzió\n2023 November 20\n\n• Az egyes fényképek vagy videók megtekintésekor a képet lefelé húzva vagy megcsípve visszatérhet az albumba.\n• Nézzen meg egy Piwigo-n tárolt videót, miközben más alkalmazásokat használ.\n• Hibajavítások"
+            "value" : "3.1-es verzió\n2023 November 20\n\n• Az egyes fényképek vagy videók megtekintésekor a képet lefelé húzva vagy megcsípve visszatérhet az albumba.\n• Nézzen meg egy Piwigo-n tárolt videót, miközben más alkalmazásokat használ.\n• Hibajavítások"
           }
         },
         "id" : {
@@ -7821,7 +7821,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.1.1 verzió\n2023 December 1\n\n• Szerver statisztikák frissítése (Piwigo 14 szükséges)\n• Hibajavítások"
+            "value" : "3.1.1-es verzió\n2023 December 1\n\n• Szerver statisztikák frissítése (Piwigo 14 szükséges)\n• Hibajavítások"
           }
         },
         "id" : {
@@ -7922,7 +7922,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.1.2 verzió\n2024 Február 1\n\n• Szükség esetén kéri a Piwigo szerver frissítését\n• Hibajavítások"
+            "value" : "3.1.2-es verzió\n2024 Február 1\n\n• Szükség esetén kéri a Piwigo szerver frissítését\n• Hibajavítások"
           }
         },
         "id" : {
@@ -8023,7 +8023,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.1.3-es verzió\n2024 Február 11\n\n• Hibajavítások"
+            "value" : "3.1.3-as verzió\n2024 Február 11\n\n• Hibajavítások"
           }
         },
         "id" : {
@@ -8124,7 +8124,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.1.4 verzió\n2024 Február 27\n\n• Kijavítja az iOS 12 rendszeren előforduló összeomlást"
+            "value" : "3.1.4-es verzió\n2024 Február 27\n\n• Kijavítja az iOS 12 rendszeren előforduló összeomlást"
           }
         },
         "id" : {
@@ -8528,7 +8528,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.2.3-es verzió\n2024 Október 17\n\n• Hibajavítások"
+            "value" : "3.2.3-as verzió\n2024 Október 17\n\n• Hibajavítások"
           }
         },
         "id" : {
@@ -8730,7 +8730,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.2.5-es verzió\n2025 Február 17\n\n• Kisebb hibajavítások és fejlesztések a felületen"
+            "value" : "3.2.5-ös verzió\n2025 Február 17\n\n• Kisebb hibajavítások és fejlesztések a felületen"
           }
         },
         "id" : {
@@ -8831,7 +8831,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.3 verzió\n2025 Március 26\n\n• Sokkal gyorsabban másolja és mozgatja a kiválasztott fényképeket\n• Az adatbázis-migráció jobb kezelése\n• Javítja a fényképek és videók megosztási jogainak kezelését\n• Hibák javítása és a kezelőfelület javítása"
+            "value" : "3.3-as verzió\n2025 Március 26\n\n• Sokkal gyorsabban másolja és mozgatja a kiválasztott fényképeket\n• Az adatbázis-migráció jobb kezelése\n• Javítja a fényképek és videók megosztási jogainak kezelését\n• Hibák javítása és a kezelőfelület javítása"
           }
         },
         "id" : {
@@ -8932,7 +8932,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.3.1 verzió\n2025 Március 28\n\n• Videó automatikus lejátszási és looping opciók hozzáadása\n• Hibajavítások és a kezelőfelület javítása"
+            "value" : "3.3.1-es verzió\n2025 Március 28\n\n• Videó automatikus lejátszási és looping opciók hozzáadása\n• Hibajavítások és a kezelőfelület javítása"
           }
         },
         "id" : {
@@ -9033,7 +9033,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.3.2 verzió\n2025 Április 14\n\n• Hibajavítások és a kezelőfelület javítása"
+            "value" : "3.3.2-es verzió\n2025 Április 14\n\n• Hibajavítások és a kezelőfelület javítása"
           }
         },
         "id" : {
@@ -9134,7 +9134,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.4 verzió\n2025 Június 30\n\n• Fájlnevek feltöltés előtti módosításának lehetőségei\n• Hibajavítások és a kezelőfelület javítása"
+            "value" : "3.4-es verzió\n2025 Június 30\n\n• Fájlnevek feltöltés előtti módosításának lehetőségei\n• Hibajavítások és a kezelőfelület javítása"
           }
         },
         "id" : {
@@ -9235,7 +9235,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.4.1 verzió\n2025. július 26.\n\n• Hozzáadja a kezdőképernyő gyors műveleteit\n• Hibák javítása és a felület javítása"
+            "value" : "3.4.1-es verzió\n2025. július 26.\n\n• Hozzáadja a kezdőképernyő gyors műveleteit\n• Hibák javítása és a felület javítása"
           }
         },
         "id" : {
@@ -9538,7 +9538,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4.0-as verzió\nSeptember 15, 2025\n\n• iOS 26 kompatibilitás\n• Kisebb hibajavítások és fejlesztések a felületen"
+            "value" : "4.0-ás verzió\nSeptember 15, 2025\n\n• iOS 26 kompatibilitás\n• Kisebb hibajavítások és fejlesztések a felületen"
           }
         },
         "id" : {
@@ -9740,7 +9740,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4.1.1 verzió\n2025 November 11\n\n• Hibajavítások és a kezelőfelület javítása"
+            "value" : "4.1.1-es verzió\n2025 November 11\n\n• Hibajavítások és a kezelőfelület javítása"
           }
         },
         "id" : {
@@ -9841,7 +9841,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4.1.2 verzió\n2025 December 12\n\n• API-kulcsok támogatása\n• Hibajavítások és a felület fejlesztése\n• Kód modernizálása"
+            "value" : "4.1.2-es verzió\n2025 December 12\n\n• API-kulcsok támogatása\n• Hibajavítások és a felület fejlesztése\n• Kód modernizálása"
           }
         },
         "id" : {
@@ -9942,7 +9942,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4.1.3 verzió\n2025 December 20\n\n• Piwigo 16 kompatibilitás\n• Hibajavítások és a kezelőfelület javítása"
+            "value" : "4.1.3-as verzió\n2025 December 20\n\n• Piwigo 16 kompatibilitás\n• Hibajavítások és a kezelőfelület javítása"
           }
         },
         "id" : {
@@ -10043,7 +10043,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4.1.4 verzió\n2026 Március 25\n\n• Hibajavítások"
+            "value" : "4.1.4-es verzió\n2026 Március 25\n\n• Hibajavítások"
           }
         },
         "id" : {
@@ -10447,7 +10447,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4.2.3 verzió\n2026 Május 29\n\n• Hibajavítások és a kezelőfelület javítása\n• Felfüggeszti a feltöltést, ha az eszköznek lehűlnie kell"
+            "value" : "4.2.3-as verzió\n2026 Május 29\n\n• Hibajavítások és a kezelőfelület javítása\n• Felfüggeszti a feltöltést, ha az eszköznek lehűlnie kell"
           }
         },
         "id" : {
@@ -10732,7 +10732,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.3.1\n\n• Bug fixes"
+            "value" : "Version 4.3.1\nAugust 22, 2026\n\n• Bug fixes"
           }
         },
         "es" : {
@@ -10750,7 +10750,7 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4.3.1 verzió\n\n• Hibajavítások"
+            "value" : "4.3.1-es verzió\n\n• Hibajavítások"
           }
         },
         "id" : {
@@ -10805,6 +10805,107 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "版本 4.3.1\n\n• 錯誤修正"
+          }
+        }
+      }
+    },
+    "v4.4.0_text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإصدار 4.4\n\n• مشاركة الألبومات الخاصة مع أشخاص ليس لديهم حساب (يتطلب ملحق Share Album)\n• استيراد الصور الحية كصورة أو فيديو أو كليهما\n• تحسين إدارة مستخدمي Community\n• إصلاح الأخطاء"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.4\n\n• Gør det muligt at dele private album med personer, der ikke har en konto (kræver Share Album-pluginnet)\n• Importerer Live Photos som foto, video eller begge\n• Forbedrer administrationen af Community-brugere\n• Fejlrettelser"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.4\n\n• Ermöglicht das Teilen privater Alben mit Personen ohne Konto (erfordert das Share Album Plugin)\n• Importiert Live Photos als Foto, Video oder beides\n• Verbessert die Verwaltung von Community-Benutzern\n• Fehlerbehebungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.4\n\n• Allows to share private albums with people who do not have an account (requires the Share Album plugin)\n• Imports Live Photos as photo, video or both\n• Improves Community user management\n• Bug fixes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión 4.4\n\n• Permite compartir álbumes privados con personas que no tengan una cuenta (requiere el plugin Share Album)\n• Importa las Live Photos como foto, vídeo o ambos\n• Mejora la gestión de los usuarios de Community\n• Corrección de errores"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.4\n\n• Partage d'albums privés avec des personnes qui n'ont pas de compte (nécessite le plugin Share Album)\n• Import des Live Photos en tant que photo, vidéo ou les deux\n• Amélioration de la gestion des utilisateurs Community\n• Correction de bugs"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4.4-es verzió\n\n• Privát albumok megosztása olyanokkal, akiknek nincs fiókjuk (a Share Album beépülő modult igényli)\n• Live Photók importálása fotóként, videóként vagy mindkettőként\n• A Community felhasználók kezelésének fejlesztése\n• Hibajavítások"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versi 4.4\n\n• Memungkinkan membagikan album pribadi kepada orang yang tidak memiliki akun (memerlukan plugin Share Album)\n• Mengimpor Live Photos sebagai foto, video, atau keduanya\n• Meningkatkan pengelolaan pengguna Community\n• Perbaikan bug"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versione 4.4\n\n• Consente di condividere album privati con chi non ha un account (richiede il plugin Share Album)\n• Importa le Live Photo come foto, video o entrambi\n• Migliora la gestione degli utenti Community\n• Correzioni di bug"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バージョン 4.4\n\n• アカウントを持たない人と非公開アルバムを共有できるようになりました（Share Album プラグインが必要）\n• Live Photos を写真、動画、またはその両方としてインポート\n• Community ユーザー管理の改善\n• バグの修正"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versie 4.4\n\n• Maakt het mogelijk privéalbums te delen met personen die geen account hebben (vereist de Share Album plugin)\n• Importeert Live Photos als foto, video of beide\n• Verbetert het beheer van Community-gebruikers\n• Foutjes verbeterd"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wersja 4.4\n\n• Umożliwia udostępnianie albumów prywatnych osobom, które nie mają konta (wymaga wtyczki Share Album)\n• Importuje zdjęcia Live Photo jako zdjęcie, film lub oba\n• Ulepszono zarządzanie użytkownikami Community\n• Poprawki błędów"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версия 4.4\n\n• Возможность делиться приватными альбомами с теми, у кого нет учётной записи (требуется плагин Share Album)\n• Импорт Live Photo как фото, видео или того и другого\n• Улучшено управление пользователями Community\n• Исправления ошибок"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.4\n\n• Gör det möjligt att dela privata album med personer som inte har ett konto (kräver Share Album-plugin)\n• Importerar Live Photo-bilder som foto, video eller båda\n• Förbättrar hanteringen av Community-användare\n• Buggfixar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 4.4\n\n• 支持与没有账户的人共享私密相册（需要 Share Album 插件）\n• 可将实况照片导入为照片、视频或两者\n• 改进 Community 用户管理\n• 错误修复"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 4.4\n\n• 可與沒有帳號的人分享私人相簿（需要「Share Album」外掛程式）\n• 將原況照片匯入為照片、影片或兩者\n• 改善 Community 使用者管理\n• 錯誤修正"
           }
         }
       }

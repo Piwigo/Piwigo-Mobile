@@ -15,7 +15,7 @@ extension AutoUploadViewController: TagsViewControllerDelegate {
     // Collect selected tags
     func didSelectTags(_ selectedTags: Set<Tag>) {
         // Store selected tags
-        let tagIDs: String = selectedTags.map({"\($0.tagId),"}).reduce("", +)
+        let tagIDs: String = selectedTags.map({"\($0.pwgID),"}).reduce("", +)
         UploadVars.shared.autoUploadTagIds = String(tagIDs.dropLast(1))
 
         // Update cell

@@ -17,9 +17,11 @@ extension ImageViewController
 {
     // MARK: - Menu
     @MainActor
-    func rotateMenu() -> UIMenu {
+    func rotateMenu() -> UIMenu? {
+        // Check that the rotateImage plugin is installed and available
+        guard ServerVars.shared.usesImageRotate else { return nil }
         return UIMenu(title: String(localized: "rotateImage_rotate", comment: "Rotate 90°…"),
-                      image: UIImage(systemName: ""),
+                      image: nil,
                       identifier: UIMenu.Identifier("org.piwigo.piwigoImage.rotate"),
                       children: [rotateRightAction(), rotateLeftAction()])
     }
@@ -69,7 +71,7 @@ extension ImageViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Rotate thumbnails
                 try await JSONManager.shared.rotateImage(withID: imageData.pwgID, by: angle)
@@ -108,7 +110,7 @@ extension ImageViewController
                         }
                     }
                     // Save changes
-                    self.mainContext.saveIfNeeded()
+                    mainContext.saveIfNeeded()
                 }
             }
             catch {
@@ -120,7 +122,7 @@ extension ImageViewController
     @MainActor
     private func rotateImageInDatabaseError(_ error: PwgKitError) {
         // Session logout required?
-        if error.requiresLogout {
+        if error.requiresLogout, userData.pwgID != 0 {
             ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }

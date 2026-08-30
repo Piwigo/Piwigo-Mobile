@@ -17,7 +17,6 @@ public extension JSONManager {
                      thumbnailSize: pwgImageSize) async throws(PwgKitError) -> [CategoryGetInfo] {
         // Smart album requested?
         if parentId < 0 { preconditionFailure("••> Cannot fetch data of smart album!") }
-        debugPrint("••> Fetch albums in parent with ID: \(parentId)")
         
         // Launch the HTTP(S) request
         var pwgData = try await JSONManager.shared.getAlbums(inParentWithId: parentId,

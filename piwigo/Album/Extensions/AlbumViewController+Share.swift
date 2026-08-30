@@ -18,18 +18,17 @@ extension AlbumViewController
     func getShareBarButton() -> UIBarButtonItem? {
         // Since Piwigo 14, pwg.categories.getImages method returns download_url if the user has download rights
         // For previous versions, we assume that all only registered users have download rights
-        if user.canDownloadImages() {
-            let button = UIBarButtonItem(barButtonSystemItem: .action, target: self,
-                                         action: #selector(shareSelection))
-            button.tintColor = PwgColor.tintColor
-            return button
-        } else {
-            return nil
-        }
+        guard userData.canDownloadImages()
+        else { return nil }
+
+        let button = UIBarButtonItem(barButtonSystemItem: .action, target: self,
+                                     action: #selector(shareSelection))
+        button.tintColor = PwgColor.tintColor
+        return button
     }
 
 
-    // MARK: Share Images
+    // MARK: - Share Images
     @objc func shareSelection() {
         initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .share, contextually: false)
     }
@@ -49,11 +48,55 @@ extension AlbumViewController
                 DispatchQueue.main.async {
                     self.shareImages(withID: imageIDs, withCameraRollAccess: false, contextually: contextually)
                 }
-            })
+            }
+        )
     }
 
     @MainActor
     func shareImages(withID imageIDs: Set<Int64>, withCameraRollAccess hasCameraRollAccess: Bool, contextually: Bool) {
+
+        // PDF, EPS and GIF files are shared as they are: no option can change anything.
+        let selection = (images.fetchedObjects ?? []).filter({ imageIDs.contains($0.pwgID) })
+        guard ShareUtilities.optionsToPropose(for: selection).metadata else {
+            shareImages(withID: imageIDs, using: ShareOptions.lastUsed,
+                        withCameraRollAccess: hasCameraRollAccess, contextually: contextually)
+            return
+        }
+        
+        // Let the user choose what will be shared before presenting the share sheet.
+        /// The choice cannot be proposed afterwards: the type and the size of the items
+        /// decide which activities the share sheet proposes and what they receive.
+        guard let optionsVC = UIStoryboard(name: "ShareOptionsViewController", bundle: nil)
+            .instantiateViewController(withIdentifier: "ShareOptionsViewController") as? ShareOptionsViewController
+        else { return }
+        
+        optionsVC.images = selection
+        optionsVC.completion = { [weak self] options in
+            guard let options = options else {
+                // The user gave up: leave the selection mode untouched, but close the HUD
+                // presented while the data of the images was retrieved and re-enable the
+                // buttons disabled by initSelection(ofImagesWithIDs:beforeAction:).
+                /// Both are otherwise only undone once the share sheet is presented, which
+                /// never happens when this sheet is dismissed without choosing an option.
+                self?.navigationController?.hideHUD { }
+                self?.setEnableStateOfButtons(true)
+                return
+            }
+            self?.shareImages(withID: imageIDs, using: options,
+                              withCameraRollAccess: hasCameraRollAccess, contextually: contextually)
+        }
+        
+        let navController = UINavigationController(rootViewController: optionsVC)
+        if let sheet = navController.sheetPresentationController {
+            sheet.detents = [.medium(), .large()]
+            sheet.prefersGrabberVisible = true
+        }
+        present(navController, animated: true)
+    }
+
+    @MainActor
+    func shareImages(withID imageIDs: Set<Int64>, using options: ShareOptions,
+                     withCameraRollAccess hasCameraRollAccess: Bool, contextually: Bool) {
 
         // Create new activity provider items to pass to the activity view controller
         var itemsToShare: [UIActivityItemProvider] = []
@@ -73,7 +116,7 @@ extension AlbumViewController
                 if let image = (images.fetchedObjects ?? []).first(where: {$0.pwgID == imageID}) {
                     if image.isVideo {
                         // Case of a video
-                        let videoItemProvider = ShareVideoActivityItemProvider(imageData: image, scale: scale, contextually: contextually)
+                        let videoItemProvider = ShareVideoActivityItemProvider(imageData: image, scale: scale, options: options, contextually: contextually)
                         
                         // Use delegation to monitor the progress of the item method
                         videoItemProvider.delegate = self
@@ -100,9 +143,7 @@ extension AlbumViewController
                         itemsToShare.append(pdfItemProvider)
                         
                         // Exclude some activities
-                        excludedActivityTypes.formUnion([.assignToContact, .saveToCameraRoll,
-                                                         .postToFacebook, .postToTwitter, .postToWeibo,
-                                                         .postToVimeo, .postToTencentWeibo])
+                        excludedActivityTypes.formUnion([.assignToContact, .saveToCameraRoll])
                         if #available(iOS 16.4, *) {
                             excludedActivityTypes.formUnion([.addToHomeScreen,
                                                              .collaborationCopyLink, .collaborationInviteWithLink])
@@ -111,7 +152,7 @@ extension AlbumViewController
                     }
                     else {
                         // Case of an image
-                        let imageItemProvider = ShareImageActivityItemProvider(imageData: image, scale: scale, contextually: contextually)
+                        let imageItemProvider = ShareImageActivityItemProvider(imageData: image, scale: scale, options: options, contextually: contextually)
                         
                         // Use delegation to monitor the progress of the item method
                         imageItemProvider.delegate = self
@@ -185,12 +226,19 @@ extension AlbumViewController
                         if activityType == nil {
                             // User dismissed the view controller without making a selection.
                             setEnableStateOfButtons(true)
+
+                            // Cancel a download which is still running for a share that
+                            // no longer exists, before the providers unregister below.
+                            NotificationCenter.default.post(name: .pwgCancelDownload, object: nil)
+
+                            // Delete shared file & remove observers
+                            NotificationCenter.default.post(name: .pwgDidShare, object: nil)
                         } else {
                             // Check what to do with selection
                             if contextually {
                                 setEnableStateOfButtons(true)
                             } else {
-                                if selectedImageIDs.isEmpty {
+                                if selectedImages.isEmpty {
                                     cancelSelect()
                                 } else {
                                     setEnableStateOfButtons(true)
@@ -238,7 +286,7 @@ extension AlbumViewController: @preconcurrency ShareImageActivityItemProviderDel
                                                         withTitle title: String) {
         // Show HUD to let the user know the image is being downloaded in the background.
         let total = presentedViewController?.view.tag ?? 1
-        let detail = total > 1 ? String(format: "%d / %d", total - selectedImageIDs.count + 1, total) : nil
+        let detail = total > 1 ? String(format: "%d / %d", total - selectedImages.count + 1, total) : nil
         if presentedViewController?.isShowingHUD() ?? false {
             presentedViewController?.updateHUD(title: title, detail: detail)
         } else {
@@ -264,13 +312,13 @@ extension AlbumViewController: @preconcurrency ShareImageActivityItemProviderDel
         // Close HUD
         if imageActivityItemProvider.isCancelled {
             presentedViewController?.hideHUD { }
-        } else if contextually == false, selectedImageIDs.contains(imageID) {
+        } else if contextually == false, selectedImages.keys.contains(imageID) {
             // Remove image from selection
             deselectImages(withIDs: Set([imageID]))
             updateBarsInSelectMode()
 
             // Close HUD if last image
-            if selectedImageIDs.count == 0 {
+            if selectedImages.isEmpty {
                 presentedViewController?.updateHUDwithSuccess { [self] in
                     self.presentedViewController?.hideHUD(afterDelay: pwgDelayHUD) { }
                 }

@@ -21,11 +21,12 @@ public final nonisolated class Album: NSManagedObject, Identifiable {
     /**
      Updates an Album instance with the values from a CategoryGetInfo struct.
      */
-    public func update(with albumData: CategoryGetInfo, userObjectID: NSManagedObjectID) throws {
+    public func update(with albumData: CategoryGetInfo, userURIstr: String) throws {
         
-        // Update the album only if the Id and Name properties have values.
+        // Update the album only if the ID and name properties have values.
         guard let newPwgId = albumData.id,
-              let newName = albumData.name else {
+              let newName = albumData.name
+        else {
             throw PwgKitError.missingAlbumData
         }
         if uuid.isEmpty {
@@ -40,7 +41,23 @@ public final nonisolated class Album: NSManagedObject, Identifiable {
         if name != newNameUTF8 {
             name = newNameUTF8
         }
-
+        
+        // Album status
+        switch albumData.status {
+        case pwgAlbumStatus.publicStatus.argument:
+            if status != pwgAlbumStatus.publicStatus.rawValue {
+                status = pwgAlbumStatus.publicStatus.rawValue
+            }
+        case pwgAlbumStatus.privateStatus.argument:
+            if status != pwgAlbumStatus.privateStatus.rawValue {
+                status = pwgAlbumStatus.privateStatus.rawValue
+            }
+        default:
+            if status != pwgAlbumStatus.unknown.rawValue {
+                status = pwgAlbumStatus.unknown.rawValue
+            }
+        }
+        
         // Album description (required)
         let newCommentStr = albumData.comment?.utf8mb4Encoded ?? ""
         if commentStr != newCommentStr {
@@ -59,12 +76,19 @@ public final nonisolated class Album: NSManagedObject, Identifiable {
             commentHTML = newCommentHTML
         }
         
+        // Album page URL
+        /// - Store relative URLs to save space and because the URL might changed in future
+        let newPageUrl = ImageGetInfo.encodedImageURL(albumData.pageUrl ?? "")
+        if newPageUrl != nil, pageUrl != newPageUrl {
+            pageUrl = newPageUrl
+        }
+
         // Album rank (required)
         let newGlobalRank = albumData.globalRank ?? ""
         if globalRank != newGlobalRank {
             globalRank = newGlobalRank
         }
-
+        
         // When upperCat i.e. parentId is null or not supplied, album at the root (required)
         let newUpperCat = Int32(albumData.upperCat ?? "") ?? 0
         if parentId != newUpperCat {
@@ -76,13 +100,13 @@ public final nonisolated class Album: NSManagedObject, Identifiable {
         if upperIds != newUpperCats {
             upperIds = newUpperCats
         }
-
+        
         // Image sort option (required)
         let newImageSort = albumData.imageSort ?? ""
         if imageSort != newImageSort {
             imageSort = newImageSort
         }
-
+        
         // Number of images and sub-albums
         let newNbImages = albumData.nbImages ?? Int64.zero
         if nbImages != newNbImages {
@@ -96,7 +120,7 @@ public final nonisolated class Album: NSManagedObject, Identifiable {
         if nbSubAlbums != newNbCategories {
             nbSubAlbums = newNbCategories
         }
-
+        
         // Album thumbnail
         /// - Store relative URLs to save space and because the URL might changed in future
         /// - Remove photo from cache if the path has changed
@@ -108,7 +132,7 @@ public final nonisolated class Album: NSManagedObject, Identifiable {
         if thumbnailUrl != newThumbnailUrl {
             thumbnailUrl = newThumbnailUrl
         }
-
+        
         // When "date_last" is null or not supplied: date in distant past
         /// - 'date_last' is the maximum 'date_available' of the images associated to an album.
         if let newTimeInterval = DateUtilities.timeInterval(from: albumData.dateLast) {
@@ -118,10 +142,12 @@ public final nonisolated class Album: NSManagedObject, Identifiable {
         } else {
             dateLast = DateUtilities.unknownDateInterval
         }
-
+        
         // This album belongs to the provided user
         if user == nil,
-           let userInContext = self.managedObjectContext?.object(with: userObjectID) as? User {
+           let userURI = URL(string: userURIstr),
+           let userID = self.managedObjectContext?.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: userURI),
+           let userInContext = self.managedObjectContext?.object(with: userID) as? User {
             user = userInContext
         }
         
@@ -132,16 +158,118 @@ public final nonisolated class Album: NSManagedObject, Identifiable {
             currentCounter = UploadVars.shared.categoryCounterInit
         }
     }
+    
+    /**
+     Updates the share data of an Album instance with the values returned by the ShareAlbum plugin.
+     */
+    public func update(with shareData: ShareAlbumGetInfo) {
+        
+        // URL of the share (required — a nil URL marks an album which is not shared)
+        /// - Stored relative to the server address like the other URLs (see RelativeURLValueTransformer)
+        /// - The plugin builds the URL with get_absolute_root_url(), which derives the scheme and
+        ///   the host from the request headers, so it may differ from the address used to log in.
+        ///   encodedImageURL() rebuilds it on that address, as it does for image URLs.
+        let newShareUrl = ImageGetInfo.encodedImageURL(shareData.shareUrl)
+        if shareUrl != newShareUrl {
+            shareUrl = newShareUrl
+        }
+        
+        // When the share was created
+        if let newTimeInterval = DateUtilities.timeInterval(from: shareData.creationDate) {
+            if shareCreationDate != newTimeInterval {
+                shareCreationDate = newTimeInterval
+            }
+        } else {
+            shareCreationDate = DateUtilities.unknownDateInterval
+        }
+        
+        // Who created the share
+        /// - The username is null when the account was deleted since the share was created.
+        let newSharedByID = shareData.createdBy?.int16Value ?? Int16.zero
+        if sharedByID != newSharedByID {
+            sharedByID = newSharedByID
+        }
+        let newSharedByName = (shareData.createdByName ?? "").utf8mb4Encoded
+        if sharedByName != newSharedByName {
+            sharedByName = newSharedByName
+        }
+    }
+    
+    /**
+     Clears the share data of an Album instance which is not shared anymore.
+     */
+    public func removeShareData() {
+        if shareUrl != nil {
+            shareUrl = nil
+        }
+        if shareCreationDate != DateUtilities.unknownDateInterval {
+            shareCreationDate = DateUtilities.unknownDateInterval
+        }
+        if sharedByID != Int16.zero {
+            sharedByID = Int16.zero
+        }
+        if sharedByName.isEmpty == false {
+            sharedByName = ""
+        }
+    }
+    
+    /**
+     Updates a User instance from UserProperties.
+     */
+    public func update(with albumData: AlbumProperties) throws {
+        
+        // Album name (required)
+        let newNameUTF8 = albumData.name.utf8mb4Encoded
+        if name != newNameUTF8 {
+            name = newNameUTF8
+        }
+                
+        // Number of images and sub-albums
+        let newNbImages = albumData.nbImages
+        if nbImages != newNbImages {
+            nbImages = newNbImages
+        }
+        let newTotalNbImages = albumData.totalNbImages
+        if totalNbImages != newTotalNbImages {
+            totalNbImages = newTotalNbImages
+        }
+        
+        // Counter for renaming files before upload
+        if currentCounter < albumData.currentCounter {
+            currentCounter = albumData.currentCounter
+        }
+    }
 }
 
 
-//extension Album
-//{
-//    public func getProperties() -> AlbumProperties {
-//        return AlbumProperties(
-//            pwgID: self.pwgID,
-//            
-//            images: (self.images ?? Set<Image>()).map { $0.pwgID }
-//        )
-//    }
-//}
+extension Album
+{
+    public func getProperties() -> AlbumProperties {
+        return AlbumProperties(
+            pwgID: self.pwgID, name: self.name,
+            status: pwgAlbumStatus(rawValue: self.status) ?? .unknown,
+            /// The bridge is lossless: every attribute produced by String.attributedHTML
+            /// belongs to a registered AttributeScope. Only unregistered keys would be dropped.
+            comment: AttributedString(self.comment),
+            commentHTML: AttributedString(self.commentHTML),
+            pageUrl: self.pageUrl as? URL,
+            query: self.query,
+            
+            upperIds: self.upperIds,
+            
+            nbImages: self.nbImages, totalNbImages: self.totalNbImages,
+            images: (self.images ?? Set<Image>()).map { $0.pwgID },
+            imageSort: self.imageSort,
+            currentCounter: self.currentCounter,
+            dateGetImages: self.dateGetImages,
+
+            shareUrl: self.shareUrl as? URL,
+            shareCreationDate: self.shareCreationDate,
+            sharedByID: self.sharedByID,
+            sharedByName: self.sharedByName,
+            
+            URIstr: self.objectID.uriRepresentation().absoluteString,
+            userURIstr: self.user?.objectID.uriRepresentation().absoluteString ?? ""
+        )
+    }
+}

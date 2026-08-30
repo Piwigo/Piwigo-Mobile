@@ -20,28 +20,23 @@ protocol PushAlbumCollectionViewCellDelegate: NSObjectProtocol {
                        completion: @escaping (Bool) -> Void)
 }
 
-class AlbumCollectionViewCellOld: UICollectionViewCell
+final class AlbumCollectionViewCellOld: UICollectionViewCell
 {
     weak var pushAlbumDelegate: (any PushAlbumCollectionViewCellDelegate)?
     
-    var albumData: Album? {
+    var album: Album? {
         didSet {
             tableView?.reloadData()
         }
     }
+    lazy var userData: UserProperties = {
+        guard let userData = album?.user?.getProperties()
+        else { preconditionFailure("Album has no User instance") }
+        return userData
+    }()
 
     var tableView: UITableView?
     var nbOrphans = Int64.min
-
-
-    // MARK: - Core Data Object Contexts
-    lazy var user: User? = albumData?.user
-    lazy var mainContext: NSManagedObjectContext = {
-        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
-            fatalError("!!! Missing Managed Object Context !!!")
-        }
-        return context
-    }()
 
     
     // MARK: - Initialisation
@@ -69,7 +64,6 @@ class AlbumCollectionViewCellOld: UICollectionViewCell
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        albumData = nil
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -82,7 +76,7 @@ class AlbumCollectionViewCellOld: UICollectionViewCell
 extension AlbumCollectionViewCellOld: UITableViewDataSource
 {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return albumData?.isFault ?? true ? 0 : 1
+        return album?.isFault ?? true ? 0 : 1
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -90,12 +84,8 @@ extension AlbumCollectionViewCellOld: UITableViewDataSource
         else { preconditionFailure("Could not load a AlbumTableViewCell") }
         
         // Configure cell
-        cell.config(withAlbumData: albumData)
+        cell.config(withAlbum: album)
         
-        // Album modifications are possible only if data are known
-        if albumData != nil {
-            cell.isAccessibilityElement = true
-        }
         return cell
     }
 }
@@ -112,11 +102,11 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
         tableView.deselectRow(at: indexPath, animated: true)
 
         // Push new album view
-        if let albumData = albumData {
+        if let album = album {
             let albumSB = UIStoryboard(name: "AlbumViewController", bundle: nil)
             guard let subAlbumVC = albumSB.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
             else { preconditionFailure("Could not load AlbumViewController") }
-            subAlbumVC.categoryId = albumData.pwgID
+            subAlbumVC.categoryId = album.pwgID
             pushAlbumDelegate?.pushAlbumView(subAlbumVC, completion: { _ in })
         }
     }
@@ -124,8 +114,7 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 
         // Only admins can rename, move and delete albums
-        guard user?.hasAdminRights ?? false,
-              let albumData = self.albumData, let user = self.user,
+        guard userData.hasAdminRights, let album = self.album,
               let topViewController = self.window?.topMostViewController()
         else { return nil }
 
@@ -133,10 +122,12 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
         Task { [self] in
             self.nbOrphans = Int64.min
             do {
-                self.nbOrphans = try await JSONManager.shared.calcOrphans(albumData.pwgID)
+                self.nbOrphans = try await JSONManager.shared.calcOrphans(album.pwgID)
             }
             catch {
+                #if DEBUG
                 debugPrint("Could not retrieve number of orphans: \(error)")
+                #endif
             }
         }
 
@@ -154,7 +145,7 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
         // Album deletion
         let trash = UIContextualAction(style: .normal, title: nil,
                                        handler: { _, _, completionHandler in
-            let delete = AlbumDeletion(albumData: albumData, user: user, nbOrphans: self.nbOrphans,
+            let delete = AlbumDeletion(album: album, nbOrphans: self.nbOrphans,
                                        topViewController: topViewController)
             delete.displayAlert(completion: completionHandler)
         })
@@ -167,8 +158,8 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
             let moveSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
             guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController
             else { preconditionFailure("Cannot instantiate SelectCategoryViewController") }
-            if moveVC.setInput(parameter: albumData, for: .moveAlbum) {
-                moveVC.user = user
+            if moveVC.setInput(parameter: album, for: .moveAlbum) {
+                moveVC.userData = self.userData
                 self.pushAlbumDelegate?.pushAlbumView(moveVC, completion: completionHandler)
             }
         })
@@ -178,15 +169,14 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
         // Album renaming
         let rename = UIContextualAction(style: .normal, title: nil,
                                         handler: { action, view, completionHandler in
-            let rename = AlbumRenaming(albumData: albumData, user: user, mainContext: self.mainContext,
-                                       topViewController: topViewController)
+            let rename = AlbumRenaming(album: album, topViewController: topViewController)
             rename.displayAlert(completion: completionHandler)
         })
         rename.backgroundColor = PwgColor.orange
         rename.image = UIImage(systemName: "character.cursor.ibeam", withConfiguration: combinedConfig)
 
         // Disallow user to delete the active auto-upload destination album
-        if (UploadVars.shared.autoUploadCategoryId == Int(albumData.pwgID)),
+        if (UploadVars.shared.autoUploadCategoryId == Int(album.pwgID)),
             UploadVars.shared.isAutoUploadActive {
             return UISwipeActionsConfiguration(actions: [move, rename])
         } else {

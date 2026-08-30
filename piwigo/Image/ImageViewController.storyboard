@@ -342,9 +342,9 @@
                                 </connections>
                             </visualEffectView>
                             <visualEffectView opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" restorationIdentifier="VideoControlsView" translatesAutoresizingMaskIntoConstraints="NO" id="jGl-s0-Ya6" customClass="VideoControlsView" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="20" y="732" width="353" height="40"/>
+                                <rect key="frame" x="28" y="732" width="337" height="40"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="gyV-iA-Gwr">
-                                    <rect key="frame" x="0.0" y="0.0" width="353" height="40"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="337" height="40"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </view>
@@ -397,12 +397,12 @@
                             <constraint firstItem="jGl-s0-Ya6" firstAttribute="top" secondItem="6ei-bj-KBT" secondAttribute="bottom" constant="12" id="OTJ-rA-8xU"/>
                             <constraint firstItem="6ei-bj-KBT" firstAttribute="centerX" secondItem="qaX-ya-55M" secondAttribute="centerX" id="Pp0-oD-2h2"/>
                             <constraint firstItem="vzA-8o-vxi" firstAttribute="centerY" secondItem="qaX-ya-55M" secondAttribute="centerY" id="RrC-fs-kKe"/>
-                            <constraint firstItem="jGl-s0-Ya6" firstAttribute="leading" secondItem="qaX-ya-55M" secondAttribute="leading" constant="20" id="XYM-L7-8N0"/>
+                            <constraint firstItem="jGl-s0-Ya6" firstAttribute="leading" secondItem="qaX-ya-55M" secondAttribute="leading" constant="28" id="XYM-L7-8N0"/>
                             <constraint firstItem="2Mi-Aw-Dsi" firstAttribute="bottom" secondItem="Tce-EN-AEL" secondAttribute="bottom" id="amf-ob-v9h"/>
                             <constraint firstItem="qaX-ya-55M" firstAttribute="bottom" secondItem="jGl-s0-Ya6" secondAttribute="bottom" constant="12" id="cFk-mI-BSt"/>
                             <constraint firstItem="2Mi-Aw-Dsi" firstAttribute="leading" secondItem="Tce-EN-AEL" secondAttribute="leading" id="h2Y-Kg-OSG"/>
                             <constraint firstItem="2Mi-Aw-Dsi" firstAttribute="top" secondItem="Tce-EN-AEL" secondAttribute="top" id="hxD-XL-L8G"/>
-                            <constraint firstItem="qaX-ya-55M" firstAttribute="trailing" secondItem="jGl-s0-Ya6" secondAttribute="trailing" constant="20" id="lPq-To-Dcc"/>
+                            <constraint firstItem="qaX-ya-55M" firstAttribute="trailing" secondItem="jGl-s0-Ya6" secondAttribute="trailing" constant="28" id="lPq-To-Dcc"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -427,6 +427,7 @@
                         <outlet property="videoContainerView" destination="kp0-5n-5Xl" id="QtP-On-yCH"/>
                         <outlet property="videoContainerWidthConstraint" destination="3Ko-OV-rN3" id="Owz-Hh-Y9D"/>
                         <outlet property="videoControls" destination="jGl-s0-Ya6" id="nFk-3c-zru"/>
+                        <outlet property="videoControlsHeight" destination="3aE-xc-lY9" id="4XS-r4-gcN"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fg0-Q1-2IZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

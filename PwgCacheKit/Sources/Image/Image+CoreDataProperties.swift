@@ -27,11 +27,13 @@ extension Image {
     @NSManaged public var visits: Int32
     @NSManaged public var fileName: String
     @NSManaged public var fileType: Int16
+    @NSManaged public var addedBy: Int16
     @NSManaged public var datePosted: TimeInterval
     @NSManaged public var dateCreated: TimeInterval
     @NSManaged public var dateGetInfos: TimeInterval
     @NSManaged public var fullRes: Resolution?
-    @NSManaged public var downloadUrl: NSURL?
+    @NSManaged public var pageUrl: NSURL?                   // Image page URL
+    @NSManaged public var downloadUrl: NSURL?               // Download URL, nil if user is not allowed
     
     @NSManaged public var author: String
     @NSManaged public var privacyLevel: Int16

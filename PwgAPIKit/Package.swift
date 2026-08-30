@@ -38,13 +38,15 @@ let package = Package(
         .testTarget(
             name: "PwgAPIKitTests",
             dependencies: [
+                "PwgAPIKit",
                 "PwgKit"
             ],
             path: "Tests",
             resources: [
                 .process("community"),
+                .process("pwg"),
                 .process("reflection"),
-                .process("pwg")
+                .process("sharealbum")
             ]
         )
     ],

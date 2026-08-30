@@ -129,7 +129,7 @@ public struct KeychainUtilities: Sendable
               username.isEmpty == false else { return "" }
 
         // Did found non-empty username
-        if username != ServerVars.shared.username {
+        if username != ServerVars.shared.login {
             // No known password
             return ""
         }

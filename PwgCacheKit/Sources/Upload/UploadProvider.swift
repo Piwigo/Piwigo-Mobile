@@ -19,6 +19,9 @@ public final class UploadProvider {
         // Priority to uploads requested manually, oldest ones first
         var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
         sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
+        // Both halves of a Live Photo are requested at the very same date:
+        // the photo (.original) is uploaded before its video (.pairedVideo).
+        sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.assetPart), ascending: true))
         return sortDescriptors
     }()
     
@@ -99,14 +102,8 @@ public final class UploadProvider {
                 // Main context automatically sees changes via merge
                 var uploadIDs: [NSManagedObjectID] = []
                 
-                // Get current user account
-                guard let user = try UserProvider().getUserAccount(inContext: taskContext)
-                else { throw PwgKitError.userCreationError }
-                if user.isFault {
-                    // user is not fired yet.
-                    user.willAccessValue(forKey: nil)
-                    user.didAccessValue(forKey: nil)
-                }
+                // Get current user account (should exist at this stage)
+                let user = try UserProvider().getCurrentUser(inContext: taskContext)
                 
                 // Retrieve existing uploads
                 // Create a fetch request for the Upload entity sorted by localIdentifier
@@ -116,7 +113,7 @@ public final class UploadProvider {
                 // Select upload requests:
                 /// — for the current server and user only
                 var andPredicates = [NSPredicate]()
-                andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
+                andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
                 andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
                 fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
                 fetchRequest.returnsObjectsAsFaults = false
@@ -126,7 +123,10 @@ public final class UploadProvider {
                 let cachedUploads = try taskContext.fetch(fetchRequest)
                 for uploadData in uploadsBatch {
                     // Index of this new upload in cache
-                    if let index = cachedUploads.firstIndex( where: { $0.localIdentifier == uploadData.localIdentifier }) {
+                    /// Both halves of a Live Photo share the same identifier and are told apart
+                    /// by the part of the asset they carry.
+                    if let index = cachedUploads.firstIndex( where: { $0.localIdentifier == uploadData.localIdentifier
+                                                                      && $0.part == uploadData.assetPart }) {
                         // Get tag instances
                         let tags = try TagProvider().getTags(withIDs: uploadData.tagIds, taskContext: taskContext)
                         
@@ -281,7 +281,7 @@ public final class UploadProvider {
             /// — for the current server and user only
             var andPredicates = [NSPredicate]()
             andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
-            andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
+            andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
             fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
             
             // Fetch number of objects
@@ -290,7 +290,9 @@ public final class UploadProvider {
                 return countResult.first!.int64Value
             }
             catch let error {
+                #if DEBUG
                 debugPrint("••> Upload count not fetched: \(error.localizedDescription)")
+                #endif
             }
             return Int64.zero
         }
@@ -309,7 +311,7 @@ public final class UploadProvider {
 
             // Retrieves only non-completed upload requests
             let variables = ["serverPath" : ServerVars.shared.serverPath,
-                             "userName"   : ServerVars.shared.user]
+                             "userName"   : ServerVars.shared.username]
             fetchRequest.predicate = pendingPredicate.withSubstitutionVariables(variables)
             fetchRequest.shouldRefreshRefetchedObjects = true
 
@@ -319,7 +321,9 @@ public final class UploadProvider {
                 return countResult.first!.intValue
             }
             catch let error {
+                #if DEBUG
                 debugPrint("••> Upload count not fetched: \(error.localizedDescription)")
+                #endif
             }
             return Int.zero
         }
@@ -329,6 +333,7 @@ public final class UploadProvider {
         Retrieve IDs of upload pending requests in given states on the PwgUploadKit private queue
      */
     public func getIDsOfPendingUploads(onlyInStates states: [pwgUploadState] = [], onlyImages: [Int64] = [],
+                                       onlyAlbums albums: [Int32] = [],
                                        onlyDeletable: Bool = false, markedForAutoUpload: Bool = false,
                                        inContext taskContext: NSManagedObjectContext) -> ([NSManagedObjectID], [String])
     {
@@ -340,7 +345,7 @@ public final class UploadProvider {
             
             // Retrieves only non-completed upload requests
             let variables = ["serverPath" : ServerVars.shared.serverPath,
-                             "userName"   : ServerVars.shared.user]
+                             "userName"   : ServerVars.shared.username]
             fetchRequest.predicate = pendingPredicate.withSubstitutionVariables(variables)
             fetchRequest.returnsObjectsAsFaults = false
             fetchRequest.shouldRefreshRefetchedObjects = true
@@ -368,6 +373,11 @@ public final class UploadProvider {
                 pendingUploads.removeAll(where: { !onlyImages.contains($0.imageId) })
             }
             
+            // Select those whose destination is one of the given Piwigo albums
+            if albums.isEmpty == false {
+                pendingUploads.removeAll(where: { !albums.contains($0.category) })
+            }
+            
             // Return objectIDs and localIdentifiers
             return (pendingUploads.map(\.objectID),
                     pendingUploads.map({ $0.localIdentifier }))
@@ -378,6 +388,7 @@ public final class UploadProvider {
         Retrieve IDs of completed upload requests marked for deletion on the PwgUploadKit private queue
      */
     public func getIDsOfCompletedUploads(onlyInStates states: [pwgUploadState] = [], onlyImages: [Int64] = [],
+                                         onlyAlbums albums: [Int32] = [],
                                          onlyDeletable: Bool = false, notAutoUploaded: Bool = false,
                                          inContext taskContext: NSManagedObjectContext) -> ([NSManagedObjectID], [String])
     {
@@ -389,7 +400,7 @@ public final class UploadProvider {
             
             // Retrieves only non-completed upload requests
             let variables = ["serverPath" : ServerVars.shared.serverPath,
-                             "userName"   : ServerVars.shared.user]
+                             "userName"   : ServerVars.shared.username]
             fetchRequest.predicate = completedPredicate.withSubstitutionVariables(variables)
             fetchRequest.returnsObjectsAsFaults = false
             fetchRequest.shouldRefreshRefetchedObjects = true
@@ -417,6 +428,11 @@ public final class UploadProvider {
                 completedUploads.removeAll(where: { !onlyImages.contains($0.imageId) })
             }
             
+            // Select those whose destination is one of the given Piwigo albums
+            if albums.isEmpty == false {
+                completedUploads.removeAll(where: { !albums.contains($0.category) })
+            }
+            
             // Return objectIDs and localIdentifiers
             return (completedUploads.map(\.objectID),
                     completedUploads.map({ $0.localIdentifier }))
@@ -428,6 +444,9 @@ public final class UploadProvider {
         The asset identifier is `deleteAssetIdentifier` when set (i.e. a photo shared via the share
         extension that the app resolved to a Photo Library asset), otherwise `localIdentifier`
         (i.e. a photo picked inside the app, whose localIdentifier already is a PHAsset identifier).
+        An asset which another request has still to upload is spared: both halves of a Live Photo
+        are uploaded separately, and deleting the asset as soon as the first one completes would
+        leave the second without anything to prepare.
      */
     public func getIDsOfUploadsToDeleteFromLibrary(inContext taskContext: NSManagedObjectContext) -> ([NSManagedObjectID], [String])
     {
@@ -436,7 +455,7 @@ public final class UploadProvider {
             let fetchRequest = Upload.fetchRequest()
             fetchRequest.sortDescriptors = sortDescriptors
             let variables = ["serverPath" : ServerVars.shared.serverPath,
-                             "userName"   : ServerVars.shared.user]
+                             "userName"   : ServerVars.shared.username]
             fetchRequest.predicate = completedPredicate.withSubstitutionVariables(variables)
             fetchRequest.returnsObjectsAsFaults = false
             fetchRequest.shouldRefreshRefetchedObjects = true
@@ -446,6 +465,20 @@ public final class UploadProvider {
 
             // Keep only requests whose original should be deleted from the Photo Library
             completedUploads.removeAll(where: { $0.deleteImageAfterUpload == false })
+
+            // Collect the assets which are still to be uploaded by another request
+            let pendingRequest = Upload.fetchRequest()
+            pendingRequest.predicate = pendingPredicate.withSubstitutionVariables(variables)
+            pendingRequest.returnsObjectsAsFaults = false
+            let pendingUploads: [Upload] = (try? taskContext.fetch(pendingRequest) as [Upload]) ?? []
+            let assetsStillInUse = Set(pendingUploads.map({ $0.deleteAssetIdentifier ?? $0.localIdentifier }))
+
+            // Spare the assets whose other half is not uploaded yet
+            if assetsStillInUse.isEmpty == false {
+                completedUploads.removeAll(where: {
+                    assetsStillInUse.contains($0.deleteAssetIdentifier ?? $0.localIdentifier)
+                })
+            }
 
             // Return objectIDs and the asset identifiers to delete
             return (completedUploads.map(\.objectID),
@@ -469,7 +502,7 @@ public final class UploadProvider {
             // Select upload requests:
             /// — for the current server and user only
             var andPredicates = [NSPredicate]()
-            andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
+            andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
             andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
             fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
             fetchRequest.returnsObjectsAsFaults = false
@@ -481,7 +514,9 @@ public final class UploadProvider {
                 return cachedUploads.map(\.md5Sum)
             }
             catch {
+                #if DEBUG
                 debugPrint("••> Error fetching uploads: \(error)")
+                #endif
                 return []
             }
         }
@@ -520,7 +555,7 @@ public final class UploadProvider {
         /// — for the current server and user only
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
+        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         
         // Create batch delete request
@@ -553,7 +588,7 @@ public final class UploadProvider {
      Used to fix situations where a user logins with API keys before v4.1.2 (since Piwigo 16)
      To be called on a background queue so it won’t block the main thread.
      */
-    public func attributeAPIKeyUploadRequests(toUserWithID userID: NSManagedObjectID,
+    public func attributeAPIKeyUploadRequests(toUserWithID userURIstr: String,
                                               inContext taskContext: NSManagedObjectContext) {
         // To be called on a background queue so it won’t block the main thread.
         taskContext.performAndWait {
@@ -566,7 +601,7 @@ public final class UploadProvider {
             /// — from the current server
             var andPredicates = [NSPredicate]()
             andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
-            andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
+            andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.login))
             fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
             
             do {
@@ -574,7 +609,9 @@ public final class UploadProvider {
                 let uploadIDs = try taskContext.fetch(fetchRequest)
                 
                 // Retrieve Piwigo user object
-                guard let piwigoUser = try? taskContext.existingObject(with: userID) as? User
+                guard let userURI = URL(string: userURIstr),
+                      let userID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: userURI),
+                      let piwigoUser = try? taskContext.existingObject(with: userID) as? User
                 else { return }
                 
                 // Attribute API key upload requests to the Piwigo user
@@ -600,7 +637,9 @@ public final class UploadProvider {
                     }
                 }
             } catch {
+                #if DEBUG
                 debugPrint("••> Unresolved error \(error.localizedDescription)")
+                #endif
             }
         }
     }

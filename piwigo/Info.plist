@@ -52,13 +52,41 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleVersion</key>
-	<string>701</string>
+	<string>704</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
+	<key>UTImportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.adobe.encapsulated-postscript</string>
+			<key>UTTypeDescription</key>
+			<string>Encapsulated PostScript</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+				<string>public.content</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>eps</string>
+					<string>epsf</string>
+					<string>epsi</string>
+				</array>
+				<key>public.mime-type</key>
+				<array>
+					<string>application/postscript</string>
+					<string>image/x-eps</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>INIntentsSupported</key>
@@ -121,33 +149,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
-	<key>UTImportedTypeDeclarations</key>
-	<array>
-		<dict>
-			<key>UTTypeIdentifier</key>
-			<string>com.adobe.encapsulated-postscript</string>
-			<key>UTTypeDescription</key>
-			<string>Encapsulated PostScript</string>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.data</string>
-				<string>public.content</string>
-			</array>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>eps</string>
-					<string>epsf</string>
-					<string>epsi</string>
-				</array>
-				<key>public.mime-type</key>
-				<array>
-					<string>application/postscript</string>
-					<string>image/x-eps</string>
-				</array>
-			</dict>
-		</dict>
-	</array>
 </dict>
 </plist>

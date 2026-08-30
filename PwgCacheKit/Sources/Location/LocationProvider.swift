@@ -171,7 +171,9 @@ public final class LocationProvider: NSObject {
                     }
                 } else {
                     // Did not return place names
+                    #if DEBUG
                     debugPrint(String(format: "Geocoder: no place mark returned!\n=> %@", error?.localizedDescription ?? ""))
+                    #endif
                 }
                 semaphore.signal()
             })
@@ -199,7 +201,9 @@ public final class LocationProvider: NSObject {
             // Create a Location managed object on the private queue context.
             guard let newLocation = NSEntityDescription.insertNewObject(forEntityName: "Location", into: taskContext) as? Location
             else {
+                #if DEBUG
                 debugPrint(PwgKitError.locationCreationError.localizedDescription)
+                #endif
                 return
             }
             
@@ -209,11 +213,15 @@ public final class LocationProvider: NSObject {
             }
             catch PwgKitError.missingLocationData {
                 // Delete invalid Location from the private queue context.
+                #if DEBUG
                 debugPrint(PwgKitError.missingLocationData.localizedDescription)
+                #endif
                 taskContext.delete(newLocation)
             }
             catch {
+                #if DEBUG
                 debugPrint(error.localizedDescription)
+                #endif
             }
             
             // Save all insertions and deletions from the context to the store.
@@ -222,7 +230,9 @@ public final class LocationProvider: NSObject {
                     try taskContext.save()
                 }
                 catch {
+                    #if DEBUG
                     debugPrint("Error: \(error.localizedDescription)\nCould not save Core Data context.")
+                    #endif
                     return
                 }
                 // Reset the taskContext to free the cache and lower the memory footprint.
@@ -251,7 +261,9 @@ public final class LocationProvider: NSObject {
             return countResult.first!.int64Value
         }
         catch let error {
+            #if DEBUG
             debugPrint("••> Location count not fetched: \(error.localizedDescription)")
+            #endif
         }
         return Int64.zero
     }
@@ -349,7 +361,9 @@ public final class LocationProvider: NSObject {
             
             // Fetch place names at location in serial queue
             fetchPlaceName(at: newLocation) { (error) in
+                #if DEBUG
                 debugPrint("=> location could not be requested: \(error?.localizedDescription ?? "Unknnown error")")
+                #endif
             }
             pending(newLocation.hashValue)
             return

@@ -40,13 +40,11 @@ struct LoginUtilities
         // and select the next available size in case of unavailability
         let albumThumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
         AlbumVars.shared.defaultAlbumThumbnailSize = getAvailableSize(near: albumThumbSize).rawValue
-        debugPrint("Album thumbnail size: \(getAvailableSize(near: albumThumbSize))")
         
         // Check that the actual default image thumbnail size is available
         // and select the next available size in case of unavailability
         let imageThumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
         AlbumVars.shared.defaultThumbnailSize = getAvailableSize(near: imageThumbSize).rawValue
-        debugPrint("Image thumbnail size: \(getAvailableSize(near: imageThumbSize))")
         
         // Calculate number of thumbnails per row for that selection
         let albumThumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
@@ -61,7 +59,6 @@ struct LoginUtilities
         // and select the next available size in case of unavailability
         let imagePreviewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
         ImageVars.shared.defaultImagePreviewSize = getAvailableSize(near: imagePreviewSize).rawValue
-        debugPrint("Image preview size: \(getAvailableSize(near: imagePreviewSize))")
     }
     
     @MainActor
@@ -128,28 +125,43 @@ struct LoginUtilities
     
     
     // MARK: - Piwigo Session Management
-    // Re-login if session was closed
-    public func checkSession(ofUserWithID objectID: NSManagedObjectID,
-                             lastConnected lastUsed: TimeInterval) async throws(PwgKitError) {
-                
-        // Check if the session is still active and update the server status
-        // every 60 seconds or more
-        let secondsSinceLastCheck = Date.timeIntervalSinceReferenceDate - lastUsed
+    /// Re-login if the session was closed.
+    ///
+    /// Concurrent calls are joined instead of being performed in parallel: this method is
+    /// called from about thirty places and several of them can run at the same time — e.g.
+    /// restoring a scene pushes every album of the restored path and each of them checks the
+    /// session when it appears. Parallel calls all pass the 60 seconds short-circuit below,
+    /// because `lastUsed` is only stored once a re-login succeeded, so each of them logs in
+    /// again and every new session token invalidates the previous one. Requests already in
+    /// flight are then answered as if the user were a guest.
+    public func checkSessionOfCurrentUser() async throws(PwgKitError) {
+        try await SessionChecker.shared.check()
+    }
+    
+    fileprivate func performSessionCheck() async throws(PwgKitError) {
+        // Retrieve current user properties
+        let bckgContext = DataController.shared.newTaskContext()
+        var userData = try UserProvider().getPropertiesOfCurrentUser(inContext: bckgContext)
+        
+        // Check if the session is still active and re-login every 60 seconds or more
+        let secondsSinceLastCheck = Date.timeIntervalSinceReferenceDate - userData.lastUsed
         if ServerVars.shared.hasNetworkConnectionChanged == false,
-           ServerVars.shared.applicationShouldRelogin == false,
            secondsSinceLastCheck < 60 {
             return
         }
         
         // Determine if the session is still active
         ServerVars.shared.hasNetworkConnectionChanged = false
+        #if DEBUG
         debugPrint("Session: starting checking… \(ServerVars.shared.isConnectedToWiFi ? "WiFi" : "Cellular")")
+        #endif
         let oldToken = ServerVars.shared.pwgToken
-        let pwgUser = try await JSONManager.shared.sessionGetStatus()
+        var sessionData = userData
+        try await JSONManager.shared.sessionGetStatus(&sessionData)
 #if DEBUG
-        debugPrint("Session: \"\(ServerVars.shared.user)\" vs \"\(pwgUser)\", \"\(oldToken)\" vs \"\(ServerVars.shared.pwgToken)\"")
+        debugPrint("Session: \"\(ServerVars.shared.username)\" vs \"\(sessionData.username)\", \"\(oldToken)\" vs \"\(ServerVars.shared.pwgToken)\"")
 #endif
-        if pwgUser != ServerVars.shared.user || oldToken.isEmpty || ServerVars.shared.pwgToken != oldToken {
+        if sessionData.username != ServerVars.shared.username || oldToken.isEmpty || ServerVars.shared.pwgToken != oldToken {
             // Collect list of methods supplied by Piwigo server
             // => Determine if Community extension 2.9a or later is installed and active
             try await JSONManager.shared.getMethods()
@@ -159,80 +171,126 @@ struct LoginUtilities
             if ServerVars.shared.username.isEmpty || ServerVars.shared.username.lowercased() == "guest" {
                 
                 // Session opened for guest
+                #if DEBUG
                 debugPrint("Session: logged as Guest")
-                try await getPiwigoConfigForUser(withID: objectID)
+                #endif
+                try await getPiwigoStatusForUser(&userData)
                 
-                // Update date of accesss to the server by guest
-                updateUser(withID: objectID, includingStatus: true)
-                ServerVars.shared.applicationShouldRelogin = false
+                // Update User values in cache, including the access date to the server
+                userData.createAlbumRights = nil
+                userData.lastUsed = Date.timeIntervalSinceReferenceDate
+                try UserProvider().updateUser(withProperties: userData, inContext: bckgContext)
             }
             else {
                 // Perform login
-                let username = ServerVars.shared.username
+                let username = ServerVars.shared.login
                 let password = KeychainUtilities.password(forService: ServerVars.shared.serverPath, account: username)
                 try await JSONManager.shared.sessionLogin(withUsername: username, password: password)
-#if DEBUG
-                debugPrint("Session: logged as \(ServerVars.shared.username)")
-#endif
-                // Session now opened
-                try await getPiwigoConfigForUser(withID: objectID)
+                #if DEBUG
+                debugPrint("Session: logged as \(ServerVars.shared.login)")
+                #endif
+                // Check Piwigo version, get token, available sizes, etc.
+                if ServerVars.shared.usesCommunityPluginV29 {
+                    try await JSONManager.shared.communityGetStatus(&userData)
+                }
+                else {
+                    userData.createAlbumRights = nil
+                }
+                try await getPiwigoStatusForUser(&userData)
                 
-                // Update date of accesss to the server by guest
-                updateUser(withID: objectID, includingStatus: true)
-                ServerVars.shared.applicationShouldRelogin = false
+                // Update User values in cache, including the access date to the server
+                userData.lastUsed = Date.timeIntervalSinceReferenceDate
+                try UserProvider().updateUser(withProperties: userData, inContext: bckgContext)
             }
         }
-        else {
-            updateUser(withID: objectID, includingStatus: false)
-        }
     }
     
-    fileprivate func updateUser(withID objectID: NSManagedObjectID, includingStatus status: Bool) {
-        let bckgContext = DataController.shared.newTaskContext()
-        UserProvider().updateUser(withID: objectID,status: status, inContext: bckgContext)
-    }
-    
-    fileprivate func getPiwigoConfigForUser(withID objectID: NSManagedObjectID) async throws(PwgKitError) {
-        // Check Piwigo version, get token, available sizes, etc.
-        if ServerVars.shared.usesCommunityPluginV29 {
-            try await JSONManager.shared.communityGetStatus()
-        }
-        try await getPiwigoStatusForUser(withID: objectID)
-    }
-    
-    fileprivate func getPiwigoStatusForUser(withID objectID: NSManagedObjectID) async throws(PwgKitError)
+    fileprivate func getPiwigoStatusForUser(_ userData: inout UserProperties) async throws(PwgKitError)
     {
-        // Retrieve the username
-        let userName = try await JSONManager.shared.sessionGetStatus()
-        
-        // Set Piwigo user
-        ServerVars.shared.user = userName
+        // Retrieve the username, and user's role if not using Community
+        try await JSONManager.shared.sessionGetStatus(&userData)
         
         // Are cached data associated to an API public key?
         // (pursue logging in without waiting for the fix to complete)
         if ServerVars.shared.fixUserIsAPIKeyV412 {
+            let userURIstr = userData.URIstr
             DispatchQueue.global(qos: .background).async {
                 // Retrieve background context
                 let bckgContext = DataController.shared.newTaskContext()
                 
                 // Attribute upload requests to appropriate user if necessary
+                #if DEBUG
                 debugPrint("Session: attributing API Key upload requests to user…")
-                UploadProvider().attributeAPIKeyUploadRequests(toUserWithID: objectID,
+                #endif
+                UploadProvider().attributeAPIKeyUploadRequests(toUserWithID: userURIstr,
                                                                inContext: bckgContext)
                 
                 // Delete API Key user (and albums in cascade)
+                #if DEBUG
                 debugPrint("Session: deleting API Key user…")
-                UserProvider().deleteUser(withUsername: ServerVars.shared.username,
+                #endif
+                UserProvider().deleteUser(withUsername: ServerVars.shared.login,
                                           inContext: bckgContext)
                 
                 // Job completed
+                #if DEBUG
                 debugPrint("Session: API Key user deleted")
+                #endif
                 ServerVars.shared.fixUserIsAPIKeyV412 = false
                 
                 // Try to resume upload requests if the low power mode is not enabled
                 let name = Notification.Name.NSProcessInfoPowerStateDidChange
                 NotificationCenter.default.post(name: name, object: nil)
             }
+        }
+    }
+}
+
+/// Serialises the session checks performed by `LoginUtilities.checkSessionOfCurrentUser()`.
+/// The check which is already running is awaited by every caller arriving while it lasts,
+/// so a single re-login is performed and they all observe its outcome.
+private actor SessionChecker {
+    
+    static let shared = SessionChecker()
+    
+    /// The check being performed, if any. Its failure is reported to every caller which
+    /// joined it, so a caller never mistakes a shared failure for a successful session.
+    private var inFlight: Task<Result<Void, PwgKitError>, Never>?
+    
+    func check() async throws(PwgKitError) {
+        // Join the check which is already running, or start one
+        let task: Task<Result<Void, PwgKitError>, Never>
+        if let inFlight {
+            task = inFlight
+        } else {
+            task = Task {
+                do throws(PwgKitError) {
+                    try await LoginUtilities().performSessionCheck()
+                    return .success(())
+                }
+                catch {
+                    return .failure(error)
+                }
+            }
+            inFlight = task
+        }
+        
+        // Await its outcome
+        /// The actor is released while suspended here, so the callers which arrive
+        /// in the meantime join this very task instead of starting another one.
+        let result = await task.value
+        
+        // Forget it so that the next caller checks the session again
+        /// Another task may already have replaced it.
+        if inFlight == task {
+            inFlight = nil
+        }
+        
+        switch result {
+        case .success:
+            return
+        case .failure(let error):
+            throw error
         }
     }
 }

@@ -72,7 +72,7 @@ extension SelectCategoryViewController: UITableViewDelegate
                    catIds.count > indexPath.row {
                     catId = catIds[indexPath.row]
                 }
-                albumData = (try? AlbumProvider().getAlbum(ofUser: user, withId: catId))!
+                albumData = AlbumProvider().getAlbum(withID: catId, inContext: mainContext)!
             } else if hasRecentAlbums {
                 // Recent albums
                 albumData = recentAlbums.object(at: indexPath)
@@ -88,7 +88,9 @@ extension SelectCategoryViewController: UITableViewDelegate
         switch wantedAction {
         case .setDefaultAlbum:
             // The current default category is not selectable
+            #if DEBUG
             debugPrint("••> albums: \(albumData.pwgID) and \(inputAlbum.pwgID)")
+            #endif
             if albumData.pwgID == inputAlbum.pwgID {
                 return false
             }
@@ -153,7 +155,7 @@ extension SelectCategoryViewController: UITableViewDelegate
                    catIds.count > indexPath.row {
                     catId = catIds[indexPath.row]
                 }
-                albumData = (try? AlbumProvider().getAlbum(ofUser: user, withId: catId))!
+                albumData = AlbumProvider().getAlbum(withID: catId, inContext: mainContext)!
             } else if hasRecentAlbums {
                 // Recent albums
                 albumData = recentAlbums.object(at: indexPath)

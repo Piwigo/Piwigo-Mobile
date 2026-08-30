@@ -192,7 +192,7 @@ extension UploadManager {
             }
             
             // Get URL of final image data file to be stored into Piwigo/Uploads directory
-            let fileURL = getUploadFileURL(from: uploadData.localIdentifier, creationDate: uploadData.creationDate, deleted: true)
+            let fileURL = getUploadFileURL(for: uploadData, deleted: true)
             
             // Prepare destination file of same type with same number of images
             guard let UTI = CGImageSourceGetType(sourceRef),
@@ -244,7 +244,7 @@ extension UploadManager {
             }
             
             // Get URL of final image data file to be stored into Piwigo/Uploads directory
-            let fileURL = getUploadFileURL(from: uploadData.localIdentifier, creationDate: uploadData.creationDate, deleted: true)
+            let fileURL = getUploadFileURL(for: uploadData, deleted: true)
             
             // Prepare destination file of same type with same number of images
             guard let UTI = CGImageSourceGetType(sourceRef),
@@ -450,7 +450,7 @@ extension UploadManager {
                 .deletingPathExtension().appendingPathExtension(fileExt).lastPathComponent
             
             // Get URL of final image data file to be stored into Piwigo/Uploads directory
-            let fileURL = getUploadFileURL(from: uploadData.localIdentifier, creationDate: uploadData.creationDate, deleted: true)
+            let fileURL = getUploadFileURL(for: uploadData, deleted: true)
             
             // Prepare destination file of JPEG type containing a single image
             guard let destinationRef = CGImageDestinationCreateWithURL(fileURL as CFURL, UTI, 1, nil)

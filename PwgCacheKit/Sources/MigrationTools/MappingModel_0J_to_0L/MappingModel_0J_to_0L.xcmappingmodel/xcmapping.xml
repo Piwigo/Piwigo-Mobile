@@ -128,7 +128,7 @@
         <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z239"></relationship>
     </object>
     <object type="XDDEVENTITYMAPPING" id="z119">
-        <attribute name="migrationpolicyclassname" type="string">PwgCacheKit.UploadToUploadMigrationPolicy_0J_to_0K</attribute>
+        <attribute name="migrationpolicyclassname" type="string">PwgCacheKit.UploadToUploadMigrationPolicy_0J_to_0L</attribute>
         <attribute name="sourcename" type="string">Upload</attribute>
         <attribute name="mappingtypename" type="string">Undefined</attribute>
         <attribute name="mappingnumber" type="int16">9</attribute>

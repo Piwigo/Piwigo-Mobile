@@ -12,7 +12,7 @@ import PwgKit
 import PwgAPIKit
 import PwgCacheKit
 
-class GifDetailViewController: UIViewController
+final class GifDetailViewController: UIViewController
 {
     var indexPath = IndexPath(item: 0, section: 0)
     var imageData: Image!
@@ -131,6 +131,9 @@ class GifDetailViewController: UIViewController
         imageData = nil
         imageView.image = nil
         NotificationCenter.default.removeObserver(self)
+        #if DEBUG
+        debugPrint("••> GifDetailViewController released memory")
+        #endif
     }
 
 

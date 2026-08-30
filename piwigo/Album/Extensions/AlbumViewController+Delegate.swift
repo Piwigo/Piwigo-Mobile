@@ -39,7 +39,7 @@ extension AlbumViewController: UICollectionViewDelegate
                 else { return }
                 
                 // Selection mode active => add/remove image from selection
-                if !selectedImageIDs.contains(imageData.pwgID) {
+                if !selectedImages.keys.contains(imageData.pwgID) {
                     selectImage(imageData, isFavorite: selectedCell.isFavorite)
                     selectedCell.isSelection = true
                 } else {
@@ -73,7 +73,7 @@ extension AlbumViewController: UICollectionViewDelegate
         let imageDetailSB = UIStoryboard(name: "ImageViewController", bundle: nil)
         guard let imageDetailView = imageDetailSB.instantiateViewController(withIdentifier: "ImageViewController") as? ImageViewController
         else { preconditionFailure("Could not load ImageViewController") }
-        imageDetailView.user = user
+        imageDetailView.userData = userData
         imageDetailView.categoryId = albumData.pwgID
         imageDetailView.images = images
         if let firstSectionID = currentSnapshot.sectionIdentifiers.first,
@@ -108,7 +108,7 @@ extension AlbumViewController: UICollectionViewDelegate
                         point: CGPoint) -> UIContextMenuConfiguration? {
         // Only admins can rename, move and delete albums
         if collectionView.cellForItem(at: indexPath) is AlbumCollectionViewCell,
-           user.hasAdminRights {
+           userData.hasAdminRights {
             // Return context menu configuration
             return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions in
                 return self.albumContextMenu(indexPath)
@@ -140,7 +140,7 @@ extension AlbumViewController: UICollectionViewDelegate
         
         // Only admins can rename, move and delete albums
         if collectionView.cellForItem(at: indexPath) is AlbumCollectionViewCell,
-           user.hasAdminRights {
+           userData.hasAdminRights {
             // Return context menu configuration
             return UIContextMenuConfiguration(actionProvider: { suggestedActions in
                 return self.albumContextMenu(indexPath)
@@ -165,10 +165,12 @@ extension AlbumViewController: UICollectionViewDelegate
     // MARK: - Album Context Menu
     private func albumContextMenu(_ indexPath: IndexPath) -> UIMenu {
         let addPhotos = self.addPhotosMenu(indexPath)
+        let share = self.shareAlbumMenu(forAlbumAt: indexPath)
         let rename = self.renameAlbumAction(indexPath)
         let move = self.moveAlbumAction(indexPath)
         let delete = self.deleteAlbumMenu(indexPath)
-        return UIMenu(title: "", children: [addPhotos, rename, move, delete])
+        let children: [UIMenuElement?] = [addPhotos, share, rename, move, delete]
+        return UIMenu(title: "", children: children.compactMap({$0}))
     }
     
     private func addPhotosMenu(_ indexPath: IndexPath) -> UIMenu {
@@ -203,11 +205,10 @@ extension AlbumViewController: UICollectionViewDelegate
         return UIAction(title: String(localized: "categoryCellOption_rename", comment: "Rename Album"),
                         image: UIImage(systemName: "character.cursor.ibeam")) { action in
             guard let objectID = self.diffableDataSource.itemIdentifier(for: indexPath),
-                  let albumData = try? self.mainContext.existingObject(with: objectID) as? Album,
+                  let album = try? self.mainContext.existingObject(with: objectID) as? Album,
                   let topViewController = self.navigationController
             else { return }
-            let rename = AlbumRenaming(albumData: albumData, user: self.user, mainContext: self.mainContext,
-                                       topViewController: topViewController)
+            let rename = AlbumRenaming(album: album, topViewController: topViewController)
             rename.displayAlert { _ in }
         }
     }
@@ -221,7 +222,7 @@ extension AlbumViewController: UICollectionViewDelegate
                   let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController
             else { return }
             if moveVC.setInput(parameter: albumData, for: .moveAlbum) {
-                moveVC.user = self.user
+                moveVC.userData = self.userData
                 self.pushAlbumView(moveVC) { _ in }
             }
         }
@@ -238,13 +239,13 @@ extension AlbumViewController: UICollectionViewDelegate
                         image: UIImage(systemName: "trash"),
                         attributes: .destructive) { action in
             guard let objectID = self.diffableDataSource.itemIdentifier(for: indexPath),
-                  let albumData = try? self.mainContext.existingObject(with: objectID) as? Album,
+                  let album = try? self.mainContext.existingObject(with: objectID) as? Album,
                   let topViewController = self.navigationController
             else { return }
-            Task { [self] in
-                let nbOrphans = (try? await JSONManager.shared.calcOrphans(albumData.pwgID)) ?? 0
+            Task {
+                let nbOrphans = (try? await JSONManager.shared.calcOrphans(album.pwgID)) ?? 0
                 await MainActor.run {
-                    let delete = AlbumDeletion(albumData: albumData, user: self.user, nbOrphans: nbOrphans,
+                    let delete = AlbumDeletion(album: album, nbOrphans: nbOrphans,
                                                topViewController: topViewController)
                     delete.displayAlert { _ in }
                 }
@@ -259,13 +260,13 @@ extension AlbumViewController: UICollectionViewDelegate
         var children = [UIMenuElement]()
         if let imageID = cell.imageData?.pwgID {
             // Since Piwigo 14, we know whether a user is allowed to download images
-            let canShareImages = user.canDownloadImages()
+            let canShareImages = userData.canDownloadImages()
             if canShareImages {
                 children.append(shareImageAction(withID: imageID))
             }
             
             // pwg.users.favorites… methods available from Piwigo version 2.10 for registered users
-            if hasFavorites {
+            if userData.canManageFavorites() {
                 if cell.isFavorite {
                     children.append(unfavoriteImageAction(withID: imageID))
                 } else {
@@ -274,8 +275,8 @@ extension AlbumViewController: UICollectionViewDelegate
             }
             
             // Not all users can select/deselect images
-            if canShareImages || hasFavorites || user.hasUploadRights(forCatID: categoryId) {
-                if self.selectedImageIDs.contains(imageID) {
+            if canShareImages || userData.canManageFavorites() || userData.hasUploadRights(forCatID: categoryId) {
+                if self.selectedImages.keys.contains(imageID) {
                     // Image not selected ► Propose to select it
                     children.append(deselectImageAction(forCell: cell, at: indexPath))
                 } else {
@@ -285,7 +286,7 @@ extension AlbumViewController: UICollectionViewDelegate
             }
             
             // User with admin or upload rights can delete images
-            if user.hasUploadRights(forCatID: categoryId) {
+            if userData.hasUploadRights(forCatID: categoryId) {
                 children.append(deleteImageMenu(forImageID: imageID))
             }
         }
@@ -357,9 +358,9 @@ extension AlbumViewController: UICollectionViewDelegate
             guard let imageData = cell.imageData else { return }
             self.deselectImages(withIDs: Set([imageData.pwgID]))
             cell.isSelection = false
-            
+
             // Check if the selection mode should be disabled
-            if self.selectedImageIDs.isEmpty {
+            if self.selectedImages.isEmpty {
                 // Disable the selection mode
                 self.cancelSelect()
             } else {

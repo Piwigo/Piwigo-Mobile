@@ -20,6 +20,13 @@ public extension Notification.Name {
     static let pwgVideoPlaybackStatus = Notification.Name("pwgNotificationVideoPlaybackStatus")
     /// - Video muted or unmuted —> used to update buttons
     static let pwgVideoMutedOrNot = Notification.Name("pwgNotificationVideoMutedOrNot")
+    /// - Video duration known —> used to update the title view
+    static let pwgVideoDuration = Notification.Name("pwgNotificationVideoDuration")
+
+
+    // MARK: - Display PDF files
+    /// - Number of pages known —> used to update the title view
+    static let pwgPdfPageCount = Notification.Name("pwgNotificationPdfPageCount")
 
 
     // MARK: - Share images & videos

@@ -99,6 +99,15 @@ public enum StringOrInt: Codable, Sendable {
         }
     }
     
+    public var int16Value: Int16? {
+        switch self {
+        case .integer(let x):
+            return Int16(x)
+        case .string(let x):
+            return Int16(x)
+        }
+    }
+    
     public var int32Value: Int32? {
         switch self {
         case .integer(let x):

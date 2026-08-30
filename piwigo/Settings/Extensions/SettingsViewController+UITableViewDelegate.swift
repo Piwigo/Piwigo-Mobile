@@ -117,17 +117,18 @@ extension SettingsViewController: UITableViewDelegate
         // MARK: Uploads
         case .uploads /* Default Upload Settings */:
             var row = indexPath.row
-            row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
-            row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
-            row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
-            row += (!UIDevice.current.hasCellular && (row > 8)) ? 1 : 0
+            row += (!userData.hasAdminRights && (row > 0)) ? 1 : 0
+            row += (!UploadVars.shared.resizeImageOnUpload && (row > 4)) ? 2 : 0
+            row += (!UploadVars.shared.compressImageOnUpload && (row > 7)) ? 1 : 0
+            row += (!UIDevice.current.hasCellular && (row > 9)) ? 1 : 0
             switch row {
             case 1  /* Privacy Level */,
-                 4  /* Upload Photo Size */,
-                 5  /* Upload Video Size */,
-                 8  /* Rename Filename Before Upload */,
-                 10 /* Auto upload */,
-                 12 /* Advanced Settings */:
+                 2  /* Live Photos */,
+                 5  /* Upload Photo Size */,
+                 6  /* Upload Video Size */,
+                 9  /* Rename Filename Before Upload */,
+                 11 /* Auto upload */,
+                 13 /* Advanced Settings */:
                 result = true
             default:
                 result = false
@@ -164,10 +165,11 @@ extension SettingsViewController: UITableViewDelegate
         // MARK: Troubleshoot
         case .troubleshoot /* Troubleshoot */:
             switch indexPath.row {
-            case 0 /* Error Logs */,
-                1 /* Support Forum */:
+            case 0 /* Logs */,
+                 1 /* Documentation */,
+                 2 /* Support Forum */:
                 result = true
-            case 2 /* Contact Support */:
+            case 3 /* Contact Support */:
                 result = MFMailComposeViewController.canSendMail() ? true : false
             default:
                 result = false
@@ -193,6 +195,20 @@ extension SettingsViewController: UITableViewDelegate
                     footer = "\(String(localized: "settingsFooter_formats", comment: "The server accepts the following file formats")): \(ServerVars.shared.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
                 }
             }
+        case .albums:
+            // Only an admin user can install the ShareAlbum plugin on the server
+            if userData.hasAdminRights, ServerVars.shared.usesShareAlbum == false {
+                footer = String(format: String(localized: "settingsFooter_shareAlbum",
+                                               comment: "Install the ShareAlbum plugin…"),
+                                pwgShareAlbumPluginName)
+            }
+        case .images:
+            // Only an admin user can install the rotateImage plugin on the server
+            if userData.hasAdminRights, ServerVars.shared.usesImageRotate == false {
+                footer = String(format: String(localized: "settingsFooter_rotateImage",
+                                               comment: "Install the rotateImage plugin…"),
+                                pwgRotateImagePluginName)
+            }
         case .about:
             footer = ServerVars.shared.pwgStatistics
         default:
@@ -204,12 +220,34 @@ extension SettingsViewController: UITableViewDelegate
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         let text = getContentOfFooter(inSection: section)
         return TableViewUtilities.heightOfFooter(withText: text,
-                                                        width: tableView.frame.width)
+                                                 width: tableView.frame.width)
+    }
+    
+    /// Returns the webpage which should be opened when tapping some text of the footer, if any.
+    private func getLinkOfFooter(inSection section: Int) -> (url: URL, text: String)? {
+        switch activeSection(section) {
+        case .albums:
+            // Propose to visit the page of the ShareAlbum plugin on piwigo.org
+            guard userData.hasAdminRights, ServerVars.shared.usesShareAlbum == false,
+                  let url = URL(string: pwgShareAlbumPluginURL)
+            else { return nil }
+            return (url, pwgShareAlbumPluginName)
+        case .images:
+            // Propose to visit the page of the rotateImage plugin on piwigo.org
+            guard userData.hasAdminRights, ServerVars.shared.usesImageRotate == false,
+                  let url = URL(string: pwgRotateImagePluginURL)
+            else { return nil }
+            return (url, pwgRotateImagePluginName)
+        default:
+            return nil
+        }
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let text = getContentOfFooter(inSection: section)
-        return TableViewUtilities.viewOfFooter(withText: text, alignment: .center)
+        let link = getLinkOfFooter(inSection: section)
+        return TableViewUtilities.viewOfFooter(withText: text, alignment: .center,
+                                               link: link?.url, onText: link?.text ?? "")
     }
     
     
@@ -232,7 +270,7 @@ extension SettingsViewController: UITableViewDelegate
                 let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController
                 else { preconditionFailure("Could not load SelectCategoryViewController") }
-                categoryVC.user = user
+                categoryVC.userData = userData
                 if categoryVC.setInput(parameter: AlbumVars.shared.defaultCategory,
                                        for: .setDefaultAlbum) {
                     categoryVC.delegate = self
@@ -285,10 +323,10 @@ extension SettingsViewController: UITableViewDelegate
         // MARK: Uploads
         case .uploads /* Default upload Settings */:
             var row = indexPath.row
-            row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
-            row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
-            row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
-            row += (!UIDevice.current.hasCellular && (row > 8)) ? 1 : 0
+            row += (!userData.hasAdminRights && (row > 0)) ? 1 : 0
+            row += (!UploadVars.shared.resizeImageOnUpload && (row > 4)) ? 2 : 0
+            row += (!UploadVars.shared.compressImageOnUpload && (row > 7)) ? 1 : 0
+            row += (!UIDevice.current.hasCellular && (row > 9)) ? 1 : 0
             switch row {
             case 1 /* Default privacy selection */:
                 let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
@@ -298,7 +336,15 @@ extension SettingsViewController: UITableViewDelegate
                 privacyVC.privacy = pwgPrivacy(rawValue: UploadVars.shared.defaultPrivacyLevel) ?? .everybody
                 navigationController?.pushViewController(privacyVC, animated: true)
 
-            case 4 /* Upload Photo Size */:
+            case 2 /* Live Photos */:
+                let livePhotoSB = UIStoryboard(name: "UploadLivePhotoViewController", bundle: nil)
+                guard let livePhotoVC = livePhotoSB.instantiateViewController(withIdentifier: "UploadLivePhotoViewController") as? UploadLivePhotoViewController
+                else { preconditionFailure("Could not load UploadLivePhotoViewController") }
+                livePhotoVC.delegate = self
+                livePhotoVC.uploadLivePhotoAs = UploadVars.shared.uploadLivePhotoAs
+                navigationController?.pushViewController(livePhotoVC, animated: true)
+
+            case 5 /* Upload Photo Size */:
                 let uploadPhotoSizeSB = UIStoryboard(name: "UploadPhotoSizeViewController", bundle: nil)
                 guard let uploadPhotoSizeVC = uploadPhotoSizeSB.instantiateViewController(withIdentifier: "UploadPhotoSizeViewController") as? UploadPhotoSizeViewController
                 else { preconditionFailure("Could not load UploadPhotoSizeViewController") }
@@ -306,7 +352,7 @@ extension SettingsViewController: UITableViewDelegate
                 uploadPhotoSizeVC.photoMaxSize = UploadVars.shared.photoMaxSize
                 navigationController?.pushViewController(uploadPhotoSizeVC, animated: true)
 
-            case 5 /* Upload Video Size */:
+            case 6 /* Upload Video Size */:
                 let uploadVideoSizeSB = UIStoryboard(name: "UploadVideoSizeViewController", bundle: nil)
                 guard let uploadVideoSizeVC = uploadVideoSizeSB.instantiateViewController(withIdentifier: "UploadVideoSizeViewController") as? UploadVideoSizeViewController
                 else { preconditionFailure("Could not load UploadVideoSizeViewController") }
@@ -314,7 +360,7 @@ extension SettingsViewController: UITableViewDelegate
                 uploadVideoSizeVC.videoMaxSize = UploadVars.shared.videoMaxSize
                 navigationController?.pushViewController(uploadVideoSizeVC, animated: true)
 
-            case 8 /* Rename Filename Before Upload */:
+            case 9 /* Rename Filename Before Upload */:
                 let filenameSB = UIStoryboard(name: "RenameFileViewController", bundle: nil)
                 guard let filenameVC = filenameSB.instantiateViewController(withIdentifier: "RenameFileViewController") as? RenameFileViewController
                 else { preconditionFailure("Could not load RenameFileViewController") }
@@ -330,14 +376,14 @@ extension SettingsViewController: UITableViewDelegate
                 filenameVC.caseOfFileExtension = FileExtCase(rawValue: UploadVars.shared.caseOfFileExtension) ?? .keep
                 navigationController?.pushViewController(filenameVC, animated: true)
 
-            case 10 /* Auto Upload */:
+            case 11 /* Auto Upload */:
                 let autoUploadSB = UIStoryboard(name: "AutoUploadViewController", bundle: nil)
                 guard let autoUploadVC = autoUploadSB.instantiateViewController(withIdentifier: "AutoUploadViewController") as? AutoUploadViewController
                 else { preconditionFailure("Could not load AutoUploadViewController") }
-                autoUploadVC.user = user
+                autoUploadVC.userData = userData
                 navigationController?.pushViewController(autoUploadVC, animated: true)
 
-            case 12 /* Advanced Options */:
+            case 13 /* Advanced Options */:
                 let advancedOptionsSB = UIStoryboard(name: "AdvancedOptionsViewController", bundle: nil)
                 guard let advancedOptionsVC = advancedOptionsSB.instantiateViewController(withIdentifier: "AdvancedOptionsViewController") as? AdvancedOptionsViewController
                 else { preconditionFailure("Could not load AdvancedOptionsViewController") }
@@ -357,6 +403,7 @@ extension SettingsViewController: UITableViewDelegate
                 else { preconditionFailure("Could not load LockOptionsViewController") }
                 appLockVC.delegate = self
                 navigationController?.pushViewController(appLockVC, animated: true)
+
             case 1 /* Clear Clipboard */:
                 // Display list of delays
                 let delaySB = UIStoryboard(name: "ClearClipboardViewController", bundle: nil)
@@ -364,11 +411,6 @@ extension SettingsViewController: UITableViewDelegate
                 else { preconditionFailure("Could not load ClearClipboardViewController") }
                 delayVC.delegate = self
                 navigationController?.pushViewController(delayVC, animated: true)
-            case 2 /* Share image metadata options */:
-                let metadataOptionsSB = UIStoryboard(name: "ShareMetadataViewController", bundle: nil)
-                guard let metadataOptionsVC = metadataOptionsSB.instantiateViewController(withIdentifier: "ShareMetadataViewController") as? ShareMetadataViewController
-                else { preconditionFailure("Could not load ShareMetadataViewController") }
-                navigationController?.pushViewController(metadataOptionsVC, animated: true)
 
             default:
                 break
@@ -386,7 +428,7 @@ extension SettingsViewController: UITableViewDelegate
             switch indexPath.row {
             case 0 /* Clear cache */:
                 // Determine position of cell in table view
-                let section = SettingsSection.clear.rawValue - (userHasUploadRights ? 0 : 1)
+                let section = SettingsSection.clear.rawValue - (userData.hasUploadRights ? 0 : 1)
                 let rowAtIndexPath = IndexPath(row: 0, section: section)
                 let rectOfCellInTableView = settingsTableView?.rectForRow(at: rowAtIndexPath)
                 
@@ -448,17 +490,25 @@ extension SettingsViewController: UITableViewDelegate
                 guard let errorLogsVC = errorLogsSB.instantiateViewController(withIdentifier: "TroubleshootingViewController") as? TroubleshootingViewController
                 else { preconditionFailure("Could not load TroubleshootingViewController") }
                 navigationController?.pushViewController(errorLogsVC, animated: true)
-            case 1 /* Open Piwigo support forum webpage with default browser */:
-                if let url = URL(string: String(localized: "settings_pwgForumURL", comment: "http://piwigo.org/forum")) {
+
+            case 1 /* Open Piwigo documentation webpage with default browser */:
+                if let url = URL(string: "https://doc.piwigo.org") {
                     UIApplication.shared.open(url)
                 }
-            case 2 /* Prepare draft email */:
+
+            case 2 /* Open Piwigo support forum webpage with default browser */:
+                if let url = URL(string: "https://piwigo.org/forum") {
+                    UIApplication.shared.open(url)
+                }
+
+            case 3 /* Prepare draft email */:
                 // Get mail composer if possible
                 guard let composeVC = SettingsUtilities.getMailComposer() else { return }
                 composeVC.mailComposeDelegate = self
 
                 // Present the view controller modally.
                 present(composeVC, animated: true)
+
             default:
                 break
             }

@@ -236,7 +236,9 @@ final class ObjectPreparation : Operation, @unchecked Sendable {
         }
         catch let error {
             // Disk full?
+            #if DEBUG
             debugPrint("could not save image file: \(error.localizedDescription)")
+            #endif
             pbObject.state = .failed
         }
         

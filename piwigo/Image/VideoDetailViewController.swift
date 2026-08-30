@@ -12,9 +12,9 @@ import PwgKit
 import PwgCacheKit
 import PwgUIKit
 
-class VideoDetailViewController: UIViewController
+final class VideoDetailViewController: UIViewController
 {
-    var user: User!
+    var userData: UserProperties!
     var indexPath = IndexPath(item: 0, section: 0)
     var imageData: Image! {
         didSet {
@@ -31,6 +31,7 @@ class VideoDetailViewController: UIViewController
     @IBOutlet weak var videoContainerHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var descContainer: ImageDescriptionView!
     @IBOutlet weak var videoControls: VideoControlsView!
+    @IBOutlet weak var videoControlsHeight: NSLayoutConstraint!
     @IBOutlet weak var videoAirplay: UIImageView!
     
     // Variable used to dismiss the view when the scale is reduced
@@ -50,12 +51,26 @@ class VideoDetailViewController: UIViewController
         // Initialise videoContainerView size with placeHolder size
         configVideoViews()
         
+        // Initialise video controls
+        if #available(iOS 26.0, *) {
+            videoControlsHeight.constant = 44
+        } else {
+            // Fallback on previous version
+            videoControlsHeight.constant = 40
+        }
+        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
         // Register font changes
         NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
                                                name: UIContentSizeCategory.didChangeNotification, object: nil)
+        
+        // Register video player changes so that the video controls reflect them
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeVideoPlaybackStatus(_:)),
+                                               name: Notification.Name.pwgVideoPlaybackStatus, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeVideoMuteOption(_:)),
+                                               name: Notification.Name.pwgVideoMutedOrNot, object: nil)
     }
     
     @MainActor
@@ -139,6 +154,9 @@ class VideoDetailViewController: UIViewController
         
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
+        #if DEBUG
+        debugPrint("••> VideoDetailViewController released memory")
+        #endif
     }
     
     
@@ -304,6 +322,44 @@ class VideoDetailViewController: UIViewController
     }
     
     
+    // MARK: - Video Controls
+    /// The play/pause and mute buttons of the video controls are driven by the player,
+    /// not by the taps: the video can also be played, paused or muted from the toolbar,
+    /// the lock screen or an external display.
+    @MainActor
+    @objc func didChangeVideoPlaybackStatus(_ notification: Notification) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self,
+                  let pwgID = notification.userInfo?["pwgID"] as? Int64,
+                  video?.pwgID == pwgID
+            else { return }
+            
+            if let isPlaying = notification.userInfo?["playing"] as? Bool {
+                videoControls?.setPlaying(isPlaying)
+            }
+            if let isBuffering = notification.userInfo?["buffering"] as? Bool {
+                videoControls?.setBuffering(isBuffering)
+            }
+            if let isMuted = notification.userInfo?["muted"] as? Bool {
+                videoControls?.setMuted(isMuted)
+            }
+        }
+    }
+    
+    @MainActor
+    @objc func didChangeVideoMuteOption(_ notification: Notification) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self,
+                  let pwgID = notification.userInfo?["pwgID"] as? Int64,
+                  video?.pwgID == pwgID,
+                  let isMuted = notification.userInfo?["muted"] as? Bool
+            else { return }
+            
+            videoControls?.setMuted(isMuted)
+        }
+    }
+    
+    
     // MARK: - Gestures Management
     @MainActor
     func updateDescriptionControlsVisibility() {
@@ -461,6 +517,20 @@ extension VideoDetailViewController: @MainActor VideoControlsDelegate
             playbackController.seek(contentOfVideo: video, toTimeFraction: value)
         }
     }
+    
+    func didTapPlayPause() {
+        guard let video = video else { return }
+        if playbackController.isPlayingVideo(video) {
+            playbackController.pause(contentOfVideo: video)
+        } else {
+            playbackController.play(contentOfVideo: video)
+        }
+    }
+    
+    func didTapMuteUnmute() {
+        guard let video = video else { return }
+        playbackController.muteUnmute(contentOfVideo: video)
+    }
 }
 
 
@@ -468,7 +538,11 @@ extension VideoDetailViewController: @MainActor VideoControlsDelegate
 extension VideoDetailViewController: VideoDetailDelegate
 {
     @MainActor
-    func config(currentTime: TimeInterval, duration: TimeInterval, delegate: any VideoControlsDelegate) {
+    func config(currentTime: TimeInterval, duration: TimeInterval) {
+        // Reached when the video plays on an external display. Stores the duration as the
+        // coordinator does when the player is presented on the device, so that it never
+        // stays NaN here whichever screen shows the video.
+        video?.duration = duration
         videoControls?.config(currentTime: currentTime, duration: duration)
     }
     

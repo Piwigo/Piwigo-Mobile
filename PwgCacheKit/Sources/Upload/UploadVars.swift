@@ -19,6 +19,34 @@ public enum FileExtCase: Int16, Sendable {
 }
 
 
+// MARK: - Live Photos
+// Which halves of a Live Photo the user wants to upload.
+// The raw value is stored in the user defaults, not in the persistent store.
+public enum pwgUploadLivePhotoAs: Int16, CaseIterable, Sendable {
+    case photo = 0
+    case movie
+    case both
+}
+
+// Which half of the asset an upload request carries.
+// The raw value is stored in the Core Data persistent store.
+// A Live Photo uploaded as both halves produces two requests sharing the same localIdentifier.
+public enum pwgUploadAssetPart: Int16, CaseIterable, Sendable {
+    case original = 0       // the asset itself: photo, video, PDF… i.e. almost every request
+    case pairedVideo        // the video half of a Live Photo
+}
+
+extension pwgUploadAssetPart {
+    // Distinguishes the upload files of both halves of a same asset
+    public var fileKeySuffix: String {
+        switch self {
+        case .original:     return ""
+        case .pairedVideo:  return kLivePhotoMovieSuffix
+        }
+    }
+}
+
+
 // MARK: - Upload Task Type
 public enum UploadTaskType: String, Sendable {      // Task launched by:
     case foreground                                 // - processNextUpload()
@@ -121,6 +149,28 @@ public class UploadVars: NSObject, @unchecked Sendable {
     @UserDefault("defaultPrivacyLevel", defaultValue: pwgPrivacy.everybody.rawValue, userDefaults: UserDefaults.dataSuite)
     public var defaultPrivacyLevel: Int16
     
+    /// - Halves of a Live Photo to upload
+    @UserDefault("uploadLivePhotoAs", defaultValue: pwgUploadLivePhotoAs.photo.rawValue, userDefaults: UserDefaults.dataSuite)
+    public var uploadLivePhotoAsRaw: Int16
+    public var uploadLivePhotoAs: pwgUploadLivePhotoAs {
+        get {
+            // Fall back on the photo when the server stopped accepting videos
+            // after the user made their choice.
+            let choice = pwgUploadLivePhotoAs(rawValue: uploadLivePhotoAsRaw) ?? .photo
+            return serverAcceptsVideos ? choice : .photo
+        }
+        set {
+            uploadLivePhotoAsRaw = newValue.rawValue
+        }
+    }
+
+    /// - Whether videos can be uploaded to the Piwigo server
+    /// The app converts to MP4 the videos whose format is not accepted,
+    /// so MP4 support is what determines this capability.
+    public var serverAcceptsVideos: Bool {
+        return ServerVars.shared.serverFileTypes.contains("mp4")
+    }
+
     /// - Strip GPS metadata before uploading
     @UserDefault("stripGPSdataOnUpload", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var stripGPSdataOnUpload: Bool
@@ -224,7 +274,7 @@ public class UploadVars: NSObject, @unchecked Sendable {
     public var autoUploadAlbumId: String
     
     /// - Category ID of the Piwigo album to upload photos into (i.e. destination album)
-    @UserDefault("autoUploadCategoryId", defaultValue: Int32.min, userDefaults: UserDefaults.dataSuite)
+    @UserDefault("autoUploadCategoryId", defaultValue: Int32.zero, userDefaults: UserDefaults.dataSuite)
     public var autoUploadCategoryId: Int32
     
     /// - IDs of the tags applied to the photos to auto-upload

@@ -16,17 +16,25 @@ import PwgUIKit
 extension AlbumViewController
 {
     // MARK: Toolbar Buttons (iOS 26+)
-    func getAddAlbumBarButton() -> UIBarButtonItem {
+    func getAddAlbumBarButton() -> UIBarButtonItem? {
+        guard userData.hasAlbumCreationRights(inCatID: categoryId)
+        else { return nil }
+        
         let image = UIImage(systemName: "rectangle.stack.badge.plus")!
         let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(didTapCreateAlbum))
         button.accessibilityIdentifier = "org.piwigo.addAlbum"
+        button.accessibilityLabel = String(localized: "createNewAlbum_title", comment: "New Album")
         return button
     }
     
-    func getAddImageBarButton() -> UIBarButtonItem {
+    func getAddImageBarButton() -> UIBarButtonItem? {
+        guard userData.hasUploadRights(forCatID: categoryId)
+        else { return nil }
+        
         let image = UIImage(systemName: "photo.badge.plus")!
         let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(checkPhotoLibraryAccess))
         button.accessibilityIdentifier = "org.piwigo.addImages"
+        button.accessibilityLabel = String(localized: "tabBar_upload", comment: "Upload")
         return button
     }
     
@@ -109,9 +117,9 @@ extension AlbumViewController
 
     @MainActor
     func addCategory(withName albumName: String, andComment albumComment: String,
-                     inParent albumData: Album) {
+                     inParent albumData: AlbumProperties) {
         // Prepare set of parent IDs before creating album (including root album)
-        let hasAdminRights = user.hasAdminRights
+        let hasAdminRights = userData.hasAdminRights
         let parentIDs = Set(albumData.upperIds.components(separatedBy: ",")
             .compactMap({Int32($0)})).union(Set([pwgSmartAlbum.root.rawValue]))
         
@@ -122,7 +130,7 @@ extension AlbumViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Create album
                 let newCatId = try await JSONManager.shared.create(withName: albumName, description: albumComment,
@@ -133,19 +141,18 @@ extension AlbumViewController
                 for parentID in parentIDs {
                     // Don't fetch an album already being fetched
                     if AlbumVars.shared.isFetchingAlbumData.contains(parentID) { continue }
-                    
-                    // Remember that the app is fetching album data
-                    AlbumVars.shared.isFetchingAlbumData.insert(parentID)
 
+                    // Remember that the app is fetching all album data
+                    // until the fetch completes or the fetch or the import below throws an error
+                    AlbumVars.shared.isFetchingAlbumData.insert(parentID)
+                    defer { AlbumVars.shared.isFetchingAlbumData.remove(parentID) }
+                    
                     // Fetch album data
                     let pwgData = try await JSONManager.shared.fetchAlbums(forUserWithAdminRights: hasAdminRights,
                                                                            inParentWithId: parentID,
                                                                            thumbnailSize: thumnailSize)
                     // Update cache
-                    try AlbumProvider().importAlbums(pwgData, inParent: parentID)
-                    
-                    // Remove album from list of albums being fetched
-                    AlbumVars.shared.isFetchingAlbumData.remove(parentID)
+                    try await AlbumProvider().importAlbums(pwgData, inParent: parentID)
                 }
 
                 // Update UI

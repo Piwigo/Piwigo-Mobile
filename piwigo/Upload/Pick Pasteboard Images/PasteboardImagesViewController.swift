@@ -18,32 +18,33 @@ import PwgUploadKit
 final class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
     
     // MARK: - Core Data Objects
-    var user: User!
-    lazy var mainContext: NSManagedObjectContext = {
-        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
-            fatalError("!!! Missing Managed Object Context !!!")
-        }
-        return context
-    }()
-
+    @MainActor
+    lazy var mainContext: NSManagedObjectContext = DataController.shared.mainContext
+    var userData: UserProperties!
+    
+    
+    // MARK: - Core Data Source
     lazy var fetchUploadRequest: NSFetchRequest = {
         let fetchRequest = Upload.fetchRequest()
         // Priority to uploads requested manually, oldest ones first
         var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
         sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
+        // Pasteboard objects never yield two halves, but this last descriptor keeps the order of
+        // requests sharing a date defined, as in the fetch request of the UploadProvider.
+        sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.assetPart), ascending: true))
         fetchRequest.sortDescriptors = sortDescriptors
 
         // Retrieves only non-completed upload requests
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", ServerVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.user))
+        andPredicates.append(NSPredicate(format: "user.username == %@", ServerVars.shared.username))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         return fetchRequest
     }()
 
     public lazy var uploads: NSFetchedResultsController<Upload> = {
         let uploads = NSFetchedResultsController(fetchRequest: fetchUploadRequest,
-                                                 managedObjectContext: self.mainContext,
+                                                 managedObjectContext: mainContext,
                                                  sectionNameKeyPath: nil,
                                                  cacheName: nil)
         uploads.delegate = self
@@ -127,7 +128,9 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
         do {
             try uploads.performFetch()
         } catch {
+            #if DEBUG
             debugPrint("Error: \(error.localizedDescription)")
+            #endif
         }
         
         // Navigation bar
@@ -148,6 +151,7 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
         }
         uploadBarButton.isEnabled = false
         uploadBarButton.accessibilityIdentifier = "Upload"
+        uploadBarButton.accessibilityLabel = String(localized: "tabBar_upload", comment: "Upload")
         
         // Title
         title = String(localized: "categoryUpload_pasteboard", comment: "Clipboard")
@@ -230,7 +234,9 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
     deinit {
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
+        #if DEBUG
         debugPrint("••> PasteboardImagesViewController released memory")
+        #endif
     }
 
     
@@ -257,7 +263,7 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
         else { preconditionFailure("Could not load UploadSwitchViewController") }
         
         uploadSwitchVC.delegate = self
-        uploadSwitchVC.user = self.user
+        uploadSwitchVC.userData = self.userData
         uploadSwitchVC.categoryId = self.categoryId
         uploadSwitchVC.categoryCurrentCounter = self.categoryCurrentCounter
         uploadSwitchVC.canDeleteImages = false

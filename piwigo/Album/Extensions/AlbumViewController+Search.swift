@@ -64,12 +64,14 @@ extension AlbumViewController
 extension AlbumViewController: UISearchControllerDelegate
 {
     func willPresentSearchController(_ searchController: UISearchController) {
+        #if DEBUG
         debugPrint("willPresentSearchController…")
+        #endif
         // Switch to Search album
         categoryId = pwgSmartAlbum.search.rawValue
         
         // Initialise albumData
-        albumData = (try? AlbumProvider().getAlbum(ofUser: user, withId: categoryId))!
+        albumData = (try? AlbumProvider().getOrCreateProperties(ofAlbumWithID: categoryId, inContext: mainContext))!
         resetSearchAlbum(withQuery: "")
         
         // Update albums and images
@@ -92,12 +94,16 @@ extension AlbumViewController: UISearchControllerDelegate
     }
     
     func didPresentSearchController(_ searchController: UISearchController) {
+        #if DEBUG
         debugPrint("didPresentSearchController")
+        #endif
         searchController.becomeFirstResponder()
     }
     
     func willDismissSearchController(_ searchController: UISearchController) {
+        #if DEBUG
         debugPrint("willDismissSearchController…")
+        #endif
         // Deselect photos if needed
         cancelSelect()
 
@@ -115,9 +121,11 @@ extension AlbumViewController: UISearchControllerDelegate
     }
     
     func didDismissSearchController(_ searchController: UISearchController) {
+        #if DEBUG
         debugPrint("didDismissSearchController…")
+        #endif
         // Update albumData
-        albumData = (try? AlbumProvider().getAlbum(ofUser: user, withId: categoryId))!
+        albumData = AlbumProvider().getProperties(ofAlbumWithID: categoryId, inContext: mainContext)!
         
         // Update albums and images
         resetPredicatesAndPerformFetch()
@@ -134,15 +142,21 @@ extension AlbumViewController: UISearchControllerDelegate
     }
     
     private func resetSearchAlbum(withQuery query: String) {
+        guard let album = albumProvider.getAlbum(withID: categoryId, inContext: mainContext)
+        else { preconditionFailure("••> Search album not found!!!") }
+
         // Reset search album
-        albumData.query = query
-        albumData.nbImages = query.isEmpty ? Int64.zero : Int64.min
-        albumData.totalNbImages = query.isEmpty ? Int64.zero : Int64.min
-        
+       album.query = query
+       album.nbImages = query.isEmpty ? Int64.zero : Int64.min
+       album.totalNbImages = query.isEmpty ? Int64.zero : Int64.min
+
         // Remove images
-        if let images = albumData.images {
-            albumData.removeFromImages(images)
+        if let images = album.images {
+            album.removeFromImages(images)
         }
+        
+        // Update album properties
+        albumData = album.getProperties()
         mainContext.saveIfNeeded()
         
         // Hides "no album/photo" label
@@ -155,13 +169,17 @@ extension AlbumViewController: UISearchControllerDelegate
 extension AlbumViewController: UISearchBarDelegate
 {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        #if DEBUG
         debugPrint("searchBar textDidChange…")
+        #endif
         // Pause image loader and stop importing images
         imageProvider.userDidCancelSearch = true
     }
     
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
+        #if DEBUG
         debugPrint("searchBarShouldBeginEditing…")
+        #endif
         
         // Animates Cancel button appearance
         if #unavailable(iOS 26.0) {
@@ -172,13 +190,17 @@ extension AlbumViewController: UISearchBarDelegate
     }
     
     func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool {
+        #if DEBUG
         debugPrint("searchBarShouldEndEditing…")
+        #endif
         // Dismiss keyboard
         return true
     }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        #if DEBUG
         debugPrint("searchBarTextDidEndEditing…")
+        #endif
         // Will fetch images and accept imports
         imageProvider.userDidCancelSearch = false
 
@@ -190,6 +212,11 @@ extension AlbumViewController: UISearchBarDelegate
         if albumData.query == query {
             // Restart loading pages of images
             Task {
+                // Remember that the app is fetching all album data
+                // until the fetch completes or the fetch or the import below throws an error
+                AlbumVars.shared.isFetchingAlbumData.insert(categoryId)
+                defer { AlbumVars.shared.isFetchingAlbumData.remove(categoryId) }
+
                 await self.fetchImages(withInitialImageIds: self.oldImageIDs, query: query,
                                        fromPage: self.onPage, toPage: self.lastPage)
             }
@@ -207,9 +234,15 @@ extension AlbumViewController: UISearchBarDelegate
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        #if DEBUG
         debugPrint("searchBarCancelButtonClicked…")
+        #endif
         // Stop image loader and image import
         imageProvider.userDidCancelSearch = true
+
+        // The paused fetch will not be resumed
+        // ► Remove current album from list of albums being fetched
+        AlbumVars.shared.isFetchingAlbumData.remove(categoryId)
 
         // Animates Cancel button appearance
         if #unavailable(iOS 26.0) {
@@ -219,7 +252,9 @@ extension AlbumViewController: UISearchBarDelegate
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        #if DEBUG
         debugPrint("searchBarSearchButtonClicked…")
+        #endif
         
         // Animates Cancel button appearance
         if #unavailable(iOS 26.0) {

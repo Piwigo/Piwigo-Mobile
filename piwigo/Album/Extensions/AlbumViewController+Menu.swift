@@ -9,7 +9,9 @@
 import Foundation
 import UIKit
 import PwgKit
+import PwgAPIKit
 import PwgCacheKit
+import PwgUIKit
 
 // MARK: - Contextual Menu
 extension AlbumViewController {
@@ -32,24 +34,51 @@ extension AlbumViewController {
         
         // Update menu
         // Not all users can select/deselect images
-        var children = [UIMenu?]()
-        if user.canDownloadImages() || hasFavorites || user.hasUploadRights(forCatID: categoryId) {
-            children = [selectMenu(enabled: albumData.nbImages != 0), sortMenu(), viewOptionsMenu()]
+        var children = [UIMenuElement?]()
+        if userData.canDownloadImages() || userData.canManageFavorites() || userData.hasUploadRights(forCatID: categoryId) {
+            children = [selectMenu(enabled: albumData.nbImages != 0),
+                        shareAlbumMenu(forAlbumWithID: categoryId), viewOptionsMenu()]
         } else {
-            children = [sortMenu(), viewOptionsMenu()]
+            children = [shareAlbumMenu(forAlbumWithID: categoryId), viewOptionsMenu()]
         }
         let updatedMenu = selectBarButton?.menu?.replacingChildren(children.compactMap({$0}))
         selectBarButton?.menu = updatedMenu
+    }
+    
+
+    // MARK: - Album View Options
+    // Menu presenting vew options
+    func viewOptionsMenu() -> UIMenu {
+        // The sub-menus are rebuilt each time the menu is presented so that the
+        // selected sort and group options always reflect the current settings,
+        // even when the menu itself is not rebuilt after a change
+        // (e.g. in the root album, or after using the segmented control of a section header).
+        let deferred = UIDeferredMenuElement.uncached { [weak self] completion in
+            guard let self else { completion([]); return }
+            completion([sortMenu(), groupMenu(), showMenu()].compactMap({$0}))
+        }
+        let options: UIMenu.Options
+        if #available(iOS 26.0, *) {
+            options = []
+        } else {
+            // Fallback on previous version
+            options = .displayInline
+        }
+        return UIMenu(title: String(localized: "categoryView_options", comment: "View Options"),
+                      image: nil,
+                      identifier: UIMenu.Identifier("org.piwigo.view.options"),
+                      options: options,
+                      children: [deferred])
     }
     
     
     // MARK: - Sort Image
     /// - for selecting image sort options
     func sortMenu() -> UIMenu? {
-        var options: UIMenu.Options = [.singleSelection]
-        if #unavailable(iOS 26.0) {
-            options.insert(.displayInline)
-        }
+        // No images in root album
+        guard categoryId != pwgSmartAlbum.root.rawValue else { return nil }
+        
+        let options: UIMenu.Options = [.singleSelection]
         let menuId = UIMenu.Identifier("org.piwigo.images.sort")
         return UIMenu(title: String(localized: "categorySort_sort", comment: "Sort Images By…"),
                       image: nil, identifier: menuId,
@@ -70,8 +99,8 @@ extension AlbumViewController {
         let actionId = UIAction.Identifier("org.piwigo.images.sort.default")
         let isActive = sortOption == .albumDefault
         let action = UIAction(title: pwgImageSort.albumDefault.name,
-                              image: isActive ? UIImage(systemName: "checkmark") : nil,
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: isActive ? .on : .off, handler: { [weak self] action in
             guard let self else { return }
             // Should sorting be changed?
             if isActive { return }
@@ -99,8 +128,8 @@ extension AlbumViewController {
         switch sortOption {
         case .nameAscending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
-                              image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: .on, handler: { [weak self] action in
                 guard let self else { return }
                 sortOption = .nameDescending
                 images.delegate = nil
@@ -110,8 +139,8 @@ extension AlbumViewController {
             })
         case .nameDescending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
-                              image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: .on, handler: { [weak self] action in
                 guard let self else { return }
                 sortOption = .nameAscending
                 images.delegate = nil
@@ -147,8 +176,8 @@ extension AlbumViewController {
         switch sortOption {
         case .dateCreatedAscending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
-                              image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: .on, handler: { [weak self] action in
                 guard let self else { return }
                 sortOption = .dateCreatedDescending
                 images.delegate = nil
@@ -158,8 +187,8 @@ extension AlbumViewController {
             })
         case .dateCreatedDescending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
-                              image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: .on, handler: { [weak self] action in
                 guard let self else { return }
                 sortOption = .dateCreatedAscending
                 images.delegate = nil
@@ -195,8 +224,8 @@ extension AlbumViewController {
         switch sortOption {
         case .datePostedAscending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
-                              image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: .on, handler: { [weak self] action in
                 guard let self else { return }
                 sortOption = .datePostedDescending
                 images.delegate = nil
@@ -206,8 +235,8 @@ extension AlbumViewController {
             })
         case .datePostedDescending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
-                              image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: .on, handler: { [weak self] action in
                 guard let self else { return }
                 sortOption = .datePostedAscending
                 images.delegate = nil
@@ -243,8 +272,8 @@ extension AlbumViewController {
         switch sortOption {
         case .ratingScoreAscending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
-                              image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: .on, handler: { [weak self] action in
                 guard let self else { return }
                 sortOption = .ratingScoreDescending
                 images.delegate = nil
@@ -254,8 +283,8 @@ extension AlbumViewController {
             })
         case .ratingScoreDescending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
-                              image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: .on, handler: { [weak self] action in
                 guard let self else { return }
                 sortOption = .ratingScoreAscending
                 images.delegate = nil
@@ -291,8 +320,8 @@ extension AlbumViewController {
         switch sortOption {
         case .visitsAscending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
-                              image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: .on, handler: { [weak self] action in
                 guard let self else { return }
                 sortOption = .visitsDescending
                 images.delegate = nil
@@ -302,8 +331,8 @@ extension AlbumViewController {
             })
         case .visitsDescending:
             action = UIAction(title: title, subtitle: sortOption.shortName,
-                              image: UIImage(systemName: "checkmark"),
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: .on, handler: { [weak self] action in
                 guard let self else { return }
                 sortOption = .visitsAscending
                 images.delegate = nil
@@ -336,8 +365,8 @@ extension AlbumViewController {
         let actionId = UIAction.Identifier("org.piwigo.images.sort.manual")
         let isActive = sortOption == .rankAscending
         let action = UIAction(title: pwgImageSort.rankAscending.name,
-                              image: isActive ? UIImage(systemName: "checkmark") : nil,
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: isActive ? .on : .off, handler: { [weak self] action in
             guard let self else { return }
             // Should sorting be changed?
             if isActive { return }
@@ -364,8 +393,8 @@ extension AlbumViewController {
         let actionId = UIAction.Identifier("org.piwigo.images.sort.random")
         let isActive = sortOption == .random
         let action = UIAction(title: String(localized: "categorySort_randomly", comment: "Randomly"),
-                              image: isActive ? UIImage(systemName: "checkmark") : nil,
-                              identifier: actionId, handler: { [weak self] action in
+                              image: nil, identifier: actionId,
+                              state: isActive ? .on : .off, handler: { [weak self] action in
             guard let self else { return }
             // Should sorting be changed?
             if isActive { return }
@@ -382,37 +411,33 @@ extension AlbumViewController {
         return action
     }
     
-    
-    // MARK: - View Options
+
+    // MARK: - Group Images Options
     /// - for choosing how to group images
-    func viewOptionsMenu() -> UIMenu {
-        return UIMenu(title: String(localized: "categoryView_options", comment: "View Options"),
-                      image: nil,
-                      identifier: UIMenu.Identifier("org.piwigo.view.options"),
-                      children: [groupMenu(), showMenu()].compactMap({$0}))
-    }
-    
     func groupMenu() -> UIMenu? {
+        // No images in root album
+        guard categoryId != pwgSmartAlbum.root.rawValue else { return nil }
+        
         // Only available when images are sorted by date
-        guard categoryId != Int32.zero,
-              let sortKey = images.fetchRequest.sortDescriptors?.first?.key,
+        guard let sortKey = images.fetchRequest.sortDescriptors?.first?.key,
               [#keyPath(Image.dateCreated), #keyPath(Image.datePosted)].contains(sortKey)
         else { return nil }
         
         // Create a menu for selecting how to group images
+        let options: UIMenu.Options = [.singleSelection]
         let children = [byDayAction(), byWeekAction(), byMonthAction(), byNoneAction()].compactMap({$0})
         return UIMenu(title: String(localized: "categoryView_group", comment: "Group Images By…"),
                       image: nil,
                       identifier: UIMenu.Identifier("org.piwigo.images.group.main"),
-                      options: UIMenu.Options.displayInline,
+                      options: options,
                       children: children)
     }
     
     func byDayAction() -> UIAction? {
         let isActive = AlbumVars.shared.defaultGroup == .day
-        let action = UIAction(title: String(localized: "Day", comment: "Day"),
-                              image: isActive ? UIImage(systemName: "checkmark") : nil,
+        let action = UIAction(title: String(localized: "Day", comment: "Day"), image: nil,
                               identifier: UIAction.Identifier("org.piwigo.images.group.day"),
+                              state: isActive ? .on : .off,
                               handler: { [weak self] action in
             guard let self else { return }
             // Should image grouping be changed?
@@ -430,9 +455,9 @@ extension AlbumViewController {
     
     func byWeekAction() -> UIAction? {
         let isActive = AlbumVars.shared.defaultGroup == .week
-        let action = UIAction(title: String(localized: "Week", comment: "Week"),
-                              image: isActive ? UIImage(systemName: "checkmark") : nil,
+        let action = UIAction(title: String(localized: "Week", comment: "Week"), image: nil,
                               identifier: UIAction.Identifier("org.piwigo.images.group.week"),
+                              state: isActive ? .on : .off,
                               handler: { [weak self] action in
             guard let self else { return }
             // Should image grouping be changed?
@@ -450,9 +475,9 @@ extension AlbumViewController {
     
     func byMonthAction() -> UIAction? {
         let isActive = AlbumVars.shared.defaultGroup == .month
-        let action = UIAction(title: String(localized: "Month", comment: "Month"),
-                              image: isActive ? UIImage(systemName: "checkmark") : nil,
+        let action = UIAction(title: String(localized: "Month", comment: "Month"), image: nil,
                               identifier: UIAction.Identifier("org.piwigo.images.group.month"),
+                              state: isActive ? .on : .off,
                               handler: { [weak self] action in
             guard let self else { return }
             // Should sorting be changed?
@@ -470,9 +495,9 @@ extension AlbumViewController {
     
     func byNoneAction() -> UIAction? {
         let isActive = AlbumVars.shared.defaultGroup == .none
-        let action = UIAction(title: String(localized: "None", comment: "None"),
-                              image: isActive ? UIImage(systemName: "checkmark") : nil,
+        let action = UIAction(title: String(localized: "None", comment: "None"), image: nil,
                               identifier: UIAction.Identifier("org.piwigo.images.group.none"),
+                              state: isActive ? .on : .off,
                               handler: { [weak self] action in
             guard let self else { return }
             // Should image grouping be changed?
@@ -488,16 +513,45 @@ extension AlbumViewController {
         return action
     }
     
+
+    // MARK: - Show Options
+    /// - for choosing whether to show image titles and album descriptions
     func showMenu() -> UIMenu? {
         // Create a menu for selecting what to show
         let children = [showHideTitlesAction(), showHideDescriptionsAction()].compactMap({$0})
         return UIMenu(title: String(localized: "categoryView_show", comment: "Show…"),
                       image: nil,
                       identifier: UIMenu.Identifier("org.piwigo.images.show.main"),
-                      options: UIMenu.Options.displayInline,
+                      options: categoryId == Int32.zero ? .displayInline : [],
                       children: children)
     }
-    
+
+    func showHideTitlesAction() -> UIAction? {
+        // No images in root album
+        guard categoryId != pwgSmartAlbum.root.rawValue else { return nil }
+        
+        let isActive = AlbumVars.shared.displayImageTitles
+        let action = UIAction(title: String(localized: "settings_displayTitles", comment: "Image Titles"),
+                              image: isActive ? UIImage(systemName: "checkmark") : nil,
+                              identifier: UIAction.Identifier("org.piwigo.images.show.titles"),
+                              handler: { [weak self] action in
+            guard let self else { return }
+            // Show or hide image titles
+            AlbumVars.shared.displayImageTitles = !isActive
+            // Update menu
+            if categoryId == Int32.zero {
+                let children = [smartAlbumsMenu(), viewOptionsMenu(), settingsMenu()].compactMap({$0})
+                let updatedMenu = discoverBarButton.menu?.replacingChildren(children)
+                discoverBarButton.menu = updatedMenu
+            } else {
+                updateCollectionAndMenu()
+            }
+            updateCollectionAndMenu()
+        })
+        action.accessibilityIdentifier = "showHideImageTitles"
+        return action
+    }
+
     func showHideDescriptionsAction() -> UIAction? {
         let isActive = AlbumVars.shared.displayAlbumDescriptions
         let action = UIAction(title: String(localized: "settings_displayDescriptions", comment: "Album Descriptions"),
@@ -522,29 +576,6 @@ extension AlbumViewController {
             }
         })
         action.accessibilityIdentifier = "showHideAlbumDescriptions"
-        return action
-    }
-
-    func showHideTitlesAction() -> UIAction? {
-        let isActive = AlbumVars.shared.displayImageTitles
-        let action = UIAction(title: String(localized: "settings_displayTitles", comment: "Image Titles"),
-                              image: isActive ? UIImage(systemName: "checkmark") : nil,
-                              identifier: UIAction.Identifier("org.piwigo.images.show.titles"),
-                              handler: { [weak self] action in
-            guard let self else { return }
-            // Show or hide image titles
-            AlbumVars.shared.displayImageTitles = !isActive
-            // Update menu
-            if categoryId == Int32.zero {
-                let children = [smartAlbumsMenu(), viewOptionsMenu(), settingsMenu()].compactMap({$0})
-                let updatedMenu = discoverBarButton.menu?.replacingChildren(children)
-                discoverBarButton.menu = updatedMenu
-            } else {
-                updateCollectionAndMenu()
-            }
-            updateCollectionAndMenu()
-        })
-        action.accessibilityIdentifier = "showHideImageTitles"
         return action
     }
 }
@@ -597,7 +628,7 @@ extension AlbumViewController: @MainActor ImageHeaderDelegate
             sectionItems.forEach { objectID in
                 // Retrieve image data
                 guard let image = try? self.mainContext.existingObject(with: objectID) as? Image,
-                      selectedImageIDs.contains(image.pwgID) == false
+                      selectedImages.keys.contains(image.pwgID) == false
                 else { return }
                 
                 // Select this image
@@ -607,7 +638,7 @@ extension AlbumViewController: @MainActor ImageHeaderDelegate
                     cell.isSelection = true
                 } else {
                     // pwg.users.favorites… methods available from Piwigo version 2.10
-                    selectImage(image, isFavorite: favAlbum?.images?.contains(image) ?? false)
+                    selectImage(image, isFavorite: favAlbum?.images.contains(image.pwgID) ?? false)
                 }
             }
             // Change section button state
@@ -621,9 +652,9 @@ extension AlbumViewController: @MainActor ImageHeaderDelegate
             sectionItems.forEach { objectID in
                 // Retrieve image data
                 guard let image = try? self.mainContext.existingObject(with: objectID) as? Image,
-                      selectedImageIDs.contains(image.pwgID)
+                      selectedImages.keys.contains(image.pwgID)
                 else { return }
-                
+
                 // Deselect this image
                 deselectImages(withIDs: Set([image.pwgID]))
                 if let indexPath = diffableDataSource.indexPath(for: objectID),
@@ -650,5 +681,271 @@ extension AlbumViewController: @MainActor ImageHeaderDelegate
                 header.selectButton.setTitle(forState: sectionState)
             }
         }
+    }
+}
+
+
+// MARK: - Share Album Menu
+extension AlbumViewController {
+    
+    /// Returns the menu proposing to share an album, or nil when it cannot be shared, i.e. when:
+    /// — the album is the root album or a smart album, which have no page on the server;
+    /// — the album is not in cache, or its status is unknown;
+    /// — the album is public but the URL of its page is unknown;
+    /// — the album is private and the ShareAlbum plugin is not installed,
+    ///   or rejected this user during this session.
+    ///
+    /// A public album can be browsed by anyone, so the URL of its page is simply sent as is.
+    /// A private album requires the ShareAlbum plugin, which creates a URL giving access to
+    /// that album only, to people having no Piwigo account.
+    func shareAlbumMenu(forAlbumWithID pwgID: Int32) -> UIMenuElement? {
+        // Don't share smart albums and the root album
+        guard pwgID > 0,
+              let album = albumProvider.getAlbum(withID: pwgID, inContext: mainContext)
+        else { return nil }
+        
+        let menuId = UIMenu.Identifier("org.piwigo.album.share")
+        let children: [UIMenuElement]
+        switch pwgAlbumStatus(rawValue: album.status) {
+        case .publicStatus:
+            // Anyone can browse a public album ► propose to send the URL of its page
+            guard let pageUrl = album.pageUrl as? URL else { return nil }
+            children = [shareAlbumLinkAction(pageUrl)]
+            
+        case .privateStatus:
+            // Only the ShareAlbum plugin can share a private album.
+            /// canShareAlbums remains nil until a sharealbum method of this session succeeded,
+            /// i.e. until fetchSharedAlbums() or fetchShareOfAlbum() has run.
+            guard ServerVars.shared.usesShareAlbum,
+                  AlbumVars.shared.canShareAlbums == true
+            else { return nil }
+            
+            // The share data is the one refreshed when the album appeared (see fetchShareOfAlbum)
+            children = shareAlbumCommands(forAlbumWithID: pwgID)
+            guard children.isEmpty == false else { return nil }
+            
+        default:
+            // The status of this album is unknown
+            return nil
+        }
+        return UIMenu(title: "", image: nil, identifier: menuId,
+                      options: UIMenu.Options.displayInline,
+                      children: children)
+    }
+    
+    /// Variant used by the contextual menu of an album cell.
+    func shareAlbumMenu(forAlbumAt indexPath: IndexPath) -> UIMenuElement? {
+        guard let objectID = diffableDataSource.itemIdentifier(for: indexPath),
+              let album = try? mainContext.existingObject(with: objectID) as? Album
+        else { return nil }
+        return shareAlbumMenu(forAlbumWithID: album.pwgID)
+    }
+    
+    
+    /// Returns the commands proposed for a private album, according to the share data in cache.
+    private func shareAlbumCommands(forAlbumWithID pwgID: Int32) -> [UIMenuElement] {
+        guard let album = albumProvider.getAlbum(withID: pwgID, inContext: mainContext)
+        else { return [] }
+        
+        // The album is not shared yet ► propose to share it
+        guard let shareUrl = album.shareUrl as? URL
+        else { return [shareAlbumAction(forAlbumWithID: pwgID)] }
+        
+        // The album is already shared ► propose to send, renew or cancel its link
+        let menuId = UIMenu.Identifier("org.piwigo.album.share.private")
+        return [UIMenu(title: String(localized: "shareAlbum_private", comment: "Share Private Album"),
+                       image: UIImage(systemName: "link"), identifier: menuId,
+                       children: [shareLinkAction(shareUrl),
+                                  renewLinkAction(forAlbumWithID: pwgID),
+                                  stopSharingAction(forAlbumWithID: pwgID)])]
+    }
+    
+    
+    // MARK: - Share Album Actions
+    private func shareAlbumLinkAction(_ pageUrl: URL) -> UIAction {
+        return UIAction(title: String(localized: "shareAlbum_public", comment: "Share Public Album"),
+                        image: UIImage(systemName: "link")) { [self] _ in
+            // Anyone can browse a public album: send the URL of its page as is
+            presentActivityView(with: pageUrl)
+        }
+    }
+    
+    private func shareAlbumAction(forAlbumWithID pwgID: Int32) -> UIAction {
+        return UIAction(title: String(localized: "shareAlbum_private", comment: "Share Private Album"),
+                        image: UIImage(systemName: "link")) { [self] _ in
+            // Share the album, then propose to send the link
+            updateShare(ofAlbumWithID: pwgID) { catID in
+                try await JSONManager.shared.createShare(ofAlbumWithID: catID)
+            } completion: { [self] shareUrl in
+                if let shareUrl {
+                    presentActivityView(with: shareUrl)
+                }
+            }
+        }
+    }
+    
+    private func shareLinkAction(_ shareUrl: URL) -> UIAction {
+        return UIAction(title: String(localized: "shareAlbum_shareLink", comment: "Share Link…"),
+                        image: UIImage(systemName: "square.and.arrow.up")) { [self] _ in
+            presentActivityView(with: shareUrl)
+        }
+    }
+    
+    private func renewLinkAction(forAlbumWithID pwgID: Int32) -> UIAction {
+        let title = String(localized: "shareAlbum_renewLink", comment: "Renew Link")
+        return UIAction(title: title,
+                        image: UIImage(systemName: "arrow.triangle.2.circlepath")) { [self] _ in
+            // Renewing the code invalidates the link which was already sent to people
+            let message = String(localized: "shareAlbum_renewLink_message",
+                                 comment: "The current link will stop working…")
+            confirmShareChange(title: title,
+                               message: message + visitsMessage(forAlbumWithID: pwgID)) { [self] in
+                // Renew the share code, then propose to send the new link
+                updateShare(ofAlbumWithID: pwgID) { catID in
+                    try await JSONManager.shared.renewShare(ofAlbumWithID: catID)
+                } completion: { [self] shareUrl in
+                    if let shareUrl {
+                        presentActivityView(with: shareUrl)
+                    }
+                }
+            }
+        }
+    }
+    
+    private func stopSharingAction(forAlbumWithID pwgID: Int32) -> UIAction {
+        let title = String(localized: "shareAlbum_stopSharing", comment: "Stop Sharing")
+        return UIAction(title: title,
+                        image: UIImage(systemName: "xmark.circle"),
+                        attributes: .destructive) { [self] _ in
+            // Cancelling the share invalidates the link which was already sent to people
+            let message = String(localized: "shareAlbum_stopSharing_message",
+                                 comment: "The link will stop working…")
+            confirmShareChange(title: title,
+                               message: message + visitsMessage(forAlbumWithID: pwgID)) { [self] in
+                // Cancel the share, which clears the share data of the album in cache
+                updateShare(ofAlbumWithID: pwgID) { catID in
+                    try await JSONManager.shared.cancelShare(ofAlbumWithID: catID)
+                    return nil
+                } completion: { _ in }
+            }
+        }
+    }
+    
+    
+    // MARK: - Share Album Utilities
+    /// Returns a sentence telling how much a shared album was visited since it was shared,
+    /// to be appended to the message of a confirmation alert. Returns an empty string when
+    /// these data are unknown, i.e. when no sharealbum request was performed for this album
+    /// or when the server did not return the creation date of the share.
+    private func visitsMessage(forAlbumWithID pwgID: Int32) -> String {
+        guard let visits = AlbumVars.shared.shareVisits[pwgID],
+              let album = albumProvider.getAlbum(withID: pwgID, inContext: mainContext),
+              album.shareCreationDate > DateUtilities.unknownDateInterval
+        else { return "" }
+        
+        // Dates are presented relatively to now, e.g. "3 months ago"
+        let formatter = RelativeDateTimeFormatter()
+        formatter.dateTimeStyle = .named
+        let now = Date()
+        let sharedSince = formatter.localizedString(
+            for: Date(timeIntervalSinceReferenceDate: album.shareCreationDate), relativeTo: now)
+        
+        // The album was never visited
+        guard visits.count > Int64.zero, let lastVisit = visits.lastVisit
+        else {
+            return "\n\n" + String.localizedStringWithFormat(
+                String(localized: "shareAlbum_notVisited", comment: "This album was shared … not been visited"),
+                sharedSince)
+        }
+        
+        // The album was visited
+        let visitsStr = String.localizedStringWithFormat(
+            String(localized: "shareAlbum_visits", comment: "This album was shared … visited … times"),
+            sharedSince, visits.count)
+        let lastVisitStr = String.localizedStringWithFormat(
+            String(localized: "shareAlbum_lastVisit", comment: "The last visit was …"),
+            formatter.localizedString(for: Date(timeIntervalSinceReferenceDate: lastVisit), relativeTo: now))
+        return "\n\n" + visitsStr + " " + lastVisitStr
+    }
+    
+    /// Asks the user to confirm an action which invalidates the link of a shared album,
+    /// i.e. which prevents the people who already received it from opening the album.
+    private func confirmShareChange(title: String, message: String,
+                                    handler: @escaping () -> Void) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        
+        let cancelAction = UIAlertAction(title: Localized.cancel, style: .cancel, handler: nil)
+        alert.addAction(cancelAction)
+        
+        let confirmAction = UIAlertAction(title: title, style: .destructive, handler: { _ in
+            handler()
+        })
+        alert.addAction(confirmAction)
+        
+        // Present the alert
+        alert.view.tintColor = PwgColor.tintColor
+        alert.view.accessibilityIdentifier = "ShareAlbum"
+        alert.overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? UIUserInterfaceStyle.dark : UIUserInterfaceStyle.light
+        present(alert, animated: true) {
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+            alert.view.tintColor = PwgColor.tintColor
+        }
+    }
+    
+    /// Performs a request modifying the share of an album, stores its result in cache and
+    /// reports a failure to the user. The completion is only called when the request succeeded,
+    /// with the URL of the share as stored in cache, or nil when the album is not shared anymore.
+    private func updateShare(ofAlbumWithID pwgID: Int32,
+                             with request: @escaping @Sendable (Int32) async throws -> ShareAlbumGetInfo?,
+                             completion: @escaping (URL?) -> Void) {
+        // Display HUD during the request
+        navigationController?.showHUD(withTitle: Localized.loading)
+        
+        Task {
+            do {
+                // Check session
+                try await LoginUtilities().checkSessionOfCurrentUser()
+                
+                // Create, renew or cancel the share
+                let shareData = try await request(pwgID)
+                
+                // Store the new share data in cache and update the UI
+                await MainActor.run { [self] in
+                    try? albumProvider.updateShare(shareData, ofAlbumWithID: pwgID, inContext: mainContext)
+                    
+                    // Rebuild the menus so that they propose the commands matching the new state
+                    updateBarsInPreviewMode()
+                    
+                    // Retrieve the URL as stored, i.e. relative to the address used to log in
+                    let shareUrl = albumProvider.getAlbum(withID: pwgID, inContext: mainContext)?.shareUrl as? URL
+                    navigationController?.hideHUD {
+                        completion(shareUrl)
+                    }
+                }
+            }
+            catch {
+                await MainActor.run { [self] in
+                    navigationController?.hideHUD { [self] in
+                        let title = String(localized: "internetErrorGeneral_title", comment: "Connection Error")
+                        dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
+                    }
+                }
+            }
+        }
+    }
+    
+    /// Presents the system share sheet so that the user sends the link to people
+    /// who do not have a Piwigo account.
+    private func presentActivityView(with shareUrl: URL) {
+        let activityVC = UIActivityViewController(activityItems: [shareUrl], applicationActivities: nil)
+        if let selectBarButton {
+            activityVC.popoverPresentationController?.barButtonItem = selectBarButton
+        } else {
+            activityVC.popoverPresentationController?.sourceView = view
+            activityVC.popoverPresentationController?.sourceRect = CGRect(x: view.bounds.midX,
+                                                                          y: view.bounds.midY,
+                                                                          width: 0, height: 0)
+        }
+        present(activityVC, animated: true)
     }
 }

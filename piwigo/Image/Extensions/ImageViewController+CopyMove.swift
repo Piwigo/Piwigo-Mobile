@@ -49,7 +49,7 @@ extension ImageViewController
         guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController
         else { preconditionFailure("Could not instantiate SelectCategoryViewController") }
         let parameter = [imageData, NSNumber(value: categoryId)]
-        copyVC.user = user
+        copyVC.userData = userData
         if copyVC.setInput(parameter: parameter, for: action) {
             copyVC.delegate = self                  // To re-enable toolbar
             if action == .copyImage {

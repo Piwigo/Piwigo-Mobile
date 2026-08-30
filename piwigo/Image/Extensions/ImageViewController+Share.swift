@@ -13,19 +13,17 @@ import PwgUIKit
 
 extension ImageViewController
 {
-    // MARK: - Share Image Bar Button
-    func getShareButton() -> UIBarButtonItem? {
+    // MARK: - Share Image
+    func getShareImageButton() -> UIBarButtonItem? {
         // Since Piwigo 14, pwg.categories.getImages method returns download_url if the user has download rights
         // For previous versions, we assume that all only registered users have download rights
-        if user.canDownloadImages() {
+        if userData.canDownloadImages() {
             return UIBarButtonItem.shareImageButton(self, action: #selector(ImageViewController.shareImage))
         } else {
             return nil
         }
     }
-
-
-    // MARK: - Share Image
+    
     @MainActor
     @objc func shareImage() {
         // Disable buttons during action
@@ -57,18 +55,58 @@ extension ImageViewController
 
     @MainActor
     func presentShareImageViewController(withCameraRollAccess hasCameraRollAccess: Bool) {
+        // Check input image data
+        guard let imageData = imageData else { return }
+
+        // PDF, EPS and GIF files are shared as they are: no option can change anything.
+        let sections = ShareUtilities.optionsToPropose(for: [imageData])
+        guard sections.metadata else {
+            presentActivityViewController(with: ShareOptions.lastUsed,
+                                          withCameraRollAccess: hasCameraRollAccess)
+            return
+        }
+
+        // Let the user choose what will be shared before presenting the share sheet.
+        /// The choice cannot be proposed afterwards: the type and the size of the item
+        /// decide which activities the share sheet proposes and what they receive.
+        guard let optionsVC = UIStoryboard(name: "ShareOptionsViewController", bundle: nil)
+            .instantiateViewController(withIdentifier: "ShareOptionsViewController") as? ShareOptionsViewController
+        else { return }
+
+        optionsVC.images = [imageData]
+        optionsVC.completion = { [weak self] options in
+            guard let options = options else {
+                // The user gave up: enable the buttons again
+                self?.setEnableStateOfButtons(true)
+                return
+            }
+            self?.presentActivityViewController(with: options,
+                                                withCameraRollAccess: hasCameraRollAccess)
+        }
+
+        let navController = UINavigationController(rootViewController: optionsVC)
+        if let sheet = navController.sheetPresentationController {
+            sheet.detents = [.medium(), .large()]
+            sheet.prefersGrabberVisible = true
+        }
+        present(navController, animated: true)
+    }
+
+    @MainActor
+    func presentActivityViewController(with options: ShareOptions,
+                                       withCameraRollAccess hasCameraRollAccess: Bool) {
         // To exclude some activity types
         var excludedActivityTypes = Set<UIActivity.ActivityType>()
 
         // Check input image data
         guard let imageData = imageData else { return }
-        
+
         // Create new activity provider item to pass to the activity view controller
         let scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))
         var itemsToShare: [AnyHashable] = []
         if imageData.isVideo {
             // Case of a video
-            let videoItemProvider = ShareVideoActivityItemProvider(imageData: imageData, scale: scale, contextually: false)
+            let videoItemProvider = ShareVideoActivityItemProvider(imageData: imageData, scale: scale, options: options, contextually: false)
 
             // Use delegation to monitor the progress of the item method
             videoItemProvider.delegate = self
@@ -94,9 +132,7 @@ extension ImageViewController
             itemsToShare.append(pdfItemProvider)
 
             // Exclude "assign to contact" activity
-            excludedActivityTypes.formUnion([.assignToContact, .saveToCameraRoll,
-                                             .postToFacebook, .postToTwitter, .postToWeibo,
-                                             .postToVimeo, .postToTencentWeibo])
+            excludedActivityTypes.formUnion([.assignToContact, .saveToCameraRoll])
             if #available(iOS 16.4, *) {
                 excludedActivityTypes.formUnion([.addToHomeScreen,
                                                  .collaborationCopyLink, .collaborationInviteWithLink])
@@ -104,7 +140,7 @@ extension ImageViewController
         }
         else {
             // Case of an image
-            let imageItemProvider = ShareImageActivityItemProvider(imageData: imageData, scale: scale, contextually: false)
+            let imageItemProvider = ShareImageActivityItemProvider(imageData: imageData, scale: scale, options: options, contextually: false)
 
             // Use delegation to monitor the progress of the item method
             imageItemProvider.delegate = self
@@ -135,31 +171,95 @@ extension ImageViewController
             // Enable buttons after action
             setEnableStateOfButtons(true)
 
+            // Cancel the download of an abandoned share, whether the user dismissed the
+            // sheet or an activity failed. Posted before .pwgDidShare, which makes the item
+            // providers unregister: afterwards they no longer hear .pwgCancelDownload.
+            if !completed {
+                #if DEBUG
+                debugPrint(activityType == nil
+                           ? "User dismissed the view controller without making a selection."
+                           : "Activity was not performed.")
+                #endif
+                NotificationCenter.default.post(name: .pwgCancelDownload, object: nil)
+            }
+
             // Remove observers
             NotificationCenter.default.post(name: .pwgDidShare, object: nil)
 
-            if !completed {
-                if activityType == nil {
-                    debugPrint("User dismissed the view controller without making a selection.");
-                } else {
-                    debugPrint("Activity was not performed.")
-                    // Cancel download task
-                    NotificationCenter.default.post(name: .pwgCancelDownload, object: nil)
-                }
-            } else {
+            if completed {
                 // Update server statistics
                 logImageVisitIfNeeded(imageData.pwgID, asDownload: true)
             }
         }
 
         // Present share image activity view controller
-        activityViewController.popoverPresentationController?.barButtonItem = shareBarButton
+        activityViewController.popoverPresentationController?.barButtonItem = shareImageButton
         present(activityViewController, animated: true)
     }
 
     @objc func cancelShareImage() {
         // Cancel file donwload
         NotificationCenter.default.post(name: .pwgCancelDownload, object: nil)
+    }
+    
+    
+    // MARK: - Share Image Page URL
+    /// Menu action sharing the URL of the page presenting the image.
+    /// Requires no download rights: the page redirects the recipient to a login page
+    /// when access needs to be granted.
+    @MainActor
+    func shareLinkAction() -> UIAction {
+        let action = UIAction(title: String(localized: "imageOptions_shareLink", comment: "Share Link"),
+                              image: UIImage(systemName: "link"),
+                              handler: { [weak self] _ in
+            guard let self else { return }
+            // Present the share sheet anchored to the action button
+            self.shareImageLink(from: self.actionBarButton)
+        })
+        action.accessibilityIdentifier = "org.piwigo.image.shareLink"
+        return action
+    }
+    
+    /**
+     Presents the share sheet with the URL of the image page on the Piwigo server,
+     so that the user can send it with Mail, Messages, AirDrop, copy it, etc.
+
+     Unlike sharing the image file, this neither downloads anything nor requires
+     download rights: the shared page redirects the recipient to a login page when
+     access needs to be granted.
+
+     - Parameter barButton: the bar button the share sheet is anchored to on iPad.
+     */
+    @MainActor
+    func shareImageLink(from barButton: UIBarButtonItem? = nil) {
+        // Check that the page URL of the current image is known.
+        guard let imageData = imageData,
+              let pageUrl = imageData.pageUrl as? URL
+        else { return }
+
+        // Disable buttons during action
+        setEnableStateOfButtons(false)
+
+        // Name of the image, used as the subject by Mail and other activities.
+        let subject = imageData.titleStr.isEmpty ? imageData.fileName : imageData.titleStr
+
+        // A single URL item is provided, so the share sheet proposes the activities
+        // which accept a link and nothing has to be excluded.
+        let itemSource = ImageLinkActivityItemSource(pageUrl: pageUrl, subject: subject)
+        let activityViewController = UIActivityViewController(activityItems: [itemSource],
+                                                              applicationActivities: nil)
+
+        activityViewController.completionWithItemsHandler = { [self] activityType, _, _, _ in
+            // Honour the user's "clear clipboard" delay when the link was copied
+            ShareUtilities.setClipboardExpiration(forActivityType: activityType)
+
+            // Enable buttons after action
+            setEnableStateOfButtons(true)
+        }
+
+        // Present the share sheet
+        activityViewController.popoverPresentationController?.barButtonItem = barButton ?? actionBarButton
+        present(activityViewController, animated: true)
     }
 }
 
@@ -197,5 +297,42 @@ extension ImageViewController: @preconcurrency ShareImageActivityItemProviderDel
             // Closes ActivityView
             presentedViewController?.dismiss(animated: true)
         }
+    }
+}
+
+
+// MARK: - Image Page URL Activity Item Source
+/**
+ Shares the URL of an image page on the Piwigo server and provides the name of that
+ image as the subject, which activities such as Mail use to pre-fill their subject field.
+
+ A plain UIActivityItemSource is used instead of the UIActivityItemProvider subclasses
+ of the other share paths: there is nothing to download or convert in the background,
+ the URL is already at hand.
+ */
+final class ImageLinkActivityItemSource: NSObject, UIActivityItemSource {
+
+    private let pageUrl: URL
+    private let subject: String
+
+    init(pageUrl: URL, subject: String) {
+        self.pageUrl = pageUrl
+        self.subject = subject
+        super.init()
+    }
+
+    func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {
+        // Returning a URL is what makes the share sheet propose the activities accepting a link
+        return pageUrl
+    }
+
+    func activityViewController(_ activityViewController: UIActivityViewController,
+                                itemForActivityType activityType: UIActivity.ActivityType?) -> Any? {
+        return pageUrl
+    }
+
+    func activityViewController(_ activityViewController: UIActivityViewController,
+                                subjectForActivityType activityType: UIActivity.ActivityType?) -> String {
+        return subject
     }
 }

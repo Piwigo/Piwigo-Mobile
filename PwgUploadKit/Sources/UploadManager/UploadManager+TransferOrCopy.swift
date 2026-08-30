@@ -18,7 +18,12 @@ extension UploadManager {
     // MARK: - Transfer or Copy Image/Video
     public func transferOrCopyFileOfUpload(withID uploadID: NSManagedObjectID,
                                            inTaskType taskType: UploadTaskType) async {
-        
+
+        // A background task owns the requests it handles, see prepareUpload()
+        if taskType.isBackground {
+            await UploadManagerActor.shared.removeUploads(withIDs: [uploadID])
+        }
+
         // Retrieve upload request properties
         guard var uploadData = try? UploadProvider().getPropertiesOfUpload(withID: uploadID, inContext: self.uploadBckgContext)
         else {
@@ -47,16 +52,13 @@ extension UploadManager {
         // Is this image already stored on the Piwigo server?
         do {
             // Check that the MD5 checksum and user are known
-            guard uploadData.md5Sum.isEmpty == false,
-                  let userURI = URL(string: uploadData.userURIstr),
-                  let userID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: userURI)
-            else {
-                throw PwgKitError.missingAsset
-            }
+            guard uploadData.md5Sum.isEmpty == false
+            else { throw PwgKitError.missingAsset }
             
             // Check session
-            let userData = try UserProvider().getPropertiesOfUser(withURIstr: uploadData.userURIstr, inContext: self.uploadBckgContext)
-            try await checkSession(ofUserWithID: userID, lastConnected: userData.lastUsed)
+            var userData = try UserProvider().getPropertiesOfUser(withURIstr: uploadData.userURIstr,
+                                                                  inContext: self.uploadBckgContext)
+            try await checkSession(ofUser: &userData)
             
             // Update state of upload request
             uploadData.requestState = .uploading
@@ -121,7 +123,7 @@ extension UploadManager {
     {
         // Update UploadQueue cell and button shown in root album (or default album)
         await MainActor.run {
-            let uploadInfo: [String : Any] = ["localIdentifier" : properties.localIdentifier,
+            let uploadInfo: [String : Any] = ["fileKey" : properties.fileKey,
                                               "progressFraction" : 0.33]
             NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
         }
@@ -135,7 +137,7 @@ extension UploadManager {
         
         // Update UploadQueue cell and button shown in root album (or default album)
         await MainActor.run {
-            let uploadInfo: [String : Any] = ["localIdentifier" : properties.localIdentifier,
+            let uploadInfo: [String : Any] = ["fileKey" : properties.fileKey,
                                               "progressFraction" : 0.67]
             NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
         }
@@ -164,17 +166,17 @@ extension UploadManager {
             
             // Update image data in cache
             // The provided sort option will not change the rankManual/rankRandom values.
-            try? ImageProvider().importImages([pwgData], inAlbum: properties.category, sort: .albumDefault)
+            try? await ImageProvider().importImages([pwgData], inAlbum: properties.category, sort: .albumDefault)
             
             // Update displayed albums which are concerned
             try? AlbumProvider().updateAlbums(addingImages: 1, toAlbumWithID: properties.category,
-                                             belongingToUser: properties.userURIstr,
-                                             inContext: self.uploadBckgContext)
+                                              belongingToUser: properties.userURIstr,
+                                              inContext: self.uploadBckgContext)
         }
         
         // Update UploadQueue cell and button shown in root album (or default album)
         await MainActor.run {
-            let uploadInfo: [String : Any] = ["localIdentifier" : properties.localIdentifier,
+            let uploadInfo: [String : Any] = ["fileKey" : properties.fileKey,
                                               "progressFraction" : 1.0]
             NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
         }

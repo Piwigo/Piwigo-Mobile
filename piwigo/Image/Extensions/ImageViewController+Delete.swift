@@ -100,7 +100,7 @@ extension ImageViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Set image properties
                 try await JSONManager.shared.setInfos(with: paramsDict)
@@ -113,10 +113,10 @@ extension ImageViewController
                         album.removeFromImages(imageData)
 
                         // Update albums
-                        try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: album, inContext: self.mainContext)
+                        try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: album, inContext: mainContext)
 
                         // Save changes
-                        self.mainContext.saveIfNeeded()
+                        mainContext.saveIfNeeded()
                     }
 
                     // Hide HUD
@@ -139,7 +139,7 @@ extension ImageViewController
     @MainActor
     private func removeImageFromAlbumError(_ error: PwgKitError) {
         // Session logout required?
-        if error.requiresLogout {
+        if error.requiresLogout, userData.pwgID != 0 {
             ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }
@@ -177,7 +177,7 @@ extension ImageViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Delete images
                 _ = try await JSONManager.shared.deleteImages(withID: [imageData.pwgID])
@@ -188,18 +188,19 @@ extension ImageViewController
                     let imageID = imageData.pwgID
 
                     // Delete image from cache (also deletes image files)
-                    self.mainContext.delete(imageData)
+                    mainContext.delete(imageData)
 
                     // Retrieve albums associated to the deleted image
                     if let albums = imageData.albums {
                         // Remove image from cached albums
                         albums.forEach { album in
-                            try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: album, inContext: self.mainContext)
+                            try? AlbumProvider().updateAlbums(removingImages: 1, fromAlbum: album,
+                                                              inContext: mainContext)
                         }
                     }
 
                     // Save changes
-                    self.mainContext.saveIfNeeded()
+                    mainContext.saveIfNeeded()
 
                     // If this image was uploaded with the iOS app,
                     // delete upload request from cache so that it can be re-uploaded.
@@ -224,7 +225,7 @@ extension ImageViewController
     @MainActor
     private func deleteImageFromDatabaseError(_ error: PwgKitError) {
         // Session logout required?
-        if error.requiresLogout {
+        if error.requiresLogout, userData.pwgID != 0 {
             ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }

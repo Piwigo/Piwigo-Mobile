@@ -22,7 +22,7 @@ protocol LocalAlbumsSelectorDelegate: NSObjectProtocol {
     func didSelectPhotoAlbum(withId: String)
 }
 
-class LocalAlbumsViewController: UIViewController {
+final class LocalAlbumsViewController: UIViewController {
     
     weak var delegate: (any LocalAlbumsSelectorDelegate)?
     
@@ -30,6 +30,7 @@ class LocalAlbumsViewController: UIViewController {
     
     var categoryId: Int32 = AlbumVars.shared.defaultCategory
     var categoryCurrentCounter: Int64 = UploadVars.shared.categoryCounterInit
+    var userData: UserProperties!
     weak var albumDelegate: (any AlbumViewControllerDelegate)?
     
     // Actions to perform after selection
@@ -71,15 +72,7 @@ class LocalAlbumsViewController: UIViewController {
         }
         return types
     }()
-    
-    // MARK: - Core Data Objects
-    var user: User!
-    lazy var mainContext: NSManagedObjectContext = {
-        guard let context: NSManagedObjectContext = user?.managedObjectContext
-        else { preconditionFailure("!!! Missing Managed Object Context !!!") }
-        return context
-    }()
-    
+        
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {

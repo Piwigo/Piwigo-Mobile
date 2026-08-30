@@ -39,7 +39,9 @@ extension ImageGetInfo {
             serverComponents = components
         } else {
             // URL not RFC compliant! - Try to fix it manually
+            #if DEBUG
             debugPrint("Received invalid URL: \(originalURL ?? "")")
+            #endif
             guard let fixedComponents = fixInvalidURL(patchedURL) else {
                 return nil
             }

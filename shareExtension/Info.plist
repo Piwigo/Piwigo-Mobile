@@ -21,13 +21,13 @@
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>701</string>
+	<string>704</string>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionAttributes</key>
 		<dict>
 			<key>NSExtensionActivationRule</key>
-			<string>SUBQUERY(extensionItems, $extensionItem, SUBQUERY($extensionItem.attachments, $attachment, ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.image" OR ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.movie" OR ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "com.adobe.pdf" OR ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "com.adobe.encapsulated-postscript").@count == $extensionItem.attachments.@count AND $extensionItem.attachments.@count &lt;= 10).@count == 1</string>
+			<string>SUBQUERY(extensionItems, $extensionItem, SUBQUERY($extensionItem.attachments, $attachment, ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;public.image&quot; OR ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;public.movie&quot; OR ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;com.adobe.pdf&quot; OR ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;com.adobe.encapsulated-postscript&quot;).@count == $extensionItem.attachments.@count AND $extensionItem.attachments.@count &lt;= 10).@count == 1</string>
 		</dict>
 		<key>NSExtensionMainStoryboard</key>
 		<string>ShareViewController</string>

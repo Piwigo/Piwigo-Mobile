@@ -28,24 +28,23 @@ extension SelectCategoryViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Move album
                 try await JSONManager.shared.move(self.inputAlbum.pwgID, intoAlbumWithId: parentData.pwgID)
                 
                 // Remember that the app is fetching all album data
+                // until the fetch completes or the fetch or the import below throws an error
                 AlbumVars.shared.isFetchingAlbumData.insert(pwgSmartAlbum.root.rawValue)
-
+                defer { AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.root.rawValue) }
+                
                 // Fetch album data recursively
                 let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                let pwgData = try await JSONManager.shared.fetchAlbums(forUserWithAdminRights: user.hasAdminRights,
+                let pwgData = try await JSONManager.shared.fetchAlbums(forUserWithAdminRights: userData.hasAdminRights,
                                                                        inParentWithId: pwgSmartAlbum.root.rawValue,
                                                                        recursively: true, thumbnailSize: thumnailSize)
                 // Update cache
-                try AlbumProvider().importAlbums(pwgData, recursively: true, inParent: pwgSmartAlbum.root.rawValue)
-                
-                // Remove current album from list of album being fetched
-                AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.root.rawValue)
+                try await AlbumProvider().importAlbums(pwgData, recursively: true, inParent: pwgSmartAlbum.root.rawValue)
 
                 // Remember when album data was fetched recursively
                 AppVars.shared.dateOfLatestRecursiveAlbumDataFetch = Date()
@@ -82,7 +81,7 @@ extension SelectCategoryViewController
         Task {
             do throws(PwgKitError) {
                 // Check session
-                try await LoginUtilities().checkSession(ofUserWithID: user.objectID, lastConnected: user.lastUsed)
+                try await LoginUtilities().checkSessionOfCurrentUser()
                 
                 // Set album representative
                 try await JSONManager.shared.setRepresentative(ofAlbumWithID: albumData.pwgID, withImageID: imageData.pwgID)

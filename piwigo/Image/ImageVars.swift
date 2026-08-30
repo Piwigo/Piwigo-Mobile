@@ -18,13 +18,43 @@ final class ImageVars: @unchecked Sendable {
 
     // Remove deprecated stored objects if needed
     init() {
-//        // Deprecated data?
-//        if let _ = UserDefaults.standard.object(forKey: "test") {
-//            UserDefaults.standard.removeObject(forKey: "test")
-//        }
-//        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
-//            UserDefaults.dataSuite.removeObject(forKey: "test")
-//        }
+        // Adopt the metadata setting which used to govern the apps the user actually shares with.
+        /// The built-in social activity types have not been vended since iOS 11, so every
+        /// third-party app fell into the 'other' case: it is the only one worth carrying over.
+        /// The choice is now global instead of per-activity, hence a single value for both switches.
+        /// Runs only once: the key is removed by the loop below.
+        if let sharesMetadataWithOtherApps = UserDefaults.standard.object(forKey: "shareMetadataTypeOther") as? Bool,
+           UserDefaults.standard.object(forKey: "shareKeepsLocation") == nil,
+           UserDefaults.standard.object(forKey: "shareKeepsContactInfo") == nil {
+            self.shareKeepsLocation = sharesMetadataWithOtherApps
+            self.shareKeepsContactInfo = sharesMetadataWithOtherApps
+        }
+
+        // Per-activity share metadata settings, replaced by the options which the user
+        // now chooses before each share (see ShareOptionsViewController).
+        let deprecatedShareMetadataKeys = ["shareMetadataTypeAirDrop",
+                                           "shareMetadataTypeAssignToContact",
+                                           "shareMetadataTypeCopyToPasteboard",
+                                           "shareMetadataTypeMail",
+                                           "shareMetadataTypeMessage",
+                                           "shareMetadataTypeSaveToCameraRoll",
+                                           "shareMetadataTypeOther",
+                                           "shareMetadataTypePostToFacebook",
+                                           "shareMetadataTypeMessenger",
+                                           "shareMetadataTypePostToFlickr",
+                                           "shareMetadataTypePostInstagram",
+                                           "shareMetadataTypePostToSignal",
+                                           "shareMetadataTypePostToSnapchat",
+                                           "shareMetadataTypePostToTencentWeibo",
+                                           "shareMetadataTypePostToTwitter",
+                                           "shareMetadataTypePostToVimeo",
+                                           "shareMetadataTypePostToWeibo",
+                                           "shareMetadataTypePostToWhatsApp"]
+        for key in deprecatedShareMetadataKeys {
+            if UserDefaults.standard.object(forKey: key) != nil {
+                UserDefaults.standard.removeObject(forKey: key)
+            }
+        }
     }
 
     // MARK: - Vars in UserDefaults / Standard
@@ -33,79 +63,22 @@ final class ImageVars: @unchecked Sendable {
     @UserDefault("defaultImagePreviewSize", defaultValue: -1)
     var defaultImagePreviewSize: Int16
 
-    /// - Share image by AirDrop with metadata by default
-    @UserDefault("shareMetadataTypeAirDrop", defaultValue: true)
-    var shareMetadataTypeAirDrop: Bool
+    /// - Options chosen the last time images were shared
+    ///   The location is dropped by default, the author's name and contact info are kept:
+    ///   Piwigo users are most often the photographers of the images they share.
+    @UserDefault("shareFormat", defaultValue: pwgShareFormat.original.rawValue)
+    var shareFormat: Int16
 
-    /// - Strip metadata when assigning image to Contact by default
-    @UserDefault("shareMetadataTypeAssignToContact", defaultValue: false)
-    var shareMetadataTypeAssignToContact: Bool
+    @UserDefault("shareSize", defaultValue: pwgShareSize.original.rawValue)
+    var shareSize: Int16
 
-    /// - Strip metadata when sharing image with the clipboard by default
-    @UserDefault("shareMetadataTypeCopyToPasteboard", defaultValue: false)
-    var shareMetadataTypeCopyToPasteboard: Bool
+    @UserDefault("shareKeepsLocation", defaultValue: false)
+    var shareKeepsLocation: Bool
 
-    /// - Share image by email with metadata by default
-    @UserDefault("shareMetadataTypeMail", defaultValue: true)
-    var shareMetadataTypeMail: Bool
+    @UserDefault("shareKeepsContactInfo", defaultValue: true)
+    var shareKeepsContactInfo: Bool
 
-    /// - Share image with metadata when sharing with Messages by default
-    @UserDefault("shareMetadataTypeMessage", defaultValue: true)
-    var shareMetadataTypeMessage: Bool
 
-    /// - Strip metadata when sharing image with Facebook by default
-    @UserDefault("shareMetadataTypePostToFacebook", defaultValue: false)
-    var shareMetadataTypePostToFacebook: Bool
-
-    /// - Strip metadata when sharing image with Messenger by default
-    @UserDefault("shareMetadataTypeMessenger", defaultValue: false)
-    var shareMetadataTypeMessenger: Bool
-    
-    /// - Strip metadata when sharing image with Flicker by default
-    @UserDefault("shareMetadataTypePostToFlickr", defaultValue: false)
-    var shareMetadataTypePostToFlickr: Bool
-    
-    /// - Strip metadata when posting image on Instagram by default
-    @UserDefault("shareMetadataTypePostInstagram", defaultValue: true)
-    var shareMetadataTypePostInstagram: Bool
-    
-    /// - Share image with metadata when sharing with Signal by default
-    @UserDefault("shareMetadataTypePostToSignal", defaultValue: true)
-    var shareMetadataTypePostToSignal: Bool
-    
-    /// - Strip metadata when posting image on Snapchat by default
-    @UserDefault("shareMetadataTypePostToSnapchat", defaultValue: false)
-    var shareMetadataTypePostToSnapchat: Bool
-    
-    /// - Strip metadata when posting image on Tencent Weibo by default
-    @UserDefault("shareMetadataTypePostToTencentWeibo", defaultValue: false)
-    var shareMetadataTypePostToTencentWeibo: Bool
-    
-    /// - Strip metadata when posting image on Twitter by default
-    @UserDefault("shareMetadataTypePostToTwitter", defaultValue: false)
-    var shareMetadataTypePostToTwitter: Bool
-    
-    /// - Strip metadata when posting image on Vimeo by default
-    @UserDefault("shareMetadataTypePostToVimeo", defaultValue: false)
-    var shareMetadataTypePostToVimeo: Bool
-    
-    /// - Strip metadata when posting image on Weibo by default
-    @UserDefault("shareMetadataTypePostToWeibo", defaultValue: false)
-    var shareMetadataTypePostToWeibo: Bool
-    
-    /// - Strip metadata when sharing image with Whatsapp by default
-    @UserDefault("shareMetadataTypePostToWhatsApp", defaultValue: false)
-    var shareMetadataTypePostToWhatsApp: Bool
-    
-    /// - Keep metadata when saving image in camera roll by default
-    @UserDefault("shareMetadataTypeSaveToCameraRoll", defaultValue: true)
-    var shareMetadataTypeSaveToCameraRoll: Bool
-    
-    /// - Strip metadata when sharing image with unknown app by default
-    @UserDefault("shareMetadataTypeOther", defaultValue: false)
-    var shareMetadataTypeOther: Bool
-
-    
     // MARK: - Vars in UserDefaults / App Group
     // Image variables stored in UserDefaults / App Group
     /// - None
@@ -117,7 +90,7 @@ final class ImageVars: @unchecked Sendable {
     let dateCommit18e4273 = ISO8601DateFormatter().date(from: "2024-09-06T00:00:00Z")!
     let dateOfFirstOptImageV323 = {
         if AppVars.shared.dateOfFirstOptImageV323 == Date.distantFuture.timeIntervalSinceReferenceDate {
-            AppVars.shared.dateOfFirstOptImageV323 = Date().timeIntervalSinceReferenceDate
+            AppVars.shared.dateOfFirstOptImageV323 = Date.timeIntervalSinceReferenceDate
         }
         return Date(timeIntervalSinceReferenceDate: AppVars.shared.dateOfFirstOptImageV323)
     }()

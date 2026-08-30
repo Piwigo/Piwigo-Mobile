@@ -92,7 +92,7 @@ struct AutoUpload: AppIntent, ForegroundContinuableIntent { // , PredictableInte
         
         // Check existence of Piwigo album
         let categoryId = UploadVars.shared.autoUploadCategoryId
-        guard categoryId != Int32.min else {
+        guard categoryId > Int32.zero else {
             // Cannot access Piwigo album -> Reset album ID
             UploadVars.shared.autoUploadCategoryId = Int32.min    // Unknown destination Piwigo album
             
@@ -142,7 +142,7 @@ struct AutoUpload: AppIntent, ForegroundContinuableIntent { // , PredictableInte
         // Inform the user that there are photos to upload and launch the uploads from the main app
         throw needsToContinueInForegroundError(.responseSuccess(photos: uploadIDs.count)) {
             Task(priority: .utility) { @UploadManagerActor in
-                #if os(iOS) && !targetEnvironment(macCatalyst)
+                #if os(iOS) && !targetEnvironment(macCatalyst) && !targetEnvironment(simulator)
                 if #available(iOS 26.0, *) {
                     // Launch new continued upload task if possible
                     if UploadVars.shared.isContinuedProcessingTaskActive == false {
@@ -156,7 +156,7 @@ struct AutoUpload: AppIntent, ForegroundContinuableIntent { // , PredictableInte
                     // Process next uploads if possible
                     await UploadManagerActor.shared.processNextUpload()
                 }
-                #elseif targetEnvironment(macCatalyst)
+                #elseif targetEnvironment(macCatalyst) || targetEnvironment(simulator)
                 // Queue uploads to prepare
                 await UploadManagerActor.shared.addUploadsToPrepare(withIDs: uploadIDs)
                 

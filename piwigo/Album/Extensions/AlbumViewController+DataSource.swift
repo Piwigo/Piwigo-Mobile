@@ -34,7 +34,7 @@ extension AlbumViewController
                     else { preconditionFailure("Could not load AlbumCollectionViewCellOld") }
                     
                     // Configure cell with album data
-                    cell.albumData = album
+                    cell.album = album
                     cell.pushAlbumDelegate = self
                     
                     // Disable album cells in Image selection mode
@@ -48,7 +48,7 @@ extension AlbumViewController
                     else { preconditionFailure("Could not load AlbumCollectionViewCell") }
                     
                     // Configure cell with album data
-                    cell.config(withAlbumData: album)
+                    cell.config(withAlbum: album)
                     
                     // Disable album cells in Image selection mode
                     cell.contentView.alpha = self.inSelectionMode ? 0.5 : 1.0
@@ -62,11 +62,11 @@ extension AlbumViewController
                 else { preconditionFailure("Could not load ImageCollectionViewCell") }
                 
                 // Is this cell selected?
-                cell.isSelection = self.selectedImageIDs.contains(image.pwgID)
+                cell.isSelection = self.selectedImages.keys.contains(image.pwgID)
                 
                 // pwg.users.favorites… methods available from Piwigo version 2.10
-                if self.hasFavorites {
-                    cell.isFavorite = self.favAlbum?.images?.contains(image) ?? false
+                if self.userData.canManageFavorites() {
+                    cell.isFavorite = self.favAlbum?.images.contains(image.pwgID) ?? false
                 }
                 
                 // The image being retrieved in a background task,
@@ -147,21 +147,22 @@ extension AlbumViewController
     
     // MARK: - Headers
     func attributedComment() -> NSAttributedString {
-        if albumData.commentHTML.string.isEmpty {
-            let desc = NSMutableAttributedString(attributedString: albumData.comment)
-            let wholeRange = NSRange(location: 0, length: albumData.comment.string.count)
-            let style = NSMutableParagraphStyle()
-            style.alignment = NSTextAlignment.center
-            let attributes = [
-                NSAttributedString.Key.foregroundColor: PwgColor.header,
-                NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .subheadline),
-                NSAttributedString.Key.paragraphStyle: style
-            ]
-            desc.addAttributes(attributes, range: wholeRange)
-            return desc
-        } else {
-            return albumData.commentHTML
-        }
+        // Return the HTML version when available
+        guard albumData.commentHTML.characters.isEmpty
+        else { return NSAttributedString(albumData.commentHTML) }
+        
+        // Present the plain version with the header style
+        let desc = NSMutableAttributedString(albumData.comment)
+        let wholeRange = NSRange(location: 0, length: albumData.comment.characters.count)
+        let style = NSMutableParagraphStyle()
+        style.alignment = NSTextAlignment.center
+        let attributes = [
+            NSAttributedString.Key.foregroundColor: PwgColor.header,
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .subheadline),
+            NSAttributedString.Key.paragraphStyle: style
+        ]
+        desc.addAttributes(attributes, range: wholeRange)
+        return desc
     }
     
     func updateHeaders() {

@@ -22,7 +22,7 @@ enum LocalAlbumType {
     func didChangePhotoLibrary()
 }
 
-class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
+final class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
 
     // Singleton
     static let shared = LocalAlbumsProvider()

@@ -111,7 +111,7 @@ extension AutoUploadViewController: UITableViewDelegate
                     guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else { return }
                     localAlbumsVC.categoryId = Int32.min
                     localAlbumsVC.wantedAction = .setAutoUploadAlbum
-                    localAlbumsVC.user = self.user
+                    localAlbumsVC.userData = self.userData
                     localAlbumsVC.delegate = self
                     self.navigationController?.pushViewController(localAlbumsVC, animated: true)
                 } onDeniedAccess: {
@@ -125,7 +125,7 @@ extension AutoUploadViewController: UITableViewDelegate
                 // Present Piwigo albums
                 let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
-                categoryVC.user = user
+                categoryVC.userData = userData
                 if categoryVC.setInput(parameter: UploadVars.shared.autoUploadCategoryId,
                                        for: .setAutoUploadAlbum) {
                     categoryVC.delegate = self
@@ -144,7 +144,7 @@ extension AutoUploadViewController: UITableViewDelegate
                 guard let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController
                 else { preconditionFailure("Could not load TagsViewController") }
                 tagsVC.delegate = self
-                tagsVC.user = user
+                tagsVC.userData = userData
                 tagsVC.setPreselectedTagIds(Set(UploadVars.shared.autoUploadTagIds
                                                     .components(separatedBy: ",")
                                                     .map { Int32($0) ?? nil }.compactMap {$0}))

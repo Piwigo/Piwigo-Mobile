@@ -15,7 +15,7 @@ import PwgCacheKit
 
 protocol VideoDetailDelegate: NSObjectProtocol {
     @MainActor
-    func config(currentTime: TimeInterval, duration: TimeInterval, delegate: any VideoControlsDelegate)
+    func config(currentTime: TimeInterval, duration: TimeInterval)
     @MainActor
     func setCurrentTime(_ value: Double)
 }
@@ -371,7 +371,7 @@ class ExternalDisplayViewController: UIViewController {
     @MainActor
     func config(currentTime: TimeInterval, duration: TimeInterval) {
         video?.duration = duration
-        videoDetailDelegate?.config(currentTime: currentTime, duration: duration, delegate: self)
+        videoDetailDelegate?.config(currentTime: currentTime, duration: duration)
     }
     
     @MainActor
@@ -416,17 +416,6 @@ class ExternalDisplayViewController: UIViewController {
                 setPdfView(with: document)
             }
         })
-    }
-}
-
-
-// MARK: - VideoControlsDelegate Methods
-extension ExternalDisplayViewController: VideoControlsDelegate
-{
-    func didChangeTime(value: Double) {
-        if let video = video {
-            playbackController.seek(contentOfVideo: video, toTimeFraction: value)
-        }
     }
 }
 
