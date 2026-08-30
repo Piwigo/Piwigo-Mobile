@@ -15,9 +15,14 @@ import PwgCacheKit
 
 /// Number of upload requests prepared concurrently by a background task.
 /// The jobs interleave on the upload actor: while a video export waits on AVFoundation, the
-/// following requests are prepared and their transfers launched in the meantime. Kept low so
-/// that two large video exports never run at once.
-private let maxNberOfConcurrentPreparations = 2
+/// following requests are prepared and their transfers launched in the meantime.
+/// Only the BGContinuedProcessingTask, which iOS 26 runs on recent devices, prepares two
+/// requests at a time — two 4K HDR exports at once remain well within its budget. The
+/// BGProcessingTask also runs on older devices, whose background memory limit is tighter,
+/// and therefore prepares the requests one by one.
+private func maxNberOfConcurrentPreparations(inTaskType taskType: UploadTaskType) -> Int {
+    return taskType == .bckgContinuedProcessingTask ? 2 : 1
+}
 
 @UploadManagerActor
 extension UploadManager
@@ -169,8 +174,8 @@ extension UploadManager
         }
     }
     
-    /// Prepares the queued upload requests, keeping up to `maxNberOfConcurrentPreparations` jobs
-    /// in flight, and appends the requests submitted while the task runs.
+    /// Prepares the queued upload requests, keeping as many jobs in flight as the task type
+    /// allows, and appends the requests submitted while the task runs.
     /// Every job is a child of the task group, so none of them outlives this method: a background
     /// task cannot complete — and the app be suspended — while a video is still being exported.
     /// Should iOS expire the task, cancellation propagates to the jobs in flight, which report
@@ -182,6 +187,7 @@ extension UploadManager
                                 onPreparation: (_ nberOfNewRequests: Int) -> Void = { _ in }) async
     {
         var toPrepare = uploadIDs
+        let maxNberOfJobs = maxNberOfConcurrentPreparations(inTaskType: taskType)
         await withTaskGroup(of: Void.self) { group in
             var nberOfJobsInFlight = 0
             while true {
@@ -189,7 +195,7 @@ extension UploadManager
                 if shouldStopUploadTask() || Task.isCancelled { break }
                 
                 // Launch jobs until the maximum number of concurrent preparations is reached
-                while nberOfJobsInFlight < maxNberOfConcurrentPreparations, toPrepare.isEmpty == false {
+                while nberOfJobsInFlight < maxNberOfJobs, toPrepare.isEmpty == false {
                     let uploadID = toPrepare.removeFirst()
                     group.addTask {
                         await UploadManager.shared.prepareUpload(withID: uploadID, inTaskType: taskType)
