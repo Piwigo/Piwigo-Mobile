@@ -50918,7 +50918,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bieżący link przestanie działać. Osoby, które już go otrzymały, nie będą mogły otworzyć tego albumu."
+            "value" : "Bieżący link przestanie działać. Osoby, które już go otrzymały, nie będą mogły więcej otworzyć tego albumu."
           }
         },
         "ru" : {
@@ -51120,7 +51120,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zatrzymaj udostępnianie"
+            "value" : "Przestań udostępniać"
           }
         },
         "ru" : {
@@ -51221,7 +51221,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Link przestanie działać. Osoby, które już go otrzymały, nie będą mogły otworzyć tego albumu."
+            "value" : "Bieżący link przestanie działać. Osoby, które już go otrzymały, nie będą mogły więcej otworzyć tego albumu."
           }
         },
         "ru" : {
@@ -57909,7 +57909,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Udostępnianie albumów prywatnych"
+            "value" : "Udostępnij prywatne albumy"
           }
         },
         "ru" : {
