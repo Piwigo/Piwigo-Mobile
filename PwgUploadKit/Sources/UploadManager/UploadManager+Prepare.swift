@@ -97,10 +97,7 @@ extension UploadManager
             }
             else {
                 // Case of an image from the local Photo Library
-                if try await prepareAssetInPhotoLibrary(for: &uploadData, withID: uploadID, inTaskType: taskType) == false {
-                    // Stop job here for videos
-                    return
-                }
+                try await prepareAssetInPhotoLibrary(for: &uploadData, withID: uploadID, inTaskType: taskType)
             }
             
             // Preparation completed
@@ -122,12 +119,24 @@ extension UploadManager
                 uploadData.requestState = .formatError
                 uploadData.requestError = error.localizedDescription
                 try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
-            case .cannotStripPrivateMetadata, .videoEncodingError:
+            
+            case .cannotStripPrivateMetadata, .videoEncodingError,
+                 .photoError, .photoResourceError:
+                /// Photos failures are transient (an iCloud download which did not complete,
+                /// a resource temporarily unavailable), so the request is worth retrying.
                 uploadData.requestState = .preparingError
                 uploadData.requestError = error.localizedDescription
                 try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
+            
+            case .otherError(let innerError) where innerError is CancellationError:
+                /// The background task expired while the file was being prepared: retry later.
+                uploadData.requestState = .preparingError
+                uploadData.requestError = error.localizedDescription
+                try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
+            
             case .missingAsset, .otherError:
                 fallthrough
+            
             default:
                 uploadData.requestState = .preparingFail
                 uploadData.requestError = error.localizedDescription
@@ -287,11 +296,11 @@ extension UploadManager
         }
     }
     
-    /// NB: Not possible to extract AVAsset with async/await methods as of iOS 26.2
-    /// so we use old method with completion handler and return false in that case.
+    /// NB: Photos still hands over the AVAsset of a video through a completion handler as of
+    /// iOS 26.2, which retrieveVideo(from:with:) bridges into an awaited job.
     fileprivate func prepareAssetInPhotoLibrary(for uploadData: inout UploadProperties,
                                                 withID uploadID: NSManagedObjectID,
-                                                inTaskType taskType: UploadTaskType) async throws(PwgKitError) -> Bool
+                                                inTaskType taskType: UploadTaskType) async throws(PwgKitError)
     {
         // Retrieve image asset
         let assets = PHAsset.fetchAssets(withLocalIdentifiers: [uploadData.localIdentifier], options: nil)
@@ -323,7 +332,7 @@ extension UploadManager
             if ServerVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
                 try await prepareVideo(atURL: fileURL, for: &uploadData)
-                return true
+                return
             }
 
             // Convert video if MP4 format is accepted by Piwigo server
@@ -331,7 +340,7 @@ extension UploadManager
                acceptedMovieExtensions.contains(fileExt) {
                 // Try conversion to MP4
                 try await convertVideo(atURL: fileURL, for: &uploadData)
-                return true
+                return
             }
 
             // Video file format cannot be accepted by the Piwigo server
@@ -356,7 +365,7 @@ extension UploadManager
             if ServerVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
                 try await prepareImage(atURL: fileURL, for: &uploadData)
-                return true
+                return
             }
             
             // Convert image if JPEG format is accepted by Piwigo server
@@ -364,7 +373,7 @@ extension UploadManager
                acceptedImageExtensions.contains(fileExt) {
                 // Try conversion to JPEG
                 try await convertImage(atURL: fileURL, for: &uploadData)
-                return true
+                return
             }
             
             // Image file format cannot be accepted by the Piwigo server
@@ -385,19 +394,20 @@ extension UploadManager
             let outputURL = getUploadFileURL(for: uploadData)
             
             // Chek that the video format is accepted by the Piwigo server
-            /// NB: Not possible to extract AVAsset with async/await methods as of iOS 26.2
+            /// Both jobs below are awaited, so that a background task remains alive until the
+            /// video is prepared, and report their outcome like any other preparation job.
             if ServerVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
-                prepareVideo(ofAsset: originalAsset, atURL: outputURL, for: uploadData, withID: uploadID, inTaskType: taskType)
-                return false
+                try await prepareVideo(ofAsset: originalAsset, atURL: outputURL, for: &uploadData, withID: uploadID, inTaskType: taskType)
+                return
             }
             
             // Convert video if MP4 format is accepted by Piwigo server
             if ServerVars.shared.serverFileTypes.contains("mp4"),
                acceptedMovieExtensions.contains(fileExt) {
                 // Try conversion to MP4
-                convertVideo(ofAsset: originalAsset, atURL: outputURL, for: uploadData, withID: uploadID, inTaskType: taskType)
-                return false
+                try await convertVideo(ofAsset: originalAsset, atURL: outputURL, for: &uploadData, withID: uploadID, inTaskType: taskType)
+                return
             }
             
             // Video file format cannot be accepted by the Piwigo server
