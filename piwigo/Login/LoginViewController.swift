@@ -88,6 +88,9 @@ final class LoginViewController: UIViewController {
         
         // Website not secure info
         websiteNotSecure.text = String(localized: "settingsHeader_notSecure", comment: "Website Not Secure!")
+
+        // Piwigo URL button
+        piwigoURL.titleLabel?.adjustsFontForContentSizeCategory = true
                 
         // Keyboard
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard)))
