@@ -537,7 +537,7 @@ final class SelectCategoryViewController: UIViewController {
 
         case .moveImages:
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
-                                 text: String(localized: "moveSeveralImages_selectAlbum", comment: "Please, select the album in which you wish to copy the photos."))
+                                 text: String(localized: "moveSeveralImages_selectAlbum", comment: "Please, select the album in which you wish to move the photos."))
 
         default:
             preconditionFailure("Action not configured in setTableViewMainHeader().")

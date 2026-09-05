@@ -5658,102 +5658,102 @@
       }
     },
     "downloadImageFail_title" : {
-      "comment" : "Download Fail",
+      "comment" : "Download Failed",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "سيتم تجاهل حساب المستخدم الذي يفتقر إلى اسم مستخدم صالح."
+            "value" : "فشل التنزيل"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vil kassere en brugerkonto mangler et gyldigt brugernavn."
+            "value" : "Download mislykkedes"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verwirft ein Benutzerkonto ohne gültigen Benutzernamen."
+            "value" : "Herunterladen fehlgeschlagen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Will discard a user account missing a valid username."
+            "value" : "Download Failed"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Se descartará una cuenta de usuario que no tiene un nombre de usuario válido."
+            "value" : "Error de descarga"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jettera un compte utilisateur manquant un nom d'utilisateur valide."
+            "value" : "Échec du téléchargement"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Elveti az érvényes felhasználónév nélküli felhasználói fiókokat."
+            "value" : "Sikertelen letöltés"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Akan mengabaikan akun pengguna yang tidak memiliki nama pengguna yang valid."
+            "value" : "Unduhan Gagal"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scarta un account utente mancante di un nome utente valido."
+            "value" : "Scaricamento Fallito"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "有効なユーザー名がないユーザーアカウントは破棄されます。"
+            "value" : "ダウンロードに失敗しました"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verwijdert een gebruikersaccount en mist een geldige gebruikersnaam."
+            "value" : "Downloaden mislukt"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Odrzuci konto użytkownika bez prawidłowej nazwy użytkownika."
+            "value" : "Pobieranie nie powiodło się"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сбросит имя пользователя без корректного имени пользователя."
+            "value" : "Не удалось скачать"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kommer att kassera ett användarkonto som saknar ett giltigt användarnamn."
+            "value" : "Hämtningen misslyckades"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "将丢弃缺少有效用户名的用户帐户。"
+            "value" : "下载失败"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "會拋棄無效使用者名稱的帳號。"
+            "value" : "下載失敗"
           }
         }
       }

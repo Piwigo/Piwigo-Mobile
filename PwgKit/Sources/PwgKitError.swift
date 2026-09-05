@@ -515,7 +515,7 @@ extension PwgKitError: LocalizedError {
                           comment: "Incorrect URL")
         case .failedToPrepareDownload:
             return String(localized: "downloadImageFail_title", bundle: .pwgKit,
-                          comment: "Download Fail")
+                          comment: "Download Failed")
         case .invalidMethod:
             return String(localized: "serverInvalidMethodError_message", bundle: .pwgKit,
                           comment: "Failed to call server method.")

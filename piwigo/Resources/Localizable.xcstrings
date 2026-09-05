@@ -30125,90 +30125,90 @@
       }
     },
     "moveSeveralImages_selectAlbum" : {
-      "comment" : "Please, select the album in which you wish to copy the photos.",
+      "comment" : "Please, select the album in which you wish to move the photos.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "من فضلك، حدد الألبوم الذي ترغب في نسخ الصور فيه."
+            "value" : "من فضلك، حدد الألبوم الذي ترغب في نقل الصور إليه."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vælg venligst det album hvortil du vil kopiere billederne."
+            "value" : "Vælg venligst det album hvortil du vil flytte billederne."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bitte wählen Sie das Album aus, in das Sie die Fotos kopieren möchten."
+            "value" : "Bitte wählen Sie das Album aus, in das Sie die Fotos verschieben möchten."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please, select the album in which you wish to copy the photos."
+            "value" : "Please, select the album in which you wish to move the photos."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seleccione el álbum en el que desea copiar las fotos."
+            "value" : "Seleccione el álbum en el que desea mover las fotos."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Veuillez sélectionner l'album dans lequel vous souhaitez copier les photos."
+            "value" : "Veuillez sélectionner l'album dans lequel vous souhaitez déplacer les photos."
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Melyik albumba másoljuk a fotókat?"
+            "value" : "Melyik albumba helyezzük át a fotókat?"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Silakan pilih album tempat Anda ingin menyalin foto-foto tersebut."
+            "value" : "Silakan pilih album tempat Anda ingin memindahkan foto-foto tersebut."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seleziona l'album in cui vuoi copiare le foto."
+            "value" : "Seleziona l'album in cui vuoi spostare le foto."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "写真をコピーしたいアルバムを選択してください。"
+            "value" : "写真を移動したいアルバムを選択してください。"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Selecteer het album waarin u de foto's wilt kopiëren."
+            "value" : "Selecteer het album waarin u de foto's wilt verplaatsen."
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wybierz album, do którego chcesz skopiować zdjęcia."
+            "value" : "Wybierz album, do którego chcesz przenieść zdjęcia."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Пожалуйста, выберите альбом, в который Вы хотите переместить фотографию \"%@\"."
+            "value" : "Пожалуйста, выберите альбом, в который Вы хотите переместить фотографии."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Välj det album som du vill kopiera bilderna i."
+            "value" : "Välj det album dit du vill flytta bilderna."
           }
         },
         "zh-Hans" : {
