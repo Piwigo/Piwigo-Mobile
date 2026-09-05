@@ -9,7 +9,7 @@ Piwigo für iPhone/iPad/iPod ergänzt die Fotogalerie-Software in der Cloud Piwi
   - mit veränderbarer Größe und Qualität,
   - mit Beschreibung, Autor, Tags, EXIF-Metadaten,
   - mit oder ohne GPS-Metadaten.
-• Fotos und Videos freigeben.
+• Alben, Fotos und Videos teilen.
 
 Piwigo ermöglicht es Ihnen, Ihre eigene Fotogalerie im Internet zu erstellen. Es enthält viele leistungsstarke Funktionen wie Alben, Tags, Geolokalisierung, viele Ebenen der Anpassung, Upload durch Besucher, Datenschutz, Kalender oder Statistiken.
 
@@ -18,8 +18,9 @@ Piwigo ist kostenlos und quelloffen.
 Piwigo ist auch mit den folgenden Plugins kompatibel:
 - Community: ermöglicht es Benutzern, Alben zu erstellen und Fotos hinzuzufügen
 - rotateImage: ermöglicht das Drehen von Bildern
+- Share Album: Ermöglicht das Teilen privater Alben mit Personen, die kein Konto haben
 - piwigo-two_factor: Fügt die Zwei-Faktor-Authentifizierung (2FA) hinzu
 - piwigo-videojs: fügt Videounterstützung hinzu
 
 Feedback oder Fragen?
-Piwigo bietet kostenlosen Support über http://piwigo.org/forum, wir würden uns freuen von Dir zu hören.
+Piwigo bietet kostenlosen Support über https://de.piwigo.org/forum, wir würden uns freuen von Dir zu hören.

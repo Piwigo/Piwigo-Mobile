@@ -10,7 +10,7 @@ Piwigo per iPhone/iPad/iPod integra il software di galleria fotografica nel clou
   - di dimensioni e qualità modificabili,
   - con descrizione, autore, tag, metadati EXIF,
   - con o senza metadati GPS.
-• Condividi foto e video.
+• Condividi album, foto e video.
 
 Piwigo ti consente di creare la tua galleria fotografica sul web. Include molte funzioni potenti come album, tag, geolocalizzazione, molti livelli di personalizzazione, caricamento da parte dei visitatori, privacy, calendario o statistiche.
 
@@ -19,8 +19,9 @@ Piwigo è gratuito e opensource.
 Piwigo è anche compatibile con le seguenti estensioni:
 - Community: consente agli utenti non amministratori di aggiungere foto
 - rotateImage: consente di ruotare le immagini
+- Share Album: consente di condividere album privati con persone che non dispongono di un account
 - piwigo-two_factor: aggiunge l'autenticazione a due fattori (2FA)
 - piwigo-videojs: aggiunge il supporto video
 
 Feedback o domande?
-Piwigo offre supporto gratuito a http://piwigo.org/forum e ci piacerebbe sentirti.
+Piwigo offre supporto gratuito a https://piwigo.org/forum e ci piacerebbe sentirti.

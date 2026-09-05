@@ -10,7 +10,7 @@ A Piwigo for iPhone/iPad/iPod a Piwigo (v12.0 vagy újabb) cloud fotógaléria-s
   - változtatható méretben és minőségben,
   - megjegyzésekkel, szerzői információval, címkékkel és EXIF adatokkal,
   - GPS adatokkal, vagy akár nélkülük is.
-• Megoszthatsz fotókat és videókat.
+• Albumok, fotók és videók megosztása.
 
 A Piwigoval saját fotógalériát hozhatsz létre a weben. Számos hatékony funkciót tartalmaz, mint például albumok, címkék, helymeghatározás, több szintű testreszabhatóság, látogatók általi feltöltések, adatvédelem, naptár és statisztikák.
 
@@ -19,6 +19,7 @@ A Piwigo ingyenes és nyílt forráskódú.
 A Piwigo a következő bővítményekkel is kompatibilis:
 - Community: nem-admin felhasználók is tölthetnek fel képeket
 - rotateImage: lehetővé teszi a képek elforgatását
+- Share Album: lehetővé teszi a privát albumok megosztását olyan személyekkel is, akik nem rendelkeznek fiókkal
 - piwigo-two_factor: kétfaktoros hitelesítést (2FA) biztosít
 - piwigo-videojs: videófájlok támogatása
 

@@ -10,13 +10,16 @@ Piwigo dla urządzeń iPhone/iPad/iPod obsługuje oprogramowanie galerii zdjęć
   - z możliwością modyfikacji rozmiaru i jakości,
   - z opisem, autorem, znacznikami, metadanymi EXIF,
   - z metadanymi GPS lub bez nich.
-• Udostępnianie zdjęć i filmów.\n\nPiwigo umożliwia Ci tworzenie własnej galerii zdjęć w sieci. Zawiera wiele potężnych funkcji, takich jak albumy, znaczniki, geolokalizacja, wiele poziomów personalizacji, przesyłanie przez gości, prywatność, kalendarz czy statystyki.
+• Udostępniaj albumy, zdjęcia i filmy.
+
+Piwigo umożliwia Ci tworzenie własnej galerii zdjęć w sieci. Zawiera wiele potężnych funkcji, takich jak albumy, znaczniki, geolokalizacja, wiele poziomów personalizacji, przesyłanie przez gości, prywatność, kalendarz czy statystyki.
 
 Piwigo jest oprogramowaniem bezpłatnym i otwartym.
 
 Piwigo jest również kompatybilny z następującymi rozszerzeniami:
 - Community: umożliwia dodawanie zdjęć użytkownikom bez uprawnień administratora
 - rotateImage: umożliwia obracanie obrazów
+- Share Album: umożliwia udostępnianie prywatnych albumów osobom, które nie mają konta
 - piwigo-two_factor: dodaje uwierzytelnianie dwuskładnikowe (2FA)
 - piwigo-videojs: dodaje obsługę wideo
 

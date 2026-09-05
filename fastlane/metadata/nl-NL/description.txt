@@ -6,11 +6,11 @@ Piwigo voor iPhone / iPad / iPod vormt een aanvulling op de fotogalerij-software
 • Kopieer en verplaats foto's en video's tussen albums,
 • Foto's toevoegen aan en verwijderen uit favorieten,
 • Een foto instellen als albumfoto,
-• Foto's uploaden:
+• Foto’s en video’s uploaden:
   - van aanpasbare grootte en kwaliteit,
   - met beschrijving, fotograaf, labels, EXIF-metadata,
   - met of zonder GPS-metadata.
-• Upload video's.
+• Albums, foto’s en video’s delen.
 
 Piwigo stelt je in staat om jouw eigen fotogalerij op het web te maken. Het bevat veel krachtige functies zoals albums, labels, geolocatie, vele niveaus van aanpassing, uploaden door bezoekers, privacy, kalender of statistieken.
 
@@ -19,6 +19,7 @@ Piwigo is gratis en opensource.
 Piwigo is ook compatibel met de volgende extensies:
 - Community: staat toe dat niet-beheerder-gebruikers foto's toevoegen
 - rotateImage: hiermee kunt u afbeeldingen roteren
+- Share Album: hiermee kun je privéalbums delen met mensen die geen account hebben
 - piwigo-two_factor: voegt tweefactorauthenticatie (2FA) toe
 - piwigo-videos: voegt video ondersteuning toe
 

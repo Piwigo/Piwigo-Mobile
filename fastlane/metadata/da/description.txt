@@ -11,7 +11,7 @@ Piwigo til iPhone/iPad/iPod supplerer fotobiblioteksporgrammet i skyen Piwigo (v
   - med beskrivelse, forfatter, tags, EXIF metadata, 
   - med eller uden GPS-metadata. 
 • Upload videoer,
-• Del billeder og videoer.
+• Del album, fotos og videoer.
 
 Piwigo giver dig mulighed for at oprette dit eget galleri på nettet. Det indeholder mange kraftfulde funktioner såsom album, tags og Geolokalisering mange niveauer af tilpasning, upload af besøgende, privatlivets fred, kalender eller statistikker. 
 
@@ -20,6 +20,7 @@ Piwigo er gratis og opensource.
 Piwigo er også kompatibel med følgende filtypenavne:
 - Community: tillader ikke-admin brugere at tilføje foto
 - rotateImage: giver dig mulighed for at rotere billeder
+- Share Album: giver mulighed for at dele private album med personer, der ikke har en konto
 - piwigo-two_factor: tilføjer tofaktorautentificering (2FA)
 - piwigo-videojs: tilføjer support for videofiler
 

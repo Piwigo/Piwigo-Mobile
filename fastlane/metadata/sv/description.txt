@@ -10,7 +10,7 @@ Piwigo för iPhone/iPad/iPod kompletterar fotogalleri-programmet i molnet Piwigo
   - av modifierbar storlek och kvalitet,
   - med beskrivning, författare, taggar, EXIF-metadata,
   - med eller utan GPS-metadata.
-• Dela bilder och videoklipp.
+• Dela album, foton och videor.
 
 Piwigo ger dig möjlighet att skapa ditt eget bildgalleri på webben. Den innehåller många kraftfulla funktioner som album, taggar, geolocation, många nivåer av anpassning, uppladdning av besökare, integritet, kalender eller statistik.
 
@@ -19,8 +19,9 @@ Piwigo är gratis och opensource.
 Piwigo är också kompatibel med följande tillägg:
 - Community: tillåter icke-administratörsanvändare att lägga till bilder
 - rotateImage: låter dig rotera bilder
+- Share Album: gör det möjligt att dela privata album med personer som inte har ett konto
 - piwigo-two_factor: lägger till tvåfaktorsautentisering (2FA)
 - piwigo-videos: lägger till stöd för video
 
 Återkoppling eller frågor?
-Piwigo erbjuder gratis support på http://piwigo.org/forum och vi vill gärna höra från dig.
+Piwigo erbjuder gratis support på https://piwigo.org/forum och vi vill gärna höra från dig.
