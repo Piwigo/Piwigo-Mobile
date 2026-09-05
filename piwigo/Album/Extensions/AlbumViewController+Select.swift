@@ -46,7 +46,7 @@ extension AlbumViewController
             guard let self else { return }
             self.didTapSelect()
         })
-        action.accessibilityIdentifier = "Select"
+        action.accessibilityIdentifier = "selectPhotos"
         action.attributes = enabled ? [] : [.disabled]
         return action
     }

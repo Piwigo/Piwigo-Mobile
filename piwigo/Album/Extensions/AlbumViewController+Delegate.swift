@@ -235,22 +235,24 @@ extension AlbumViewController: UICollectionViewDelegate
     }
     
     private func deleteAlbumAction(_ indexPath: IndexPath) -> UIAction {
-        return UIAction(title: String(localized: "categoryCellOption_delete", comment: "Delete Album"),
-                        image: UIImage(systemName: "trash"),
-                        attributes: .destructive) { action in
-            guard let objectID = self.diffableDataSource.itemIdentifier(for: indexPath),
-                  let album = try? self.mainContext.existingObject(with: objectID) as? Album,
-                  let topViewController = self.navigationController
-            else { return }
-            Task {
-                let nbOrphans = (try? await JSONManager.shared.calcOrphans(album.pwgID)) ?? 0
-                await MainActor.run {
-                    let delete = AlbumDeletion(album: album, nbOrphans: nbOrphans,
-                                               topViewController: topViewController)
-                    delete.displayAlert { _ in }
+        let deleteAction = UIAction(title: String(localized: "categoryCellOption_delete", comment: "Delete Album"),
+                            image: UIImage(systemName: "trash"),
+                            attributes: .destructive) { action in
+                guard let objectID = self.diffableDataSource.itemIdentifier(for: indexPath),
+                      let album = try? self.mainContext.existingObject(with: objectID) as? Album,
+                      let topViewController = self.navigationController
+                else { return }
+                Task {
+                    let nbOrphans = (try? await JSONManager.shared.calcOrphans(album.pwgID)) ?? 0
+                    await MainActor.run {
+                        let delete = AlbumDeletion(album: album, nbOrphans: nbOrphans,
+                                                   topViewController: topViewController)
+                        delete.displayAlert { _ in }
+                    }
                 }
             }
-        }
+        deleteAction.accessibilityIdentifier = "deleteAlbumAction"
+        return deleteAction
     }
     
     

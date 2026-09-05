@@ -147,10 +147,13 @@ extension LocalAlbumsViewController: UITableViewDataSource {
             else { preconditionFailure("Could not load a LocalAlbumsTableViewCell!") }
             cell.configure(with: title, nberPhotos: nberPhotos, startDate: startDate, endDate: endDate, preferredContenSize: traitCollection.preferredContentSizeCategory, width: localAlbumsTableView.frame.width - 2 * TableViewUtilities.rowCornerRadius)
             cell.accessoryType = wantedAction == .setAutoUploadAlbum ? .none : .disclosureIndicator
-            if aCollection.assetCollectionType == .smartAlbum,
+            #if DEBUG
+            if indexPath.section == 0,
+               aCollection.assetCollectionType == .smartAlbum,
                aCollection.assetCollectionSubtype == .smartAlbumUserLibrary {
                 cell.accessibilityIdentifier = "Recent"
             }
+            #endif
             cell.isAccessibilityElement = true
             return cell
         }
@@ -159,10 +162,13 @@ extension LocalAlbumsViewController: UITableViewDataSource {
             else { preconditionFailure("Could not load a LocalAlbumsNoDatesTableViewCell!") }
             cell.configure(with: title, nberPhotos: nberPhotos)
             cell.accessoryType = wantedAction == .setAutoUploadAlbum ? .none : .disclosureIndicator
-            if aCollection.assetCollectionType == .smartAlbum,
+            #if DEBUG
+            if indexPath.section == 0,
+               aCollection.assetCollectionType == .smartAlbum,
                aCollection.assetCollectionSubtype == .smartAlbumUserLibrary {
                 cell.accessibilityIdentifier = "Recent"
             }
+            #endif
             cell.isAccessibilityElement = true
             return cell
         }

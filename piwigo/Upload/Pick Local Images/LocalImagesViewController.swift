@@ -171,11 +171,11 @@ final class LocalImagesViewController: UIViewController
         }
         
         // Navigation bar
-        navigationController?.navigationBar.accessibilityIdentifier = "LocalImagesNav"
+        navigationController?.navigationBar.accessibilityIdentifier = "org.piwigo.upload.images.navigation"
         
         // The cancel button is used to cancel the selection of images to upload
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
-        cancelBarButton?.accessibilityIdentifier = "Cancel"
+        cancelBarButton?.accessibilityIdentifier = "cancelLocalImages"
         
         // The upload button is available after having selecting images
         if #available(iOS 17.0, *) {

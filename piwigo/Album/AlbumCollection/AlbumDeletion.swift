@@ -49,6 +49,7 @@ final class AlbumDeletion: NSObject
             // Hide swipe buttons
             completion(true)
         })
+        cancelAction.accessibilityIdentifier = "cancelDeleteAlbum"
         alert.addAction(cancelAction)
         
         if album.totalNbImages == 0 {

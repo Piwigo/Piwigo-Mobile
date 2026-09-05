@@ -54,7 +54,7 @@ final class UploadSwitchViewController: UIViewController {
         
         // Bar buttons
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelUpload))
-        cancelBarButton?.accessibilityIdentifier = "Cancel"
+        cancelBarButton?.accessibilityIdentifier = "cancelUpload"
         if #available(iOS 17.0, *) {
             uploadBarButton = UIBarButtonItem(image: UIImage(systemName: "arrowshape.up.fill"),
                                               style: .plain, target: self, action: #selector(didTapUploadButton))

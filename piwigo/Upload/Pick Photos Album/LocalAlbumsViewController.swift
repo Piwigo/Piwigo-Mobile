@@ -86,7 +86,7 @@ final class LocalAlbumsViewController: UIViewController {
         
         // Button for returning to albums/images collections
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(quitUpload))
-        cancelBarButton?.accessibilityIdentifier = "Cancel"
+        cancelBarButton?.accessibilityIdentifier = "cancelLocalAlbums"
                 
         // Table view identifier
         localAlbumsTableView?.accessibilityIdentifier = "album selector"
@@ -142,7 +142,7 @@ final class LocalAlbumsViewController: UIViewController {
             
             // Navigation "Cancel" button and identifier
             navigationItem.setLeftBarButton(cancelBarButton, animated: true)
-            navigationController?.navigationBar.accessibilityIdentifier = "LocalAlbumsNav"
+            navigationController?.navigationBar.accessibilityIdentifier = "org.piwigo.upload.album.navigation"
             
             // Check if there are photos/videos in the pasteboard
             let testTypes = UIPasteboard.general.contains(pasteboardTypes: pasteboardTypes) ? true : false
