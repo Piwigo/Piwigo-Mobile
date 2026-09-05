@@ -454,7 +454,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "All Albums"
+            "value" : "Semua Album"
           }
         },
         "it" : {
@@ -656,7 +656,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Recent Albums"
+            "value" : "Album Terbaru"
           }
         },
         "it" : {
@@ -757,7 +757,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enter Passcode"
+            "value" : "Masukkan Kode Sandi"
           }
         },
         "it" : {
@@ -858,7 +858,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "With App Lock, a device-specific code is required to access the app. If you loose this code, you will have to reinstall the app."
+            "value" : "Dengan App Lock, diperlukan kode khusus perangkat untuk mengakses aplikasi. Jika Anda kehilangan kode ini, Anda harus memasang ulang aplikasi."
           }
         },
         "it" : {
@@ -959,7 +959,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Modify Passcode"
+            "value" : "Ubah Kode Sandi"
           }
         },
         "it" : {
@@ -1060,7 +1060,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verify Passcode"
+            "value" : "Verifikasi Kode Sandi"
           }
         },
         "it" : {
@@ -1262,7 +1262,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Privacy"
+            "value" : "Privasi"
           }
         },
         "it" : {

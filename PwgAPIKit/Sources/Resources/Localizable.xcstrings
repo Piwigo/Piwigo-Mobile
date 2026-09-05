@@ -454,7 +454,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ sub-albums"
+            "value" : "%@ sub-album"
           }
         },
         "it" : {
