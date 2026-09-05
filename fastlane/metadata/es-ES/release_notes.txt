@@ -1,1 +1,4 @@
+• Permite compartir álbumes privados con personas que no tengan una cuenta (requiere el plugin Share Album)
+• Importa las Live Photos como foto, vídeo o ambos
+• Mejora la gestión de los usuarios de Community
 • Corrección de errores

@@ -1,1 +1,4 @@
+• Ermöglicht das Teilen privater Alben mit Personen ohne Konto (erfordert das Share Album Plugin)
+• Importiert Live Photos als Foto, Video oder beides
+• Verbessert die Verwaltung von Community-Benutzern
 • Fehlerbehebungen

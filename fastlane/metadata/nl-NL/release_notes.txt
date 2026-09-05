@@ -1,1 +1,4 @@
+• Maakt het mogelijk privéalbums te delen met personen die geen account hebben (vereist de Share Album plugin)
+• Importeert Live Photos als foto, video of beide
+• Verbetert het beheer van Community-gebruikers
 • Foutjes verbeterd

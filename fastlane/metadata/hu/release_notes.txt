@@ -1,1 +1,4 @@
+• Privát albumok megosztása olyanokkal, akiknek nincs fiókjuk (a Share Album beépülő modult igényli)
+• Live Photók importálása fotóként, videóként vagy mindkettőként
+• A Community felhasználók kezelésének fejlesztése
 • Hibajavítások

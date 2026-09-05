@@ -1,1 +1,4 @@
+• Gör det möjligt att dela privata album med personer som inte har ett konto (kräver Share Album-plugin)
+• Importerar Live Photo-bilder som foto, video eller båda
+• Förbättrar hanteringen av Community-användare
 • Buggfixar

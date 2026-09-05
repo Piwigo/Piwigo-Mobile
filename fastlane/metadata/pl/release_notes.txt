@@ -1,1 +1,4 @@
+• Umożliwia udostępnianie albumów prywatnych osobom, które nie mają konta (wymaga wtyczki Share Album)
+• Importuje zdjęcia Live Photo jako zdjęcie, film lub oba
+• Ulepszono zarządzanie użytkownikami Community
 • Poprawki błędów
