@@ -18,8 +18,8 @@ build/
 *.xccheckout
 *.moved-aside
 **/DerivedData/
-**/screenshots/
-**/videos/
+/fastlane/screenshots/
+/fastlane/videos/
 *.hmap
 *.ipa
 *.xcuserstate
