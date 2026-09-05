@@ -858,7 +858,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dengan App Lock, diperlukan kode khusus perangkat untuk mengakses aplikasi. Jika Anda kehilangan kode ini, Anda harus memasang ulang aplikasi."
+            "value" : "Dengan Kunci Aplikasi, diperlukan kode khusus perangkat untuk mengakses aplikasi. Jika Anda kehilangan kode ini, Anda harus memasang ulang aplikasi."
           }
         },
         "it" : {

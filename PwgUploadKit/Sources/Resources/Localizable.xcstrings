@@ -1289,7 +1289,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please select the album or sub-album into which photos and videos will be auto-uploaded."
+            "value" : "Silakan pilih album atau sub-album tujuan pengunggahan otomatis foto dan video."
           }
         },
         "it" : {
@@ -1390,7 +1390,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please select the album or sub-album from which photos and videos of your device will be auto-uploaded."
+            "value" : "Silakan pilih album atau sub-album di perangkat Anda yang foto dan videonya akan diunggah secara otomatis."
           }
         },
         "it" : {

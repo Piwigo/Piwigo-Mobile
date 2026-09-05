@@ -144,7 +144,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "12-hour cycle"
+            "value" : "Siklus 12 jam"
           }
         },
         "it" : {
@@ -245,7 +245,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "24-hour cycle"
+            "value" : "Siklus 24 jam"
           }
         },
         "it" : {
@@ -346,7 +346,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abbreviation"
+            "value" : "Singkatan"
           }
         },
         "it" : {
@@ -750,7 +750,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "All Photos"
+            "value" : "Semua Foto"
           }
         },
         "it" : {
@@ -850,7 +850,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Caricamento Automatico Foto"
+            "value" : "Unggah Foto Otomatis"
           }
         },
         "it" : {
@@ -1051,7 +1051,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The Auto-Upload option is disabled in the app settings."
+            "value" : "Opsi Unggah Otomatis dinonaktifkan di pengaturan aplikasi."
           }
         },
         "it" : {
@@ -1152,7 +1152,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Several transfers failed and the upload queue is on hold. Please check in the app."
+            "value" : "Beberapa transfer gagal dan antrian unggahan ditangguhkan. Silakan periksa di aplikasi."
           }
         },
         "it" : {
@@ -1354,7 +1354,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Add Photos"
+            "value" : "Tambah Foto"
           }
         },
         "it" : {
@@ -1758,7 +1758,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "hits"
+            "value" : "kunjungan"
           }
         },
         "it" : {
@@ -1859,7 +1859,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deselect"
+            "value" : "Batalkan Pilihan"
           }
         },
         "it" : {
@@ -1960,7 +1960,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Favorite"
+            "value" : "Favoritkan"
           }
         },
         "it" : {
@@ -2263,7 +2263,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Share"
+            "value" : "Bagikan"
           }
         },
         "it" : {
@@ -2364,7 +2364,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unfavorite"
+            "value" : "Hapus dari Favorit"
           }
         },
         "it" : {
@@ -2566,7 +2566,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Album Thumbnail"
+            "value" : "Gambar Mini Album"
           }
         },
         "it" : {
@@ -3475,7 +3475,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Root"
+            "value" : "Utama"
           }
         },
         "it" : {
@@ -3576,7 +3576,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please select the album which will use the photo \"%@\" as a thumbnail."
+            "value" : "Silakan pilih album yang akan menggunakan foto \"%@\" sebagai gambar mini."
           }
         },
         "it" : {
@@ -3980,7 +3980,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Date Created"
+            "value" : "Tanggal Dibuat"
           }
         },
         "it" : {
@@ -4081,7 +4081,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Date Posted"
+            "value" : "Tanggal Diunggah"
           }
         },
         "it" : {
@@ -4182,7 +4182,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "File Name"
+            "value" : "Nama File"
           }
         },
         "it" : {
@@ -4283,7 +4283,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Identifier"
+            "value" : "Pengenal"
           }
         },
         "it" : {
@@ -4485,7 +4485,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Photo Title"
+            "value" : "Judul Foto"
           }
         },
         "it" : {
@@ -4586,7 +4586,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Randomly"
+            "value" : "Acak"
           }
         },
         "it" : {
@@ -4687,7 +4687,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rating Score"
+            "value" : "Skor Penilaian"
           }
         },
         "it" : {
@@ -4788,7 +4788,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sort Images By…"
+            "value" : "Sortir Gambar Berdasarkan…"
           }
         },
         "it" : {
@@ -4990,7 +4990,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Visits"
+            "value" : "Kunjungan"
           }
         },
         "it" : {
@@ -5091,7 +5091,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Updated at %@"
+            "value" : "Diperbarui pukul %@"
           }
         },
         "it" : {
@@ -5192,7 +5192,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Updated just now"
+            "value" : "Baru saja diperbarui"
           }
         },
         "it" : {
@@ -5293,7 +5293,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Updated on %@"
+            "value" : "Diperbarui pada %@"
           }
         },
         "it" : {
@@ -5394,7 +5394,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Updating…"
+            "value" : "Memperbarui…"
           }
         },
         "it" : {
@@ -6000,7 +6000,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Media Types"
+            "value" : "Jenis Media"
           }
         },
         "it" : {
@@ -6203,7 +6203,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Other Albums"
+            "value" : "Album Lainnya"
           }
         },
         "it" : {
@@ -6304,7 +6304,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clipboard"
+            "value" : "Papan Klip"
           }
         },
         "it" : {
@@ -6405,7 +6405,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Shared Albums"
+            "value" : "Album Bersama"
           }
         },
         "it" : {
@@ -6506,7 +6506,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iPhoto Albums"
+            "value" : "Album iPhoto"
           }
         },
         "it" : {
@@ -6607,7 +6607,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iPhoto Events"
+            "value" : "Acara iPhoto"
           }
         },
         "it" : {
@@ -6708,7 +6708,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iPhoto Faces"
+            "value" : "Wajah iPhoto"
           }
         },
         "it" : {
@@ -6809,7 +6809,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Group Images By…"
+            "value" : "Kelompokkan Gambar Berdasarkan…"
           }
         },
         "it" : {
@@ -6910,7 +6910,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "View Options"
+            "value" : "Opsi Tampilan"
           }
         },
         "it" : {
@@ -7011,7 +7011,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Show…"
+            "value" : "Tampilkan…"
           }
         },
         "it" : {
@@ -7516,7 +7516,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please, select the album in which you wish to copy the photos."
+            "value" : "Silakan pilih album tempat Anda ingin menyalin foto-foto tersebut."
           }
         },
         "it" : {
@@ -7617,7 +7617,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to copy some photos"
+            "value" : "Gagal menyalin sebagian foto"
           }
         },
         "it" : {
@@ -7920,7 +7920,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please, select the album in which you wish to copy the photo \"%@\"."
+            "value" : "Silakan pilih album tempat Anda ingin menyalin foto \"%@\"."
           }
         },
         "it" : {
@@ -8526,7 +8526,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Migration in Progress..."
+            "value" : "Migrasi Sedang Berlangsung..."
           }
         },
         "it" : {
@@ -9435,7 +9435,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Date"
+            "value" : "Tanggal"
           }
         },
         "it" : {
@@ -9536,7 +9536,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Day"
+            "value" : "Hari"
           }
         },
         "it" : {
@@ -9637,7 +9637,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Albums Thumbnail File"
+            "value" : "File Gambar Mini Album"
           }
         },
         "it" : {
@@ -9738,7 +9738,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please select an album thumbnail size"
+            "value" : "Silakan pilih ukuran gambar mini album"
           }
         },
         "it" : {
@@ -10546,7 +10546,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Number"
+            "value" : "Jumlah"
           }
         },
         "it" : {
@@ -10950,7 +10950,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thumbnail"
+            "value" : "Gambar Mini"
           }
         },
         "it" : {
@@ -11455,7 +11455,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please select a photo thumbnail size"
+            "value" : "Silakan pilih ukuran gambar mini foto"
           }
         },
         "it" : {
@@ -14210,7 +14210,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Are you sure you want to delete this video? This cannot be undone!"
+            "value" : "Anda yakin ingin menghapus video ini? Tindakan ini tidak dapat dibatalkan!"
           }
         },
         "it" : {
@@ -14412,7 +14412,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deleting Video…"
+            "value" : "Menghapus Video…"
           }
         },
         "it" : {
@@ -14917,7 +14917,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Downloading Video"
+            "value" : "Mengunduh Video"
           }
         },
         "it" : {
@@ -15928,7 +15928,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Today"
+            "value" : "Hari Ini"
           }
         },
         "it" : {
@@ -16029,7 +16029,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unset"
+            "value" : "Tidak Ditentukan"
           }
         },
         "it" : {
@@ -16130,7 +16130,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Description"
+            "value" : "Deskripsi"
           }
         },
         "it" : {
@@ -17039,7 +17039,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Full Name"
+            "value" : "Nama Lengkap"
           }
         },
         "it" : {
@@ -17342,7 +17342,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Multiple Selection"
+            "value" : "Pemilihan Ganda"
           }
         },
         "it" : {
@@ -17443,7 +17443,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Slide your finger from left to right (or right to left) then down, etc."
+            "value" : "Geser jari Anda dari kiri ke kanan (atau kanan ke kiri) lalu ke bawah, dan seterusnya."
           }
         },
         "it" : {
@@ -17544,7 +17544,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Plug the device to its charger and let iOS launch the uploads whenever appropriate."
+            "value" : "Hubungkan perangkat ke pengisi dayanya dan biarkan iOS memulai pengunggahan pada saat yang tepat."
           }
         },
         "it" : {
@@ -17645,7 +17645,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Administrators"
+            "value" : "Administrator"
           }
         },
         "it" : {
@@ -17847,7 +17847,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uploaded photos removed from the camera roll remain available in the iOS Photos trash for 30 days."
+            "value" : "Foto terunggah yang dihapus dari rol kamera tetap tersedia di Tempat Sampah Foto iOS selama 30 hari."
           }
         },
         "it" : {
@@ -17948,7 +17948,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uploading Photos"
+            "value" : "Mengunggah Foto"
           }
         },
         "it" : {
@@ -18049,7 +18049,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Once upload requests are submitted, you can browse albums, submit other requests or leave the app."
+            "value" : "Setelah permintaan unggah dikirim, Anda dapat menjelajahi album, mengirim permintaan lain, atau menutup aplikasi."
           }
         },
         "it" : {
@@ -18150,7 +18150,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tap the grey button presented in the root album to manage uploads."
+            "value" : "Ketuk tombol abu-abu yang ditampilkan di album utama untuk mengelola pengunggahan."
           }
         },
         "it" : {
@@ -18251,7 +18251,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Upload Management"
+            "value" : "Pengelolaan Unggahan"
           }
         },
         "it" : {
@@ -18352,7 +18352,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Monitor, cancel and resume upload requests globally or individually."
+            "value" : "Pantau, batalkan, dan lanjutkan permintaan unggah secara global atau satu per satu."
           }
         },
         "it" : {
@@ -18453,7 +18453,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auto-Uploading"
+            "value" : "Unggah Otomatis"
           }
         },
         "it" : {
@@ -18554,7 +18554,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select source and destination albums in Piwigo, create automations in Shortcuts."
+            "value" : "Pilih album sumber dan tujuan di Piwigo, buat otomatisasi di Pintasan."
           }
         },
         "it" : {
@@ -18655,7 +18655,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Parent Albums"
+            "value" : "Album Induk"
           }
         },
         "it" : {
@@ -18756,7 +18756,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Long-press on the back button to display the list of parent albums."
+            "value" : "Tekan lama tombol kembali untuk menampilkan daftar album induk."
           }
         },
         "it" : {
@@ -18857,7 +18857,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tap the parent album of your choice to jump back to it."
+            "value" : "Ketuk album induk pilihan Anda untuk kembali ke album tersebut."
           }
         },
         "it" : {
@@ -19665,7 +19665,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hour"
+            "value" : "Jam"
           }
         },
         "it" : {
@@ -19766,7 +19766,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deselecting Photos…"
+            "value" : "Membatalkan Pilihan Foto…"
           }
         },
         "it" : {
@@ -19968,7 +19968,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fetching the photo data failed."
+            "value" : "Gagal mengambil data foto."
           }
         },
         "it" : {
@@ -20271,7 +20271,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Favorites"
+            "value" : "Favorit"
           }
         },
         "it" : {
@@ -20372,7 +20372,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to add this photo to your favorites."
+            "value" : "Gagal menambahkan foto ini ke favorit Anda."
           }
         },
         "it" : {
@@ -20473,7 +20473,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to remove this photo from your favorites."
+            "value" : "Gagal menghapus foto ini dari favorit Anda."
           }
         },
         "it" : {
@@ -20877,7 +20877,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Modify Properties"
+            "value" : "Ubah Properti"
           }
         },
         "it" : {
@@ -21485,7 +21485,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Selecting Photos…"
+            "value" : "Memilih Foto…"
           }
         },
         "it" : {
@@ -22596,7 +22596,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sorting Photos…"
+            "value" : "Menyortir Foto…"
           }
         },
         "it" : {
@@ -22899,7 +22899,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clear %@ Completed Uploads"
+            "value" : "Bersihkan %@ Unggahan Selesai"
           }
         },
         "it" : {
@@ -23000,7 +23000,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clear Completed Upload"
+            "value" : "Bersihkan Unggahan Selesai"
           }
         },
         "it" : {
@@ -23101,7 +23101,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clear %@ Failed Uploads"
+            "value" : "Bersihkan %@ Unggahan Gagal"
           }
         },
         "it" : {
@@ -23202,7 +23202,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clear Failed Upload"
+            "value" : "Bersihkan Unggahan Gagal"
           }
         },
         "it" : {
@@ -24414,7 +24414,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please set the parameters to apply to the selection of photos/videos"
+            "value" : "Silakan atur parameter yang akan diterapkan pada foto/video yang dipilih"
           }
         },
         "it" : {
@@ -24515,7 +24515,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please set the upload parameters to apply to the selection of photos/videos"
+            "value" : "Silakan atur parameter unggah yang akan diterapkan pada foto/video yang dipilih"
           }
         },
         "it" : {
@@ -24616,7 +24616,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Photos Parameters"
+            "value" : "Parameter Foto"
           }
         },
         "it" : {
@@ -24717,7 +24717,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Upload Settings"
+            "value" : "Pengaturan Unggah"
           }
         },
         "it" : {
@@ -24818,7 +24818,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Resume %@ Uploads"
+            "value" : "Lanjutkan %@ Unggahan"
           }
         },
         "it" : {
@@ -24919,7 +24919,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Resume Upload"
+            "value" : "Lanjutkan Unggahan"
           }
         },
         "it" : {
@@ -25525,7 +25525,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Accessible Photos"
+            "value" : "Foto yang Dapat Diakses"
           }
         },
         "it" : {
@@ -26030,7 +26030,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Do you wish to delete the uploaded photos or videos from the camera roll? The deleted photos or videos will still be available in the iOS Photos Trash for 30 days."
+            "value" : "Apakah Anda ingin menghapus foto atau video yang telah diunggah dari rol kamera? Foto atau video yang dihapus tetap tersedia di Tempat Sampah Foto iOS selama 30 hari."
           }
         },
         "it" : {
@@ -26131,7 +26131,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remove from Camera Roll"
+            "value" : "Hapus dari Rol Kamera"
           }
         },
         "it" : {
@@ -26232,7 +26232,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Re-upload"
+            "value" : "Unggah Ulang"
           }
         },
         "it" : {
@@ -27445,7 +27445,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?"
+            "value" : "Piwigo memperingatkan Anda ketika sebuah situs web memiliki sertifikat yang tidak valid. Apakah Anda tetap ingin menerima sertifikat ini?"
           }
         },
         "it" : {
@@ -27546,7 +27546,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Connection Not Private"
+            "value" : "Koneksi Tidak Pribadi"
           }
         },
         "it" : {
@@ -27849,7 +27849,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Would you like to reset your password from the web interface?"
+            "value" : "Apakah Anda ingin mengatur ulang kata sandi Anda melalui antarmuka web?"
           }
         },
         "it" : {
@@ -28354,7 +28354,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?"
+            "value" : "Piwigo tidak dapat membuat koneksi yang aman. Apakah Anda ingin mencoba membuat koneksi yang tidak aman?"
           }
         },
         "it" : {
@@ -28455,7 +28455,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Secure Connection Failed"
+            "value" : "Koneksi Aman Gagal"
           }
         },
         "it" : {
@@ -28960,7 +28960,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Minute"
+            "value" : "Menit"
           }
         },
         "it" : {
@@ -29061,7 +29061,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Month"
+            "value" : "Bulan"
           }
         },
         "it" : {
@@ -29465,7 +29465,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please select an album or sub-album to move album \"%@\" into."
+            "value" : "Silakan pilih album atau sub-album tujuan pemindahan album \"%@\"."
           }
         },
         "it" : {
@@ -30172,7 +30172,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please, select the album in which you wish to copy the photos."
+            "value" : "Silakan pilih album tempat Anda ingin menyalin foto-foto tersebut."
           }
         },
         "it" : {
@@ -30273,7 +30273,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to move some photos"
+            "value" : "Gagal memindahkan sebagian foto"
           }
         },
         "it" : {
@@ -30576,7 +30576,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please, select the album in which you wish to move the photo \"%@\"."
+            "value" : "Silakan pilih album tempat Anda ingin memindahkan foto \"%@\"."
           }
         },
         "it" : {
@@ -31182,7 +31182,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "None"
+            "value" : "Tidak Ada"
           }
         },
         "it" : {
@@ -32102,7 +32102,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ days"
+            "value" : "%@ hari"
           }
         },
         "it" : {
@@ -32203,7 +32203,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Recent Period"
+            "value" : "Periode Terbaru"
           }
         },
         "it" : {
@@ -32609,7 +32609,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Removing Photos/Videos…"
+            "value" : "Menghapus Foto/Video…"
           }
         },
         "it" : {
@@ -32912,7 +32912,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Removing Video…"
+            "value" : "Menghapus Video…"
           }
         },
         "it" : {
@@ -33619,7 +33619,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enter a new file name for this photo"
+            "value" : "Masukkan nama file baru untuk foto ini"
           }
         },
         "it" : {
@@ -33720,7 +33720,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Original File"
+            "value" : "File Asli"
           }
         },
         "it" : {
@@ -33821,7 +33821,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to rename photo file"
+            "value" : "Gagal mengganti nama file foto"
           }
         },
         "it" : {
@@ -33922,7 +33922,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Renaming File…"
+            "value" : "Mengganti Nama File…"
           }
         },
         "it" : {
@@ -34023,7 +34023,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Counterclockwise"
+            "value" : "Berlawanan Arah Jarum Jam"
           }
         },
         "it" : {
@@ -34124,7 +34124,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clockwise"
+            "value" : "Searah Jarum Jam"
           }
         },
         "it" : {
@@ -34225,7 +34225,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rotate 90°…"
+            "value" : "Putar 90°…"
           }
         },
         "it" : {
@@ -34326,7 +34326,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Image could not be rotated"
+            "value" : "Gambar tidak dapat diputar"
           }
         },
         "it" : {
@@ -34427,7 +34427,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The rotateImage plugin is not activated."
+            "value" : "Plugin rotateImage tidak diaktifkan."
           }
         },
         "it" : {
@@ -34528,7 +34528,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rotation Failed"
+            "value" : "Rotasi Gagal"
           }
         },
         "it" : {
@@ -34629,7 +34629,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rotating Photos…"
+            "value" : "Memutar Foto…"
           }
         },
         "it" : {
@@ -34730,7 +34730,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rotating Photo…"
+            "value" : "Memutar Foto…"
           }
         },
         "it" : {
@@ -34831,7 +34831,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Second"
+            "value" : "Detik"
           }
         },
         "it" : {
@@ -35336,7 +35336,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Separator"
+            "value" : "Pemisah"
           }
         },
         "it" : {
@@ -36043,7 +36043,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your Piwigo server version is %@. Please ask the administrator to update it."
+            "value" : "Versi server Piwigo Anda adalah %@. Silakan minta administrator untuk memperbaruinya."
           }
         },
         "it" : {
@@ -36144,7 +36144,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Server Update Available"
+            "value" : "Pembaruan Server Tersedia"
           }
         },
         "it" : {
@@ -36447,7 +36447,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please select an album or sub-album which will become the new root album."
+            "value" : "Silakan pilih album atau sub-album yang akan menjadi album utama yang baru."
           }
         },
         "it" : {
@@ -36548,7 +36548,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Default Album"
+            "value" : "Album Standar"
           }
         },
         "it" : {
@@ -36851,7 +36851,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please select the action to add"
+            "value" : "Silakan pilih tindakan yang akan ditambahkan"
           }
         },
         "it" : {
@@ -38164,7 +38164,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "App Lock"
+            "value" : "Kunci Aplikasi"
           }
         },
         "it" : {
@@ -38366,7 +38366,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auto Upload"
+            "value" : "Unggah Otomatis"
           }
         },
         "it" : {
@@ -38467,7 +38467,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Destination"
+            "value" : "Tujuan"
           }
         },
         "it" : {
@@ -38568,7 +38568,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Off"
+            "value" : "Nonaktif"
           }
         },
         "it" : {
@@ -38669,7 +38669,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Photos will not be automatically uploaded to your Piwigo."
+            "value" : "Foto tidak akan diunggah secara otomatis ke Piwigo Anda."
           }
         },
         "it" : {
@@ -38770,7 +38770,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "On"
+            "value" : "Aktif"
           }
         },
         "it" : {
@@ -38871,7 +38871,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Photos will be automatically uploaded to your Piwigo."
+            "value" : "Foto akan diunggah secara otomatis ke Piwigo Anda."
           }
         },
         "it" : {
@@ -38972,7 +38972,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Photos and videos will be automatically uploaded to your Piwigo."
+            "value" : "Foto dan video akan diunggah secara otomatis ke Piwigo Anda."
           }
         },
         "it" : {
@@ -39073,7 +39073,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auto Upload Photos"
+            "value" : "Unggah Foto Otomatis"
           }
         },
         "it" : {
@@ -39174,7 +39174,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Source"
+            "value" : "Sumber"
           }
         },
         "it" : {
@@ -39377,7 +39377,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Use Face ID as an alternative to your App Lock passcode."
+            "value" : "Gunakan Face ID sebagai alternatif kode sandi Kunci Aplikasi Anda."
           }
         },
         "it" : {
@@ -39580,7 +39580,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Use Optic ID as an alternative to your App Lock passcode."
+            "value" : "Gunakan Optic ID sebagai alternatif kode sandi Kunci Aplikasi Anda."
           }
         },
         "it" : {
@@ -39783,7 +39783,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Use Touch ID as an alternative to your App Lock passcode."
+            "value" : "Gunakan Touch ID sebagai alternatif kode sandi Kunci Aplikasi Anda."
           }
         },
         "it" : {
@@ -39985,7 +39985,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clear All"
+            "value" : "Bersihkan Semua"
           }
         },
         "it" : {
@@ -40288,7 +40288,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clear Clipboard"
+            "value" : "Bersihkan Papan Klip"
           }
         },
         "it" : {
@@ -40389,7 +40389,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "After 1 minute"
+            "value" : "Setelah 1 menit"
           }
         },
         "it" : {
@@ -40490,7 +40490,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "After 1 min"
+            "value" : "Setelah 1 mnt"
           }
         },
         "it" : {
@@ -40591,7 +40591,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "After 2 minutes"
+            "value" : "Setelah 2 menit"
           }
         },
         "it" : {
@@ -40692,7 +40692,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "After 2 min"
+            "value" : "Setelah 2 mnt"
           }
         },
         "it" : {
@@ -40793,7 +40793,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "After 5 minutes"
+            "value" : "Setelah 5 menit"
           }
         },
         "it" : {
@@ -40894,7 +40894,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "After 5 min"
+            "value" : "Setelah 5 mnt"
           }
         },
         "it" : {
@@ -40995,7 +40995,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "After 10 seconds"
+            "value" : "Setelah 10 detik"
           }
         },
         "it" : {
@@ -41096,7 +41096,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "After 10 s"
+            "value" : "Setelah 10 dtk"
           }
         },
         "it" : {
@@ -41197,7 +41197,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "After 30 seconds"
+            "value" : "Setelah 30 detik"
           }
         },
         "it" : {
@@ -41298,7 +41298,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "After 30 s"
+            "value" : "Setelah 30 dtk"
           }
         },
         "it" : {
@@ -41399,7 +41399,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please select the delay after which the clipboard will be cleared."
+            "value" : "Silakan pilih jeda waktu setelah papan klip akan dibersihkan."
           }
         },
         "it" : {
@@ -41500,7 +41500,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Never"
+            "value" : "Tidak Pernah"
           }
         },
         "it" : {
@@ -41702,7 +41702,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dark"
+            "value" : "Gelap"
           }
         },
         "it" : {
@@ -42005,7 +42005,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Author Name"
+            "value" : "Nama Penulis"
           }
         },
         "it" : {
@@ -42308,7 +42308,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please select who will be able to see photos"
+            "value" : "Silakan pilih siapa yang dapat melihat foto"
           }
         },
         "it" : {
@@ -42510,7 +42510,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete After Upload"
+            "value" : "Hapus Setelah Mengunggah"
           }
         },
         "it" : {
@@ -42611,7 +42611,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Album Descriptions"
+            "value" : "Deskripsi Album"
           }
         },
         "it" : {
@@ -42712,7 +42712,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Image Titles"
+            "value" : "Judul Gambar"
           }
         },
         "it" : {
@@ -43116,7 +43116,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Invalid Server Responses"
+            "value" : "Respons Server Tidak Valid"
           }
         },
         "it" : {
@@ -43217,7 +43217,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Light"
+            "value" : "Terang"
           }
         },
         "it" : {
@@ -43520,7 +43520,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Logs"
+            "value" : "Log"
           }
         },
         "it" : {
@@ -43722,7 +43722,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The passcode is separate from your Piwigo account password."
+            "value" : "Kode sandi ini terpisah dari kata sandi akun Piwigo Anda."
           }
         },
         "it" : {
@@ -43924,7 +43924,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Compress Photo"
+            "value" : "Kompresi Foto"
           }
         },
         "it" : {
@@ -44227,7 +44227,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Downsize Photo"
+            "value" : "Perkecil Ukuran Foto"
           }
         },
         "it" : {
@@ -45035,7 +45035,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Add After Name"
+            "value" : "Tambahkan Setelah Nama"
           }
         },
         "it" : {
@@ -45136,7 +45136,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Add Before Name"
+            "value" : "Tambahkan Sebelum Nama"
           }
         },
         "it" : {
@@ -45237,7 +45237,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Change Case"
+            "value" : "Ubah Huruf Besar/Kecil"
           }
         },
         "it" : {
@@ -45338,7 +45338,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Current Value"
+            "value" : "Nilai Saat Ini"
           }
         },
         "it" : {
@@ -45439,7 +45439,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The next series of uploads will start with this counter value which will then be incremented by one for each file processed."
+            "value" : "Rangkaian unggahan berikutnya akan dimulai dengan nilai penghitung ini, yang kemudian bertambah satu untuk setiap file yang diproses."
           }
         },
         "it" : {
@@ -45540,7 +45540,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Digits"
+            "value" : "Jumlah Digit"
           }
         },
         "it" : {
@@ -45641,7 +45641,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "When the counter needs more digits than specified, the number of digits is automatically increased."
+            "value" : "Bila penghitung memerlukan lebih banyak digit daripada yang ditentukan, jumlah digit akan ditambah secara otomatis."
           }
         },
         "it" : {
@@ -45742,7 +45742,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please select a counter format to include in the file name."
+            "value" : "Silakan pilih format penghitung yang akan disertakan dalam nama file."
           }
         },
         "it" : {
@@ -45843,7 +45843,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Starts From"
+            "value" : "Dimulai Dari"
           }
         },
         "it" : {
@@ -45944,7 +45944,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "For each album, the counter will be initialised with this value which will then be incremented by one for each file processed."
+            "value" : "Untuk setiap album, penghitung akan diinisialisasi dengan nilai ini, yang kemudian bertambah satu untuk setiap file yang diproses."
           }
         },
         "it" : {
@@ -46045,7 +46045,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please select a date format to include in the file name."
+            "value" : "Silakan pilih format tanggal yang akan disertakan dalam nama file."
           }
         },
         "it" : {
@@ -46146,7 +46146,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Day of Year"
+            "value" : "Hari dalam Tahun"
           }
         },
         "it" : {
@@ -46247,7 +46247,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rename"
+            "value" : "Ganti Nama"
           }
         },
         "it" : {
@@ -46348,7 +46348,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please indicate below how files should be renamed before uploading."
+            "value" : "Silakan tentukan di bawah ini bagaimana file harus diganti namanya sebelum diunggah."
           }
         },
         "it" : {
@@ -46449,7 +46449,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "File Extension"
+            "value" : "Ekstensi File"
           }
         },
         "it" : {
@@ -46550,7 +46550,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rename File"
+            "value" : "Ganti Nama File"
           }
         },
         "it" : {
@@ -46651,7 +46651,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "5-digit version"
+            "value" : "Versi 5 digit"
           }
         },
         "it" : {
@@ -46752,7 +46752,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4-digit version"
+            "value" : "Versi 4 digit"
           }
         },
         "it" : {
@@ -46853,7 +46853,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lowercase"
+            "value" : "Huruf Kecil"
           }
         },
         "it" : {
@@ -46954,7 +46954,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prefix File Name"
+            "value" : "Awalan Nama File"
           }
         },
         "it" : {
@@ -47055,7 +47055,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Replace File Name"
+            "value" : "Gantikan Nama File"
           }
         },
         "it" : {
@@ -47156,7 +47156,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Suffix File Name"
+            "value" : "Akhiran Nama File"
           }
         },
         "it" : {
@@ -47257,7 +47257,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please select a time format to include in the file name."
+            "value" : "Silakan pilih format waktu yang akan disertakan dalam nama file."
           }
         },
         "it" : {
@@ -47358,7 +47358,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2-digit version"
+            "value" : "Versi 2 digit"
           }
         },
         "it" : {
@@ -47459,7 +47459,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uppercase"
+            "value" : "Huruf Besar"
           }
         },
         "it" : {
@@ -47661,7 +47661,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Strip Metadata"
+            "value" : "Hapus Metadata"
           }
         },
         "it" : {
@@ -47762,7 +47762,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Strip Private Metadata"
+            "value" : "Hapus Metadata Pribadi"
           }
         },
         "it" : {
@@ -48267,7 +48267,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatic"
+            "value" : "Otomatis"
           }
         },
         "it" : {
@@ -48772,7 +48772,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wi-Fi Only"
+            "value" : "Hanya Wi-Fi"
           }
         },
         "it" : {
@@ -49277,7 +49277,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Appearance"
+            "value" : "Tampilan"
           }
         },
         "it" : {
@@ -49479,7 +49479,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Color Palette"
+            "value" : "Palet Warna"
           }
         },
         "it" : {
@@ -49985,7 +49985,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Troubleshooting"
+            "value" : "Pemecahan Masalah"
           }
         },
         "it" : {
@@ -50288,7 +50288,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Videos"
+            "value" : "Video"
           }
         },
         "it" : {
@@ -51615,7 +51615,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Share Failed"
+            "value" : "Pembagian Gagal"
           }
         },
         "it" : {
@@ -51716,7 +51716,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Selection too large to share"
+            "value" : "Pilihan terlalu besar untuk dibagikan"
           }
         },
         "it" : {
@@ -53940,7 +53940,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enter a name for this new tag"
+            "value" : "Masukkan nama untuk tag baru ini"
           }
         },
         "it" : {
@@ -54041,7 +54041,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "New tag"
+            "value" : "Tag baru"
           }
         },
         "it" : {
@@ -54142,7 +54142,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Add Tag"
+            "value" : "Tambah Tag"
           }
         },
         "it" : {
@@ -54243,7 +54243,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to create new tag"
+            "value" : "Gagal membuat tag baru"
           }
         },
         "it" : {
@@ -54344,7 +54344,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Creation Failed"
+            "value" : "Pembuatan Gagal"
           }
         },
         "it" : {
@@ -54445,7 +54445,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Creating Tag…"
+            "value" : "Membuat Tag…"
           }
         },
         "it" : {
@@ -54647,7 +54647,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Not Selected"
+            "value" : "Tidak Dipilih"
           }
         },
         "it" : {
@@ -55965,7 +55965,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Low Power Mode enabled"
+            "value" : "Mode Daya Rendah aktif"
           }
         },
         "it" : {
@@ -56066,7 +56066,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No Internet Connection"
+            "value" : "Tidak Ada Koneksi Internet"
           }
         },
         "it" : {
@@ -56167,7 +56167,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No Wi-Fi Connection"
+            "value" : "Tidak Ada Koneksi Wi-Fi"
           }
         },
         "it" : {
@@ -56268,7 +56268,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please select the maximum size of the photos which will be uploaded."
+            "value" : "Silakan pilih ukuran maksimum foto yang akan diunggah."
           }
         },
         "it" : {
@@ -56369,7 +56369,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No Downsizing"
+            "value" : "Tanpa Pengecilan"
           }
         },
         "it" : {
@@ -56470,7 +56470,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Built-in cameras maximum resolution:"
+            "value" : "Resolusi maksimum kamera bawaan:"
           }
         },
         "it" : {
@@ -56571,7 +56571,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Max Photo Size"
+            "value" : "Ukuran Foto Maks."
           }
         },
         "it" : {
@@ -56672,7 +56672,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uploads"
+            "value" : "Unggahan"
           }
         },
         "it" : {
@@ -57077,7 +57077,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please select the maximum size of the videos which will be uploaded."
+            "value" : "Silakan pilih ukuran maksimum video yang akan diunggah."
           }
         },
         "it" : {
@@ -57178,7 +57178,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Built-in cameras maximum specifications:"
+            "value" : "Spesifikasi maksimum kamera bawaan:"
           }
         },
         "it" : {
@@ -57279,7 +57279,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Max Video Size"
+            "value" : "Ukuran Video Maks."
           }
         },
         "it" : {
@@ -57380,7 +57380,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Week"
+            "value" : "Minggu"
           }
         },
         "it" : {
@@ -57582,7 +57582,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Continue"
+            "value" : "Lanjutkan"
           }
         },
         "it" : {
@@ -58087,7 +58087,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "What's New in Piwigo"
+            "value" : "Yang Baru di Piwigo"
           }
         },
         "it" : {
@@ -58188,7 +58188,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Year"
+            "value" : "Tahun"
           }
         },
         "it" : {

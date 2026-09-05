@@ -49,7 +49,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Album ID"
+            "value" : "ID Album"
           }
         },
         "it" : {
@@ -150,7 +150,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " & more"
+            "value" : " & lainnya"
           }
         },
         "it" : {
@@ -453,7 +453,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Counter"
+            "value" : "Penghitung"
           }
         },
         "it" : {
@@ -554,7 +554,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Creation Date"
+            "value" : "Tanggal Pembuatan"
           }
         },
         "it" : {
@@ -655,7 +655,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Creation Time"
+            "value" : "Waktu Pembuatan"
           }
         },
         "it" : {
@@ -857,7 +857,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "File format not accepted by Piwigo server."
+            "value" : "Format file tidak diterima oleh server Piwigo."
           }
         },
         "it" : {
@@ -1059,7 +1059,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Finishing..."
+            "value" : "Menyelesaikan..."
           }
         },
         "it" : {
@@ -1160,7 +1160,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ready for upload..."
+            "value" : "Siap diunggah..."
           }
         },
         "it" : {
@@ -1261,7 +1261,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Preparing..."
+            "value" : "Mempersiapkan..."
           }
         },
         "it" : {
@@ -1362,7 +1362,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uploaded"
+            "value" : "Terunggah"
           }
         },
         "it" : {
@@ -1564,7 +1564,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Waiting..."
+            "value" : "Menunggu..."
           }
         },
         "it" : {
@@ -1665,7 +1665,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Text"
+            "value" : "Teks"
           }
         },
         "it" : {
@@ -1766,7 +1766,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Impossible Uploads"
+            "value" : "Unggahan Tidak Memungkinkan"
           }
         },
         "it" : {
@@ -1867,7 +1867,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Upload Queue"
+            "value" : "Antrian Unggahan"
           }
         },
         "it" : {
@@ -1968,7 +1968,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Resumable Uploads"
+            "value" : "Unggahan Dapat Dilanjutkan"
           }
         },
         "it" : {

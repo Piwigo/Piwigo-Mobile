@@ -150,7 +150,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Best Rated"
+            "value" : "Peringkat Terbaik"
           }
         },
         "it" : {
@@ -251,7 +251,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your Favorites"
+            "value" : "Favorit Anda"
           }
         },
         "it" : {
@@ -352,7 +352,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Recent Photos"
+            "value" : "Foto Terbaru"
           }
         },
         "it" : {
@@ -453,7 +453,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tagged"
+            "value" : "Diberi Tag"
           }
         },
         "it" : {
@@ -554,7 +554,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Most Visited"
+            "value" : "Paling Sering Dikunjungi"
           }
         },
         "it" : {
@@ -756,7 +756,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oldest → Newest"
+            "value" : "Terlama → Terbaru"
           }
         },
         "it" : {
@@ -1059,7 +1059,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Newest → Oldest"
+            "value" : "Terbaru → Terlama"
           }
         },
         "it" : {
@@ -1362,7 +1362,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Default"
+            "value" : "Standar"
           }
         },
         "it" : {
@@ -1665,7 +1665,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Identifier, 1 → 9"
+            "value" : "Pengenal, 1 → 9"
           }
         },
         "it" : {
@@ -1867,7 +1867,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Identifier, 9 → 1"
+            "value" : "Pengenal, 9 → 1"
           }
         },
         "it" : {
@@ -2574,7 +2574,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Random Order"
+            "value" : "Urutan Acak"
           }
         },
         "it" : {
@@ -2675,7 +2675,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lowest → Highest"
+            "value" : "Terendah → Tertinggi"
           }
         },
         "it" : {
@@ -2776,7 +2776,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Highest → Lowest"
+            "value" : "Tertinggi → Terendah"
           }
         },
         "it" : {
@@ -2877,7 +2877,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rating Score, low → high"
+            "value" : "Skor Penilaian, rendah → tinggi"
           }
         },
         "it" : {
@@ -2978,7 +2978,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rating Score, high → low"
+            "value" : "Skor Penilaian, tinggi → rendah"
           }
         },
         "it" : {
@@ -3281,7 +3281,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Visits, low → high"
+            "value" : "Kunjungan, sedikit → banyak"
           }
         },
         "it" : {
@@ -3382,7 +3382,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Visits, high → low"
+            "value" : "Kunjungan, banyak → sedikit"
           }
         },
         "it" : {
@@ -3483,7 +3483,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Album not in persistent cache."
+            "value" : "Album tidak ada di cache persisten."
           }
         },
         "it" : {
@@ -3685,7 +3685,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to create a new Server object."
+            "value" : "Gagal membuat objek Server baru."
           }
         },
         "it" : {
@@ -3786,7 +3786,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to create a new User object."
+            "value" : "Gagal membuat objek User baru."
           }
         },
         "it" : {
@@ -3887,7 +3887,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to create a new Album object."
+            "value" : "Gagal membuat objek Album baru."
           }
         },
         "it" : {
@@ -3988,7 +3988,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fetch albums error!"
+            "value" : "Galat saat mengambil album!"
           }
         },
         "it" : {
@@ -4089,7 +4089,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Found and will discard an album missing a valid ID or name."
+            "value" : "Menemukan dan akan mengabaikan album yang tidak memiliki ID atau nama yang valid."
           }
         },
         "it" : {
@@ -4190,7 +4190,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to create a new Image object."
+            "value" : "Gagal membuat objek Image baru."
           }
         },
         "it" : {
@@ -4291,7 +4291,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fetch photos/videos error!"
+            "value" : "Galat saat mengambil foto/video!"
           }
         },
         "it" : {
@@ -4392,7 +4392,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Found and will discard a photo/video missing a valid ID or URL."
+            "value" : "Menemukan dan akan mengabaikan foto/video yang tidak memiliki ID atau URL yang valid."
           }
         },
         "it" : {
@@ -4493,7 +4493,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to create a new Location object."
+            "value" : "Gagal membuat objek Location baru."
           }
         },
         "it" : {
@@ -4594,7 +4594,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Found and will discard a location missing a valid identifier."
+            "value" : "Menemukan dan akan mengabaikan lokasi yang tidak memiliki pengenal yang valid."
           }
         },
         "it" : {
@@ -4695,7 +4695,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to create a new Tag object."
+            "value" : "Gagal membuat objek Tag baru."
           }
         },
         "it" : {
@@ -4796,7 +4796,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fetch tags error!"
+            "value" : "Galat saat mengambil tag!"
           }
         },
         "it" : {
@@ -4897,7 +4897,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Found and will discard a tag missing a valid code or name."
+            "value" : "Menemukan dan akan mengabaikan tag yang tidak memiliki kode atau nama yang valid."
           }
         },
         "it" : {
@@ -4998,7 +4998,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to create a new Upload object."
+            "value" : "Gagal membuat objek Upload baru."
           }
         },
         "it" : {
@@ -5099,7 +5099,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to delete an Upload object."
+            "value" : "Gagal menghapus objek Upload."
           }
         },
         "it" : {
@@ -5200,7 +5200,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to retrieve photo."
+            "value" : "Gagal mengambil foto."
           }
         },
         "it" : {
@@ -5301,7 +5301,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Found and will discard an upload missing a valid identifier."
+            "value" : "Menemukan dan akan mengabaikan unggahan yang tidak memiliki pengenal yang valid."
           }
         },
         "it" : {
@@ -5402,7 +5402,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Will discard a user account missing a valid username."
+            "value" : "Akan mengabaikan akun pengguna yang tidak memiliki nama pengguna yang valid."
           }
         },
         "it" : {
@@ -5604,7 +5604,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to get Community extension parameters.\nTry logging in again."
+            "value" : "Gagal mendapatkan parameter ekstensi Community.\nCoba masuk kembali."
           }
         },
         "it" : {
@@ -5705,7 +5705,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Will discard a user account missing a valid username."
+            "value" : "Akan mengabaikan akun pengguna yang tidak memiliki nama pengguna yang valid."
           }
         },
         "it" : {
@@ -6614,7 +6614,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo server did return an empty JSON object."
+            "value" : "Server Piwigo mengembalikan objek JSON yang kosong."
           }
         },
         "it" : {
@@ -6715,7 +6715,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo server did not return a valid JSON object."
+            "value" : "Server Piwigo tidak mengembalikan objek JSON yang valid."
           }
         },
         "it" : {
@@ -6816,7 +6816,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo server did not return a valid response."
+            "value" : "Server Piwigo tidak mengembalikan respons yang valid."
           }
         },
         "it" : {
@@ -7220,7 +7220,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Could not digest JSON object returned by Piwigo server."
+            "value" : "Tidak dapat mengolah objek JSON yang dikembalikan oleh server Piwigo."
           }
         },
         "it" : {
@@ -8533,7 +8533,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Invalid destination album"
+            "value" : "Album tujuan tidak valid"
           }
         },
         "it" : {
@@ -8634,7 +8634,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Invalid source album"
+            "value" : "Album sumber tidak valid"
           }
         },
         "it" : {
@@ -8735,7 +8735,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cannot strip private metadata"
+            "value" : "Tidak dapat menghapus metadata pribadi"
           }
         },
         "it" : {
