@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import LinkPresentation
 import UIKit
 import PwgKit
 import PwgUIKit
@@ -334,5 +335,21 @@ final class ImageLinkActivityItemSource: NSObject, UIActivityItemSource {
     func activityViewController(_ activityViewController: UIActivityViewController,
                                 subjectForActivityType activityType: UIActivity.ActivityType?) -> String {
         return subject
+    }
+
+    func activityViewControllerLinkMetadata(_: UIActivityViewController) -> LPLinkMetadata? {
+        // Providing the metadata ourselves prevents the share sheet from fetching the page
+        // to guess a title and an icon from the theme of the Piwigo server.
+        let linkMetaData = LPLinkMetadata()
+        linkMetaData.originalURL = pageUrl
+        linkMetaData.url = pageUrl
+        linkMetaData.title = subject
+
+        // We use the Piwigo logo bundled with the app
+        if let logo = UIImage(named: "piwigo") {
+            linkMetaData.iconProvider = NSItemProvider(object: logo)
+        }
+
+        return linkMetaData
     }
 }
