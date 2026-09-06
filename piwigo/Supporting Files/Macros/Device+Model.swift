@@ -332,9 +332,9 @@ extension UIDevice {
         case "iPad16,11":
             return "iPad Air 13-inch (M4) (Wi-Fi + Cellular)"
         case "iPad17,1":
-            return "iPad Pro 11-inch (Wi-Fi)"
+            return "iPad Pro 11-inch (M5) (Wi-Fi)"
         case "iPad17,2":
-            return "iPad Pro 11-inch (Wi-Fi + Cellular)"
+            return "iPad Pro 11-inch (M5) (Wi-Fi + Cellular)"
         case "iPad17,3":
             return "iPad Pro 13-inch (M5) (Wi-Fi)"
         case "iPad17,4":
