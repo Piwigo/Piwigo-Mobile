@@ -6,38 +6,25 @@
 #
 # Set up a complete Ruby web development environment
 # brew install openssl@3 libyaml readline ruby-install chruby
-# ruby-install ruby 3.4.0
+# ruby-install ruby 3.4.10
+# sed -i '' 's/^chruby ruby-3.4.0$/chruby ruby-3.4.10/' ~/.zshrc
 #
-# Add GEM to PATH (in .zshrc)
-#	export PATH=$PATH:/Users/lelievre/.gem/ruby/2.7.3/bin
-#	export LC_ALL=en_US.UTF-8
-#	export LANG=en_US.UTF-8
-#   export SNAPSHOT_SIMULATOR_WAIT_FOR_BOOT_TIMEOUT=10
-#	chruby ruby-2.7.3
+# Then in a new shell, from the repo:
+#	gem install bundler -v 4.0.20 && bundle install && bundle exec fastlane --version
 #
-#
-# Install fastlane
-#	gem install bundler
+# Clean or update:
 #   gem cleanup (from time to time to speed up fastlane)
 #   gem update
 #   bundle install
 #	bundle update --bundler
-#	gem install fastlane -NV
 #	fastlane init
 #   fastlane init swift
 #   fastlane snapshot update
+#	bundle update fastlane
+#   bundle exec fastlane snapshot update
 #	
 # To locate fastlane
 #	which fastlane
-#
-# To update screen sizes
-#	bundle exec fastlane frameit download_frames
-#   vi ~/.gem/ruby/2.7.3/gems/fastlane-2.228.0/snapshot/lib/snapshot/reports_generator.rb
-#	vi ~/.gem/ruby/2.7.3/gems/fastlane-2.228.0/deliver/lib/deliver/app_screenshot.rb
-#
-# To update fastlane:
-#	bundle update fastlane
-#   bundle exec fastlane snapshot update
 #
 # To get a list of available options
 #   bundle exec fastlane action deliver
