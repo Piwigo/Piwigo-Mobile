@@ -73,7 +73,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         guard let cacheURL = imageData.cacheURL(ofSize: size) else {
             imageFileURL = Bundle.main.url(forResource: "piwigo", withExtension: "png")!
             pwgImageURL = imageFileURL
-            super.init(placeholderItem: UIImage(named: "AppIconShare")!)
+            super.init(placeholderItem: UIImage(named: "piwigo")!)
             return
         }
         
@@ -86,7 +86,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             let resizedImage = cachedImage.resize(to: CGFloat(70.0), opaque: true, scale: scale)
             super.init(placeholderItem: resizedImage)
         } else {
-            super.init(placeholderItem: UIImage(named: "AppIconShare")!)
+            super.init(placeholderItem: UIImage(named: "piwigo")!)
         }
 
         // The item method downloads the video and waits for the export session to finish.
@@ -473,7 +473,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         if let cachedImage = imageData.cachedThumbnail(ofSize: size) {
             linkMetaData.imageProvider = NSItemProvider(object: cachedImage)
         } else {
-            linkMetaData.imageProvider = NSItemProvider(object: UIImage(named: "AppIconShare")!)
+            linkMetaData.imageProvider = NSItemProvider(object: UIImage(named: "piwigo")!)
         }
         
         // Title
