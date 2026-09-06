@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "Icon-Light-70px@1x.png",
+      "filename" : "Icon-Light-68px@1x 1.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -12,7 +12,7 @@
           "value" : "light"
         }
       ],
-      "filename" : "Icon-Light-70px@1x 1.png",
+      "filename" : "Icon-Light-68px@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -23,12 +23,12 @@
           "value" : "dark"
         }
       ],
-      "filename" : "Icon-Dark-70px@1x.png",
+      "filename" : "Icon-Dark-68px@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Icon-Light-70px@2x.png",
+      "filename" : "Icon-Light-68px@2x 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -39,7 +39,7 @@
           "value" : "light"
         }
       ],
-      "filename" : "Icon-Light-70px@2x 1.png",
+      "filename" : "Icon-Light-68px@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -50,12 +50,12 @@
           "value" : "dark"
         }
       ],
-      "filename" : "Icon-Dark-70px@2x.png",
+      "filename" : "Icon-Dark-68px@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Icon-Light-70px@3x.png",
+      "filename" : "Icon-Light-68px@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     },
@@ -66,7 +66,7 @@
           "value" : "light"
         }
       ],
-      "filename" : "Icon-Light-70px@3x 1.png",
+      "filename" : "Icon-Light-68px@3x 1.png",
       "idiom" : "universal",
       "scale" : "3x"
     },
@@ -77,7 +77,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "Icon-Dark-70px@3x.png",
+      "filename" : "Icon-Dark-68px@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
