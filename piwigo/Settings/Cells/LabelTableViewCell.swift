@@ -34,6 +34,19 @@ class LabelTableViewCell: UITableViewCell {
         detailLabel.text = detail
         detailLabel.textColor = PwgColor.rightLabel
         detailLabel.isHidden = detail.isEmpty
+
+        // A detail sharing the line with the title belongs against the trailing
+        // edge. NSTextAlignment has no trailing case and .natural means leading,
+        // so the alignment is derived from the layout direction. Short details are
+        // already flush because the label hugs them, but a long one stretches the
+        // label and would otherwise be pushed away from that edge.
+        // The accessibility variant stacks both labels, where leading is correct.
+        if traitCollection.preferredContentSizeCategory < .accessibilityMedium {
+            detailLabel.textAlignment =
+                effectiveUserInterfaceLayoutDirection == .rightToLeft ? .left : .right
+        } else {
+            detailLabel.textAlignment = .natural
+        }
     }
 
     override func prepareForReuse() {
