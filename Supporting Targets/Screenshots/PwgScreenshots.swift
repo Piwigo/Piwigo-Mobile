@@ -331,7 +331,7 @@ final class PwgScreenshots: XCTestCase {
              "iPhone 17e",                                          // 6.1-inch
              "iPhone 17 Pro",                                       // 6.3-inch
              "iPhone 14 Plus":                                      // 6.5-inch
-            swipeCount = 4
+            swipeCount = 3
         case "iPhone Air":                                          // 6.9-inch
             swipeCount = 5
         case "iPad Pro 9.7-inch (Wi-Fi + Cellular)":                // 9.7-inch
@@ -398,8 +398,18 @@ final class PwgScreenshots: XCTestCase {
         
         // MARK: Screenshot #9 -> 09
         // Show upload settings
-        app.navigationBars["org.piwigo.upload.switchView"]
-            .segmentedControls["org.piwigo.upload.switch"].swipeRight()
+        // The segmented control is mirrored in right-to-left languages: the settings
+        // tab sits on the left in Arabic, so the swipe has to go the other way to
+        // reach it. Snapshot.deviceLanguage names the language being captured, and
+        // an empty one (test run outside fastlane) falls back to left-to-right.
+        let uploadSwitch = app.navigationBars["org.piwigo.upload.switchView"]
+            .segmentedControls["org.piwigo.upload.switch"]
+        let isRTL = NSLocale.characterDirection(forLanguage: Snapshot.deviceLanguage) == .rightToLeft
+        if isRTL {
+            uploadSwitch.swipeLeft()
+        } else {
+            uploadSwitch.swipeRight()
+        }
         sleep(1)
         snapshot("09")
         
