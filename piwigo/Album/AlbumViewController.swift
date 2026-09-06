@@ -278,6 +278,9 @@ final class AlbumViewController: UIViewController
         // Initialise album width and height
         updateContentSizes(for: traitCollection.preferredContentSizeCategory)
         
+        // Collection view ID
+        collectionView?.accessibilityIdentifier = "org.piwigo.albumCollectionView"
+        
         // Register classes before using them
         collectionView?.isPrefetchingEnabled = true
         collectionView?.register(UINib(nibName: "AlbumHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AlbumHeaderReusableView")

@@ -95,7 +95,7 @@ final class EditImageParamsViewController: UIViewController
         
         // Buttons
         let cancel = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(cancelEdit))
-        cancel.accessibilityIdentifier = "Cancel"
+        cancel.accessibilityIdentifier = "cancelEdit"
         let done = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(doneEdit))
         done.accessibilityIdentifier = "Done"
         

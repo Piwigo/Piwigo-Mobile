@@ -59,6 +59,9 @@ final class ImageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Navigation bar
+        navigationController?.navigationBar.accessibilityIdentifier = "ImageViewNav"
+        
         // Initialise video players and PiP management
         playbackController.videoItemDelegate = self
         

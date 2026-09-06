@@ -229,6 +229,25 @@ final class ImageDetailViewController: UIViewController
         
         // Set scroll view scale and range
         configScrollView()
+        
+        #if DEBUG
+        let deviceType = UIDevice().modelName
+        guard deviceType == "iPad Pro 11-inch (M5) (Wi-Fi + Cellular)",
+              ["Clos de Vougeot", "Hotel de Coimbra"].contains(imageData.title.string)
+        else { return }
+        
+        // Get current scale
+        let scale = scrollView.zoomScale * 1.15
+        
+        // Zoom in for producing screenshot
+        let point = CGRect(x: imageView.bounds.midX, y: imageView.bounds.midY, width: 0, height: 0)
+        let scrollSize = scrollView.frame.size
+        let size = CGSize(width: scrollSize.width / scale,
+                          height: scrollSize.height / scale)
+        let origin = CGPoint(x: point.minX - size.width / 2,
+                             y: point.minY - size.height / 2)
+        scrollView.zoom(to:CGRect(origin: origin, size: size), animated: true)
+        #endif
     }
     
     @MainActor
