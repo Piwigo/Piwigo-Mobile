@@ -17,15 +17,32 @@ import PwgUploadKit
 extension AlbumViewController
 {
     // MARK: - Buttons Management
+    // These buttons are positioned by hand above the collection view, so nothing
+    // mirrors them in right-to-left languages the way constraints would. Each frame
+    // is therefore computed as if the layout were left-to-right, then mirrored about
+    // the vertical axis of the view: the "Add" button moves to the left, the "Home"
+    // button to its right, and the "Create Album" and "Upload Images" buttons fan out
+    // towards the right — matching the toolbar of iOS 26.
+    private var addButtonLTRFrame: CGRect {
+        return CGRect(x: view.bounds.size.width - 3 * kRadius,
+                      y: view.bounds.size.height - 3 * kRadius,
+                      width: 2 * kRadius, height: 2 * kRadius)
+    }
+
+    private func mirroredIfNeeded(_ frame: CGRect) -> CGRect {
+        guard view.effectiveUserInterfaceLayoutDirection == .rightToLeft
+        else { return frame }
+        return CGRect(x: view.bounds.size.width - frame.maxX, y: frame.minY,
+                      width: frame.size.width, height: frame.size.height)
+    }
+
     func relocateButtons() {
         // Buttons might have to be relocated:
         /// - when using several scenes on iPad
         /// - when launching the app in landscape mode on iPhone and returning to the root album in portrait mode
         // Calculate reference position
-        let xPos = view.bounds.size.width - 3 * kRadius
-        let yPos = view.bounds.size.height - 3 * kRadius
-        var newFrame = CGRect(x: xPos, y: yPos, width: 2 * kRadius, height: 2 * kRadius)
-        
+        var newFrame = getAddButtonFrame()
+
         // Relocate the "Add" button if needed
         if addButton.frame.equalTo(newFrame) == false {
             addButton.frame = newFrame
@@ -171,9 +188,7 @@ extension AlbumViewController
     }
     
     func getAddButtonFrame() -> CGRect {
-        let xPos = view.bounds.size.width - 3 * kRadius
-        let yPos = view.bounds.size.height - 3 * kRadius
-        return CGRect(x: xPos, y: yPos, width: 2 * kRadius, height: 2 * kRadius)
+        return mirroredIfNeeded(addButtonLTRFrame)
     }
     
     func getAddButtonOrangeConfiguration() -> UIButton.Configuration {
@@ -338,14 +353,14 @@ extension AlbumViewController
         path.lineCapStyle = .round
         progressLayer.path = path.cgPath
 
-        let xPos = addButton.frame.origin.x - extraWidth
-        let yPos = addButton.frame.origin.y
+        let xPos = addButtonLTRFrame.origin.x - extraWidth
+        let yPos = addButtonLTRFrame.origin.y
         if addButton.isHidden {
-            return CGRect(x: xPos, y: yPos,
-                          width: 2 * kRadius + extraWidth, height: 2 * kRadius)
+            return mirroredIfNeeded(CGRect(x: xPos, y: yPos,
+                                           width: 2 * kRadius + extraWidth, height: 2 * kRadius))
         } else {
-            return CGRect(x: xPos - 3 * kRadius, y: yPos,
-                          width: 2 * kRadius + extraWidth, height: 2 * kRadius)
+            return mirroredIfNeeded(CGRect(x: xPos - 3 * kRadius, y: yPos,
+                                           width: 2 * kRadius + extraWidth, height: 2 * kRadius))
         }
     }
     
@@ -491,10 +506,10 @@ extension AlbumViewController
         // — webmaster or admin rights
         // — normal rights and upload access to the current category
         if categoryId > 0, userData.hasUploadRights(forCatID: categoryId) {
-            let xPos = addButton.frame.origin.x
-            let yPos = addButton.frame.origin.y
-            return CGRect(x: xPos - 3 * kRadius, y: yPos,
-                          width: 2 * kRadius, height: 2 * kRadius)
+            let xPos = addButtonLTRFrame.origin.x
+            let yPos = addButtonLTRFrame.origin.y
+            return mirroredIfNeeded(CGRect(x: xPos - 3 * kRadius, y: yPos,
+                                           width: 2 * kRadius, height: 2 * kRadius))
         } else {
             return addButton.frame
         }
@@ -569,14 +584,14 @@ extension AlbumViewController
     }
     
     func getCreateAlbumButtonFrame(isHidden: Bool) -> CGRect {
-        var xPos = addButton.frame.origin.x
-        var yPos = addButton.frame.origin.y
+        var xPos = addButtonLTRFrame.origin.x
+        var yPos = addButtonLTRFrame.origin.y
         if isHidden == false {
             xPos -= 3 * kRadius * cos(15 * kDeg2Rad)
             yPos -= 3 * kRadius * sin(15 * kDeg2Rad)
         }
-        return CGRect(x: xPos, y: yPos,
-                      width: 1.72 * kRadius, height: 1.72 * kRadius)
+        return mirroredIfNeeded(CGRect(x: xPos, y: yPos,
+                                       width: 1.72 * kRadius, height: 1.72 * kRadius))
     }
     
     func getCreateAlbumButtonConfiguration() -> UIButton.Configuration {
@@ -604,14 +619,14 @@ extension AlbumViewController
     }
 
     func getUploadImagesButtonFrame(isHidden: Bool) -> CGRect {
-        var xPos = addButton.frame.origin.x
-        var yPos = addButton.frame.origin.y
+        var xPos = addButtonLTRFrame.origin.x
+        var yPos = addButtonLTRFrame.origin.y
         if isHidden == false {
             xPos -= 3 * kRadius * cos(75 * kDeg2Rad)
             yPos -= 3 * kRadius * sin(75 * kDeg2Rad)
         }
-        return CGRect(x: xPos, y: yPos,
-                      width: 1.72 * kRadius, height: 1.72 * kRadius)
+        return mirroredIfNeeded(CGRect(x: xPos, y: yPos,
+                                       width: 1.72 * kRadius, height: 1.72 * kRadius))
     }
 
     func getUploadImagesButtonConfiguration() -> UIButton.Configuration {
