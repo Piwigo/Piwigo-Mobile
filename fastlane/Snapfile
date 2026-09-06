@@ -58,25 +58,24 @@
 # A list of devices you want to take the screenshots from
 # https://developer.apple.com/help/app-store-connect/reference/screenshot-specifications
 devices([
-# "iPhone SE (1st generation)",				# 4-inch
+"iPhone SE (1st generation)",				# 4-inch
 "iPhone SE (3rd generation)",				# 4.7-inch
 "iPhone 8 Plus",							# 5.5-inch
-"iPhone 16e",								# 6.1-inch
-# "iPhone 13 Pro",							# Wiki
+"iPhone 17e",								# 6.1-inch
 "iPhone 17 Pro",							# 6.3-inch
 "iPhone 14 Plus",							# 6.5-inch
 "iPhone Air",								# 6.9-inch
-"iPad Pro (9.7-inch)",					# 9.7-inch
-"iPad Pro (10.5-inch)",					# 10.5-inch
-"iPad Pro 11-inch (M4)",					# 11-inch
+"iPad Pro (9.7-inch)",						# 9.7-inch
+"iPad Pro (10.5-inch)",						# 10.5-inch
+"iPad Pro 11-inch (M5)",					# 11-inch
 "iPad Pro (12.9-inch) (2nd generation)",	# 12.9-inch
-"iPad Pro 13-inch (M4)"					# 13-inch
+"iPad Pro 13-inch (M5)"						# 13-inch
 ])
 
 # ["pt", "pt_BR"] # Portuguese with Brazilian locale
 languages([
-# "en-US",
-# "zh-Hans",
+"en-US",
+"zh-Hans",
 "zh-Hant",
 "da",
 "nl-NL",
@@ -84,6 +83,7 @@ languages([
 "de-DE",
 "hu",
 "it",
+"id",
 "ja",
 "pl",
 "ru",
@@ -92,11 +92,11 @@ languages([
 ])
 
 # Parameters
-scheme("piwigoScreenshots")
+scheme("Screenshots")
 derived_data_path("DerivedData/piwigo")
-test_without_building(true)
+test_without_building(true)   # must be false once before launching all languages
 output_directory("fastlane/screenshots")
-concurrent_simulators(false)
+concurrent_simulators(true)
 skip_open_summary(true)
 number_of_retries(1)
 
@@ -106,7 +106,6 @@ number_of_retries(1)
 # and https://github.com/fastlane/fastlane/issues/21464
 # override_status_bar(true)	# Enabled only for iPhone SE (1st Generation)
 # override_status_bar_arguments("--time 9:41 --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --operatorName '' --cellularBars 4 --batteryState charged --batteryLevel 100 --dataNetwork wifi")
-# concurrent_simulators(true)
 # With Xcode:
 #	xcrun simctl status_bar booted list
 #   xcrun simctl status_bar booted override --time "09:41" --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --operatorName '' --cellularBars 4 --batteryState charged --batteryLevel 100
