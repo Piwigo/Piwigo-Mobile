@@ -87,9 +87,7 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
             numberFormatter.numberStyle = .decimal
             let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData.nbSubAlbums)) ?? "0"
             if traitCollection.preferredContentSizeCategory < .extraLarge {
-                subCategoriesLabel.text = albumData.nbSubAlbums > 1
-                    ? String(format: Localized.severalSubAlbumsCount, nberAlbums)
-                    : String(format: Localized.singleSubAlbumCount, nberAlbums)
+                subCategoriesLabel.text = Localized.subAlbumCount(Int(albumData.nbSubAlbums))
             } else {
                 subCategoriesLabel.text = nberAlbums
             }

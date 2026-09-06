@@ -38,13 +38,7 @@ class TagTableViewCell: UITableViewCell {
             leftLabel.text = tag.name
         } else {
             // Known number of images
-            let numberFormatter = NumberFormatter()
-            numberFormatter.numberStyle = .decimal
-            let nberPhotos = (numberFormatter.string(from: NSNumber(value: nber)) ?? "0") as String
-            let nberImages = nber > 1
-                ? String(format: Localized.severalImagesCount, nberPhotos)
-                : String(format: Localized.singleImageCount, nberPhotos)
-            leftLabel.text = "\(tag.name) (\(nberImages))"
+            leftLabel.text = "\(tag.name) (\(Localized.imageCount(Int(nber))))"
         }
         leftLabel.textColor = PwgColor.leftLabel
 

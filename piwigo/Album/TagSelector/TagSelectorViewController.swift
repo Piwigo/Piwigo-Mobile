@@ -263,14 +263,7 @@ extension TagSelectorViewController: UITableViewDelegate
 {
     // MARK: - Footers
     private func getContentOfFooter() -> String {
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .decimal
-        let nberOfTags = (tags.fetchedObjects ?? []).count
-        let nberAsStr = numberFormatter.string(from: NSNumber(value: nberOfTags)) ?? "0"
-        let footer = nberOfTags > 1
-            ? String(format: Localized.severalTagsCount, nberAsStr)
-            : String(format: Localized.singleTagCount, nberAsStr)
-        return footer
+        return Localized.tagCount((tags.fetchedObjects ?? []).count)
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {

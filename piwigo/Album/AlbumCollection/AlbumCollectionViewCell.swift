@@ -94,36 +94,21 @@ class AlbumCollectionViewCell: UICollectionViewCell {
     }
     
     private func getNberOfImages(fromAlbumData albumData: Album?) -> String {
-        // Constants
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = NumberFormatter.Style.decimal
         // Determine string
         var text = ""
         if albumData?.nbSubAlbums ?? Int32.zero == Int32.zero {
             // There are no sub-albums
-            let nberImages = numberFormatter.string(from: NSNumber(value: albumData?.nbImages ?? 0))
-            text = (albumData?.nbImages ?? 0 > 1)
-                ? String.localizedStringWithFormat(Localized.severalImagesCount, nberImages ?? "")
-                : String.localizedStringWithFormat(Localized.singleImageCount, nberImages ?? "")
+            text = Localized.imageCount(Int(albumData?.nbImages ?? 0))
         }
         else if albumData?.totalNbImages ?? Int64.zero == Int64.zero {
             // There are no images but sub-albums
-            let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData?.nbSubAlbums ?? 0))
-            text = (albumData?.nbSubAlbums ?? Int32.zero > 1)
-                ? String.localizedStringWithFormat(Localized.severalSubAlbumsCount, nberAlbums ?? "")
-                : String.localizedStringWithFormat(Localized.singleSubAlbumCount, nberAlbums ?? "")
+            text = Localized.subAlbumCount(Int(albumData?.nbSubAlbums ?? 0))
         }
         else {
             // There are images and sub-albums
-            let nberImages = numberFormatter.string(from: NSNumber(value: albumData?.totalNbImages ?? 0))
-            text = (albumData?.totalNbImages ?? Int64.zero > 1)
-                ? String.localizedStringWithFormat(Localized.severalImagesCount, nberImages ?? "")
-                : String.localizedStringWithFormat(Localized.singleImageCount, nberImages ?? "")
+            text = Localized.imageCount(Int(albumData?.totalNbImages ?? 0))
             text += ", "
-            let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData?.nbSubAlbums ?? 0))
-            text += (albumData?.nbSubAlbums ?? Int32.zero > 1)
-                ? String.localizedStringWithFormat(Localized.severalSubAlbumsCount, nberAlbums ?? "")
-                : String.localizedStringWithFormat(Localized.singleSubAlbumCount, nberAlbums ?? "")
+            text += Localized.subAlbumCount(Int(albumData?.nbSubAlbums ?? 0))
         }
         return text
     }

@@ -22,14 +22,34 @@ public extension Bundle {
 
 // Shared localized strings
 public enum Localized {
-    public static let singleAlbumCount = String(localized: "singleAlbumCount", bundle: .pwgAPIKit, comment: "%@ album")
-    public static let severalAlbumsCount = String(localized: "severalAlbumsCount", bundle: .pwgAPIKit, comment: "%@ albums")
-    public static let singleSubAlbumCount = String(localized: "singleSubAlbumCount", bundle: .pwgAPIKit, comment: "%@ sub-album")
-    public static let severalSubAlbumsCount = String(localized: "severalSubAlbumsCount", bundle: .pwgAPIKit, comment: "%@ sub-albums")
-    public static let singleImageCount = String(localized: "singleImageCount", bundle: .pwgAPIKit, comment: "%@ photo")
-    public static let severalImagesCount = String(localized: "severalImagesCount", bundle: .pwgAPIKit, comment: "%@ photos")
-    public static let singleTagCount = String(localized: "singleTagCount", bundle: .pwgAPIKit, comment: "%@ tag")
-    public static let severalTagsCount = String(localized: "severalTagsCount", bundle: .pwgAPIKit, comment: "%@ tags")
+    public static func albumCount(_ count: Int) -> String {
+        String.localizedStringWithFormat(
+            String(localized: "albumCount", bundle: .pwgAPIKit, comment: "%lld albums"), count)
+    }
+    public static func subAlbumCount(_ count: Int) -> String {
+        String.localizedStringWithFormat(
+            String(localized: "subAlbumCount", bundle: .pwgAPIKit, comment: "%lld sub-albums"), count)
+    }
+    public static func imageCount(_ count: Int) -> String {
+        String.localizedStringWithFormat(
+            String(localized: "imageCount", bundle: .pwgAPIKit, comment: "%lld photos"), count)
+    }
+    public static func tagCount(_ count: Int) -> String {
+        String.localizedStringWithFormat(
+            String(localized: "tagCount", bundle: .pwgAPIKit, comment: "%lld tags"), count)
+    }
+    public static func userCount(_ count: Int) -> String {
+        String.localizedStringWithFormat(
+            String(localized: "userCount", bundle: .pwgAPIKit, comment: "%lld users"), count)
+    }
+    public static func groupCount(_ count: Int) -> String {
+        String.localizedStringWithFormat(
+            String(localized: "groupCount", bundle: .pwgAPIKit, comment: "%lld groups"), count)
+    }
+    public static func commentCount(_ count: Int) -> String {
+        String.localizedStringWithFormat(
+            String(localized: "commentCount", bundle: .pwgAPIKit, comment: "%lld comments"), count)
+    }
 }
 
 // Disconnects and asks to update the Piwigo server if version is lower than:
