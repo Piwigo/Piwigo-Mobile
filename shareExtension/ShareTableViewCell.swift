@@ -37,6 +37,14 @@ final class ShareTableViewCell: UITableViewCell, CAAnimationDelegate {
     private var albumData: Album!
     private var buttonState: pwgShareCellButtonState = .none
 
+    // chevron.forward points to the right in left-to-right languages and to the
+    // left in right-to-left ones, but transforms are never mirrored. The quarter
+    // turn bringing it to point downwards is therefore clockwise in French and
+    // anti-clockwise in Arabic.
+    private var openedChevronRotation: CGFloat {
+        effectiveUserInterfaceLayoutDirection == .rightToLeft ? -.pi/2.0 : .pi/2.0
+    }
+
     override func awakeFromNib() {
         super.awakeFromNib()
         
@@ -93,7 +101,7 @@ final class ShareTableViewCell: UITableViewCell, CAAnimationDelegate {
             showHideSubCategoriesImage.tintColor = PwgColor.orange
             showHideSubCategoriesImage.image = UIImage(systemName: "chevron.forward")
             if buttonState == .hideSubAlbum {
-                self.showHideSubCategoriesImage.transform = CGAffineTransform(rotationAngle: CGFloat(.pi/2.0))
+                self.showHideSubCategoriesImage.transform = CGAffineTransform(rotationAngle: openedChevronRotation)
             } else {
                 self.showHideSubCategoriesImage.transform = CGAffineTransform.identity
             }
@@ -105,13 +113,13 @@ final class ShareTableViewCell: UITableViewCell, CAAnimationDelegate {
         if buttonState == .none { return }
 
         // Remember the new button state
-        let sign = buttonState == .showSubAlbum ? +1.0 : -1.0
+        let sign: CGFloat = buttonState == .showSubAlbum ? +1.0 : -1.0
         buttonState = buttonState == .showSubAlbum ? .hideSubAlbum : .showSubAlbum
-        
+
         // Rotate the chevron before adding/removing sub-categories
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveLinear) { [self] in
             // Rotate the chevron
-            self.showHideSubCategoriesImage.transform = self.showHideSubCategoriesImage.transform.rotated(by: CGFloat(sign * .pi/2.0))
+            self.showHideSubCategoriesImage.transform = self.showHideSubCategoriesImage.transform.rotated(by: sign * openedChevronRotation)
         }
         completion: { [self] _ in
             // Add/remove sub-categories
