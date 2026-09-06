@@ -346,7 +346,7 @@ final class ImageLinkActivityItemSource: NSObject, UIActivityItemSource {
         linkMetaData.title = subject
 
         // We use the Piwigo logo bundled with the app
-        if let logo = UIImage(named: "piwigo") {
+        if let logo = UIImage(named: "piwigoLogo") {
             linkMetaData.iconProvider = NSItemProvider(object: logo)
         }
 

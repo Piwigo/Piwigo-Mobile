@@ -463,7 +463,7 @@ final class PlayerViewControllerCoordinator: NSObject {
             if let data = video.artwork.pngData() {
                 metadataItem.value = NSData(data: data)
             } else {
-                metadataItem.value = NSData(data: UIImage(named: "piwigo")!.pngData()!)
+                metadataItem.value = NSData(data: UIImage(named: "piwigoLogo")!.pngData()!)
             }
             metadataItem.identifier = .commonIdentifierArtwork
             return metadataItem
