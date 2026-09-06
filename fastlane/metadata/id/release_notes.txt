@@ -1,0 +1,4 @@
+• Memungkinkan membagikan album pribadi kepada orang yang tidak memiliki akun (memerlukan plugin Share Album)
+• Mengimpor Live Photos sebagai foto, video, atau keduanya
+• Meningkatkan pengelolaan pengguna Community
+• Perbaikan bug
