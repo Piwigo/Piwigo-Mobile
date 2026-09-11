@@ -75,7 +75,8 @@ languages([
 "pl",
 "ru",
 "es-ES",
-"sv"
+"sv",
+"ar-SA"
 ])
 
 # Parameters
