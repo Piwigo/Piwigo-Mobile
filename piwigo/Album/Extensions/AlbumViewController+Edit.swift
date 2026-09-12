@@ -53,7 +53,7 @@ extension AlbumViewController
         let albumImages = images.fetchedObjects ?? []
         editImageVC.images = albumImages.filter({imageIDs.contains($0.pwgID)})
         editImageVC.delegate = self
-        pushView(editImageVC)
+        pushView(editImageVC, forButton: actionBarButton)
     }
 }
 

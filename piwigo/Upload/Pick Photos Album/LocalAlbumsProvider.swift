@@ -367,10 +367,6 @@ final class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
     }
 
     func titleForFooterInSectionOf(albumType: LocalAlbumType) -> String {
-        // Initialisation
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .decimal
-        
         // Set footer
         var count = 0
         switch albumType {
@@ -391,11 +387,7 @@ final class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         case .otherAlbums:
             count = otherAlbums.count
         }
-        let nberOfAlbums = numberFormatter.string(from: NSNumber(value: count)) ?? ""
-        let footer = count > 1
-            ? String(format: Localized.severalAlbumsCount, nberOfAlbums)
-            : String(format: Localized.singleAlbumCount, nberOfAlbums)
-        return footer
+        return Localized.albumCount(count)
     }
 }
 

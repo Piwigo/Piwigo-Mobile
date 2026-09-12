@@ -49,6 +49,50 @@ extension UIViewController {
     }
     
     
+    // MARK: - Push Views
+    @MainActor
+    func pushView(_ viewController: UIViewController?, forButton button: UIBarButtonItem?) {
+        guard let viewController = viewController
+        else { return }
+        
+        // Help and release notes views present their own close button
+        let isSelfContained = (viewController is HelpViewController) ||
+                              (viewController is ReleaseNotesViewController)
+        let presentedVC = isSelfContained ? viewController
+                                          : UINavigationController(rootViewController: viewController)
+        presentedVC.modalTransitionStyle = .coverVertical
+        
+        // Push album list, tag list, help view, etc.
+        switch view.traitCollection.userInterfaceIdiom {
+        case .phone:
+            presentedVC.modalPresentationStyle = .popover
+            presentedVC.popoverPresentationController?.sourceView = view
+            
+        case .pad:
+            if #available(iOS 26.0, *) {
+                // Present the view in a form sheet of the wanted size
+                presentedVC.modalPresentationStyle = .formSheet
+                let windowBounds = view.window?.bounds ?? .zero
+                presentedVC.popoverPresentationController?.sourceRect = CGRect(
+                    x: windowBounds.midX, y: windowBounds.midY,
+                    width: 0, height: 0)
+                presentedVC.preferredContentSize = CGSize(
+                    width: pwgPadSettingsWidth,
+                    height: ceil(windowBounds.height * 2 / 3))
+            } else {
+                // Present the view in a popover anchored to the button
+                presentedVC.modalPresentationStyle = .popover
+                presentedVC.popoverPresentationController?.barButtonItem = button
+                presentedVC.popoverPresentationController?.permittedArrowDirections = .up
+            }
+            
+        default:
+            preconditionFailure("!!! Interface not supported !!!")
+        }
+        present(presentedVC, animated: true)
+    }
+    
+    
     // MARK: - PiwigoHUD
     @MainActor
     func showHUD(withTitle title: String, detail: String? = nil, minWidth: CGFloat = 200,

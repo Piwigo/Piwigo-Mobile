@@ -59,7 +59,7 @@ extension AlbumViewController
             guard let self else { return }
             // Present help views
             let helpVC = HelpUtilities.getHelpViewController()
-            pushView(helpVC)
+            pushView(helpVC, forButton: discoverBarButton)
         })
         action.accessibilityIdentifier = "help"
         return action
@@ -81,7 +81,7 @@ extension AlbumViewController
             let releaseNotesSB = UIStoryboard(name: "ReleaseNotesViewController", bundle: nil)
             guard let releaseNotesVC = releaseNotesSB.instantiateViewController(withIdentifier: "ReleaseNotesViewController") as? ReleaseNotesViewController
             else { preconditionFailure("Could not load ReleaseNotesViewController") }
-            pushView(releaseNotesVC)
+            pushView(releaseNotesVC, forButton: discoverBarButton)
         })
         return action
     }
@@ -188,15 +188,14 @@ extension AlbumViewController
         navController.modalTransitionStyle = .coverVertical
         navController.modalPresentationStyle = .formSheet
         
-        // For iPads, adopt a size that fits all orientations
+        // For iPads, set the size of the view
         let windowBounds = view.window?.bounds ?? .zero
         navController.popoverPresentationController?.sourceRect = CGRect(
             x: windowBounds.midX, y: windowBounds.midY,
             width: 0, height: 0)
-        let minHeight = min(windowBounds.width, windowBounds.height)
         navController.preferredContentSize = CGSize(
             width: pwgPadSettingsWidth,
-            height: ceil(minHeight * 2 / 3))
+            height: ceil(windowBounds.height * 2 / 3))
         
         present(navController, animated: true)
     }

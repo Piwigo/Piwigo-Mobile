@@ -264,20 +264,11 @@ extension AlbumViewController
         }
         else {
             // Display number of images…
-            let numberFormatter = NumberFormatter()
-            numberFormatter.numberStyle = .decimal
-            if let number = numberFormatter.string(from: NSNumber(value: totalCount)) {
-                // Prepare legend
-                let format:String = totalCount > 1 ? Localized.severalImagesCount : Localized.singleImageCount
-                legend = String(format: format, number)
+            legend = Localized.imageCount(Int(totalCount))
 
-                // Show/hide "No album in your Piwigo"
-                let hasItems = (categoryId == pwgSmartAlbum.search.rawValue) || (totalCount != 0)
-                noAlbumLabel.isHidden = hasItems
-            }
-            else {
-                legend = String(format: Localized.severalImagesCount, "?")
-            }
+            // Show/hide "No album in your Piwigo"
+            let hasItems = (categoryId == pwgSmartAlbum.search.rawValue) || (totalCount != 0)
+            noAlbumLabel.isHidden = hasItems
         }
         return legend
     }

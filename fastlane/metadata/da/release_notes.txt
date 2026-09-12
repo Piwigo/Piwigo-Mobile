@@ -1,4 +1,4 @@
-• Gør det muligt at dele private album med personer, der ikke har en konto (kræver Share Album-pluginnet)
-• Importerer Live Photos som foto, video eller begge
-• Forbedrer administrationen af Community-brugere
-• Fejlrettelser
+• Retter layoutet på arabisk og andre sprog, der skrives fra højre mod venstre
+• Anvender hvert sprogs flertalsregler på antallet af fotos, album og etiketter
+• Fuldfører den indonesiske oversættelse
+• Fejlrettelser og forbedringer af brugerfladen

@@ -36,8 +36,11 @@ class TextFieldTableViewCell: UITableViewCell {
         rightTextField.attributedPlaceholder = NSAttributedString(string: placeHolder, attributes: [
             NSAttributedString.Key.foregroundColor: PwgColor.placeHolder
         ])
-//        let isAppLanguageL2R = UIApplication.shared.userInterfaceLayoutDirection == .leftToRight
-//        rightTextField.textAlignment = isAppLanguageL2R ? .right : .left
+        // The value belongs against the trailing edge, like the detail label of the
+        // other rows. NSTextAlignment has no trailing case and .natural means
+        // leading, so the alignment is derived from the layout direction.
+        rightTextField.textAlignment =
+            effectiveUserInterfaceLayoutDirection == .rightToLeft ? .left : .right
     }
 
     override func prepareForReuse() {

@@ -530,54 +530,6 @@ final class ImageViewController: UIViewController {
     }
     
     
-    // MARK: - Push Views
-    func pushView(_ viewController: UIViewController, forButton button: UIBarButtonItem?)
-    {
-        let navController = UINavigationController(rootViewController: viewController)
-        navController.modalTransitionStyle = .coverVertical
-        if #available(iOS 26.0, *) {
-            switch view.traitCollection.userInterfaceIdiom {
-            case .phone:
-                navController.modalPresentationStyle = .popover
-                navController.popoverPresentationController?.sourceView = view
-                
-            case .pad:
-                // Push view embedded in navigation controller
-                navController.modalPresentationStyle = .formSheet
-                let windowBounds = view.window?.bounds ?? .zero
-                navController.popoverPresentationController?.sourceRect = CGRect(
-                    x: windowBounds.midX, y: windowBounds.midY,
-                    width: 0, height: 0)
-                let minHeight = min(windowBounds.width, windowBounds.height)
-                navController.preferredContentSize = CGSize(
-                    width: pwgPadSettingsWidth,
-                    height: ceil(minHeight * 2 / 3))
-                
-            default:
-                preconditionFailure("!!! Interface not supported !!!")
-            }
-        }
-        else {
-            // Fallback on previous version
-            switch view.traitCollection.userInterfaceIdiom {
-            case .phone:
-                navController.modalTransitionStyle = .coverVertical
-                navController.modalPresentationStyle = .popover
-                navController.popoverPresentationController?.sourceView = view
-                
-            case .pad:
-                // Push view embedded in navigation controller
-                navController.modalPresentationStyle = .popover
-                navController.popoverPresentationController?.barButtonItem = button
-                
-            default:
-                preconditionFailure("!!! Interface not supported !!!")
-            }
-        }
-        present(navController, animated: true)
-    }
-    
-    
     // MARK: - Help Views
     @MainActor
     private func showHelpIfNeeded() {

@@ -1,4 +1,4 @@
-• Partage d'albums privés avec des personnes qui n'ont pas de compte (nécessite le plugin Share Album)
-• Import des Live Photos en tant que photo, vidéo ou les deux
-• Amélioration de la gestion des utilisateurs Community
-• Correction de bugs
+• Correction de la mise en page en arabe et dans les autres langues s'écrivant de droite à gauche
+• Application des règles de pluriel de chaque langue aux nombres de photos, d'albums et de tags
+• Traduction indonésienne complétée
+• Correction de bugs et améliorations de l'interface

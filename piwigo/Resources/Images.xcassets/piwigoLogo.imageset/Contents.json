@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "piwigo@1x.png",
+      "filename" : "piwigo-76px@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "piwigo@2x.png",
+      "filename" : "piwigo-76px@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "piwigo@3x.png",
+      "filename" : "piwigo-76px@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
@@ -19,5 +19,8 @@
   "info" : {
     "author" : "xcode",
     "version" : 1
+  },
+  "properties" : {
+    "preserves-vector-representation" : true
   }
 }

@@ -261,7 +261,7 @@
 		AD9698242BE6548400520614 /* AlbumViewController+Discover.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9698232BE6548400520614 /* AlbumViewController+Discover.swift */; };
 		AD9698262BE6661D00520614 /* AlbumViewController+Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9698252BE6661D00520614 /* AlbumViewController+Search.swift */; };
 		AD96982A2BE6844C00520614 /* AlbumNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9698292BE6844C00520614 /* AlbumNavigationController.swift */; };
-		AD96F4302748601D004C8DFF /* piwigo.png in Resources */ = {isa = PBXBuildFile; fileRef = AD96F42F2748601D004C8DFF /* piwigo.png */; };
+		AD96A32B304D77430029C42B /* piwigo-url.png in Resources */ = {isa = PBXBuildFile; fileRef = AD96A32A304D77430029C42B /* piwigo-url.png */; };
 		AD97CFBD265D1AF800719ED5 /* AlbumVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD97CFBC265D1AF800719ED5 /* AlbumVars.swift */; };
 		AD9833A62E37834200159DEA /* ImageViewController+GoTo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9833A52E37834200159DEA /* ImageViewController+GoTo.swift */; };
 		AD987634262606C600B964C5 /* UIViewController+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD987633262606C600B964C5 /* UIViewController+AppTools.swift */; };
@@ -786,7 +786,7 @@
 		AD9698232BE6548400520614 /* AlbumViewController+Discover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumViewController+Discover.swift"; sourceTree = "<group>"; };
 		AD9698252BE6661D00520614 /* AlbumViewController+Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumViewController+Search.swift"; sourceTree = "<group>"; };
 		AD9698292BE6844C00520614 /* AlbumNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumNavigationController.swift; sourceTree = "<group>"; };
-		AD96F42F2748601D004C8DFF /* piwigo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = piwigo.png; path = Assets/Icons/piwigo/piwigo.png; sourceTree = SOURCE_ROOT; };
+		AD96A32A304D77430029C42B /* piwigo-url.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "piwigo-url.png"; sourceTree = "<group>"; };
 		AD97CFB3265A50EE00719ED5 /* debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = debug.entitlements; sourceTree = "<group>"; };
 		AD97CFBC265D1AF800719ED5 /* AlbumVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumVars.swift; sourceTree = "<group>"; };
 		AD9833A52E37834200159DEA /* ImageViewController+GoTo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+GoTo.swift"; sourceTree = "<group>"; };
@@ -1415,7 +1415,7 @@
 				AD8D218526B0B46A0008E907 /* lightPhone.png */,
 				AD31E72B2EB0D91900584ECB /* Help for iOS 18 */,
 				AD31E72E2EB0D95100584ECB /* Help for iOS 26 */,
-				AD96F42F2748601D004C8DFF /* piwigo.png */,
+				AD96A32A304D77430029C42B /* piwigo-url.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -2233,10 +2233,10 @@
 				AD31E7482EB106C100584ECB /* help04-iOS18.png in Resources */,
 				AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */,
 				AD9D684827DFE6DF00517261 /* VerificationFailed.ahap in Resources */,
+				AD96A32B304D77430029C42B /* piwigo-url.png in Resources */,
 				AD1644052E894313002B555F /* RenameFileTableHeaderView.xib in Resources */,
 				AD8D218626B0B46A0008E907 /* darkPhone.png in Resources */,
 				AD8D218826B0B46A0008E907 /* darkPad.png in Resources */,
-				AD96F4302748601D004C8DFF /* piwigo.png in Resources */,
 				AD8D218926B0B46A0008E907 /* lightPhone.png in Resources */,
 				AD8D218726B0B46A0008E907 /* lightPad.png in Resources */,
 				ADAE3C342E19215200E1D634 /* ReleaseNotes.xcstrings in Resources */,
@@ -2880,6 +2880,7 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZEC3W885H6;
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = ZEC3W885H6;
+				ENABLE_DEBUG_DYLIB = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				INFOPLIST_FILE = shareExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = shareExtension;
@@ -2891,7 +2892,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 4.4;
+				MARKETING_VERSION = 4.4.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = NO;
@@ -2949,7 +2950,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 4.4;
+				MARKETING_VERSION = 4.4.1;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo.shareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3135,6 +3136,7 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZEC3W885H6;
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = ZEC3W885H6;
+				ENABLE_DEBUG_DYLIB = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				INFOPLIST_FILE = "piwigo/Info-debug.plist";
@@ -3147,7 +3149,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.4;
+				MARKETING_VERSION = 4.4.1;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_SWIFT_FLAGS = "$(inherited) -Xfrontend -warn-long-function-bodies=300 -Xfrontend -warn-long-expression-type-checking=50";
@@ -3196,7 +3198,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.4;
+				MARKETING_VERSION = 4.4.1;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo;

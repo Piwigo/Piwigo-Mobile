@@ -1,4 +1,4 @@
-• Memungkinkan membagikan album pribadi kepada orang yang tidak memiliki akun (memerlukan plugin Share Album)
-• Mengimpor Live Photos sebagai foto, video, atau keduanya
-• Meningkatkan pengelolaan pengguna Community
-• Perbaikan bug
+• Memperbaiki tata letak dalam bahasa Arab dan bahasa lain yang ditulis dari kanan ke kiri
+• Menerapkan aturan jamak setiap bahasa pada jumlah foto, album, dan tag
+• Melengkapi terjemahan bahasa Indonesia
+• Perbaikan bug dan peningkatan antarmuka

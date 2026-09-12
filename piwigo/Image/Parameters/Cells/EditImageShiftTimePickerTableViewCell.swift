@@ -48,6 +48,11 @@ class EditImageShiftTimePickerTableViewCell: UITableViewCell {
         // Initialization code
         super.awakeFromNib()
         
+        // A time is a run of digits, which the bidirectional algorithm always lays
+        // out from left to right. Hours must therefore remain on the left in
+        // right-to-left languages, as in the cell presenting that time.
+        shiftPicker.semanticContentAttribute = .forceLeftToRight
+        
         // Date picker: determine current time format: 12 or 24h
         let formatter = DateFormatter()
         formatter.locale = NSLocale.current
