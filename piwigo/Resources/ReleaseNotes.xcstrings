@@ -49,7 +49,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 1.0\n17 Oktober, 2011"
+            "value" : "Versi 1.0\n17 Oktober 2011"
           }
         },
         "it" : {
@@ -67,7 +67,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 1.0\n17 Oktober 2011"
+            "value" : "Versie 1.0\n17 oktober 2011"
           }
         },
         "pl" : {
@@ -168,7 +168,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.0\n24 April 2015\n\nNieuwe native applicatie met‎:\n - Mogelijkheid om albums te beheren\n - Bekijk je foto's\n - Bulk foto's uploaden\n - Video uploaden en afspelen ‎(VideoJS-plug-in moet zijn geïnstalleerd)"
+            "value" : "Versie 2.0\n24 april 2015\n\nNieuwe native applicatie met‎:\n - Mogelijkheid om albums te beheren\n - Bekijk je foto's\n - Bulk foto's uploaden\n - Video uploaden en afspelen ‎(VideoJS-plug-in moet zijn geïnstalleerd)"
           }
         },
         "pl" : {
@@ -270,7 +270,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.0.1\n26 Juni 2015\n\nNieuwe instellingen‎:\n - Optie om het formaat van afbeeldingen te wijzigen bij het uploaden\n   + De beeldkwaliteit is van een bereik van 50 - 98%\n - Mogelijkheid om een standaardfotovoorbeeld in te stellen\nFoutjes verbeterd"
+            "value" : "Versie 2.0.1\n26 juni 2015\n\nNieuwe instellingen‎:\n - Optie om het formaat van afbeeldingen te wijzigen bij het uploaden\n   + De beeldkwaliteit is van een bereik van 50 - 98%\n - Mogelijkheid om een standaardfotovoorbeeld in te stellen\nFoutjes verbeterd"
           }
         },
         "pl" : {
@@ -371,7 +371,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.0.2\n8 Mei 2017\n\n• Sorteercriteria zijn nu identiek aan die van de Web-app\n• Sorteerproblemen opgelost\n• Een crash verholpen die optrad bij het toevoegen van labels aan een foto vóór het uploaden\n• Verbeterde situaties waarin het verwijderen van een selectie van afbeeldingen niet werkte\n• Verbeterde situaties waarin een album niet te zien was na verplaatsing\n• Verbeterd een compatibiliteitsprobleem op iOS 10 - verouderde code"
+            "value" : "Versie 2.0.2\n8 mei 2017\n\n• Sorteercriteria zijn nu identiek aan die van de Web-app\n• Sorteerproblemen opgelost\n• Een crash verholpen die optrad bij het toevoegen van labels aan een foto vóór het uploaden\n• Verbeterde situaties waarin het verwijderen van een selectie van afbeeldingen niet werkte\n• Verbeterde situaties waarin een album niet te zien was na verplaatsing\n• Verbeterd een compatibiliteitsprobleem op iOS 10 - verouderde code"
           }
         },
         "pl" : {
@@ -424,7 +424,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 2.0.3\nMai 26, 2017\n\n• Option in den Einstellungen hinzugefügt um GPS-Metadaten zu löschen\n• Cache-Nutzung in den Einstellungen ersichtlich\n• Fehlerbehebung Cache Einstellungen wurden manchmal gelöscht/Reset\n• Fehlerbehebung Foto hochladen Einstellungen wurden manchmal gelöscht/Reset"
+            "value" : "Version 2.0.3\n26. Mai 2017\n\n• Option in den Einstellungen hinzugefügt um GPS-Metadaten zu löschen\n• Cache-Nutzung in den Einstellungen ersichtlich\n• Fehlerbehebung Cache Einstellungen wurden manchmal gelöscht/Reset\n• Fehlerbehebung Foto hochladen Einstellungen wurden manchmal gelöscht/Reset"
           }
         },
         "en" : {
@@ -472,7 +472,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.0.3\n26 Mei 2017\n\n• Optie toegevoegd om GPS-metadata te strippen op de pagina Instellingen\n• Huidige cache-gebruik toevoegen op de pagina Instellingen\n• Verbeterde cache-instellingen soms vergeten ‎/ opnieuw instellen\n• Verbeterde upload beeldinstellingen soms verloren ‎/ opnieuw instellen"
+            "value" : "Versie 2.0.3\n26 mei 2017\n\n• Optie toegevoegd om GPS-metadata te strippen op de pagina Instellingen\n• Huidige cache-gebruik toevoegen op de pagina Instellingen\n• Verbeterde cache-instellingen soms vergeten ‎/ opnieuw instellen\n• Verbeterde upload beeldinstellingen soms verloren ‎/ opnieuw instellen"
           }
         },
         "pl" : {
@@ -573,7 +573,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.0.4\n28 Juli 2017\n\n• iPad — Vage miniaturen verbeterd en de onmogelijkheid om foto's te bewerken op de iPad\n• Video's — Problemen met uploaden en downloaden verholpen ‎(VideoJS-extensie vereist op server‎)\n• Instellingen — Opties toegevoegd om titels te verwijderen en de resolutie van miniaturen te wijzigen\n• De betrouwbaarheid verbeterd van de verbinding en melding wanneer het uploaden is voltooid\n• Kleine foutjes verbeterd en verbetering van de interface"
+            "value" : "Versie 2.0.4\n28 juli 2017\n\n• iPad — Vage miniaturen verbeterd en de onmogelijkheid om foto's te bewerken op de iPad\n• Video's — Problemen met uploaden en downloaden verholpen ‎(VideoJS-extensie vereist op server‎)\n• Instellingen — Opties toegevoegd om titels te verwijderen en de resolutie van miniaturen te wijzigen\n• De betrouwbaarheid verbeterd van de verbinding en melding wanneer het uploaden is voltooid\n• Kleine foutjes verbeterd en verbetering van de interface"
           }
         },
         "pl" : {
@@ -656,7 +656,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 2.1\n14 Agustus, 2017\n\n• Kompatibilitas dengan ekstensi Community\n• Terjemahan bahasa Denmark, Prancis, dan Polandia\n• Perbaikan bug"
+            "value" : "Versi 2.1\n14 Agustus 2017\n\n• Kompatibilitas dengan ekstensi Community\n• Terjemahan bahasa Denmark, Prancis, dan Polandia\n• Perbaikan bug"
           }
         },
         "it" : {
@@ -674,7 +674,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.1\n14 Augustus 2017\n\n• Community extensie overeenstemming\n• Deense, Franse, Poolse vertalingen\n• Fouten verbeterd"
+            "value" : "Versie 2.1\n14 augustus 2017\n\n• Community extensie overeenstemming\n• Deense, Franse, Poolse vertalingen\n• Fouten verbeterd"
           }
         },
         "pl" : {
@@ -757,7 +757,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 2.1.1\n20 Agustus, 2017\n\n• Perbaikan bug yang ditemui dengan sertifikat SSL yang tidak valid\n• Perbaikan terjemahan bahasa Denmark"
+            "value" : "Versi 2.1.1\n20 Agustus 2017\n\n• Perbaikan bug yang ditemui dengan sertifikat SSL yang tidak valid\n• Perbaikan terjemahan bahasa Denmark"
           }
         },
         "it" : {
@@ -775,7 +775,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.1.1\n20 Augustus 2017\n\n• Fout verbeterd die is aangetroffen met ongeldige SSL-certificaten\n• Verbeterde Deense vertaling\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n"
+            "value" : "Versie 2.1.1\n20 augustus 2017\n\n• Fout verbeterd die is aangetroffen met ongeldige SSL-certificaten\n• Verbeterde Deense vertaling\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n"
           }
         },
         "pl" : {
@@ -858,7 +858,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 2.1.2\n7 September, 2017\n\n• Perbaikan penolakan yang ditolak dengan plugin Community versi <2.9\n• Peningkatan terjemahan\n• Pemeliharaan"
+            "value" : "Versi 2.1.2\n7 September 2017\n\n• Perbaikan penolakan yang ditolak dengan plugin Community versi <2.9\n• Peningkatan terjemahan\n• Pemeliharaan"
           }
         },
         "it" : {
@@ -876,7 +876,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.1.2\n7 September 2017\n\n• Hersteld geweigerde aanmelding met Community-plug-in-versies <2.9\n• Verbeterde vertalingen\n• Onderhoudswerkzaamheden\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n"
+            "value" : "Versie 2.1.2\n7 september 2017\n\n• Hersteld geweigerde aanmelding met Community-plug-in-versies <2.9\n• Verbeterde vertalingen\n• Onderhoudswerkzaamheden\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n"
           }
         },
         "pl" : {
@@ -959,7 +959,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 2.1.3\n19 Oktober, 2017\n\n• Penambahan pengesahan akses dasar\n• Izinkan pembatalan sambungan otomatis\n• Peningkatan antarmuka dan manajemen unggah\n• Peningkatan terjemahan dan kompatibilitas iOS 11\n• Perbaikan bug yang ditemui dengan filter \"Tidak diunggah\"\n• Kode modernisasi"
+            "value" : "Versi 2.1.3\n19 Oktober 2017\n\n• Penambahan pengesahan akses dasar\n• Izinkan pembatalan sambungan otomatis\n• Peningkatan antarmuka dan manajemen unggah\n• Peningkatan terjemahan dan kompatibilitas iOS 11\n• Perbaikan bug yang ditemui dengan filter \"Tidak diunggah\"\n• Kode modernisasi"
           }
         },
         "it" : {
@@ -977,7 +977,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.1.3\nOktober 19, 2017\n\n• Toegevoegd basistoegangsauthenticatie\n• Toestaan dat de automatische verbinding wordt geannuleerd\n• Verbetering interface- en uploadbeheer\n• Verbetering vertalingen en iOS 11-compatibiliteit\n• Fout verbeterd die is aangetroffen met het filter \"Niet geüpload\"\n• Code modernisering\n________________________________________\n\n"
+            "value" : "Versie 2.1.3\n19 oktober 2017\n\n• Toegevoegd basistoegangsauthenticatie\n• Toestaan dat de automatische verbinding wordt geannuleerd\n• Verbetering interface- en uploadbeheer\n• Verbetering vertalingen en iOS 11-compatibiliteit\n• Fout verbeterd die is aangetroffen met het filter \"Niet geüpload\"\n• Code modernisering\n________________________________________\n\n"
           }
         },
         "pl" : {
@@ -1060,7 +1060,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 2.1.4\n31 Oktober, 2017\n\n• Terjemahan bahasa Swedia\n• Perbaikan bug"
+            "value" : "Versi 2.1.4\n31 Oktober 2017\n\n• Terjemahan bahasa Swedia\n• Perbaikan bug"
           }
         },
         "it" : {
@@ -1078,7 +1078,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.1.4\n31 Oktober 2017\n\n• Zweedse vertaling\n• Foutjes verbeterd"
+            "value" : "Versie 2.1.4\n31 oktober 2017\n\n• Zweedse vertaling\n• Foutjes verbeterd"
           }
         },
         "pl" : {
@@ -1179,7 +1179,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.1.5\n21 December 2017\n\n• Toegevoegd mogelijkheid om uploads te annuleren\n• Optie toegevoegd om foto's te verwijderen na het uploaden\n• Compatibiliteit toegevoegd met Optimize Storage (iCloud)\n• Bewaar, waar mogelijk, het beeldformaat na het wijzigen van de afmetingen \n• Deense en Indonesische vertalingen\n• Verbeterd: PNG-formaat vervangen door JPEG vóór uploaden\n• Verbeterd: PNG-formaat vervangen door JPEG vóór uploaden\n• Problemen verholpen die zijn aangetroffen met iOS 11 en iPhone X\n• Kleine bugs verbeterd\n• Codemodernisering"
+            "value" : "Versie 2.1.5\n21 december 2017\n\n• Toegevoegd mogelijkheid om uploads te annuleren\n• Optie toegevoegd om foto's te verwijderen na het uploaden\n• Compatibiliteit toegevoegd met Optimize Storage (iCloud)\n• Bewaar, waar mogelijk, het beeldformaat na het wijzigen van de afmetingen \n• Deense en Indonesische vertalingen\n• Verbeterd: PNG-formaat vervangen door JPEG vóór uploaden\n• Verbeterd: PNG-formaat vervangen door JPEG vóór uploaden\n• Problemen verholpen die zijn aangetroffen met iOS 11 en iPhone X\n• Kleine bugs verbeterd\n• Codemodernisering"
           }
         },
         "pl" : {
@@ -1280,7 +1280,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.1.6\n7 Januari 2018\n\n• Arabische vertaling\n• Verbeterd HTTP-basistoegangsverificatiebeheer\n• Kleine foutjes verbeterd en verbetering van de interface"
+            "value" : "Versie 2.1.6\n7 januari 2018\n\n• Arabische vertaling\n• Verbeterd HTTP-basistoegangsverificatiebeheer\n• Kleine foutjes verbeterd en verbetering van de interface"
           }
         },
         "pl" : {
@@ -1482,7 +1482,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.1.8\n29 April 2018\n\n• Voegt de mogelijkheid toe om de grootte van miniaturen te wijzigen\n• HTTPS wordt het standaardprotocol\n• Japanse vertaling\n• Kleine foutjes verbeterd en verbetering van de interface"
+            "value" : "Versie 2.1.8\n29 april 2018\n\n• Voegt de mogelijkheid toe om de grootte van miniaturen te wijzigen\n• HTTPS wordt het standaardprotocol\n• Japanse vertaling\n• Kleine foutjes verbeterd en verbetering van de interface"
           }
         },
         "pl" : {
@@ -1583,7 +1583,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.1.9\n14 Mei 2018\n\n• Foutjes verbeterd"
+            "value" : "Versie 2.1.9\n14 mei 2018\n\n• Foutjes verbeterd"
           }
         },
         "pl" : {
@@ -1684,7 +1684,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.2\n12 Juli 2018\n\n• Sub-album creaties vanuit elk album\n• Verbeterd beheer met het standaard album\n• Verbeterde albums presentatie op iPad (en iPhone)\n• Constatering van veranderingen van de Foto Bibliotheek\n• Kleine foutjes verbeterd en verbetering van de interface"
+            "value" : "Versie 2.2\n12 juli 2018\n\n• Sub-album creaties vanuit elk album\n• Verbeterd beheer met het standaard album\n• Verbeterde albums presentatie op iPad (en iPhone)\n• Constatering van veranderingen van de Foto Bibliotheek\n• Kleine foutjes verbeterd en verbetering van de interface"
           }
         },
         "pl" : {
@@ -1785,7 +1785,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.2.1\n25 Juli 2018\n\n• Kleine foutjes gerepareerd en verbetering van de interface"
+            "value" : "Versie 2.2.1\n25 juli 2018\n\n• Kleine foutjes gerepareerd en verbetering van de interface"
           }
         },
         "pl" : {
@@ -1868,7 +1868,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 2.2.2\n14 Agustus, 2018\n\n• Salin dan pindahkan gambar antar album\n• Perbaikan bug minor dan perbaikan antarmuka"
+            "value" : "Versi 2.2.2\n14 Agustus 2018\n\n• Salin dan pindahkan gambar antar album\n• Perbaikan bug minor dan perbaikan antarmuka"
           }
         },
         "it" : {
@@ -1886,7 +1886,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.2.2\n14 Augustus 2018\n\n• Kopieer en verplaats foto's naar de albums\n• Kleine foutjes gerepareerd en verbetering van de interface"
+            "value" : "Versie 2.2.2\n14 augustus 2018\n\n• Kopieer en verplaats foto's naar de albums\n• Kleine foutjes gerepareerd en verbetering van de interface"
           }
         },
         "pl" : {
@@ -1969,7 +1969,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 2.2.3\n27 Agustus, 2018\n\n• Desain album baru\n• Perbaikan bug minor dan perbaikan antarmuka"
+            "value" : "Versi 2.2.3\n27 Agustus 2018\n\n• Desain album baru\n• Perbaikan bug minor dan perbaikan antarmuka"
           }
         },
         "it" : {
@@ -1987,7 +1987,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.2.3\n27 Augustus 2018\n\n• Nieuw albumontwerp\n• Kleine foutjes gerepareerd en verbetering van de interface"
+            "value" : "Versie 2.2.3\n27 augustus 2018\n\n• Nieuw albumontwerp\n• Kleine foutjes gerepareerd en verbetering van de interface"
           }
         },
         "pl" : {
@@ -2070,7 +2070,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 2.2.4\n23 September, 2018\n\n• Perbaikan bug"
+            "value" : "Versi 2.2.4\n23 September 2018\n\n• Perbaikan bug"
           }
         },
         "it" : {
@@ -2088,7 +2088,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.2.4\n23 September 2018\n\n• Foutjes verbeterd"
+            "value" : "Versie 2.2.4\n23 september 2018\n\n• Foutjes verbeterd"
           }
         },
         "pl" : {
@@ -2171,7 +2171,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 2.2.5\n28 Oktober, 2018\n\n• Kirimi kami umpan balik melalui email\n• Rahasia pribadi\n• Perbaikan bug"
+            "value" : "Versi 2.2.5\n28 Oktober 2018\n\n• Kirimi kami umpan balik melalui email\n• Rahasia pribadi\n• Perbaikan bug"
           }
         },
         "it" : {
@@ -2189,7 +2189,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.2.5\n28 Oktober 2018\n\n• Stuur ons feedback per e-mail\n• Privacybeleid\n• Foutjes verbeterd"
+            "value" : "Versie 2.2.5\n28 oktober 2018\n\n• Stuur ons feedback per e-mail\n• Privacybeleid\n• Foutjes verbeterd"
           }
         },
         "pl" : {
@@ -2290,7 +2290,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.2.6\n20 December 2018\n\n• Verbetering vertalingen en iOS 12-compatibiliteit\n• Kleine foutjes verbeterd en verbetering van de interface\n• Italiaanse vertaling"
+            "value" : "Versie 2.2.6\n20 december 2018\n\n• Verbetering vertalingen en iOS 12-compatibiliteit\n• Kleine foutjes verbeterd en verbetering van de interface\n• Italiaanse vertaling"
           }
         },
         "pl" : {
@@ -2391,7 +2391,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.2.7\n29 December 2018\n\n• Kleine foutjes verbeterd en verbetering van de interface\n• Betere vertalingen"
+            "value" : "Versie 2.2.7\n29 december 2018\n\n• Kleine foutjes verbeterd en verbetering van de interface\n• Betere vertalingen"
           }
         },
         "pl" : {
@@ -2777,7 +2777,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 2.3.3\n10 April 2018\n\n• Perbaikan bug minor dan perbaikan antarmuka"
+            "value" : "Versi 2.3.3\n10 April 2019\n\n• Perbaikan bug minor dan perbaikan antarmuka"
           }
         },
         "it" : {
@@ -2896,7 +2896,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.3.4\n1 Mei 2019\n\n• Verbeterde albums presentatie op iPad (en iPhone)\n• Kleine foutjes gerepareerd en verbetering van de interface"
+            "value" : "Versie 2.3.4\n1 mei 2019\n\n• Verbeterde albums presentatie op iPad (en iPhone)\n• Kleine foutjes gerepareerd en verbetering van de interface"
           }
         },
         "pl" : {
@@ -2997,7 +2997,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.3.5\n6 Juni 2019\n\n• Een crash verhelpen die soms optreedt bij het bewerken van het serveradres na het afmelden"
+            "value" : "Versie 2.3.5\n6 juni 2019\n\n• Een crash verhelpen die soms optreedt bij het bewerken van het serveradres na het afmelden"
           }
         },
         "pl" : {
@@ -3098,7 +3098,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.4\n15 Juli 2019\n\n• Voegt een zoekfunctie toe (vereist iOS 11 of hoger)\n• Voegt beeldsortering toe op scorewaarde\n• Sneller downloaden van albumminiaturen (vereist Piwigo 2.8 of hoger)\n• Titels van geüploade afbeeldingen veranderen niet meer standaard in bestandsnamen\n• Lost onmogelijkheid op om tags te verwijderen\n• Corrigeert in sommige omstandigheden onnauwkeurige afbeeldingsgegevens"
+            "value" : "Versie 2.4\n15 juli 2019\n\n• Voegt een zoekfunctie toe (vereist iOS 11 of hoger)\n• Voegt beeldsortering toe op scorewaarde\n• Sneller downloaden van albumminiaturen (vereist Piwigo 2.8 of hoger)\n• Titels van geüploade afbeeldingen veranderen niet meer standaard in bestandsnamen\n• Lost onmogelijkheid op om tags te verwijderen\n• Corrigeert in sommige omstandigheden onnauwkeurige afbeeldingsgegevens"
           }
         },
         "pl" : {
@@ -3181,7 +3181,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 2.4.1\n10 Agustus, 2019\n\n• Menambahkan album \"Tag\", \"Paling sering dikunjungi\", \"Nilai terbaik\" dan \"Foto terbaru\"\n• Perbaikan bug minor dan perbaikan antarmuka"
+            "value" : "Versi 2.4.1\n10 Agustus 2019\n\n• Menambahkan album \"Tag\", \"Paling sering dikunjungi\", \"Nilai terbaik\" dan \"Foto terbaru\"\n• Perbaikan bug minor dan perbaikan antarmuka"
           }
         },
         "it" : {
@@ -3300,7 +3300,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.4.2\n3 September 2019\n\n• Voegt de mogelijkheid om labels te maken toe (alleen voor admin gebruikers)\n• Voegt de mogelijkheid om de grootte van de album-miniaturen te veranderen\n• Voegt Retina beeldscherm-management toe\n• Kleine foutjes hersteld en verbetering van de interface"
+            "value" : "Versie 2.4.2\n3 september 2019\n\n• Voegt de mogelijkheid om labels te maken toe (alleen voor admin gebruikers)\n• Voegt de mogelijkheid om de grootte van de album-miniaturen te veranderen\n• Voegt Retina beeldscherm-management toe\n• Kleine foutjes hersteld en verbetering van de interface"
           }
         },
         "pl" : {
@@ -3401,7 +3401,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.4.3\n25 September 2019\n\n• iOS 13-compatibiliteit\n• Kleine foutjes hersteld en verbetering van de interface"
+            "value" : "Versie 2.4.3\n25 september 2019\n\n• iOS 13-compatibiliteit\n• Kleine foutjes hersteld en verbetering van de interface"
           }
         },
         "pl" : {
@@ -3484,7 +3484,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 2.4.4\n1 Oktober, 2019\n\n• Perbaiki masalah upload video di beberapa server\n• Perbaikan bug minor dan perbaikan antarmuka"
+            "value" : "Version 2.4.4\n1 Oktober 2019\n\n• Perbaiki masalah upload video di beberapa server\n• Perbaikan bug minor dan perbaikan antarmuka"
           }
         },
         "it" : {
@@ -3502,7 +3502,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.4.4\n1 Oktober 2019\n\n• Problemen met video-uploads op sommige servers oplossen\n• Kleine foutjes hersteld en verbetering van de interface"
+            "value" : "Versie 2.4.4\n1 oktober 2019\n\n• Problemen met video-uploads op sommige servers oplossen\n• Kleine foutjes hersteld en verbetering van de interface"
           }
         },
         "pl" : {
@@ -3603,7 +3603,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.4.5\n6 November 2019\n\n• Toont uw favoriete afbeeldingen (vereist Piwigo 2.10 of hoger)\n• Optie voor het handmatig presenteren van afbeeldingen\n• Hiermee kunnen Community gebruikers albums maken (met de juiste rechten)\n• Kleine foutjes hersteld en verbetering van de interface"
+            "value" : "Versie 2.4.5\n6 november 2019\n\n• Toont uw favoriete afbeeldingen (vereist Piwigo 2.10 of hoger)\n• Optie voor het handmatig presenteren van afbeeldingen\n• Hiermee kunnen Community gebruikers albums maken (met de juiste rechten)\n• Kleine foutjes hersteld en verbetering van de interface"
           }
         },
         "pl" : {
@@ -4108,7 +4108,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.5.1\n10 September 2020\n\n• Nieuwe optie voor het presenteren van foto's en video's in willekeurige volgorde\n• Kleine foutjes verbeterd en verbetering van de interface"
+            "value" : "Versie 2.5.1\n10 september 2020\n\n• Nieuwe optie voor het presenteren van foto's en video's in willekeurige volgorde\n• Kleine foutjes verbeterd en verbetering van de interface"
           }
         },
         "pl" : {
@@ -4209,7 +4209,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.5.2\n3 December 2020\n\n• Achtergrond uploaden (vereist de uploadAsync-extensie of Piwigo 11 of hoger)\n• Kleine foutjes gerepareerd en verbetering van de interface"
+            "value" : "Versie 2.5.2\n3 december 2020\n\n• Achtergrond uploaden (vereist de uploadAsync-extensie of Piwigo 11 of hoger)\n• Kleine foutjes gerepareerd en verbetering van de interface"
           }
         },
         "pl" : {
@@ -4310,7 +4310,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.5.3\n21 December 2020\n\n• Bepaal welke foto's en video's Piwigo toegang hebben tot\n• Tips en trucs voor een betere exploitatie van de app\n• Foutjes verbeterd"
+            "value" : "Versie 2.5.3\n21 december 2020\n\n• Bepaal welke foto's en video's Piwigo toegang hebben tot\n• Tips en trucs voor een betere exploitatie van de app\n• Foutjes verbeterd"
           }
         },
         "pl" : {
@@ -5421,7 +5421,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.8.1\n9 November 2021\n\n• Foutjes verbeterd"
+            "value" : "Versie 2.8.1\n9 november 2021\n\n• Foutjes verbeterd"
           }
         },
         "pl" : {
@@ -5522,7 +5522,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.8.2\n26 November 2021\n\n• Maakt het mogelijk voor gebruikers van de community om op de achtergrond te uploaden en automatisch foto's en video's te uploaden\n• Een compatibiliteitsprobleem met Piwigo 12\n• Kleine foutjes verbeterd en verbetering van de interface"
+            "value" : "Versie 2.8.2\n26 november 2021\n\n• Maakt het mogelijk voor gebruikers van de community om op de achtergrond te uploaden en automatisch foto's en video's te uploaden\n• Een compatibiliteitsprobleem met Piwigo 12\n• Kleine foutjes verbeterd en verbetering van de interface"
           }
         },
         "pl" : {
@@ -6431,7 +6431,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.12.3\n7 augustus 2022\n\n• Foutjes verbeterd"
+            "value" : "Versie 2.12.3\n12 juni 2022\n\n• Foutjes verbeterd"
           }
         },
         "pl" : {
@@ -6918,7 +6918,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 2.12.3\n7 Agustus, 2022\n\n• Perbaikan bug"
+            "value" : "Versi 2.12.3\n7 Agustus 2022\n\n• Perbaikan bug"
           }
         },
         "it" : {
@@ -7019,7 +7019,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 2.12.4\n16 Agustus, 2022\n\n• Perbaikan bug"
+            "value" : "Versi 2.12.4\n16 Agustus 2022\n\n• Perbaikan bug"
           }
         },
         "it" : {
@@ -7239,7 +7239,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.12.6\n21 November 2022\n\n• Foutjes verbeterd"
+            "value" : "Versie 2.12.6\n21 november 2022\n\n• Foutjes verbeterd"
           }
         },
         "pl" : {
@@ -7340,7 +7340,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 2.12.7\n19 December 2022\n\n• Foutjes verbeterd"
+            "value" : "Versie 2.12.7\n19 december 2022\n\n• Foutjes verbeterd"
           }
         },
         "pl" : {
@@ -7744,7 +7744,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 3.1\n20 November 2023\n\n• Veeg naar beneden of zet de afbeelding om terug te keren naar het album bij het bekijken van individuele foto's of video's\n• Bekijk een video die is opgeslagen op uw Piwigo terwijl u andere apps gebruikt.\n• Foutjes verbeterd"
+            "value" : "Versie 3.1\n20 november 2023\n\n• Veeg naar beneden of zet de afbeelding om terug te keren naar het album bij het bekijken van individuele foto's of video's\n• Bekijk een video die is opgeslagen op uw Piwigo terwijl u andere apps gebruikt.\n• Foutjes verbeterd"
           }
         },
         "pl" : {
@@ -7845,7 +7845,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 3.1.1\n1 December 2023\n\n• Serverstatistieken bijwerken (vereist Piwigo 14)\n• Foutjes verbeterd"
+            "value" : "Versie 3.1.1\n1 december 2023\n\n• Serverstatistieken bijwerken (vereist Piwigo 14)\n• Foutjes verbeterd"
           }
         },
         "pl" : {
@@ -9562,7 +9562,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 4.0\n15 September 2025\n\n• iOS 26-compatibiliteit\n• Kleine foutjes hersteld en verbetering van de interface"
+            "value" : "Versie 4.0\n15 september 2025\n\n• iOS 26-compatibiliteit\n• Kleine foutjes hersteld en verbetering van de interface"
           }
         },
         "pl" : {
@@ -9764,7 +9764,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 4.1.1\n11 November 2025\n\n• Lost bugs op en verbetert de interface"
+            "value" : "Versie 4.1.1\n11 november 2025\n\n• Lost bugs op en verbetert de interface"
           }
         },
         "pl" : {
@@ -9865,7 +9865,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 4.1.2\n12 December 2025\n\n• Ondersteuning voor API-sleutels toegevoegd\n• Bugs verholpen en interface verbeterd\n• Codemodernisering"
+            "value" : "Versie 4.1.2\n12 december 2025\n\n• Ondersteuning voor API-sleutels toegevoegd\n• Bugs verholpen en interface verbeterd\n• Codemodernisering"
           }
         },
         "pl" : {
@@ -10120,7 +10120,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.2\nMai 1, 2026\n\n• Schnelleres Hochladen und erweiterte Upload-Optionen\n• Fortsetzung des Uploads im Hintergrund, nachdem zu einer anderen App gewechselt wurde\n• Schnellere Anzeige der auf dem Gerät gespeicherten Alben vor dem Hochladen\n• Freigabe der Protokolle als Datei über AirDrop und Gruppierung nach Millisekunden\n• Fehlerbehebungen und Verbesserungen der Benutzeroberfläche"
+            "value" : "Version 4.2\n1. Mai 2026\n\n• Schnelleres Hochladen und erweiterte Upload-Optionen\n• Fortsetzung des Uploads im Hintergrund, nachdem zu einer anderen App gewechselt wurde\n• Schnellere Anzeige der auf dem Gerät gespeicherten Alben vor dem Hochladen\n• Freigabe der Protokolle als Datei über AirDrop und Gruppierung nach Millisekunden\n• Fehlerbehebungen und Verbesserungen der Benutzeroberfläche"
           }
         },
         "en" : {
@@ -10168,7 +10168,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 4.2\n1 Mei 2026\n\n• Upload sneller en biedt geavanceerde uploadopties\n• Zet uploads op de achtergrond voort nadat je naar een andere app bent overgeschakeld\n• Versnelt het weergeven van albums die op het apparaat zijn opgeslagen vóór het uploaden\n• Deelt logbestanden via AirDrop en groepeert ze per milliseconde\n• Lost bugs op en verbetert de interface"
+            "value" : "Versie 4.2\n1 mei 2026\n\n• Upload sneller en biedt geavanceerde uploadopties\n• Zet uploads op de achtergrond voort nadat je naar een andere app bent overgeschakeld\n• Versnelt het weergeven van albums die op het apparaat zijn opgeslagen vóór het uploaden\n• Deelt logbestanden via AirDrop en groepeert ze per milliseconde\n• Lost bugs op en verbetert de interface"
           }
         },
         "pl" : {
@@ -10221,7 +10221,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.2.1\nMai 9, 2026\n\n• Hilfeansichten hinzugefügt\n• Fehlerbehebungen"
+            "value" : "Version 4.2.1\n9. Mai 2026\n\n• Hilfeansichten hinzugefügt\n• Fehlerbehebungen"
           }
         },
         "en" : {
@@ -10269,7 +10269,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 4.2.1\n9 Mei 2026\n\n• Voeg help views toe\n• Foutjes verbeterd"
+            "value" : "Versie 4.2.1\n9 mei 2026\n\n• Voeg help views toe\n• Foutjes verbeterd"
           }
         },
         "pl" : {
@@ -10322,7 +10322,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.2.2\nMai 24, 2026\n\n• Fehler behoben im Zusammenhang mit der Auto-Upload Option\n• Verbesserte Übersetzungen"
+            "value" : "Version 4.2.2\n24. Mai 2026\n\n• Fehler behoben im Zusammenhang mit der Auto-Upload Option\n• Verbesserte Übersetzungen"
           }
         },
         "en" : {
@@ -10370,7 +10370,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 4.2.2\n24 Mei 2026\n\n• Een bug met betrekking tot de auto-upload optie\n• Verbeterde vertalingen"
+            "value" : "Versie 4.2.2\n24 mei 2026\n\n• Een bug met betrekking tot de auto-upload optie\n• Verbeterde vertalingen"
           }
         },
         "pl" : {
@@ -10423,7 +10423,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.2.3\nMai 29, 2026\n\n• Behebt Fehler und verbessert die Benutzeroberfläche\n• Unterbricht den Upload, wenn das Gerät abkühlen muss"
+            "value" : "Version 4.2.3\n29. Mai 2026\n\n• Behebt Fehler und verbessert die Benutzeroberfläche\n• Unterbricht den Upload, wenn das Gerät abkühlen muss"
           }
         },
         "en" : {
@@ -10471,7 +10471,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 4.2.3\n29 Mei 2026\n\n• Lost bugs op en verbetert de interface\n• Onderbreekt het uploaden wanneer het apparaat moet afkoelen"
+            "value" : "Versie 4.2.3\n29 mei 2026\n\n• Lost bugs op en verbetert de interface\n• Onderbreekt het uploaden wanneer het apparaat moet afkoelen"
           }
         },
         "pl" : {
@@ -10655,7 +10655,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 4.3\n1 Agustus, 2026\n\n• Menambahkan ekstensi Bagikan yang memungkinkan pengguna mengunggah foto, video, dan berkas PDF dari aplikasi lain\n• Memutar gambar GIF animasi\n• Memperbaiki bug dan meningkatkan antarmuka"
+            "value" : "Versi 4.3\n1 Agustus 2026\n\n• Menambahkan ekstensi Bagikan yang memungkinkan pengguna mengunggah foto, video, dan berkas PDF dari aplikasi lain\n• Memutar gambar GIF animasi\n• Memperbaiki bug dan meningkatkan antarmuka"
           }
         },
         "it" : {
@@ -10673,7 +10673,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 4.3\n1 Augustus 2026\n\n• Er is een ‘Delen’-extensie toegevoegd waarmee je foto’s, video’s en PDF-bestanden vanuit andere apps kunt uploaden\n• Speelt geanimeerde GIF-afbeeldingen af\n• Verhelpt bugs en verbetert de interface"
+            "value" : "Versie 4.3\n1 augustus 2026\n\n• Er is een ‘Delen’-extensie toegevoegd waarmee je foto’s, video’s en PDF-bestanden vanuit andere apps kunt uploaden\n• Speelt geanimeerde GIF-afbeeldingen af\n• Verhelpt bugs en verbetert de interface"
           }
         },
         "pl" : {
@@ -10815,97 +10815,97 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الإصدار 4.4\n\n• مشاركة الألبومات الخاصة مع أشخاص ليس لديهم حساب (يتطلب ملحق Share Album)\n• استيراد الصور الحية كصورة أو فيديو أو كليهما\n• تحسين إدارة مستخدمي Community\n• إصلاح الأخطاء"
+            "value" : "الإصدار 4.4\n7 سبتمبر 2026\n\n• مشاركة الألبومات الخاصة مع أشخاص ليس لديهم حساب (يتطلب ملحق Share Album)\n• استيراد الصور الحية كصورة أو فيديو أو كليهما\n• تحسين إدارة مستخدمي Community\n• إصلاح الأخطاء"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.4\n\n• Gør det muligt at dele private album med personer, der ikke har en konto (kræver Share Album-pluginnet)\n• Importerer Live Photos som foto, video eller begge\n• Forbedrer administrationen af Community-brugere\n• Fejlrettelser"
+            "value" : "Version 4.4\n7 september 2026\n\n• Gør det muligt at dele private album med personer, der ikke har en konto (kræver Share Album-pluginnet)\n• Importerer Live Photos som foto, video eller begge\n• Forbedrer administrationen af Community-brugere\n• Fejlrettelser"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.4\n\n• Ermöglicht das Teilen privater Alben mit Personen ohne Konto (erfordert das Share Album Plugin)\n• Importiert Live Photos als Foto, Video oder beides\n• Verbessert die Verwaltung von Community-Benutzern\n• Fehlerbehebungen"
+            "value" : "Version 4.4\n7. September 2026\n\n• Ermöglicht das Teilen privater Alben mit Personen ohne Konto (erfordert das Share Album Plugin)\n• Importiert Live Photos als Foto, Video oder beides\n• Verbessert die Verwaltung von Community-Benutzern\n• Fehlerbehebungen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.4\n\n• Allows to share private albums with people who do not have an account (requires the Share Album plugin)\n• Imports Live Photos as photo, video or both\n• Improves Community user management\n• Bug fixes"
+            "value" : "Version 4.4\nSeptember 7, 2026\n\n• Allows to share private albums with people who do not have an account (requires the Share Album plugin)\n• Imports Live Photos as photo, video or both\n• Improves Community user management\n• Bug fixes"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versión 4.4\n\n• Permite compartir álbumes privados con personas que no tengan una cuenta (requiere el plugin Share Album)\n• Importa las Live Photos como foto, vídeo o ambos\n• Mejora la gestión de los usuarios de Community\n• Corrección de errores"
+            "value" : "Versión 4.4\n7 de septiembre de 2026\n\n• Permite compartir álbumes privados con personas que no tengan una cuenta (requiere el plugin Share Album)\n• Importa las Live Photos como foto, vídeo o ambos\n• Mejora la gestión de los usuarios de Community\n• Corrección de errores"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.4\n\n• Partage d'albums privés avec des personnes qui n'ont pas de compte (nécessite le plugin Share Album)\n• Import des Live Photos en tant que photo, vidéo ou les deux\n• Amélioration de la gestion des utilisateurs Community\n• Correction de bugs"
+            "value" : "Version 4.4\n7 septembre 2026\n\n• Partage d'albums privés avec des personnes qui n'ont pas de compte (nécessite le plugin Share Album)\n• Import des Live Photos en tant que photo, vidéo ou les deux\n• Amélioration de la gestion des utilisateurs Community\n• Correction de bugs"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4.4-es verzió\n\n• Privát albumok megosztása olyanokkal, akiknek nincs fiókjuk (a Share Album beépülő modult igényli)\n• Live Photók importálása fotóként, videóként vagy mindkettőként\n• A Community felhasználók kezelésének fejlesztése\n• Hibajavítások"
+            "value" : "4.4-es verzió\n2026 Szeptember 7\n\n• Privát albumok megosztása olyanokkal, akiknek nincs fiókjuk (a Share Album beépülő modult igényli)\n• Live Photók importálása fotóként, videóként vagy mindkettőként\n• A Community felhasználók kezelésének fejlesztése\n• Hibajavítások"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 4.4\n\n• Memungkinkan membagikan album pribadi kepada orang yang tidak memiliki akun (memerlukan plugin Share Album)\n• Mengimpor Live Photos sebagai foto, video, atau keduanya\n• Meningkatkan pengelolaan pengguna Community\n• Perbaikan bug"
+            "value" : "Versi 4.4\n7 September 2026\n\n• Memungkinkan membagikan album pribadi kepada orang yang tidak memiliki akun (memerlukan plugin Share Album)\n• Mengimpor Live Photos sebagai foto, video, atau keduanya\n• Meningkatkan pengelolaan pengguna Community\n• Perbaikan bug"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versione 4.4\n\n• Consente di condividere album privati con chi non ha un account (richiede il plugin Share Album)\n• Importa le Live Photo come foto, video o entrambi\n• Migliora la gestione degli utenti Community\n• Correzioni di bug"
+            "value" : "Versione 4.4\n7 settembre 2026\n\n• Consente di condividere album privati con chi non ha un account (richiede il plugin Share Album)\n• Importa le Live Photo come foto, video o entrambi\n• Migliora la gestione degli utenti Community\n• Correzioni di bug"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "バージョン 4.4\n\n• アカウントを持たない人と非公開アルバムを共有できるようになりました（Share Album プラグインが必要）\n• Live Photos を写真、動画、またはその両方としてインポート\n• Community ユーザー管理の改善\n• バグの修正"
+            "value" : "バージョン 4.4\n2026年9月7日\n\n• アカウントを持たない人と非公開アルバムを共有できるようになりました（Share Album プラグインが必要）\n• Live Photos を写真、動画、またはその両方としてインポート\n• Community ユーザー管理の改善\n• バグの修正"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 4.4\n\n• Maakt het mogelijk privéalbums te delen met personen die geen account hebben (vereist de Share Album plugin)\n• Importeert Live Photos als foto, video of beide\n• Verbetert het beheer van Community-gebruikers\n• Foutjes verbeterd"
+            "value" : "Versie 4.4\n7 september 2026\n\n• Maakt het mogelijk privéalbums te delen met personen die geen account hebben (vereist de Share Album plugin)\n• Importeert Live Photos als foto, video of beide\n• Verbetert het beheer van Community-gebruikers\n• Foutjes verbeterd"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wersja 4.4\n\n• Umożliwia udostępnianie albumów prywatnych osobom, które nie mają konta (wymaga wtyczki Share Album)\n• Importuje zdjęcia Live Photo jako zdjęcie, film lub oba\n• Ulepszono zarządzanie użytkownikami Community\n• Poprawki błędów"
+            "value" : "Wersja 4.4\n7 września 2026\n\n• Umożliwia udostępnianie albumów prywatnych osobom, które nie mają konta (wymaga wtyczki Share Album)\n• Importuje zdjęcia Live Photo jako zdjęcie, film lub oba\n• Ulepszono zarządzanie użytkownikami Community\n• Poprawki błędów"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Версия 4.4\n\n• Возможность делиться приватными альбомами с теми, у кого нет учётной записи (требуется плагин Share Album)\n• Импорт Live Photo как фото, видео или того и другого\n• Улучшено управление пользователями Community\n• Исправления ошибок"
+            "value" : "Версия 4.4\n7 сентября 2026\n\n• Возможность делиться приватными альбомами с теми, у кого нет учётной записи (требуется плагин Share Album)\n• Импорт Live Photo как фото, видео или того и другого\n• Улучшено управление пользователями Community\n• Исправления ошибок"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.4\n\n• Gör det möjligt att dela privata album med personer som inte har ett konto (kräver Share Album-plugin)\n• Importerar Live Photo-bilder som foto, video eller båda\n• Förbättrar hanteringen av Community-användare\n• Buggfixar"
+            "value" : "Version 4.4\n7 september 2026\n\n• Gör det möjligt att dela privata album med personer som inte har ett konto (kräver Share Album-plugin)\n• Importerar Live Photo-bilder som foto, video eller båda\n• Förbättrar hanteringen av Community-användare\n• Buggfixar"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "版本 4.4\n\n• 支持与没有账户的人共享私密相册（需要 Share Album 插件）\n• 可将实况照片导入为照片、视频或两者\n• 改进 Community 用户管理\n• 错误修复"
+            "value" : "版本 4.4\n2026年9月7日\n\n• 支持与没有账户的人共享私密相册（需要 Share Album 插件）\n• 可将实况照片导入为照片、视频或两者\n• 改进 Community 用户管理\n• 错误修复"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "版本 4.4\n\n• 可與沒有帳號的人分享私人相簿（需要「Share Album」外掛程式）\n• 將原況照片匯入為照片、影片或兩者\n• 改善 Community 使用者管理\n• 錯誤修正"
+            "value" : "版本 4.4\n2026年9月7日\n\n• 可與沒有帳號的人分享私人相簿（需要「Share Album」外掛程式）\n• 將原況照片匯入為照片、影片或兩者\n• 改善 Community 使用者管理\n• 錯誤修正"
           }
         }
       }
