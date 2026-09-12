@@ -54,7 +54,7 @@ extension AlbumViewController
         copyVC.userData = userData
         if copyVC.setInput(parameter: parameter, for: .copyImages) {
             copyVC.delegate = self              // To re-enable toolbar
-            pushView(copyVC)
+            pushView(copyVC, forButton: actionBarButton)
         }
     }
 
@@ -66,7 +66,7 @@ extension AlbumViewController
         moveVC.userData = userData
         if moveVC.setInput(parameter: parameter, for: .moveImages) {
             moveVC.delegate = self              // To re-enable toolbar
-            pushView(moveVC)
+            pushView(moveVC, forButton: actionBarButton)
         }
     }
 }

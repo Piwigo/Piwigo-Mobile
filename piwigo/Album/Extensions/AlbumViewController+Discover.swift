@@ -153,7 +153,7 @@ extension AlbumViewController
         else { preconditionFailure("Could not load TagSelectorViewController") }
         tagSelectorVC.userData = userData
         tagSelectorVC.tagSelectedDelegate = self
-        pushView(tagSelectorVC)
+        pushView(tagSelectorVC, forButton: discoverBarButton)
     }
 }
 
