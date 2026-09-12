@@ -10909,6 +10909,107 @@
           }
         }
       }
+    },
+    "v4.4.1_text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإصدار 4.4.1\n\n• تصحيح التخطيط في العربية وغيرها من اللغات التي تُكتب من اليمين إلى اليسار\n• تطبيق قواعد الجمع الخاصة بكل لغة على أعداد الصور والألبومات والعلامات\n• استكمال الترجمة الإندونيسية\n• إصلاح الأخطاء وتحسين الواجهة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.4.1\n\n• Retter layoutet på arabisk og andre sprog der skrives fra højre mod venstre\n• Anvender hvert sprogs flertalsregler på antallet af billeder, album og tags\n• Fuldender den indonesiske oversættelse\n• Retter fejl og forbedrer brugerfladen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.4.1\n\n• Korrigiert das Layout in Arabisch und anderen von rechts nach links geschriebenen Sprachen\n• Wendet die Pluralregeln jeder Sprache auf die Anzahl der Fotos, Alben und Tags an\n• Vervollständigt die indonesische Übersetzung\n• Behebt Fehler und verbessert die Benutzeroberfläche"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.4.1\n\n• Corrects the layout in Arabic and other right-to-left languages\n• Applies the plural rules of each language to photo, album and tag counts\n• Completes the Indonesian translation\n• Fixes bugs and improves the interface"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión 4.4.1\n\n• Corrige el diseño en árabe y otros idiomas que se escriben de derecha a izquierda\n• Aplica las reglas de plural de cada idioma a los recuentos de fotos, álbumes y etiquetas\n• Completa la traducción al indonesio\n• Corrige errores y mejora la interfaz"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.4.1\n\n• Corrige la mise en page en arabe et dans les autres langues écrites de droite à gauche\n• Applique les règles de pluriel de chaque langue aux nombres de photos, d'albums et de tags\n• Complète la traduction en indonésien\n• Corrige des bugs et améliore l'interface"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4.4.1-es verzió\n\n• Javítja az elrendezést arab és más, jobbról balra író nyelveken\n• Az egyes nyelvek többesszám-szabályait alkalmazza a fotók, albumok és címkék számára\n• Teljessé teszi az indonéz fordítást\n• Hibajavítások és a kezelőfelület javítása"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versi 4.4.1\n\n• Memperbaiki tata letak dalam bahasa Arab dan bahasa lain yang ditulis dari kanan ke kiri\n• Menerapkan aturan jamak setiap bahasa pada jumlah foto, album, dan tag\n• Melengkapi terjemahan Bahasa Indonesia\n• Memperbaiki bug dan meningkatkan antarmuka"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versione 4.4.1\n\n• Corregge il layout in arabo e nelle altre lingue che si scrivono da destra a sinistra\n• Applica le regole del plurale di ogni lingua ai conteggi di foto, album e tag\n• Completa la traduzione indonesiana\n• Corregge i bug e migliora l'interfaccia"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バージョン 4.4.1\n\n• アラビア語など右から左に記述する言語のレイアウトを修正\n• 写真、アルバム、タグの数に各言語の複数形の規則を適用\n• インドネシア語への翻訳を完成\n• バグの修正とインターフェイスの改善"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versie 4.4.1\n\n• Corrigeert de lay-out in het Arabisch en andere talen die van rechts naar links lopen\n• Past de meervoudsregels van elke taal toe op het aantal foto's, albums en labels\n• Voltooit de Indonesische vertaling\n• Lost bugs op en verbetert de interface"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wersja 4.4.1\n\n• Poprawia układ w języku arabskim i innych językach pisanych od prawej do lewej\n• Stosuje reguły liczby mnogiej każdego języka do liczby zdjęć, albumów i tagów\n• Uzupełnia tłumaczenie indonezyjskie\n• Poprawki błędów i usprawnienia interfejsu"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версия 4.4.1\n\n• Исправлена вёрстка на арабском и других языках с письмом справа налево\n• Применены правила множественного числа каждого языка к числу фото, альбомов и тегов\n• Завершён индонезийский перевод\n• Исправлены ошибки и улучшен интерфейс"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.4.1\n\n• Rättar layouten på arabiska och andra språk som skrivs från höger till vänster\n• Tillämpar varje språks pluralregler på antalet foton, album och taggar\n• Slutför den indonesiska översättningen\n• Fixar buggar och förbättrar gränssnittet"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 4.4.1\n\n• 修正阿拉伯语等从右至左书写语言的界面布局\n• 照片、相册和标签的数量采用各语言的复数规则\n• 完成印度尼西亚语翻译\n• 修正错误并改进界面"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 4.4.1\n\n• 修正阿拉伯語等從右至左書寫語言的介面佈局\n• 照片、相簿與標籤的數量採用各語言的複數規則\n• 完成印尼語翻譯\n• 修正錯誤並改進介面"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"
