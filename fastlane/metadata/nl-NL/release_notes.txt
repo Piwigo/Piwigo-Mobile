@@ -1,4 +1,4 @@
-• Maakt het mogelijk privéalbums te delen met personen die geen account hebben (vereist de Share Album plugin)
-• Importeert Live Photos als foto, video of beide
-• Verbetert het beheer van Community-gebruikers
-• Foutjes verbeterd
+• Corrigeert de lay-out in het Arabisch en andere talen die van rechts naar links worden geschreven
+• Past de meervoudsregels van elke taal toe op het aantal foto's, albums en labels
+• Voltooit de Indonesische vertaling
+• Foutjes verholpen en interface verbeterd

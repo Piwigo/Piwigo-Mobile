@@ -1,4 +1,4 @@
-• Ermöglicht das Teilen privater Alben mit Personen ohne Konto (erfordert das Share Album Plugin)
-• Importiert Live Photos als Foto, Video oder beides
-• Verbessert die Verwaltung von Community-Benutzern
-• Fehlerbehebungen
+• Korrigiert das Layout in Arabisch und anderen von rechts nach links geschriebenen Sprachen
+• Wendet die Pluralregeln jeder Sprache auf die Anzahl der Fotos, Alben und Schlagwörter an
+• Vervollständigt die indonesische Übersetzung
+• Fehlerbehebungen und Verbesserungen der Benutzeroberfläche

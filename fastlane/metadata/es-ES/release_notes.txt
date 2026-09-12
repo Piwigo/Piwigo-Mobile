@@ -1,4 +1,4 @@
-• Permite compartir álbumes privados con personas que no tengan una cuenta (requiere el plugin Share Album)
-• Importa las Live Photos como foto, vídeo o ambos
-• Mejora la gestión de los usuarios de Community
-• Corrección de errores
+• Corrige el diseño en árabe y en otros idiomas que se escriben de derecha a izquierda
+• Aplica las reglas de plural de cada idioma al número de fotos, álbumes y etiquetas
+• Completa la traducción al indonesio
+• Corrección de errores y mejoras de la interfaz
