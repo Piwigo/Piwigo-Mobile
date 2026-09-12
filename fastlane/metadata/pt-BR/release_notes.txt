@@ -1,0 +1,4 @@
+• Corrige o layout em árabe e nos outros idiomas escritos da direita para a esquerda
+• Aplica as regras de plural de cada idioma às contagens de fotos, álbuns e etiquetas
+• Conclui a tradução para indonésio
+• Corrige erros e melhora a interface
