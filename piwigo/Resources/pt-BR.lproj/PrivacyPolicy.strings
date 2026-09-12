@@ -1,0 +1,63 @@
+/* 
+  PrivacyPolicy.strings
+  piwigo
+
+  Created by Eddy Lelièvre-Berna on 27/10/2018.
+  Copyright © 2018 Piwigo.org. All rights reserved.
+*/
+
+"privacy_text" = "O Piwigo-Android e o Piwigo-Mobile são aplicativos cliente livres, gratuitos e de código aberto para galerias Piwigo. Esta política de privacidade aplica-se a estes aplicativos nativos para Android e iOS, que se conectam a sites Piwigo que estão fora do controle dos autores. Consulte a política de privacidade dos sites correspondentes antes de configurar uma conta no Piwigo-Android ou no Piwigo-Mobile para se conectar a uma galeria.\n\nÚltima atualização em 25 de outubro de 2018";
+
+"intro_title" = "Introdução";
+
+"intro_text1" = "Nós, desenvolvedores do Piwigo-Android e do Piwigo-Mobile (“nós” ou “nosso”), respeitamos a privacidade dos nossos usuários (“usuário” ou “você”). Esta Política de Privacidade explica como coletamos, usamos, divulgamos e protegemos as suas informações quando você usa os nossos aplicativos móveis (os “Aplicativos”). Os nossos nomes podem ser extraídos dos metadados dos repositórios git e da seção Agradecimentos dentro dos Aplicativos.";
+
+"intro_text2" = "Leia esta Política de Privacidade com atenção. Se você não concordar com os termos desta Política de Privacidade, não acesse os Aplicativos.";
+
+"intro_text3" = "Reservamo-nos o direito de alterar esta Política de Privacidade a qualquer momento e por qualquer motivo. Avisaremos você sobre quaisquer alterações atualizando a data de “Última atualização” desta Política de Privacidade.";
+
+"intro_text4" = "Recomendamos que você reveja periodicamente esta Política de Privacidade para se manter informado sobre as atualizações. Considerar-se-á que você tomou conhecimento das alterações de qualquer Política de Privacidade revista, que está sujeito a elas e que as aceitou, ao continuar a usar os Aplicativos após a data de publicação dessa Política de Privacidade revista.";
+
+"intro_text5" = "Esta Política de Privacidade não se aplica à loja online/móvel de terceiros a partir da qual você instala os Aplicativos ou efetua pagamentos, incluindo quaisquer itens virtuais dentro do aplicativo, que também podem coletar e usar dados sobre você. Não somos responsáveis por quaisquer dados coletados por esses terceiros.";
+
+"what_title" = "Quais dados são processados e armazenados?";
+
+"what_subTitle1" = "Dados da galeria Piwigo";
+
+"what_subText1a" = "As credenciais da conta são armazenadas pelos Aplicativos e enviadas aos sites configurados para se conectar a uma ou várias galerias Piwigo. Além disso, todas as fotos, vídeos e outros arquivos selecionados para download/envio e o conteúdo inserido são armazenados, processados e transmitidos ao site da galeria configurado.";
+
+"what_subTitle2" = "Informações de geolocalização";
+
+"what_subText2a" = "Podemos solicitar acesso ou permissão a informações de localização do seu dispositivo móvel e rastreá-las, de forma contínua ou enquanto você usa os Aplicativos, para fornecer serviços baseados em localização. Se desejar alterar o nosso acesso ou as permissões, você pode fazê-lo nos ajustes do seu dispositivo.";
+
+"what_subTitle3" = "Acesso ao dispositivo móvel";
+
+"what_subText3a" = "Os Aplicativos podem solicitar acesso ou permissão a determinados recursos do seu dispositivo móvel, incluindo a fototeca e o armazenamento de arquivos do dispositivo, o AccountManager do Android, as Chaves do Apple, pastas de armazenamento externas e na nuvem, a geolocalização e outros recursos. Se desejar alterar o nosso acesso ou as permissões, você pode fazê-lo nos ajustes do seu dispositivo, mas tenha em conta que alguns acessos são necessários para enviar arquivos de mídia do seu dispositivo móvel para a galeria Piwigo ou para armazenar arquivos de mídia do Piwigo no seu dispositivo móvel.";
+
+"what_subTitle4" = "Dados do dispositivo móvel";
+
+"what_subText4a" = "Ao entrar em contato com a equipe de suporte, informações do dispositivo, como o ID, o modelo e o fabricante do seu dispositivo móvel, a versão do seu sistema operacional, o e-mail, o país, a localização e quaisquer outros dados que você opte por fornecer, podem ser transmitidos à equipe de desenvolvimento dos Aplicativos. Além dos dados explicitamente compartilhados pelo usuário com os desenvolvedores, nenhum conteúdo será armazenado, transmitido ou processado por nós.";
+
+"why_title" = "Por que o aplicativo móvel armazena dados?";
+
+"why_text1" = "Os Aplicativos armazenam apenas os dados necessários para satisfazer uma finalidade: acessar uma galeria Piwigo hospedada em um servidor web remoto. Não são coletados, transmitidos ou armazenados dados que não sejam necessários para a funcionalidade pretendida.";
+
+"why_text2" = "Quando você acessa os Aplicativos, as suas informações pessoais não são coletadas através do uso de tecnologia de rastreamento. Usamos apenas mecanismos de cache para ajudar a personalizar os Aplicativos e melhorar a sua experiência. Você pode desativar ou limpar os caches, mas tenha em conta que essa ação pode afetar a disponibilidade e a funcionalidade dos Aplicativos.";
+
+"how_title" = "Como os dados são protegidos?";
+
+"how_text1" = "Os Aplicativos armazenam os dados localmente no dispositivo em que são executados. Você é responsável por proteger os dados armazenados contra acessos não autorizados. Recomendamos vivamente o uso de HTTPS para proteger os dados durante a transmissão, e os Aplicativos tentam usar conexões criptografadas por HTTPS na primeira vez que o usuário estabelece uma conexão com uma galeria Piwigo. Manter os certificados e as bibliotecas de acesso HTTPS atualizados é da responsabilidade do operador do servidor Piwigo. Quando os Aplicativos não conseguem usar HTTPS, passam para HTTP e os dados não são criptografados durante a transmissão.";
+
+"how_text2" = "Quando você envia imagens para uma galeria Piwigo, as imagens podem conter dados privados, como coordenadas GPS ou comentários. Os Aplicativos oferecem uma opção, na seção de Ajustes, para remover esses dados dos arquivos de imagem antes do envio. É da responsabilidade do usuário decidir se esses dados privados são enviados.";
+
+"security_title" = "Segurança das suas informações";
+
+"security_text" = "Usamos medidas técnicas de segurança para ajudar a proteger as suas informações pessoais. Embora tenhamos tomado medidas razoáveis para proteger as informações pessoais que você nos fornece, tenha em conta que, apesar dos nossos esforços, nenhuma medida de segurança é perfeita ou impenetrável, e nenhum método de transmissão de dados pode ser garantido contra interceptação ou outro tipo de uso indevido. Qualquer informação divulgada online está vulnerável à interceptação e ao uso indevido por parte de terceiros não autorizados. Por conseguinte, não podemos garantir segurança total se você fornecer informações pessoais.";
+
+"contact_title" = "Entre em contato conosco";
+
+"contact_text" = "Se você tiver dúvidas ou comentários sobre esta Política de Privacidade, entre em contato conosco através de:";
+
+"contact_address" = "Piwigo, 42 rue des Vignes, 21800 Quetigny (França)";
+
+"contact_email" = "iOS@piwigo.org";

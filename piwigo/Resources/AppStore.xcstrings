@@ -76,6 +76,18 @@
             "value" : "Piwigo jest również kompatybilny z następującymi rozszerzeniami:\n- Community: umożliwia dodawanie zdjęć użytkownikom bez uprawnień administratora\n- rotateImage: umożliwia obracanie obrazów\n- piwigo-two_factor: dodaje uwierzytelnianie dwuskładnikowe (2FA)\n- piwigo-videojs: dodaje obsługę wideo"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Piwigo também é compatível com os seguintes plugins:\n- Community: permite que os usuários criem álbuns e adicionem fotos\n- rotateImage: permite girar imagens\n- piwigo-two_factor: adiciona a autenticação de dois fatores (2FA)\n- piwigo-videojs: adiciona suporte a vídeo"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Piwigo também é compatível com os seguintes plugins:\n- Community: permite aos utilizadores criar álbuns e adicionar fotografias\n- rotateImage: permite rodar imagens\n- piwigo-two_factor: adiciona a autenticação de dois fatores (2FA)\n- piwigo-videojs: adiciona suporte de vídeo"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -175,6 +187,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Piwigo dla urządzeń iPhone/iPad/iPod obsługuje oprogramowanie galerii zdjęć w chmurze Piwigo (w wersji 2.10 lub wyższej). Aplikacja pozwala na:\n\n• Przeglądanie albumów.\n• Tworzenie, usuwanie, przenoszenie i zmianę nazw albumów.\n• Wyszukiwanie, edycję, pobieranie i usuwanie zdjęć i filmów.\n• Kopiowanie i przenoszenie zdjęć i filmów między albumami.\n• Dodawanie i usuwanie zdjęć i filmów z Twoich Ulubionych.\n• Ustawianie zdjęcia jako zdjęcia albumu.\n• Przesyłanie zdjęć i filmów:\n  - z możliwością modyfikacji rozmiaru i jakości,\n  - z opisem, autorem, znacznikami, metadanymi EXIF,\n  - z metadanymi GPS lub bez nich.\n• Udostępnianie zdjęć i filmów.\n\nPiwigo umożliwia Ci tworzenie własnej galerii zdjęć w sieci. Zawiera wiele potężnych funkcji, takich jak albumy, znaczniki, geolokalizacja, wiele poziomów personalizacji, przesyłanie przez gości, prywatność, kalendarz czy statystyki.\n\nPiwigo jest oprogramowaniem bezpłatnym i otwartym."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Piwigo para iPhone/iPad/iPod complementa o software de galeria de fotos na nuvem Piwigo (v2.10 ou superior):\n\n• Navegue pelos seus álbuns,\n• Crie, apague, mova e renomeie álbuns,\n• Pesquise, edite, baixe e apague fotos e vídeos,\n• Copie e mova fotos e vídeos entre álbuns,\n• Adicione e remova fotos e vídeos dos seus favoritos,\n• Defina uma foto como imagem do álbum,\n• Envie fotos e vídeos:\n - de tamanho e qualidade ajustáveis,\n - com descrição, autor, etiquetas, metadados EXIF,\n - com ou sem metadados GPS.\n• Compartilhe fotos e vídeos.\n\nO Piwigo permite que você crie a sua própria galeria de fotos na web. Ele inclui muitos recursos poderosos, como álbuns, etiquetas, geolocalização, vários níveis de personalização, envio por visitantes, privacidade, calendário ou estatísticas.\n\nO Piwigo é livre e de código aberto."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Piwigo para iPhone/iPad/iPod complementa o software de galeria de fotografias na nuvem Piwigo (v2.10 ou superior):\n\n• Navegue pelos seus álbuns,\n• Crie, apague, mova e mude o nome de álbuns,\n• Pesquise, edite, transfira e apague fotografias e vídeos,\n• Copie e mova fotografias e vídeos entre álbuns,\n• Adicione e remova fotografias e vídeos dos seus favoritos,\n• Defina uma fotografia como imagem do álbum,\n• Carregue fotografias e vídeos:\n - de tamanho e qualidade ajustáveis,\n - com descrição, autor, etiquetas, metadados EXIF,\n - com ou sem metadados GPS.\n• Partilhe fotografias e vídeos.\n\nO Piwigo permite-lhe criar a sua própria galeria de fotografias na web. Inclui muitas funcionalidades poderosas, como álbuns, etiquetas, geolocalização, vários níveis de personalização, carregamento por visitantes, privacidade, calendário ou estatísticas.\n\nO Piwigo é livre e de código aberto."
           }
         },
         "ru" : {
@@ -278,6 +302,18 @@
             "value" : "Opinie lub pytania? \nPiwigo oferuje bezpłatną pomoc w %@ i chcielibyśmy poznać Twoje zdanie."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comentários ou dúvidas?\nO Piwigo oferece suporte gratuito em %@ e adoraríamos ouvir você."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comentários ou questões?\nO Piwigo oferece apoio gratuito em %@ e gostaríamos muito de o ouvir."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -377,6 +413,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Piwigo, Cloud, album, zdjęcie, video, obraz, wysyłanie, pobieranie"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo, nuvem, álbum, foto, vídeo, imagem, enviar, baixar"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo, nuvem, álbum, fotografia, vídeo, imagem, carregar, transferir"
           }
         },
         "ru" : {
@@ -480,6 +528,18 @@
             "value" : "Twoja biblioteka zdjęć w chmurze Piwigo pod ręką!"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua fototeca gratuita na nuvem Piwigo ao alcance das mãos!"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A sua fototeca gratuita na nuvem Piwigo ao seu alcance!"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -579,6 +639,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Twoje zdjęcia w Twojej chmurze"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suas fotos na sua nuvem"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As suas fotografias na sua nuvem"
           }
         },
         "ru" : {

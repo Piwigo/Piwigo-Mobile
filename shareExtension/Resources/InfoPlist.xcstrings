@@ -114,6 +114,18 @@
             "value" : "Użyj Face ID zamiast hasła, aby uzyskać dostęp do swoich albumów."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use o Face ID em vez de um código para acessar seus álbuns."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilize o Face ID em vez de um código para aceder aos seus álbuns."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",

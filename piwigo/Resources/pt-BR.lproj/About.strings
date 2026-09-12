@@ -1,0 +1,15 @@
+/* 
+  About.strings
+  piwigo
+
+  Created by Spencer Baker on 2/19/15.
+  Copyright (c) 2015 bakercrew. All rights reserved.
+*/
+
+"authors1" = "Por Spencer Baker, Olaf Greck";
+"authors2" = "e Eddy Lelièvre-Berna";
+"version" = "Versão";
+
+"translators_text" = "Agradecemos sinceramente aos seguintes usuários por dedicarem o seu tempo e esforço à tradução do Piwigo:\n\n- Alemão: Jörg Knörchen,\n- Árabe: Rachid Haddani,\n- Chinês (simplificado): Benjamin Chris,\n- Chinês (tradicional): Sean Pai,\n- Dinamarquês: Thomas Christfort,\n- Espanhol: Armando Bello, Albert Parera e Tirs Abril,\n- Francês: Eddy Lelièvre-Berna,\n- Holandês: Robert Mulder e Wim Woonings,\n- Húngaro: Miklos Bagi,\n- Indonésio: Arvin Noer e Alfian Silaban,\n- Italiano: Alessio Perilli,\n- Japonês: Takahiro Yakoh,\n- Polonês: Michał Majchrowicz e T00kie,\n- Russo: Eugene Vivdich,\n- Sueco: Elger Lindgren.";
+
+"licenceMIT_text" = "A Licença MIT (MIT)\nÉ concedida por este meio, gratuitamente, a qualquer pessoa que obtenha uma cópia deste software e dos arquivos de documentação associados (o \"Software\"), permissão para utilizar o Software sem restrições, incluindo, sem limitação, os direitos de usar, copiar, modificar, mesclar, publicar, distribuir, sublicenciar e/ou vender cópias do Software, e de permitir que as pessoas a quem o Software é fornecido o façam, sujeito às seguintes condições:\n\nO aviso de direitos autorais acima e este aviso de permissão devem ser incluídos em todas as cópias ou partes substanciais do Software.\n\nO SOFTWARE É FORNECIDO \"NO ESTADO EM QUE SE ENCONTRA\", SEM GARANTIA DE QUALQUER TIPO, EXPRESSA OU IMPLÍCITA, INCLUINDO, MAS NÃO SE LIMITANDO ÀS GARANTIAS DE COMERCIALIZAÇÃO, ADEQUAÇÃO A UM DETERMINADO FIM E NÃO VIOLAÇÃO. EM NENHUMA HIPÓTESE OS AUTORES OU OS TITULARES DOS DIREITOS AUTORAIS SERÃO RESPONSÁVEIS POR QUALQUER RECLAMAÇÃO, DANO OU OUTRA RESPONSABILIDADE, SEJA EM AÇÃO CONTRATUAL, EXTRACONTRATUAL OU DE OUTRA NATUREZA, DECORRENTE DE, OU RELACIONADA COM O SOFTWARE OU O SEU USO, OU OUTRAS OPERAÇÕES NO SOFTWARE.";

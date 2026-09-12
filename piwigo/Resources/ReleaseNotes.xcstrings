@@ -76,6 +76,18 @@
             "value" : "Wersja 1.0\n17 października 2011"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 1.0\n17 de outubro de 2011"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 1.0\n17 de outubro de 2011"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -175,6 +187,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.0\n24 kwietnia 2015\n\nNowa natywna aplikacja oferuje:\n - możliwość zarządzania albumami\n - przeglądanie Twoich zdjęć\n - hurtowe przesyłanie zdjęć\n - przesyłanie i odtwarzanie filmów (musi być zainstalowany dodatek VideoJS)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.0\n24 de abril de 2015\n\nNovo aplicativo nativo com:\n - Capacidade de gerenciar álbuns\n - Visualização das suas fotos\n - Envio de fotos em lote\n - Envio e reprodução de vídeos (o plugin VideoJS deve estar instalado)"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.0\n24 de abril de 2015\n\nNova aplicação nativa com:\n - Capacidade de gerir álbuns\n - Visualização das suas fotografias\n - Carregamento de fotografias em lote\n - Carregamento e reprodução de vídeos (o plugin VideoJS tem de estar instalado)"
           }
         },
         "ru" : {
@@ -279,6 +303,18 @@
             "value" : "Wersja 2.0.1\n26 czerwca 2015\n\nNowe ustawienia:\n - możliwość zmiany rozmiaru przesyłanych zdjęć\n  + jakość zdjęcia z zakresu 50 - 98%\n - możliwość ustawienia domyślnego rozmiaru podglądu zdjęcia\nPoprawki"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.0.1\n26 de junho de 2015\n\nNovos ajustes:\n - Opção para redimensionar as fotos ao enviar\n   + A qualidade da imagem vai de 50 a 98 por cento\n - Possibilidade de definir um tamanho padrão de pré-visualização das fotos\nCorreções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.0.1\n26 de junho de 2015\n\nNovas definições:\n - Opção para redimensionar as fotografias ao carregar\n   + A qualidade da imagem vai de 50 a 98 por cento\n - Possibilidade de definir um tamanho predefinido de pré-visualização das fotografias\nCorreções de erros"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -378,6 +414,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.0.2\n8 maja 2017\n\n• Kryteria sortowania teraz identyczne z aplikacją Web\n• Poprawka problemu z sortowaniem \n• Poprawka awarii napotkanych podczas dodawania znaczników do zdjęć przed wysłaniem \n• Poprawka sytuacji gdzie nie działało usunięcie zaznaczonych zdjęć \n• Poprawka sytuacji gdzie album nie pojawiał się po przeniesieniu \n• Rozwiązany problem ze zgodnością z systemem iOS 10 — przestarzały kod"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.0.2\n8 de maio de 2017\n\n• Critérios de ordenação agora idênticos aos do app web\n• Corrige problemas de ordenação\n• Corrige um travamento ao adicionar etiquetas a uma foto antes do envio\n• Corrige situações em que a exclusão de uma seleção de fotos não funcionava\n• Corrige situações em que um álbum não aparecia depois de ser movido\n• Corrige um problema de compatibilidade com o iOS 10 — código obsoleto"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.0.2\n8 de maio de 2017\n\n• Critérios de ordenação agora idênticos aos da aplicação web\n• Corrige problemas de ordenação\n• Corrige um encerramento inesperado ao adicionar etiquetas a uma fotografia antes do carregamento\n• Corrige situações em que a eliminação de uma seleção de fotografias não funcionava\n• Corrige situações em que um álbum não aparecia depois de ser movido\n• Corrige um problema de compatibilidade com o iOS 10 — código obsoleto"
           }
         },
         "ru" : {
@@ -481,6 +529,18 @@
             "value" : "Wersja 2.0.3\n26 maja 2017\n\n• Dodaj opcję usunięcie metadanych GPS w ustawieniach strony \n• Dodaj bieżące użycie pamięci podręcznej w ustawienia strona \n• Poprawka pamięci podręcznej ustawienia czasami zapomniane/reset \n• Poprawka wysyłania obrazu ustawienia czasami stracił/reset"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.0.3\n26 de maio de 2017\n\n• Adiciona uma opção para remover os metadados GPS na página de Ajustes\n• Adiciona o uso atual do cache na página de Ajustes\n• Corrige os ajustes de cache às vezes esquecidos/redefinidos\n• Corrige os ajustes de envio de fotos às vezes perdidos/redefinidos"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.0.3\n26 de maio de 2017\n\n• Adiciona uma opção para remover os metadados GPS na página de Definições\n• Adiciona a utilização atual da cache na página de Definições\n• Corrige as definições de cache por vezes esquecidas/reiniciadas\n• Corrige as definições de carregamento de fotografias por vezes perdidas/reiniciadas"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -580,6 +640,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.0.4\n28 lipca 2017\n\n• iPad — naprawić rozmyte miniatury i niemożliwość edycji zdjęć na iPadzie \n• Filmy — poprawka wysyłania i pobierania problemy (wymagane na serwerze rozszerzenia VideoJS) \n• Ustawień — Dodaj opcje aby usunąć tytuły & zmiana miniatury rozdzielczość \n• Poprawić niezawodność połączeń i informuje, kiedy przesyłanie zakończone \n• Poprawki błędów i usprawnienia interfejsu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.0.4\n28 de julho de 2017\n\n• iPad — Corrige as miniaturas desfocadas e a impossibilidade de editar fotos no iPad\n• Vídeos — Corrige problemas de envio e de download (extensão VideoJS necessária no servidor)\n• Ajustes — Adiciona opções para remover os títulos e alterar a resolução das miniaturas\n• Melhora a confiabilidade da conexão e informa quando o envio termina\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.0.4\n28 de julho de 2017\n\n• iPad — Corrige as miniaturas desfocadas e a impossibilidade de editar fotografias no iPad\n• Vídeos — Corrige problemas de carregamento e de transferência (extensão VideoJS necessária no servidor)\n• Definições — Adiciona opções para remover os títulos e alterar a resolução das miniaturas\n• Melhora a fiabilidade da ligação e informa quando o carregamento termina\n• Correções de erros menores e melhorias na interface"
           }
         },
         "ru" : {
@@ -683,6 +755,18 @@
             "value" : "Wersja 2.1\n14 sierpnia 2017\n\n• Dodanie kompatybilności z rozszerzeniem Community (Społeczność)\n• Dodanie duńskiego, francuskiego i polskiego tłumaczenia\n• Poprawki"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.1\n14 de agosto de 2017\n\n• Compatibilidade com a extensão Community\n• Traduções para dinamarquês, francês e polonês\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.1\n14 de agosto de 2017\n\n• Compatibilidade com a extensão Community\n• Traduções para dinamarquês, francês e polaco\n• Correções de erros"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -782,6 +866,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.1.1\n20 sierpnia 2017\n\n• Poprawki błędów napotkanych przy nieważnych certyfikatach SSL \n• Poprawa duńskiego tłumaczenia"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.1.1\n20 de agosto de 2017\n\n• Corrige um erro encontrado com certificados SSL não válidos\n• Melhora a tradução para dinamarquês"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.1.1\n20 de agosto de 2017\n\n• Corrige um erro encontrado com certificados SSL não válidos\n• Melhora a tradução para dinamarquês"
           }
         },
         "ru" : {
@@ -885,6 +981,18 @@
             "value" : "Wersja 2.1.2\n7 września 2017\n\n• Poprawka odmowy logowania z wtyczką społeczność w wersji wtyczki < 2.9 \n• Poprawy tłumaczenia\n• Drobne poprawki"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.1.2\n7 de setembro de 2017\n\n• Corrige a recusa de login com versões do plugin Community anteriores à 2.9\n• Melhora as traduções\n• Trabalho de manutenção"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.1.2\n7 de setembro de 2017\n\n• Corrige a recusa de início de sessão com versões do plugin Community anteriores à 2.9\n• Melhora as traduções\n• Trabalho de manutenção"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -984,6 +1092,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.1.3\n19 października 2017\n\n• Dodanie obsługi podstawowej autentykacji HTTP(S) \n• Dodanie możliwości anulowania auto podłączania\n• Poprawki interfejsu i wysyłania\n• Poprawki tłumaczenia i obsługi iOS 11\n• Poprawki kodu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.1.3\n19 de outubro de 2017\n\n• Adiciona a autenticação de acesso básica\n• Permite cancelar a conexão automática\n• Melhora a interface e o gerenciamento dos envios\n• Melhora as traduções e a compatibilidade com o iOS 11\n• Corrige um erro encontrado com o filtro “Não enviadas”\n• Modernização do código"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.1.3\n19 de outubro de 2017\n\n• Adiciona a autenticação de acesso básica\n• Permite cancelar a ligação automática\n• Melhora a interface e a gestão dos carregamentos\n• Melhora as traduções e a compatibilidade com o iOS 11\n• Corrige um erro encontrado com o filtro «Não carregadas»\n• Modernização do código"
           }
         },
         "ru" : {
@@ -1087,6 +1207,18 @@
             "value" : "Wersja 2.1.4\n31 października 2017\n\n• Dodanie szwedzkiego tłumaczenia\n• Poprawki błędów"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.1.4\n31 de outubro de 2017\n\n• Tradução para sueco\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.1.4\n31 de outubro de 2017\n\n• Tradução para sueco\n• Correções de erros"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1186,6 +1318,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.1.5\n21 grudnia 2017\n\n• Dodano możliwość anulowania wysyłania\n• Dodano możliwość usuwania zdjęcia po wysłaniu\n• Dodano kompatybilność z Optymalizowaniem Magazynu (iCloud)\n• Zachowuje format obrazu po zmianie rozmiaru, gdy to możliwe\n• Tłumaczenia duńskie i indonezyjskie\n• Naprawiono tracenie części metadanych przy pobieraniu\n• Naprawiono zmianę formatu z PNG na JPG przed wysłaniem\n• Naprawiono błędy napotkane w iOS 11 i iPhone X\n• Naprawiono drobne błędy\n• Zmodernizowano kod"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.1.5\n21 de dezembro de 2017\n\n• Adiciona a possibilidade de cancelar envios\n• Adiciona uma opção para apagar as fotos após o envio\n• Adiciona a compatibilidade com Otimizar Armazenamento (iCloud)\n• Preserva o formato da foto após o redimensionamento sempre que possível\n• Traduções para dinamarquês e indonésio\n• Corrige a perda parcial de metadados ao baixar\n• Corrige a substituição do formato PNG por JPEG antes do envio\n• Corrige problemas encontrados com o iOS 11 e o iPhone X\n• Corrige erros menores\n• Modernização do código"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.1.5\n21 de dezembro de 2017\n\n• Adiciona a possibilidade de cancelar carregamentos\n• Adiciona uma opção para apagar as fotografias após o carregamento\n• Adiciona a compatibilidade com Otimizar Armazenamento (iCloud)\n• Preserva o formato da fotografia após o redimensionamento sempre que possível\n• Traduções para dinamarquês e indonésio\n• Corrige a perda parcial de metadados ao transferir\n• Corrige a substituição do formato PNG por JPEG antes do carregamento\n• Corrige problemas encontrados com o iOS 11 e o iPhone X\n• Corrige erros menores\n• Modernização do código"
           }
         },
         "ru" : {
@@ -1289,6 +1433,18 @@
             "value" : "Wersja 2.1.6\n7 stycznia 2018\n\n• Tłumaczenie arabskie\n• Udoskonalono zarządzanie uwierzytelnianiem za pomocą podstawowego dostępu HTTP\n• Poprawki błędów i usprawnienia interfejsu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.1.6\n7 de janeiro de 2018\n\n• Tradução para árabe\n• Melhoria do gerenciamento da autenticação de acesso básica HTTP\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.1.6\n7 de janeiro de 2018\n\n• Tradução para árabe\n• Melhoria da gestão da autenticação de acesso básica HTTP\n• Correções de erros menores e melhorias na interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1388,6 +1544,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.1.7\n3 lutego 2018\n\n• Naprawiono problemy z przesyłaniem wideo na niektórych serwerach"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.1.7\n3 de fevereiro de 2018\n\n• Corrige problemas de envio de vídeos em alguns servidores"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.1.7\n3 de fevereiro de 2018\n\n• Corrige problemas de carregamento de vídeos em alguns servidores"
           }
         },
         "ru" : {
@@ -1491,6 +1659,18 @@
             "value" : "Wersja 2.1.8\n29 kwietnia 2018\n\n• Dodaje możliwość zmiany wielkości miniatur\n• HTTPS staje się domyślnym protokołem\n• Japońskie tłumaczenie\n• Poprawki błędów i usprawnienia interfejsu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.1.8\n29 de abril de 2018\n\n• Adiciona a capacidade de alterar o tamanho das miniaturas\n• O HTTPS passa a ser o protocolo padrão\n• Tradução para japonês\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.1.8\n29 de abril de 2018\n\n• Adiciona a capacidade de alterar o tamanho das miniaturas\n• O HTTPS passa a ser o protocolo predefinido\n• Tradução para japonês\n• Correções de erros menores e melhorias na interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1590,6 +1770,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.1.9\n14 maja 2018\n\n• Poprawki błędów"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.1.9\n14 de maio de 2018\n\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.1.9\n14 de maio de 2018\n\n• Correções de erros"
           }
         },
         "ru" : {
@@ -1693,6 +1885,18 @@
             "value" : "Wersja 2.2 \n12 lipca 2018\n\n• Tworzenie podalbumów z dowolnego albumu\n• Poprawa zarządzania poprzez wprowadzenie domyślnego Albumu\n• Usprawniono prezentację albumów na iPad-ie (i iPhone-ie) \n• Wykrywanie zmian w Bibliotece zdjęć \n• Drobne poprawki błędów i ulepszenia interfejsu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.2\n12 de julho de 2018\n\n• Criação de subálbuns a partir de qualquer álbum\n• Melhoria do gerenciamento com o Álbum padrão\n• Melhoria da apresentação dos álbuns no iPad (e no iPhone)\n• Detecção das alterações da fototeca\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.2\n12 de julho de 2018\n\n• Criação de subálbuns a partir de qualquer álbum\n• Melhoria da gestão com o Álbum predefinido\n• Melhoria da apresentação dos álbuns no iPad (e no iPhone)\n• Deteção das alterações da fototeca\n• Correções de erros menores e melhorias na interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1792,6 +1996,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.2.1\n25 lipca 2018\n\n• Drobne poprawki błędów i ulepszenia interfejsu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.2.1\n25 de julho de 2018\n\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.2.1\n25 de julho de 2018\n\n• Correções de erros menores e melhorias na interface"
           }
         },
         "ru" : {
@@ -1895,6 +2111,18 @@
             "value" : "Wersja 2.2.2\n14 sierpnia 2018\n\n• Kopiowanie i przenoszenie zdjęć pomiędzy albumami\n• Poprawki drobnych błędów i ulepszenia interfejsu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.2.2\n14 de agosto de 2018\n\n• Cópia e movimentação de fotos entre álbuns\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.2.2\n14 de agosto de 2018\n\n• Cópia e deslocação de fotografias entre álbuns\n• Correções de erros menores e melhorias na interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1994,6 +2222,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.2.3\n27 sierpnia 2018\n\n• Nowy projekt albumu\n• Drobne poprawki błędów i ulepszenia interfejsu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.2.3\n27 de agosto de 2018\n\n• Novo design dos álbuns\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.2.3\n27 de agosto de 2018\n\n• Novo design dos álbuns\n• Correções de erros menores e melhorias na interface"
           }
         },
         "ru" : {
@@ -2097,6 +2337,18 @@
             "value" : "Wersja 2.2.4\n23 września 2018\n\n• Poprawki błędów"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.2.4\n23 de setembro de 2018\n\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.2.4\n23 de setembro de 2018\n\n• Correções de erros"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2196,6 +2448,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.2.5\n28 października 2018\n\n• Prześlij nam opinię e-mailem\n• Polityka prywatności\n• Poprawki błędów"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.2.5\n28 de outubro de 2018\n\n• Envie-nos os seus comentários por e-mail\n• Política de privacidade\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.2.5\n28 de outubro de 2018\n\n• Envie-nos os seus comentários por e-mail\n• Política de privacidade\n• Correções de erros"
           }
         },
         "ru" : {
@@ -2299,6 +2563,18 @@
             "value" : "Wersja 2.2.6\n20 grudnia 2018\n\n• Poprawa tłumaczenia i obsługi iOS 12\n• Drobne poprawki błędów i ulepszenia interfejsu\n• Włoskie tłumaczenie"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.2.6\n20 de dezembro de 2018\n\n• Melhora as traduções e a compatibilidade com o iOS 12\n• Correções de erros menores e melhorias na interface\n• Tradução para italiano"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.2.6\n20 de dezembro de 2018\n\n• Melhora as traduções e a compatibilidade com o iOS 12\n• Correções de erros menores e melhorias na interface\n• Tradução para italiano"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2398,6 +2674,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.2.7\n29 grudnia 2018\n\n• Drobne poprawki błędów i ulepszenia interfejsu\n• Poprawa tłumaczenia"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.2.7\n29 de dezembro de 2018\n\n• Correções de erros menores e melhorias na interface\n• Melhoria das traduções"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.2.7\n29 de dezembro de 2018\n\n• Correções de erros menores e melhorias na interface\n• Melhoria das traduções"
           }
         },
         "ru" : {
@@ -2501,6 +2789,18 @@
             "value" : "Wersja 2.3\n2 lutego 2019\n\n• Udostępniaj zdjęcia i filmy\n• Zwiększa limit rozmiaru pamięci podręcznej\n• Drobne poprawki błędów i ulepszenia interfejsu\n• Poprawa tłumaczenia"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.3\n2 de fevereiro de 2019\n\n• Compartilhamento de fotos e vídeos\n• Aumento dos limites de tamanho do cache\n• Correções de erros menores e melhorias na interface\n• Melhoria das traduções"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.3\n2 de fevereiro de 2019\n\n• Partilha de fotografias e vídeos\n• Aumento dos limites de tamanho da cache\n• Correções de erros menores e melhorias na interface\n• Melhoria das traduções"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2600,6 +2900,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.3.1\n15 lutego 2019\n\n• Drobne poprawki błędów i ulepszenia interfejsu\n• Poprawy tłumaczenia"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.3.1\n15 de fevereiro de 2019\n\n• Correções de erros menores e melhorias na interface\n• Melhoria das traduções"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.3.1\n15 de fevereiro de 2019\n\n• Correções de erros menores e melhorias na interface\n• Melhoria das traduções"
           }
         },
         "ru" : {
@@ -2703,6 +3015,18 @@
             "value" : "Wersja 2.3.2\n27 marca 2019\n\n• Lokalne zdjęcia prezentowane w widoku osi czasu przed dniem przesłania\n• Poprawki drobnych błędów i ulepszenie interfejsu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.3.2\n27 de março de 2019\n\n• As fotos locais são apresentadas numa linha do tempo por dia antes do envio\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.3.2\n27 de março de 2019\n\n• As fotografias locais são apresentadas numa cronologia por dia antes do carregamento\n• Correções de erros menores e melhorias na interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2802,6 +3126,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.3.3\n10 kwietnia 2019\n\n• Drobne poprawki błędów i ulepszenia interfejsu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.3.3\n10 de abril de 2019\n\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.3.3\n10 de abril de 2019\n\n• Correções de erros menores e melhorias na interface"
           }
         },
         "ru" : {
@@ -2905,6 +3241,18 @@
             "value" : "Wersja 2.3.4\n1 maja 2019\n\n• Udoskonala prezentację albumów na iPadzie (i iPhonie)\n• Drobne poprawki błędów i ulepszenie interfejsu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.3.4\n1 de maio de 2019\n\n• Melhoria da apresentação dos álbuns no iPad (e no iPhone)\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.3.4\n1 de maio de 2019\n\n• Melhoria da apresentação dos álbuns no iPad (e no iPhone)\n• Correções de erros menores e melhorias na interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3004,6 +3352,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.3.5\n6 czerwca 2019\n\n• Naprawia awarię, która czasami zdarza się podczas edycji adresu serwera po wylogowaniu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.3.5\n6 de junho de 2019\n\n• Corrige um travamento que ocorria às vezes ao editar o endereço do servidor depois de sair da conta"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.3.5\n6 de junho de 2019\n\n• Corrige um encerramento inesperado que ocorria por vezes ao editar o endereço do servidor depois de terminar a sessão"
           }
         },
         "ru" : {
@@ -3107,6 +3467,18 @@
             "value" : "Wersja 2.4\n15 lipca 2019\n\n• Dodaje narzędzie wyszukiwania (wymaga systemu iOS 11 lub nowszego)\n• Dodaje sortowanie zdjęć według wyniku oceny\n• Szybsze pobieranie miniatur albumów (wymaga Piwigo 2.8 lub nowszego)\n• Tytuły przesłanych zdjęć nie są już domyślnie nazwami plików\n• Naprawiono niemożność usunięcia znaczników\n• Naprawia niedokładności informacji o zdjęciu w niektórych okolicznościach"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.4\n15 de julho de 2019\n\n• Adiciona uma ferramenta de busca (requer o iOS 11 ou posterior)\n• Adiciona a ordenação das fotos por pontuação\n• Download mais rápido das miniaturas dos álbuns (requer o Piwigo 2.8 ou posterior)\n• Os títulos das fotos enviadas deixam de ser, por padrão, os nomes dos arquivos\n• Corrige a impossibilidade de remover etiquetas\n• Corrige dados de fotos imprecisos em algumas circunstâncias"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.4\n15 de julho de 2019\n\n• Adiciona uma ferramenta de pesquisa (requer o iOS 11 ou posterior)\n• Adiciona a ordenação das fotografias por pontuação\n• Transferência mais rápida das miniaturas dos álbuns (requer o Piwigo 2.8 ou posterior)\n• Os títulos das fotografias carregadas deixam de ser, por predefinição, os nomes dos ficheiros\n• Corrige a impossibilidade de remover etiquetas\n• Corrige dados de fotografias imprecisos em algumas circunstâncias"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3206,6 +3578,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.4.1\n10 sierpnia 2019\n\n• Dodaje albumy „Znaczniki”, „Najczęściej odwiedzane”, „Najlepiej oceniane” i „Najnowsze zdjęcia”\n• Drobne poprawki błędów i ulepszenia interfejsu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.4.1\n10 de agosto de 2019\n\n• Adiciona os álbuns “Etiquetas”, “Mais vistas”, “Mais bem avaliadas” e “Fotos recentes”\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.4.1\n10 de agosto de 2019\n\n• Adiciona os álbuns «Etiquetas», «Mais vistas», «Mais bem classificadas» e «Fotografias recentes»\n• Correções de erros menores e melhorias na interface"
           }
         },
         "ru" : {
@@ -3309,6 +3693,18 @@
             "value" : "Wersja 2.4.2\n3 września 2019\n\n• Dodaje możliwość tworzenia znaczników (tylko użytkownicy administracyjni)\n• Dodaje możliwość zmiany rozmiaru miniatur albumów\n• Dodaje zarządzanie wyświetlaniem Retina\n• Drobne poprawki błędów i ulepszenia interfejsu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.4.2\n3 de setembro de 2019\n\n• Adiciona a capacidade de criar etiquetas (apenas para administradores)\n• Adiciona a capacidade de alterar o tamanho das miniaturas dos álbuns\n• Adiciona o suporte a telas Retina\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.4.2\n3 de setembro de 2019\n\n• Adiciona a capacidade de criar etiquetas (apenas para administradores)\n• Adiciona a capacidade de alterar o tamanho das miniaturas dos álbuns\n• Adiciona o suporte a ecrãs Retina\n• Correções de erros menores e melhorias na interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3408,6 +3804,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.4.3\n25 września 2019\n\n• Kompatybilność z iOS 13\n• Drobne poprawki błędów i ulepszenia interfejsu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.4.3\n25 de setembro de 2019\n\n• Compatibilidade com o iOS 13\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.4.3\n25 de setembro de 2019\n\n• Compatibilidade com o iOS 13\n• Correções de erros menores e melhorias na interface"
           }
         },
         "ru" : {
@@ -3511,6 +3919,18 @@
             "value" : "Wersja 2.4.4\n1 października 2019\n\n• Naprawia problemy z przesyłaniem wideo na niektórych serwerach\n• Poprawki drobnych błędów i ulepszenia interfejsu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.4.4\n1 de outubro de 2019\n\n• Corrige problemas de envio de vídeos em alguns servidores\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.4.4\n1 de outubro de 2019\n\n• Corrige problemas de carregamento de vídeos em alguns servidores\n• Correções de erros menores e melhorias na interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3610,6 +4030,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.4.5\n6 listopada 2019\n\n• Wyświetla twoje ulubione zdjęcia (wymaga Piwigo 2.10 lub nowszego)\n• Opcja prezentacji zdjęć posortowanych ręcznie\n• Pozwala użytkownikom Community (z odpowiednimi uprawnieniami) tworzyć albumy\n• Poprawki drobnych błędów i ulepszenia interfejsu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.4.5\n6 de novembro de 2019\n\n• Mostra as suas fotos favoritas (requer o Piwigo 2.10 ou posterior)\n• Opção para apresentar as fotos ordenadas manualmente\n• Permite que os usuários do Community criem álbuns (com os direitos adequados)\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.4.5\n6 de novembro de 2019\n\n• Mostra as suas fotografias favoritas (requer o Piwigo 2.10 ou posterior)\n• Opção para apresentar as fotografias ordenadas manualmente\n• Permite que os utilizadores do Community criem álbuns (com os direitos adequados)\n• Correções de erros menores e melhorias na interface"
           }
         },
         "ru" : {
@@ -3713,6 +4145,18 @@
             "value" : "Wersja 2.4.6\n18 stycznia 2020\n\n• Możliwość edycji właściwości wybranych zdjęć\n• Możliwość zmiany daty utworzenia zdjęcia lub filmu\n• Opcja dodania prefiksu nazw plików przed przesłaniem\n• Poprawki drobnych błędów i ulepszenia interfejsu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.4.6\n18 de janeiro de 2020\n\n• Edição das propriedades de uma seleção de fotos\n• Alteração da data de criação de uma foto ou de um vídeo\n• Opção para prefixar os nomes dos arquivos antes do envio\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.4.6\n18 de janeiro de 2020\n\n• Edição das propriedades de uma seleção de fotografias\n• Alteração da data de criação de uma fotografia ou de um vídeo\n• Opção para prefixar os nomes dos ficheiros antes do carregamento\n• Correções de erros menores e melhorias na interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3812,6 +4256,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.4.7\n30 stycznia 2020\n\n• Dodano tłumaczenia: chiński (uproszczony), rosyjski i hiszpański\n• Naprawiono problem z odtwarzaniem filmów na niektórych serwerach"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.4.7\n30 de janeiro de 2020\n\n• Traduções para chinês simplificado, russo e espanhol\n• Corrige um problema de reprodução de vídeo em alguns servidores"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.4.7\n30 de janeiro de 2020\n\n• Traduções para chinês simplificado, russo e espanhol\n• Corrige um problema de reprodução de vídeo em alguns servidores"
           }
         },
         "ru" : {
@@ -3915,6 +4371,18 @@
             "value" : "Wersja 2.4.8\n25 marca 2020\n\n• Piwigo ostrzega, kiedy:\n - strona internetowa posiada niepoprawny certyfikat,\n - próbujesz ustanowić niezabezpieczone połączenie\n• Ulepszone zarządzanie pamięcią podręczną\n• Poprawki drobnych błędów i ulepszenia interfejsu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.4.8\n25 de março de 2020\n\n• O Piwigo avisa você quando:\n - um site tem um certificado que não é válido,\n - antes de estabelecer uma conexão não segura\n• Melhoria do gerenciamento do cache\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.4.8\n25 de março de 2020\n\n• O Piwigo avisa-o quando:\n - um site tem um certificado que não é válido,\n - antes de estabelecer uma ligação não segura\n• Melhoria da gestão da cache\n• Correções de erros menores e melhorias na interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4014,6 +4482,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.5\n27 sierpnia 2020\n\n• Rejestracja żądań przesyłania\n• Przesyłanie zdjęć i filmów w miarę możliwości\n• Opcja przesyłania tylko przez Wi-Fi\n• Zawieszanie przesyłania w trybie oszczędzania energii\n• Znacznie szybszy dostęp do biblioteki zdjęć\n• Poprawki drobnych błędów i ulepszenia interfejsu\n• Modernizacja kodu\n\nPrzesyłanie w tle będzie dostępne po uaktualnieniu serwera."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.5\n27 de agosto de 2020\n\n• Registra as solicitações de envio\n• Envia as fotos/vídeos quando possível\n• Opção “Somente Wi-Fi” para os envios\n• Nenhum envio no Modo de Baixo Consumo\n• Acesso muito mais rápido à fototeca\n• Correções de erros menores e melhorias na interface\n• Modernização do código\n\nO envio em segundo plano estará disponível após uma atualização do servidor."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.5\n27 de agosto de 2020\n\n• Regista os pedidos de carregamento\n• Carrega as fotografias/vídeos quando possível\n• Opção «Apenas Wi-Fi» para os carregamentos\n• Nenhum carregamento no Modo de Poupança de Energia\n• Acesso muito mais rápido à fototeca\n• Correções de erros menores e melhorias na interface\n• Modernização do código\n\nO carregamento em segundo plano estará disponível após uma atualização do servidor."
           }
         },
         "ru" : {
@@ -4117,6 +4597,18 @@
             "value" : "Wersja 2.5.1\n10 września 2020\n\n• Nowa opcja prezentowania zdjęć i filmów w losowej kolejności\n• Poprawki drobnych błędów i ulepszenia interfejsu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.5.1\n10 de setembro de 2020\n\n• Nova opção para apresentar as fotos e os vídeos em ordem aleatória\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.5.1\n10 de setembro de 2020\n\n• Nova opção para apresentar as fotografias e os vídeos em ordem aleatória\n• Correções de erros menores e melhorias na interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4216,6 +4708,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.5.2\n3 grudnia 2020\n\n• Przesyłanie w tle (wymaga rozszerzenia uploadAsync lub Piwigo 2.11 lub nowszego)\n• Poprawki drobnych błędów i ulepszenia interfejsu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.5.2\n3 de dezembro de 2020\n\n• Envio em segundo plano (requer a extensão uploadAsync ou o Piwigo 11 ou posterior)\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.5.2\n3 de dezembro de 2020\n\n• Carregamento em segundo plano (requer a extensão uploadAsync ou o Piwigo 11 ou posterior)\n• Correções de erros menores e melhorias na interface"
           }
         },
         "ru" : {
@@ -4319,6 +4823,18 @@
             "value" : "Wersja 2.5.3\n21 grudnia 2020\n\n• Kontroluj, do których zdjęć i filmów Piwigo ma dostęp\n• Wskazówki i porady, aby lepiej wykorzystywać aplikację\n• Poprawki błędów"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.5.3\n21 de dezembro de 2020\n\n• Controle quais fotos e vídeos o Piwigo pode acessar\n• Dicas e truques para aproveitar melhor o aplicativo\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.5.3\n21 de dezembro de 2020\n\n• Controle a que fotografias e vídeos o Piwigo pode aceder\n• Dicas e sugestões para tirar melhor partido da aplicação\n• Correções de erros"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4418,6 +4934,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.5.4\n2 stycznia 2021\n\n• Poprawki drobnych błędów i ulepszenia interfejsu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.5.4\n2 de janeiro de 2021\n\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.5.4\n2 de janeiro de 2021\n\n• Correções de erros menores e melhorias na interface"
           }
         },
         "ru" : {
@@ -4521,6 +5049,18 @@
             "value" : "Wersja 2.6\n3 marca 2021\n\n• Wklejanie/przesyłanie zdjęć i filmów ze schowka\n• Rozwiązanie problemu z kompatybilnością z Piwigo 11\n• Poprawki drobnych błędów i ulepszenia interfejsu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.6\n3 de março de 2021\n\n• Cole/envie fotos e vídeos a partir da área de transferência\n• Corrige um problema de compatibilidade com o Piwigo 11\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.6\n3 de março de 2021\n\n• Cole/carregue fotografias e vídeos a partir da área de transferência\n• Corrige um problema de compatibilidade com o Piwigo 11\n• Correções de erros menores e melhorias na interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4620,6 +5160,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.6.1\n19 marca 2021\n\n• Naprawia przypisywanie tagów wybranym zdjęciom\n• Przeprojektowane ustawienia wyglądu\n• Poprawia niezawodność przesyłania w tle\n• Poprawki drobnych błędów i ulepszenia interfejsu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.6.1\n19 de março de 2021\n\n• Corrige a atribuição de etiquetas a uma seleção de fotos\n• Ajustes de aparência redesenhados\n• Melhora a confiabilidade do envio em segundo plano\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.6.1\n19 de março de 2021\n\n• Corrige a atribuição de etiquetas a uma seleção de fotografias\n• Definições de aparência redesenhadas\n• Melhora a fiabilidade do carregamento em segundo plano\n• Correções de erros menores e melhorias na interface"
           }
         },
         "ru" : {
@@ -4723,6 +5275,18 @@
             "value" : "Wersja 2.6.2\n3 maja 2021\n\n• Pozwala wybranym użytkownikom Community tworzyć tagi\n• Naprawia problem kompatybilności z Piwigo 11\n• Poprawki drobnych błędów i ulepszenia interfejsu\n• Modernizacja kodu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.6.2\n3 de maio de 2021\n\n• Permite que alguns usuários do Community criem etiquetas\n• Corrige um problema de compatibilidade com o Piwigo 11\n• Correções de erros menores e melhorias na interface\n• Modernização do código"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.6.2\n3 de maio de 2021\n\n• Permite que alguns utilizadores do Community criem etiquetas\n• Corrige um problema de compatibilidade com o Piwigo 11\n• Correções de erros menores e melhorias na interface\n• Modernização do código"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4822,6 +5386,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.6.3\n11 maja 2021\n\n• Poprawki błędów"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.6.3\n11 de maio de 2021\n\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.6.3\n11 de maio de 2021\n\n• Correções de erros"
           }
         },
         "ru" : {
@@ -4925,6 +5501,18 @@
             "value" : "Wersja 2.6.4\n18 maja 2021\n\n• Poprawki drobnych błędów i ulepszenia interfejsu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.6.4\n18 de maio de 2021\n\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.6.4\n18 de maio de 2021\n\n• Correções de erros menores e melhorias na interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5024,6 +5612,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.7\n12 sierpnia 2021\n\n• Automatyczne przesyłanie zdjęć i filmów\n• Poprawione opcje zmniejszania zdjęć i filmów\n• Poprawki drobnych błędów i ulepszenia interfejsu\n• Modernizacja kodu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.7\n12 de agosto de 2021\n\n• Envio automático de fotos e vídeos\n• Melhoria das opções de redução de tamanho de fotos e vídeos\n• Correções de erros menores e melhorias na interface\n• Modernização do código"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.7\n12 de agosto de 2021\n\n• Carregamento automático de fotografias e vídeos\n• Melhoria das opções de redução de tamanho de fotografias e vídeos\n• Correções de erros menores e melhorias na interface\n• Modernização do código"
           }
         },
         "ru" : {
@@ -5127,6 +5727,18 @@
             "value" : "Wersja 2.7.1\n1 września 2021\n\n• Poprawki drobnych błędów i ulepszenia interfejsu\n• Poprawki tłumaczenia"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.7.1\n1 de setembro de 2021\n\n• Correções de erros menores e melhorias na interface\n• Melhoria das traduções"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.7.1\n1 de setembro de 2021\n\n• Correções de erros menores e melhorias na interface\n• Melhoria das traduções"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5226,6 +5838,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.7.2\n20 września 2021\n\n• Kompatybilność z iOS 15\n• Poprawki drobnych błędów i ulepszenia interfejsu\n• Modernizacja kodu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.7.2\n20 de setembro de 2021\n\n• Compatibilidade com o iOS 15\n• Correções de erros menores e melhorias na interface\n• Modernização do código"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.7.2\n20 de setembro de 2021\n\n• Compatibilidade com o iOS 15\n• Correções de erros menores e melhorias na interface\n• Modernização do código"
           }
         },
         "ru" : {
@@ -5329,6 +5953,18 @@
             "value" : "Wersja 2.8\n23 października 2021\n\n• Dodawanie i usuwanie zdjęć i filmów z Twoich Ulubionych\n• Poprawki drobnych błędów i ulepszenia interfejsu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.8\n23 de outubro de 2021\n\n• Adicione e remova fotos e vídeos dos seus favoritos\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.8\n23 de outubro de 2021\n\n• Adicione e remova fotografias e vídeos dos seus favoritos\n• Correções de erros menores e melhorias na interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5428,6 +6064,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.8.1\n9 listopada 2021\n\n• Poprawki błędów"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.8.1\n9 de novembro de 2021\n\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.8.1\n9 de novembro de 2021\n\n• Correções de erros"
           }
         },
         "ru" : {
@@ -5531,6 +6179,18 @@
             "value" : "Wersja 2.8.2\n26 listopada 2021\n\n• Umożliwia użytkownikom Community przesyłanie w tle i automatyczne przesyłanie zdjęć i filmów\n• Naprawia problem z kompatybilnością z Piwigo 12\n• Poprawki drobnych błędów i ulepszenia interfejsu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.8.2\n26 de novembro de 2021\n\n• Permite que os usuários do Community enviem em segundo plano e enviem fotos e vídeos automaticamente\n• Corrige um problema de compatibilidade com o Piwigo 12\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.8.2\n26 de novembro de 2021\n\n• Permite que os utilizadores do Community carreguem em segundo plano e carreguem fotografias e vídeos automaticamente\n• Corrige um problema de compatibilidade com o Piwigo 12\n• Correções de erros menores e melhorias na interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5630,6 +6290,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.9\n9 stycznia 2022\n\n• Możliwość wyświetlania opisów zdjęć/filmów w trybie podglądu\n• Poprawki drobnych błędów i ulepszenia interfejsu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.9\n9 de janeiro de 2022\n\n• Mostra as descrições das fotos/vídeos no modo de pré-visualização\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.9\n9 de janeiro de 2022\n\n• Mostra as descrições das fotografias/vídeos no modo de pré-visualização\n• Correções de erros menores e melhorias na interface"
           }
         },
         "ru" : {
@@ -5733,6 +6405,18 @@
             "value" : "Wersja 2.9.1\n20 stycznia 2022\n\n• Podświetlanie ostatnio zaktualizowanych albumów\n• Poprawki drobnych błędów i ulepszenia interfejsu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.9.1\n20 de janeiro de 2022\n\n• Destaca os álbuns atualizados recentemente\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.9.1\n20 de janeiro de 2022\n\n• Destaca os álbuns atualizados recentemente\n• Correções de erros menores e melhorias na interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5832,6 +6516,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.9.2\n24 stycznia 2022\n\n• Poprawki błędów\n• Modernizacja kodu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.9.2\n24 de janeiro de 2022\n\n• Correções de erros\n• Modernização do código"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.9.2\n24 de janeiro de 2022\n\n• Correções de erros\n• Modernização do código"
           }
         },
         "ru" : {
@@ -5935,6 +6631,18 @@
             "value" : "Wersja 2.9.3\n11 lutego 2022\n\n• Dotknij dwukrotnie, aby powiększyć i pomniejszyć zdjęcie\n• Poprawki drobnych błędów i ulepszenia interfejsu\n• Modernizacja kodu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.9.3\n11 de fevereiro de 2022\n\n• Toque duas vezes para ampliar e reduzir as fotos\n• Correções de erros menores e melhorias na interface\n• Modernização do código"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.9.3\n11 de fevereiro de 2022\n\n• Toque duas vezes para ampliar e reduzir as fotografias\n• Correções de erros menores e melhorias na interface\n• Modernização do código"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6034,6 +6742,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.9.4\n23 lutego 2022\n\n• Poprawki błędów\n• Modernizacja kodu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.9.4\n23 de fevereiro de 2022\n\n• Correções de erros\n• Modernização do código"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.9.4\n23 de fevereiro de 2022\n\n• Correções de erros\n• Modernização do código"
           }
         },
         "ru" : {
@@ -6137,6 +6857,18 @@
             "value" : "Wersja 2.9.5\n7 marca 2022\n\n• Poprawki błędów\n• Modernizacja kodu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.9.5\n7 de março de 2022\n\n• Correções de erros\n• Modernização do código"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.9.5\n7 de março de 2022\n\n• Correções de erros\n• Modernização do código"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6236,6 +6968,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.10\n20 maja 2022\n\n• Dodaje App Lock, funkcję ukrycia albumów za Face ID, Touch ID i kodem dostępu\n• Poprawki błędów\n• Modernizacja kodu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.10\n20 de maio de 2022\n\n• Adiciona o Bloqueio do App, um recurso para esconder os seus álbuns atrás do Face ID, do Touch ID e de um código\n• Correções de erros\n• Modernização do código"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.10\n20 de maio de 2022\n\n• Adiciona o Bloqueio da Aplicação, uma funcionalidade para esconder os seus álbuns atrás do Face ID, do Touch ID e de um código\n• Correções de erros\n• Modernização do código"
           }
         },
         "ru" : {
@@ -6339,6 +7083,18 @@
             "value" : "Wersja 2.11\n11 czerwca 2022\n\n• Dodaje opcję ponownego przesyłania zdjęć i filmów\n• Modernizacja kodu\n• Poprawki błędów"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.11\n11 de junho de 2022\n\n• Adiciona uma opção para enviar novamente fotos e vídeos\n• Modernização do código\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.11\n11 de junho de 2022\n\n• Adiciona uma opção para carregar novamente fotografias e vídeos\n• Modernização do código\n• Correções de erros"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6438,6 +7194,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.11.1\n12 czerwca 2022\n\n• Poprawki błędów"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.11.1\n12 de junho de 2022\n\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.11.1\n12 de junho de 2022\n\n• Correções de erros"
           }
         },
         "ru" : {
@@ -6541,6 +7309,18 @@
             "value" : "Wersja 2.11.2\n21 czerwca 2022\n\n• Rozwiązuje problem ze zgodnością z wtyczką Community"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.11.2\n21 de junho de 2022\n\n• Corrige um problema de compatibilidade com o plugin Community"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.11.2\n21 de junho de 2022\n\n• Corrige um problema de compatibilidade com o plugin Community"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6640,6 +7420,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.12\n3 lipca 2022\n\n• Wybierz tag szybciej z paskiem wyszukiwania\n• Modernizacja kodu\n• Poprawki błędów"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.12\n3 de julho de 2022\n\n• Selecione uma etiqueta mais rapidamente com a barra de busca\n• Modernização do código\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.12\n3 de julho de 2022\n\n• Selecione uma etiqueta mais rapidamente com a barra de pesquisa\n• Modernização do código\n• Correções de erros"
           }
         },
         "ru" : {
@@ -6743,6 +7535,18 @@
             "value" : "Wersja 2.12.1\n10 lipca 2022\n\n• Naprawia awarię w iOS 9-13 występującą podczas zmiany tagów przypisanych do zdjęć"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.12.1\n10 de julho de 2022\n\n• Corrige um travamento que ocorria no iOS 9-13 ao alterar as etiquetas atribuídas às fotos"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.12.1\n10 de julho de 2022\n\n• Corrige um encerramento inesperado que ocorria no iOS 9-13 ao alterar as etiquetas atribuídas às fotografias"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6842,6 +7646,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.12.2\n2 sierpnia 2022\n\n• Naprawia awarię w iOS 9-12 podczas wyświetlania kolejki żądań przesyłania\n• Drobne poprawki błędów i ulepszenia interfejsu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.12.2\n2 de agosto de 2022\n\n• Corrige um travamento que ocorria no iOS 9-12 ao mostrar a fila de solicitações de envio\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.12.2\n2 de agosto de 2022\n\n• Corrige um encerramento inesperado que ocorria no iOS 9-12 ao mostrar a fila de pedidos de carregamento\n• Correções de erros menores e melhorias na interface"
           }
         },
         "ru" : {
@@ -6945,6 +7761,18 @@
             "value" : "Wersja 2.12.3\n7 sierpnia 2022\n\n• Poprawki błędów"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.12.3\n7 de agosto de 2022\n\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.12.3\n7 de agosto de 2022\n\n• Correções de erros"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7044,6 +7872,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.12.4\n16 sierpnia 2022\n\n• Poprawki błędów"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.12.4\n16 de agosto de 2022\n\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.12.4\n16 de agosto de 2022\n\n• Correções de erros"
           }
         },
         "ru" : {
@@ -7147,6 +7987,18 @@
             "value" : "Wersja 2.12.5\n26 sierpnia 2022\n\n• Poprawki błędów"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.12.5\n26 de agosto de 2022\n\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.12.5\n26 de agosto de 2022\n\n• Correções de erros"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7246,6 +8098,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 2.12.6\n21 listopada 2022\n\n• Poprawki błędów"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.12.6\n21 de novembro de 2022\n\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.12.6\n21 de novembro de 2022\n\n• Correções de erros"
           }
         },
         "ru" : {
@@ -7349,6 +8213,18 @@
             "value" : "Wersja 2.12.7\n19 grudnia 2022\n\n• Poprawki błędów"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.12.7\n19 de dezembro de 2022\n\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 2.12.7\n19 de dezembro de 2022\n\n• Correções de erros"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7448,6 +8324,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 3.0\n27 czerwca 2023\n\n• W całości przepisane zarządzanie pamięcią podręczną w celu poprawy komfortu użytkowania i umożliwienia przeglądania offline\n• Poprawki niektórych tłumaczeń"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.0\n27 de junho de 2023\n\n• Gerenciamento do cache totalmente reescrito para melhorar a experiência de uso e permitir a navegação offline\n• Corrige algumas traduções"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.0\n27 de junho de 2023\n\n• Gestão da cache totalmente reescrita para melhorar a experiência de utilização e permitir a navegação offline\n• Corrige algumas traduções"
           }
         },
         "ru" : {
@@ -7551,6 +8439,18 @@
             "value" : "Wersja 3.0.1\n2 lipca 2023\n\n• Poprawki drobnych błędów i ulepszenia interfejsu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.0.1\n2 de julho de 2023\n\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.0.1\n2 de julho de 2023\n\n• Correções de erros menores e melhorias na interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7650,6 +8550,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 3.0.2\n15 lipca 2023\n\n• Poprawki błędów"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.0.2\n15 de julho de 2023\n\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.0.2\n15 de julho de 2023\n\n• Correções de erros"
           }
         },
         "ru" : {
@@ -7753,6 +8665,18 @@
             "value" : "Wersja 3.1\n20 listopada 2023\n\n• Przesuń palcem w dół lub zsuń obraz, aby powrócić do albumu podczas przeglądania pojedynczych zdjęć lub filmów.\n• Oglądaj wideo przechowywane na twoim Piwigo podczas korzystania z innych aplikacji.\n• Poprawki błędów"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.1\n20 de novembro de 2023\n\n• Deslize para baixo ou belisque a imagem para voltar ao álbum ao visualizar fotos ou vídeos individuais\n• Assista a um vídeo guardado no seu Piwigo enquanto usa outros aplicativos.\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.1\n20 de novembro de 2023\n\n• Deslize para baixo ou belisque a imagem para voltar ao álbum ao visualizar fotografias ou vídeos individuais\n• Veja um vídeo guardado no seu Piwigo enquanto utiliza outras aplicações.\n• Correções de erros"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7852,6 +8776,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 3.1.1\n1 grudnia 2023\n\n• Aktualizacja statystyk serwera (wymaga Piwigo 14)\n• Poprawki błędów"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.1.1\n1 de dezembro de 2023\n\n• Atualiza as estatísticas do servidor (requer o Piwigo 14)\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.1.1\n1 de dezembro de 2023\n\n• Atualiza as estatísticas do servidor (requer o Piwigo 14)\n• Correções de erros"
           }
         },
         "ru" : {
@@ -7955,6 +8891,18 @@
             "value" : "Wersja 3.1.2\n1 lutego 2024\n\n• Żądanie aktualizacji serwera Piwigo w razie potrzeby\n• Poprawki błędów"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.1.2\n1 de fevereiro de 2024\n\n• Solicita a atualização do servidor Piwigo se necessário\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.1.2\n1 de fevereiro de 2024\n\n• Solicita a atualização do servidor Piwigo se necessário\n• Correções de erros"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8054,6 +9002,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 3.1.3\n11 lutego 2024\n\n• Poprawki błędów"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.1.3\n11 de fevereiro de 2024\n\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.1.3\n11 de fevereiro de 2024\n\n• Correções de erros"
           }
         },
         "ru" : {
@@ -8157,6 +9117,18 @@
             "value" : "Wersja 3.1.4\n27 lutego 2024\n\n• Naprawa awarii występującej w systemie iOS 12"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.1.4\n27 de fevereiro de 2024\n\n• Corrige um travamento que ocorria no iOS 12"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.1.4\n27 de fevereiro de 2024\n\n• Corrige um encerramento inesperado que ocorria no iOS 12"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8256,6 +9228,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 3.2\n14 lipca 2024\n\n• Można dopasować opcje sortowania zdjęć w albumie\n• Dodaje opcje sortowania zdjęć w locie\n• Dodaje możliwość obracania przesyłanych zdjęć (wymagana wtyczka rotateImage)\n• Poprawki błędów"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.2\n14 de julho de 2024\n\n• Adota as opções de ordenação das fotos do álbum\n• Adiciona opções de ordenação de fotos instantânea\n• Adiciona a rotação das fotos enviadas (requer o plugin rotateImage)\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.2\n14 de julho de 2024\n\n• Adota as opções de ordenação das fotografias do álbum\n• Adiciona opções de ordenação de fotografias instantânea\n• Adiciona a rotação das fotografias carregadas (requer o plugin rotateImage)\n• Correções de erros"
           }
         },
         "ru" : {
@@ -8359,6 +9343,18 @@
             "value" : "Wersja 3.2.1\n29 lipca 2024\n\n• Dodaje opcję wyświetlania albumów z ich opisami lub bez opisów\n• Poprawki błędów"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.2.1\n29 de julho de 2024\n\n• Adiciona uma opção para mostrar os álbuns com ou sem descrições\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.2.1\n29 de julho de 2024\n\n• Adiciona uma opção para mostrar os álbuns com ou sem descrições\n• Correções de erros"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8458,6 +9454,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 3.2.2\n12 września 2024\n\n• Dodano opcję usuwania wybranych zdjęć/filmów zapisanych w urządzeniu\n• Poprawki błędów"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.2.2\n12 de setembro de 2024\n\n• Adiciona uma opção para apagar seleções de fotos/vídeos guardados no dispositivo\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.2.2\n12 de setembro de 2024\n\n• Adiciona uma opção para apagar seleções de fotografias/vídeos guardados no dispositivo\n• Correções de erros"
           }
         },
         "ru" : {
@@ -8561,6 +9569,18 @@
             "value" : "Wersja 3.2.3\n17 października 2024\n\n• Poprawki błędów"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.2.3\n17 de outubro de 2024\n\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.2.3\n17 de outubro de 2024\n\n• Correções de erros"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8660,6 +9680,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 3.2.4\n18 stycznia 2025\n\n• Poprawki drobnych błędów i ulepszenia interfejsu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.2.4\n18 de janeiro de 2025\n\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.2.4\n18 de janeiro de 2025\n\n• Correções de erros menores e melhorias na interface"
           }
         },
         "ru" : {
@@ -8763,6 +9795,18 @@
             "value" : "Wersja 3.2.5\n17 lutego 2025\n\n• Poprawki drobnych błędów i ulepszenia interfejsu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.2.5\n17 de fevereiro de 2025\n\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.2.5\n17 de fevereiro de 2025\n\n• Correções de erros menores e melhorias na interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8862,6 +9906,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 3.3\n26 marca 2025\n\n• Szybsze kopiowanie i przenoszenie wybranych zdjęć\n• Poprawiono zarządzanie migracją bazy danych\n• Poprawiono zarządzanie prawami do udostępniania zdjęć i filmów\n• Naprawiono błędy i ulepszono interfejs"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.3\n26 de março de 2025\n\n• Copia e move uma seleção de fotos muito mais rapidamente\n• Melhoria do gerenciamento da migração do banco de dados\n• Corrige o gerenciamento dos direitos de compartilhamento de fotos e vídeos\n• Corrige erros e melhora a interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.3\n26 de março de 2025\n\n• Copia e move uma seleção de fotografias muito mais rapidamente\n• Melhoria da gestão da migração da base de dados\n• Corrige a gestão dos direitos de partilha de fotografias e vídeos\n• Corrige erros e melhora a interface"
           }
         },
         "ru" : {
@@ -8965,6 +10021,18 @@
             "value" : "Wersja 3.3.1\n28 marca 2025\n\n• Dodano opcje automatycznego odtwarzania i zapętlania filmów\n• Naprawiono błędy i ulepszono interfejs"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.3.1\n28 de março de 2025\n\n• Adiciona opções de reprodução automática e de repetição dos vídeos\n• Corrige erros e melhora a interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.3.1\n28 de março de 2025\n\n• Adiciona opções de reprodução automática e de repetição dos vídeos\n• Corrige erros e melhora a interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9064,6 +10132,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 3.3.2\n14 kwietnia 2025\n\n• Naprawiono błędy i ulepszono interfejs"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.3.2\n14 de abril de 2025\n\n• Corrige erros e melhora a interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.3.2\n14 de abril de 2025\n\n• Corrige erros e melhora a interface"
           }
         },
         "ru" : {
@@ -9167,6 +10247,18 @@
             "value" : "Wersja 3.4\n30 czerwca 2025\n\n• Dodaje opcje modyfikowania nazw plików przed przesłaniem\n• Poprawki błędów i usprawnienia interfejsu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.4\n30 de junho de 2025\n\n• Adiciona opções para modificar os nomes dos arquivos antes do envio\n• Corrige erros e melhora a interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.4\n30 de junho de 2025\n\n• Adiciona opções para modificar os nomes dos ficheiros antes do carregamento\n• Corrige erros e melhora a interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9266,6 +10358,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 3.4.1\n26 lipca 2025\n\n• Dodano szybkie akcje na ekranie głównym\n• Naprawiono błędy i ulepszono interfejs"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.4.1\n26 de julho de 2025\n\n• Adiciona ações rápidas na Tela de Início\n• Corrige erros e melhora a interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.4.1\n26 de julho de 2025\n\n• Adiciona ações rápidas no ecrã principal\n• Corrige erros e melhora a interface"
           }
         },
         "ru" : {
@@ -9369,6 +10473,18 @@
             "value" : "Wersja 3.5\n18 sierpnia 2025\n\n• Dodano zarządzanie plikami PDF\n• Poprawki błędów i usprawnienia interfejsu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.5\n18 de agosto de 2025\n\n• Adiciona o gerenciamento de arquivos PDF\n• Corrige erros e melhora a interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.5\n18 de agosto de 2025\n\n• Adiciona a gestão de ficheiros PDF\n• Corrige erros e melhora a interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9468,6 +10584,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 3.5.1\n23 sierpnia 2025\n\n• Poprawki błędów i usprawnienia interfejsu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.5.1\n23 de agosto de 2025\n\n• Corrige erros e melhora a interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 3.5.1\n23 de agosto de 2025\n\n• Corrige erros e melhora a interface"
           }
         },
         "ru" : {
@@ -9571,6 +10699,18 @@
             "value" : "Wersja 4.0\n15 września 2025\n\n• Kompatybilność z iOS 26\n• Drobne poprawki błędów i ulepszenia interfejsu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.0\n15 de setembro de 2025\n\n• Compatibilidade com o iOS 26\n• Correções de erros menores e melhorias na interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.0\n15 de setembro de 2025\n\n• Compatibilidade com o iOS 26\n• Correções de erros menores e melhorias na interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9670,6 +10810,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 4.1\n29 października 2025\n\n• Obsługa większych czcionek\n• Poprawki błędów i ulepszenia interfejsu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.1\n29 de outubro de 2025\n\n• Adiciona o suporte a Texto Maior\n• Corrige erros e melhora a interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.1\n29 de outubro de 2025\n\n• Adiciona o suporte a Texto Maior\n• Corrige erros e melhora a interface"
           }
         },
         "ru" : {
@@ -9773,6 +10925,18 @@
             "value" : "Wersja 4.1.1\n11 listopada 2025\n\n• Poprawki błędów i usprawnienia interfejsu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.1.1\n11 de novembro de 2025\n\n• Corrige erros e melhora a interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.1.1\n11 de novembro de 2025\n\n• Corrige erros e melhora a interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9872,6 +11036,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 4.1.2\n12 grudnia 2025\n\n• Dodano obsługę kluczy API\n• Poprawki błędów i usprawnienia interfejsu\n• Modernizacja kodu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.1.2\n12 de dezembro de 2025\n\n• Adiciona o suporte a chaves de API\n• Corrige erros e melhora a interface\n• Modernização do código"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.1.2\n12 de dezembro de 2025\n\n• Adiciona o suporte a chaves de API\n• Corrige erros e melhora a interface\n• Modernização do código"
           }
         },
         "ru" : {
@@ -9975,6 +11151,18 @@
             "value" : "Wersja 4.1.3\n20 grudnia 2025\n\n• Kompatybilność z Piwigo 16\n• Poprawki błędów i usprawnienia interfejsu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.1.3\n20 de dezembro de 2025\n\n• Compatibilidade com o Piwigo 16\n• Corrige erros e melhora a interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.1.3\n20 de dezembro de 2025\n\n• Compatibilidade com o Piwigo 16\n• Corrige erros e melhora a interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10074,6 +11262,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 4.1.4\n25 marca 2026\n\n• Poprawki błędów"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.1.4\n25 de março de 2026\n\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.1.4\n25 de março de 2026\n\n• Correções de erros"
           }
         },
         "ru" : {
@@ -10177,6 +11377,18 @@
             "value" : "Wersja 4.2\n1 maja 2026\n\n• Szybsze przesyłanie zdjęć i zaawansowane opcje przesyłania\n• Kontynuacja przesyłania w tle po przejściu do innej aplikacji\n• Szybsze wyświetlanie albumów zapisanych w urządzeniu przed przesłaniem\n• Udostępnianie dzienników w pliku za pośrednictwem AirDrop i grupowanie ich według milisekund\n• Poprawki błędów i ulepszenia interfejsu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.2\n1 de maio de 2026\n\n• Envia mais rapidamente e oferece opções de envio avançadas\n• Continua os envios em segundo plano depois de mudar para outro aplicativo\n• Acelera a exibição dos álbuns guardados no dispositivo antes do envio\n• Compartilha os registros num arquivo via AirDrop e agrupa os registros por milissegundo\n• Corrige erros e melhora a interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.2\n1 de maio de 2026\n\n• Carrega mais rapidamente e oferece opções de carregamento avançadas\n• Continua os carregamentos em segundo plano depois de mudar para outra aplicação\n• Acelera a apresentação dos álbuns guardados no dispositivo antes do carregamento\n• Partilha os registos num ficheiro via AirDrop e agrupa os registos por milissegundo\n• Corrige erros e melhora a interface"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10276,6 +11488,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 4.2.1\n9 maja 2026\n\n• Dodaj widoki pomocy\n• Poprawki błędów"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.2.1\n9 de maio de 2026\n\n• Adiciona páginas de ajuda\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.2.1\n9 de maio de 2026\n\n• Adiciona páginas de ajuda\n• Correções de erros"
           }
         },
         "ru" : {
@@ -10379,6 +11603,18 @@
             "value" : "Wersja 4.2.2\n24 maja 2026\n\n• Naprawiono błąd związany z opcją automatycznego wysyłania\n• Ulepszone tłumaczenia"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.2.2\n24 de maio de 2026\n\n• Corrige um erro relacionado com a opção de envio automático\n• Melhoria das traduções"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.2.2\n24 de maio de 2026\n\n• Corrige um erro relacionado com a opção de carregamento automático\n• Melhoria das traduções"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10478,6 +11714,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 4.2.3\n29 maja 2026\n\n• Poprawki błędów i usprawnienia interfejsu\n• Wstrzymuje przesyłanie danych, gdy urządzenie musi się ochłodzić"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.2.3\n29 de maio de 2026\n\n• Corrige erros e melhora a interface\n• Pausa os envios quando o dispositivo precisa esfriar"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.2.3\n29 de maio de 2026\n\n• Corrige erros e melhora a interface\n• Coloca os carregamentos em pausa quando o dispositivo precisa de arrefecer"
           }
         },
         "ru" : {
@@ -10581,6 +11829,18 @@
             "value" : "Wersja 4.2.4\n1 lipca 2026\n\n• Poprawki błędów i usprawnienia interfejsu\n• Dodano możliwość zmiany maksymalnej liczby jednoczesnych połączeń z serwerem Piwigo"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.2.4\n1 de julho de 2026\n\n• Corrige erros e melhora a interface\n• Permite alterar o número máximo de conexões simultâneas com o servidor Piwigo"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.2.4\n1 de julho de 2026\n\n• Corrige erros e melhora a interface\n• Permite alterar o número máximo de ligações simultâneas ao servidor Piwigo"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10680,6 +11940,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 4.3\n1 sierpnia 2026\n\n• Dodano rozszerzenie „Udostępnij”, umożliwiające przesyłanie zdjęć, filmów i plików PDF z innych aplikacji\n• Odtwarza animowane pliki GIF\n• Naprawiono błędy i ulepszono interfejs"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.3\n1 de agosto de 2026\n\n• Adiciona uma extensão de Compartilhamento que permite enviar fotos, vídeos e arquivos PDF a partir de outros aplicativos\n• Reproduz imagens GIF animadas\n• Corrige erros e melhora a interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.3\n1 de agosto de 2026\n\n• Adiciona uma extensão de Partilha que permite carregar fotografias, vídeos e ficheiros PDF a partir de outras aplicações\n• Reproduz imagens GIF animadas\n• Corrige erros e melhora a interface"
           }
         },
         "ru" : {
@@ -10783,6 +12055,18 @@
             "value" : "Wersja 4.3.1\n22 sierpnia 2026\n\n• Poprawki błędów"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.3.1\n22 de agosto de 2026\n\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.3.1\n22 de agosto de 2026\n\n• Correções de erros"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10884,6 +12168,18 @@
             "value" : "Wersja 4.4\n7 września 2026\n\n• Umożliwia udostępnianie albumów prywatnych osobom, które nie mają konta (wymaga wtyczki Share Album)\n• Importuje zdjęcia Live Photo jako zdjęcie, film lub oba\n• Ulepszono zarządzanie użytkownikami Community\n• Poprawki błędów"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.4\n7 de setembro de 2026\n\n• Permite compartilhar álbuns privados com pessoas que não têm conta (requer o plugin Share Album)\n• Importa as Live Photos como foto, vídeo ou ambos\n• Melhora o gerenciamento dos usuários do Community\n• Correções de erros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.4\n7 de setembro de 2026\n\n• Permite partilhar álbuns privados com pessoas que não têm conta (requer o plugin Share Album)\n• Importa as Live Photos como fotografia, vídeo ou ambos\n• Melhora a gestão dos utilizadores do Community\n• Correções de erros"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10983,6 +12279,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja 4.4.1\n\n• Poprawia układ w języku arabskim i innych językach pisanych od prawej do lewej\n• Stosuje reguły liczby mnogiej każdego języka do liczby zdjęć, albumów i tagów\n• Uzupełnia tłumaczenie indonezyjskie\n• Poprawki błędów i usprawnienia interfejsu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.4.1\n\n• Corrige o layout em árabe e noutros idiomas da direita para a esquerda\n• Aplica as regras de plural de cada idioma às contagens de fotos, álbuns e etiquetas\n• Conclui a tradução para indonésio\n• Corrige erros e melhora a interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.4.1\n\n• Corrige a disposição em árabe e noutros idiomas da direita para a esquerda\n• Aplica as regras de plural de cada idioma às contagens de fotografias, álbuns e etiquetas\n• Conclui a tradução para indonésio\n• Corrige erros e melhora a interface"
           }
         },
         "ru" : {

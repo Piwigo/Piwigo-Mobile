@@ -59,7 +59,7 @@ devices([
 "iPad Pro 13-inch (M5)"						# 13-inch
 ])
 
-# ["pt", "pt_BR"] # Portuguese with Brazilian locale
+# List of languages
 languages([
 "en-US",
 "zh-Hans",
@@ -73,6 +73,8 @@ languages([
 "id",
 "ja",
 "pl",
+"pt-BR",
+"pt-PT",
 "ru",
 "es-ES",
 "sv",

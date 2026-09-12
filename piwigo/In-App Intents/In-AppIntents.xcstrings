@@ -243,6 +243,42 @@
             }
           }
         },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld foto adicionada à fila de envio."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotos adicionadas à fila de envio."
+                }
+              }
+            }
+          }
+        },
+        "pt-PT" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotografia adicionada à fila de carregamento."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotografias adicionadas à fila de carregamento."
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -560,6 +596,42 @@
             }
           }
         },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld foto adicionada à fila de envio (este servidor Piwigo não aceita arquivos PDF)."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotos adicionadas à fila de envio (este servidor Piwigo não aceita arquivos PDF)."
+                }
+              }
+            }
+          }
+        },
+        "pt-PT" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotografia adicionada à fila de carregamento (este servidor Piwigo não aceita ficheiros PDF)."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotografias adicionadas à fila de carregamento (este servidor Piwigo não aceita ficheiros PDF)."
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -708,6 +780,18 @@
             "value" : "Dodaje ostatnie zdjęcia do kolejki wysyłania zgodnie z ustawieniami automatycznego wysyłania."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adiciona as fotos recentes à fila de envio conforme os ajustes de envio automático."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adiciona as fotografias recentes à fila de carregamento de acordo com as definições de carregamento automático."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -806,6 +890,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nie dodano zdjęć do kolejki przesyłania."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma foto adicionada à fila de envio."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma fotografia adicionada à fila de carregamento."
           }
         },
         "ru" : {
@@ -909,6 +1005,18 @@
             "value" : "Prześlij zdjęcia"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar fotos"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregar fotografias"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1008,6 +1116,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dodaje zdjęcia do kolejki przesyłania."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adiciona fotos à fila de envio."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adiciona fotografias à fila de carregamento."
           }
         },
         "ru" : {
@@ -1111,6 +1231,18 @@
             "value" : "Nie masz uprawnień do przesyłania zdjęć do tego albumu."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você não tem permissão para enviar para este álbum."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não tem permissão para carregar para este álbum."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1210,6 +1342,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Do skrótu nie dodano żadnego zdjęcia ani filmu."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma foto ou vídeo foi fornecido ao atalho."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi fornecida nenhuma fotografia ou vídeo ao atalho."
           }
         },
         "ru" : {

@@ -975,6 +975,14 @@
 		ADFC3A4B2401D704004CD337 /* PrivacyPolicyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyViewController.swift; sourceTree = "<group>"; };
 		D0B07F397539C725E4E665D9 /* UploadPhotosError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = UploadPhotosError.swift; sourceTree = "<group>"; };
 		D82B8CBB1A67820A000E47CA /* piwigo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = piwigo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		14C56BF9BE67EBE05C0092A0 /* pt-BR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/PrivacyPolicy.strings"; sourceTree = "<group>"; };
+		A016881C03A0767FB28D94FA /* pt-PT */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/PrivacyPolicy.strings"; sourceTree = "<group>"; };
+		7F76AF28A758FDDB05CA59AA /* pt-BR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/About.strings"; sourceTree = "<group>"; };
+		9414D6A8113A1DE8672F1518 /* pt-PT */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/About.strings"; sourceTree = "<group>"; };
+		4899B315FF781F4B193C3290 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/AppShortcuts.strings"; sourceTree = "<group>"; };
+		B90AD594935F7188AFBC7F67 /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/AppShortcuts.strings"; sourceTree = "<group>"; };
+		9DC3A90FB2836DB7AA4B46CF /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/InAppIntents.strings"; sourceTree = "<group>"; };
+		59020160E02941AC165368A7 /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/InAppIntents.strings"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2099,6 +2107,8 @@
 				"zh-Hans",
 				hu,
 				"zh-Hant",
+				"pt-BR",
+				"pt-PT",
 			);
 			mainGroup = D82B8CB21A67820A000E47CA;
 			packageReferences = (
@@ -2619,6 +2629,8 @@
 				AD1AD62B2DFF1C8C00D25EF9 /* ru */,
 				AD1AD62C2DFF1C8D00D25EF9 /* es */,
 				AD1AD62D2DFF1C8E00D25EF9 /* sv */,
+				4899B315FF781F4B193C3290 /* pt-BR */,
+				B90AD594935F7188AFBC7F67 /* pt-PT */,
 			);
 			name = AppShortcuts.strings;
 			sourceTree = "<group>";
@@ -2642,6 +2654,8 @@
 				AD32036B2184739500BAD372 /* sv */,
 				AD32036E2184739800BAD372 /* ar */,
 				AD32036C2184739600BAD372 /* id */,
+				14C56BF9BE67EBE05C0092A0 /* pt-BR */,
+				A016881C03A0767FB28D94FA /* pt-PT */,
 			);
 			name = PrivacyPolicy.strings;
 			sourceTree = "<group>";
@@ -2665,6 +2679,8 @@
 				AD0822721FA06B090005AA12 /* sv */,
 				AD8452601FEC70740035047B /* ar */,
 				AD8338601FE677970072104F /* id */,
+				7F76AF28A758FDDB05CA59AA /* pt-BR */,
+				9414D6A8113A1DE8672F1518 /* pt-PT */,
 			);
 			name = About.strings;
 			sourceTree = "<group>";
@@ -2689,6 +2705,8 @@
 				AD8D214626ACC1790008E907 /* sv */,
 				AD8D212E26ACC1700008E907 /* ar */,
 				AD8D213A26ACC1740008E907 /* id */,
+				9DC3A90FB2836DB7AA4B46CF /* pt-BR */,
+				59020160E02941AC165368A7 /* pt-PT */,
 			);
 			name = InAppIntents.intentdefinition;
 			sourceTree = "<group>";

@@ -76,6 +76,18 @@
             "value" : "Anuluj"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -177,6 +189,18 @@
             "value" : "Anuluj"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dispensar"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ignorar"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -273,6 +297,18 @@
           }
         },
         "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
+        "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "OK"
@@ -380,6 +416,18 @@
             "value" : "Tak"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sim"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sim"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -479,6 +527,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wszystkie albumy"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos os álbuns"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos os álbuns"
           }
         },
         "ru" : {
@@ -582,6 +642,18 @@
             "value" : "Ładowanie…"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregando…"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A carregar…"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -681,6 +753,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ostatnio użyte albumy"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Álbuns recentes"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Álbuns recentes"
           }
         },
         "ru" : {
@@ -784,6 +868,18 @@
             "value" : "Wprowadź kod"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Digite o código"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Introduza o código"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -883,6 +979,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Z App Lock, aby uzyskać dostęp do aplikacji, wymagane jest podanie przyporządkowanego urządzeniu kodu. Jeśli utracisz kod, aplikacja będzie musiała być zainstalowana ponownie."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Com o Bloqueio do App, é necessário um código específico do dispositivo para acessar o aplicativo. Se você perder esse código, terá que reinstalar o aplicativo."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Com o Bloqueio da Aplicação, é necessário um código específico do dispositivo para aceder à aplicação. Se perder esse código, terá de reinstalar a aplicação."
           }
         },
         "ru" : {
@@ -986,6 +1094,18 @@
             "value" : "Zmień kod"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alterar o código"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alterar o código"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1085,6 +1205,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Potwierdź kod"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verificar o código"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verificar o código"
           }
         },
         "ru" : {
@@ -1188,6 +1320,18 @@
             "value" : "Uzyskaj dostęp do swoich albumów Piwigo"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acessar seus álbuns do Piwigo"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aceder aos seus álbuns do Piwigo"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1287,6 +1431,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prywatność"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacidade"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacidade"
           }
         },
         "ru" : {

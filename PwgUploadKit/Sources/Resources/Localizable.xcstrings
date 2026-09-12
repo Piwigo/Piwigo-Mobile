@@ -76,6 +76,18 @@
             "value" : "Przesyłanie zostało przerwane. Uruchom aplikację ponownie."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envios interrompidos. Reinicie o aplicativo."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregamentos interrompidos. Reinicie a aplicação."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -345,6 +357,42 @@
             }
           }
         },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld envio concluído"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld envios concluídos"
+                }
+              }
+            }
+          }
+        },
+        "pt-PT" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld carregamento concluído"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld carregamentos concluídos"
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -494,6 +542,18 @@
             "value" : "Urządzenie musi się ochłodzić."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O dispositivo precisa esfriar."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O dispositivo precisa de arrefecer."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -593,6 +653,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Włączono tryb oszczędzania energii. Wyłącz go."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo de baixo consumo ativado. Desative-o."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo de poupança de energia ativado. Desative-o."
           }
         },
         "ru" : {
@@ -696,6 +768,18 @@
             "value" : "Przesyłanie odbywa się wyłącznie przez Wi-Fi. Połącz się z siecią Wi-Fi."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envio somente por Wi-Fi. Conecte-se a uma rede Wi-Fi."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregamento apenas por Wi-Fi. Ligue-se a uma rede Wi-Fi."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -795,6 +879,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Przygotowywanie przesyłania…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparando os envios…"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A preparar os carregamentos…"
           }
         },
         "ru" : {
@@ -1066,6 +1162,42 @@
             }
           }
         },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld envio restante"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld envios restantes"
+                }
+              }
+            }
+          }
+        },
+        "pt-PT" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld carregamento restante"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld carregamentos restantes"
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -1215,6 +1347,18 @@
             "value" : "Przygotowywanie przesyłania…"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparando os envios…"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A preparar os carregamentos…"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1316,6 +1460,18 @@
             "value" : "Wybierz album lub podalbum, do którego zdjęcia i filmy z twojego urządzenia będą automatycznie przesyłane."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecione o álbum ou subálbum para o qual as fotos e os vídeos serão enviados automaticamente."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecione o álbum ou subálbum para o qual as fotografias e os vídeos serão carregados automaticamente."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1415,6 +1571,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wybierz album lub podalbum, z którego zdjęcia i filmy z Twojego urządzenia będą automatycznie przesyłane."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecione o álbum ou subálbum do qual as fotos e os vídeos do seu dispositivo serão enviados automaticamente."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecione o álbum ou subálbum a partir do qual as fotografias e os vídeos do seu dispositivo serão carregados automaticamente."
           }
         },
         "ru" : {

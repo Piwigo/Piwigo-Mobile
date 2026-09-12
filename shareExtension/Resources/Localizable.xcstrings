@@ -76,6 +76,18 @@
             "value" : "Nie udało się pobrać udostępnionych zdjęć i filmów."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível recuperar as fotos e os vídeos compartilhados."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível obter as fotografias e os vídeos partilhados."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -175,6 +187,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Przed udostępnieniem zdjęć lub filmów otwórz aplikację Piwigo i utwórz album."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abra o aplicativo Piwigo e crie um álbum antes de compartilhar fotos ou vídeos."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abra a aplicação Piwigo e crie um álbum antes de partilhar fotografias ou vídeos."
           }
         },
         "ru" : {
@@ -278,6 +302,18 @@
             "value" : "Udostępnianie nie powiodło się"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falha no compartilhamento"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falha na partilha"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -377,6 +413,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wybierz album, do którego chcesz przesłać zdjęcia."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecione o álbum no qual você deseja enviar as fotos."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecione o álbum para o qual pretende carregar as fotografias."
           }
         },
         "ru" : {
@@ -480,6 +528,18 @@
             "value" : "Czy na pewno chcesz przesłać zdjęcia do albumu „%@”?"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tem certeza de que deseja enviar as fotos para o álbum “%@”?"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tem a certeza de que pretende carregar as fotografias para o álbum «%@»?"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -579,6 +639,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prześlij do albumu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar para o álbum"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregar para o álbum"
           }
         },
         "ru" : {

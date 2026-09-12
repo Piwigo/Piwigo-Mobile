@@ -76,6 +76,18 @@
             "value" : "Niestety, pliki audio nie są jeszcze obsługiwane przez Piwigo Mobile."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desculpe, os arquivos de áudio ainda não são compatíveis com o Piwigo Mobile."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lamentamos, os ficheiros de áudio ainda não são suportados pelo Piwigo Mobile."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -175,6 +187,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Najwyżej oceniane"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais bem avaliadas"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais bem classificadas"
           }
         },
         "ru" : {
@@ -278,6 +302,18 @@
             "value" : "Moje ulubione"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seus favoritos"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os seus favoritos"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -377,6 +413,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Najnowsze zdjęcia"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotos recentes"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotografias recentes"
           }
         },
         "ru" : {
@@ -480,6 +528,18 @@
             "value" : "Oznaczone"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etiquetadas"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etiquetadas"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -579,6 +639,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Najczęściej odwiedzane"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais vistas"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais vistas"
           }
         },
         "ru" : {
@@ -682,6 +754,18 @@
             "value" : "Album główny"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Álbum raiz"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Álbum raiz"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -781,6 +865,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Najstarsze → Najnowsze"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais antigas → Mais recentes"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais antigas → Mais recentes"
           }
         },
         "ru" : {
@@ -884,6 +980,18 @@
             "value" : "Data Utworzenia, stare → nowe"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data de criação, antiga → recente"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data de criação, antiga → recente"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -983,6 +1091,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Data Utworzenia, nowe → stare"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data de criação, recente → antiga"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data de criação, recente → antiga"
           }
         },
         "ru" : {
@@ -1086,6 +1206,18 @@
             "value" : "Najnowsze → Najstarsze"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais recentes → Mais antigas"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais recentes → Mais antigas"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1185,6 +1317,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Data Wysłania, stare → nowe"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data de publicação, antiga → recente"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data de publicação, antiga → recente"
           }
         },
         "ru" : {
@@ -1288,6 +1432,18 @@
             "value" : "Data Wysłania, nowe → stare"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data de publicação, recente → antiga"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data de publicação, recente → antiga"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1387,6 +1543,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Domyślnie"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Padrão"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Predefinição"
           }
         },
         "ru" : {
@@ -1490,6 +1658,18 @@
             "value" : "Nazwa Pliku, A → Z"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome do arquivo, A → Z"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome do ficheiro, A → Z"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1589,6 +1769,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nazwa Pliku, Z → A"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome do arquivo, Z → A"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome do ficheiro, Z → A"
           }
         },
         "ru" : {
@@ -1692,6 +1884,18 @@
             "value" : "Identyfikator, 1 → 9"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Identificador, 1 → 9"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Identificador, 1 → 9"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1788,6 +1992,18 @@
           }
         },
         "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 → 9"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 → 9"
+          }
+        },
+        "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "1 → 9"
@@ -1894,6 +2110,18 @@
             "value" : "Identyfikator, 9 → 1"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Identificador, 9 → 1"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Identificador, 9 → 1"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1990,6 +2218,18 @@
           }
         },
         "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "9 → 1"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "9 → 1"
+          }
+        },
+        "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "9 → 1"
@@ -2096,6 +2336,18 @@
             "value" : "Ustaw ręcznie"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordem manual"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordem manual"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2197,6 +2449,18 @@
             "value" : "Tytuł Zdjęcia, A → Z"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Título da foto, A → Z"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Título da fotografia, A → Z"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2293,6 +2557,18 @@
           }
         },
         "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A → Z"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A → Z"
+          }
+        },
+        "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "A → Z"
@@ -2399,6 +2675,18 @@
             "value" : "Tytuł Zdjęcia, Z → A"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Título da foto, Z → A"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Título da fotografia, Z → A"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2495,6 +2783,18 @@
           }
         },
         "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Z → A"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Z → A"
+          }
+        },
+        "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Z → A"
@@ -2601,6 +2901,18 @@
             "value" : "Kolejność losowa"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordem aleatória"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordem aleatória"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2700,6 +3012,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Najniższa → Najwyższa"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais baixa → Mais alta"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais baixa → Mais alta"
           }
         },
         "ru" : {
@@ -2803,6 +3127,18 @@
             "value" : "Najwyższa → Najniższa"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais alta → Mais baixa"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais alta → Mais baixa"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2902,6 +3238,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ocena, niska → wysoka"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pontuação, baixa → alta"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pontuação, baixa → alta"
           }
         },
         "ru" : {
@@ -3005,6 +3353,18 @@
             "value" : "Ocena, wysoka → niska"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pontuação, alta → baixa"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pontuação, alta → baixa"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3104,6 +3464,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Najniższy → Najwyższy"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menor → Maior"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menor → Maior"
           }
         },
         "ru" : {
@@ -3207,6 +3579,18 @@
             "value" : "Najwięcej → Najmniej"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maior → Menor"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maior → Menor"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3306,6 +3690,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Odwiedzin, mniej → więcej"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visitas, menor → maior"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visitas, menor → maior"
           }
         },
         "ru" : {
@@ -3409,6 +3805,18 @@
             "value" : "Odwiedzin, mniej → więcej"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visitas, maior → menor"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visitas, maior → menor"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3508,6 +3916,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Albumu nie ma w stałej pamięci podręcznej."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O álbum não está no cache persistente."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O álbum não está na cache persistente."
           }
         },
         "ru" : {
@@ -3611,6 +4031,18 @@
             "value" : "Zdjęcie/film nie znajduje się w pamięci podręcznej."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A foto/vídeo não está no cache persistente."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A fotografia/vídeo não está na cache persistente."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3710,6 +4142,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nie udało się utworzyć nowego obiektu Serwer."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível criar um novo objeto Server."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível criar um novo objeto Server."
           }
         },
         "ru" : {
@@ -3813,6 +4257,18 @@
             "value" : "Nie udało się utworzyć nowego obiektu Użytkownik."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível criar um novo objeto User."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível criar um novo objeto User."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3912,6 +4368,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nie udało się utworzyć nowego obiektu Album."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível criar um novo objeto Album."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível criar um novo objeto Album."
           }
         },
         "ru" : {
@@ -4015,6 +4483,18 @@
             "value" : "Błąd pobierania albumów!"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erro ao obter os álbuns!"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erro ao obter os álbuns!"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4114,6 +4594,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Znaleziono album bez poprawnego identyfikatora lub nazwy i zostanie on usunięty."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foi encontrado e será descartado um álbum sem um ID ou um nome válido."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foi encontrado e será descartado um álbum sem um ID ou um nome válido."
           }
         },
         "ru" : {
@@ -4217,6 +4709,18 @@
             "value" : "Nie udało się utworzyć nowego obiektu Zdjęcie."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível criar um novo objeto Image."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível criar um novo objeto Image."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4316,6 +4820,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Błąd pobierania zdjęć/filmów!"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erro ao obter as fotos/vídeos!"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erro ao obter as fotografias/vídeos!"
           }
         },
         "ru" : {
@@ -4419,6 +4935,18 @@
             "value" : "Znaleziono i będzie usunięte zdjęcie/film bez poprawnego identyfikatora lub nazwy."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foi encontrada e será descartada uma foto/vídeo sem um ID ou um URL válido."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foi encontrada e será descartada uma fotografia/vídeo sem um ID ou um URL válido."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4518,6 +5046,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nie udało się utworzyć nowego obiektu Lokalizacja."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível criar um novo objeto Location."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível criar um novo objeto Location."
           }
         },
         "ru" : {
@@ -4621,6 +5161,18 @@
             "value" : "Znaleziono i zostanie odrzucona lokalizacja bez prawidłowego identyfikatora."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foi encontrada e será descartada uma localização sem um identificador válido."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foi encontrada e será descartada uma localização sem um identificador válido."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4720,6 +5272,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nie udało się utworzyć nowego obiektu znacznika."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível criar um novo objeto Tag."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível criar um novo objeto Tag."
           }
         },
         "ru" : {
@@ -4823,6 +5387,18 @@
             "value" : "Błąd pobierania znaczników!"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erro ao obter as etiquetas!"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erro ao obter as etiquetas!"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4922,6 +5498,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Znaleziono i będzie usunięty znacznik bez poprawnego kodu lub nazwy."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foi encontrada e será descartada uma etiqueta sem um código ou um nome válido."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foi encontrada e será descartada uma etiqueta sem um código ou um nome válido."
           }
         },
         "ru" : {
@@ -5025,6 +5613,18 @@
             "value" : "Nie udało się utworzyć nowego obiektu prześlij."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível criar um novo objeto Upload."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível criar um novo objeto Upload."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5124,6 +5724,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nie udało się usunąć obiektu Przesyłanie."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível apagar um objeto Upload."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível apagar um objeto Upload."
           }
         },
         "ru" : {
@@ -5227,6 +5839,18 @@
             "value" : "Nie udało się pobrać zdjęcia."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível recuperar a foto."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível obter a fotografia."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5326,6 +5950,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Znaleziono i zostanie odrzucone przesłanie bez prawidłowego identyfikatora."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foi encontrado e será descartado um envio sem um identificador válido."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foi encontrado e será descartado um carregamento sem um identificador válido."
           }
         },
         "ru" : {
@@ -5429,6 +6065,18 @@
             "value" : "Odrzuci konto użytkownika bez prawidłowej nazwy użytkownika."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Será descartada uma conta de usuário sem um nome de usuário válido."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Será descartada uma conta de utilizador sem um nome de utilizador válido."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5528,6 +6176,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Brak konta użytkownika w pamięci podręcznej."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A conta de usuário não está no cache persistente."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A conta de utilizador não está na cache persistente."
           }
         },
         "ru" : {
@@ -5631,6 +6291,18 @@
             "value" : "Nie udało się ustalić parametrów rozszerzenia Community. \nSpróbuj zalogować się ponownie."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível obter os parâmetros da extensão Community.\nTente entrar novamente."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível obter os parâmetros da extensão Community.\nTente iniciar sessão novamente."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5730,6 +6402,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pobieranie nie powiodło się"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falha no download"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falha na transferência"
           }
         },
         "ru" : {
@@ -5833,6 +6517,18 @@
             "value" : "Nie udało się przetworzyć przesłanych obrazów."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível processar as imagens enviadas."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível processar as imagens carregadas."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5932,6 +6628,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ten serwer Piwigo nie akceptuje plików EPS."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este servidor Piwigo não aceita arquivos EPS."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este servidor Piwigo não aceita ficheiros EPS."
           }
         },
         "ru" : {
@@ -6035,6 +6743,18 @@
             "value" : "Format pliku zdjęcia nie jest obsługiwany."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato de arquivo de foto não suportado."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato de ficheiro de fotografia não suportado."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6134,6 +6854,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Przepraszamy komunikacja została przerwana. Spróbuj zalogować się ponownie."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desculpe, a comunicação foi interrompida. Tente entrar novamente."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lamentamos, a comunicação foi interrompida. Tente iniciar sessão novamente."
           }
         },
         "ru" : {
@@ -6237,6 +6969,18 @@
             "value" : "Nazwa użytkownika i hasło nie pasują do podanego serwera"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O nome de usuário e a senha não correspondem ao endereço web informado"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O nome de utilizador e a palavra-passe não correspondem ao endereço web indicado"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6336,6 +7080,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nie udało się wylogować."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível sair da conta."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível terminar a sessão."
           }
         },
         "ru" : {
@@ -6439,6 +7195,18 @@
             "value" : "Format pliku nie jest obsługiwany."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato de arquivo não suportado."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato de ficheiro não suportado."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6538,6 +7306,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ten serwer Piwigo nie akceptuje plików PDF."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este servidor Piwigo não aceita arquivos PDF."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este servidor Piwigo não aceita ficheiros PDF."
           }
         },
         "ru" : {
@@ -6641,6 +7421,18 @@
             "value" : "Serwer Piwigo zwrócił pusty obiekt JSON."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O servidor Piwigo retornou um objeto JSON vazio."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O servidor Piwigo devolveu um objeto JSON vazio."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6740,6 +7532,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Serwer Piwigo nie zwrócił poprawnego obiektu JSON."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O servidor Piwigo não retornou um objeto JSON válido."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O servidor Piwigo não devolveu um objeto JSON válido."
           }
         },
         "ru" : {
@@ -6843,6 +7647,18 @@
             "value" : "Serwer Piwigo nie zwrócił prawidłowej odpowiedzi."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O servidor Piwigo não retornou uma resposta válida."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O servidor Piwigo não devolveu uma resposta válida."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6942,6 +7758,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Brak obiektu serwera w pamięci podręcznej."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O objeto de servidor não está no cache persistente."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O objeto de servidor não está na cache persistente."
           }
         },
         "ru" : {
@@ -7045,6 +7873,18 @@
             "value" : "Serwer Piwigo nie mógł wykonać żądanej operacji."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O servidor Piwigo não conseguiu concluir a operação solicitada."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O servidor Piwigo não conseguiu concluir a operação solicitada."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7144,6 +7984,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nie można wyodrębnić oczekiwanych informacji z danych zwróconych przez serwer Piwigo."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível extrair as informações esperadas dos dados retornados pelo servidor Piwigo."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível extrair as informações esperadas dos dados devolvidos pelo servidor Piwigo."
           }
         },
         "ru" : {
@@ -7247,6 +8099,18 @@
             "value" : "Nie można przejąć obiektu JSON zwróconego przez serwer Piwigo."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível processar o objeto JSON retornado pelo servidor Piwigo."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível processar o objeto JSON devolvido pelo servidor Piwigo."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7346,6 +8210,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Admin"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Administradores"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Administradores"
           }
         },
         "ru" : {
@@ -7449,6 +8325,18 @@
             "value" : "Admin, Rodzina"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Admins, Família"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Admins, Família"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7548,6 +8436,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Admin, Rodzina, Przyjaciele"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Admins, Família, Amigos"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Admins, Família, Amigos"
           }
         },
         "ru" : {
@@ -7651,6 +8551,18 @@
             "value" : "Admin, Rodzina, Przyjaciele, Kontakty"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Admins, Família, Amigos, Contatos"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Admins, Família, Amigos, Contactos"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7750,6 +8662,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Każdy"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos"
           }
         },
         "ru" : {
@@ -7853,6 +8777,18 @@
             "value" : "Nie można wywołać metody serwera."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível chamar o método do servidor."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível chamar o método do servidor."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7952,6 +8888,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nie można wykonać metody serwera z brakującym parametrem."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível executar o método do servidor: falta um parâmetro."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível executar o método do servidor: falta um parâmetro."
           }
         },
         "ru" : {
@@ -8055,6 +9003,18 @@
             "value" : "Napotkano niespodziewany błąd podczas wywoływania serwera z dostarczonymi parametrami."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocorreu um erro inesperado ao chamar o método do servidor com os parâmetros fornecidos."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocorreu um erro inesperado ao chamar o método do servidor com os parâmetros fornecidos."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8154,6 +9114,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Popraw adres serwera Piwigo."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corrija o endereço do servidor web Piwigo."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corrija o endereço do servidor web Piwigo."
           }
         },
         "ru" : {
@@ -8257,6 +9229,18 @@
             "value" : "Niepoprawny adres URL"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL incorreto"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL incorreto"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8356,6 +9340,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wersja serwera Twojego Piwigo to %@. Piwigo Mobile obsługuje tylko wersję co najmniej %@. Zaktualizuj swój serwer aby korzystać z Piwigo Mobile."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A versão do seu servidor Piwigo é %@. O Piwigo Mobile requer pelo menos a versão %@. Atualize o seu servidor para usar o Piwigo Mobile."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A versão do seu servidor Piwigo é %@. O Piwigo Mobile requer, no mínimo, a versão %@. Atualize o seu servidor para utilizar o Piwigo Mobile."
           }
         },
         "ru" : {
@@ -8459,6 +9455,18 @@
             "value" : "Nie można uwierzytelnić z serwerem. Spróbuj zalogować się ponownie."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falha ao autenticar no servidor. Tente entrar novamente."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falha na autenticação com o servidor. Tente iniciar sessão novamente."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8558,6 +9566,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nieprawidłowy album docelowy"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Álbum de destino inválido"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Álbum de destino inválido"
           }
         },
         "ru" : {
@@ -8661,6 +9681,18 @@
             "value" : "Nieprawidłowy album źródłowy"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Álbum de origem inválido"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Álbum de origem inválido"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8760,6 +9792,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nie można usunąć prywatnych metadanych"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não é possível remover os metadados privados"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não é possível remover os metadados privados"
           }
         },
         "ru" : {
@@ -8863,6 +9907,18 @@
             "value" : "Albumy"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Álbuns"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Álbuns"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8962,6 +10018,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pełna rozdzielczość"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resolução completa"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resolução completa"
           }
         },
         "ru" : {
@@ -9065,6 +10133,18 @@
             "value" : "Duży"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grande"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grande"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9164,6 +10244,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Średnie"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Médio"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Médio"
           }
         },
         "ru" : {
@@ -9267,6 +10359,18 @@
             "value" : "Mały"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pequeno"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pequeno"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9366,6 +10470,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kwadrat"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quadrado"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quadrado"
           }
         },
         "ru" : {
@@ -9469,6 +10585,18 @@
             "value" : "Miniaturka"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniatura"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniatura"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9568,6 +10696,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bardzo duży"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muito grande"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muito grande"
           }
         },
         "ru" : {
@@ -9671,6 +10811,18 @@
             "value" : "Bardzo mały"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muito pequeno"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muito pequeno"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9770,6 +10922,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ogromny"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enorme"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enorme"
           }
         },
         "ru" : {
@@ -9873,6 +11037,18 @@
             "value" : "Malutkie"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minúsculo"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minúsculo"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9972,6 +11148,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Przeogromny"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gigante"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gigante"
           }
         },
         "ru" : {
@@ -10075,6 +11263,18 @@
             "value" : "Gigantyczne"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gigantesco"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gigantesco"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10176,6 +11376,18 @@
             "value" : "Brak parametru żądania przesłania"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falta um parâmetro na requisição de envio"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falta um parâmetro no pedido de carregamento"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10275,6 +11487,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Format pliku wideo nie jest obsługiwany."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato de arquivo de vídeo não suportado."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato de ficheiro de vídeo não suportado."
           }
         },
         "ru" : {

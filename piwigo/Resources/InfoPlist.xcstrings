@@ -77,6 +77,18 @@
             "value" : "Piwigo"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -179,6 +191,18 @@
             "value" : "Piwigo"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -274,6 +298,18 @@
           }
         },
         "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encapsulated PostScript"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encapsulated PostScript"
+          }
+        },
+        "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Encapsulated PostScript"
@@ -382,6 +418,18 @@
             "value" : "Użyj Face ID zamiast hasła, aby uzyskać dostęp do swoich albumów."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use o Face ID em vez de um código para acessar seus álbuns."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilize o Face ID em vez de um código para aceder aos seus álbuns."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -482,6 +530,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Piwigo używa sieci lokalnej, aby uzyskać dostęp do Twojego serwera Piwigo."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Piwigo usa a rede local para acessar o seu servidor Piwigo."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Piwigo utiliza a rede local para aceder ao seu servidor Piwigo."
           }
         },
         "ru" : {
@@ -585,6 +645,18 @@
             "value" : "dzięki temu będzie w stanie przechowywać zdjęcia w aplikacji Zdjęcia i przesłać je do Twojej galerii Piwigo."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "para que ele possa salvar fotos no app Fotos e enviar fotos para o seu Piwigo."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "para que possa guardar fotografias na aplicação Fotografias e carregar fotografias para o seu Piwigo."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -685,6 +757,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "aby Piwigo mógł przesyłać zdjęcia z Siri."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "para que o Piwigo possa enviar imagens com a Siri."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "para que o Piwigo possa carregar imagens com a Siri."
           }
         },
         "ru" : {

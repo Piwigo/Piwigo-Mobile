@@ -76,6 +76,18 @@
             "value" : "Identyfikator albumu"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID do álbum"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID do álbum"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -175,6 +187,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : " i więcej"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " e mais"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " e mais"
           }
         },
         "ru" : {
@@ -278,6 +302,18 @@
             "value" : "Aplikacja zawiesiła się podczas migracji bazy danych. Uruchom ponownie aplikację i spróbuj ponownie."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O aplicativo foi suspenso durante a migração do banco de dados. Reinicie o aplicativo e tente novamente."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A aplicação foi suspensa durante a migração da base de dados. Reinicie a aplicação e tente novamente."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -377,6 +413,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Trwała baza danych Piwigo wymaga migracji. Prosimy o uruchomienie aplikacji."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O banco de dados persistente dos seus dados do Piwigo precisa ser migrado. Inicie o aplicativo."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A base de dados persistente dos seus dados do Piwigo necessita de migração. Inicie a aplicação."
           }
         },
         "ru" : {
@@ -480,6 +528,18 @@
             "value" : "Licznik"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contador"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contador"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -579,6 +639,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Data Utworzenia"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data de criação"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data de criação"
           }
         },
         "ru" : {
@@ -682,6 +754,18 @@
             "value" : "Czas utworzenia"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hora de criação"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hora de criação"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -781,6 +865,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Błąd"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erro"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erro"
           }
         },
         "ru" : {
@@ -884,6 +980,18 @@
             "value" : "Format pliku nie został zaakceptowany przez serwer Piwigo."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato de arquivo não aceito pelo servidor Piwigo."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato de ficheiro não aceite pelo servidor Piwigo."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -983,6 +1091,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zakończono"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concluído"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concluído"
           }
         },
         "ru" : {
@@ -1086,6 +1206,18 @@
             "value" : "Kończenie..."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finalizando..."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A finalizar..."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1185,6 +1317,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gotowy do przesłania..."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pronto para envio…"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pronto para carregar…"
           }
         },
         "ru" : {
@@ -1288,6 +1432,18 @@
             "value" : "Przygotowywanie..."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparando..."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A preparar..."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1387,6 +1543,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Przesłane"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviada"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregada"
           }
         },
         "ru" : {
@@ -1490,6 +1658,18 @@
             "value" : "Przesyłanie..."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviando..."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A carregar..."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1589,6 +1769,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Oczekiwanie..."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aguardando..."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A aguardar..."
           }
         },
         "ru" : {
@@ -1692,6 +1884,18 @@
             "value" : "Tekst"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texto"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texto"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1791,6 +1995,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Przesyłania niemożliwe"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envios impossíveis"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregamentos impossíveis"
           }
         },
         "ru" : {
@@ -1894,6 +2110,18 @@
             "value" : "Kolejka przesyłania"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fila de envio"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fila de carregamento"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1993,6 +2221,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Przesyłania do wznowienia"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envios retomáveis"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregamentos retomáveis"
           }
         },
         "ru" : {
