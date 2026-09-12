@@ -445,7 +445,7 @@ final class PwgScreenshots: XCTestCase {
         case "iPad Pro 10.5 inch (Wi-Fi)":                          // 10.5-inch
             cellID = "defaultAuthorName"
         case "iPad Pro 11-inch (M5) (Wi-Fi + Cellular)":            // 11-inch
-            cellID = "switchLoopVideosOnDevice"
+            cellID = "defaultAuthorName"
         case "iPad Pro 12.9-inch (2nd generation) (Wi-Fi)":         // 12.9-inch
             cellID = "defaultAuthorName"
         case "iPad Pro 13-inch (M5) (Wi-Fi + Cellular)":            // 13-inch
