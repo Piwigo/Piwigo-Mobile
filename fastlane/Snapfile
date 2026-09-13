@@ -64,6 +64,7 @@ languages([
 "en-US",
 "zh-Hans",
 "zh-Hant",
+"cs",
 "da",
 "nl-NL",
 "fr-FR",

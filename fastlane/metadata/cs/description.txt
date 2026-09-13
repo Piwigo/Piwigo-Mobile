@@ -1,0 +1,27 @@
+Piwigo pro iPhone/iPad/iPod doplňuje software fotogalerie v cloudu Piwigo (v12.0 nebo novější):
+
+• Procházejte svá alba,
+• Vytvářejte, mažte, přesouvejte a přejmenovávejte alba,
+• Vyhledávejte, upravujte, stahujte a mažte fotky a videa,
+• Kopírujte a přesouvejte fotky a videa mezi alby,
+• Přidávejte a odebírejte fotky a videa ze svých oblíbených,
+• Nastavte fotku jako obrázek alba,
+• Nahrávejte fotky a videa:
+   - s upravitelnou velikostí a kvalitou,
+   - s popisem, autorem, štítky a metadaty EXIF,
+   - s metadaty GPS nebo bez nich.
+• Sdílejte alba, fotky a videa.
+
+Piwigo vám umožní vytvořit si vlastní fotogalerii na webu. Nabízí řadu výkonných funkcí, jako jsou alba, štítky, geolokace, mnoho úrovní přizpůsobení, nahrávání návštěvníky, soukromí, kalendář nebo statistiky.
+
+Piwigo je svobodný a otevřený software.
+
+Piwigo je také kompatibilní s následujícími rozšířeními:
+- Community: umožňuje uživatelům vytvářet alba a přidávat fotky
+- rotateImage: umožňuje otáčet obrázky
+- Share Album: umožňuje sdílet soukromá alba s lidmi, kteří nemají účet
+- piwigo-two_factor: přidává dvoufázové ověření (2FA)
+- piwigo-videojs: přidává podporu videa
+
+Máte připomínky nebo dotazy?
+Piwigo nabízí bezplatnou podporu na https://piwigo.org/forum a rádi se od vás něco dozvíme.

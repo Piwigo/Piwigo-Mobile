@@ -1,0 +1,4 @@
+• Opravuje rozvržení v arabštině a dalších jazycích psaných zprava doleva
+• Uplatňuje pravidla množného čísla každého jazyka na počty fotek, alb a štítků
+• Dokončuje indonéský překlad
+• Opravuje chyby a vylepšuje rozhraní

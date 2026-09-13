@@ -10,6 +10,12 @@
             "value" : "Piwigo متوافق أيضًا مع الإضافات التالية:\n- Community: يتيح للمستخدمين إنشاء الألبومات وإضافة الصور\n- rotateImage: يتيح لك تدوير الصور\n- Share Album: يتيح مشاركة الألبومات الخاصة مع أشخاص لا يملكون حسابًا\n- piwigo-two_factor: يضيف المصادقة الثنائية (2FA)\n- piwigo-videojs: يضيف دعم الفيديو"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo je také kompatibilní s následujícími rozšířeními:\n- Community: umožňuje uživatelům vytvářet alba a přidávat fotky\n- rotateImage: umožňuje otáčet obrázky\n- Share Album: umožňuje sdílet soukromá alba s lidmi, kteří nemají účet\n- piwigo-two_factor: přidává dvoufázové ověření (2FA)\n- piwigo-videojs: přidává podporu videa"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -121,6 +127,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يُكمّل Piwigo لأجهزة iPhone/iPad/iPod برنامج معرض الصور السحابي Piwigo (الإصدار 12.0 أو أحدث):\n\n• تصفّح ألبوماتك،\n• إنشاء الألبومات وحذفها ونقلها وإعادة تسميتها،\n• البحث عن الصور ومقاطع الفيديو وتحريرها وتنزيلها وحذفها،\n• نسخ الصور ومقاطع الفيديو ونقلها بين الألبومات،\n• إضافة الصور ومقاطع الفيديو إلى المفضلة وإزالتها منها،\n• تعيين صورة كغلاف للألبوم،\n• رفع الصور ومقاطع الفيديو:\n   - بحجم وجودة قابلين للتعديل،\n   - مع الوصف والمؤلف والوسوم وبيانات EXIF،\n   - مع بيانات GPS أو بدونها.\n• مشاركة الألبومات والصور ومقاطع الفيديو.\n\nيمنحك Piwigo إمكانية إنشاء معرض الصور الخاص بك على الويب. وهو يتضمّن العديد من الميزات القوية مثل الألبومات والوسوم وتحديد الموقع الجغرافي ومستويات متعددة من التخصيص والرفع من قِبل الزوّار والخصوصية والتقويم والإحصاءات.\n\nPiwigo مجاني ومفتوح المصدر."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo pro iPhone/iPad/iPod doplňuje software fotogalerie v cloudu Piwigo (v12.0 nebo novější):\n\n• Procházejte svá alba,\n• Vytvářejte, mažte, přesouvejte a přejmenovávejte alba,\n• Vyhledávejte, upravujte, stahujte a mažte fotky a videa,\n• Kopírujte a přesouvejte fotky a videa mezi alby,\n• Přidávejte a odebírejte fotky a videa ze svých oblíbených,\n• Nastavte fotku jako obrázek alba,\n• Nahrávejte fotky a videa:\n   - s upravitelnou velikostí a kvalitou,\n   - s popisem, autorem, štítky a metadaty EXIF,\n   - s metadaty GPS nebo bez nich.\n• Sdílejte alba, fotky a videa.\n\nPiwigo vám umožní vytvořit si vlastní fotogalerii na webu. Nabízí řadu výkonných funkcí, jako jsou alba, štítky, geolokace, mnoho úrovní přizpůsobení, nahrávání návštěvníky, soukromí, kalendář nebo statistiky.\n\nPiwigo je svobodný a otevřený software."
           }
         },
         "da" : {
@@ -236,6 +248,12 @@
             "value" : "هل لديك ملاحظات أو أسئلة؟\nيقدّم Piwigo دعمًا مجانيًا على https://piwigo.org/forum ويسعدنا أن نسمع منك."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Máte připomínky nebo dotazy?\nPiwigo nabízí bezplatnou podporu na https://piwigo.org/forum a rádi se od vás něco dozvíme."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -347,6 +365,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Piwigo, سحابة, ألبوم, صور, فيديو, معرض, رفع, تنزيل"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo, cloud, album, fotka, video, obrázek, nahrát, stáhnout"
           }
         },
         "da" : {
@@ -462,6 +486,12 @@
             "value" : "مكتبة صورك السحابية المجانية من Piwigo في متناول يدك!"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vaše bezplatná cloudová fototéka Piwigo po ruce!"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -573,6 +603,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "صورك في سحابتك"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vaše fotky ve vašem cloudu"
           }
         },
         "da" : {
