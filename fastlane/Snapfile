@@ -79,6 +79,7 @@ languages([
 "ru",
 "es-ES",
 "sv",
+"uk",
 "ar-SA"
 ])
 

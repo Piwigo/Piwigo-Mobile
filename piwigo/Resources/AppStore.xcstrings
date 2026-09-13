@@ -106,6 +106,12 @@
             "value" : "Piwigo är också kompatibel med följande tillägg:\n- Community: tillåter icke-administratörsanvändare att lägga till bilder\n- rotateImage: låter dig rotera bilder\n- Share Album: gör det möjligt att dela privata album med personer som inte har ett konto\n- piwigo-two_factor: lägger till tvåfaktorsautentisering (2FA)\n- piwigo-videos: lägger till stöd för video"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo також сумісний із такими розширеннями:\n- Community: дозволяє користувачам створювати альбоми та додавати фото\n- rotateImage: дозволяє повертати зображення\n- Share Album: дозволяє ділитися приватними альбомами з людьми, які не мають облікового запису\n- piwigo-two_factor: додає двофакторну автентифікацію (2FA)\n- piwigo-videojs: додає підтримку відео"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -223,6 +229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Piwigo för iPhone/iPad/iPod kompletterar fotogalleri-programmet i molnet Piwigo (v12.0 eller högre):\n\n• Bläddra bland dina album,\n• Skapa, radera, flytta och byt namn på album,\n• Sök, redigera, ladda ner och ta bort bilder och videoklipp,\n• Kopiera och flytta foton och videoklipp mellan album,\n• Lägg till och ta bort foton och videor från dina favoriter,\n• Ställ in en bild som albumbild,\n• Ladda upp bilder och videoklipp:\n  - av modifierbar storlek och kvalitet,\n  - med beskrivning, författare, taggar, EXIF-metadata,\n  - med eller utan GPS-metadata.\n• Dela album, foton och videor.\n\nPiwigo ger dig möjlighet att skapa ditt eget bildgalleri på webben. Den innehåller många kraftfulla funktioner som album, taggar, geolocation, många nivåer av anpassning, uppladdning av besökare, integritet, kalender eller statistik.\n\nPiwigo är gratis och opensource."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo для iPhone/iPad/iPod доповнює програмне забезпечення хмарної фотогалереї Piwigo (v12.0 або новішої):\n\n• Переглядайте свої альбоми,\n• Створюйте, видаляйте, переміщуйте та перейменовуйте альбоми,\n• Шукайте, редагуйте, завантажуйте та видаляйте фото й відео,\n• Копіюйте та переміщуйте фото й відео між альбомами,\n• Додавайте та вилучайте фото й відео з улюблених,\n• Встановлюйте фото як зображення альбому,\n• Вивантажуйте фото та відео:\n   - зі змінним розміром і якістю,\n   - з описом, автором, тегами, метаданими EXIF,\n   - з метаданими GPS або без них.\n• Діліться альбомами, фото та відео.\n\nPiwigo дає змогу створити власну фотогалерею в інтернеті. Він містить багато потужних функцій, як-от альбоми, теги, геолокація, різні рівні налаштування, вивантаження відвідувачами, конфіденційність, календар чи статистика.\n\nPiwigo — вільне програмне забезпечення з відкритим кодом."
           }
         },
         "zh-Hans" : {
@@ -344,6 +356,12 @@
             "value" : "Återkoppling eller frågor?\nPiwigo erbjuder gratis support på https://piwigo.org/forum och vi vill gärna höra från dig."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Маєте відгуки чи запитання?\nPiwigo пропонує безкоштовну підтримку на https://piwigo.org/forum, і ми будемо раді почути вас."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -461,6 +479,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Piwigo, Cloud, album, foto, video, bild, ladda upp, ladda ner"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo, хмара, альбом, фото, відео, зображення, вивантажити, завантажити"
           }
         },
         "zh-Hans" : {
@@ -582,6 +606,12 @@
             "value" : "Ditt fria Piwigo bildbibliotek i molnet till hands!"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ваша безкоштовна хмарна фототека Piwigo завжди під рукою!"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -699,6 +729,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dina bilder i ditt Moln"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ваші фото у вашій хмарі"
           }
         },
         "zh-Hans" : {
