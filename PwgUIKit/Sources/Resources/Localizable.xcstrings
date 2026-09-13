@@ -106,6 +106,12 @@
             "value" : "Avbryt"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скасувати"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -225,6 +231,12 @@
             "value" : "Avfärda"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрити"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -342,6 +354,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ok"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
           }
         },
         "zh-Hans" : {
@@ -464,6 +482,12 @@
             "value" : "Ja"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Так"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -581,6 +605,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Alla album"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Усі альбоми"
           }
         },
         "zh-Hans" : {
@@ -702,6 +732,12 @@
             "value" : "Laddar…"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завантаження…"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -819,6 +855,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Senaste album"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нещодавні альбоми"
           }
         },
         "zh-Hans" : {
@@ -940,6 +982,12 @@
             "value" : "Ange lösenord"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Введіть код"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1057,6 +1105,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Med App Lock krävs en enhetsspecifik kod för att komma åt appen. Om du förlorar denna kod måste du installera om appen."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "З увімкненим блокуванням програми для доступу до неї потрібен код, унікальний для цього пристрою. Якщо ви втратите цей код, доведеться перевстановити програму."
           }
         },
         "zh-Hans" : {
@@ -1178,6 +1232,12 @@
             "value" : "Ändra lösenord"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Змінити код"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1295,6 +1355,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Verifiera lösenkod"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Підтвердити код"
           }
         },
         "zh-Hans" : {
@@ -1416,6 +1482,12 @@
             "value" : "Få tillgång till dina Piwigoalbum"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доступ до ваших альбомів Piwigo"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1533,6 +1605,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sekretess"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Конфіденційність"
           }
         },
         "zh-Hans" : {

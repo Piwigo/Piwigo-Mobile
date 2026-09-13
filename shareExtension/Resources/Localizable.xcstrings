@@ -106,6 +106,12 @@
             "value" : "Det gick inte att hämta de delade bilderna och videoklippen."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося отримати спільні фото та відео."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -223,6 +229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Öppna Piwigo-appen och skapa ett album innan du delar bilder eller videoklipp."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перш ніж ділитися фото чи відео, відкрийте програму Piwigo та створіть альбом."
           }
         },
         "zh-Hans" : {
@@ -344,6 +356,12 @@
             "value" : "Delningen misslyckades"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося поділитися"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -461,6 +479,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Välj det album som du vill ladda upp bilderna till."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виберіть альбом, до якого потрібно вивантажити фото."
           }
         },
         "zh-Hans" : {
@@ -582,6 +606,12 @@
             "value" : "Är du säker på att du vill ladda upp bilderna till albumet ”%@”?"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ви впевнені, що хочете вивантажити фото до альбому «%@»?"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -699,6 +729,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ladda upp till album"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вивантажити до альбому"
           }
         },
         "zh-Hans" : {

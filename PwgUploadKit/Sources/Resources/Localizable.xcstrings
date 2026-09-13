@@ -106,6 +106,12 @@
             "value" : "Uppladdningen avbröts. Starta om appen."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вивантаження перервано. Перезапустіть програму."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -477,6 +483,36 @@
             }
           }
         },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld вивантаження завершено"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld вивантажень завершено"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld вивантаження завершено"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld вивантаження завершено"
+                }
+              }
+            }
+          }
+        },
         "zh-Hans" : {
           "variations" : {
             "plural" : {
@@ -608,6 +644,12 @@
             "value" : "Enheten måste svalna."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пристрій має охолонути."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -725,6 +767,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Energisparläge aktiverat. Stäng av det."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Увімкнено режим енергозбереження. Вимкніть його."
           }
         },
         "zh-Hans" : {
@@ -846,6 +894,12 @@
             "value" : "Uppladdning endast via Wi-Fi. Anslut till ett Wi-Fi-nätverk."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вивантаження лише через Wi-Fi. Під’єднайтеся до Wi-Fi."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -963,6 +1017,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Förbereder uppladdningar…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Підготовка вивантажень…"
           }
         },
         "zh-Hans" : {
@@ -1336,6 +1396,36 @@
             }
           }
         },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "залишилося %lld вивантаження"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "залишилося %lld вивантажень"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "залишилося %lld вивантаження"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "залишилося %lld вивантаження"
+                }
+              }
+            }
+          }
+        },
         "zh-Hans" : {
           "variations" : {
             "plural" : {
@@ -1467,6 +1557,12 @@
             "value" : "Förbereder uppladdningar…"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Підготовка вивантажень…"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1586,6 +1682,12 @@
             "value" : "Välj albumet eller underalbumet till vilka foton och videor automatiskt laddas upp."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виберіть альбом або підальбом, до якого автоматично вивантажуватимуться фото та відео."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1703,6 +1805,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Välj det album eller underalbum från vilka foton och videor på din enhet automatiskt laddas upp."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виберіть альбом або підальбом, з якого автоматично вивантажуватимуться фото та відео з вашого пристрою."
           }
         },
         "zh-Hans" : {

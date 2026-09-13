@@ -144,6 +144,12 @@
             "value" : "Använd Face ID istället för en lösenkod för att komma åt dina album."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Використовуйте Face ID замість коду для доступу до ваших альбомів."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",

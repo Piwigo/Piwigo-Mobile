@@ -106,6 +106,12 @@
             "value" : "Tyvärr, ljudfiler stöds inte av Piwigo Mobile ännu."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вибачте, Piwigo Mobile поки що не підтримує аудіофайли."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -223,6 +229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Högst betygsatta"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Найкращі за оцінкою"
           }
         },
         "zh-Hans" : {
@@ -344,6 +356,12 @@
             "value" : "Mina favoriter"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ваші улюблені"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -461,6 +479,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Senaste bilder"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нещодавні фото"
           }
         },
         "zh-Hans" : {
@@ -582,6 +606,12 @@
             "value" : "Taggad"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "З тегами"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -699,6 +729,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mest besökta"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Найпопулярніші"
           }
         },
         "zh-Hans" : {
@@ -820,6 +856,12 @@
             "value" : "Rotalbum"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кореневий альбом"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -937,6 +979,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Oldest → Newest"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Найстаріші → Найновіші"
           }
         },
         "zh-Hans" : {
@@ -1058,6 +1106,12 @@
             "value" : "Skapelsedatum, gammal → ny"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дата створення, старі → нові"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1175,6 +1229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Skapelsedatum, ny → gammal"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дата створення, нові → старі"
           }
         },
         "zh-Hans" : {
@@ -1296,6 +1356,12 @@
             "value" : "Newest → Oldest"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Найновіші → Найстаріші"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1413,6 +1479,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Skapelsedatum, gammal → ny"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дата додавання, старі → нові"
           }
         },
         "zh-Hans" : {
@@ -1534,6 +1606,12 @@
             "value" : "Skapelsedatum, ny → gammal"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дата додавання, нові → старі"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1651,6 +1729,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Standard"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "За замовчуванням"
           }
         },
         "zh-Hans" : {
@@ -1772,6 +1856,12 @@
             "value" : "Filnamn, A → Ö"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Назва файлу, А → Я"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1889,6 +1979,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Filnamn, Ö → A"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Назва файлу, Я → А"
           }
         },
         "zh-Hans" : {
@@ -2010,6 +2106,12 @@
             "value" : "Identifier, 1 → 9"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ідентифікатор, 1 → 9"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2124,6 +2226,12 @@
           }
         },
         "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 → 9"
+          }
+        },
+        "uk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "1 → 9"
@@ -2248,6 +2356,12 @@
             "value" : "Identifier, 9 → 1"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ідентифікатор, 9 → 1"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2362,6 +2476,12 @@
           }
         },
         "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "9 → 1"
+          }
+        },
+        "uk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "9 → 1"
@@ -2486,6 +2606,12 @@
             "value" : "Manuell sortering"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ручне впорядкування"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2603,6 +2729,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bildtitel, A → Ö"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Назва фото, А → Я"
           }
         },
         "zh-Hans" : {
@@ -2724,6 +2856,12 @@
             "value" : "A → Z"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "А → Я"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2841,6 +2979,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bildtitel, Z → A"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Назва фото, Я → А"
           }
         },
         "zh-Hans" : {
@@ -2962,6 +3106,12 @@
             "value" : "Z → A"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Я → А"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3079,6 +3229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Slumpmässig ordning"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Випадкове впорядкування"
           }
         },
         "zh-Hans" : {
@@ -3200,6 +3356,12 @@
             "value" : "Lowest → Highest"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Найнижча → Найвища"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3317,6 +3479,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Highest → Lowest"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Найвища → Найнижча"
           }
         },
         "zh-Hans" : {
@@ -3438,6 +3606,12 @@
             "value" : "Betyg, låg → hög"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оцінка, низька → висока"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3555,6 +3729,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Betyg, hög → låg"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оцінка, висока → низька"
           }
         },
         "zh-Hans" : {
@@ -3676,6 +3856,12 @@
             "value" : "Lägsta → Högsta"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Найменше → Найбільше"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3793,6 +3979,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Högsta → Lägsta"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Найбільше → Найменше"
           }
         },
         "zh-Hans" : {
@@ -3914,6 +4106,12 @@
             "value" : "Besökare, låg → hög"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перегляди, менше → більше"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4031,6 +4229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Besökare, hög → låg"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перегляди, більше → менше"
           }
         },
         "zh-Hans" : {
@@ -4152,6 +4356,12 @@
             "value" : "Album ej i ihållande cache."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Альбому немає в постійному кеші."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4269,6 +4479,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Foto/video ej i ihållande cache."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фото чи відео немає в постійному кеші."
           }
         },
         "zh-Hans" : {
@@ -4390,6 +4606,12 @@
             "value" : "Failed to create a new Server object."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося створити новий об’єкт Server."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4507,6 +4729,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Det gick inte att skapa ett nytt användarobjekt."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося створити новий об’єкт User."
           }
         },
         "zh-Hans" : {
@@ -4628,6 +4856,12 @@
             "value" : "Det gick inte att skapa ett nytt albumobjekt."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося створити новий об’єкт Album."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4745,6 +4979,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hämta album fel!"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Помилка отримання альбомів!"
           }
         },
         "zh-Hans" : {
@@ -4866,6 +5106,12 @@
             "value" : "Hittade och kommer att kasta ett album som saknar ett giltigt ID eller namn."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Знайдено та буде відхилено альбом без дійсного ID або назви."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4983,6 +5229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Det gick inte att skapa ett nytt bildobjekt."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося створити новий об’єкт Image."
           }
         },
         "zh-Hans" : {
@@ -5104,6 +5356,12 @@
             "value" : "Hämta foton/videofel!"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Помилка отримання фото та відео!"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5221,6 +5479,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hittade och kommer att kasta ett foto/video som saknar ett giltigt ID eller URL."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Знайдено та буде відхилено фото чи відео без дійсного ID або URL."
           }
         },
         "zh-Hans" : {
@@ -5342,6 +5606,12 @@
             "value" : "Failed to create a new Location object."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося створити новий об’єкт Location."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5459,6 +5729,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Found and will discard a location missing a valid identifier."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Знайдено та буде відхилено місцезнаходження без дійсного ідентифікатора."
           }
         },
         "zh-Hans" : {
@@ -5580,6 +5856,12 @@
             "value" : "Det gick inte att skapa ett nytt taggobjekt."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося створити новий об’єкт Tag."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5697,6 +5979,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hämta taggar fel!"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Помилка отримання тегів!"
           }
         },
         "zh-Hans" : {
@@ -5818,6 +6106,12 @@
             "value" : "Hittade och kommer att kasta en tagg som saknar en giltig kod eller namn."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Знайдено та буде відхилено тег без дійсного коду або назви."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5935,6 +6229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Det gick inte att skapa ett nytt uppladdningsobjekt."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося створити новий об’єкт Upload."
           }
         },
         "zh-Hans" : {
@@ -6056,6 +6356,12 @@
             "value" : "Failed to delete an Upload object."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося видалити об’єкт Upload."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6173,6 +6479,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kunde inte hämta foto."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося отримати фото."
           }
         },
         "zh-Hans" : {
@@ -6294,6 +6606,12 @@
             "value" : "Found and will discard an upload missing a valid identifier."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Знайдено та буде відхилено вивантаження без дійсного ідентифікатора."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6411,6 +6729,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kommer att kassera ett användarkonto som saknar ett giltigt användarnamn."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Буде відхилено обліковий запис користувача без дійсного імені користувача."
           }
         },
         "zh-Hans" : {
@@ -6532,6 +6856,12 @@
             "value" : "Användarkontot finns inte i den beständiga cachen."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Облікового запису користувача немає в постійному кеші."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6649,6 +6979,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kunde inte hämta utökade parametrar för Community.\nProva med att logga in igen."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося отримати параметри розширення Community.\nСпробуйте увійти ще раз."
           }
         },
         "zh-Hans" : {
@@ -6770,6 +7106,12 @@
             "value" : "Hämtningen misslyckades"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося завантажити"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6887,6 +7229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Det gick inte att bearbeta uppladdade bilder."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося обробити вивантажені зображення."
           }
         },
         "zh-Hans" : {
@@ -7008,6 +7356,12 @@
             "value" : "Denna Piwigo-server accepterar inte EPS-filer."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Цей сервер Piwigo не приймає файли EPS."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7125,6 +7479,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bildfilsformat stöds inte."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Формат файлу фото не підтримується."
           }
         },
         "zh-Hans" : {
@@ -7246,6 +7606,12 @@
             "value" : "Tyvärr, kommunikationen bröts. Försök logga in igen."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вибачте, зв’язок було перервано. Спробуйте увійти ще раз."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7363,6 +7729,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Användarnamnet och lösenordet matchar inte den angivna webbadressen"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ім’я користувача та пароль не відповідають указаній вебадресі"
           }
         },
         "zh-Hans" : {
@@ -7484,6 +7856,12 @@
             "value" : "Kunde inte logga ut."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося вийти."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7601,6 +7979,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Filformatet stöds inte."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Формат файлу не підтримується."
           }
         },
         "zh-Hans" : {
@@ -7722,6 +8106,12 @@
             "value" : "Denna Piwigo-server accepterar inte PDF-filer."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Цей сервер Piwigo не приймає файли PDF."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7839,6 +8229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Piwigo-servern returnerade ett tomt JSON-objekt."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сервер Piwigo повернув порожній об’єкт JSON."
           }
         },
         "zh-Hans" : {
@@ -7960,6 +8356,12 @@
             "value" : "Piwigo-servern returnerade inte ett giltigt JSON-objekt."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сервер Piwigo не повернув дійсний об’єкт JSON."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8077,6 +8479,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Piwigo server did not return a valid response."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сервер Piwigo не повернув дійсну відповідь."
           }
         },
         "zh-Hans" : {
@@ -8198,6 +8606,12 @@
             "value" : "Serverobjektet finns inte i den beständiga cachen."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Об’єкта сервера немає в постійному кеші."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8315,6 +8729,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Piwigo-servern kunde inte slutföra den begärda åtgärden."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Серверу Piwigo не вдалося завершити запитану операцію."
           }
         },
         "zh-Hans" : {
@@ -8436,6 +8856,12 @@
             "value" : "Det gick inte att extrahera den förväntade informationen från de data som returnerades av Piwigo-servern."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося видобути очікувану інформацію з даних, повернутих сервером Piwigo."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8553,6 +8979,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kunde inte smälta JSON-objekt som returneras av Piwigo server."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося обробити об’єкт JSON, повернутий сервером Piwigo."
           }
         },
         "zh-Hans" : {
@@ -8674,6 +9106,12 @@
             "value" : "Admins"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Адміністратори"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8791,6 +9229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Admins, Familj"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Адміністратори, родина"
           }
         },
         "zh-Hans" : {
@@ -8912,6 +9356,12 @@
             "value" : "Admins, Familj, Vänner"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Адміністратори, родина, друзі"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9029,6 +9479,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Admins, Familj, Vänner, Kontakter"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Адміністратори, родина, друзі, контакти"
           }
         },
         "zh-Hans" : {
@@ -9150,6 +9606,12 @@
             "value" : "Alla"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Усі"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9267,6 +9729,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Misslyckades att anropa servermetod."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося викликати метод сервера."
           }
         },
         "zh-Hans" : {
@@ -9388,6 +9856,12 @@
             "value" : "Det gick inte att exekvera servermetoden med saknad parameter."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося виконати метод сервера: бракує параметра."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9505,6 +9979,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ett oväntat fel uppstod när du anropade servermetoden med angivna parametrar."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Під час виклику методу сервера із наданими параметрами сталася неочікувана помилка."
           }
         },
         "zh-Hans" : {
@@ -9626,6 +10106,12 @@
             "value" : "Vänligen korrigera Piwigo webbserveradressen."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виправте адресу вебсервера Piwigo."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9743,6 +10229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Felaktig URL"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Неправильна URL-адреса"
           }
         },
         "zh-Hans" : {
@@ -9864,6 +10356,12 @@
             "value" : "Din Piwigo serverversion är %@. Piwigo Mobile stöder endast en version av minst %@. Uppdatera din server för att använda Piwigo Mobile."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія вашого сервера Piwigo — %@. Piwigo Mobile підтримує лише версію %@ або новішу. Оновіть сервер, щоб користуватися Piwigo Mobile."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9981,6 +10479,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Det gick inte att autentisera med servern. Försök logga in igen."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося пройти автентифікацію на сервері. Спробуйте увійти ще раз."
           }
         },
         "zh-Hans" : {
@@ -10102,6 +10606,12 @@
             "value" : "Ogiltigt målalbum"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Недійсний альбом призначення"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10219,6 +10729,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ogiltigt källalbum"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Недійсний вихідний альбом"
           }
         },
         "zh-Hans" : {
@@ -10340,6 +10856,12 @@
             "value" : "Kan inte ta bort privata metadata"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдається вилучити приватні метадані"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10457,6 +10979,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Album"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Альбоми"
           }
         },
         "zh-Hans" : {
@@ -10578,6 +11106,12 @@
             "value" : "Full upplösning"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Повна роздільність"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10695,6 +11229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Stor"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Велика"
           }
         },
         "zh-Hans" : {
@@ -10816,6 +11356,12 @@
             "value" : "Medium"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Середня"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10933,6 +11479,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Liten"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Мала"
           }
         },
         "zh-Hans" : {
@@ -11054,6 +11606,12 @@
             "value" : "Kvadrat"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Квадратна"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11171,6 +11729,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Miniatyr"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Мініатюра"
           }
         },
         "zh-Hans" : {
@@ -11292,6 +11856,12 @@
             "value" : "Extra stor"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дуже велика"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11409,6 +11979,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Extra liten"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дуже мала"
           }
         },
         "zh-Hans" : {
@@ -11530,6 +12106,12 @@
             "value" : "Jättestor"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Величезна"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11647,6 +12229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mini"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Крихітна"
           }
         },
         "zh-Hans" : {
@@ -11768,6 +12356,12 @@
             "value" : "Extra jättestor"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Гігантська"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11885,6 +12479,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gigantisk"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Колосальна"
           }
         },
         "zh-Hans" : {
@@ -12006,6 +12606,12 @@
             "value" : "Överför begäran parameter saknas"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бракує параметра запиту на вивантаження"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12123,6 +12729,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Videofilformat stöds inte."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Формат відеофайлу не підтримується."
           }
         },
         "zh-Hans" : {

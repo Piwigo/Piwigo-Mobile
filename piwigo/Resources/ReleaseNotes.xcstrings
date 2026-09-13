@@ -106,6 +106,12 @@
             "value" : "Version 1.0\n17 oktober 2011"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 1.0\n17 жовтня 2011"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -223,6 +229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.0\n24 april 2015\n\nNya inbyggda funktioner:\n  - Möjlighet att hantera album\n  - Visa dina bilder\n  - Massuppladdning av bilder\n  - Video uppladdning och uppspelning (VideoJS-plugin måste installeras)"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.0\n24 квітня 2015\n\nНова власна програма пропонує:\n - Можливість керувати альбомами\n - Перегляд ваших фото\n - Масове вивантаження фото\n - Вивантаження та відтворення відео (має бути встановлено розширення VideoJS)"
           }
         },
         "zh-Hans" : {
@@ -345,6 +357,12 @@
             "value" : "Version 2.0.1\n26 juni 2015\n\nNya inställningar:\n  - Alternativ för att ändra storlek på bilder vid uppladdning\n    + Bildkvaliteten är från ett område på 50 - 98%\n  - Möjlighet att ställa in en standardbildsförhandsgranskningstorlek\nBug fixar"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.0.1\n26 червня 2015\n\nНові налаштування:\n - Параметр для зміни розміру фото під час вивантаження\n   + Якість зображення в діапазоні від 50 до 98 відсотків\n - Можливість задати типовий розмір попереднього перегляду фото\nВиправлення помилок"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -462,6 +480,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.0.2\n8 maj 2017\n\n• Sorteringskriterier som nu är identiska med webapplikation\n• Fixat sorteringsproblem\n• Fixat en krasch som uppstod när du lägger till taggar i en bild före uppladdning\n• Fixat situationer där radering av ett urval bilder inte fungerade\n• Fixat situationer där ett album inte visades efter flyttning\n• Fixat ett kompatibilitetsproblem med iOS 10 - utfasad kod"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.0.2\n8 травня 2017\n\n• Критерії впорядкування тепер такі самі, як у вебпрограмі\n• Виправлено проблеми з упорядкуванням\n• Виправлено збій під час додавання тегів до фото перед вивантаженням\n• Виправлено ситуації, коли не працювало видалення вибраних фото\n• Виправлено ситуації, коли альбом не з’являвся після переміщення\n• Виправлено проблему сумісності з iOS 10 — застарілий код"
           }
         },
         "zh-Hans" : {
@@ -583,6 +607,12 @@
             "value" : "Version 2.0.3\n26 maj 2017\n\n• Lagt till alternativ för att ta bort GPS-metadata på inställningssidan\n• Lagt till aktuell cache-användning på inställningssidan\n• Fixat cache-inställningar som ibland var glömda/återställda\n• Fixat uppladdning av bildinställningar som ibland blev förlorade/återställda"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.0.3\n26 травня 2017\n\n• Додано параметр для вилучення метаданих GPS на сторінці налаштувань\n• Додано поточне використання кешу на сторінці налаштувань\n• Виправлено випадкову втрату або скидання налаштувань кешу\n• Виправлено випадкову втрату або скидання налаштувань вивантаження фото"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -700,6 +730,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.0.4\n28 juli 2017\n\n• iPad - Fixat suddiga miniatyrbilder och omöjligheten att redigera bilder på iPad\n• Videor - Fixat uppladdning och nedladdning (VideoJS-tillägg krävs på servern)\n• Inställningar - Lagt till alternativ för att ta bort titlar & ändra miniatyrbildsupplösning\n• Förbättrad anslutningsäkerhet och informerar när uppladdningen är klar\n• Mindre buggfixar och förbättring av gränssnittet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.0.4\n28 липня 2017\n\n• iPad — Виправлено розмиті мініатюри та неможливість редагувати фото на iPad\n• Відео — Виправлено проблеми з вивантаженням і завантаженням (на сервері потрібне розширення VideoJS)\n• Налаштування — Додано параметри для вилучення назв і зміни роздільності мініатюр\n• Покращено надійність з’єднання та сповіщення про завершення вивантаження\n• Незначні виправлення помилок і покращення інтерфейсу"
           }
         },
         "zh-Hans" : {
@@ -821,6 +857,12 @@
             "value" : "Version 2.1\n14 augusti 2017\n\n• Kompatibilitet för Communitytillägg\n• Danska, franska, polska översättningar\n• Bug fixar"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.1\n14 серпня 2017\n\n• Сумісність із розширенням Community\n• Данський, французький і польський переклади\n• Виправлення помилок"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -938,6 +980,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.1.1\n20 augusti 2017\n\n• Fixat bugg med icke-giltiga SSL-certifikat\n• Förbättrad dansk översättning"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.1.1\n20 серпня 2017\n\n• Виправлено помилку з недійсними сертифікатами SSL\n• Покращено данський переклад"
           }
         },
         "zh-Hans" : {
@@ -1059,6 +1107,12 @@
             "value" : "Version 2.1.2\n7 september 2017\n\n• Fixat nekad inloggning med Community plugin <2.9\n• Förbättrade översättningar\n• Underhållsarbete"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.1.2\n7 вересня 2017\n\n• Виправлено відмову у вході для версій розширення Community, старіших за 2.9\n• Покращено переклади\n• Технічне обслуговування"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1176,6 +1230,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.1.3\n19 oktober 2017\n\n• Lagt till grundläggande behörighetskontroll\n• Lagt till tillåtelse att avbryta automatisk anslutning\n• Förbättrat gränssnitt och uppladdningshantering\n• Förbättrade översättningar och kompatibilitet med iOS 11\n• Rättat fel med \"Ej uppladdat\" filter\n• Kod modernisering"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.1.3\n19 жовтня 2017\n\n• Додано базову автентифікацію доступу\n• Дозволено скасовувати автоматичне з’єднання\n• Покращено інтерфейс і керування вивантаженнями\n• Покращено переклади та сумісність з iOS 11\n• Виправлено помилку з фільтром «Не вивантажені»\n• Модернізація коду"
           }
         },
         "zh-Hans" : {
@@ -1297,6 +1357,12 @@
             "value" : "Version 2.1.4\n31 oktober 2017\n\n• Svensk översättning\n• Buggfixar"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.1.4\n31 жовтня 2017\n\n• Шведський переклад\n• Виправлення помилок"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1414,6 +1480,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.1.5\n21 december 2017\n\n• Adderat möjlighet att avbryta uppladdningar\n• Adderat alternativ att radera bilder efter uppladdning\n• Adderat kompatibilitet med optimerad lagring (iCloud)\n• Bevara bildformatet efter storleksändring närhelst möjligt\n• Danska och indonesiska översättningar\n• Fixat metadata delvis förlorat vid nedladdning\n• Fixat PNG format ersättas med JPEG innan uppladdning\n• Fixat problem som uppstått med iOS 11 och iPhone X\n• Fixat mindre buggar\n• Kodmodernisering"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.1.5\n21 грудня 2017\n\n• Додано можливість скасовувати вивантаження\n• Додано параметр для видалення фото після вивантаження\n• Додано сумісність з «Оптимізацією сховища» (iCloud)\n• За можливості зберігається формат фото після зміни розміру\n• Данський та індонезійський переклади\n• Виправлено часткову втрату метаданих під час завантаження\n• Виправлено заміну формату PNG на JPEG перед вивантаженням\n• Виправлено проблеми з iOS 11 та iPhone X\n• Виправлено незначні помилки\n• Модернізація коду"
           }
         },
         "zh-Hans" : {
@@ -1535,6 +1607,12 @@
             "value" : "Version 2.1.6\n7 januari 2018\n\n• Arabisk översättning\n• Förbättrad autentiseringshantering för HTTP-baserad åtkomst\n• Mindre buggfixar och förbättring av gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.1.6\n7 січня 2018\n\n• Арабський переклад\n• Покращено керування базовою автентифікацією доступу HTTP\n• Незначні виправлення помилок і покращення інтерфейсу"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1652,6 +1730,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.1.7\n3 februari 2018\n\n• Fixa problem med videouppladdningar på vissa servrar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.1.7\n3 лютого 2018\n\n• Виправлено проблеми з вивантаженням відео на деяких серверах"
           }
         },
         "zh-Hans" : {
@@ -1773,6 +1857,12 @@
             "value" : "Version 2.1.8\n29 april 2018\n\n• Lägger till förmåga att ändra storleken på miniatyrer\n• HTTPS blir standardprotokollet\n• Japansk översättning\n• Mindre buggfixar och förbättring av gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.1.8\n29 квітня 2018\n\n• Додано можливість змінювати розмір мініатюр\n• HTTPS стає типовим протоколом\n• Японський переклад\n• Незначні виправлення помилок і покращення інтерфейсу"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1890,6 +1980,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.1.9\n14 maj 2018\n\n• Buggfixar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.1.9\n14 травня 2018\n\n• Виправлення помилок"
           }
         },
         "zh-Hans" : {
@@ -2011,6 +2107,12 @@
             "value" : "Version 2.2\n12 juli 2018\n\n• Underalbum skapelser från alla album\n• Förbättrad hantering med standardalbum\n• Förbättrad albumpresentation på iPad (och iPhone)\n• Detektion av bildbibliotekets ändringar\n• Mindre buggfixar och förbättring av gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.2\n12 липня 2018\n\n• Створення підальбомів у будь-якому альбомі\n• Покращено керування типовим альбомом\n• Покращено відображення альбомів на iPad (та iPhone)\n• Виявлення змін у медіатеці\n• Незначні виправлення помилок і покращення інтерфейсу"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2128,6 +2230,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.2.1\n25 juli 2018\n\n• Mindre buggfixar och förbättring av gränssnittet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.2.1\n25 липня 2018\n\n• Незначні виправлення помилок і покращення інтерфейсу"
           }
         },
         "zh-Hans" : {
@@ -2249,6 +2357,12 @@
             "value" : "Version 2.2.2\n14 augusti 2018\n\n• kopiera och flytta bilder mellan album\n• mindre buggfixar och förbättringar av gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.2.2\n14 серпня 2018\n\n• Копіювання та переміщення фото між альбомами\n• Незначні виправлення помилок і покращення інтерфейсу"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2366,6 +2480,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.2.3\n27 augusti 2018\n\n• Ny albumdesign\n• Mindre buggfixar och förbättring av gränssnittet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.2.3\n27 серпня 2018\n\n• Новий дизайн альбомів\n• Незначні виправлення помилок і покращення інтерфейсу"
           }
         },
         "zh-Hans" : {
@@ -2487,6 +2607,12 @@
             "value" : "Version 2.2.4\n23 september 2018\n\n• Buggfixar"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.2.4\n23 вересня 2018\n\n• Виправлення помилок"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2604,6 +2730,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.2.5\n28 oktober 2018\n\n• Skicka oss feedback via e-post\n• Integritetspolicy\n• Buggfixar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.2.5\n28 жовтня 2018\n\n• Надсилайте нам відгуки електронною поштою\n• Політика конфіденційності\n• Виправлення помилок"
           }
         },
         "zh-Hans" : {
@@ -2725,6 +2857,12 @@
             "value" : "Version 2.2.6\n20 december 2018\n\n• Förbättrade översättningar och kompatibilitet med iOS 12\n• Mindre buggfixar och förbättring av gränssnittet\n• Italienska översättning"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.2.6\n20 грудня 2018\n\n• Покращено переклади та сумісність з iOS 12\n• Незначні виправлення помилок і покращення інтерфейсу\n• Італійський переклад"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2842,6 +2980,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.2.7\n29 december 2018\n\n• Mindre buggfixar och förbättring av gränssnittet\n• Förbättrade översättningar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.2.7\n29 грудня 2018\n\n• Незначні виправлення помилок і покращення інтерфейсу\n• Покращені переклади"
           }
         },
         "zh-Hans" : {
@@ -2963,6 +3107,12 @@
             "value" : "Version 2.3\n2 februari 2019\n\n• Dela bilder och videoklipp\n• Öka gränsvärdena för cache-storlek\n• Mindre buggfixar och gränssnittsförbättring\n• Förbättrade översättningar"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.3\n2 лютого 2019\n\n• Діліться фото та відео\n• Збільшено обмеження розміру кешу\n• Незначні виправлення помилок і покращення інтерфейсу\n• Покращені переклади"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3080,6 +3230,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.3.1\n15 februari 2019\n\n• Mindre buggfixar och förbättring av gränssnittet\n• Förbättrade översättningar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.3.1\n15 лютого 2019\n\n• Незначні виправлення помилок і покращення інтерфейсу\n• Покращені переклади"
           }
         },
         "zh-Hans" : {
@@ -3201,6 +3357,12 @@
             "value" : "Version 2.3.2\n27 mars 2019\n\n• Lokala bilder presenteras i en tidslinjevisning dag före uppladdning\n• Mindre buggfixar och förbättring av gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.3.2\n27 березня 2019\n\n• Локальні фото відображаються на часовій шкалі за днями перед вивантаженням\n• Незначні виправлення помилок і покращення інтерфейсу"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3318,6 +3480,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.3.3\n10 april 2019\n\n• Mindre buggfixar och förbättring av gränssnittet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.3.3\n10 квітня 2019\n\n• Незначні виправлення помилок і покращення інтерфейсу"
           }
         },
         "zh-Hans" : {
@@ -3439,6 +3607,12 @@
             "value" : "Version 2.3.4\n1 maj 2019\n\n• Förbättrad albumpresentation på iPad (och iPhone)\n• Mindre buggfixar och förbättring av gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.3.4\n1 травня 2019\n\n• Покращено відображення альбомів на iPad (та iPhone)\n• Незначні виправлення помилок і покращення інтерфейсу"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3556,6 +3730,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.3.5\n6 juni 2019\n\n• Fixa en krasch som ibland händer när du redigerar serverns adress efter utloggning"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.3.5\n6 червня 2019\n\n• Виправлено збій, який іноді траплявся під час зміни адреси сервера після виходу"
           }
         },
         "zh-Hans" : {
@@ -3677,6 +3857,12 @@
             "value" : "Version 2.4\n15 juli 2019\n\n• Lägger till ett sökverktyg (kräver iOS 11 eller senare)\n• Lägger till bildsortering med betygsättning\n• Snabbare nedladdning av miniatyrer i albumet (kräver Piwigo 2.8 eller senare)\n• Titlar på uppladdade bilder går inte längre till filnamn längre\n• Fixar omöjligt att ta bort taggar\n• Löser felaktiga bilddata under vissa omständigheter"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.4\n15 липня 2019\n\n• Додано інструмент пошуку (потрібен iOS 11 або новіший)\n• Додано впорядкування фото за оцінкою\n• Швидше завантаження мініатюр альбомів (потрібен Piwigo 2.8 або новіший)\n• Назви вивантажених фото більше не беруться з назв файлів\n• Виправлено неможливість вилучити теги\n• Виправлено неточні дані фото за певних обставин"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3794,6 +3980,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.4.1\n10 augusti 2019\n\n• Lägger till album \"Etiketter\", \"Mest besökta\", \"Högst betygsatta\" och \"Senaste bilder\"\n• Mindre buggfixar och förbättring av gränssnittet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.4.1\n10 серпня 2019\n\n• Додано альбоми «Теги», «Найпопулярніші», «Найкращі за оцінкою» та «Нещодавні фото»\n• Незначні виправлення помилок і покращення інтерфейсу"
           }
         },
         "zh-Hans" : {
@@ -3915,6 +4107,12 @@
             "value" : "Version 2.4.2\n3 september 2019\n\n• Lägger till förmågan att skapa taggar (endast adminanvändare)\n• Lägger till möjligheten att ändra storlek på albumminiatyrerna\n• Lägger till retina-displayhantering\n• Mindre bugfixar och förbättringar av gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.4.2\n3 вересня 2019\n\n• Додано можливість створювати теги (лише для адміністраторів)\n• Додано можливість змінювати розмір мініатюр альбомів\n• Додано підтримку дисплеїв Retina\n• Незначні виправлення помилок і покращення інтерфейсу"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4032,6 +4230,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.4.3\n25 september 2019\n\n• iOS 13-kompatibilitet\n• Mindre bugfixar och förbättringar av gränssnittet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.4.3\n25 вересня 2019\n\n• Сумісність з iOS 13\n• Незначні виправлення помилок і покращення інтерфейсу"
           }
         },
         "zh-Hans" : {
@@ -4153,6 +4357,12 @@
             "value" : "Version 2.4.4\n1 oktober 2019\n\n• Fixa problem med videouppladdningar på vissa servrar\n• Mindre bugfixar och förbättringar av gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.4.4\n1 жовтня 2019\n\n• Виправлено проблеми з вивантаженням відео на деяких серверах\n• Незначні виправлення помилок і покращення інтерфейсу"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4270,6 +4480,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.4.5\n6 november 2019\n\n• Visar dina favoritbilder (kräver Piwigo 2.10 eller senare)\n• Alternativ för att presentera bilder sorterade manuellt\n• Tillåter Community-användare att skapa album (med lämpliga rättigheter)\n• Mindre bugfixar och förbättringar av gränssnittet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.4.5\n6 листопада 2019\n\n• Показує ваші улюблені фото (потрібен Piwigo 2.10 або новіший)\n• Параметр для показу фото, упорядкованих вручну\n• Дозволяє користувачам Community створювати альбоми (з відповідними правами)\n• Незначні виправлення помилок і покращення інтерфейсу"
           }
         },
         "zh-Hans" : {
@@ -4391,6 +4607,12 @@
             "value" : "Version 2.4.6\n18 januari 2020\n\n• Redigera egenskaper för ett urval av foton\n• Ändra datum för att skapa ett foto eller en video\n• Alternativ för att prefix filnamn innan du laddar upp\n• Mindre buggfixar och förbättringar av gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.4.6\n18 січня 2020\n\n• Редагування властивостей вибраних фото\n• Зміна дати створення фото чи відео\n• Параметр для додавання префікса до назв файлів перед вивантаженням\n• Незначні виправлення помилок і покращення інтерфейсу"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4508,6 +4730,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.4.7\n30 januari 2020\n\n• Kinesiska, förenklade, ryska och spanska översättningar\n• Fixar ett videouppspelningsproblem på vissa servrar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.4.7\n30 січня 2020\n\n• Спрощена китайська, російський та іспанський переклади\n• Виправлено проблему з відтворенням відео на деяких серверах"
           }
         },
         "zh-Hans" : {
@@ -4629,6 +4857,12 @@
             "value" : "Version 2.4.8\n25 mars 2020\n\n• Piwigo varnar dig när:\n - en webbplats har ett certifikat som inte är giltigt,\n - innan du upprättar en osäker anslutning\n• Förbättrad cachehantering\n• Mindre buggfixar och förbättringar av gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.4.8\n25 березня 2020\n\n• Piwigo попереджає вас, коли:\n - сайт має недійсний сертифікат,\n - перед встановленням незахищеного з’єднання\n• Покращено керування кешем\n• Незначні виправлення помилок і покращення інтерфейсу"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4746,6 +4980,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.5\n27 augusti 2020\n\n• Records upload requests\n• Uploads photos/videos when possible\n• \"Wi-Fi only\" option for uploads\n• No upload when in Low Power Mode\n• Mycket snabbare tillgång till fotobiblioteket\n• Mindre buggfixar och förbättringar av gränssnittet\n• Uppdatering av kod\n\nBakgrundsuppladdning kommer att vara tillgänglig efter en serveruppdatering."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.5\n27 серпня 2020\n\n• Записує запити на вивантаження\n• Вивантажує фото та відео, коли це можливо\n• Параметр «Лише Wi-Fi» для вивантажень\n• Без вивантаження в режимі енергозбереження\n• Значно швидший доступ до медіатеки\n• Незначні виправлення помилок і покращення інтерфейсу\n• Модернізація коду\n\nВивантаження у фоновому режимі стане доступним після оновлення сервера."
           }
         },
         "zh-Hans" : {
@@ -4867,6 +5107,12 @@
             "value" : "Version 2.5.1\n10 september 2020\n\n• Nytt alternativ för att presentera foton och videor i slumpmässig ordning\n• Mindre buggfixar och förbättringar av gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.5.1\n10 вересня 2020\n\n• Новий параметр для показу фото та відео у випадковому порядку\n• Незначні виправлення помилок і покращення інтерфейсу"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4984,6 +5230,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.5.2\n3 december 2020\n\n• Bakgrundsuppladdning (kräver uploadAsync-tillägg eller Piwigo 11 eller senare)\n• Mindre buggfixar och förbättringar av gränssnittet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.5.2\n3 грудня 2020\n\n• Вивантаження у фоновому режимі (потрібне розширення uploadAsync або Piwigo 11 чи новіший)\n• Незначні виправлення помилок і покращення інтерфейсу"
           }
         },
         "zh-Hans" : {
@@ -5105,6 +5357,12 @@
             "value" : "Version 2.5.3\n21 december 2020\n\n• Kontrollera vilka foton och videor Piwigo kan komma åt\n• Tips och tricks för att bättre utnyttja appen\n• Felrättelser"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.5.3\n21 грудня 2020\n\n• Керуйте тим, до яких фото та відео має доступ Piwigo\n• Поради та підказки для кращого використання програми\n• Виправлення помилок"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5222,6 +5480,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.5.4\n2 januari 2021\n\n• Mindre buggfixar och förbättringar av gränssnittet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.5.4\n2 січня 2021\n\n• Незначні виправлення помилок і покращення інтерфейсу"
           }
         },
         "zh-Hans" : {
@@ -5343,6 +5607,12 @@
             "value" : "Version 2.6\n3 mars 2021\n\n• Klistra in/ladda upp foton och videor från urklipp\n• Fixar ett kompatibilitetsproblem med Piwigo 11\n• Mindre buggfixar och förbättring av gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.6\n3 березня 2021\n\n• Вставляння та вивантаження фото й відео з буфера обміну\n• Виправлено проблему сумісності з Piwigo 11\n• Незначні виправлення помилок і покращення інтерфейсу"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5460,6 +5730,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.6.1\n19 mars 2021\n\n• Fixar tilldelningen av taggar till ett urval av foton\n• Nydesignade inställningar för utseende\n• Förbättrar tillförlitligheten för uppladdning av bakgrunden\n• Mindre buggfixar och förbättring av gränssnittet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.6.1\n19 березня 2021\n\n• Виправлено призначення тегів вибраним фото\n• Перероблено налаштування вигляду\n• Покращено надійність вивантаження у фоновому режимі\n• Незначні виправлення помилок і покращення інтерфейсу"
           }
         },
         "zh-Hans" : {
@@ -5581,6 +5857,12 @@
             "value" : "Version 2.6.2\n3 maj 2021\n\n• Tillåter vissa gemenskapsanvändare att skapa taggar\n• Fixar ett kompatibilitetsproblem med Piwigo 11\n• Mindre buggfixar och förbättringar av gränssnittet\n• Uppdatering av kod"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.6.2\n3 травня 2021\n\n• Дозволяє деяким користувачам Community створювати теги\n• Виправлено проблему сумісності з Piwigo 11\n• Незначні виправлення помилок і покращення інтерфейсу\n• Модернізація коду"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5698,6 +5980,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.6.3\n11 maj 2021\n\n• Buggfixar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.6.3\n11 травня 2021\n\n• Виправлення помилок"
           }
         },
         "zh-Hans" : {
@@ -5819,6 +6107,12 @@
             "value" : "Version 2.6.4\n18 maj 2021\n\n• Mindre buggfixar och förbättringar av gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.6.4\n18 травня 2021\n\n• Незначні виправлення помилок і покращення інтерфейсу"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5936,6 +6230,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.7\n12 augusti 2021\n\n• Automatisk uppladdning av foton och videoklipp\n• Förbättrade alternativ för video- och foto\n• Mindre buggfixar och förbättring av gränssnittet\n• Modernisering av kod"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.7\n12 серпня 2021\n\n• Автоматичне вивантаження фото та відео\n• Покращено параметри зменшення розміру фото та відео\n• Незначні виправлення помилок і покращення інтерфейсу\n• Модернізація коду"
           }
         },
         "zh-Hans" : {
@@ -6057,6 +6357,12 @@
             "value" : "Version 2.7.1\n1 september 2021\n\n• Mindre buggfixar och förbättring av gränssnittet\n• Förbättrade översättningar"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.7.1\n1 вересня 2021\n\n• Незначні виправлення помилок і покращення інтерфейсу\n• Покращені переклади"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6174,6 +6480,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.7.2\n20 september 2021\n\n• iOS 15-kompatibilitet\n• Mindre buggfixar och förbättringar av gränssnittet\n• Uppdatering av kod"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.7.2\n20 вересня 2021\n\n• Сумісність з iOS 15\n• Незначні виправлення помилок і покращення інтерфейсу\n• Модернізація коду"
           }
         },
         "zh-Hans" : {
@@ -6295,6 +6607,12 @@
             "value" : "Version 2.8\n23 oktober 2021\n\n• Lägg till och ta bort foton och videor från dina favoriter\n• Mindre buggfixar och förbättringar av gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.8\n23 жовтня 2021\n\n• Додавайте та вилучайте фото й відео з улюблених\n• Незначні виправлення помилок і покращення інтерфейсу"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6412,6 +6730,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.8.1\n9 november 2021\n\n• Buggfixar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.8.1\n9 листопада 2021\n\n• Виправлення помилок"
           }
         },
         "zh-Hans" : {
@@ -6533,6 +6857,12 @@
             "value" : "Version 2.8.2\n26 november 2021\n\n• Gör det möjligt för gemenskapsanvändare att ladda upp foton och videor automatiskt\n• Fixar ett kompatibilitetsproblem med Piwigo 12\n• Mindre buggfixar och förbättringar av gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.8.2\n26 листопада 2021\n\n• Дозволяє користувачам Community вивантажувати у фоновому режимі та автоматично вивантажувати фото й відео\n• Виправлено проблему сумісності з Piwigo 12\n• Незначні виправлення помилок і покращення інтерфейсу"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6650,6 +6980,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.9\n9 januari 2022\n\n• Visar foto-/videobeskrivningar i förhandsgranskningsläge\n• Mindre buggfixar och förbättringar av gränssnittet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.9\n9 січня 2022\n\n• Показує описи фото та відео в режимі попереднього перегляду\n• Незначні виправлення помилок і покращення інтерфейсу"
           }
         },
         "zh-Hans" : {
@@ -6771,6 +7107,12 @@
             "value" : "Version 2.9.1\n20 januari 2022\n\n• Höjdpunkter album som uppdaterats nyligen\n• Mindre bugfixar och förbättringar av gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.9.1\n20 січня 2022\n\n• Виділяє нещодавно оновлені альбоми\n• Незначні виправлення помилок і покращення інтерфейсу"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6888,6 +7230,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.9.2\n24 januari 2022\n\n• Buggfixar\n• Uppdatering av kod"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.9.2\n24 січня 2022\n\n• Виправлення помилок\n• Модернізація коду"
           }
         },
         "zh-Hans" : {
@@ -7009,6 +7357,12 @@
             "value" : "Version 2.9.3\n11 februari 2022\n\n• Tryck snabbt två gånger för att zooma in och ut foton\n• Mindre buggfixar och förbättringar av gränssnittet\n• Modernisering av kod"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.9.3\n11 лютого 2022\n\n• Подвійне торкання наближає та віддаляє фото\n• Незначні виправлення помилок і покращення інтерфейсу\n• Модернізація коду"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7126,6 +7480,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.9.4\n23 februari 2022\n\n• Buggfixar\n• Uppdatering av kod"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.9.4\n23 лютого 2022\n\n• Виправлення помилок\n• Модернізація коду"
           }
         },
         "zh-Hans" : {
@@ -7247,6 +7607,12 @@
             "value" : "Version 2.9.5\n7 mars 2022\n\n• Buggfixar\n• Uppdatering av kod"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.9.5\n7 березня 2022\n\n• Виправлення помилок\n• Модернізація коду"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7364,6 +7730,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.10\n20 maj 2022\n\n• Lägger till App Lock, en funktion för att dölja dina album bakom Face ID, Touch ID och en lösenkod\n• Felrättelser\n• Modernisering av kod"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.10\n20 травня 2022\n\n• Додано блокування програми — функцію, що приховує ваші альбоми за Face ID, Touch ID і кодом\n• Виправлення помилок\n• Модернізація коду"
           }
         },
         "zh-Hans" : {
@@ -7485,6 +7857,12 @@
             "value" : "Version 2.11\n11 juni 2022\n\n• Lägger till en alternativ för att ladda upp foton och videor på nytt\n• Uppdatering av kod\n• Felrättelser"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.11\n11 червня 2022\n\n• Додано параметр для повторного вивантаження фото та відео\n• Модернізація коду\n• Виправлення помилок"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7602,6 +7980,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.11.1\n12 juni 2022\n\n• Buggfixar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.11.1\n12 червня 2022\n\n• Виправлення помилок"
           }
         },
         "zh-Hans" : {
@@ -7723,6 +8107,12 @@
             "value" : "Version 2.11.2\n21 juni 2022\n\n• Åtgärdar ett kompatibilitetsproblem med Community-plugin"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.11.2\n21 червня 2022\n\n• Виправлено проблему сумісності з розширенням Community"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7840,6 +8230,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.12\n3 juli 2022\n\n• Välj en tagg snabbare med sökfältet\n• Uppdatering av kod\n• Buggfixar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.12\n3 липня 2022\n\n• Швидший вибір тега за допомогою рядка пошуку\n• Модернізація коду\n• Виправлення помилок"
           }
         },
         "zh-Hans" : {
@@ -7961,6 +8357,12 @@
             "value" : "Version 2.12.1\n10 juli 2022\n\n• Fixar en krasch som inträffar på iOS 9-13 vid ändring av taggar som tilldelats foton"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.12.1\n10 липня 2022\n\n• Виправлено збій в iOS 9-13 під час зміни тегів, призначених фото"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8078,6 +8480,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.12.2\n2 augusti 2022\n\n• Fixar en krasch som inträffar på iOS 9-12 när du visar uppladdningskön\n• Mindre bugfixar och förbättringar av gränssnittet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.12.2\n2 серпня 2022\n\n• Виправлено збій в iOS 9-12 під час показу черги запитів на вивантаження\n• Незначні виправлення помилок і покращення інтерфейсу"
           }
         },
         "zh-Hans" : {
@@ -8199,6 +8607,12 @@
             "value" : "Version 2.12.3\n7 augusti 2022\n\n• Buggfixar"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.12.3\n7 серпня 2022\n\n• Виправлення помилок"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8316,6 +8730,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.12.4\n16 augusti 2022\n\n• Buggfixar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.12.4\n16 серпня 2022\n\n• Виправлення помилок"
           }
         },
         "zh-Hans" : {
@@ -8437,6 +8857,12 @@
             "value" : "Version 2.12.5\n26 augusti 2022\n\n• Buggfixar"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.12.5\n26 серпня 2022\n\n• Виправлення помилок"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8554,6 +8980,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 2.12.6\n21 november 2022\n\n• Buggfixar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.12.6\n21 листопада 2022\n\n• Виправлення помилок"
           }
         },
         "zh-Hans" : {
@@ -8675,6 +9107,12 @@
             "value" : "Version 2.12.7\n19 december 2022\n\n• Buggfixar"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 2.12.7\n19 грудня 2022\n\n• Виправлення помилок"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8792,6 +9230,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 3.0\n27 juni 2023\n\n• Cache-hanteringen är helt omskriven för att förbättra användarupplevelsen och göra det möjligt att surfa offline.\n• Korrigerar vissa översättningar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 3.0\n27 червня 2023\n\n• Керування кешем повністю переписано, щоб покращити роботу з програмою та додати перегляд офлайн\n• Виправлено деякі переклади"
           }
         },
         "zh-Hans" : {
@@ -8913,6 +9357,12 @@
             "value" : "Version 3.0.1\n2 juli 2023\n\n• Mindre bugfixar och förbättringar av gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 3.0.1\n2 липня 2023\n\n• Незначні виправлення помилок і покращення інтерфейсу"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9030,6 +9480,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 3.0.2\n15 juli 2023\n\n• Buggfixar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 3.0.2\n15 липня 2023\n\n• Виправлення помилок"
           }
         },
         "zh-Hans" : {
@@ -9151,6 +9607,12 @@
             "value" : "Version 3.1\n20 november 2023\n\n• Svep nedåt eller nypa bilden för att återgå till albumet när du visar enskilda foton eller videor\n• Titta på en video som lagras på din Piwigo medan du använder andra appar.\n• Felrättelser"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 3.1\n20 листопада 2023\n\n• Під час перегляду окремих фото чи відео проведіть вниз або зведіть пальці, щоб повернутися до альбому\n• Дивіться відео, збережене у вашому Piwigo, користуючись іншими програмами.\n• Виправлення помилок"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9268,6 +9730,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 3.1.1\n1 december 2023\n\n• Uppdaterar serverstatistik (kräver Piwigo 14)\n• Felrättelser"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 3.1.1\n1 грудня 2023\n\n• Оновлює статистику сервера (потрібен Piwigo 14)\n• Виправлення помилок"
           }
         },
         "zh-Hans" : {
@@ -9389,6 +9857,12 @@
             "value" : "Version 3.1.2\n1 februari 2024\n\n• Begär Piwigo server uppdatering om det behövs\n• Felrättelser"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 3.1.2\n1 лютого 2024\n\n• За потреби пропонує оновити сервер Piwigo\n• Виправлення помилок"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9506,6 +9980,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 3.1.3\n11 februari 2024\n\n• Buggfixar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 3.1.3\n11 лютого 2024\n\n• Виправлення помилок"
           }
         },
         "zh-Hans" : {
@@ -9627,6 +10107,12 @@
             "value" : "Version 3.1.4\n27 februari 2024\n\n• Åtgärdar en krasch som inträffar på iOS 12"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 3.1.4\n27 лютого 2024\n\n• Виправлено збій в iOS 12"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9744,6 +10230,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 3.2\n14 juli 2024\n\n• Antar sorteringsalternativ för albumfoto\n• Lägger till foton i farten sorteringsalternativ\n• Lägger till rotation av uppladdade bilder (kräver rotateImage plugin)\n• Felrättelser"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 3.2\n14 липня 2024\n\n• Перейнято параметри впорядкування фото в альбомі\n• Додано параметри миттєвого впорядкування фото\n• Додано повертання вивантажених фото (потрібне розширення rotateImage)\n• Виправлення помилок"
           }
         },
         "zh-Hans" : {
@@ -9865,6 +10357,12 @@
             "value" : "Version 3.2.1\n29 juli 2024\n\n• Lägger till ett alternativ för att visa album med eller utan beskrivningar\n• Bug fixar"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 3.2.1\n29 липня 2024\n\n• Додано параметр для показу альбомів з описами або без них\n• Виправлення помилок"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9982,6 +10480,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 3.2.2\n12 september 2024\n\n• Lägger till ett alternativ för att radera urval av foton/videor som lagrats i enheten\n• Buggfixar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 3.2.2\n12 вересня 2024\n\n• Додано параметр для видалення вибраних фото та відео, збережених на пристрої\n• Виправлення помилок"
           }
         },
         "zh-Hans" : {
@@ -10103,6 +10607,12 @@
             "value" : "Version 3.2.3\n17 oktober 2024\n\n• Buggfixar"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 3.2.3\n17 жовтня 2024\n\n• Виправлення помилок"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10220,6 +10730,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 3.2.4\n18 januari 2025\n\n• Mindre bugfixar och förbättringar av gränssnittet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 3.2.4\n18 січня 2025\n\n• Незначні виправлення помилок і покращення інтерфейсу"
           }
         },
         "zh-Hans" : {
@@ -10341,6 +10857,12 @@
             "value" : "Version 3.2.5\n17 februari 2025\n\n• Mindre bugfixar och förbättringar av gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 3.2.5\n17 лютого 2025\n\n• Незначні виправлення помилок і покращення інтерфейсу"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10458,6 +10980,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 3.3\n26 mars 2025\n\n• Kopierar och flyttar ett urval av foton mycket snabbare\n• Förbättrad hantering av databasmigrering\n• Korrigerar hanteringen av rättigheter för delning av foton och videor\n• Fixar buggar och förbättrar gränssnittet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 3.3\n26 березня 2025\n\n• Копіює та переміщує вибрані фото значно швидше\n• Покращено керування перенесенням бази даних\n• Виправлено керування правами на спільний доступ до фото та відео\n• Виправляє помилки та покращує інтерфейс"
           }
         },
         "zh-Hans" : {
@@ -10579,6 +11107,12 @@
             "value" : "Version 3.3.1\n28 mars 2025\n\n• Lägger till alternativ för automatisk uppspelning och looping av video\n• Fixar buggar och förbättrar gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 3.3.1\n28 березня 2025\n\n• Додано параметри автовідтворення та повторення відео\n• Виправляє помилки та покращує інтерфейс"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10696,6 +11230,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 3.3.2\n14 april 2025\n\n• Fixar buggar och förbättrar gränssnittet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 3.3.2\n14 квітня 2025\n\n• Виправляє помилки та покращує інтерфейс"
           }
         },
         "zh-Hans" : {
@@ -10817,6 +11357,12 @@
             "value" : "Version 3.4\n30 juni 2025\n\n• Lägger till alternativ för att ändra filnamn före uppladdning\n• Fixar buggar och förbättrar gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 3.4\n30 червня 2025\n\n• Додано параметри для зміни назв файлів перед вивантаженням\n• Виправляє помилки та покращує інтерфейс"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10934,6 +11480,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 3.4.1\n26 juli 2025\n\n• Lägger till snabbåtgärder på startskärmen\n• Fixar buggar och förbättrar gränssnittet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 3.4.1\n26 липня 2025\n\n• Додано швидкі дії на початковому екрані\n• Виправляє помилки та покращує інтерфейс"
           }
         },
         "zh-Hans" : {
@@ -11055,6 +11607,12 @@
             "value" : "Version 3.5\n18 augusti 2025\n\n• Lägger till hantering av PDF-filer\n• Fixar buggar och förbättrar gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 3.5\n18 серпня 2025\n\n• Додано керування файлами PDF\n• Виправляє помилки та покращує інтерфейс"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11172,6 +11730,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 3.5.1\n23 augusti 2025\n\n• Fixar buggar och förbättrar gränssnittet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 3.5.1\n23 серпня 2025\n\n• Виправляє помилки та покращує інтерфейс"
           }
         },
         "zh-Hans" : {
@@ -11293,6 +11857,12 @@
             "value" : "Version 4.0\n15 september 2025\n\n• iOS 26-kompatibilitet\n• Mindre bugfixar och förbättringar av gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 4.0\n15 вересня 2025\n\n• Сумісність з iOS 26\n• Незначні виправлення помилок і покращення інтерфейсу"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11410,6 +11980,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 4.1\n29 oktober 2025\n\n• Stöder större teckensnitt\n• Fixar buggar och förbättrar gränssnittet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 4.1\n29 жовтня 2025\n\n• Додано підтримку збільшеного тексту\n• Виправляє помилки та покращує інтерфейс"
           }
         },
         "zh-Hans" : {
@@ -11531,6 +12107,12 @@
             "value" : "Version 4.1.1\n11 november 2025\n\n• Fixar buggar och förbättrar gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 4.1.1\n11 листопада 2025\n\n• Виправляє помилки та покращує інтерфейс"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11648,6 +12230,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 4.1.2\n12 december 2025\n\n• Lägger till stöd för API-nycklar\n• Fixar buggar och förbättrar gränssnittet\n• Modernisering av koden"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 4.1.2\n12 грудня 2025\n\n• Додано підтримку ключів API\n• Виправляє помилки та покращує інтерфейс\n• Модернізація коду"
           }
         },
         "zh-Hans" : {
@@ -11769,6 +12357,12 @@
             "value" : "Version 4.1.3\n20 december 2025\n\n• Kompatibilitet med Piwigo 16\n• Fixar buggar och förbättrar gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 4.1.3\n20 грудня 2025\n\n• Сумісність з Piwigo 16\n• Виправляє помилки та покращує інтерфейс"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11886,6 +12480,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 4.1.4\n25 mars 2026\n\n• Buggfixar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 4.1.4\n25 березня 2026\n\n• Виправлення помилок"
           }
         },
         "zh-Hans" : {
@@ -12007,6 +12607,12 @@
             "value" : "Version 4.2\n1 maj 2026\n\n• Snabbare uppladdning och avancerade uppladdningsalternativ\n• Fortsätter uppladdningen i bakgrunden även efter att du bytt till en annan app\n• Snabbare visning av album som lagrats på enheten före uppladdning\n• Delar loggar i en fil via AirDrop och grupperar dem per millisekund\n• Bugfixar och förbättringar av gränssnittet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 4.2\n1 травня 2026\n\n• Вивантажує швидше та пропонує додаткові параметри вивантаження\n• Продовжує вивантаження у фоновому режимі після переходу до іншої програми\n• Прискорює показ альбомів, збережених на пристрої, перед вивантаженням\n• Ділиться журналами у файлі через AirDrop і групує їх за мілісекундами\n• Виправляє помилки та покращує інтерфейс"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12124,6 +12730,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 4.2.1\n9 maj 2026\n\n• Hjälpsidor har lagts till\n• Felkorrigeringar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 4.2.1\n9 травня 2026\n\n• Додано сторінки довідки\n• Виправлення помилок"
           }
         },
         "zh-Hans" : {
@@ -12245,6 +12857,12 @@
             "value" : "Version 4.2.2\n24 maj 2026\n\n• Fixade en bugg relaterad till auto-uppladdningsalternativet\n• Förbättrade översättningar"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 4.2.2\n24 травня 2026\n\n• Виправлено помилку, пов’язану з параметром автоматичного вивантаження\n• Покращені переклади"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12362,6 +12980,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 4.2.3\n29 maj 2026\n\n• Fixar buggar och förbättrar gränssnittet\n• Avbryter uppladdningar när enheten behöver svalna"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 4.2.3\n29 травня 2026\n\n• Виправляє помилки та покращує інтерфейс\n• Призупиняє вивантаження, коли пристрій має охолонути"
           }
         },
         "zh-Hans" : {
@@ -12483,6 +13107,12 @@
             "value" : "Version 4.2.4\n1 juli 2026\n\n• Fixar buggar och förbättrar gränssnittet\n• Gör det möjligt att ändra det maximala antalet samtidiga anslutningar till Piwigo-servern"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 4.2.4\n1 липня 2026\n\n• Виправляє помилки та покращує інтерфейс\n• Дозволяє змінювати максимальну кількість одночасних з’єднань із сервером Piwigo"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12600,6 +13230,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 4.3\n1 augusti 2026\n\n• Lägger till en delningsfunktion som gör det möjligt att ladda upp foton, videor och PDF-filer från andra appar\n• Spelar upp animerade GIF-bilder\n• Åtgärdar buggar och förbättrar gränssnittet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 4.3\n1 серпня 2026\n\n• Додано розширення «Поділитися», яке дозволяє вивантажувати фото, відео та файли PDF з інших програм\n• Відтворює анімовані зображення GIF\n• Виправляє помилки та покращує інтерфейс"
           }
         },
         "zh-Hans" : {
@@ -12721,6 +13357,12 @@
             "value" : "Version 4.3.1\n22 augusti 2026\n\n• Buggfixar"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 4.3.1\n22 серпня 2026\n\n• Виправлення помилок"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12840,6 +13482,12 @@
             "value" : "Version 4.4\n7 september 2026\n\n• Gör det möjligt att dela privata album med personer som inte har ett konto (kräver Share Album-plugin)\n• Importerar Live Photo-bilder som foto, video eller båda\n• Förbättrar hanteringen av Community-användare\n• Buggfixar"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 4.4\n7 вересня 2026\n\n• Дозволяє ділитися приватними альбомами з людьми, які не мають облікового запису (потрібне розширення Share Album)\n• Імпортує Live Photos як фото, відео або обидва\n• Покращує керування користувачами Community\n• Виправлення помилок"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12957,6 +13605,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 4.4.1\n\n• Rättar layouten på arabiska och andra språk som skrivs från höger till vänster\n• Tillämpar varje språks pluralregler på antalet foton, album och taggar\n• Slutför den indonesiska översättningen\n• Fixar buggar och förbättrar gränssnittet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 4.4.1\n\n• Виправляє компонування арабською та іншими мовами з написанням справа наліво\n• Застосовує правила множини кожної мови до кількості фото, альбомів і тегів\n• Завершує індонезійський переклад\n• Виправляє помилки та покращує інтерфейс"
           }
         },
         "zh-Hans" : {

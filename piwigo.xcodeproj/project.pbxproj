@@ -987,6 +987,10 @@
 		C7003D3EBFFB44E4370F0059 /* cs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/About.strings; sourceTree = "<group>"; };
 		C35B799EC01ACA2D70D45C5F /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
 		1F4A9108F02A4D198552E7F8 /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/InAppIntents.strings; sourceTree = "<group>"; };
+		3CBDEA9E47E7622668B1A08D /* uk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
+		E528C938AE44B3B20B39886A /* uk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/About.strings; sourceTree = "<group>"; };
+		B322212CFAB15487D483E77C /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
+		28FCE78221338A7FF16EF594 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/InAppIntents.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2114,6 +2118,7 @@
 				"pt-BR",
 				"pt-PT",
 				cs,
+				uk,
 			);
 			mainGroup = D82B8CB21A67820A000E47CA;
 			packageReferences = (
@@ -2637,6 +2642,7 @@
 				4899B315FF781F4B193C3290 /* pt-BR */,
 				B90AD594935F7188AFBC7F67 /* pt-PT */,
 				C35B799EC01ACA2D70D45C5F /* cs */,
+				B322212CFAB15487D483E77C /* uk */,
 			);
 			name = AppShortcuts.strings;
 			sourceTree = "<group>";
@@ -2663,6 +2669,7 @@
 				14C56BF9BE67EBE05C0092A0 /* pt-BR */,
 				A016881C03A0767FB28D94FA /* pt-PT */,
 				6110168E01D5961787AD56D9 /* cs */,
+				3CBDEA9E47E7622668B1A08D /* uk */,
 			);
 			name = PrivacyPolicy.strings;
 			sourceTree = "<group>";
@@ -2689,6 +2696,7 @@
 				7F76AF28A758FDDB05CA59AA /* pt-BR */,
 				9414D6A8113A1DE8672F1518 /* pt-PT */,
 				C7003D3EBFFB44E4370F0059 /* cs */,
+				E528C938AE44B3B20B39886A /* uk */,
 			);
 			name = About.strings;
 			sourceTree = "<group>";
@@ -2716,6 +2724,7 @@
 				9DC3A90FB2836DB7AA4B46CF /* pt-BR */,
 				59020160E02941AC165368A7 /* pt-PT */,
 				1F4A9108F02A4D198552E7F8 /* cs */,
+				28FCE78221338A7FF16EF594 /* uk */,
 			);
 			name = InAppIntents.intentdefinition;
 			sourceTree = "<group>";

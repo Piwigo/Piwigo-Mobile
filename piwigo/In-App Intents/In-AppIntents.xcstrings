@@ -357,6 +357,36 @@
             }
           }
         },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld фото додано до черги вивантаження."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld фото додано до черги вивантаження."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld фото додано до черги вивантаження."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld фото додано до черги вивантаження."
+                }
+              }
+            }
+          }
+        },
         "zh-Hans" : {
           "variations" : {
             "plural" : {
@@ -740,6 +770,36 @@
             }
           }
         },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld фото додано до черги вивантаження (цей сервер Piwigo не приймає файли PDF)."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld фото додано до черги вивантаження (цей сервер Piwigo не приймає файли PDF)."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld фото додано до черги вивантаження (цей сервер Piwigo не приймає файли PDF)."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld фото додано до черги вивантаження (цей сервер Piwigo не приймає файли PDF)."
+                }
+              }
+            }
+          }
+        },
         "zh-Hans" : {
           "variations" : {
             "plural" : {
@@ -870,6 +930,12 @@
             "value" : "Lägger till de senaste bilderna i uppladdningskön enligt inställningarna för automatisk uppladdning."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додає нещодавні фото до черги вивантаження відповідно до налаштувань автоматичного вивантаження."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -986,6 +1052,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Inget foto har lagts till i uppladdningskön."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "До черги вивантаження не додано жодного фото."
           }
         },
         "zh-Hans" : {
@@ -1107,6 +1179,12 @@
             "value" : "Ladda upp bilder"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вивантажити фото"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1224,6 +1302,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lägger till bilder i uppladdningskön."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додає фото до черги вивантаження."
           }
         },
         "zh-Hans" : {
@@ -1345,6 +1429,12 @@
             "value" : "Du har inte behörighet att ladda upp till det här albumet."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ви не маєте дозволу вивантажувати до цього альбому."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1462,6 +1552,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ingen bild eller video angavs för genvägen."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для швидкої команди не надано жодного фото чи відео."
           }
         },
         "zh-Hans" : {

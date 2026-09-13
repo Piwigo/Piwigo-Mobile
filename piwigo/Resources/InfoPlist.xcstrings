@@ -107,6 +107,12 @@
             "value" : "Piwigo"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -227,6 +233,12 @@
             "value" : "Piwigo"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -340,6 +352,12 @@
           }
         },
         "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encapsulated PostScript"
+          }
+        },
+        "uk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Encapsulated PostScript"
@@ -466,6 +484,12 @@
             "value" : "Använd Face ID istället för en lösenkod för att komma åt dina album."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Використовуйте Face ID замість коду для доступу до ваших альбомів."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -584,6 +608,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Piwigo använder det lokala nätverket för att komma åt din Piwigo-server."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo використовує локальну мережу для доступу до вашого сервера Piwigo."
           }
         },
         "zh-Hans" : {
@@ -705,6 +735,12 @@
             "value" : "så att den kommer att kunna ladda ner bilder till Bilder-appen och ladda upp bilder till din Piwigo."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "щоб зберігати фото у програмі Фото та вивантажувати фото до вашого Piwigo."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -823,6 +859,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "så att Piwigo kan ladda upp bilder med Siri."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "щоб Piwigo міг вивантажувати зображення за допомогою Siri."
           }
         },
         "zh-Hans" : {

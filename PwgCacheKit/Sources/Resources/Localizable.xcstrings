@@ -106,6 +106,12 @@
             "value" : "Album-ID"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID альбому"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -223,6 +229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : " & mer"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " та інше"
           }
         },
         "zh-Hans" : {
@@ -344,6 +356,12 @@
             "value" : "Appen avbröts medan databasen migrerades. Vänligen starta om appen och försök igen."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Програму було призупинено під час перенесення бази даних. Перезапустіть програму та спробуйте ще раз."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -461,6 +479,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Den permanenta databasen med dina Piwigo-data behöver migreras. Vänligen starta applikationen."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Постійна база даних ваших даних Piwigo потребує перенесення. Запустіть програму."
           }
         },
         "zh-Hans" : {
@@ -582,6 +606,12 @@
             "value" : "Räknare"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лічильник"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -699,6 +729,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Skapat den"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дата створення"
           }
         },
         "zh-Hans" : {
@@ -820,6 +856,12 @@
             "value" : "Skapelsetid"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Час створення"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -937,6 +979,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fel"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Помилка"
           }
         },
         "zh-Hans" : {
@@ -1058,6 +1106,12 @@
             "value" : "Filformatet accepteras inte av Piwigo server."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сервер Piwigo не приймає цей формат файлу."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1175,6 +1229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Klart"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завершено"
           }
         },
         "zh-Hans" : {
@@ -1296,6 +1356,12 @@
             "value" : "Slutför..."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завершення..."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1413,6 +1479,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Redo för uppladdning..."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Готово до вивантаження…"
           }
         },
         "zh-Hans" : {
@@ -1534,6 +1606,12 @@
             "value" : "Förbereder..."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Підготовка..."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1651,6 +1729,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uppladdad"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вивантажено"
           }
         },
         "zh-Hans" : {
@@ -1772,6 +1856,12 @@
             "value" : "Laddar upp..."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вивантаження..."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1889,6 +1979,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Väntar..."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очікування..."
           }
         },
         "zh-Hans" : {
@@ -2010,6 +2106,12 @@
             "value" : "Text"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Текст"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2127,6 +2229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Omöjliga uppladdningar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Неможливі вивантаження"
           }
         },
         "zh-Hans" : {
@@ -2248,6 +2356,12 @@
             "value" : "Uppladdningar kö"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Черга вивантаження"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2365,6 +2479,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Återuppladdningsbara uppladdningar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вивантаження для відновлення"
           }
         },
         "zh-Hans" : {
