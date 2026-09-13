@@ -20,7 +20,7 @@ default_platform(:ios)
 platform :ios do
   desc "Generate new localized screenshots"
   lane :screenshots do
-    capture_screenshots(workspace: "piwigo.xcworkspace", scheme: "piwigoAppStore")
+    capture_screenshots(workspace: "piwigo.xcworkspace", scheme: "Screenshots")
   end
 end
 
@@ -30,3 +30,11 @@ update_app_identifier(
   app_identifier: "org.piwigo" 		# The App Identifier
 )
 
+upload_to_testflight(
+  skip_waiting_for_build_processing: true,
+  apple_id: "472225196"
+)
+
+upload_to_app_store(
+  precheck_include_in_app_purchases: false
+)
