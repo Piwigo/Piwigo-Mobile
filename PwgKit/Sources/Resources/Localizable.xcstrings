@@ -10,6 +10,12 @@
             "value" : "عذرا، لا يتم اعتماد الملفات الصوتية من قبل Piwigo موبايل حتى الآن."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je nám líto, Piwigo Mobile zatím nepodporuje zvukové soubory."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -121,6 +127,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الأفضل تقييماً"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nejlépe hodnocené"
           }
         },
         "da" : {
@@ -236,6 +248,12 @@
             "value" : "مفضلتك"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vaše oblíbené"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -347,6 +365,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "أحدث الصور"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nedávné fotky"
           }
         },
         "da" : {
@@ -462,6 +486,12 @@
             "value" : "الموسومة بـ"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se štítkem"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -573,6 +603,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الأكثر زيارة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nejnavštěvovanější"
           }
         },
         "da" : {
@@ -688,6 +724,12 @@
             "value" : "ألبوم الجذر"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kořenové album"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -799,6 +841,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الأقدم → الأحدث"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nejstarší → Nejnovější"
           }
         },
         "da" : {
@@ -914,6 +962,12 @@
             "value" : "تاريخ الإنشاء، القديم → جديد"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datum vytvoření, staré → nové"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1025,6 +1079,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تاريخ الإنشاء، جديد → القديم"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datum vytvoření, nové → staré"
           }
         },
         "da" : {
@@ -1140,6 +1200,12 @@
             "value" : "الأحدث → الأقدم"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nejnovější → Nejstarší"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1251,6 +1317,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تاريخ النشر، القديم → جديد"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datum přidání, staré → nové"
           }
         },
         "da" : {
@@ -1366,6 +1438,12 @@
             "value" : "تاريخ النشر، جديد → القديم"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datum přidání, nové → staré"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1477,6 +1555,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "افتراضي"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Výchozí"
           }
         },
         "da" : {
@@ -1592,6 +1676,12 @@
             "value" : "اسم الملف، A → Z"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Název souboru, A → Z"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1703,6 +1793,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "اسم الملف، Z → A"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Název souboru, Z → A"
           }
         },
         "da" : {
@@ -1818,6 +1914,12 @@
             "value" : "المعرف , 1 → 9"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Identifikátor, 1 → 9"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1926,6 +2028,12 @@
       "comment" : "1 → 9",
       "localizations" : {
         "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 → 9"
+          }
+        },
+        "cs" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "1 → 9"
@@ -2044,6 +2152,12 @@
             "value" : "المعرف, 9 → 1"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Identifikátor, 9 → 1"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2152,6 +2266,12 @@
       "comment" : "9 → 1",
       "localizations" : {
         "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "9 → 1"
+          }
+        },
+        "cs" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "9 → 1"
@@ -2270,6 +2390,12 @@
             "value" : "الطلب اليدوي"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ruční řazení"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2383,6 +2509,12 @@
             "value" : "عنوان الصورة، A → Z"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Název fotky, A → Z"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2491,6 +2623,12 @@
       "comment" : "A → Z",
       "localizations" : {
         "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A → Z"
+          }
+        },
+        "cs" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "A → Z"
@@ -2609,6 +2747,12 @@
             "value" : "عنوان الصورة، Z → A"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Název fotky, Z → A"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2717,6 +2861,12 @@
       "comment" : "Z → A",
       "localizations" : {
         "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Z → A"
+          }
+        },
+        "cs" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Z → A"
@@ -2835,6 +2985,12 @@
             "value" : "ترتيب عشوائي"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Náhodné řazení"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2946,6 +3102,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "أدنى → أعلى"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nejnižší → Nejvyšší"
           }
         },
         "da" : {
@@ -3061,6 +3223,12 @@
             "value" : "أعلى → أدنى"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nejvyšší → Nejnižší"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3172,6 +3340,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "درجة التقييم، منخفضة → عالية"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hodnocení, nízké → vysoké"
           }
         },
         "da" : {
@@ -3287,6 +3461,12 @@
             "value" : "درجة التقييم، مرتفعة → منخفضة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hodnocení, vysoké → nízké"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3398,6 +3578,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "أدنى → أعلى"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nejnižší → Nejvyšší"
           }
         },
         "da" : {
@@ -3513,6 +3699,12 @@
             "value" : "أعلى → أدنى"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nejvyšší → Nejnižší"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3624,6 +3816,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الزيارات، منخفضة → مرتفعة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Návštěvy, nejméně → nejvíce"
           }
         },
         "da" : {
@@ -3739,6 +3937,12 @@
             "value" : "الزيارات، عالية → منخفضة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Návštěvy, nejvíce → nejméně"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3850,6 +4054,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الألبوم ليس في ذاكرة التخزين المؤقت الثابتة."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Album není v trvalé mezipaměti."
           }
         },
         "da" : {
@@ -3965,6 +4175,12 @@
             "value" : "التصوير/الفيديو ليس في ذاكرة التخزين المؤقت الثابتة."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotka/video není v trvalé mezipaměti."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4076,6 +4292,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Failed to create a new Server object."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodařilo se vytvořit nový objekt Server."
           }
         },
         "da" : {
@@ -4191,6 +4413,12 @@
             "value" : "فشل إنشاء كائن مستخدم جديد."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodařilo se vytvořit nový objekt User."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4302,6 +4530,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل إنشاء كائن ألبوم جديد."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodařilo se vytvořit nový objekt Album."
           }
         },
         "da" : {
@@ -4417,6 +4651,12 @@
             "value" : "خطأ في إحضار الألبومات"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chyba při načítání alb!"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4528,6 +4768,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تم العثور عليه وسيتجاهل ألبومًا يفتقد معرفًا أو اسمًا صحيحًا."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bylo nalezeno a bude zahozeno album bez platného ID nebo názvu."
           }
         },
         "da" : {
@@ -4643,6 +4889,12 @@
             "value" : "فشل إنشاء كائن صورة جديد."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodařilo se vytvořit nový objekt Image."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4754,6 +5006,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "خطأ في جلب الصور/الفيديوها!"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chyba při načítání fotek/videí!"
           }
         },
         "da" : {
@@ -4869,6 +5127,12 @@
             "value" : "تم العثور على صورة/فيديو تفتقد إلى معرّف أو عنوان URL صالح وسيتم تجاهلها."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Byla nalezena a bude zahozena fotka/video bez platného ID nebo URL."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4980,6 +5244,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل إنشاء كائن ”الموقع“ الجديد."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodařilo se vytvořit nový objekt Location."
           }
         },
         "da" : {
@@ -5095,6 +5365,12 @@
             "value" : "تم العثور على موقع يفتقر إلى معرّف صالح وسيتم تجاهله."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Byla nalezena a bude zahozena poloha bez platného identifikátoru."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5206,6 +5482,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل في إنشاء عنصر علامة جديد."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodařilo se vytvořit nový objekt Tag."
           }
         },
         "da" : {
@@ -5321,6 +5603,12 @@
             "value" : "خطأ في جلب العلامات!"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chyba při načítání štítků!"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5432,6 +5720,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تم العثور عليه وسوف يتم تجاهل علامة مفقودة رمز أو اسم صالح."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Byl nalezen a bude zahozen štítek bez platného kódu nebo názvu."
           }
         },
         "da" : {
@@ -5547,6 +5841,12 @@
             "value" : "فشل إنشاء كائن تحميل جديد."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodařilo se vytvořit nový objekt Upload."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5658,6 +5958,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Failed to delete an Upload object."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodařilo se smazat objekt Upload."
           }
         },
         "da" : {
@@ -5773,6 +6079,12 @@
             "value" : "فشل في استعادة الصورة."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodařilo se načíst fotku."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5884,6 +6196,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تم العثور على ملف تم تحميله يفتقر إلى معرّف صالح، وسيتم تجاهله."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bylo nalezeno a bude zahozeno nahrávání bez platného identifikátoru."
           }
         },
         "da" : {
@@ -5999,6 +6317,12 @@
             "value" : "سيتم تجاهل حساب المستخدم الذي يفتقر إلى اسم مستخدم صالح."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bude zahozen uživatelský účet bez platného uživatelského jména."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6110,6 +6434,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "حساب المستخدم غير موجود في ذاكرة التخزين المؤقت الدائمة."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uživatelský účet není v trvalé mezipaměti."
           }
         },
         "da" : {
@@ -6225,6 +6555,12 @@
             "value" : "أخفق الحصول على معلمات إضافة المجتمع. حاول تسجيل الدخول مرة أخرى."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodařilo se získat parametry rozšíření Community.\nZkuste se přihlásit znovu."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6336,6 +6672,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل التنزيل"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stahování se nezdařilo"
           }
         },
         "da" : {
@@ -6451,6 +6793,12 @@
             "value" : "فشل في معالجة الصور التي تم تحميلها."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodařilo se zpracovat nahrané obrázky."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6562,6 +6910,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "خادم Piwigo هذا لا يقبل ملفات EPS."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tento server Piwigo nepřijímá soubory EPS."
           }
         },
         "da" : {
@@ -6677,6 +7031,12 @@
             "value" : "تنسيق ملف الصور غير مدعوم."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formát souboru fotky není podporován."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6788,6 +7148,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "عذرا، تم كسر الاتصال. حاول تسجيل الدخول مرة أخرى."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je nám líto, komunikace byla přerušena. Zkuste se přihlásit znovu."
           }
         },
         "da" : {
@@ -6903,6 +7269,12 @@
             "value" : "لا يتطابق اسم المستخدم وكلمة المرور مع عنوان الويب المحدد"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uživatelské jméno a heslo neodpovídají zadané webové adrese"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7014,6 +7386,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل تسجيل الخروج."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odhlášení se nezdařilo."
           }
         },
         "da" : {
@@ -7129,6 +7507,12 @@
             "value" : "صيغة الملف غير معتمدة."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formát souboru není podporován."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7240,6 +7624,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "خادم Piwigo هذا لا يقبل ملفات PDF."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tento server Piwigo nepřijímá soubory PDF."
           }
         },
         "da" : {
@@ -7355,6 +7745,12 @@
             "value" : "قام خادم Piwigo بإعادة كائن JSON فارغ."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Server Piwigo vrátil prázdný objekt JSON."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7466,6 +7862,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "خادم Piwigo لم يعيد كائن JSON صالح."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Server Piwigo nevrátil platný objekt JSON."
           }
         },
         "da" : {
@@ -7581,6 +7983,12 @@
             "value" : "Piwigo server did not return a valid response."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Server Piwigo nevrátil platnou odpověď."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7692,6 +8100,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "كائن الخادم غير موجود في ذاكرة التخزين المؤقت الدائمة."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Objekt serveru není v trvalé mezipaměti."
           }
         },
         "da" : {
@@ -7807,6 +8221,12 @@
             "value" : "لم يتمكن خادم Piwigo من إكمال العملية المطلوبة."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Server Piwigo nedokázal dokončit požadovanou operaci."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7918,6 +8338,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "غير قادر على استخراج المعلومات المتوقعة من البيانات التي أرسلها خادم Piwigo."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Z dat vrácených serverem Piwigo se nepodařilo získat očekávané informace."
           }
         },
         "da" : {
@@ -8033,6 +8459,12 @@
             "value" : "تعذر استدراج كائن JSON الذي أرسله خادم Piwigo."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Objekt JSON vrácený serverem Piwigo se nepodařilo zpracovat."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8144,6 +8576,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "المشرفين"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Správci"
           }
         },
         "da" : {
@@ -8259,6 +8697,12 @@
             "value" : "المشرفين، العائلة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Správci, rodina"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8370,6 +8814,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "المشرفين، العائلة، الأصدقاء"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Správci, rodina, přátelé"
           }
         },
         "da" : {
@@ -8485,6 +8935,12 @@
             "value" : "المشرفين، العائلة، الأصدقاء، جهات الاتصال"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Správci, rodina, přátelé, kontakty"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8596,6 +9052,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الجميع"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Všichni"
           }
         },
         "da" : {
@@ -8711,6 +9173,12 @@
             "value" : "فشل استدعاء منهج الخادم."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodařilo se zavolat metodu serveru."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8822,6 +9290,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل في تنفيذ طريقة الخادم مع المعلمة المفقودة."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodařilo se provést metodu serveru, chybí parametr."
           }
         },
         "da" : {
@@ -8937,6 +9411,12 @@
             "value" : "حدث خطأ غير متوقع أثناء الاتصال بطريقة الخادم مع المعلمات المقدمة."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Při volání metody serveru se zadanými parametry došlo k neočekávané chybě."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9048,6 +9528,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يرجى تصحيح عنوان خادم الويب الخاص بتطبيق Piwigo."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opravte prosím adresu webového serveru Piwigo."
           }
         },
         "da" : {
@@ -9163,6 +9649,12 @@
             "value" : "URL غير صحيحة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nesprávná URL"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9274,6 +9766,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إصدار خادم Piwigo هو %@. Piwigo موبايل يدعم فقط على الأقل نسخة من 2.8. يرجى تحديث الخادم الخاص بك لاستخدام Piwigo موبايل. هل ما زلت ترغب في المتابعة؟"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze vašeho serveru Piwigo je %@. Piwigo Mobile podporuje pouze verzi %@ a novější. Aktualizujte prosím server, abyste mohli Piwigo Mobile používat."
           }
         },
         "da" : {
@@ -9389,6 +9887,12 @@
             "value" : "فشل أثناء المصادقة مع الخادم. حاول تسجيل الدخول مرة أخرى."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ověření u serveru se nezdařilo. Zkuste se přihlásit znovu."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9500,6 +10004,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ألبوم وجهة غير صالح"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neplatné cílové album"
           }
         },
         "da" : {
@@ -9615,6 +10125,12 @@
             "value" : "ألبوم مصدر غير صالح"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neplatné zdrojové album"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9726,6 +10242,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "لا يمكن تجريد البيانات الوصفية الخاصة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soukromá metadata nelze odstranit"
           }
         },
         "da" : {
@@ -9841,6 +10363,12 @@
             "value" : "ألبومات"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alba"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9952,6 +10480,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "عرض كامل"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plné rozlišení"
           }
         },
         "da" : {
@@ -10067,6 +10601,12 @@
             "value" : "كبير"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velká"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10178,6 +10718,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "متوسط"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Střední"
           }
         },
         "da" : {
@@ -10293,6 +10839,12 @@
             "value" : "صغير"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Malá"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10404,6 +10956,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "مربع"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Čtvercová"
           }
         },
         "da" : {
@@ -10519,6 +11077,12 @@
             "value" : "الصورة المصغرة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniatura"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10630,6 +11194,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "كبير جدا"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velmi velká"
           }
         },
         "da" : {
@@ -10745,6 +11315,12 @@
             "value" : "صغير جدا"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velmi malá"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10856,6 +11432,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ضخم"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obrovská"
           }
         },
         "da" : {
@@ -10971,6 +11553,12 @@
             "value" : "صغير"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drobná"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11082,6 +11670,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ضخم جداً"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gigantická"
           }
         },
         "da" : {
@@ -11197,6 +11791,12 @@
             "value" : "ضخامة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obří"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11310,6 +11910,12 @@
             "value" : "تحميل معلمة طلب مفقودة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chybí parametr požadavku na nahrání"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11421,6 +12027,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تنسيق ملف الفيديو غير مدعوم."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formát souboru videa není podporován."
           }
         },
         "da" : {

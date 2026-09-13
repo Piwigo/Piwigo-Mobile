@@ -10,6 +10,12 @@
             "value" : "إلغاء"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zrušit"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -123,6 +129,12 @@
             "value" : "تجاهل"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zavřít"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -234,6 +246,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "موافق"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
           }
         },
         "da" : {
@@ -350,6 +368,12 @@
             "value" : "نعم"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ano"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -461,6 +485,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "جميع الألبومات"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Všechna alba"
           }
         },
         "da" : {
@@ -576,6 +606,12 @@
             "value" : "جاري التحميل…"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Načítání…"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -687,6 +723,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "أحدث الألبومات"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nedávná alba"
           }
         },
         "da" : {
@@ -802,6 +844,12 @@
             "value" : "أدخل رمز المرور"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zadejte kód"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -913,6 +961,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "مع قفل التطبيق، يلزم وجود رمز خاص بالجهاز للوصول إلى التطبيق. إذا فقدت هذا الرمز، فسيتعين عليك إعادة تثبيت التطبيق."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se zámkem aplikace je pro přístup k aplikaci vyžadován kód specifický pro dané zařízení. Pokud tento kód ztratíte, budete muset aplikaci přeinstalovat."
           }
         },
         "da" : {
@@ -1028,6 +1082,12 @@
             "value" : "تعديل رمز المرور"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Změnit kód"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1139,6 +1199,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "التحقق من رمز المرور"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ověřit kód"
           }
         },
         "da" : {
@@ -1254,6 +1320,12 @@
             "value" : "الوصول إلى ألبومات Piwigo الخاصة بك"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přístup k vašim albům Piwigo"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1365,6 +1437,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الخصوصية"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soukromí"
           }
         },
         "da" : {

@@ -9,6 +9,12 @@
             "value" : "%@"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -115,6 +121,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "دورة مدتها 12 ساعة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "12hodinový cyklus"
           }
         },
         "da" : {
@@ -230,6 +242,12 @@
             "value" : "دورة 24 ساعة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "24hodinový cyklus"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -341,6 +359,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الاختصار"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zkratka"
           }
         },
         "da" : {
@@ -456,6 +480,12 @@
             "value" : "إضافة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přidat"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -567,6 +597,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "لا"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ne"
           }
         },
         "da" : {
@@ -682,6 +718,12 @@
             "value" : "إعادة المحاولة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zkusit znovu"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -793,6 +835,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "جميع الصور"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Všechny fotky"
           }
         },
         "da" : {
@@ -907,6 +955,12 @@
             "value" : "التحميل التلقائي للصور"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatické nahrávání fotek"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1017,6 +1071,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "التحميل التلقائي للصور"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nahrávat fotky automaticky"
           }
         },
         "da" : {
@@ -1132,6 +1192,12 @@
             "value" : "تم تعطيل خيار التحميل التلقائي في إعدادات التطبيق."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatické nahrávání je v nastavení aplikace vypnuto."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1243,6 +1309,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشلت العديد من عمليات النقل وقائمة انتظار التحميل معلقة. يرجى التحقق في التطبيق."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Několik přenosů se nezdařilo a fronta nahrávání je pozastavena. Zkontrolujte to prosím v aplikaci."
           }
         },
         "da" : {
@@ -1358,6 +1430,12 @@
             "value" : "رجوع"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zpět"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1469,6 +1547,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إضافة صور"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přidat fotky"
           }
         },
         "da" : {
@@ -1584,6 +1668,12 @@
             "value" : "حذف"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Smazat album"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1695,6 +1785,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "نقل"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přesunout album"
           }
         },
         "da" : {
@@ -1810,6 +1906,12 @@
             "value" : "إعادة التسمية"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přejmenovat album"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1921,6 +2023,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الضربات"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "návštěv"
           }
         },
         "da" : {
@@ -2036,6 +2144,12 @@
             "value" : "إلغاء التحديد"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odznačit"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2147,6 +2261,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "المفضلة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přidat k oblíbeným"
           }
         },
         "da" : {
@@ -2262,6 +2382,12 @@
             "value" : "خطأ لا توجد بيانات"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chyba: žádná data"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2373,6 +2499,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "حدد"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vybrat"
           }
         },
         "da" : {
@@ -2488,6 +2620,12 @@
             "value" : "مشاركة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sdílet"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2599,6 +2737,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "غير مفضل"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odebrat z oblíbených"
           }
         },
         "da" : {
@@ -2714,6 +2858,12 @@
             "value" : "هل تريد بالتأكيد تعيين هذه الصورة للألبوم \"%@\"؟"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opravdu chcete tuto fotku použít pro album „%@“?"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2825,6 +2975,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "صورة مصغرة للألبوم"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniatura alba"
           }
         },
         "da" : {
@@ -2940,6 +3096,12 @@
             "value" : "أخفق تعيين صورة الألبوم"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodařilo se nastavit fotku alba"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3051,6 +3213,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "خطأ في تعيين الصورة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chyba při nastavení fotky"
           }
         },
         "da" : {
@@ -3166,6 +3334,12 @@
             "value" : "جار تحديث الصورة المصغرة للألبوم…"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualizace miniatury alba…"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3277,6 +3451,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "لا توجد ألبومات في Piwigo حتى الآن. يمكنك السحب إلى الأسفل لتحديث أو إعادة تسجيل الدخول."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ve vašem Piwigu zatím nejsou žádná alba. Můžete potáhnout dolů pro obnovení nebo se znovu přihlásit."
           }
         },
         "da" : {
@@ -3392,6 +3572,12 @@
             "value" : "حدد إجراء لهذا الألبوم"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte akci pro toto album"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3503,6 +3689,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "حدد الألبوم الحالي لهذه الصورة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte aktuální album pro tuto fotku"
           }
         },
         "da" : {
@@ -3618,6 +3810,12 @@
             "value" : "اختر أحد الألبومات التي تحتوي على هذه الصورة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte jedno z alb obsahujících tuto fotku"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3729,6 +3927,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "أو حدد ألبومًا آخر لهذه الصورة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nebo vyberte jiné album pro tuto fotku"
           }
         },
         "da" : {
@@ -3844,6 +4048,12 @@
             "value" : "ألبوم راسين"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kořen"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3955,6 +4165,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يرجى تحديد الألبوم الذي سيستخدم الصورة ”%@“ كصورة مصغرة."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte album, které bude používat fotku „%@“ jako miniaturu."
           }
         },
         "da" : {
@@ -4070,6 +4286,12 @@
             "value" : "ألبوم"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Album"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4181,6 +4403,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ألبومات فرعية"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podalba"
           }
         },
         "da" : {
@@ -4296,6 +4524,12 @@
             "value" : "استرداد بيانات الألبومات..."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Načítání dat alb…"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4407,6 +4641,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تاريخ الإنشاء"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datum vytvoření"
           }
         },
         "da" : {
@@ -4522,6 +4762,12 @@
             "value" : "تاريخ النشر"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datum přidání"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4633,6 +4879,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "اسم الملف"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Název souboru"
           }
         },
         "da" : {
@@ -4748,6 +5000,12 @@
             "value" : "المعرف"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Identifikátor"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4859,6 +5117,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الصور فقط"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pouze fotky"
           }
         },
         "da" : {
@@ -4974,6 +5238,12 @@
             "value" : "عنوان الصورة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Název fotky"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5085,6 +5355,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "عشوائياً"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Náhodně"
           }
         },
         "da" : {
@@ -5200,6 +5476,12 @@
             "value" : "درجة التقييم"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hodnocení"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5311,6 +5593,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فرز الصور حسب..."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Řadit obrázky podle…"
           }
         },
         "da" : {
@@ -5426,6 +5714,12 @@
             "value" : "مقاطع الفيديو فقط"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pouze videa"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5537,6 +5831,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الزيارات"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Návštěvy"
           }
         },
         "da" : {
@@ -5652,6 +5952,12 @@
             "value" : "تم التحديث في %@"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualizováno v %@"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5763,6 +6069,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تم التحديث الآن"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualizováno právě teď"
           }
         },
         "da" : {
@@ -5878,6 +6190,12 @@
             "value" : "تم التحديث على %@"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualizováno %@"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5989,6 +6307,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يتم التحديث…"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualizace…"
           }
         },
         "da" : {
@@ -6104,6 +6428,12 @@
             "value" : "حدد ألبوما لتحميل الصور إلى"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte podalbum, do kterého se nahrají fotky"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6215,6 +6545,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "حدد ألبوم iCloud للحصول على صور منه"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte album iCloud, ze kterého se načtou fotky"
           }
         },
         "da" : {
@@ -6330,6 +6666,12 @@
             "value" : "حدد ألبوما للحصول على صور من"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte album, ze kterého se načtou fotky"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6441,6 +6783,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "iCloud الالبومات"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alba iCloud"
           }
         },
         "da" : {
@@ -6556,6 +6904,12 @@
             "value" : "الألبومات المحلية"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Místní alba"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6667,6 +7021,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "أنواع الوسائط"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typy médií"
           }
         },
         "da" : {
@@ -6783,6 +7143,12 @@
             "value" : "وهناك لا يوجد ألبوم الفرعية تحميل الصور إلى"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Není k dispozici žádné podalbum pro nahrání fotek"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6894,6 +7260,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ألبومات أخرى"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ostatní alba"
           }
         },
         "da" : {
@@ -7009,6 +7381,12 @@
             "value" : "الحافظة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schránka"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7120,6 +7498,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الألبومات المشتركة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sdílená alba"
           }
         },
         "da" : {
@@ -7235,6 +7619,12 @@
             "value" : "ألبومات iPhoto"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alba iPhoto"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7346,6 +7736,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "أحداث iPhoto"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Události iPhoto"
           }
         },
         "da" : {
@@ -7461,6 +7857,12 @@
             "value" : "وجوه iPhoto"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tváře iPhoto"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7572,6 +7974,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "صور المجموعة حسب..."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seskupit obrázky podle…"
           }
         },
         "da" : {
@@ -7687,6 +8095,12 @@
             "value" : "عرض الخيارات"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Možnosti zobrazení"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7798,6 +8212,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "عرض..."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobrazit…"
           }
         },
         "da" : {
@@ -7913,6 +8333,12 @@
             "value" : "إنهاء"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hotovo"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8024,6 +8450,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "نسخ إلى الألبوم"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopírovat do alba"
           }
         },
         "da" : {
@@ -8139,6 +8571,12 @@
             "value" : "فشل النسخ"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopírování se nezdařilo"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8250,6 +8688,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "هل أنت متأكد من أنك تريد نسخ الصور إلى الألبوم ”%@“؟"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opravdu chcete zkopírovat fotky do alba „%@“?"
           }
         },
         "da" : {
@@ -8365,6 +8809,12 @@
             "value" : "من فضلك، حدد الألبوم الذي ترغب في نسخ الصور فيه."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte album, do kterého chcete fotky zkopírovat."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8476,6 +8926,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل في نسخ بعض الصور"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Některé fotky se nepodařilo zkopírovat"
           }
         },
         "da" : {
@@ -8591,6 +9047,12 @@
             "value" : "نسخ الصور..."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopírování fotek…"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8702,6 +9164,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "هل تريد بالتأكيد نسخ الصورة ”%@“ إلى الألبوم ”%@“؟"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opravdu chcete zkopírovat fotku „%@“ do alba „%@“?"
           }
         },
         "da" : {
@@ -8817,6 +9285,12 @@
             "value" : "من فضلك، حدد الألبوم الذي ترغب في نسخ الصورة فيه ”%@“."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte album, do kterého chcete zkopírovat fotku „%@“."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8928,6 +9402,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل في نسخ صورتك"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vaši fotku se nepodařilo zkopírovat"
           }
         },
         "da" : {
@@ -9043,6 +9523,12 @@
             "value" : "نسخ الصور..."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopírování fotky…"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9154,6 +9640,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "حدث خطأ غير متوقع أثناء الهجرة."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Během migrace došlo k neočekávané chybě."
           }
         },
         "da" : {
@@ -9269,6 +9761,12 @@
             "value" : "فشل الترحيل"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Migrace se nezdařila"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9380,6 +9878,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "نحن بصدد ترحيل بعض بياناتك. يرجى الانتظار حتى النهاية. لا تقم بإنهاء التطبيق أو إيقاف تشغيله."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Probíhá migrace některých vašich dat. Vyčkejte prosím do konce. Neukončujte aplikaci ani ji nevypínejte."
           }
         },
         "da" : {
@@ -9495,6 +9999,12 @@
             "value" : "جاري الانتقال ..."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Probíhá migrace..."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9606,6 +10116,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل إنشاء ألبوم جديد"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodařilo se vytvořit nové album"
           }
         },
         "da" : {
@@ -9721,6 +10237,12 @@
             "value" : "خطأ في إنشاء ألبوم"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chyba při vytváření alba"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9832,6 +10354,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "أدخل اسم لهذا الألبوم:"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zadejte název tohoto alba:"
           }
         },
         "da" : {
@@ -9947,6 +10475,12 @@
             "value" : "اسم الألبوم"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Název alba"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10058,6 +10592,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "البوم جديد"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nové album"
           }
         },
         "da" : {
@@ -10173,6 +10713,12 @@
             "value" : "لا يوجد وصف"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "bez popisu"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10284,6 +10830,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الوصف"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Popis"
           }
         },
         "da" : {
@@ -10399,6 +10951,12 @@
             "value" : "جار إنشاء الألبوم…"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vytváření alba…"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10510,6 +11068,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "التاريخ"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datum"
           }
         },
         "da" : {
@@ -10625,6 +11189,12 @@
             "value" : "اليوم"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Den"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10736,6 +11306,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ملف الصور المصغرة للألبومات"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soubor miniatur alb"
           }
         },
         "da" : {
@@ -10851,6 +11427,12 @@
             "value" : "يرجى تحديد حجم الصورة المصغرة للألبوم"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte velikost miniatury alba"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10962,6 +11544,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الصور"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotky"
           }
         },
         "da" : {
@@ -11077,6 +11665,12 @@
             "value" : "(موصى به)"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(doporučeno)"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11188,6 +11782,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "حجم الصورة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velikost fotek"
           }
         },
         "da" : {
@@ -11303,6 +11903,12 @@
             "value" : "الحجم الافتراضي للصور"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Výchozí velikost fotek"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11414,6 +12020,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الرجاء تحديد حجم الصورة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte velikost fotky"
           }
         },
         "da" : {
@@ -11529,6 +12141,12 @@
             "value" : "التصنيف"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Řazení"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11640,6 +12258,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الفرز الافتراضي للصور"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Výchozí řazení fotek"
           }
         },
         "da" : {
@@ -11755,6 +12379,12 @@
             "value" : "العدد"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Počet"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11866,6 +12496,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "عرض مسبق"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Náhled"
           }
         },
         "da" : {
@@ -11981,6 +12617,12 @@
             "value" : "معاينة ملف صورة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soubor náhledu fotek"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12092,6 +12734,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "لا ينصح بأحجام الرمادي أو إنها غير متوفرة على خادم Piwigo."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Šedě zobrazené velikosti se nedoporučují nebo nejsou na serveru Piwigo dostupné."
           }
         },
         "da" : {
@@ -12207,6 +12855,12 @@
             "value" : "الصورة المصغرة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniatura"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12318,6 +12972,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "صورة مصغرة صورة الملف"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soubor miniatur fotek"
           }
         },
         "da" : {
@@ -12433,6 +13093,12 @@
             "value" : "‮الحجم"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velikost"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12544,6 +13210,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "حجم الصور المصغرة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velikost miniatur"
           }
         },
         "da" : {
@@ -12659,6 +13331,12 @@
             "value" : "الحجم الافتراضي للصور المصغرة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Výchozí velikost miniatur"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12772,6 +13450,12 @@
             "value" : "يرجى تحديد حجم الصورة المصغرة للصور"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte velikost miniatury fotky"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12883,6 +13567,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "حذف الألبوم الفارغ"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Smazat prázdné album"
           }
         },
         "da" : {
@@ -13029,6 +13719,36 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "هل أنت متأكد من أنك تريد حذف الألبوم ”%@“ والصورة؟"
+                }
+              }
+            }
+          }
+        },
+        "cs" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "OPRAVDU CHCETE SMAZAT ALBUM „%@“ A VŠECHNY %lld FOTKY?"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "OPRAVDU CHCETE SMAZAT ALBUM „%@“ A VŠECHNY %lld FOTKY?"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "OPRAVDU CHCETE SMAZAT ALBUM „%@“ A TUTO FOTKU?"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "OPRAVDU CHCETE SMAZAT ALBUM „%@“ A VŠECH %lld FOTEK?"
                 }
               }
             }
@@ -13351,6 +14071,12 @@
             "value" : "الاحتفاظ بالصور/الفيديوهات"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponechat fotky/videa"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13462,6 +14188,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "حذف الأيتام"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Smazat osiřelé"
           }
         },
         "da" : {
@@ -13608,6 +14340,36 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "حذف يتيم"
+                }
+              }
+            }
+          }
+        },
+        "cs" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Smazat %lld osiřelé fotky"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Smazat %lld osiřelé fotky"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Smazat osiřelou fotku"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Smazat %lld osiřelých fotek"
                 }
               }
             }
@@ -13930,6 +14692,12 @@
             "value" : "حذف الألبوم"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SMAZAT ALBUM"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -14041,6 +14809,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "حذف"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SMAZAT"
           }
         },
         "da" : {
@@ -14156,6 +14930,12 @@
             "value" : "الرجاء إدخال عدد الصور لحذف هذا الألبوم. عدد الصور: %@"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zadejte počet fotek, abyste mohli toto album smazat. Počet fotek: %@"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -14267,6 +15047,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "هل أنت واثق؟"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opravdu?"
           }
         },
         "da" : {
@@ -14382,6 +15168,12 @@
             "value" : "فشل في حذف الألبوم الخاص بك"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vaše album se nepodařilo smazat"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -14493,6 +15285,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل في حذف"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mazání se nezdařilo"
           }
         },
         "da" : {
@@ -14608,6 +15406,12 @@
             "value" : "جار حذف الألبوم…"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mazání alba…"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -14719,6 +15523,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "لا يتطابق عدد الصور التي أدخلتها مع عدد الصور في الفئة. الرجاء إعادة المحاولة إذا كنت ترغب في حذف هذا الألبوم"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Počet fotek, který jste zadali, neodpovídá počtu fotek v albu. Pokud chcete toto album smazat, zkuste to prosím znovu"
           }
         },
         "da" : {
@@ -14834,6 +15644,12 @@
             "value" : "الرقم لا يطابق"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Počet nesouhlasí"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -14945,6 +15761,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تعذر حذف الصورة\n%@"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotku se nepodařilo smazat."
           }
         },
         "da" : {
@@ -15060,6 +15882,12 @@
             "value" : "فشل الحذف"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mazání se nezdařilo"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15171,6 +15999,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "هل تريد بالتأكيد حذف %@ من الصور المحددة؟ هذا لا يمكن التراجع عنه!"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opravdu chcete smazat vybraných %@ fotek/videí? Tuto akci nelze vrátit zpět!"
           }
         },
         "da" : {
@@ -15286,6 +16120,12 @@
             "value" : "حذف الصور"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Smazat %@ fotek/videí"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15397,6 +16237,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "حذف الصور/مقاطع الفيديو..."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mazání fotek/videí…"
           }
         },
         "da" : {
@@ -15512,6 +16358,12 @@
             "value" : "هل أنت متأكد أنك تريد حذف هذه الصورة؟ هذا لا يمكن التراجع عنه!"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opravdu chcete smazat tuto fotku? Tuto akci nelze vrátit zpět!"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15623,6 +16475,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "حذف الصورة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Smazat fotku"
           }
         },
         "da" : {
@@ -15738,6 +16596,12 @@
             "value" : "حذف الصورة..."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mazání fotky…"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15849,6 +16713,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "هل أنت متأكد أنك تريد حذف هذا الفيديو؟ لا يمكن التراجع عن ذلك!"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opravdu chcete smazat toto video? Tuto akci nelze vrátit zpět!"
           }
         },
         "da" : {
@@ -15964,6 +16834,12 @@
             "value" : "حذف الفيديو"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Smazat video"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -16075,6 +16951,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "حذف الفيديو..."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mazání videa…"
           }
         },
         "da" : {
@@ -16190,6 +17072,12 @@
             "value" : "اكتشاف"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Objevovat"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -16301,6 +17189,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "أخفق تنزيل الصورة!\n%@"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotku se nepodařilo stáhnout!\n%@"
           }
         },
         "da" : {
@@ -16416,6 +17310,12 @@
             "value" : "تنزيل الصورة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stahování fotky"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -16527,6 +17427,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تنزيل ملف PDF"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stahování souboru PDF"
           }
         },
         "da" : {
@@ -16642,6 +17548,12 @@
             "value" : "تنزيل الفيديو"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stahování videa"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -16753,6 +17665,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل في تنزيل ملف PDF!\n%@"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soubor PDF se nepodařilo stáhnout!\n%@"
           }
         },
         "da" : {
@@ -16868,6 +17786,12 @@
             "value" : "هل تريد بالتأكيد تنزيل %@ من الصور المحددة؟"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opravdu chcete stáhnout vybraných %@ fotek?"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -16981,6 +17905,12 @@
             "value" : "تحميل الصور"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stáhnout %@ fotek"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -17092,6 +18022,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "هل تريد بالتأكيد تنزيل الصورة المحددة؟"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opravdu chcete stáhnout vybranou fotku?"
           }
         },
         "da" : {
@@ -17208,6 +18144,12 @@
             "value" : "تحميل الصورة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stáhnout fotku"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -17319,6 +18261,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "أخفق تنزيل الفيديو!\n%@"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video se nepodařilo stáhnout!\n%@"
           }
         },
         "da" : {
@@ -17434,6 +18382,12 @@
             "value" : "تنسيق الفيديو غير مقبول من قبل الصور!"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formát videa aplikace Fotky nepřijímá!"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -17545,6 +18499,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "المؤلف:"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autor"
           }
         },
         "da" : {
@@ -17660,6 +18620,12 @@
             "value" : "تعليقات"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Komentáře"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -17771,6 +18737,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "اليوم"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dnes"
           }
         },
         "da" : {
@@ -17886,6 +18858,12 @@
             "value" : "إلغاء التعيين"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenastaveno"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -17997,6 +18975,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الوصف"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Popis"
           }
         },
         "da" : {
@@ -18112,6 +19096,12 @@
             "value" : "من يمكنه مشاهدة هذه الصورة؟"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kdo může vidět tuto fotku?"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -18223,6 +19213,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "العلامات:"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Štítky"
           }
         },
         "da" : {
@@ -18338,6 +19334,12 @@
             "value" : "العنوان:"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Název"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -18449,6 +19451,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "العنوان"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Název obrázku"
           }
         },
         "da" : {
@@ -18564,6 +19572,12 @@
             "value" : "فشل في تحديث التغييرات مع الخادم. حاول ثانية؟"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vaše změny se nepodařilo uložit na server."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -18675,6 +19689,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل في التحديث"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualizace se nezdařila"
           }
         },
         "da" : {
@@ -18790,6 +19810,12 @@
             "value" : "تحديث الصور..."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualizace fotek…"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -18901,6 +19927,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تحديث الصورة..."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualizace fotky…"
           }
         },
         "da" : {
@@ -19016,6 +20048,12 @@
             "value" : "الاسم الكامل"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Celé jméno"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -19127,6 +20165,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "رقم الصفحة؟"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Číslo stránky?"
           }
         },
         "da" : {
@@ -19242,6 +20286,12 @@
             "value" : "انتقل إلى الصفحة…"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přejít na stránku…"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -19353,6 +20403,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "اختيار متعدد"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vícenásobný výběr"
           }
         },
         "da" : {
@@ -19468,6 +20524,12 @@
             "value" : "مرر إصبعك من اليسار إلى اليمين (أو من اليمين إلى اليسار) ثم إلى الأسفل، إلخ."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posuňte prst zleva doprava (nebo zprava doleva) a potom dolů atd."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -19579,6 +20641,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "قم بتوصيل الجهاز بالشاحن الخاص به واسمح لنظام iOS بتشغيل التحميلات كلما كان ذلك مناسبًا."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Připojte zařízení k nabíječce a nechte iOS spustit nahrávání, až to bude vhodné."
           }
         },
         "da" : {
@@ -19694,6 +20762,12 @@
             "value" : "الإداريون"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Správci"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -19805,6 +20879,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إنشاء الألبومات وحذفها ونقلها وإعادة تسميتها ومشاركتها."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vytvářejte, mažte, přesouvejte, přejmenovávejte a sdílejte alba."
           }
         },
         "da" : {
@@ -19920,6 +21000,12 @@
             "value" : "تظل الصور المرفوعة التي تمت إزالتها من لفة الكاميرا متاحة في سلة مهملات صور iOS لمدة 30 يومًا."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nahrané fotky odstraněné z fotoaparátu zůstávají 30 dní dostupné ve složce Naposledy smazané v aplikaci Fotky."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -20031,6 +21117,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تحميل الصور"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nahrávání fotek"
           }
         },
         "da" : {
@@ -20146,6 +21238,12 @@
             "value" : "بمجرد إرسال طلبات التحميل، يمكنك تصفح الألبومات أو إرسال طلبات أخرى أو مغادرة التطبيق."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jakmile odešlete požadavky na nahrání, můžete procházet alba, odesílat další požadavky nebo aplikaci opustit."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -20257,6 +21355,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "اضغط على الزر الرمادي الموجود في ألبوم الجذر لإدارة التحميلات."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klepnutím na šedé tlačítko v kořenovém albu spravujete nahrávání."
           }
         },
         "da" : {
@@ -20372,6 +21476,12 @@
             "value" : "إدارة التحميل"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Správa nahrávání"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -20483,6 +21593,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "مراقبة طلبات التحميل وإلغاءها واستئنافها على مستوى العالم أو بشكل فردي."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sledujte, rušte a obnovujte požadavky na nahrání hromadně nebo jednotlivě."
           }
         },
         "da" : {
@@ -20598,6 +21714,12 @@
             "value" : "التحميل التلقائي"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatické nahrávání"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -20709,6 +21831,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "حدد ألبومات المصدر والوجهة في Piwigo، وأنشئ عمليات تلقائية في الاختصارات."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte zdrojové a cílové album v Piwigu a vytvořte automatizace v aplikaci Zkratky."
           }
         },
         "da" : {
@@ -20824,6 +21952,12 @@
             "value" : "ألبومات الوالدين"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nadřazená alba"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -20935,6 +22069,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "اضغط مطولاً على زر الرجوع لعرض قائمة الألبومات الأصلية."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dlouhým stiskem tlačítka Zpět zobrazíte seznam nadřazených alb."
           }
         },
         "da" : {
@@ -21050,6 +22190,12 @@
             "value" : "اضغط على الألبوم الأصلي الذي تختاره للرجوع إليه."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klepnutím na zvolené nadřazené album se do něj vrátíte."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -21161,6 +22307,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الوصف في HTML"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Popisy v HTML"
           }
         },
         "da" : {
@@ -21276,6 +22428,12 @@
             "value" : "استخدم العلامات <HTML…> لتنسيق النص في وصف الألبوم والصور."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro formátování textu v popisech alb a fotek použijte značky <HTML…>."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -21387,6 +22545,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "اعرض صورك ومقاطع الفيديو الخاصة بك على التلفزيون أو جهاز Mac"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobrazte své fotky a videa na televizoru nebo Macu"
           }
         },
         "da" : {
@@ -21502,6 +22666,12 @@
             "value" : "1. قم بتوصيل iPhone أو iPad بنفس شبكة Wi-Fi مثل تلفزيون Apple أو تلفزيون ذكي متوافق مع أيربلاي، أو ماك."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Připojte iPhone nebo iPad ke stejné síti Wi-Fi jako Apple TV, chytrý televizor s podporou AirPlay nebo Mac."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -21613,6 +22783,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "2. فتح مركز التحكم."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. Otevřete Ovládací centrum."
           }
         },
         "da" : {
@@ -21728,6 +22904,12 @@
             "value" : "3. اضغط على زر انعكاس الشاشة:"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3. Klepněte na tlačítko Zrcadlení obrazovky:"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -21839,6 +23021,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "4. حدد التلفزيون الخاص بك أو Mac من القائمة."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4. Vyberte ze seznamu svůj televizor nebo Mac."
           }
         },
         "da" : {
@@ -21954,6 +23142,12 @@
             "value" : "ساعة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hodina"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -22065,6 +23259,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إلغاء تحديد الصور..."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odznačování fotek…"
           }
         },
         "da" : {
@@ -22180,6 +23380,12 @@
             "value" : "أخفق جلب بيانات الصورة. استمر؟"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Načtení dat fotky se nezdařilo. Pokračovat?"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -22291,6 +23497,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل جلب بيانات الصورة."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Načtení dat fotky se nezdařilo."
           }
         },
         "da" : {
@@ -22406,6 +23618,12 @@
             "value" : "أخفق جلب تفاصيل الصورة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Načtení detailů fotky se nezdařilo"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -22517,6 +23735,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تفاصيل الصورة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vlastnosti"
           }
         },
         "da" : {
@@ -22632,6 +23856,12 @@
             "value" : "المفضلة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oblíbené"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -22743,6 +23973,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل في إضافة هذه الصورة إلى المفضلة لديك."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tuto fotku se nepodařilo přidat k oblíbeným."
           }
         },
         "da" : {
@@ -22858,6 +24094,12 @@
             "value" : "فشل في إزالة هذه الصورة من المفضلة لديك."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tuto fotku se nepodařilo odebrat z oblíbených."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -22969,6 +24211,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تنزيل"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stáhnout"
           }
         },
         "da" : {
@@ -23084,6 +24332,12 @@
             "value" : "تعديل"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upravit"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -23195,6 +24449,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "اذهب إلى الألبوم…"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přejít do alba…"
           }
         },
         "da" : {
@@ -23310,6 +24570,12 @@
             "value" : "تعديل الخصائص"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Změnit vlastnosti"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -23421,6 +24687,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تعيين كصورة الألبوم"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nastavit jako miniaturu alba"
           }
         },
         "da" : {
@@ -23537,6 +24809,12 @@
             "value" : "مشاركة الرابط"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sdílet odkaz"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -23649,6 +24927,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "خيارات الصورة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Možnosti fotky"
           }
         },
         "da" : {
@@ -23764,6 +25048,12 @@
             "value" : "أخفق حفظ الصورة. خطأ:%@"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotku se nepodařilo uložit. Chyba: %@"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -23875,6 +25165,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "أخفق حفظ الصورة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uložení fotky se nezdařilo"
           }
         },
         "da" : {
@@ -23990,6 +25286,12 @@
             "value" : "اختيار الصور..."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Výběr fotek…"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -24101,6 +25403,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "كبير"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velká"
           }
         },
         "da" : {
@@ -24216,6 +25524,12 @@
             "value" : "متوسط"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Střední"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -24327,6 +25641,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "صغير"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Malá"
           }
         },
         "da" : {
@@ -24442,6 +25762,12 @@
             "value" : "مربع"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Čtvercová"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -24553,6 +25879,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الصورة المصغرة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniatura"
           }
         },
         "da" : {
@@ -24668,6 +26000,12 @@
             "value" : "عرض كامل"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plné rozlišení"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -24779,6 +26117,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "كبير جدًا"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velmi velká"
           }
         },
         "da" : {
@@ -24894,6 +26238,12 @@
             "value" : "صغير جدا"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velmi malá"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -25005,6 +26355,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ضخم"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obrovská"
           }
         },
         "da" : {
@@ -25120,6 +26476,12 @@
             "value" : "صغير"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drobná"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -25231,6 +26593,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فرز الصور..."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Řazení fotek…"
           }
         },
         "da" : {
@@ -25346,6 +26714,12 @@
             "value" : "الرجاء تحديد الطريقة التي ترغب في فرز الصور بها"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte, jak chcete fotky seřadit"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -25457,6 +26831,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فرز الصور"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seřadit fotky"
           }
         },
         "da" : {
@@ -25572,6 +26952,12 @@
             "value" : "مسح %@ التحميلات المكتملة %@ التحميلات المكتملة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vymazat %@ dokončených nahrávání"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -25683,6 +27069,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "مسح التحميل المكتمل"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vymazat dokončené nahrávání"
           }
         },
         "da" : {
@@ -25798,6 +27190,12 @@
             "value" : "مسح %@ %@ عمليات التحميل الفاشلة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vymazat %@ neúspěšných nahrávání"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -25909,6 +27307,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "مسح التحميل الفاشل"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vymazat neúspěšné nahrávání"
           }
         },
         "da" : {
@@ -26024,6 +27428,12 @@
             "value" : "صورة / فيديو تم تحميلها إلى خادم Piwigo الخاص بك."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "fotka nahrána na váš server Piwigo."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -26135,6 +27545,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "صور / فيديوهات تم تحميلها إلى خادم Piwigo الخاص بك."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "fotek nahráno na váš server Piwigo."
           }
         },
         "da" : {
@@ -26250,6 +27666,12 @@
             "value" : "اكتمل التحميل"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nahrávání dokončeno"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -26361,6 +27783,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الكاتب:"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autor:"
           }
         },
         "da" : {
@@ -26476,6 +27904,12 @@
             "value" : "الوصف:"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Popis:"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -26587,6 +28021,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الخصوصية:"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soukromí:"
           }
         },
         "da" : {
@@ -26702,6 +28142,12 @@
             "value" : "العلامات:"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Štítky:"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -26813,6 +28259,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "العنوان:"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Název:"
           }
         },
         "da" : {
@@ -26928,6 +28380,12 @@
             "value" : "لا يمكن إنشاء وجهة الصورة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nelze vytvořit cíl fotky"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -27039,6 +28497,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تعذر استرداد الصورة. خطأ:%@"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotku se nepodařilo načíst. Chyba: %@"
           }
         },
         "da" : {
@@ -27154,6 +28618,12 @@
             "value" : "لا يمكن إنشاء مصدر الصورة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nelze vytvořit zdroj fotky"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -27265,6 +28735,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يُرجى تعيين المعلمات لتطبيقها على اختيار الصور/مقاطع الفيديو"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nastavte parametry, které se použijí na vybrané fotky/videa"
           }
         },
         "da" : {
@@ -27380,6 +28856,12 @@
             "value" : "يرجى تعيين معلمات التحميل لتطبيقها على اختيار الصور/مقاطع الفيديو"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nastavte parametry nahrávání, které se použijí na vybrané fotky/videa"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -27491,6 +28973,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "معلمات الصور"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parametry fotek"
           }
         },
         "da" : {
@@ -27606,6 +29094,12 @@
             "value" : "إعدادات التحميل"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nastavení nahrávání"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -27717,6 +29211,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "استئناف %@ التحميلات"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obnovit %@ nahrávání"
           }
         },
         "da" : {
@@ -27832,6 +29332,12 @@
             "value" : "استئناف التحميل"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obnovit nahrávání"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -27943,6 +29449,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إلغاء الإتصال"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zrušit připojení"
           }
         },
         "da" : {
@@ -28058,6 +29570,12 @@
             "value" : "تم إلغاء الإتصال"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Připojení zrušeno"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -28169,6 +29687,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "جاري إلغاء الإتصال…"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rušení připojení…"
           }
         },
         "da" : {
@@ -28284,6 +29808,12 @@
             "value" : "خطأ في الاتصال"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chyba připojení"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -28395,6 +29925,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "مكتبة الصور"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Knihovna fotek"
           }
         },
         "da" : {
@@ -28510,6 +30046,12 @@
             "value" : "صور يسهل الوصول إليها"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dostupné fotky"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -28621,6 +30163,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "مشكلة في قراءة الصور"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Problém při čtení fotek"
           }
         },
         "da" : {
@@ -28736,6 +30284,12 @@
             "value" : "هناك مشكلة في قراءة مكتبة الصور المحلية."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Při čtení vaší místní knihovny fotek nastal problém."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -28847,6 +30401,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "لا يمكن فتح مكتبة الصور المحلية. يرجى الدخول إلى إعدادات التطبيق، وتمكين الوصول ل Piwigo."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Místní knihovnu fotek nelze otevřít. Přejděte do aplikace Nastavení a povolte přístup pro Piwigo."
           }
         },
         "da" : {
@@ -28962,6 +30522,12 @@
             "value" : "ممنوع الدخول"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bez přístupu"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -29073,6 +30639,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "هل ترغب في حذف الصور أو مقاطع الفيديو التي تم تحميلها من لفة الكاميرا؟ ستظل الصور أو مقاطع الفيديو المحذوفة متاحة في سلة مهملات صور iOS لمدة 30 يومًا."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chcete nahrané fotky nebo videa smazat z fotoaparátu? Smazané fotky nebo videa zůstanou 30 dní dostupné ve složce Naposledy smazané v aplikaci Fotky."
           }
         },
         "da" : {
@@ -29188,6 +30760,12 @@
             "value" : "إزالة من لفة الكاميرا"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odstranit z fotoaparátu"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -29299,6 +30877,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إعادة التحميل"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nahrát znovu"
           }
         },
         "da" : {
@@ -29414,6 +30998,12 @@
             "value" : "تسجيل الدخول"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přihlásit se"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -29525,6 +31115,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "اختتام الجلسة..."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukončování relace..."
           }
         },
         "da" : {
@@ -29640,6 +31236,12 @@
             "value" : "المعلمات Community"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parametry Community"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -29751,6 +31353,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "جاري الإتصال"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Připojování"
           }
         },
         "da" : {
@@ -29866,6 +31474,12 @@
             "value" : "تم تغيير الاتصال!"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Připojení se změnilo!"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -29977,6 +31591,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "جاري تسجيل الدخول..."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přihlašování..."
           }
         },
         "da" : {
@@ -30092,6 +31712,12 @@
             "value" : "الجلسة المفتوحة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zahájení relace"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -30203,6 +31829,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "كلمة المرور (اختياري)"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heslo (nepovinné)"
           }
         },
         "da" : {
@@ -30318,6 +31950,12 @@
             "value" : "معايير Piwigo"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parametry Piwigo"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -30429,6 +32067,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "example.com"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "priklad.cz"
           }
         },
         "da" : {
@@ -30545,6 +32189,12 @@
             "value" : "اسم المستخدم (اختياري)"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uživatelské jméno (nepovinné)"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -30656,6 +32306,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تطبيق Piwigo يحذرك عندما يحتوي أحد المواقع على شهادة صالحة. هل مازلت تودّ قبول هذه الشهادة؟"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo vás upozorní, když má web neplatný certifikát. Chcete tento certifikát přesto přijmout?"
           }
         },
         "da" : {
@@ -30771,6 +32427,12 @@
             "value" : "الاتصال ليس خاصًا"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Připojení není soukromé"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -30882,6 +32544,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يرجى تحديد بروتوكول وإدخال عنوان ويب Piwigo للمواصلة."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chcete-li pokračovat, vyberte protokol a zadejte webovou adresu Piwigo."
           }
         },
         "da" : {
@@ -30997,6 +32665,12 @@
             "value" : "أدخل عنوان ويب"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zadejte webovou adresu"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -31108,6 +32782,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "هل ترغب في إعادة تعيين كلمة المرور الخاصة بك من واجهة الويب؟"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chcete si obnovit heslo přes webové rozhraní?"
           }
         },
         "da" : {
@@ -31223,6 +32903,12 @@
             "value" : "أخفق تسجيل الدخول"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přihlášení se nezdařilo"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -31334,6 +33020,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يتطلب خادم Piwigo مصادقة الوصول الأساسية لـ HTTP:"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Server Piwigo vyžaduje základní ověření přístupu HTTP:"
           }
         },
         "da" : {
@@ -31449,6 +33141,12 @@
             "value" : "بيانات اعتماد HTTP"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přihlašovací údaje HTTP"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -31560,6 +33258,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "كلمة المرور"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heslo"
           }
         },
         "da" : {
@@ -31675,6 +33379,12 @@
             "value" : "تعذر على تطبيق Piwigo إنشاء اتصال آمن. هل تودّ محاولة إنشاء اتصال غير آمن؟"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo nemůže navázat zabezpečené připojení. Chcete zkusit navázat nezabezpečené připojení?"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -31786,6 +33496,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل الاتصال الآمن"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zabezpečené připojení se nezdařilo"
           }
         },
         "da" : {
@@ -31901,6 +33617,12 @@
             "value" : "اسم المستخدم"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uživatelské jméno"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -32012,6 +33734,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "هل أنت متأكد من أنك تريد الخروج؟"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opravdu se chcete odhlásit?"
           }
         },
         "da" : {
@@ -32127,6 +33855,12 @@
             "value" : "تسجيل خروج"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odhlásit se"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -32238,6 +33972,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل في تسجيل الخروج"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odhlášení se nezdařilo"
           }
         },
         "da" : {
@@ -32353,6 +34093,12 @@
             "value" : "دقيقة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minuta"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -32464,6 +34210,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الشهر"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Měsíc"
           }
         },
         "da" : {
@@ -32579,6 +34331,12 @@
             "value" : "المزيد"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Více"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -32690,6 +34448,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "نقل الألبوم"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přesunout album"
           }
         },
         "da" : {
@@ -32805,6 +34569,12 @@
             "value" : "هل تريد بالتأكيد نقل \"%@\" إلى الألبوم \"%@\"؟"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opravdu chcete přesunout „%@“ do alba „%@“?"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -32916,6 +34686,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الرجاء تحديد ألبوم أو ألبوم فرعي لنقل الألبوم ”%@“ إليه."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte album nebo podalbum, do kterého chcete přesunout album „%@“."
           }
         },
         "da" : {
@@ -33031,6 +34807,12 @@
             "value" : "فشل في نقل الألبوم الخاص بك"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vaše album se nepodařilo přesunout"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -33142,6 +34924,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل النقل"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přesun se nezdařil"
           }
         },
         "da" : {
@@ -33257,6 +35045,12 @@
             "value" : "جار نقل الألبوم…"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přesouvání alba…"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -33368,6 +35162,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الانتقال إلى الألبوم"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přesunout do alba"
           }
         },
         "da" : {
@@ -33483,6 +35283,12 @@
             "value" : "فشل النقل"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přesun se nezdařil"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -33594,6 +35400,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "هل تريد بالتأكيد نقل الصور إلى الألبوم ”%@“؟"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opravdu chcete přesunout fotky do alba „%@“?"
           }
         },
         "da" : {
@@ -33709,6 +35521,12 @@
             "value" : "من فضلك، حدد الألبوم الذي ترغب في نقل الصور إليه."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte album, do kterého chcete fotky přesunout."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -33820,6 +35638,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل في نقل بعض الصور"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Některé fotky se nepodařilo přesunout"
           }
         },
         "da" : {
@@ -33935,6 +35759,12 @@
             "value" : "صور متحركة..."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přesouvání fotek…"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -34046,6 +35876,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "هل تريد بالتأكيد نقل الصورة ”%@“ إلى الألبوم ”%@“؟"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opravdu chcete přesunout fotku „%@“ do alba „%@“?"
           }
         },
         "da" : {
@@ -34161,6 +35997,12 @@
             "value" : "من فضلك، حدد الألبوم الذي ترغب في نقل الصورة إليه ”%@“."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte album, do kterého chcete přesunout fotku „%@“."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -34272,6 +36114,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل في نقل صورتك"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vaši fotku se nepodařilo přesunout"
           }
         },
         "da" : {
@@ -34387,6 +36235,12 @@
             "value" : "صورة متحركة..."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přesouvání fotky…"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -34498,6 +36352,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "كتم الصوت"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ztlumit"
           }
         },
         "da" : {
@@ -34613,6 +36473,12 @@
             "value" : "لا توجد صور"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Žádné fotky"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -34724,6 +36590,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "لا شيء"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "žádný"
           }
         },
         "da" : {
@@ -34839,6 +36711,12 @@
             "value" : "لا شيء"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Žádný"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -34951,6 +36829,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إيقاف مؤقت"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pozastavit"
           }
         },
         "da" : {
@@ -35098,6 +36982,36 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld صفحة"
+                }
+              }
+            }
+          }
+        },
+        "cs" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld stránky"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld stránky"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld stránka"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld stránek"
                 }
               }
             }
@@ -35419,6 +37333,12 @@
             "value" : "Piwigo"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -35526,6 +37446,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تشغيل"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přehrát"
           }
         },
         "da" : {
@@ -35641,6 +37567,12 @@
             "value" : "مستوى الخصوصية"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Úroveň soukromí"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -35752,6 +37684,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إعادة تحميل الصور"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Znovu načíst fotky"
           }
         },
         "da" : {
@@ -35867,6 +37805,12 @@
             "value" : "%@ أيام"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ dnů"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -35978,6 +37922,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الفترة الأخيرة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nedávné období"
           }
         },
         "da" : {
@@ -36094,6 +38044,12 @@
             "value" : "ممثل منعش..."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obnovování obrázku alba…"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -36205,6 +38161,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل في تحديث ممثل ألبومك"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obrázek vašeho alba se nepodařilo obnovit"
           }
         },
         "da" : {
@@ -36321,6 +38283,12 @@
             "value" : "فشلت عملية التحديث"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obnovení se nezdařilo"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -36432,6 +38400,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إزالة الصور/مقاطع الفيديو..."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odebírání fotek/videí…"
           }
         },
         "da" : {
@@ -36547,6 +38521,12 @@
             "value" : "إزالة من الألبوم"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odebrat z alba"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -36658,6 +38638,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إزالة الصورة..."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odebírání fotky…"
           }
         },
         "da" : {
@@ -36773,6 +38759,12 @@
             "value" : "إزالة الفيديو..."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odebírání videa…"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -36884,6 +38876,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إعادة التسمية"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přejmenovat"
           }
         },
         "da" : {
@@ -36999,6 +38997,12 @@
             "value" : "أدخل اسم جديد لهذا الألبوم"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zadejte nový název tohoto alba"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -37110,6 +39114,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إعادة تسمية الألبوم"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přejmenovat album"
           }
         },
         "da" : {
@@ -37225,6 +39235,12 @@
             "value" : "جار إعادة تسمية الألبوم…"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přejmenovávání alba…"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -37336,6 +39352,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل إعادة تسمية الألبوم الخاص بك"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vaše album se nepodařilo přejmenovat"
           }
         },
         "da" : {
@@ -37451,6 +39473,12 @@
             "value" : "فشلت إعادة التسمية"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přejmenování se nezdařilo"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -37562,6 +39590,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "أدخل اسم ملف جديد لهذه الصورة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zadejte nový název souboru pro tuto fotku"
           }
         },
         "da" : {
@@ -37677,6 +39711,12 @@
             "value" : "الملف الأصلي"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Původní soubor"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -37788,6 +39828,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل في إعادة تسمية ملف الصورة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soubor fotky se nepodařilo přejmenovat"
           }
         },
         "da" : {
@@ -37903,6 +39949,12 @@
             "value" : "إعادة تسمية الملف..."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přejmenovávání souboru…"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -38014,6 +40066,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "عكس اتجاه عقارب الساعة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Proti směru hodinových ručiček"
           }
         },
         "da" : {
@@ -38129,6 +40187,12 @@
             "value" : "في اتجاه عقارب الساعة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Po směru hodinových ručiček"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -38240,6 +40304,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تدوير 90°..."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otočit o 90°…"
           }
         },
         "da" : {
@@ -38355,6 +40425,12 @@
             "value" : "تعذر تدوير الصورة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obrázek se nepodařilo otočit"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -38466,6 +40542,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "لم يتم تنشيط المكون الإضافي RotateImage."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zásuvný modul rotateImage není aktivován."
           }
         },
         "da" : {
@@ -38581,6 +40663,12 @@
             "value" : "فشل التناوب"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otočení se nezdařilo"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -38692,6 +40780,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تدوير الصور..."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otáčení fotek…"
           }
         },
         "da" : {
@@ -38807,6 +40901,12 @@
             "value" : "صورة دوارة..."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otáčení fotky…"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -38918,6 +41018,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الثاني"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sekunda"
           }
         },
         "da" : {
@@ -39033,6 +41139,12 @@
             "value" : "الكل"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vybrat vše"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -39144,6 +41256,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تحديد صور"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte fotky"
           }
         },
         "da" : {
@@ -39259,6 +41377,12 @@
             "value" : "1 صورة مختارة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 vybraná fotka"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -39370,6 +41494,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ الصور المختارة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vybráno fotek: %@"
           }
         },
         "da" : {
@@ -39485,6 +41615,12 @@
             "value" : "الفاصل"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oddělovač"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -39596,6 +41732,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تعذر إنشاء اتصال HTTPS آمن. يرجى التحقق من العنوان أو محاولة وضع HTTP غير المشفرة؟"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zabezpečené připojení HTTPS se nepodařilo navázat. Zkontrolujte adresu nebo to zkuste v nešifrovaném režimu HTTP."
           }
         },
         "da" : {
@@ -39711,6 +41853,12 @@
             "value" : "فشل الإتصال"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Připojení se nezdařilo"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -39822,6 +41970,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل استدعاء أسلوب الخادم مع المعلمات المتوفرة."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodařilo se zavolat metodu serveru se zadanými parametry."
           }
         },
         "da" : {
@@ -39937,6 +42091,12 @@
             "value" : "أخفق الحصول على طرق الخادم. مشكلة مع خادم Piwigo ؟"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodařilo se získat metody serveru. Problém se serverem Piwigo?"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -40048,6 +42208,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "طرق غير معروفة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neznámé metody"
           }
         },
         "da" : {
@@ -40163,6 +42329,12 @@
             "value" : "الخادم غير متوافق"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nekompatibilní server"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -40274,6 +42446,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إصدار خادم Piwigo الخاص بك هو %@. يرجى طلب من المسؤول تحديثه."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze vašeho serveru Piwigo je %@. Požádejte prosím správce o její aktualizaci."
           }
         },
         "da" : {
@@ -40389,6 +42567,12 @@
             "value" : "تحديث السيرفر متاح"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "K dispozici je aktualizace serveru"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -40500,6 +42684,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل أثناء المصادقة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ověření se nezdařilo"
           }
         },
         "da" : {
@@ -40615,6 +42805,12 @@
             "value" : "هل أنت متأكد من أنك تريد تعيين الألبوم ”%@“ كألبوم افتراضي؟"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opravdu chcete nastavit album „%@“ jako výchozí album?"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -40726,6 +42922,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يُرجى تحديد ألبوم أو ألبوم فرعي سيصبح الألبوم الجذر الجديد."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte album nebo podalbum, které se stane novým kořenovým albem."
           }
         },
         "da" : {
@@ -40841,6 +43043,12 @@
             "value" : "الألبوم الافتراضي"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Výchozí album"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -40952,6 +43160,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "حول Piwigo"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O aplikaci Piwigo"
           }
         },
         "da" : {
@@ -41067,6 +43281,12 @@
             "value" : "شكر وتقدير"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poděkování"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -41178,6 +43398,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الرجاء تحديد الإجراء المراد إضافته"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte akci, kterou chcete přidat"
           }
         },
         "da" : {
@@ -41293,6 +43519,12 @@
             "value" : "‮الحجم"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velikost"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -41404,6 +43636,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "قيمة %@ هي عموما نقطة بداية جيدة. الاتصالات السريعة سيكون لها أداء أفضل مع قيم عالية، مثل %@."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hodnota %@ je obvykle dobrý výchozí bod. Rychlá připojení dosáhnou lepšího výkonu s vyššími hodnotami, například %@."
           }
         },
         "da" : {
@@ -41519,6 +43757,12 @@
             "value" : "الرجاء تحديد حجم القطع التي يتم تقسيم الملفات إليها أثناء التحميل."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte velikost částí, na které se soubory při nahrávání dělí."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -41630,6 +43874,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "حجم القطعة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velikost částí"
           }
         },
         "da" : {
@@ -41745,6 +43995,12 @@
             "value" : "الرجاء تحديد الحد الأقصى لعدد الاتصالات المتزامنة مع خادم Piwigo."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte maximální počet současných připojení k serveru Piwigo."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -41856,6 +44112,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إتصالات"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Připojení"
           }
         },
         "da" : {
@@ -41971,6 +44233,12 @@
             "value" : "الحد"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limit"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -42082,6 +44350,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "خيارات متقدمة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pokročilé možnosti"
           }
         },
         "da" : {
@@ -42197,6 +44471,12 @@
             "value" : "القيمة المناسبة هي واحدة أعلى قليلا من الحد الأقصى لعدد الصور أو مقاطع الفيديو التي يمكنك رفعها في كل مرة. لاحظ أن زيادة الحد الأقصى ستؤدي إلى زيادة استخدام مساحة القرص."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vhodná hodnota je mírně vyšší než maximální počet fotek nebo videí, které najednou nahráváte. Vyšší limit znamená větší využití místa na disku."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -42308,6 +44588,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الرجاء تحديد الحد الأقصى لعدد التحميلات للتحضير مسبقاً."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte maximální počet nahrávání připravovaných dopředu."
           }
         },
         "da" : {
@@ -42423,6 +44709,12 @@
             "value" : "تحميل الإعداد"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Příprava nahrávání"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -42534,6 +44826,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "وقيمة 4 هي عموما نقطة بداية جيدة. من المستصوب الحفاظ على هذا الرقم منخفض، أو التحقق مع مزود خدمة الاستضافة أو مدير الشبكة. إذا واجهت مهلة أو 503 أخطاء، حاول تقليل هذا العدد."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hodnota 4 je obvykle dobrý výchozí bod. Doporučuje se držet toto číslo nízko nebo se poradit s poskytovatelem hostingu či správcem sítě. Pokud narazíte na vypršení časového limitu nebo chyby 503, zkuste toto číslo snížit."
           }
         },
         "da" : {
@@ -42649,6 +44947,12 @@
             "value" : "قفل التطبيق"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zámek aplikace"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -42760,6 +45064,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Piwigo موبايل"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo Mobile"
           }
         },
         "da" : {
@@ -42875,6 +45185,12 @@
             "value" : "التحميل التلقائي"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto. nahrávání"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -42986,6 +45302,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الوجهة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cíl"
           }
         },
         "da" : {
@@ -43101,6 +45423,12 @@
             "value" : "إيقاف التشغيل"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vypnuto"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -43212,6 +45540,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "لن يتم تحميل الصور تلقائياً إلى Piwigo الخاص بك."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotky se nebudou automaticky nahrávat do vašeho Piwiga."
           }
         },
         "da" : {
@@ -43327,6 +45661,12 @@
             "value" : "على"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zapnuto"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -43438,6 +45778,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "سيتم تحميل الصور تلقائياً إلى Piwigo الخاص بك."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotky se budou automaticky nahrávat do vašeho Piwiga."
           }
         },
         "da" : {
@@ -43553,6 +45899,12 @@
             "value" : "سيتم تحميل الصور ومقاطع الفيديو تلقائياً إلى Piwigo الخاص بك."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotky a videa se budou automaticky nahrávat do vašeho Piwiga."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -43664,6 +46016,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "التحميل التلقائي للصور"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatické nahrávání fotek"
           }
         },
         "da" : {
@@ -43779,6 +46137,12 @@
             "value" : "المصدر"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zdroj"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -43887,6 +46251,12 @@
       "comment" : "Face ID",
       "localizations" : {
         "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID"
+          }
+        },
+        "cs" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Face ID"
@@ -44006,6 +46376,12 @@
             "value" : "استخدم Face ID كبديل لرمز مرور قفل التطبيق الخاص بك."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Použijte Face ID jako alternativu ke kódu zámku aplikace."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -44114,6 +46490,12 @@
       "comment" : "Optic ID",
       "localizations" : {
         "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optic ID"
+          }
+        },
+        "cs" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Optic ID"
@@ -44233,6 +46615,12 @@
             "value" : "استخدم Optic ID كبديل لرمز مرور قفل التطبيق."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Použijte Optic ID jako alternativu ke kódu zámku aplikace."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -44341,6 +46729,12 @@
       "comment" : "Touch ID",
       "localizations" : {
         "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touch ID"
+          }
+        },
+        "cs" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Touch ID"
@@ -44460,6 +46854,12 @@
             "value" : "استخدم Touch ID كبديل لرمز مرور قفل التطبيق."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Použijte Touch ID jako alternativu ke kódu zámku aplikace."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -44571,6 +46971,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "مسح ذاكرة التخزين المؤقت"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vymazat mezipaměť"
           }
         },
         "da" : {
@@ -44686,6 +47092,12 @@
             "value" : "مسح الكل"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vymazat vše"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -44797,6 +47209,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "مسح ذاكرة التخزين المؤقت"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mazání mezipaměti"
           }
         },
         "da" : {
@@ -44912,6 +47330,12 @@
             "value" : "هل أنت متأكد من أنك تريد مسح ذاكرة التخزين المؤقت للصور؟ هذا سيجعل الألبومات والصور تستغرق بعض الوقت للتحميل مرة أخرى."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opravdu chcete vymazat mezipaměť fotek? Načtení alb a fotek pak bude chvíli trvat."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -45023,6 +47447,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "مسح الحافظة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vymazat schránku"
           }
         },
         "da" : {
@@ -45138,6 +47568,12 @@
             "value" : "بعد 1 دقيقة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Po 1 minutě"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -45249,6 +47685,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "بعد 1 دقيقة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Po 1 min"
           }
         },
         "da" : {
@@ -45364,6 +47806,12 @@
             "value" : "بعد 2 دقيقة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Po 2 minutách"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -45475,6 +47923,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "بعد 2 دقيقة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Po 2 min"
           }
         },
         "da" : {
@@ -45590,6 +48044,12 @@
             "value" : "بعد 5 دقائق"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Po 5 minutách"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -45701,6 +48161,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "بعد 5 دقائق"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Po 5 min"
           }
         },
         "da" : {
@@ -45816,6 +48282,12 @@
             "value" : "بعد 10 ثوانٍ"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Po 10 sekundách"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -45927,6 +48399,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "بعد 10 ثوانٍ"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Po 10 s"
           }
         },
         "da" : {
@@ -46042,6 +48520,12 @@
             "value" : "بعد 30 ثانية"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Po 30 sekundách"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -46153,6 +48637,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "بعد 30 ثانية"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Po 30 s"
           }
         },
         "da" : {
@@ -46268,6 +48758,12 @@
             "value" : "يرجى تحديد التأخير الذي سيتم بعده مسح الحافظة."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte prodlevu, po které se schránka vymaže."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -46379,6 +48875,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "أبداً"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nikdy"
           }
         },
         "da" : {
@@ -46494,6 +48996,12 @@
             "value" : "صفحات المساعدة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontaktovat podporu"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -46605,6 +49113,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "داكن"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tmavý"
           }
         },
         "da" : {
@@ -46720,6 +49234,12 @@
             "value" : "البيانات"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -46831,6 +49351,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الكاتب"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autor"
           }
         },
         "da" : {
@@ -46946,6 +49472,12 @@
             "value" : "اسم المؤلف"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jméno autora"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -47057,6 +49589,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "اسم الكاتب"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jméno autora"
           }
         },
         "da" : {
@@ -47172,6 +49710,12 @@
             "value" : "الخصوصية"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soukromí"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -47283,6 +49827,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يرجى تحديد من سيتمكن من رؤية الصور"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte, kdo bude moci vidět fotky"
           }
         },
         "da" : {
@@ -47398,6 +49948,12 @@
             "value" : "الحذف بعد التحميل"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Smazat po nahrání"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -47509,6 +50065,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الحذف بعد الرفع"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Smazat po nahrání"
           }
         },
         "da" : {
@@ -47624,6 +50186,12 @@
             "value" : "أوصاف الألبوم"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Popisy alb"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -47735,6 +50303,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "عناوين الصور"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Názvy obrázků"
           }
         },
         "da" : {
@@ -47850,6 +50424,12 @@
             "value" : "الملاحظات"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zpětná vazba"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -47961,6 +50541,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "مساعدة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nápověda"
           }
         },
         "da" : {
@@ -48076,6 +50662,12 @@
             "value" : "اتصل بالدعم الفني"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stránky nápovědy"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -48187,6 +50779,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "استجابات الخادم غير صالحة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neplatné odpovědi serveru"
           }
         },
         "da" : {
@@ -48302,6 +50900,12 @@
             "value" : "خفيف"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Světlý"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -48413,6 +51017,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الصور الحية"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Live Photos"
           }
         },
         "da" : {
@@ -48528,6 +51138,12 @@
             "value" : "الخروج"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odhlásit se"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -48639,6 +51255,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "السجلات"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protokoly"
           }
         },
         "da" : {
@@ -48754,6 +51376,12 @@
             "value" : " - لم تقم بتسجيل الدخول - "
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " - Nepřihlášen - "
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -48865,6 +51493,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "رمز المرور منفصل عن كلمة مرور حساب Piwigo الخاص بك."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tento kód je jiný než heslo k vašemu účtu Piwigo."
           }
         },
         "da" : {
@@ -48980,6 +51614,12 @@
             "value" : "التضغيط قبل التحميل"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Komprimovat"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -49091,6 +51731,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ضغط الصورة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Komprimovat fotku"
           }
         },
         "da" : {
@@ -49206,6 +51852,12 @@
             "value" : "الجودة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kvalita"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -49317,6 +51969,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تغيير الحجم قبل التحميل"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zmenšit"
           }
         },
         "da" : {
@@ -49432,6 +52090,12 @@
             "value" : "تصغير حجم الصورة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zmenšit fotku"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -49543,6 +52207,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الحجم"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velikost"
           }
         },
         "da" : {
@@ -49658,6 +52328,12 @@
             "value" : "البادئة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Předpona"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -49769,6 +52445,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "البادئة_"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Předpona_"
           }
         },
         "da" : {
@@ -49884,6 +52566,12 @@
             "value" : "سياسة الخصوصية"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zásady ochrany soukromí"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -49992,6 +52680,12 @@
       "comment" : "https://piwigo.org",
       "localizations" : {
         "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://piwigo.org"
+          }
+        },
+        "cs" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "https://piwigo.org"
@@ -50110,6 +52804,12 @@
             "value" : "تقييم Piwigo موبايل"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohodnotit Piwigo Mobile"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -50221,6 +52921,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ملاحظات الإصدار"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poznámky k verzi"
           }
         },
         "da" : {
@@ -50336,6 +53042,12 @@
             "value" : "إضافة بعد الاسم"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přidat za název"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -50447,6 +53159,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إضافة قبل الاسم"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přidat před název"
           }
         },
         "da" : {
@@ -50562,6 +53280,12 @@
             "value" : "تغيير الحالة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Změnit velikost písmen"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -50673,6 +53397,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "القيمة الحالية"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuální hodnota"
           }
         },
         "da" : {
@@ -50788,6 +53518,12 @@
             "value" : "ستبدأ السلسلة التالية من التحميلات بقيمة العداد هذه والتي ستتم زيادتها بعد ذلك بمقدار واحد لكل ملف تتم معالجته."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Další série nahrávání začne touto hodnotou počítadla, která se pak u každého zpracovaného souboru zvýší o jedna."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -50899,6 +53635,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الأرقام"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Číslice"
           }
         },
         "da" : {
@@ -51014,6 +53756,12 @@
             "value" : "عندما يحتاج العداد إلى أرقام أكثر مما هو محدد، يتم زيادة عدد الأرقام تلقائيًا."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Když počítadlo potřebuje více číslic, než je uvedeno, počet číslic se automaticky zvýší."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -51125,6 +53873,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يرجى تحديد تنسيق العداد لتضمينه في اسم الملف."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte formát počítadla, které se má zahrnout do názvu souboru."
           }
         },
         "da" : {
@@ -51240,6 +53994,12 @@
             "value" : "يبدأ من"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Začíná od"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -51351,6 +54111,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "بالنسبة لكل ألبوم، ستتم تهيئة العداد بهذه القيمة التي ستتم زيادتها بعد ذلك بمقدار واحد لكل ملف تتم معالجته."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro každé album se počítadlo nastaví na tuto hodnotu, která se pak u každého zpracovaného souboru zvýší o jedna."
           }
         },
         "da" : {
@@ -51466,6 +54232,12 @@
             "value" : "يرجى تحديد تنسيق التاريخ لتضمينه في اسم الملف."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte formát data, který se má zahrnout do názvu souboru."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -51577,6 +54349,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يوم من السنة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Den v roce"
           }
         },
         "da" : {
@@ -51692,6 +54470,12 @@
             "value" : "إعادة التسمية"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přejmenovat"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -51803,6 +54587,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يُرجى الإشارة أدناه إلى كيفية إعادة تسمية الملفات قبل تحميلها."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Níže určete, jak se mají soubory před nahráním přejmenovat."
           }
         },
         "da" : {
@@ -51918,6 +54708,12 @@
             "value" : "امتداد الملف"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přípona souboru"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -52029,6 +54825,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إعادة تسمية الملف"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přejmenovat soubor"
           }
         },
         "da" : {
@@ -52144,6 +54946,12 @@
             "value" : "إصدار مكون من 5 أرقام"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pětimístná verze"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -52255,6 +55063,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إصدار مكون من 4 أرقام"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Čtyřmístná verze"
           }
         },
         "da" : {
@@ -52370,6 +55184,12 @@
             "value" : "الأحرف الصغيرة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Malá písmena"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -52481,6 +55301,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "اسم الملف البادئة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Předpona názvu souboru"
           }
         },
         "da" : {
@@ -52596,6 +55422,12 @@
             "value" : "استبدال اسم الملف"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nahradit název souboru"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -52707,6 +55539,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "لاحقة اسم الملف"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přípona názvu souboru"
           }
         },
         "da" : {
@@ -52822,6 +55660,12 @@
             "value" : "يرجى تحديد تنسيق الوقت لتضمينه في اسم الملف."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte formát času, který se má zahrnout do názvu souboru."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -52933,6 +55777,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إصدار مكون من 2 رقم"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dvoumístná verze"
           }
         },
         "da" : {
@@ -53048,6 +55898,12 @@
             "value" : "أحرف كبيرة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velká písmena"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -53159,6 +56015,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "العنوان"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adresa"
           }
         },
         "da" : {
@@ -53274,6 +56136,12 @@
             "value" : "تجريد البيانات الوصفية"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odstranit metadata"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -53385,6 +56253,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تجريد البيانات الوصفية الخاصة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odstranit soukromá metadata"
           }
         },
         "da" : {
@@ -53500,6 +56374,12 @@
             "value" : "لاحقة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přípona"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -53611,6 +56491,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "_لاحقة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "_pripona"
           }
         },
         "da" : {
@@ -53726,6 +56612,12 @@
             "value" : "الدليل"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dokumentace"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -53837,6 +56729,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "منتدى الدعم"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fórum podpory"
           }
         },
         "da" : {
@@ -53952,6 +56850,12 @@
             "value" : "أوتوماتيكي"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automaticky"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -54063,6 +56967,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ترجمة Piwigo موبايل"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přeložit Piwigo Mobile"
           }
         },
         "da" : {
@@ -54178,6 +57088,12 @@
             "value" : "اسم المستخدم"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uživatelské jméno"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -54289,6 +57205,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "التشغيل التلقائي"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatické přehrávání"
           }
         },
         "da" : {
@@ -54404,6 +57326,12 @@
             "value" : "فيديوهات الحلقات"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opakovat videa"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -54515,6 +57443,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wi-Fi فقط"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pouze Wi-Fi"
           }
         },
         "da" : {
@@ -54630,6 +57564,12 @@
             "value" : "يقبل الخادم أنواع الملفات التالية"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Server přijímá následující typy souborů"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -54741,6 +57681,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "قم بتثبيت الملحق %@ على Piwigo لتتمكن من تدوير الصور من التطبيق."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nainstalujte do svého Piwiga zásuvný modul %@, abyste mohli fotky otáčet přímo v aplikaci."
           }
         },
         "da" : {
@@ -54856,6 +57802,12 @@
             "value" : "قم بتثبيت الملحق %@ على Piwigo لمشاركة الألبومات الخاصة مع أشخاص ليس لديهم حساب."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nainstalujte do svého Piwiga zásuvný modul %@, abyste mohli sdílet soukromá alba s lidmi, kteří nemají účet."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -54967,6 +57919,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "معلومة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informace"
           }
         },
         "da" : {
@@ -55082,6 +58040,12 @@
             "value" : "المظهر"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vzhled"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -55195,6 +58159,12 @@
             "value" : "ذاكرة التخزين المؤقت"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mezipaměť"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -55306,6 +58276,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "لوحة الألوان"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Barevná paleta"
           }
         },
         "da" : {
@@ -55422,6 +58398,12 @@
             "value" : "الاعدادات العامة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obecná nastavení"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -55533,6 +58515,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "موقع ويب غير آمنة!"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Web není zabezpečený!"
           }
         },
         "da" : {
@@ -55648,6 +58636,12 @@
             "value" : "خادم Piwigo"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Server Piwigo"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -55759,6 +58753,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الصورة المصغرة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniatury"
           }
         },
         "da" : {
@@ -55874,6 +58874,12 @@
             "value" : "استكشاف الأخطاء وإصلاحها"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Řešení potíží"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -55985,6 +58991,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إعدادات التحميل الافتراضية"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Výchozí nastavení nahrávání"
           }
         },
         "da" : {
@@ -56100,6 +59112,12 @@
             "value" : "الصور"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotky"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -56211,6 +59229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "مقاطع الفيديو"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Videa"
           }
         },
         "da" : {
@@ -56326,6 +59350,12 @@
             "value" : "آخر زيارة: %@."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poslední návštěva: %@."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -56437,6 +59467,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تمت مشاركة هذا الألبوم %@ ولم تتم زيارته بعد."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toto album bylo sdíleno %@ a zatím nebylo navštíveno."
           }
         },
         "da" : {
@@ -56552,6 +59588,12 @@
             "value" : "مشاركة ألبوم خاص"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sdílet soukromé album"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -56663,6 +59705,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "مشاركة ألبوم عام"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sdílet veřejné album"
           }
         },
         "da" : {
@@ -56778,6 +59826,12 @@
             "value" : "تجديد الرابط"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obnovit odkaz"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -56889,6 +59943,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "سيتوقف الرابط الحالي عن العمل. لن يتمكن الأشخاص الذين استلموه من فتح هذا الألبوم بعد الآن."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stávající odkaz přestane fungovat. Lidé, kteří jej již obdrželi, nebudou moci toto album nadále otevřít."
           }
         },
         "da" : {
@@ -57004,6 +60064,12 @@
             "value" : "مشاركة الرابط…"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sdílet odkaz…"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -57117,6 +60183,12 @@
             "value" : "إيقاف المشاركة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukončit sdílení"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -57228,6 +60300,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "سيتوقف الرابط عن العمل. لن يتمكن الأشخاص الذين استلموه من فتح هذا الألبوم بعد الآن."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odkaz přestane fungovat. Lidé, kteří jej již obdrželi, nebudou moci toto album nadále otevřít."
           }
         },
         "da" : {
@@ -57374,6 +60452,36 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "تمت مشاركة هذا الألبوم %@ ولم تتم زيارته."
+                }
+              }
+            }
+          }
+        },
+        "cs" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Toto album bylo sdíleno %@ a bylo navštíveno %lldkrát."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Toto album bylo sdíleno %@ a bylo navštíveno %lldkrát."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Toto album bylo sdíleno %@ a bylo navštíveno jednou."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Toto album bylo sdíleno %@ a bylo navštíveno %lldkrát."
                 }
               }
             }
@@ -57696,6 +60804,12 @@
             "value" : "فشل المشاركة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sdílení se nezdařilo"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -57807,6 +60921,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "مجموعة مختارات كبيرة جداً للمشاركة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Výběr je příliš velký ke sdílení"
           }
         },
         "da" : {
@@ -57922,6 +61042,12 @@
             "value" : "معلومات الاتصالمعلومات الاتصال"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontaktní údaje"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -58033,6 +61159,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "التنسيق"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formát"
           }
         },
         "da" : {
@@ -58148,6 +61280,12 @@
             "value" : "الأكثر توافقاً"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nejkompatibilnější"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -58259,6 +61397,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "التنسيق الأكثر توافقاً يحول صور HEIC إلى JPEG ومقاطع الفيديو إلى MP4. ويمكن لأي تطبيق قراءتها."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nejkompatibilnější formát převede fotky HEIC na JPEG a videa na MP4. Přečte je jakákoli aplikace."
           }
         },
         "da" : {
@@ -58374,6 +61518,12 @@
             "value" : "الأصلية"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Originál"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -58485,6 +61635,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تحديد الموقع الجغرافي"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poloha"
           }
         },
         "da" : {
@@ -58600,6 +61756,12 @@
             "value" : "بيانات التعريف"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metadata"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -58711,6 +61873,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يتم دائمًا حذف أرقام التسلسل الخاصة بالكاميرا والعدسات. ولا يتم تعديل محتوى الملف بأكمله."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sériová čísla fotoaparátu a objektivu se vždy odstraní. Při zachování všeho se soubor sdílí beze změny."
           }
         },
         "da" : {
@@ -58826,6 +61994,12 @@
             "value" : "الحجم"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velikost"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -58937,6 +62111,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يتم تنزيل الحجم المُحسَّن بسرعة أكبر، وهو كبير بما يكفي لمعظم الاستخدامات. أما الصور الأصغر من هذا الحجم، فيتم مشاركتها دون تغيير."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optimalizovaná velikost se stahuje rychleji a pro většinu použití je dostatečně velká. Fotky menší než tato velikost se sdílejí beze změny."
           }
         },
         "da" : {
@@ -59052,6 +62232,12 @@
             "value" : "مُحسَّن"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optimalizovaná"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -59163,6 +62349,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "أصلي"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Originál"
           }
         },
         "da" : {
@@ -59278,6 +62470,12 @@
             "value" : "خيارات"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Možnosti"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -59391,6 +62589,12 @@
             "value" : "الصوت"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zvuk"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -59502,6 +62706,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "صورة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotka"
           }
         },
         "da" : {
@@ -59618,6 +62828,12 @@
             "value" : "فيديو"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -59730,6 +62946,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "التصنيف حسب"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Řadit podle"
           }
         },
         "da" : {
@@ -59845,6 +63067,12 @@
             "value" : "الإعدادات"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nastavení"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -59956,6 +63184,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تحميل"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nahrát"
           }
         },
         "da" : {
@@ -60071,6 +63305,12 @@
             "value" : "الوسم"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Štítek"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -60182,6 +63422,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "العلامات"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Štítky"
           }
         },
         "da" : {
@@ -60297,6 +63543,12 @@
             "value" : "أدخل اسماً لهذه العلامة الجديدة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zadejte název tohoto nového štítku"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -60408,6 +63660,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "علامة جديدة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nový štítek"
           }
         },
         "da" : {
@@ -60523,6 +63781,12 @@
             "value" : "إضافة علامة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přidat štítek"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -60634,6 +63898,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فشل إنشاء علامة جديدة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nový štítek se nepodařilo vytvořit"
           }
         },
         "da" : {
@@ -60749,6 +64019,12 @@
             "value" : "فشل الإنشاء"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vytvoření se nezdařilo"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -60860,6 +64136,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إنشاء العلامة..."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vytváření štítku…"
           }
         },
         "da" : {
@@ -60975,6 +64257,12 @@
             "value" : "الكل"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vše"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -61086,6 +64374,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "لم يتم اختياره"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nevybrané"
           }
         },
         "da" : {
@@ -61201,6 +64495,12 @@
             "value" : "تم تحديدها"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vybrané"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -61312,6 +64612,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "اختر علامة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte štítek"
           }
         },
         "da" : {
@@ -61427,6 +64733,12 @@
             "value" : "إلغاء كتم الصوت"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zrušit ztlumení"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -61537,6 +64849,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تحميل ${photos} إلى ${album}"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nahrát ${photos} do ${album}"
           }
         },
         "da" : {
@@ -61652,6 +64970,12 @@
             "value" : "تم إلغاء الرفع"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nahrávání zrušeno"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -61763,6 +65087,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تعذر تحميل الصورة الخاصة بك. خطأ: %@"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vaši fotku se nepodařilo nahrát. Chyba: %@"
           }
         },
         "da" : {
@@ -61879,6 +65209,12 @@
             "value" : "خطأ في التحميل"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chyba nahrávání"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -61991,6 +65327,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الصورة والفيديو"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotka a video"
           }
         },
         "da" : {
@@ -62107,6 +65449,12 @@
             "value" : "لا يقبل خادم Piwigo هذا مقاطع الفيديو، لذلك يمكن تحميل الصورة فقط من الصورة الحية."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tento server Piwigo nepřijímá videa, proto lze z Live Photo nahrát pouze fotku."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -62219,6 +65567,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يرجى تحديد ما تريد تحميله من الصورة الحية."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte, co se má z Live Photo nahrát."
           }
         },
         "da" : {
@@ -62335,6 +65689,12 @@
             "value" : "الفيديو فقط"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pouze video"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -62447,6 +65807,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الصورة فقط"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pouze fotka"
           }
         },
         "da" : {
@@ -62562,6 +65928,12 @@
             "value" : "تم تمكين وضع الطاقة المنخفضة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je zapnutý režim nízké spotřeby"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -62673,6 +66045,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "لا يوجد اتصال بالإنترنت"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Není připojení k internetu"
           }
         },
         "da" : {
@@ -62788,6 +66166,12 @@
             "value" : "لا يوجد اتصال Wi-Fi"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Není připojení k Wi-Fi"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -62899,6 +66283,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يرجى تحديد الحد الأقصى لحجم الصور التي سيتم تحميلها."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte maximální velikost fotek, které se budou nahrávat."
           }
         },
         "da" : {
@@ -63014,6 +66404,12 @@
             "value" : "عدم تقليص الحجم"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bez zmenšení"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -63125,6 +66521,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "كاميرات مدمجة بأقصى دقة كاميرات مدمجة:"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maximální rozlišení vestavěných fotoaparátů:"
           }
         },
         "da" : {
@@ -63240,6 +66642,12 @@
             "value" : "الحد الأقصى لحجم الصورة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maximální velikost fotky"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -63353,6 +66761,12 @@
             "value" : "التحميلات"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nahrávání"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -63464,6 +66878,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يجب أن يكون لديك حقوق تحميل ليتمكن من تحميل الصور أو مقاطع الفيديو."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abyste mohli nahrávat fotky nebo videa, musíte mít oprávnění k nahrávání."
           }
         },
         "da" : {
@@ -63580,6 +67000,12 @@
             "value" : "تحميل الحقوق المطلوبة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jsou potřeba oprávnění k nahrávání"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -63691,6 +67117,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "حالة الحرارة عالية"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vysoká teplota zařízení"
           }
         },
         "da" : {
@@ -63806,6 +67238,12 @@
             "value" : "يرجى تحديد الحد الأقصى لحجم مقاطع الفيديو التي سيتم تحميلها."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte maximální velikost videí, která se budou nahrávat."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -63917,6 +67355,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "كاميرات مدمجة بأقصى مواصفات الكاميرات المدمجة:"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maximální parametry vestavěných fotoaparátů:"
           }
         },
         "da" : {
@@ -64032,6 +67476,12 @@
             "value" : "الحد الأقصى لحجم الفيديو"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maximální velikost videa"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -64143,6 +67593,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الأسبوع"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Týden"
           }
         },
         "da" : {
@@ -64258,6 +67714,12 @@
             "value" : "إصلاح الأخطاء وتحسين الواجهة."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opravy chyb a vylepšení rozhraní."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -64369,6 +67831,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تابع"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pokračovat"
           }
         },
         "da" : {
@@ -64484,6 +67952,12 @@
             "value" : "التحسينات"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vylepšení"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -64595,6 +68069,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يستورد الصور الحية كصورة أو فيديو أو كليهما."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importuje Live Photos jako fotku, video nebo obojí."
           }
         },
         "da" : {
@@ -64710,6 +68190,12 @@
             "value" : "مشاركة الألبومات الخاصة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sdílení soukromých alb"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -64821,6 +68307,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يتيح مشاركة الألبومات الخاصة مع أشخاص ليس لديهم حساب (يتطلب الملحق Share Album)."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Umožňuje sdílet soukromá alba s lidmi, kteří nemají účet (vyžaduje zásuvný modul Share Album)."
           }
         },
         "da" : {
@@ -64936,6 +68428,12 @@
             "value" : "ما الجديد في Piwigo"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novinky v Piwigu"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -65047,6 +68545,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "السنة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rok"
           }
         },
         "da" : {

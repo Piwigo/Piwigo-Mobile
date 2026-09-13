@@ -1,0 +1,63 @@
+/* 
+  PrivacyPolicy.strings
+  piwigo
+
+  Created by Eddy Lelièvre-Berna on 27/10/2018.
+  Copyright © 2018 Piwigo.org. All rights reserved.
+*/
+
+"privacy_text" = "Piwigo-Android a Piwigo-Mobile jsou svobodné, bezplatné a otevřené klientské aplikace pro galerie Piwigo. Tyto zásady ochrany soukromí se vztahují na tyto nativní aplikace pro Android a iOS, které se připojují ke stránkám Piwigo, jež nejsou pod kontrolou autorů. Než v aplikaci Piwigo-Android nebo Piwigo-Mobile nastavíte účet pro připojení ke galerii, přečtěte si zásady ochrany soukromí příslušných stránek.\n\nPoslední aktualizace 25. října 2018";
+
+"intro_title" = "Úvod";
+
+"intro_text1" = "Jako vývojáři aplikací Piwigo-Android a Piwigo-Mobile („my“ nebo „naše“) respektujeme soukromí našich uživatelů („uživatel“ nebo „vy“). Tyto zásady ochrany soukromí vysvětlují, jak shromažďujeme, používáme, zveřejňujeme a chráníme vaše údaje, když používáte naše mobilní aplikace (dále jen „Aplikace“). Naše jména lze zjistit z metadat v repozitářích git a v sekci Poděkování uvnitř Aplikací.";
+
+"intro_text2" = "Přečtěte si prosím tyto zásady ochrany soukromí pozorně. Pokud s podmínkami těchto zásad nesouhlasíte, Aplikace prosím nepoužívejte.";
+
+"intro_text3" = "Vyhrazujeme si právo tyto zásady ochrany soukromí kdykoli a z jakéhokoli důvodu změnit. Na veškeré změny vás upozorníme aktualizací data „Poslední aktualizace“ těchto zásad.";
+
+"intro_text4" = "Doporučujeme vám tyto zásady ochrany soukromí pravidelně kontrolovat, abyste byli informováni o aktualizacích. Pokračováním v používání Aplikací po datu zveřejnění revidovaných zásad se má za to, že jste byli se změnami seznámeni, že se jimi řídíte a že jste je přijali.";
+
+"intro_text5" = "Tyto zásady ochrany soukromí se nevztahují na online či mobilní obchod třetí strany, ze kterého Aplikace instalujete nebo v němž provádíte platby, včetně jakýchkoli virtuálních položek v aplikaci; i tyto obchody mohou o vás shromažďovat a používat údaje. Za žádné údaje shromážděné takovou třetí stranou neneseme odpovědnost.";
+
+"what_title" = "Která data se zpracovávají a ukládají?";
+
+"what_subTitle1" = "Data galerie Piwigo";
+
+"what_subText1a" = "Přihlašovací údaje k účtu jsou ukládány Aplikacemi a odesílány na nastavené stránky za účelem připojení k jedné či více galeriím Piwigo. Kromě toho se všechny fotky, videa a další soubory vybrané ke stažení či nahrání a zadaný obsah ukládají, zpracovávají a přenášejí na nastavené stránky galerie.";
+
+"what_subTitle2" = "Informace o poloze";
+
+"what_subText2a" = "Můžeme požádat o přístup či oprávnění k informacím o poloze vašeho mobilního zařízení a sledovat je, a to průběžně nebo během používání Aplikací, abychom mohli poskytovat služby založené na poloze. Pokud chcete náš přístup nebo oprávnění změnit, můžete tak učinit v nastavení svého zařízení.";
+
+"what_subTitle3" = "Přístup k mobilnímu zařízení";
+
+"what_subText3a" = "Aplikace mohou požádat o přístup či oprávnění k některým funkcím vašeho mobilního zařízení, včetně knihovny fotek a úložiště souborů, služby Android AccountManager, Apple Keychain, externích a cloudových složek úložiště, geolokace a dalších funkcí. Pokud chcete náš přístup nebo oprávnění změnit, můžete tak učinit v nastavení svého zařízení, ale mějte na paměti, že některé přístupy jsou nezbytné pro nahrávání mediálních souborů z vašeho mobilního zařízení do galerie Piwigo nebo pro ukládání mediálních souborů Piwigo do vašeho zařízení.";
+
+"what_subTitle4" = "Data mobilního zařízení";
+
+"what_subText4a" = "Při kontaktování týmu podpory mohou být vývojovému týmu Aplikací předány informace o zařízení, například ID, model a výrobce vašeho mobilního zařízení, verze operačního systému, e-mail, země, poloha a jakékoli další údaje, které se rozhodnete poskytnout. Kromě údajů, které uživatel vývojářům výslovně sdělí, neukládáme, nepřenášíme ani nezpracováváme žádný obsah.";
+
+"why_title" = "Proč mobilní aplikace ukládá data?";
+
+"why_text1" = "Aplikace ukládají pouze data potřebná k jedinému účelu: přístupu ke galerii Piwigo umístěné na vzdáleném webovém serveru. Neshromažďují, nepřenášejí ani neukládají se žádná data, která nejsou nezbytná pro zamýšlenou funkci.";
+
+"why_text2" = "Když Aplikace používáte, vaše osobní údaje nejsou shromažďovány pomocí sledovacích technologií. Používáme pouze mechanismy mezipaměti, které pomáhají Aplikace přizpůsobit a zlepšit váš zážitek. Mezipaměť můžete vypnout nebo vymazat, ale mějte na paměti, že to může ovlivnit dostupnost a funkčnost Aplikací.";
+
+"how_title" = "Jak jsou data chráněna?";
+
+"how_text1" = "Aplikace ukládají data lokálně v zařízení, na kterém běží. Za ochranu uložených dat před neoprávněným přístupem odpovídáte vy. Důrazně doporučujeme používat HTTPS k ochraně dat během přenosu; Aplikace se při prvním navázání spojení s galerií Piwigo pokoušejí použít šifrované připojení přes HTTPS. Udržování certifikátů a knihoven pro přístup přes HTTPS v aktuálním stavu je odpovědností provozovatele serveru Piwigo. Pokud Aplikace nemohou použít HTTPS, přepnou se na HTTP a data nejsou během přenosu šifrována.";
+
+"how_text2" = "Když nahráváte obrázky do galerie Piwigo, mohou obsahovat soukromá data, jako jsou souřadnice GPS nebo komentáře. Aplikace nabízejí v sekci Nastavení volbu pro odstranění těchto dat z obrazových souborů před nahráním. Je na uživateli, aby rozhodl, zda se tato soukromá data nahrají.";
+
+"security_title" = "Zabezpečení vašich údajů";
+
+"security_text" = "K ochraně vašich osobních údajů používáme technická bezpečnostní opatření. Přestože jsme přijali přiměřené kroky k zabezpečení osobních údajů, které nám poskytujete, mějte na paměti, že navzdory našemu úsilí není žádné bezpečnostní opatření dokonalé či neprolomitelné a u žádné metody přenosu dat nelze zaručit, že nedojde k jejímu zachycení nebo jinému zneužití. Jakékoli informace zveřejněné online jsou zranitelné vůči zachycení a zneužití neoprávněnými osobami. Nemůžeme proto zaručit úplné zabezpečení, pokud osobní údaje poskytnete.";
+
+"contact_title" = "Kontaktujte nás";
+
+"contact_text" = "Máte-li k těmto zásadám ochrany soukromí dotazy nebo připomínky, kontaktujte nás na:";
+
+"contact_address" = "Piwigo, 42 rue des Vignes, 21800 Quetigny (Francie)";
+
+"contact_email" = "iOS@piwigo.org";

@@ -48,6 +48,12 @@
             "value" : "استخدم معرف الوجه بدلاً من رمز المرور للوصول إلى الألبومات الخاصة بك."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Použijte Face ID místo kódu pro přístup ke svým albům."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",

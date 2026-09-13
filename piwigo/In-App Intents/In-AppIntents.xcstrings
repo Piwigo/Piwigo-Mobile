@@ -45,6 +45,36 @@
             }
           }
         },
+        "cs" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotky přidány do fronty nahrávání."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotky přidány do fronty nahrávání."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotka přidána do fronty nahrávání."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotek přidáno do fronty nahrávání."
+                }
+              }
+            }
+          }
+        },
         "da" : {
           "variations" : {
             "plural" : {
@@ -398,6 +428,36 @@
             }
           }
         },
+        "cs" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotky přidány do fronty nahrávání (tento server Piwigo nepřijímá soubory PDF)."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotky přidány do fronty nahrávání (tento server Piwigo nepřijímá soubory PDF)."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotka přidána do fronty nahrávání (tento server Piwigo nepřijímá soubory PDF)."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotek přidáno do fronty nahrávání (tento server Piwigo nepřijímá soubory PDF)."
+                }
+              }
+            }
+          }
+        },
         "da" : {
           "variations" : {
             "plural" : {
@@ -714,6 +774,12 @@
             "value" : "إلحاق الصور الأخيرة إلى قائمة انتظار التحميل وفقًا لإعدادات التحميل التلقائي."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přidá nedávné fotky do fronty nahrávání podle nastavení automatického nahrávání."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -824,6 +890,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "لا توجد صورة تضاف إلى قائمة انتظار التحميل."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do fronty nahrávání nebyla přidána žádná fotka."
           }
         },
         "da" : {
@@ -939,6 +1011,12 @@
             "value" : "تحميل الصور"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nahrát fotky"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1050,6 +1128,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إلحاق الصور إلى قائمة انتظار الرفع."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přidá fotky do fronty nahrávání."
           }
         },
         "da" : {
@@ -1165,6 +1249,12 @@
             "value" : "ليس لديك الصلاحية للتحميل إلى هذا الألبوم."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nemáte oprávnění nahrávat do tohoto alba."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1276,6 +1366,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ولم تقدم أي صورة أو شريط فيديو إلى الاختصار."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zkratce nebyla poskytnuta žádná fotka ani video."
           }
         },
         "da" : {

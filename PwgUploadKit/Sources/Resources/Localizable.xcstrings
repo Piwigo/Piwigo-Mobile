@@ -10,6 +10,12 @@
             "value" : "تمت مقاطعة عمليات التحميل. يرجى إعادة تشغيل التطبيق."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nahrávání bylo přerušeno. Restartujte aplikaci."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -154,6 +160,36 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "اكتمل تحميل %lld"
+                }
+              }
+            }
+          }
+        },
+        "cs" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld nahrání dokončena"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld nahrání dokončena"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld nahrání dokončeno"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld nahrání dokončeno"
                 }
               }
             }
@@ -476,6 +512,12 @@
             "value" : "يحتاج الجهاز إلى تبريد رائع."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zařízení se musí ochladit."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -587,6 +629,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تم تمكين وضع توفير الطاقة. يرجى إيقاف تشغيله."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je zapnutý režim nízké spotřeby. Vypněte jej."
           }
         },
         "da" : {
@@ -702,6 +750,12 @@
             "value" : "التحميل عبر شبكة Wi-Fi فقط. يرجى الاتصال بشبكة Wi-Fi."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nahrávání pouze přes Wi-Fi. Připojte se k Wi-Fi."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -813,6 +867,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "جاري التحضير لعمليات التحميل…"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Příprava nahrávání…"
           }
         },
         "da" : {
@@ -959,6 +1019,36 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "متبقي تحميل %lld"
+                }
+              }
+            }
+          }
+        },
+        "cs" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld nahrání zbývají"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld nahrání zbývá"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld nahrání zbývá"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld nahrání zbývá"
                 }
               }
             }
@@ -1281,6 +1371,12 @@
             "value" : "جاري التحضير لعمليات التحميل…"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Příprava nahrávání…"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1394,6 +1490,12 @@
             "value" : "يُرجى تحديد الألبوم أو الألبوم الفرعي الذي سيتم تحميل الصور ومقاطع الفيديو فيه تلقائيًا."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte album nebo podalbum, do kterého se budou fotky a videa automaticky nahrávat."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1505,6 +1607,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يُرجى تحديد الألبوم أو الألبوم الفرعي الذي سيتم تحميل الصور ومقاطع الفيديو الخاصة بجهازك منه تلقائيًا."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte album nebo podalbum, ze kterého se budou fotky a videa z vašeho zařízení automaticky nahrávat."
           }
         },
         "da" : {

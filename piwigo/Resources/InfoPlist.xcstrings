@@ -11,6 +11,12 @@
             "value" : "Piwigo"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -125,6 +131,12 @@
             "value" : "Piwigo"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -232,6 +244,12 @@
     "Encapsulated PostScript" : {
       "localizations" : {
         "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encapsulated PostScript"
+          }
+        },
+        "cs" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Encapsulated PostScript"
@@ -352,6 +370,12 @@
             "value" : "استخدم معرف الوجه بدلاً من رمز المرور للوصول إلى الألبومات الخاصة بك."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Použijte Face ID místo kódu pro přístup ke svým albům."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -464,6 +488,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يستخدم Piwigo الشبكة المحلية للوصول إلى خادم Piwigo الخاص بك."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo používá místní síť pro přístup k vašemu serveru Piwigo."
           }
         },
         "da" : {
@@ -579,6 +609,12 @@
             "value" : "بحيث أنها سوف تكون قادرة على تحميل الصور إلى الصور وتحميل الصور إلى Piwigo الخاص بك."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "aby mohla ukládat fotky do aplikace Fotky a nahrávat fotky do vašeho Piwigo."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -691,6 +727,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "حتى يتمكن Piwigo من تحميل الصور باستخدام Siri."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "aby Piwigo mohlo nahrávat obrázky pomocí Siri."
           }
         },
         "da" : {

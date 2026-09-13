@@ -10,6 +10,12 @@
             "value" : "فشل في استرداد الصور والفيديوهات المشتركة."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodařilo se načíst sdílené fotky a videa."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -121,6 +127,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الرجاء فتح تطبيق Piwigo وإنشاء ألبوم قبل مشاركة الصور أو الفيديو."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Než začnete sdílet fotky nebo videa, otevřete aplikaci Piwigo a vytvořte album."
           }
         },
         "da" : {
@@ -236,6 +248,12 @@
             "value" : "فشل المشاركة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sdílení se nezdařilo"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -347,6 +365,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الرجاء تحديد الألبوم الذي ترغب في تحميل الصور فيه."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte album, do kterého chcete fotky nahrát."
           }
         },
         "da" : {
@@ -462,6 +486,12 @@
             "value" : "هل أنت متأكد من أنك تريد رفع الصور إلى الألبوم \"%@\"؟"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opravdu chcete nahrát fotky do alba „%@“?"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -573,6 +603,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تحميل إلى الألبوم"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nahrát do alba"
           }
         },
         "da" : {

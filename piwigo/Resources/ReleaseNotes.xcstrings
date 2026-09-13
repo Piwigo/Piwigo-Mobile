@@ -10,6 +10,12 @@
             "value" : "الإصدار 1.0\n17 أكتوبر 2011"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 1.0\n17. října 2011"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -121,6 +127,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.0\n24 أبريل 2015\n\nتطبيق الأصلي الجديد يضم:\n  - القدرة على إدارة الألبومات\n  - عرض الصور الخاصة بك\n  - تحميل الصورة السائبة\n  - تحميل الفيديو وتشغيل (يجب تثبيت فيدوجس البرنامج المساعد)"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.0\n24. dubna 2015\n\nNová nativní aplikace nabízí:\n - Možnost spravovat alba\n - Prohlížení vašich fotek\n - Hromadné nahrávání fotek\n - Nahrávání a přehrávání videí (musí být nainstalován zásuvný modul VideoJS)"
           }
         },
         "da" : {
@@ -237,6 +249,12 @@
             "value" : "الإصدار 2.0.1\n26 يونيو 2015\n\nإعدادات جديدة:\n  - الخيار لتغيير حجم الصور عند التحميل\n    + جودة الصورة هي من مجموعة من 50 - 98٪\n  - القدرة على تعيين الافتراضي حجم معاينة الصورة\nاصلاحات الشوائب"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.0.1\n26. června 2015\n\nNová nastavení:\n - Možnost změnit velikost fotek při nahrávání\n   + Kvalita obrázku v rozsahu 50 až 98 procent\n - Možnost nastavit výchozí velikost náhledu fotky\nOpravy chyb"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -348,6 +366,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.0.2\n8 مايو 2017\n\n• معايير التصنيف مطابقة الآن لتلك التي من التطبيق على شبكة الإنترنت\n• إصلاح قضايا الفرز\n• إصلاح تحطم واجهت عند إضافة علامات إلى صورة قبل التحميل\n• إصلاح الحالات حيث حذف مجموعة مختارة من الصور لم تنجح\n• إصلاح الحالات حيث ألبوم لم تظهر بعد التحرك\n• إصلاح مشكلة التوافق مع دائرة الرقابة الداخلية 10 - رمز موقوف"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.0.2\n8. května 2017\n\n• Kritéria řazení jsou nyní shodná s webovou aplikací\n• Opravuje problémy s řazením\n• Opravuje pád při přidávání štítků k fotce před nahráním\n• Opravuje situace, kdy nefungovalo mazání vybraných fotek\n• Opravuje situace, kdy se album po přesunu nezobrazilo\n• Opravuje problém s kompatibilitou s iOS 10 — zastaralý kód"
           }
         },
         "da" : {
@@ -463,6 +487,12 @@
             "value" : "الإصدار 2.0.3\n26 مايو 2017\n\n• إضافة خيار لتجريد البيانات الوصفية غس في صفحة إعدادات\n• إضافة استخدام ذاكرة التخزين المؤقت الحالي في صفحة إعدادات\n• إصلاح إعدادات ذاكرة التخزين المؤقت في بعض الأحيان نسي / إعادة تعيين\n• إصلاح تحميل إعدادات الصورة في بعض الأحيان فقدت / إعادة تعيين"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.0.3\n26. května 2017\n\n• Přidává na stránku Nastavení volbu pro odstranění metadat GPS\n• Přidává na stránku Nastavení aktuální využití mezipaměti\n• Opravuje občasné zapomenutí či vynulování nastavení mezipaměti\n• Opravuje občasnou ztrátu či vynulování nastavení nahrávání fotek"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -574,6 +604,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.0.4\n28 يوليو 2017\n\n• باد - إصلاح الصور المصغرة غامض واستحالة تحرير الصور على باد\n• فيديو - إصلاح تحميل وتحميل القضايا (فيدوجس التمديد المطلوبة على الخادم)\n• إعدادات - إضافة خيارات لإزالة العناوين وتغيير الصور المصغرة القرار\n• تحسين موثوقية الاتصال وإعلام عند اكتمال التحميل\n• إصلاحات الشوائب طفيفة وتحسين واجهة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.0.4\n28. července 2017\n\n• iPad — Opravuje rozmazané miniatury a nemožnost upravovat fotky na iPadu\n• Videa — Opravuje problémy s nahráváním a stahováním (na serveru je vyžadováno rozšíření VideoJS)\n• Nastavení — Přidává volby pro odstranění názvů a změnu rozlišení miniatur\n• Zlepšuje spolehlivost připojení a informuje o dokončení nahrávání\n• Drobné opravy chyb a vylepšení rozhraní"
           }
         },
         "da" : {
@@ -689,6 +725,12 @@
             "value" : "الإصدار 2.1\n14 أغسطس 2017\n\n• التوافق الإرشاد المجتمع\n• الترجمات الدانماركية والفرنسية والبولندية\n• اصلاحات الشوائب"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.1\n14. srpna 2017\n\n• Kompatibilita s rozšířením Community\n• Dánský, francouzský a polský překlad\n• Opravy chyb"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -800,6 +842,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.1.1\n20 أغسطس 2017\n\n• إصلاح الأخطاء التي واجهتها مع شهادات سل غير صالحة\n• تحسين الترجمة الدنماركية"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.1.1\n20. srpna 2017\n\n• Opravuje chybu u neplatných certifikátů SSL\n• Vylepšuje dánský překlad"
           }
         },
         "da" : {
@@ -915,6 +963,12 @@
             "value" : "الإصدار 2.1.2\n7 سبتمبر 2017\n\n• إصلاح رفض تسجيل الدخول مع الإصدارات المساعد المجتمع <2.9\n• تحسين الترجمة\n• أعمال صيانة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.1.2\n7. září 2017\n\n• Opravuje odmítnuté přihlášení u verzí zásuvného modulu Community nižších než 2.9\n• Vylepšuje překlady\n• Údržba"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1026,6 +1080,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.1.3\n19 أكتوبر 2017\n\n• إضافة مصادقة الوصول الأساسية\n• السماح بإلغاء الاتصال التلقائي\n• تحسين واجهة وتحميل الإدارة\n• تحسين الترجمة ودائرة الرقابة الداخلية 11 التوافق\n• إصلاح علة واجه مع المرشح \"لم يتم تحميل\"\n• تحديث الرمز"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.1.3\n19. října 2017\n\n• Přidává základní ověření přístupu\n• Umožňuje zrušit automatické připojení\n• Vylepšuje rozhraní a správu nahrávání\n• Vylepšuje překlady a kompatibilitu s iOS 11\n• Opravuje chybu u filtru „Nenahrané“\n• Modernizace kódu"
           }
         },
         "da" : {
@@ -1141,6 +1201,12 @@
             "value" : "الإصدار 2.1.4\n31 أكتوبر 2017\n\n• الترجمة السويدية\n• اصلاحات الشوائب"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.1.4\n31. října 2017\n\n• Švédský překlad\n• Opravy chyb"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1252,6 +1318,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.1.5\n21 ديسمبر 2017\n\n• إضافة إمكانية إلغاء التحميلات\n• إضافة خيار لحذف الصور بعد التحميل\n• إضافة التوافق مع تحسين التخزين (iCloud)\n• الحفاظ على تنسيق الصورة بعد تغيير حجم كلما كان ذلك ممكنا\n• الترجمات الدانماركية والإندونيسية\n• إصلاح البيانات الوصفية فقدت جزئيا عند التنزيل\n• إصلاح تنسيق ينغ استبدال جبيغ قبل التحميل\n• إصلاح القضايا التي تواجهها مع دائرة الرقابة الداخلية 11 و إفون X\n• إصلاح الأخطاء الطفيفة\n• تحديث الرمز"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.1.5\n21. prosince 2017\n\n• Přidává možnost rušit nahrávání\n• Přidává volbu pro mazání fotek po nahrání\n• Přidává kompatibilitu s funkcí Optimalizovat úložiště (iCloud)\n• Pokud je to možné, zachovává formát fotky po změně velikosti\n• Dánský a indonéský překlad\n• Opravuje částečnou ztrátu metadat při stahování\n• Opravuje nahrazení formátu PNG formátem JPEG před nahráním\n• Opravuje problémy s iOS 11 a iPhonem X\n• Opravuje drobné chyby\n• Modernizace kódu"
           }
         },
         "da" : {
@@ -1367,6 +1439,12 @@
             "value" : "الإصدار 2.1.6\n7 يناير 2018\n\n• الترجمة العربية\n• تحسين إدارة مصادقة الوصول الأساسية ل HTTP \n• إصلاحات الشوائب طفيفة وتحسين واجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.1.6\n7. ledna 2018\n\n• Arabský překlad\n• Vylepšená správa základního ověření přístupu HTTP\n• Drobné opravy chyb a vylepšení rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1478,6 +1556,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.1.7\n3 فبراير 2018\n\n• إصلاح مشاكل تحميل الفيديو على بعض الملقمات"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.1.7\n3. února 2018\n\n• Opravuje problémy s nahráváním videí na některých serverech"
           }
         },
         "da" : {
@@ -1593,6 +1677,12 @@
             "value" : "الإصدار 2.1.8\n29 أبريل 2018\n\n• يضيف القدرة على تغيير حجم الصور المصغرة\n• HTTPS يصبح البروتوكول الافتراضي\n• الترجمة اليابانية\n• إصلاحات الشوائب طفيفة وتحسين واجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.1.8\n29. dubna 2018\n\n• Přidává možnost změnit velikost miniatur\n• HTTPS se stává výchozím protokolem\n• Japonský překlad\n• Drobné opravy chyb a vylepšení rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1704,6 +1794,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.1.9\n14 مايو 2018\n\n• اصلاحات الشوائب"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.1.9\n14. května 2018\n\n• Opravy chyb"
           }
         },
         "da" : {
@@ -1819,6 +1915,12 @@
             "value" : "الإصدار 2.2\n12 يوليو 2018\n\n• Sub-album creations from any album\n• Improved management with Default Album\n• Improved albums presentation on iPad (and iPhone)\n• Detection of Photo Library changes\n• إصلاحات الشوائب طفيفة وتحسين واجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.2\n12. července 2018\n\n• Vytváření podalb z libovolného alba\n• Vylepšená správa výchozího alba\n• Vylepšené zobrazení alb na iPadu (i iPhonu)\n• Rozpoznávání změn v knihovně fotek\n• Drobné opravy chyb a vylepšení rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1930,6 +2032,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.2.1\n25 يوليو 2018\n\n• إصلاحات الشوائب طفيفة وتحسين واجهة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.2.1\n25. července 2018\n\n• Drobné opravy chyb a vylepšení rozhraní"
           }
         },
         "da" : {
@@ -2045,6 +2153,12 @@
             "value" : "الإصدار 2.2.2\n14 أغسطس 2018\n\n• Copy and move images between albums\n• إصلاحات الشوائب طفيفة وتحسين واجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.2.2\n14. srpna 2018\n\n• Kopírování a přesouvání fotek mezi alby\n• Drobné opravy chyb a vylepšení rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2156,6 +2270,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.2.3\n27 أغسطس 2018\n\n• تصميم ألبوم جديد\n• إصلاحات الشوائب طفيفة وتحسين واجهة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.2.3\n27. srpna 2018\n\n• Nový vzhled alb\n• Drobné opravy chyb a vylepšení rozhraní"
           }
         },
         "da" : {
@@ -2271,6 +2391,12 @@
             "value" : "الإصدار 2.2.4\n23 سبتمبر 2018\n\n• اصلاحات الشوائب"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.2.4\n23. září 2018\n\n• Opravy chyb"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2382,6 +2508,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.2.5\n28 أكتوبر 2018\n\n• أرسل لنا ردود الفعل عن طريق البريد الإلكتروني\n• سياسة خاصة\n• اصلاحات الشوائب"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.2.5\n28. října 2018\n\n• Pošlete nám zpětnou vazbu e-mailem\n• Zásady ochrany soukromí\n• Opravy chyb"
           }
         },
         "da" : {
@@ -2497,6 +2629,12 @@
             "value" : "الإصدار 2.2.6\n20 ديسمبر 2018\n\n• تحسين الترجمة ودائرة الرقابة الداخلية 12 التوافق\n• إصلاحات الشوائب طفيفة وتحسين واجهة\n• ترجمة إيطالية"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.2.6\n20. prosince 2018\n\n• Vylepšuje překlady a kompatibilitu s iOS 12\n• Drobné opravy chyb a vylepšení rozhraní\n• Italský překlad"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2608,6 +2746,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.2.7\n29 ديسمبر 2018\n\n• إصلاحات الشوائب طفيفة وتحسين واجهة\n• تحسين الترجمة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.2.7\n29. prosince 2018\n\n• Drobné opravy chyb a vylepšení rozhraní\n• Vylepšené překlady"
           }
         },
         "da" : {
@@ -2723,6 +2867,12 @@
             "value" : "الإصدار 2.3\n2 فبراير 2019\n\n• مشاركة الصور ومقاطع الفيديو\n• زيادة حدود حجم ذاكرة التخزين المؤقت\n• إصلاحات الشوائب طفيفة وتحسين واجهة\n• تحسين الترجمة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.3\n2. února 2019\n\n• Sdílení fotek a videí\n• Zvýšení limitů velikosti mezipaměti\n• Drobné opravy chyb a vylepšení rozhraní\n• Vylepšené překlady"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2834,6 +2984,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.3.1\n15 فبراير 2019\n\n• إصلاحات الشوائب طفيفة وتحسين واجهة\n• تحسين الترجمة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.3.1\n15. února 2019\n\n• Drobné opravy chyb a vylepšení rozhraní\n• Vylepšené překlady"
           }
         },
         "da" : {
@@ -2949,6 +3105,12 @@
             "value" : "الإصدار 2.3.2\n27 مارس 2019\n\n• الصور المحلية المعروضة في الجدول الزمني قبل تحميل\n• إصلاحات الشوائب طفيفة والتحسينات في الواجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.3.2\n27. března 2019\n\n• Místní fotky se před nahráním zobrazují na časové ose po dnech\n• Drobné opravy chyb a vylepšení rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3060,6 +3222,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.3.3\n10 أبريل 2019\n\n• إصلاحات الشوائب طفيفة والتحسينات في الواجهة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.3.3\n10. dubna 2019\n\n• Drobné opravy chyb a vylepšení rozhraní"
           }
         },
         "da" : {
@@ -3175,6 +3343,12 @@
             "value" : "الإصدار 2.3.4\n1 مايو 2019\n\n• تحسين عرض الألبومات على الأيباد (وآيفون)\n• إصلاحات الشوائب طفيفة وتحسين الواجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.3.4\n1. května 2019\n\n• Vylepšené zobrazení alb na iPadu (i iPhonu)\n• Drobné opravy chyb a vylepšení rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3286,6 +3460,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.3.5\n6 يونيو 2019\n\n• إصلاح تحطم يحدث أحيانا عند تحرير عنوان الخادم بعد تسجيل الخروج"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.3.5\n6. června 2019\n\n• Opravuje pád, ke kterému občas docházelo při úpravě adresy serveru po odhlášení"
           }
         },
         "da" : {
@@ -3401,6 +3581,12 @@
             "value" : "الإصدار 2.4\n15 يوليو 2019\n\n• يضيف أداة بحث (يتطلب iOS 11 أو أحدث)\n• يضيف فرز الصور حسب الدرجة\n• تنزيل أسرع من الصور المصغرة الألبوم (يتطلب Piwigo 2. أو لاحقا)\n• عناوين الصور التي تم تحميلها ليست افتراضية إلى أسماء الملفات بعد الآن\n• إصلاح استحالة إزالة العلامات\n• إصلاح بيانات الصور غير الدقيقة في بعض الظروف"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.4\n15. července 2019\n\n• Přidává nástroj pro vyhledávání (vyžaduje iOS 11 nebo novější)\n• Přidává řazení fotek podle hodnocení\n• Rychlejší stahování miniatur alb (vyžaduje Piwigo 2.8 nebo novější)\n• Názvy nahraných fotek už nejsou ve výchozím stavu názvy souborů\n• Opravuje nemožnost odebrat štítky\n• Opravuje nepřesná data fotek za určitých okolností"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3512,6 +3698,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.4.1\n10 أغسطس 2019\n\n• تضيف \"العلامات\"، \"الأكثر زيارة\"، ألبومات \"أفضل تقييم\" و \"الصور الأخيرة\"\n• إصلاحات الشوائب طفيفة والتحسينات في الواجهة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.4.1\n10. srpna 2019\n\n• Přidává alba „Štítky“, „Nejnavštěvovanější“, „Nejlépe hodnocené“ a „Nedávné fotky“\n• Drobné opravy chyb a vylepšení rozhraní"
           }
         },
         "da" : {
@@ -3627,6 +3819,12 @@
             "value" : "الإصدار 2.4.2\n3 سبتمبر 2019\n\n• إضافة إمكانية إنشاء علامات (للمستخدمين الإداريين فقط)\n• إضافة إمكانية تغيير حجم الصور المصغرة للألبوم\n• إضافة إدارة شاشة Retina\n• إصلاحات طفيفة للأخطاء وتحسينات للواجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.4.2\n3. září 2019\n\n• Přidává možnost vytvářet štítky (pouze pro správce)\n• Přidává možnost změnit velikost miniatur alb\n• Přidává podporu displejů Retina\n• Drobné opravy chyb a vylepšení rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3738,6 +3936,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.4.3\n25 سبتمبر 2019\n\n• iOS 13\n• إصلاحات الشوائب طفيفة والتحسينات في الواجهة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.4.3\n25. září 2019\n\n• Kompatibilita s iOS 13\n• Drobné opravy chyb a vylepšení rozhraní"
           }
         },
         "da" : {
@@ -3853,6 +4057,12 @@
             "value" : "الإصدار 2.4.4\n1 أكتوبر 2019\n\n• إصلاح مشاكل تحميل الفيديو على بعض الخوادم\n• إصلاحات الشوائب طفيفة وتحسين الواجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.4.4\n1. října 2019\n\n• Opravuje problémy s nahráváním videí na některých serverech\n• Drobné opravy chyb a vylepšení rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3964,6 +4174,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.4.5\n6 نوفمبر 2019\n\n• يعرض صورك المفضلة (يتطلب Piwigo 2. 0 أو أحدث)\n• خيار لتقديم صور مرتبة يدويا\n• السماح لمستخدمي المجتمع بإنشاء ألبومات (مع الحقوق المناسبة)\n• إصلاحات الشوائب طفيفة وتحسين واجهة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.4.5\n6. listopadu 2019\n\n• Zobrazuje vaše oblíbené fotky (vyžaduje Piwigo 2.10 nebo novější)\n• Volba pro zobrazení ručně seřazených fotek\n• Umožňuje uživatelům Community vytvářet alba (s odpovídajícími právy)\n• Drobné opravy chyb a vylepšení rozhraní"
           }
         },
         "da" : {
@@ -4079,6 +4295,12 @@
             "value" : "الإصدار 2.4.6\n18 يناير 2020\n\n• تحرير خصائص مجموعة من الصور\n• تغيير تاريخ إنشاء صورة أو فيديو\n• خيار تثبيت أسماء الملفات قبل تحميل\n• إصلاحات الشوائب طفيفة وتحسين الواجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.4.6\n18. ledna 2020\n\n• Úprava vlastností vybraných fotek\n• Změna data vytvoření fotky nebo videa\n• Volba pro přidání předpony k názvům souborů před nahráním\n• Drobné opravy chyb a vylepšení rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4190,6 +4412,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.4.7\n30 يناير 2020\n\n• الترجمات الصينية المبسطة والروسية والإسبانية\n• إصلاح مشكلة في تشغيل الفيديو على بعض الخوادم"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.4.7\n30. ledna 2020\n\n• Zjednodušená čínština, ruský a španělský překlad\n• Opravuje problém s přehráváním videa na některých serverech"
           }
         },
         "da" : {
@@ -4305,6 +4533,12 @@
             "value" : "الإصدار 2.4.8\n25 مارس 2020\n\n• Piwigo يحذرك عندما:\n - الموقع يحتوي على شهادة غير صالحة،\n - قبل إنشاء اتصال غير آمن\n• تحسين إدارة ذاكرة التخزين المؤقت\n• إصلاحات الشوائب طفيفة وتحسين الواجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.4.8\n25. března 2020\n\n• Piwigo vás upozorní, když:\n - má web neplatný certifikát,\n - před navázáním nezabezpečeného připojení\n• Vylepšená správa mezipaměti\n• Drobné opravy chyb a vylepšení rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4416,6 +4650,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.5\n27 أغسطس 2020\n\n• طلب تحميل السجلات\n• تحميل صور/مقاطع فيديو عندما يكون ذلك ممكنا\n• خيار \"Wi-Fi فقط\" لتحميل\n• لا تحميل عندما يكون في وضع الطاقة المنخفضة\n• الوصول الأسرع إلى مكتبة الصور\n• إصلاحات الشوائب طفيفة وتحسين الواجهة\n• تحديث الكود\n\nتحميل الخلفية سيكون متاحا بعد تحديث الخادم."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.5\n27. srpna 2020\n\n• Zaznamenává požadavky na nahrání\n• Nahrává fotky a videa, když je to možné\n• Volba „Pouze Wi-Fi“ pro nahrávání\n• Žádné nahrávání v režimu nízké spotřeby\n• Mnohem rychlejší přístup ke knihovně fotek\n• Drobné opravy chyb a vylepšení rozhraní\n• Modernizace kódu\n\nNahrávání na pozadí bude k dispozici po aktualizaci serveru."
           }
         },
         "da" : {
@@ -4531,6 +4771,12 @@
             "value" : "الإصدار 2.5.1\n10 سبتمبر 2020\n\n• خيار جديد لعرض الصور ومقاطع الفيديو بترتيب عشوائي\n• إصلاحات طفيفة للأخطاء وتحسينات للواجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.5.1\n10. září 2020\n\n• Nová volba pro zobrazení fotek a videí v náhodném pořadí\n• Drobné opravy chyb a vylepšení rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4642,6 +4888,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.5.2\n3 ديسمبر 2020\n\n• تحميل الخلفية (يتطلب ملحق التحميل Async أو Piwigo 11 أو آخر)\n• إصلاحات الشوائب طفيفة والتحسينات في الواجهة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.5.2\n3. prosince 2020\n\n• Nahrávání na pozadí (vyžaduje rozšíření uploadAsync nebo Piwigo 11 či novější)\n• Drobné opravy chyb a vylepšení rozhraní"
           }
         },
         "da" : {
@@ -4757,6 +5009,12 @@
             "value" : "الإصدار 2.5.3\n21 ديسمبر 2020\n\n• التحكم في الصور والفيديوهات التي يمكن الوصول إليها\n• نصائح وخدع لتحسين استغلال التطبيق\n• إصلاحات الشوائب"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.5.3\n21. prosince 2020\n\n• Určete, ke kterým fotkám a videím má Piwigo přístup\n• Tipy a triky pro lepší využití aplikace\n• Opravy chyb"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4868,6 +5126,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.5.4\n2 يناير 2021\n\n• إصلاحات الشوائب طفيفة والتحسينات في الواجهة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.5.4\n2. ledna 2021\n\n• Drobné opravy chyb a vylepšení rozhraní"
           }
         },
         "da" : {
@@ -4983,6 +5247,12 @@
             "value" : "الإصدار 2.6\n3 مارس 2021\n\n• لصق/رفع الصور ومقاطع الفيديو من الحافظة\n• إصلاح مشكلة التوافق مع Piwigo 11\n• إصلاحات طفيفة للأخطاء وتحسينات في الواجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.6\n3. března 2021\n\n• Vkládání a nahrávání fotek a videí ze schránky\n• Opravuje problém s kompatibilitou s Piwigem 11\n• Drobné opravy chyb a vylepšení rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5094,6 +5364,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.6.1\n19 مارس 2021\n\n• إصلاح إسناد العلامات إلى مجموعة مختارة من الصور\n• إعادة تصميم إعدادات المظهر\n• تحسين موثوقية التحميل في الخلفية\n• إصلاحات طفيفة للأخطاء وتحسينات للواجهة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.6.1\n19. března 2021\n\n• Opravuje přiřazování štítků vybraným fotkám\n• Přepracované nastavení vzhledu\n• Zlepšuje spolehlivost nahrávání na pozadí\n• Drobné opravy chyb a vylepšení rozhraní"
           }
         },
         "da" : {
@@ -5209,6 +5485,12 @@
             "value" : "الإصدار 2.6.2\n3 مايو 2021\n\n• يسمح لبعض مستخدمي المجتمع بإنشاء وسوم\n• يُصلح مشكلة التوافق مع Piwigo 11\n• إصلاحات أخطاء طفيفة وتحسينات في الواجهة\n• تحديث الكود"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.6.2\n3. května 2021\n\n• Umožňuje některým uživatelům Community vytvářet štítky\n• Opravuje problém s kompatibilitou s Piwigem 11\n• Drobné opravy chyb a vylepšení rozhraní\n• Modernizace kódu"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5320,6 +5602,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.6.3\n11 مايو 2021\n\n• إصلاحات الأخطاء"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.6.3\n11. května 2021\n\n• Opravy chyb"
           }
         },
         "da" : {
@@ -5435,6 +5723,12 @@
             "value" : "الإصدار 2.6.4\n18 مايو 2021\n\n• إصلاحات أخطاء طفيفة وتحسينات في الواجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.6.4\n18. května 2021\n\n• Drobné opravy chyb a vylepšení rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5546,6 +5840,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.7\n12 أغسطس 2021\n\n• تحميل الصور ومقاطع الفيديو تلقائيًا\n• تحسين خيارات تصغير حجم الصور والفيديو\n• إصلاحات طفيفة للأخطاء وتحسينات في الواجهة\n• تحديث الكود"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.7\n12. srpna 2021\n\n• Automatické nahrávání fotek a videí\n• Vylepšené možnosti zmenšování fotek a videí\n• Drobné opravy chyb a vylepšení rozhraní\n• Modernizace kódu"
           }
         },
         "da" : {
@@ -5661,6 +5961,12 @@
             "value" : "الإصدار 2.7.1\n1 سبتمبر 2021\n\n• إصلاحات الشوائب طفيفة وتحسين واجهة\n• تحسين الترجمة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.7.1\n1. září 2021\n\n• Drobné opravy chyb a vylepšení rozhraní\n• Vylepšené překlady"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5772,6 +6078,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.7.2\n20 سبتمبر 2021\n\n• التوافق مع iOS 15\n• إصلاحات أخطاء طفيفة وتحسينات للواجهة\n• تحديث الكود"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.7.2\n20. září 2021\n\n• Kompatibilita s iOS 15\n• Drobné opravy chyb a vylepšení rozhraní\n• Modernizace kódu"
           }
         },
         "da" : {
@@ -5887,6 +6199,12 @@
             "value" : "الإصدار 2.8\n23 أكتوبر 2021\n\n• إضافة وإزالة الصور ومقاطع الفيديو من مفضلاتك\n• إصلاحات طفيفة للأخطاء وتحسينات للواجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.8\n23. října 2021\n\n• Přidávání a odebírání fotek a videí z oblíbených\n• Drobné opravy chyb a vylepšení rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5998,6 +6316,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.8.1\n9 نوفمبر 2021\n\n• إصلاحات الأخطاء"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.8.1\n9. listopadu 2021\n\n• Opravy chyb"
           }
         },
         "da" : {
@@ -6113,6 +6437,12 @@
             "value" : "الإصدار 2.8.2\n26 نوفمبر 2021\n\n• تمكين مستخدمي المجتمع من التحميل في الخلفية والتحميل التلقائي للصور ومقاطع الفيديو\n• إصلاح مشكلة التوافق مع Piwigo 12\n• إصلاحات طفيفة للأخطاء وتحسينات في الواجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.8.2\n26. listopadu 2021\n\n• Umožňuje uživatelům Community nahrávat na pozadí a nahrávat fotky a videa automaticky\n• Opravuje problém s kompatibilitou s Piwigem 12\n• Drobné opravy chyb a vylepšení rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6224,6 +6554,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.9\n9 يناير 2022\n\n• عرض أوصاف الصور/الفيديو في وضع المعاينة\n• إصلاحات أخطاء طفيفة وتحسينات في الواجهة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.9\n9. ledna 2022\n\n• Zobrazuje popisy fotek a videí v režimu náhledu\n• Drobné opravy chyb a vylepšení rozhraní"
           }
         },
         "da" : {
@@ -6339,6 +6675,12 @@
             "value" : "الإصدار 2.9.1\n20 يناير 2022\n\n• أبرز الألبومات التي تم تحديثها مؤخرًا\n• إصلاحات أخطاء طفيفة وتحسينات في الواجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.9.1\n20. ledna 2022\n\n• Zvýrazňuje nedávno aktualizovaná alba\n• Drobné opravy chyb a vylepšení rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6450,6 +6792,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.9.2\n24 يناير 2022\n\n• إصلاحات الأخطاء\n• تحديث الكود"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.9.2\n24. ledna 2022\n\n• Opravy chyb\n• Modernizace kódu"
           }
         },
         "da" : {
@@ -6565,6 +6913,12 @@
             "value" : "الإصدار 2.9.3\n11 فبراير 2022\n\n• النقر المزدوج لتكبير وتصغير الصور\n• إصلاحات أخطاء طفيفة وتحسينات في الواجهة\n• تحديث الكود"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.9.3\n11. února 2022\n\n• Dvojitým klepnutím fotky přiblížíte a oddálíte\n• Drobné opravy chyb a vylepšení rozhraní\n• Modernizace kódu"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6676,6 +7030,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.9.4\n23 فبراير 2022\n\n• إصلاحات الأخطاء\n• تحديث الكود"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.9.4\n23. února 2022\n\n• Opravy chyb\n• Modernizace kódu"
           }
         },
         "da" : {
@@ -6791,6 +7151,12 @@
             "value" : "الإصدار 2.9.5\n7 مارس 2022\n\n• إصلاحات الأخطاء\n• تحديث الكود"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.9.5\n7. března 2022\n\n• Opravy chyb\n• Modernizace kódu"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6902,6 +7268,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.10\n20 مايو 2022\n\n• يضيف ميزة ”قفل التطبيق“، وهي ميزة لإخفاء ألبوماتك خلف معرف الوجه ومعرف اللمس ورمز المرور\n• إصلاح الأخطاء\n• تحديث الكود"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.10\n20. května 2022\n\n• Přidává zámek aplikace, funkci pro skrytí vašich alb za Face ID, Touch ID a kód\n• Opravy chyb\n• Modernizace kódu"
           }
         },
         "da" : {
@@ -7017,6 +7389,12 @@
             "value" : "الإصدار 2.11\n11 يونيو 2022\n\n• يضيف خيارًا لإعادة تحميل الصور ومقاطع الفيديو\n• تحديث الكود\n• إصلاح الأخطاء"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.11\n11. června 2022\n\n• Přidává volbu pro opětovné nahrání fotek a videí\n• Modernizace kódu\n• Opravy chyb"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7128,6 +7506,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.11.1\n12 يونيو 2022\n\n• اصلاحات الشوائب"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.11.1\n12. června 2022\n\n• Opravy chyb"
           }
         },
         "da" : {
@@ -7243,6 +7627,12 @@
             "value" : "الإصدار 2.11.2\n21 يونيو 2022\n\n• يعمل على إصلاح مشكلة التوافق مع إضافة المجتمع"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.11.2\n21. června 2022\n\n• Opravuje problém s kompatibilitou se zásuvným modulem Community"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7354,6 +7744,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.12\n3 يوليو 2022\n\n• حدد علامة بشكل أسرع باستخدام شريط البحث\n• تحديث الكود\n• إصلاح الأخطاء"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.12\n3. července 2022\n\n• Rychlejší výběr štítku pomocí vyhledávacího pole\n• Modernizace kódu\n• Opravy chyb"
           }
         },
         "da" : {
@@ -7469,6 +7865,12 @@
             "value" : "الإصدار 2.12.1\n10 يوليو 2022\n\n• إصلاح تعطل يحدث على نظام التشغيل iOS 9-13 عند تغيير العلامات المخصصة للصور"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.12.1\n10. července 2022\n\n• Opravuje pád na iOS 9-13 při změně štítků přiřazených fotkám"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7580,6 +7982,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.12.2\n2 أغسطس 2022\n\n• إصلاح تعطل يحدث على نظام التشغيل iOS 9-12 عند عرض قائمة انتظار طلبات التحميل\n• إصلاحات أخطاء طفيفة وتحسينات في الواجهة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.12.2\n2. srpna 2022\n\n• Opravuje pád na iOS 9-12 při zobrazení fronty požadavků na nahrání\n• Drobné opravy chyb a vylepšení rozhraní"
           }
         },
         "da" : {
@@ -7695,6 +8103,12 @@
             "value" : "الإصدار 2.12.3\n7 أغسطس 2022\n\n• إصلاحات الأخطاء"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.12.3\n7. srpna 2022\n\n• Opravy chyb"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7806,6 +8220,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.12.4\n16 أغسطس 2022\n\n• اصلاحات الشوائب"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.12.4\n16. srpna 2022\n\n• Opravy chyb"
           }
         },
         "da" : {
@@ -7921,6 +8341,12 @@
             "value" : "الإصدار 2.12.5\n26 أغسطس 2022\n\n• اصلاحات الشوائب"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.12.5\n26. srpna 2022\n\n• Opravy chyb"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8032,6 +8458,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 2.12.6\n21 نوفمبر 2022\n\n• إصلاحات الأخطاء"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.12.6\n21. listopadu 2022\n\n• Opravy chyb"
           }
         },
         "da" : {
@@ -8147,6 +8579,12 @@
             "value" : "الإصدار 2.12.7\n19 ديسمبر 2022\n\n• إصلاحات الأخطاء"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 2.12.7\n19. prosince 2022\n\n• Opravy chyb"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8258,6 +8696,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 3.0\n27 يونيو 2023\n\n• تمت إعادة كتابة إدارة ذاكرة التخزين المؤقت بالكامل لتحسين تجربة المستخدم وإتاحة التصفح دون اتصال بالإنترنت\n• إصلاح بعض الترجمات"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 3.0\n27. června 2023\n\n• Správa mezipaměti byla zcela přepsána, aby zlepšila používání aplikace a přinesla prohlížení offline\n• Opravuje některé překlady"
           }
         },
         "da" : {
@@ -8373,6 +8817,12 @@
             "value" : "الإصدار 3.0.1\n2 يوليو 2023\n\n• إصلاحات أخطاء طفيفة وتحسينات في الواجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 3.0.1\n2. července 2023\n\n• Drobné opravy chyb a vylepšení rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8484,6 +8934,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 3.0.2\n15 يوليو 2023\n\n• إصلاحات الأخطاء"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 3.0.2\n15. července 2023\n\n• Opravy chyb"
           }
         },
         "da" : {
@@ -8599,6 +9055,12 @@
             "value" : "الصيغة 3.0\n20 نوفمبر 2023\n\n• السحب للأسفل أو تثبيت الصورة للعودة إلى الألبوم عند مشاهدة صور فردية أو فيديوهات\n• مشاهدة فيديو مخزن على Piwigo الخاص بك بينما تستخدم تطبيقات أخرى.\n• إصلاحات الشوائب"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 3.1\n20. listopadu 2023\n\n• Při prohlížení jednotlivých fotek nebo videí se do alba vrátíte potažením dolů nebo stažením prstů\n• Sledujte video uložené ve svém Piwigu, zatímco používáte jiné aplikace.\n• Opravy chyb"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8710,6 +9172,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 3.1.1\n1 ديسمبر 2023\n\n• تحديث إحصائيات الخادم (يتطلب Piwigo 14)\n• إصلاحات الشوائب"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 3.1.1\n1. prosince 2023\n\n• Aktualizuje statistiky serveru (vyžaduje Piwigo 14)\n• Opravy chyb"
           }
         },
         "da" : {
@@ -8825,6 +9293,12 @@
             "value" : "الإصدار 3.1.2\n1 فبراير 2024\n\n• طلبات تحديث خادم Piwigo إذا لزم الأمر\n• إصلاحات الشوائب"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 3.1.2\n1. února 2024\n\n• V případě potřeby vyzve k aktualizaci serveru Piwigo\n• Opravy chyb"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8936,6 +9410,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 3.1.3\n11 فبراير 2024\n\n• إصلاحات الأخطاء"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 3.1.3\n11. února 2024\n\n• Opravy chyb"
           }
         },
         "da" : {
@@ -9051,6 +9531,12 @@
             "value" : "الإصدار 3.1.4\n27 فبراير 2024\n\n• يصلح تحطم يحدث على iOS 12"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 3.1.4\n27. února 2024\n\n• Opravuje pád na iOS 12"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9162,6 +9648,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 3.2\n14 يوليو 2024\n\n• يعتمد خيارات فرز صور الألبوم\n• يُضيف خيارات فرز الصور أثناء التنقل\n• يضيف تدوير الصور التي تم تحميلها (يتطلب ملحق RotateImage)\n• إصلاح الأخطاء"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 3.2\n14. července 2024\n\n• Přebírá možnosti řazení fotek v albu\n• Přidává možnosti okamžitého řazení fotek\n• Přidává otáčení nahraných fotek (vyžaduje zásuvný modul rotateImage)\n• Opravy chyb"
           }
         },
         "da" : {
@@ -9277,6 +9769,12 @@
             "value" : "الإصدار 3.2.1\n29 يوليو 2024\n\n• يضيف خيار لعرض الألبومات مع أو بدون الأوصاف\n• إصلاحات الشوائب"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 3.2.1\n29. července 2024\n\n• Přidává volbu pro zobrazení alb s popisy nebo bez nich\n• Opravy chyb"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9388,6 +9886,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 3.2-2\n12 سبتمبر 2024\n\n• يضيف خيارا لحذف اختيارات الصور/الفيديوهات المخزنة في الجهاز\n• إصلاحات الشوائب"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 3.2.2\n12. září 2024\n\n• Přidává volbu pro mazání vybraných fotek a videí uložených v zařízení\n• Opravy chyb"
           }
         },
         "da" : {
@@ -9503,6 +10007,12 @@
             "value" : "الإصدار 3.2.3\n17 أكتوبر 2024\n\n- إصلاحات الأخطاء"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 3.2.3\n17. října 2024\n\n• Opravy chyb"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9614,6 +10124,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 3.2.4\n18 يناير 2025\n\n• إصلاحات الشوائب طفيفة وتحسين واجهة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 3.2.4\n18. ledna 2025\n\n• Drobné opravy chyb a vylepšení rozhraní"
           }
         },
         "da" : {
@@ -9729,6 +10245,12 @@
             "value" : "الإصدار 3.2.5\n17 فبراير 2025\n\n• إصلاحات الشوائب طفيفة وتحسين واجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 3.2.5\n17. února 2025\n\n• Drobné opravy chyb a vylepšení rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9840,6 +10362,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 3.3\n26 مارس 2025\n\n- نسخ مجموعة مختارة من الصور ونقلها بسرعة أكبر بكثير\n- تحسين إدارة ترحيل قاعدة البيانات\n- تصحيح إدارة حقوق مشاركة الصور والفيديو\n- إصلاح الأخطاء وتحسين الواجهة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 3.3\n26. března 2025\n\n• Kopíruje a přesouvá vybrané fotky mnohem rychleji\n• Vylepšená správa migrace databáze\n• Opravuje správu práv ke sdílení fotek a videí\n• Opravuje chyby a vylepšuje rozhraní"
           }
         },
         "da" : {
@@ -9955,6 +10483,12 @@
             "value" : "الإصدار 3.3.1\n28 مارس 2025\n\n• يضيف خاصية التشغيل التلقائي للفيديو وخيارات الحلقة\n• إصلاح الأخطاء وتحسين الواجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 3.3.1\n28. března 2025\n\n• Přidává volby automatického přehrávání a opakování videí\n• Opravuje chyby a vylepšuje rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10066,6 +10600,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 3.3.2\n14 أبريل 2025\n\n• إصلاح الأخطاء وتحسين الواجهة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 3.3.2\n14. dubna 2025\n\n• Opravuje chyby a vylepšuje rozhraní"
           }
         },
         "da" : {
@@ -10181,6 +10721,12 @@
             "value" : "الإصدار 3.4\n30 يونيو 2025\n\n• يضيف خيارات لتعديل أسماء الملفات قبل تحميل\n• إصلاح الأخطاء وتحسين الواجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 3.4\n30. června 2025\n\n• Přidává možnosti úpravy názvů souborů před nahráním\n• Opravuje chyby a vylepšuje rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10292,6 +10838,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 3.4.1\n26 يوليو 2025\n\n• يضيف إجراءات سريعة للشاشة الرئيسية\n• يصلح الأخطاء ويحسن واجهة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 3.4.1\n26. července 2025\n\n• Přidává rychlé akce na plochu\n• Opravuje chyby a vylepšuje rozhraní"
           }
         },
         "da" : {
@@ -10407,6 +10959,12 @@
             "value" : "الإصدار 3.5\n18 أغسطس 2025\n\n• يضيف إدارة ملفات PDF\n• إصلاح الأخطاء وتحسين الواجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 3.5\n18. srpna 2025\n\n• Přidává správu souborů PDF\n• Opravuje chyby a vylepšuje rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10518,6 +11076,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 3.5.1\n23 أغسطس 2025\n\n• إصلاح الأخطاء وتحسين الواجهة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 3.5.1\n23. srpna 2025\n\n• Opravuje chyby a vylepšuje rozhraní"
           }
         },
         "da" : {
@@ -10633,6 +11197,12 @@
             "value" : "الإصدار 4.0\n15 سبتمبر 2025\n\n• توافق iOS 26\n• إصلاحات الشوائب طفيفة والتحسينات في الواجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 4.0\n15. září 2025\n\n• Kompatibilita s iOS 26\n• Drobné opravy chyb a vylepšení rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10744,6 +11314,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 4.1\n29 أكتوبر 2025\n\n• يجلب الدعم للنص الاكبر\n• إصلاح الأخطاء وتحسين الواجهة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 4.1\n29. října 2025\n\n• Přináší podporu většího textu\n• Opravuje chyby a vylepšuje rozhraní"
           }
         },
         "da" : {
@@ -10859,6 +11435,12 @@
             "value" : "الإصدار 4.1.1\n11 نوفمبر 2025\n\n• إصلاح الأخطاء وتحسين الواجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 4.1.1\n11. listopadu 2025\n\n• Opravuje chyby a vylepšuje rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10970,6 +11552,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 4.1.2\n12 ديسمبر 2025\n\n• يضيف الدعم لمفاتيح API\n• إصلاح الأخطاء وتحسين الواجهة\n• تحديث التعليمات البرمجية"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 4.1.2\n12. prosince 2025\n\n• Přidává podporu klíčů API\n• Opravuje chyby a vylepšuje rozhraní\n• Modernizace kódu"
           }
         },
         "da" : {
@@ -11085,6 +11673,12 @@
             "value" : "الإصدار 4.1.3\n20 ديسمبر 2025\n\n• التوافق مع Piwigo 16\n• إصلاح الأخطاء وتحسين الواجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 4.1.3\n20. prosince 2025\n\n• Kompatibilita s Piwigem 16\n• Opravuje chyby a vylepšuje rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11196,6 +11790,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 4.1.4\n25 مارس 2026\n\n• اصلاحات الشوائب"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 4.1.4\n25. března 2026\n\n• Opravy chyb"
           }
         },
         "da" : {
@@ -11311,6 +11911,12 @@
             "value" : "الإصدار 4.2\n1 مايو 2026\n\n• تحميل أسرع مع خيارات تحميل متقدمة\n• استكمال عمليات التحميل في الخلفية بعد الانتقال إلى تطبيق آخر\n• عرض أسرع للألبومات المخزنة على الجهاز قبل التحميل\n• مشاركة السجلات في ملف عبر AirDrop وتجميعها حسب المللي ثانية\n• إصلاح الأخطاء وتحسين الواجهة"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 4.2\n1. května 2026\n\n• Nahrává rychleji a nabízí pokročilé možnosti nahrávání\n• Pokračuje v nahrávání na pozadí i po přepnutí do jiné aplikace\n• Zrychluje zobrazení alb uložených v zařízení před nahráním\n• Sdílí protokoly v souboru přes AirDrop a seskupuje je po milisekundách\n• Opravuje chyby a vylepšuje rozhraní"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11422,6 +12028,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 4.2.1\n9 مايو 2026\n\n• إضافة مشاهدة المساعدة\n• إصلاحات الشوائب"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 4.2.1\n9. května 2026\n\n• Přidává stránky nápovědy\n• Opravy chyb"
           }
         },
         "da" : {
@@ -11537,6 +12149,12 @@
             "value" : "الإصدار 4.2.2\n24 مايو 2026\n\n• إصلاح خطأ يتعلق بخيار التحميل التلقائي\n• تحسين الترجمات"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 4.2.2\n24. května 2026\n\n• Opravuje chybu související s volbou automatického nahrávání\n• Vylepšené překlady"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11648,6 +12266,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 4.2.3\n29 مايو 2026\n\n• إصلاح الأخطاء وتحسين الواجهة\n• إيقاف التحميل عندما يحتاج الجهاز إلى التبريد"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 4.2.3\n29. května 2026\n\n• Opravuje chyby a vylepšuje rozhraní\n• Pozastavuje nahrávání, když se zařízení potřebuje ochladit"
           }
         },
         "da" : {
@@ -11763,6 +12387,12 @@
             "value" : "الإصدار 4.2.4\n1 يوليو 2026\n\n• إصلاح الأخطاء وتحسين الواجهة\n• يسمح بتغيير الحد الأقصى لعدد الاتصالات المتزامنة مع خادم Piwigo"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 4.2.4\n1. července 2026\n\n• Opravuje chyby a vylepšuje rozhraní\n• Umožňuje změnit maximální počet současných připojení k serveru Piwigo"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11874,6 +12504,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 4.3\n1 أغسطس 2026\n\n• تمت إضافة ملحق «مشاركة» يتيح تحميل الصور ومقاطع الفيديو وملفات PDF من التطبيقات الأخرى\n• تشغيل صور GIF المتحركة\n• إصلاح الأخطاء وتحسين الواجهة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 4.3\n1. srpna 2026\n\n• Přidává rozšíření Sdílení, které umožňuje nahrávat fotky, videa a soubory PDF z jiných aplikací\n• Přehrává animované obrázky GIF\n• Opravuje chyby a vylepšuje rozhraní"
           }
         },
         "da" : {
@@ -11989,6 +12625,12 @@
             "value" : "الإصدار 4.3.1\n22 أغسطس 2026\n\n• اصلاحات الشوائب"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 4.3.1\n22. srpna 2026\n\n• Opravy chyb"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12102,6 +12744,12 @@
             "value" : "الإصدار 4.4\n7 سبتمبر 2026\n\n• مشاركة الألبومات الخاصة مع أشخاص ليس لديهم حساب (يتطلب ملحق Share Album)\n• استيراد الصور الحية كصورة أو فيديو أو كليهما\n• تحسين إدارة مستخدمي Community\n• إصلاح الأخطاء"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 4.4\n7. září 2026\n\n• Umožňuje sdílet soukromá alba s lidmi, kteří nemají účet (vyžaduje zásuvný modul Share Album)\n• Importuje Live Photos jako fotku, video nebo obojí\n• Vylepšuje správu uživatelů Community\n• Opravy chyb"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12213,6 +12861,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الإصدار 4.4.1\n\n• تصحيح التخطيط في العربية وغيرها من اللغات التي تُكتب من اليمين إلى اليسار\n• تطبيق قواعد الجمع الخاصة بكل لغة على أعداد الصور والألبومات والعلامات\n• استكمال الترجمة الإندونيسية\n• إصلاح الأخطاء وتحسين الواجهة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 4.4.1\n\n• Opravuje rozvržení v arabštině a dalších jazycích psaných zprava doleva\n• Uplatňuje pravidla množného čísla každého jazyka na počty fotek, alb a štítků\n• Dokončuje indonéský překlad\n• Opravuje chyby a vylepšuje rozhraní"
           }
         },
         "da" : {

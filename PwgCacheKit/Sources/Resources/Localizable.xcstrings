@@ -10,6 +10,12 @@
             "value" : "معرّف الألبوم"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID alba"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -121,6 +127,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : " & المزيد"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " a další"
           }
         },
         "da" : {
@@ -236,6 +248,12 @@
             "value" : "تم تعليق التطبيق أثناء ترحيل قاعدة البيانات. الرجاء إعادة تشغيل التطبيق والمحاولة مرة أخرى."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplikace byla během migrace databáze pozastavena. Restartujte aplikaci a zkuste to znovu."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -347,6 +365,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "قاعدة البيانات المستمرة لبيانات Piwigo الخاصة بك تتطلب الهجرة. الرجاء بدء تشغيل التطبيق."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trvalá databáze vašich dat Piwigo vyžaduje migraci. Spusťte prosím aplikaci."
           }
         },
         "da" : {
@@ -462,6 +486,12 @@
             "value" : "العداد"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Počítadlo"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -573,6 +603,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تاريخ الإنشاء"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datum vytvoření"
           }
         },
         "da" : {
@@ -688,6 +724,12 @@
             "value" : "وقت الإنشاء"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Čas vytvoření"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -799,6 +841,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "خطأ"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chyba"
           }
         },
         "da" : {
@@ -914,6 +962,12 @@
             "value" : "تنسيق الملف غير مقبول من قبل خادم Piwigo."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formát souboru server Piwigo nepřijímá."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1025,6 +1079,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "اكتملت"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dokončeno"
           }
         },
         "da" : {
@@ -1140,6 +1200,12 @@
             "value" : "التشطيب..."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dokončování..."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1251,6 +1317,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "جاهز للتحميل..."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Připraveno k nahrání…"
           }
         },
         "da" : {
@@ -1366,6 +1438,12 @@
             "value" : "التحضير..."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Příprava..."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1477,6 +1555,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تم التحميل"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nahráno"
           }
         },
         "da" : {
@@ -1592,6 +1676,12 @@
             "value" : "تحميل..."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nahrávání..."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1703,6 +1793,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الانتظار..."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Čekání..."
           }
         },
         "da" : {
@@ -1818,6 +1914,12 @@
             "value" : "النص"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1929,6 +2031,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "التحميلات المستحيلة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nemožná nahrávání"
           }
         },
         "da" : {
@@ -2044,6 +2152,12 @@
             "value" : "قائمة انتظار التحميل"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fronta nahrávání"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2155,6 +2269,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "التحميلات القابلة للاستئناف"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obnovitelná nahrávání"
           }
         },
         "da" : {
