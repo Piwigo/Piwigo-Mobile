@@ -42,6 +42,9 @@
 # To produce snapshots:
 #	bundle exec fastlane snapshot
 #
+# To get even more debug information:
+#   add "--verbose" at the end of the command line
+#
 # A list of devices you want to take the screenshots from
 # https://developer.apple.com/help/app-store-connect/reference/screenshot-specifications
 devices([
