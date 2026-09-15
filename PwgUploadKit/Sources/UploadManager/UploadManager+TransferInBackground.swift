@@ -71,6 +71,10 @@ extension UploadManager {
         if taskType.isBackgroundAndInactive { return }
         
         // Loop over all chunks
+        /// The task of the last chunk is not resumed here, see resumeLastChunkOfUpload(): the server
+        /// merges the chunks as soon as it finds them all in its buffer directory, so two
+        /// requests arriving together both start merging the same series — and one of them
+        /// then fails to open a chunk file which the other has already deleted.
         for chunk in 1...chunks {
             autoreleasepool {
                 // Get HTTP request body
@@ -94,6 +98,9 @@ extension UploadManager {
                     #endif
                     return
                 }
+                
+                // Hold back the last chunk until the server acknowledged the others
+                if chunks > 1, chunk == chunks { return }
                 
                 // Prepare URL Request Object
                 let chunkStr = "\(chunk)"
@@ -269,6 +276,15 @@ extension UploadManager {
                         task.cancel()
                     }
                 }
+                
+                // Send the last chunk now that the server holds all the others
+                /// It completes the series, so it is the only request which will ask the server
+                /// to merge the chunks, see transferInBackground().
+                if let chunksStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks),
+                   let chunks = Int(chunksStr), chunks > 1,
+                   uploadedChunks.isSuperset(of: Set(1..<chunks)) {
+                    resumeLastChunkOfUpload(withID: uploadID, uploadData: uploadData, chunks: chunks)
+                }
                 return
             }
             
@@ -439,6 +455,46 @@ extension UploadManager {
         request.setAPIKeyHTTPHeader(for: pwgImagesUploadAsync)
         
         return request
+    }
+    
+    /// Resumes the task of the last chunk, which transferInBackground() held back so that the
+    /// server is never asked to merge the same series of chunks twice.
+    fileprivate func resumeLastChunkOfUpload(withID uploadID: NSManagedObjectID,
+                                             uploadData: UploadProperties, chunks: Int) {
+        // Was it already sent?
+        /// The counter is the list of the chunks which are still to be sent. It is updated
+        /// below without suspension, so two responses cannot both resume the last chunk.
+        let objectIDstr = uploadID.uriRepresentation().lastPathComponent
+        guard let counter = transferCounters.first(where: { $0.uid == objectIDstr }),
+              counter.chunksToSend.contains(chunks)
+        else { return }
+        
+        // Get the body stored in the Piwigo/Uploads directory by transferInBackground()
+        let suffix = "." + chunkFormatter.string(from: NSNumber(value: chunks))!
+        let fileURL = getUploadFileURL(for: uploadData, withSuffix: suffix)
+        guard let attributes = try? FileManager.default.attributesOfItem(atPath: fileURL.path),
+              let bytesToSend = (attributes[.size] as? NSNumber)?.int64Value
+        else {
+            UploadManager.logger.notice("\(objectIDstr) • Could not retrieve the file of chunk \(chunks)/\(chunks)")
+            return
+        }
+        
+        // Prepare URL Request Object
+        /// The boundary is derived from the checksum, i.e. it is the one adopted for the body.
+        guard let uploadUrl = URL(string: ServerVars.shared.service + "/ws.php?format=json&method=\(pwgImagesUploadAsync)")
+        else { preconditionFailure("!!! Invalid uploadAsync URL") }
+        let boundary = createBoundary(from: uploadData.md5Sum)
+        let request = getHttpRequestForChunk("\(chunks)", ofChunks: "\(chunks)", with: boundary,
+                                             for: uploadUrl, uploadData: uploadData, withID: uploadID)
+        
+        // Resume task
+        let task = UploadSessionManager.shared.bckgSession.uploadTask(with: request, fromFile: fileURL)
+        task.taskDescription = pwgUploadBckgSessionID
+        task.countOfBytesClientExpectsToSend = bytesToSend
+        task.countOfBytesClientExpectsToReceive = 600
+        task.resume()
+        self.removeChunk(chunks, fromCounterWithID: objectIDstr)
+        UploadManager.logger.notice("\(objectIDstr) • Task \(task.taskIdentifier) resumed (\(chunks)/\(chunks))")
     }
     
     fileprivate func deleteChunk(_ chunk: Int, ofImageWith identifier: String) {
