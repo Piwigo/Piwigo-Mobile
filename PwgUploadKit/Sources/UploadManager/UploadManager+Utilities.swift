@@ -88,8 +88,42 @@ extension UploadManager {
     
     
     // MARK: - Piwigo Session Management
-    // Re-login if session was closed
+    /// Re-login if the session was closed.
+    ///
+    /// Concurrent calls are joined instead of being performed in parallel, see PwgSessionChecker.
+    /// The upload manager checks the session before every transfer, before emptying the lounge
+    /// and before moderating images, and the album refresh task does the same, so several checks
+    /// can easily be requested at the same moment — as when a scene becomes active and resumes
+    /// the pending upload requests.
     public func checkSession(ofUser userData: inout UserProperties) async throws(PwgKitError) {
+        // Perform the check, or join the one which is already running
+        let userURIstr = userData.URIstr
+        try await PwgSessionChecker.shared.check {
+            do throws(PwgKitError) {
+                try await UploadManager.shared.performSessionCheck(ofUserWithURIstr: userURIstr)
+                return .success(())
+            }
+            catch {
+                return .failure(error)
+            }
+        }
+        
+        // Adopt the user properties stored by the check
+        /// The check may have been performed by another caller, i.e. with its own copy of the
+        /// properties, so the ones of this caller are refreshed. A new context is used because
+        /// it fetches from the store, while an existing one may still serve the values it
+        /// cached before the check stored the login data.
+        let readContext = DataController.shared.newTaskContext()
+        if let checkedData = try? UserProvider().getPropertiesOfUser(withURIstr: userURIstr,
+                                                                     inContext: readContext) {
+            userData = checkedData
+        }
+    }
+    
+    fileprivate func performSessionCheck(ofUserWithURIstr userURIstr: String) async throws(PwgKitError) {
+        // Retrieve the properties of the user owning the upload requests
+        let bckgContext = DataController.shared.newTaskContext()
+        var userData = try UserProvider().getPropertiesOfUser(withURIstr: userURIstr, inContext: bckgContext)
         
         // Check if the session is still active and re-login every 60 seconds or more
         let secondsSinceLastCheck = Date.timeIntervalSinceReferenceDate - userData.lastUsed
@@ -109,7 +143,6 @@ extension UploadManager {
 #if DEBUG
         debugPrint("Session: \"\(ServerVars.shared.username)\" vs \"\(sessionData.username)\", \"\(oldToken)\" vs \"\(ServerVars.shared.pwgToken)\"")
 #endif
-        let bckgContext = DataController.shared.newTaskContext()
         if sessionData.username != ServerVars.shared.username || oldToken.isEmpty || ServerVars.shared.pwgToken != oldToken {
             // Collect list of methods supplied by Piwigo server
             // => Determine if Community extension 2.9a or later is installed and active

@@ -118,7 +118,6 @@ extension UploadManager
             case .unacceptedImageFormat, .unacceptedVideoFormat, .unacceptedAudioFormat, .unacceptedDataFormat:
                 uploadData.requestState = .formatError
                 uploadData.requestError = error.localizedDescription
-                try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             
             case .cannotStripPrivateMetadata, .videoEncodingError,
                  .photoError, .photoResourceError:
@@ -126,13 +125,11 @@ extension UploadManager
                 /// a resource temporarily unavailable), so the request is worth retrying.
                 uploadData.requestState = .preparingError
                 uploadData.requestError = error.localizedDescription
-                try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             
             case .otherError(let innerError) where innerError is CancellationError:
                 /// The background task expired while the file was being prepared: retry later.
                 uploadData.requestState = .preparingError
                 uploadData.requestError = error.localizedDescription
-                try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             
             case .missingAsset, .otherError:
                 fallthrough
@@ -140,8 +137,9 @@ extension UploadManager
             default:
                 uploadData.requestState = .preparingFail
                 uploadData.requestError = error.localizedDescription
-                try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             }
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Preparation failed with \(String(describing: error)) —> state '\(uploadData.stateLabel)'")
+            try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
         }
         
         // In foreground, process next upload if any

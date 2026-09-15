@@ -91,24 +91,30 @@ extension UploadManager {
             case .emptyUsername:
                 uploadData.requestState = .uploadingError
                 uploadData.requestError = error.localizedDescription
-                try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
                 
             case .authenticationFailed, .invalidCredentials,
                  .invalidStatusCode(statusCode: 401),
                  .invalidStatusCode(statusCode: 403):
-                fallthrough
+                /// The server refused the session, which happens when it was closed on its side
+                /// or invalidated by another login. Logging in again usually restores it, so the
+                /// request is worth retrying instead of being failed for good.
+                uploadData.requestState = .uploadingError
+                uploadData.requestError = error.localizedDescription
+                
             case .missingAsset, .missingUploadData, .fileOperationFailed,
                  .missingUploadParameter, .wrongServerURL:
                 fallthrough
             default:
                 uploadData.requestState = .uploadingFail
                 uploadData.requestError = error.localizedDescription
-                try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             }
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Transfer/copy failed with \(String(describing: error)) —> state '\(uploadData.stateLabel)'")
+            try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
         }
         catch {
             uploadData.requestState = .uploadingFail
             uploadData.requestError = PwgKitError.otherError(innerError: error).localizedDescription
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Transfer/copy failed with \(String(describing: error)) —> state '\(uploadData.stateLabel)'")
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
         }
         

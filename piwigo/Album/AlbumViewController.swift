@@ -552,7 +552,7 @@ final class AlbumViewController: UIViewController
             /// appears, so this method runs once per restored album. The albums which are
             /// not presented are refreshed when the user comes back to them, i.e. when they
             /// appear again. Without this, they would all fetch data at once, and the
-            /// concurrent session checks would race each other (see SessionChecker).
+            /// concurrent session checks would race each other (see PwgSessionChecker).
         }
         else if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty,
            isSmartAlbum || missingImages ||

@@ -23,8 +23,8 @@ extension UploadSessionsDelegate: URLSessionTaskDelegate {
         
         // Check authentication method
         let authMethod = challenge.protectionSpace.authenticationMethod
-        guard authMethod == NSURLAuthenticationMethodHTTPBasic,
-              authMethod == NSURLAuthenticationMethodHTTPDigest else {
+        guard [NSURLAuthenticationMethodHTTPBasic, NSURLAuthenticationMethodHTTPDigest].contains(authMethod)
+        else {
             completionHandler(.performDefaultHandling, nil)
             return
         }
