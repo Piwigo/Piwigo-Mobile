@@ -138,8 +138,13 @@ extension UploadLivePhotoViewController: UITableViewDelegate
     // MARK: - Footer
     private func getContentOfFooter() -> String {
         // Explain why the options uploading the video are not proposed
-        if UploadVars.shared.serverAcceptsVideos { return "" }
-        return String(localized: "UploadLivePhotoAs_footer", comment: "This Piwigo server does not accept videos, so only the photo of a Live Photo can be uploaded.")
+        guard UploadVars.shared.serverAcceptsVideos else {
+            return String(localized: "UploadLivePhotoAs_footer", comment: "This Piwigo server does not accept videos, so only the photo of a Live Photo can be uploaded.")
+        }
+        // Explain why some Live Photos will be uploaded without their video
+        /// The paired video of a Live Photo which is not stored in the Photo Library,
+        /// e.g. one received in Messages, cannot be retrieved.
+        return String(localized: "UploadLivePhotoAs_library", comment: "The video is only available for Live Photos stored in the Photo Library. A Live Photo received in Messages, for example, is uploaded as a photo until you save it.")
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {

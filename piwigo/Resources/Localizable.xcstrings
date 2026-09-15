@@ -69033,6 +69033,132 @@
         }
       }
     },
+    "UploadLivePhotoAs_library" : {
+      "comment" : "The video is only available for Live Photos stored in the Photo Library. A Live Photo received in Messages, for example, is uploaded as a photo until you save it.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يتوفر الفيديو فقط للصور الحية المخزنة في مكتبة الصور. فالصورة الحية المستلمة في الرسائل، على سبيل المثال، يتم تحميلها كصورة إلى أن تقوم بحفظها."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video je k dispozici pouze u Live Photo uložených v knihovně fotografií. Live Photo přijaté ve Zprávách se například nahraje jako fotka, dokud ji neuložíte."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Videoen er kun tilgængelig for Live Photos, der er arkiveret i fotobiblioteket. En Live Photo, der er modtaget i Beskeder, uploades f.eks. som et billede, indtil du arkiverer den."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Video ist nur bei Live Photos verfügbar, die in der Fotomediathek gespeichert sind. Ein in Nachrichten empfangenes Live Photo wird zum Beispiel als Foto hochgeladen, solange es nicht gesichert wurde."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The video is only available for Live Photos stored in the Photo Library. A Live Photo received in Messages, for example, is uploaded as a photo until you save it."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El vídeo sólo está disponible para las Live Photos guardadas en la fototeca. Una Live Photo recibida en Mensajes, por ejemplo, se sube como foto mientras no se guarde."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La vidéo n'est disponible que pour les Live Photos enregistrées dans la photothèque. Une Live Photo reçue dans Messages, par exemple, est transférée en tant que photo tant qu'elle n'est pas enregistrée."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A videó csak a Fotókönyvtárban tárolt Live Photók esetén érhető el. Egy Üzenetekben kapott Live Photo például fotóként töltődik fel, amíg nem menti el."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video hanya tersedia untuk Live Photo yang tersimpan di Pustaka Foto. Live Photo yang diterima di Pesan, misalnya, diunggah sebagai foto selama belum disimpan."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il video è disponibile solo per le Live Photo salvate nella libreria foto. Una Live Photo ricevuta in Messaggi, ad esempio, viene caricata come foto finché non viene salvata."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "動画は、写真ライブラリに保存されているLive Photosでのみ利用できます。たとえば、メッセージで受け取ったLive Photosは、保存するまで写真としてアップロードされます。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De video is alleen beschikbaar voor Live Photo's die in de fotobibliotheek zijn bewaard. Een Live Photo die in Berichten is ontvangen, wordt bijvoorbeeld als foto geüpload zolang deze niet is bewaard."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Film jest dostępny tylko dla Live Photo zapisanych w bibliotece zdjęć. Live Photo otrzymane w Wiadomościach zostanie na przykład przesłane jako zdjęcie, dopóki nie zostanie zapisane."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O vídeo só está disponível para Live Photos armazenadas na fototeca. Uma Live Photo recebida em Mensagens, por exemplo, é enviada como foto enquanto não for salva."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O vídeo só está disponível para Live Photos guardadas na fototeca. Uma Live Photo recebida em Mensagens, por exemplo, é carregada como fotografia enquanto não for guardada."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видео доступно только для Live Photo, сохранённых в медиатеке. Например, Live Photo, полученное в Сообщениях, загружается как фотография, пока вы его не сохраните."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Videon är endast tillgänglig för Live Photos som sparats i bildbiblioteket. En Live Photo som tagits emot i Meddelanden laddas till exempel upp som en bild tills den sparas."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відео доступне лише для Live Photo, збережених у медіатеці. Наприклад, Live Photo, отримане в Повідомленнях, вивантажується як фото, доки ви його не збережете."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅当实况照片存储在照片图库中时，才能上传其视频。例如，通过信息收到的实况照片在保存之前只会作为照片上传。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "僅當原況照片儲存在照片圖庫中時，才能上傳其影片。例如，透過訊息收到的原況照片在儲存之前只會作為照片上傳。"
+          }
+        }
+      }
+    },
     "UploadLivePhotoAs_movie" : {
       "comment" : "Video Only",
       "extractionState" : "manual",
