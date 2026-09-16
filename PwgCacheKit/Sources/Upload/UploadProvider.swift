@@ -184,9 +184,13 @@ public final class UploadProvider {
      Clear status of Core Data upload requests on the PwgUploadKit private queue
      */
     public func clearFailedUploads(_ toResume: [NSManagedObjectID],
-                                   inContext taskContext: NSManagedObjectContext) -> ([NSManagedObjectID], [NSManagedObjectID])
+                                   inContext taskContext: NSManagedObjectContext)
+    -> (toPrepare: [NSManagedObjectID], toTransfer: [NSManagedObjectID])
     {
-        taskContext.performAndWait { () -> ([NSManagedObjectID], [NSManagedObjectID]) in
+        /// The elements are labelled because both are arrays of upload IDs: an unlabelled
+        /// tuple is easily bound in the wrong order by a caller, which would send a request
+        /// waiting for a transfer to the preparation queue and vice versa.
+        taskContext.performAndWait { () -> (toPrepare: [NSManagedObjectID], toTransfer: [NSManagedObjectID]) in
             // Upload requests to resume
             var toPrepare: [NSManagedObjectID] = []
             var toTransfer: [NSManagedObjectID] = []

@@ -126,7 +126,8 @@ extension UploadManager
         }
     }
         
-    public func clearFailedUploads(except activeUploadsURIstr: Set<String>) async -> ([NSManagedObjectID], [NSManagedObjectID]) {
+    public func clearFailedUploads(except activeUploadsURIstr: Set<String>) async
+    -> (toPrepare: [NSManagedObjectID], toTransfer: [NSManagedObjectID]) {
         // Will retry inactive uploads marked "uploading", and those which returned an error
         let states: [pwgUploadState] = [.preparing, .preparingError, .uploading, .uploadingError, .finishing, .finishingError]
         let (uploadIDs, _) = UploadProvider().getIDsOfPendingUploads(onlyInStates: states, inContext: self.uploadBckgContext)
@@ -134,7 +135,8 @@ extension UploadManager
         return UploadProvider().clearFailedUploads(toResumeUploadIDs, inContext: self.uploadBckgContext)
     }
     
-    public func clearFailedUpload(withID uploadID: NSManagedObjectID) async -> ([NSManagedObjectID], [NSManagedObjectID]) {
+    public func clearFailedUpload(withID uploadID: NSManagedObjectID) async
+    -> (toPrepare: [NSManagedObjectID], toTransfer: [NSManagedObjectID]) {
         // Clear upload request error
         return UploadProvider().clearFailedUploads([uploadID], inContext: self.uploadBckgContext)
     }

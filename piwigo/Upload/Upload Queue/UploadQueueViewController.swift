@@ -300,9 +300,9 @@ final class UploadQueueViewController: UIViewController {
                         // Get Upload URI strings of active transfers
                         let activeUploadsURIstr = await UploadManager.shared.getUploadURIsOfTransfers()
                         // Clear upload requests which encountered an error
-                        let (toTransfer, toPrepare) = await UploadManager.shared.clearFailedUploads(except: activeUploadsURIstr)
+                        let cleared = await UploadManager.shared.clearFailedUploads(except: activeUploadsURIstr)
                         // Resume cleared upload
-                        await UploadManager.shared.resumeUploads(toTransfer: toTransfer, andToPrepare: toPrepare)
+                        await UploadManager.shared.resumeUploads(toTransfer: cleared.toTransfer, andToPrepare: cleared.toPrepare)
                     }
                 })
                 alert.addAction(resumeAction)

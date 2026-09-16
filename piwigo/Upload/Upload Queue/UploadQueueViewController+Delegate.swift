@@ -58,9 +58,9 @@ extension UploadQueueViewController: UITableViewDelegate
                                        handler: { action, view, completionHandler in
             Task(priority: .utility) { @UploadManagerActor in
                 // Clear upload request error
-                let (toPrepare, toTransfer) = await UploadManager.shared.clearFailedUpload(withID: upload.objectID)
+                let cleared = await UploadManager.shared.clearFailedUpload(withID: upload.objectID)
                 // Resume cleared upload
-                await UploadManager.shared.resumeUploads(toTransfer: toTransfer, andToPrepare: toPrepare)
+                await UploadManager.shared.resumeUploads(toTransfer: cleared.toTransfer, andToPrepare: cleared.toPrepare)
             }
             completionHandler(true)
         })
