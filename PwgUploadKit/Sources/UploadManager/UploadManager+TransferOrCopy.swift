@@ -108,6 +108,15 @@ extension UploadManager {
                 uploadData.requestState = .uploadingError
                 uploadData.requestError = error.localizedDescription
                 
+            case .decodingFailed, .invalidJSONobject, .emptyJSONobject, .invalidResponse:
+                /// The server answered with something which is not the expected JSON, e.g. a PHP
+                /// warning or a fatal error page emitted before the payload. The request itself is
+                /// sound — the very same one usually succeeds on the next attempt — so it is worth
+                /// retrying instead of being failed for good. A server which answers badly for good
+                /// exhausts the retries and the request is then presented to the user as failed.
+                uploadData.requestState = .uploadingError
+                uploadData.requestError = error.localizedDescription
+                
             case .missingAsset, .missingUploadData, .fileOperationFailed,
                  .missingUploadParameter, .wrongServerURL:
                 fallthrough
