@@ -125,10 +125,14 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         let scale = max(imageThumbnail.traitCollection.displayScale, 1.0)
         let cellSize = CGSizeMake(imageThumbnail.bounds.size.width * scale, imageThumbnail.bounds.size.height * scale)
         let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+        /// The cell identifies itself so that a new request replaces the handlers of its
+        /// previous one, see ImageDownload.addHandlers().
+        let requester = ObjectIdentifier(self)
         Task {
             await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: thumbnailSize, type: .image,
                                                   atURL: imageData.url(forMaxSize: thumbnailSize),
-                                                  fromServer: imageData.server?.uuid) { [weak self = self] cachedImageURL in
+                                                  fromServer: imageData.server?.uuid,
+                                                  requestedBy: requester) { [weak self = self] cachedImageURL in
                 Task { @MainActor in
                     guard let self else { return }
                     self.downsampleImage(atURL: cachedImageURL, to: cellSize)

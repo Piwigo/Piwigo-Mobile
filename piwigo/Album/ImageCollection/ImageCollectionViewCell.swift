@@ -138,10 +138,15 @@ class ImageCollectionViewCell: UICollectionViewCell {
         let scale = max(traitCollection.displayScale, 1.0)
         let cellSize = CGSizeMake(self.bounds.size.width * scale, self.bounds.size.height * scale)
         imageURL = imageData.url(forMaxSize: size)
+        /// The cell is reconfigured whenever the collection view applies a snapshot, e.g. after
+        /// each upload, so it identifies itself: the handlers below then replace the ones of its
+        /// previous request instead of adding a set which would decode the same image once more.
+        let requester = ObjectIdentifier(self)
         Task {
             let expectedURL = imageURL
             await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: size, type: .image, atURL: imageURL,
-                                                  fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self = self] cachedImageURL in
+                                                  fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
+                                                  requestedBy: requester) { [weak self = self] cachedImageURL in
                 // Downsample image in the background
                 let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .image)
                 

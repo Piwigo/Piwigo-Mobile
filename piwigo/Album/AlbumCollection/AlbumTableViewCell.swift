@@ -76,10 +76,14 @@ final class AlbumTableViewCell: UITableViewCell {
         let cellSize = CGSizeMake(self.albumThumbnail.bounds.size.width * scale, self.albumThumbnail.bounds.size.height * scale)
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
         imageURL = album?.thumbnailUrl as? URL
+        /// The cell identifies itself so that a new request replaces the handlers of its
+        /// previous one, see ImageDownload.addHandlers().
+        let requester = ObjectIdentifier(self)
         Task {
             let expectedURL = imageURL
             await ImageDownloader.shared.getImage(withID: album?.thumbnailId, ofSize: thumbSize, type: .album,
-                                                  atURL: imageURL, fromServer: album?.user?.server?.uuid) { [weak self = self] cachedImageURL in
+                                                  atURL: imageURL, fromServer: album?.user?.server?.uuid,
+                                                  requestedBy: requester) { [weak self = self] cachedImageURL in
                 // Downsample image in cache
                 let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .album)
                 
