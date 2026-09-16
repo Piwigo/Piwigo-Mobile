@@ -101,6 +101,13 @@ extension UploadManager {
                 uploadData.requestState = .uploadingError
                 uploadData.requestError = error.localizedDescription
                 
+            case .invalidStatusCode(let statusCode) where (500...599).contains(statusCode):
+                /// The server failed to answer this request, e.g. a PHP error while a chunk was
+                /// being stored. Such failures are transient: the chunk tasks already retry them
+                /// and the requests which complete during the same run prove the server recovers.
+                uploadData.requestState = .uploadingError
+                uploadData.requestError = error.localizedDescription
+                
             case .missingAsset, .missingUploadData, .fileOperationFailed,
                  .missingUploadParameter, .wrongServerURL:
                 fallthrough
@@ -108,13 +115,15 @@ extension UploadManager {
                 uploadData.requestState = .uploadingFail
                 uploadData.requestError = error.localizedDescription
             }
-            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Transfer/copy failed with \(String(describing: error)) —> state '\(uploadData.stateLabel)'")
+            /// The state is logged by its name: 'Uploading… Error' labels both the state which
+            /// is retried and the one which is not.
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Transfer/copy failed with \(String(describing: error)) —> state '\(String(describing: uploadData.requestState))'")
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
         }
         catch {
             uploadData.requestState = .uploadingFail
             uploadData.requestError = PwgKitError.otherError(innerError: error).localizedDescription
-            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Transfer/copy failed with \(String(describing: error)) —> state '\(uploadData.stateLabel)'")
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Transfer/copy failed with \(String(describing: error)) —> state '\(String(describing: uploadData.requestState))'")
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
         }
         

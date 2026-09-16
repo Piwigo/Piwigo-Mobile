@@ -138,7 +138,7 @@ extension UploadManager
                 uploadData.requestState = .preparingFail
                 uploadData.requestError = error.localizedDescription
             }
-            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Preparation failed with \(String(describing: error)) —> state '\(uploadData.stateLabel)'")
+            UploadManager.logger.notice("\(uploadID.uriRepresentation().lastPathComponent) • Preparation failed with \(String(describing: error)) —> state '\(String(describing: uploadData.requestState))'")
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
         }
         
