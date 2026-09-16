@@ -182,10 +182,8 @@ struct LoginUtilities
                 #endif
                 try await getPiwigoStatusForUser(&userData)
                 
-                // Update User values in cache, including the access date to the server
+                // Update User values in cache
                 userData.createAlbumRights = nil
-                userData.lastUsed = Date.timeIntervalSinceReferenceDate
-                try UserProvider().updateUser(withProperties: userData, inContext: bckgContext)
             }
             else {
                 // Perform login
@@ -203,12 +201,16 @@ struct LoginUtilities
                     userData.createAlbumRights = nil
                 }
                 try await getPiwigoStatusForUser(&userData)
-                
-                // Update User values in cache, including the access date to the server
-                userData.lastUsed = Date.timeIntervalSinceReferenceDate
-                try UserProvider().updateUser(withProperties: userData, inContext: bckgContext)
             }
         }
+        
+        // Update User values in cache, including the date of this check
+        /// Stored whichever branch was taken above: a session which the server confirmed
+        /// is as good a reason to skip the next check as one which had to be re-opened.
+        /// Storing it only after a re-login left 'lastUsed' in the past for ever, so that
+        /// the 60 seconds short-circuit never fired and every caller queried the server.
+        userData.lastUsed = Date.timeIntervalSinceReferenceDate
+        try UserProvider().updateUser(withProperties: userData, inContext: bckgContext)
     }
     
     fileprivate func getPiwigoStatusForUser(_ userData: inout UserProperties) async throws(PwgKitError)

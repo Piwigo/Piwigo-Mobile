@@ -15,10 +15,10 @@ import PwgKit
  The session is checked from about thirty places in the app and from the upload manager,
  and several of them run at the same time — e.g. the album which appears when a scene is
  restored and the upload requests which resume at the very same moment. They all pass the
- 60 seconds short-circuit of the check, because the date of the last check is only stored
- once a re-login succeeded, so each of them logs in again and every new session token
- invalidates the previous one. The requests already in flight are then answered by the
- server as if the user were a guest, i.e. with an authentication error.
+ 60 seconds short-circuit of the check, because none of them has stored the date of a more
+ recent one yet, so each of them logs in again and every new session token invalidates the
+ previous one. The requests already in flight are then answered by the server as if the
+ user were a guest, i.e. with an authentication error.
 
  The work to perform is supplied by the caller, so that the app and the upload manager keep
  their own implementation, but only one of them runs at a time and the others adopt its
