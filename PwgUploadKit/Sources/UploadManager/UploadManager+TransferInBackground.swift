@@ -175,6 +175,11 @@ extension UploadManager {
             UploadManager.logger.notice("\(objectIDstr) • Task \(task.taskIdentifier) failed with communication error: \(error.localizedDescription)")
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             await UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: task.taskIdentifier)
+            // Try again when the failure is worth retrying
+            /// The background session reports the outcome of a chunk outside the loop which
+            /// launched it, so this failure never reaches the catch of transferOrCopyFileOfUpload()
+            /// and nothing else would retry the request before the user resumes it by hand.
+            await retryTransferOfUpload(withID: uploadID, inTaskType: currentTaskType)
             return
         }
         
@@ -186,6 +191,8 @@ extension UploadManager {
             UploadManager.logger.notice("\(objectIDstr) • Task \(task.taskIdentifier) failed with HTTP response error: \(PwgKitError.invalidResponse.localizedDescription)")
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             await UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: task.taskIdentifier)
+            // Try again when the failure is worth retrying
+            await retryTransferOfUpload(withID: uploadID, inTaskType: currentTaskType)
             return
         }
         
@@ -197,6 +204,8 @@ extension UploadManager {
             UploadManager.logger.notice("\(objectIDstr) • Task \(task.taskIdentifier) failed with HTTP response error: \(PwgKitError.invalidStatusCode(statusCode: response.statusCode).localizedDescription)")
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             await UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: task.taskIdentifier)
+            // Try again when the failure is worth retrying
+            await retryTransferOfUpload(withID: uploadID, inTaskType: currentTaskType)
             return
         }
 
@@ -234,6 +243,8 @@ extension UploadManager {
             uploadData.requestError = PwgKitError.emptyJSONobject.localizedDescription
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             await UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: task.taskIdentifier)
+            // Try again when the failure is worth retrying
+            await retryTransferOfUpload(withID: uploadID, inTaskType: currentTaskType)
             return
         }
         var jsonData = data
@@ -244,6 +255,8 @@ extension UploadManager {
             uploadData.requestError = PwgKitError.invalidJSONobject.localizedDescription
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
             await UploadSessionsDelegate.shared.cancelTasksOfUpload(withID: objectURIstr, exceptedTaskID: task.taskIdentifier)
+            // Try again when the failure is worth retrying
+            await retryTransferOfUpload(withID: uploadID, inTaskType: currentTaskType)
             return
         }
         
@@ -316,6 +329,7 @@ extension UploadManager {
             uploadData.requestState = .uploaded
             uploadData.requestError = ""
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
+            await UploadManagerActor.shared.forgetRetries(ofUploadWithID: uploadID)
             
             // Finish the upload whichever task launched the transfer
             if UploadVars.shared.isProcessingTaskActive {
@@ -388,6 +402,11 @@ extension UploadManager {
                 uploadData.requestError = PwgKitError.wrongJSONobject.localizedDescription
             }
             try? UploadProvider().updateUpload(withID: uploadID, properties: uploadData, inContext: self.uploadBckgContext)
+            
+            // Try again when the failure is worth retrying
+            /// A request which failed authentication was marked '.uploadingFail' above and is
+            /// left alone by the retry.
+            await retryTransferOfUpload(withID: uploadID, inTaskType: currentTaskType)
         }
     }
     
