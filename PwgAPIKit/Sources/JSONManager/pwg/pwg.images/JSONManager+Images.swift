@@ -82,9 +82,10 @@ public extension JSONManager {
     }
     
     @concurrent
-    func processImages(withIds imageIds: [Int64], inCategory categoryId: Int32) async throws(PwgKitError) {
+    @discardableResult
+    func processImages(withIds imageIds: [Int64], inCategory categoryId: Int32) async throws(PwgKitError) -> Int64? {
         // Prepare parameters
-        if imageIds.isEmpty { return }
+        if imageIds.isEmpty { return nil }
         let listOfImageIds = imageIds.compactMap({"\(NSNumber(value: $0)),"}).reduce("", +)
         let paramDict: [String : Any] = ["image_id"   : String(listOfImageIds.dropLast(1)),
                                          "pwg_token"  : ServerVars.shared.pwgToken,
@@ -98,5 +99,9 @@ public extension JSONManager {
         if pwgData.success == false {
             throw .emptyingLoungeFailed
         }
+
+        // Returns the number of images which the server counts in that album once the lounge was
+        // emptied, or nil when the server did not provide it.
+        return pwgData.nbImages?.int64Value
     }
 }

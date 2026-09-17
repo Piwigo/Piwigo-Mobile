@@ -17,11 +17,25 @@ public struct ImagesUploadCompletedJSON: Decodable {
     public var status: String?
     public var success = false
     
+    /// Number of images which the server counts in the album once the lounge was emptied.
+    /// Returned as a string, e.g. "204", which a future version may well return as a number,
+    /// and absent from the replies of servers which do not provide it — in which case the
+    /// count held in cache is left untouched.
+    public var nbImages: StringOrInt?
+    
     private enum RootCodingKeys: String, CodingKey {
         case status = "stat"
         case result
         case errorCode = "err"
         case errorMessage = "message"
+    }
+    
+    private enum ResultCodingKeys: String, CodingKey {
+        case category
+    }
+    
+    private enum CategoryCodingKeys: String, CodingKey {
+        case nbImages = "nb_photos"
     }
     
     public init(from decoder: any Decoder) throws
@@ -34,6 +48,12 @@ public struct ImagesUploadCompletedJSON: Decodable {
         if status == "ok"
         {
             success = true
+            
+            // Number of images counted by the server in the album
+            if let resultContainer = try? rootContainer.nestedContainer(keyedBy: ResultCodingKeys.self, forKey: .result),
+               let categoryContainer = try? resultContainer.nestedContainer(keyedBy: CategoryCodingKeys.self, forKey: .category) {
+                nbImages = try? categoryContainer.decode(StringOrInt.self, forKey: .nbImages)
+            }
         }
         else if status == "fail"
         {

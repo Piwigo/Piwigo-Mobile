@@ -575,6 +575,52 @@ public final class AlbumProvider {
         catch { throw PwgKitError.otherError(innerError: error) }
     }
     
+    /**
+     Adopt the number of images which the server counts in an album, and report the difference to
+     - the attribute 'totalNbImages' of the album and its parent albums.
+     N.B.: Parent albums are updated in the background.
+     
+     Preferred to updateAlbums(addingImages:) whenever the server provides its own count, e.g. when
+     the lounge is emptied after a series of uploads: a count adopted as a whole cannot drift, while
+     increments applied from several background contexts at once overwrite one another.
+     */
+    public func updateAlbums(withNberOfImages nbImages: Int64, ofAlbumWithID pwgID: Int32,
+                             belongingToUser userURIstr: String,
+                             inContext taskContext: NSManagedObjectContext) throws(PwgKitError) {
+        // Do {} below is used to allow typed throws
+        do {
+            // Synchronous execution
+            try taskContext.performAndWait { () -> Void in
+                // Retrieve album instance
+                guard let album = getAlbum(withID: pwgID, ofUserWithURI: userURIstr, inContext: taskContext)
+                else { throw PwgKitError.albumNotFound }
+                
+                // Nothing to do when the album already holds that number of images
+                let difference = nbImages - album.nbImages
+                if difference == .zero { return }
+                
+                // Adopt the number of images counted by the server
+                album.nbImages = nbImages
+                
+                // Report the difference to the total, which also counts the sub-albums
+                let (total, overflow) = album.totalNbImages.addingReportingOverflow(difference)
+                if overflow == false {      // Avoids possible crash with e.g. smart albums
+                    album.totalNbImages = total
+                }
+                
+                // Keep 'date_last' set as expected by the server
+                if difference > .zero {
+                    album.dateLast = max(Date.timeIntervalSinceReferenceDate, album.dateLast)
+                }
+                
+                // Update parent albums in the background
+                try self.updateParents(ofAlbum: album, nbImages: difference, inContext: taskContext)
+            }
+        }
+        catch let error as PwgKitError { throw error }
+        catch { throw PwgKitError.otherError(innerError: error) }
+    }
+    
     public func updateAlbums(addingImages nbImages: Int64, toAlbum album: Album,
                              inContext taskContext: NSManagedObjectContext) throws {
         // Add images from album

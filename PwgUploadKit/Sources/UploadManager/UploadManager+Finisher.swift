@@ -111,7 +111,23 @@ extension UploadManager {
             
             // Empty lounge
             let imageIds = uploadDataArrayForAlbum.map({ $0.imageId })
-            try await JSONManager.shared.processImages(withIds: imageIds, inCategory: albumId)
+            let nbImages = try await JSONManager.shared.processImages(withIds: imageIds, inCategory: albumId)
+            
+            // Update the number of images of the album
+            /// The images are not counted one by one while they are uploaded, because the server
+            /// gathers them in a lounge and only adds them to the album now. Its own count is
+            /// therefore adopted as a whole, and a server which does not return one leaves the
+            /// uploaded images to be counted.
+            let userURIstr = uploadDataArrayForAlbum[0].userURIstr
+            if let nbImages {
+                try? AlbumProvider().updateAlbums(withNberOfImages: nbImages, ofAlbumWithID: albumId,
+                                                  belongingToUser: userURIstr,
+                                                  inContext: self.uploadBckgContext)
+            } else {
+                try? AlbumProvider().updateAlbums(addingImages: Int64(imageIds.count), toAlbumWithID: albumId,
+                                                  belongingToUser: userURIstr,
+                                                  inContext: self.uploadBckgContext)
+            }
         }
     }
     
