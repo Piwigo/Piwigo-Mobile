@@ -361,6 +361,31 @@ final class AlbumViewController: UIViewController
         /// which are not visible, do also update the rights they grant.
         NotificationCenter.default.addObserver(self, selector: #selector(didUpdateUserID(_:)),
                                                name: Notification.Name.pwgUserIDdidChange, object: nil)
+        
+        // Register the changes of the album which this view presents
+        /// Its number of images is adopted from the count returned by the server, e.g. when the
+        /// lounge is emptied after a series of uploads. That happens well after the images were
+        /// added to the cache, so the fetched results controllers — which watch the sub-albums
+        /// and the images, not this album — do not announce it.
+        NotificationCenter.default.addObserver(self, selector: #selector(didUpdateAlbumData(_:)),
+                                               name: .NSManagedObjectContextObjectsDidChange,
+                                               object: mainContext)
+    }
+    
+    @MainActor
+    @objc func didUpdateAlbumData(_ notification: Notification) {
+        // Did the album which this view presents change?
+        let userInfo = notification.userInfo ?? [:]
+        let changed = (userInfo[NSUpdatedObjectsKey] as? Set<NSManagedObject> ?? [])
+            .union(userInfo[NSRefreshedObjectsKey] as? Set<NSManagedObject> ?? [])
+        guard changed.contains(where: { ($0 as? Album)?.pwgID == categoryId })
+        else { return }
+        
+        // Adopt the new properties of the album
+        albumData = currentAlbumData()
+        
+        // Present the number of images of the album
+        updateNberOfImagesInFooter()
     }
     
     @MainActor
