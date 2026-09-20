@@ -68,10 +68,21 @@ extension AlbumViewController: UISearchControllerDelegate
         debugPrint("willPresentSearchController…")
         #endif
         // Switch to Search album
-        categoryId = pwgSmartAlbum.search.rawValue
+        let searchId = pwgSmartAlbum.search.rawValue
+        guard let searchData = try? AlbumProvider().getOrCreateProperties(ofAlbumWithID: searchId,
+                                                                          inContext: mainContext)
+        else {
+            // Present the album which is left, or the login view when there is none
+            albumData = currentAlbumData()
+            DispatchQueue.main.async {
+                searchController.isActive = false
+            }
+            return
+        }
+        categoryId = searchId
         
         // Initialise albumData
-        albumData = currentAlbumData()
+        albumData = searchData
         resetSearchAlbum(withQuery: "")
         
         // Update albums and images
@@ -125,7 +136,9 @@ extension AlbumViewController: UISearchControllerDelegate
         debugPrint("didDismissSearchController…")
         #endif
         // Update albumData
-        albumData = AlbumProvider().getProperties(ofAlbumWithID: categoryId, inContext: mainContext)!
+        /// The default album restored by willDismissSearchController() may have left the cache,
+        /// so the fallbacks of currentAlbumData() are used rather than a forced unwrapping.
+        albumData = currentAlbumData()
         
         // Update albums and images
         resetPredicatesAndPerformFetch()
@@ -142,8 +155,10 @@ extension AlbumViewController: UISearchControllerDelegate
     }
     
     private func resetSearchAlbum(withQuery query: String) {
+        /// The album of search is created before this method is reached, but the session may have
+        /// been closed since, and there is then nothing left to reset.
         guard let album = albumProvider.getAlbum(withID: categoryId, inContext: mainContext)
-        else { preconditionFailure("••> Search album not found!!!") }
+        else { return }
 
         // Reset search album
        album.query = query
