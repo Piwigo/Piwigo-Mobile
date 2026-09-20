@@ -1,4 +1,6 @@
-• Corrects the layout in Arabic and other right-to-left languages
-• Applies the plural rules of each language to photo, album and tag counts
-• Completes the Indonesian translation
-• Fixes bugs and improves the interface
+• Adds Czech, Portuguese and Ukrainian translations
+• Retries the transfers interrupted by a server error or an invalid response
+• Fixes the migration of data stored by version 3.2 and earlier
+• Corrects the number of photos presented in album footers
+• Invites to update Piwigo servers older than version 16
+• Fixes crashes and improves the interface

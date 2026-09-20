@@ -1,4 +1,6 @@
-• Opravuje rozvržení v arabštině a dalších jazycích psaných zprava doleva
-• Uplatňuje pravidla množného čísla každého jazyka na počty fotek, alb a štítků
-• Dokončuje indonéský překlad
-• Opravuje chyby a vylepšuje rozhraní
+• Přidává český, portugalský a ukrajinský překlad
+• Opakuje přenosy přerušené chybou serveru nebo neplatnou odpovědí
+• Opravuje migraci dat uložených ve verzi 3.2 a starších
+• Opravuje počet fotek zobrazený v zápatí alb
+• Vyzývá k aktualizaci serverů Piwigo starších než verze 16
+• Opravuje pády a vylepšuje rozhraní

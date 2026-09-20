@@ -1,4 +1,6 @@
-• Corrige o layout em árabe e nos outros idiomas escritos da direita para a esquerda
-• Aplica as regras de plural de cada idioma às contagens de fotos, álbuns e etiquetas
-• Conclui a tradução para indonésio
-• Corrige erros e melhora a interface
+• Adiciona as traduções para checo, português e ucraniano
+• Repete as transferências interrompidas por um erro do servidor ou uma resposta inválida
+• Corrige a migração dos dados salvos na versão 3.2 e anteriores
+• Corrige o número de fotos apresentado no rodapé dos álbuns
+• Convida a atualizar os servidores Piwigo anteriores à versão 16
+• Corrige falhas e melhora a interface

@@ -1,4 +1,6 @@
-• Corrigeert de lay-out in het Arabisch en andere talen die van rechts naar links worden geschreven
-• Past de meervoudsregels van elke taal toe op het aantal foto's, albums en labels
-• Voltooit de Indonesische vertaling
-• Foutjes verholpen en interface verbeterd
+• Voegt Tsjechische, Portugese en Oekraïense vertalingen toe
+• Probeert overdrachten die door een serverfout of een ongeldig antwoord zijn afgebroken opnieuw
+• Corrigeert de migratie van gegevens uit versie 3.2 en eerder
+• Corrigeert het aantal foto's in de voettekst van albums
+• Nodigt uit om Piwigo-servers ouder dan versie 16 bij te werken
+• Crashes verholpen en interface verbeterd
