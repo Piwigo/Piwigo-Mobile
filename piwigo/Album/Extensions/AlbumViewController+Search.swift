@@ -71,7 +71,7 @@ extension AlbumViewController: UISearchControllerDelegate
         categoryId = pwgSmartAlbum.search.rawValue
         
         // Initialise albumData
-        albumData = (try? AlbumProvider().getOrCreateProperties(ofAlbumWithID: categoryId, inContext: mainContext))!
+        albumData = currentAlbumData()
         resetSearchAlbum(withQuery: "")
         
         // Update albums and images
