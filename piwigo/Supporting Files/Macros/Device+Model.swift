@@ -149,6 +149,10 @@ extension UIDevice {
             return "iPhone Air"
         case "iPhone18,5":
             return "iPhone 17e"
+        case "iPhone19,2":
+            return "iPhone 18 Pro"
+        case "iPhone19,3":
+            return "iPhone 18 Pro Max"
         
         // MARK: iPad
         case "iPad1,1":
@@ -611,7 +615,8 @@ extension UIDevice {
         case "iPhone15,2", "iPhone15,3", "iPhone15,4", "iPhone15,5",
             "iPhone16,1", "iPhone16,2",
             "iPhone17,1", "iPhone17,2", "iPhone17,3", "iPhone17,4", "iPhone17,5",
-            "iPhone18,1", "iPhone18,2", "iPhone18,3", "iPhone18,4", "iPhone18,5":
+            "iPhone18,1", "iPhone18,2", "iPhone18,3", "iPhone18,4", "iPhone18,5",
+            "iPhone19,2", "iPhone19,3":
             return "48 Mpx"
             
         // MARK: iPad
@@ -689,7 +694,8 @@ extension UIDevice {
              "iPhone18,3", "iPhone18,4", "iPhone18,5":
             return "4K, 60 fps"
         case "iPhone17,1", "iPhone17,2",
-             "iPhone18,1", "iPhone18,2":
+             "iPhone18,1", "iPhone18,2",
+             "iPhone19,2", "iPhone19,3":
             return "4K, 120 fps"
             
         // MARK: iPad
@@ -777,7 +783,8 @@ extension UIDevice {
              "iPhone17,1", "iPhone17,2", "iPhone17,3", "iPhone17,4", "iPhone17,5",
              "iPhone18,3", "iPhone18,5":
             return 8192
-        case "iPhone18,1", "iPhone18,2", "iPhone18,4":
+        case "iPhone18,1", "iPhone18,2", "iPhone18,4",
+             "iPhone19,2", "iPhone19,3":
             return 12288
 
         // MARK: iPad
