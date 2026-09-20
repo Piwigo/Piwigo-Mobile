@@ -528,7 +528,7 @@ extension AlbumViewController
     
     
     // MARK: - Fetch Favorites in the background
-    /// The below methods are only called if the Piwigo server version is between 2.10.0 and 12.x.y.
+    /// The below methods are only called if the Piwigo server version is below 13.0.0.
     /// These methods run while the user is browsing another album, so the album of favorites is
     /// read and written on the queue of its own private context and never from the main thread.
     func loadFavoritesInBckg() async {
