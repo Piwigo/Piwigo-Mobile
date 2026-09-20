@@ -109,7 +109,16 @@ public final class UserProvider {
     }
     
     public func getPropertiesOfCurrentUser(inContext taskContext: NSManagedObjectContext) throws(PwgKitError) -> UserProperties {
-        return try getCurrentUser(inContext: taskContext).getProperties()
+        // Do {} below is used to allow typed throws
+        do {
+            // Synchronous execution
+            return try taskContext.performAndWait { () -> UserProperties in
+                return try getCurrentUser(inContext: taskContext).getProperties()
+            }
+        }
+        catch let error as PwgKitError { throw error }
+        catch let error as NSError { throw PwgKitError.CoreDataError(innerError: error)}
+        catch let error { throw PwgKitError.otherError(innerError: error) }
     }
     
     
@@ -137,7 +146,16 @@ public final class UserProvider {
     
     public func getPropertiesOfUser(withURIstr userURIstr: String,
                                     inContext taskContext: NSManagedObjectContext) throws(PwgKitError) -> UserProperties {
-        return try getUser(withURIstr: userURIstr, inContext: taskContext).getProperties()
+        // Do {} below is used to allow typed throws
+        do {
+            // Synchronous execution
+            return try taskContext.performAndWait { () -> UserProperties in
+                return try getUser(withURIstr: userURIstr, inContext: taskContext).getProperties()
+            }
+        }
+        catch let error as PwgKitError { throw error }
+        catch let error as NSError { throw PwgKitError.CoreDataError(innerError: error)}
+        catch let error { throw PwgKitError.otherError(innerError: error) }
     }
     
     

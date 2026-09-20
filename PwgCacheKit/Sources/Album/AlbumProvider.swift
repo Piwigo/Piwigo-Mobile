@@ -55,7 +55,11 @@ public final class AlbumProvider {
     public func getProperties(ofAlbumWithID pwgID: Int32,
                               inContext taskContext: NSManagedObjectContext) -> AlbumProperties? {
         // Synchronous execution
-        return getAlbum(withID: pwgID, inContext: taskContext)?.getProperties()
+        /// The properties must be extracted inside the block: the Album returned by getAlbum()
+        /// must not be touched once performAndWait() has returned, i.e. on the calling thread.
+        return taskContext.performAndWait { () -> AlbumProperties? in
+            return getAlbum(withID: pwgID, inContext: taskContext)?.getProperties()
+        }
     }
     
     public func getOrCreateAlbum(withID pwgID: Int32, name: String = "",
@@ -100,7 +104,18 @@ public final class AlbumProvider {
     
     public func getOrCreateProperties(ofAlbumWithID pwgID: Int32, name: String = "",
                                       inContext taskContext: NSManagedObjectContext) throws(PwgKitError) -> AlbumProperties {
-        return try getOrCreateAlbum(withID: pwgID, name: name, inContext: taskContext).getProperties()
+        // Do {} below is used to allow typed throws
+        do {
+            // Synchronous execution
+            /// The properties must be extracted inside the block: the Album returned by getOrCreateAlbum()
+            /// must not be touched once performAndWait() has returned, i.e. on the calling thread.
+            return try taskContext.performAndWait { () -> AlbumProperties in
+                return try getOrCreateAlbum(withID: pwgID, name: name, inContext: taskContext).getProperties()
+            }
+        }
+        catch let error as PwgKitError { throw error }
+        catch let error as NSError { throw PwgKitError.CoreDataError(innerError: error)}
+        catch { throw PwgKitError.otherError(innerError: error) }
     }
 
     /// Returns the IDs of the album and of all its sub-albums, i.e. the IDs of all the albums
@@ -159,7 +174,9 @@ public final class AlbumProvider {
     public func getProperties(ofAlbumWithID pwgID: Int32, ofUserWithURI userURIstr: String,
                               inContext taskContext: NSManagedObjectContext) -> AlbumProperties? {
         // Synchronous execution
-        return getAlbum(withID: pwgID, ofUserWithURI: userURIstr,inContext: taskContext)?.getProperties()
+        return taskContext.performAndWait { () -> AlbumProperties? in
+            return getAlbum(withID: pwgID, ofUserWithURI: userURIstr, inContext: taskContext)?.getProperties()
+        }
     }
     
     
