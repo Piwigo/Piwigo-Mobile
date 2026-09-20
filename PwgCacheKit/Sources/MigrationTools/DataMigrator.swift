@@ -354,10 +354,10 @@ public final class DataMigrator: NSObject {
                     .appendingPathComponent(nameForIncompatibleStore)
                     .appendingPathExtension(ext.rawValue)
                 
-                // Move the corrupt data store
+                // Move all files of the corrupt data store
                 try? fm.removeItem(at: corruptURL)
                 do {
-                    try fm.moveItem(at: storeURL, to: corruptURL)
+                    try fm.moveItem(at: fileURL, to: corruptURL)
                 } catch let error {
                     DataMigrator.logger.notice("Unable to move a corrupted data store: \(error.localizedDescription)")
                 }
