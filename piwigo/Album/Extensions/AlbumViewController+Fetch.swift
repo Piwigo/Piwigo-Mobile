@@ -6,6 +6,7 @@
 //  Copyright © 2024 Piwigo.org. All rights reserved.
 //
 
+import CoreData
 import Foundation
 import PwgKit
 import PwgAPIKit
@@ -527,44 +528,69 @@ extension AlbumViewController
     
     
     // MARK: - Fetch Favorites in the background
-    /// The below methods are only called if the Piwigo server version is between 2.10.0 and 13.0.0.
+    /// The below methods are only called if the Piwigo server version is between 2.10.0 and 12.x.y.
+    /// These methods run while the user is browsing another album, so the album of favorites is
+    /// read and written on the queue of its own private context and never from the main thread.
     func loadFavoritesInBckg() async {
         // Check that an album of favorites exists in cache (create it if necessary)
         let bckgContext = DataController.shared.newTaskContext()
-        guard let album = try? albumProvider.getOrCreateAlbum(withID: pwgSmartAlbum.favorites.rawValue,
-                                                              inContext: bckgContext) else {
-            // Remove favorite album from list of album being fetched
-            AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.favorites.rawValue)
-            return
+        let favoritesId = pwgSmartAlbum.favorites.rawValue
+        let perPage = self.perPage
+
+        // Remember which images belong to this album before fetching them again,
+        // and how many pages the fetch will take.
+        /// The album never leaves the block: this view controller is isolated to the main actor,
+        /// so reading it here would read a private queue context from the main thread.
+        let start = await bckgContext.perform { () -> (imageIds: Set<Int64>, lastPage: Int)? in
+            guard let album = try? AlbumProvider().getOrCreateAlbum(withID: favoritesId,
+                                                                    inContext: bckgContext)
+            else { return nil }
+            let oldImageIDs = Set(album.images?.map({$0.pwgID}) ?? [])
+            let albumNbImages = album.nbImages
+            let (quotient, remainer) = albumNbImages.quotientAndRemainder(dividingBy: Int64(perPage))
+            return (oldImageIDs, Int(quotient) + Int(remainer) > 0 ? 1 : 0)
         }
 
-        // Remember which images belong to this album
-        // from main context before calling background tasks
-        let oldImageIDs = Set(album.images?.map({$0.pwgID}) ?? [])
+        guard let start else {
+            // Remove favorite album from list of album being fetched
+            AlbumVars.shared.isFetchingAlbumData.remove(favoritesId)
+            return
+        }
 
         // Load favorites data in the background
         // Use the ImageProvider to fetch image data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        let albumNbImages = album.nbImages
-        let (quotient, remainer) = albumNbImages.quotientAndRemainder(dividingBy: Int64(self.perPage))
-        let lastPage = Int(quotient) + Int(remainer) > 0 ? 1 : 0
-        await self.fetchFavorites(ofAlbum: album, imageIDs: oldImageIDs,
-                                  fromPage: 0, toPage: lastPage, perPage: perPage)
+        await self.fetchFavorites(inContext: bckgContext, withImageIds: start.imageIds,
+                                  fromPage: 0, toPage: start.lastPage, perPage: perPage)
     }
     
-    private func fetchFavorites(ofAlbum album: Album, imageIDs: Set<Int64>,
+    /// Fetches a page of favorites, then the next one until the album is complete.
+    ///
+    /// The album is deliberately not carried from page to page: every call suspends on the fetch
+    /// below, and an Album held across that suspension may no longer be reachable when the task
+    /// resumes — writing to it then throws NSObjectInaccessibleException from the fault handler,
+    /// which is what v4.4 (703) crashed with. It is looked up again, on its own queue, for each page.
+    private func fetchFavorites(inContext bckgContext: NSManagedObjectContext,
+                                withImageIds imageIDs: Set<Int64>,
                                 fromPage onPage: Int, toPage lastPage: Int, perPage: Int) async {
-        // Use the ImageProvider to fetch image data. On completion,
-        // handle general UI updates and error alerts on the main queue.
-        Task {
-            do {
-                let (fetchedImageIds, totalCount, _) =
-                try await fetchImages(ofAlbumWithId: album.pwgID, withQuery: "", sort: sortOption,
-                                      fromPage: onPage, perPage: perPage)
-                
-                // Re-calculate number of pages
-                var newLastPage = lastPage
-                newLastPage = Int(totalCount.quotientAndRemainder(dividingBy: Int64(perPage)).quotient)
+        let favoritesId = pwgSmartAlbum.favorites.rawValue
+        do {
+            let (fetchedImageIds, totalCount, _) =
+            try await fetchImages(ofAlbumWithId: favoritesId, withQuery: "", sort: sortOption,
+                                  fromPage: onPage, perPage: perPage)
+            
+            // Re-calculate number of pages
+            var newLastPage = lastPage
+            newLastPage = Int(totalCount.quotientAndRemainder(dividingBy: Int64(perPage)).quotient)
+            
+            // Will not remove fetched images from album image list
+            let newImageIds = imageIDs.subtracting(fetchedImageIds)
+            let isLastPage = onPage >= newLastPage
+            
+            // Update the album of favorites on the queue owning it
+            await bckgContext.perform {
+                guard let album = AlbumProvider().getAlbum(withID: favoritesId, inContext: bckgContext)
+                else { return }
                 
                 // Update smart album data
                 if album.nbImages != totalCount {
@@ -574,38 +600,34 @@ extension AlbumViewController
                     album.totalNbImages = totalCount
                 }
                 
-                // Will not remove fetched images from album image list
-                let newImageIds = imageIDs.subtracting(fetchedImageIds)
-                
-                // Should we continue?
-                if onPage < newLastPage {
-                    // Load next page of images
-                    await self.fetchFavorites(ofAlbum: album, imageIDs: newImageIds,
-                                              fromPage: onPage + 1, toPage: newLastPage, perPage: perPage)
-                    return
+                if isLastPage {
+                    // ► Remove non-fetched images from album
+                    if let toRemove = album.images?.filter({ newImageIds.contains($0.pwgID) }) {
+                        album.removeFromImages(toRemove)
+                    }
+                    
+                    // ► Remember when favorites were fetched
+                    album.dateGetImages = Date.timeIntervalSinceReferenceDate
                 }
-                
-                // ► Remove non-fetched images from album
-                if let toRemove = album.images?.filter({ newImageIds.contains($0.pwgID) }) {
-                    album.removeFromImages(toRemove)
-                }
-                
-                // ► Remember when favorites were fetched
-                album.dateGetImages = Date.timeIntervalSinceReferenceDate
-                
-                // ► Remove favorite album from list of album being fetched
-                AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.favorites.rawValue)
                 
                 // Save changes
-                album.managedObjectContext?.saveIfNeeded()
-                Task { @MainActor in
-                    self.mainContext.saveIfNeeded()
-                }
+                bckgContext.saveIfNeeded()
             }
-            catch {
-                // Remove favorite album from list of album being fetched
-                AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.favorites.rawValue)
+            
+            // Should we continue?
+            if isLastPage == false {
+                // Load next page of images
+                await self.fetchFavorites(inContext: bckgContext, withImageIds: newImageIds,
+                                          fromPage: onPage + 1, toPage: newLastPage, perPage: perPage)
+                return
             }
+            
+            // ► Remove favorite album from list of album being fetched
+            AlbumVars.shared.isFetchingAlbumData.remove(favoritesId)
+        }
+        catch {
+            // Remove favorite album from list of album being fetched
+            AlbumVars.shared.isFetchingAlbumData.remove(favoritesId)
         }
     }
 }
