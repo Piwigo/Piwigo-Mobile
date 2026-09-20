@@ -135,6 +135,7 @@ class TroubleshootingViewController: UIViewController {
                 }
                 categories.append(String(describing: AutoUploadIntentHandler.self))
                 categories.append(contentsOf: [
+                    String(describing: DataController.self),
                     String(describing: DataMigrator.self),
                     String(describing: Image.self),
                     String(describing: ImageDownloader.self),
