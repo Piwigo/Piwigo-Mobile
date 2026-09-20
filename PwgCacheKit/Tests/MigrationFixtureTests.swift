@@ -108,10 +108,41 @@ final class MigrationFixtureTests: XCTestCase {
         (.version0O, .version0P),   // TagToTagMigrationPolicy_Copy
     ]
 
+    /// Steps whose mapping model wires a `Sizes` migration policy and can run here.
+    ///
+    /// Two families are missing, neither of them by oversight:
+    ///
+    /// `0B → 0C` runs `ImageToSizesMigrationPolicy_0B_to_0C`, which builds the Sizes out
+    /// of an Image rather than out of a Sizes, so it needs an Image fixture.
+    ///
+    /// `0L → 0N` and `0M → 0N`, the steps adding `xxxlarge` and `xxxxlarge`, run
+    /// `SizesToSizesMigrationPolicy_0M_to_0N`, which seeds them with
+    /// `Resolution(imageWidth: 1, imageHeight: 1, imagePath: nil)`. That initialiser
+    /// stores `NSURL(string: "")`, which is *not* nil, so writing the value sends
+    /// `ResolutionValueTransformer` down its URL branch and into
+    /// `ServerVars.shared.service` — the app group `UserDefaults`, named after
+    /// `Bundle.main.bundleIdentifier`, which nil-crashes outside the app. Covering those
+    /// two steps needs a test host, not another fixture.
+    private static let sizesSteps: [(source: DataMigrationVersion, destination: DataMigrationVersion)] = [
+        (.version0F, .version0H),   // SizesToSizesMigrationPolicy_Copy
+        (.version0G, .version0H),   // SizesToSizesMigrationPolicy_Copy
+        (.version0H, .version0J),   // SizesToSizesMigrationPolicy_Copy
+        (.version0I, .version0J),   // SizesToSizesMigrationPolicy_Copy
+        (.version0J, .version0L),   // SizesToSizesMigrationPolicy_Copy
+        (.version0K, .version0L),   // SizesToSizesMigrationPolicy_Copy
+        (.version0N, .version0O),   // SizesToSizesMigrationPolicy_Copy
+        (.version0O, .version0P),   // SizesToSizesMigrationPolicy_Copy
+    ]
+
+    /// The size attributes every model from `0C` on declares.
+    private static let sizeNames = ["square", "thumb", "xxsmall", "xsmall", "small",
+                                    "medium", "large", "xlarge", "xxlarge"]
+
     private let uploadCount = 3
     private let imageCount = 3
     private let albumCount = 3
     private let tagCount = 3
+    private let sizesCount = 3
 
     // MARK: - Helpers
 
@@ -217,6 +248,40 @@ final class MigrationFixtureTests: XCTestCase {
 
     private func expectedTagNames(_ count: Int) -> [String] {
         (0..<count).map { "tag-\($0)" }.sorted()
+    }
+
+    /**
+     A store of `sizes` Sizes of the given model version, every size filled with a
+     resolution of its own.
+
+     The paths are left nil on purpose: `ResolutionValueTransformer` resolves a relative
+     path against `ServerVars.shared.service`, which reads the app group `UserDefaults`
+     and crashes outside the app. A resolution without a URL never reaches that branch.
+     */
+    private func makeSizesStore(version: DataMigrationVersion, sizes: Int) throws -> URL {
+        try makeStore(version: version, entityName: "Sizes", rows: sizes) { size, index in
+            for (rank, name) in Self.sizeNames.enumerated() {
+                size.setValue(Resolution(imageWidth: Self.width(row: index, rank: rank),
+                                         imageHeight: Self.height(row: index, rank: rank),
+                                         imageURL: nil),
+                              forKey: name)
+            }
+        }
+    }
+
+    /// Distinct pixel counts, so that a size landing in the wrong attribute is visible.
+    private static func width(row: Int, rank: Int) -> Int { 1_000 + row * 100 + rank }
+    private static func height(row: Int, rank: Int) -> Int { 5_000 + row * 100 + rank }
+
+    /// The width of the `square` of every Sizes held by a store, which identifies its row.
+    private func cachedSquareWidths(at url: URL, version: DataMigrationVersion) throws -> [Int] {
+        try withRows(at: url, version: version, entityName: "Sizes") { rows in
+            rows.compactMap { ($0.value(forKey: "square") as? Resolution)?.width }.sorted()
+        }
+    }
+
+    private func expectedSquareWidths(_ count: Int) -> [Int] {
+        (0..<count).map { Self.width(row: $0, rank: 0) }.sorted()
     }
 
     /// The `uuid` of every instance of an entity held by a store, duplicates included.
@@ -667,6 +732,82 @@ final class MigrationFixtureTests: XCTestCase {
         XCTAssertEqual(try cachedTagNames(at: urls[urls.count - 1], version: version),
                        expectedTagNames(tagCount),
                        "the upgrade from 0A did not carry every tag to \(version.rawValue)")
+
+        for url in urls {
+            NSPersistentStoreCoordinator.destroyStore(at: url)
+        }
+    }
+
+    // MARK: - Sizes
+
+    /// No step carrying a Sizes policy adds or drops a set of sizes.
+    func testSizesSurviveEachStepUnchanged() throws {
+        for (source, destination) in Self.sizesSteps {
+            let sourceURL = try makeSizesStore(version: source, sizes: sizesCount)
+            let destinationURL = try migrate(sourceURL, from: source, to: destination)
+            XCTAssertEqual(try cachedSquareWidths(at: destinationURL, version: destination),
+                           expectedSquareWidths(sizesCount),
+                           """
+                           \(source.rawValue) ► \(destination.rawValue) changed the \
+                           number of cached sizes, or lost the square of one.
+                           """)
+            NSPersistentStoreCoordinator.destroyStore(at: sourceURL)
+            NSPersistentStoreCoordinator.destroyStore(at: destinationURL)
+        }
+    }
+
+    /**
+     Every size survives its step with the pixels it was given.
+
+     A `Resolution` reaches the store through `ResolutionValueTransformer`, so a step
+     copies it by archiving and unarchiving it rather than by moving a scalar. Nothing
+     in the mapping model states the type, which is why this has to be migrated to be
+     checked: `MigrationChainTests` accepts any value class an expression yields for a
+     transformable attribute it cannot type.
+     */
+    func testResolutionsKeepTheirPixelsThroughEveryStep() throws {
+        for (source, destination) in Self.sizesSteps {
+            let sourceURL = try makeSizesStore(version: source, sizes: sizesCount)
+            let destinationURL = try migrate(sourceURL, from: source, to: destination)
+
+            try withRows(at: destinationURL, version: destination, entityName: "Sizes") { rows in
+                XCTAssertEqual(rows.count, sizesCount)
+                for row in rows {
+                    let square = try XCTUnwrap(row.value(forKey: "square") as? Resolution,
+                                              "\(source.rawValue) ► \(destination.rawValue) lost the square")
+                    let index = (square.width - 1_000) / 100
+                    for (rank, name) in Self.sizeNames.enumerated() {
+                        let resolution = try XCTUnwrap(row.value(forKey: name) as? Resolution,
+                                                      "\(source.rawValue) ► \(destination.rawValue) lost \(name)")
+                        XCTAssertEqual(resolution.width, Self.width(row: index, rank: rank),
+                                       "\(source.rawValue) ► \(destination.rawValue) changed the width of \(name)")
+                        XCTAssertEqual(resolution.height, Self.height(row: index, rank: rank),
+                                       "\(source.rawValue) ► \(destination.rawValue) changed the height of \(name)")
+                    }
+                }
+            }
+
+            NSPersistentStoreCoordinator.destroyStore(at: sourceURL)
+            NSPersistentStoreCoordinator.destroyStore(at: destinationURL)
+        }
+    }
+
+    /// The chain from `0C`, the oldest model holding a Sizes, as far as this target can
+    /// take it: the step into `0N` cannot run here, for the reason given on `sizesSteps`.
+    func testSizesSurviveTheUpgradeFrom0CTo0L() throws {
+        var version = DataMigrationVersion.version0C
+        var urls = [try makeSizesStore(version: version, sizes: sizesCount)]
+
+        while let next = version.nextVersion(), next != .version0N {
+            urls.append(try migrate(urls[urls.count - 1], from: version, to: next))
+            version = next
+        }
+
+        XCTAssertEqual(version, DataMigrationVersion.version0L,
+                       "the walk stopped somewhere other than the step into 0N")
+        XCTAssertEqual(try cachedSquareWidths(at: urls[urls.count - 1], version: version),
+                       expectedSquareWidths(sizesCount),
+                       "the upgrade from 0C did not carry every set of sizes to \(version.rawValue)")
 
         for url in urls {
             NSPersistentStoreCoordinator.destroyStore(at: url)
