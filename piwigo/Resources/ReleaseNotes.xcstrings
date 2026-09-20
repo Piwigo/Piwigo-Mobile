@@ -13626,6 +13626,131 @@
           }
         }
       }
+    },
+    "v4.4.2_text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإصدار 4.4.2\n\n• إضافة الترجمة التشيكية والبرتغالية والأوكرانية\n• إعادة محاولة عمليات النقل التي قطعها خطأ في الخادم أو استجابة غير صالحة\n• إصلاح ترحيل البيانات المحفوظة في الإصدار 3.2 وما قبله\n• تصحيح عدد الصور المعروض في تذييل الألبومات\n• الدعوة إلى تحديث خوادم Piwigo الأقدم من الإصدار 16\n• إصلاح الأعطال وتحسين الواجهة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 4.4.2\n\n• Přidává český, portugalský a ukrajinský překlad\n• Opakuje přenosy přerušené chybou serveru nebo neplatnou odpovědí\n• Opravuje migraci dat uložených ve verzi 3.2 a starších\n• Opravuje počet fotek zobrazený v zápatí alb\n• Vyzývá k aktualizaci serverů Piwigo starších než verze 16\n• Opravuje pády a vylepšuje rozhraní"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.4.2\n\n• Tilføjer tjekkisk, portugisisk og ukrainsk oversættelse\n• Gentager overførsler afbrudt af en serverfejl eller et ugyldigt svar\n• Retter migrationen af data gemt i version 3.2 og tidligere\n• Retter antallet af billeder i albummernes sidefod\n• Opfordrer til at opdatere Piwigo-servere ældre end version 16\n• Retter nedbrud og forbedrer brugerfladen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.4.2\n\n• Fügt tschechische, portugiesische und ukrainische Übersetzungen hinzu\n• Wiederholt Übertragungen, die durch einen Serverfehler oder eine ungültige Antwort abgebrochen wurden\n• Behebt die Migration von Daten aus Version 3.2 und früher\n• Korrigiert die Anzahl der Fotos in der Fußzeile der Alben\n• Empfiehlt die Aktualisierung von Piwigo-Servern älter als Version 16\n• Behebt Abstürze und verbessert die Benutzeroberfläche"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.4.2\n\n• Adds Czech, Portuguese and Ukrainian translations\n• Retries the transfers interrupted by a server error or an invalid response\n• Fixes the migration of data stored by version 3.2 and earlier\n• Corrects the number of photos presented in album footers\n• Invites to update Piwigo servers older than version 16\n• Fixes crashes and improves the interface"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión 4.4.2\n\n• Añade las traducciones al checo, portugués y ucraniano\n• Reintenta las transferencias interrumpidas por un error del servidor o una respuesta no válida\n• Corrige la migración de los datos guardados en la versión 3.2 y anteriores\n• Corrige el número de fotos mostrado en el pie de los álbumes\n• Invita a actualizar los servidores Piwigo anteriores a la versión 16\n• Corrige bloqueos y mejora la interfaz"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.4.2\n\n• Ajoute les traductions en tchèque, portugais et ukrainien\n• Relance les transferts interrompus par une erreur du serveur ou une réponse invalide\n• Corrige la migration des données enregistrées avec la version 3.2 et antérieures\n• Corrige le nombre de photos présenté dans le pied des albums\n• Invite à mettre à jour les serveurs Piwigo antérieurs à la version 16\n• Corrige des plantages et améliore l'interface"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4.4.2-es verzió\n\n• Cseh, portugál és ukrán fordítást ad hozzá\n• Újrapróbálja a kiszolgálóhiba vagy érvénytelen válasz miatt megszakadt átviteleket\n• Javítja a 3.2-es és korábbi verziókban tárolt adatok migrációját\n• Javítja az albumok láblécében megjelenő fotószámot\n• A 16-osnál régebbi Piwigo kiszolgálók frissítésére ösztönöz\n• Összeomlások javítása és a kezelőfelület fejlesztése"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versi 4.4.2\n\n• Menambahkan terjemahan bahasa Ceko, Portugis, dan Ukraina\n• Mengulang transfer yang terputus oleh kesalahan server atau respons tidak valid\n• Memperbaiki migrasi data yang disimpan oleh versi 3.2 dan sebelumnya\n• Memperbaiki jumlah foto yang ditampilkan di footer album\n• Menganjurkan pembaruan server Piwigo yang lebih lama dari versi 16\n• Memperbaiki crash dan meningkatkan antarmuka"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versione 4.4.2\n\n• Aggiunge le traduzioni in ceco, portoghese e ucraino\n• Ritenta i trasferimenti interrotti da un errore del server o da una risposta non valida\n• Corregge la migrazione dei dati salvati con la versione 3.2 e precedenti\n• Corregge il numero di foto mostrato nel piè di pagina degli album\n• Invita ad aggiornare i server Piwigo precedenti alla versione 16\n• Corregge gli arresti anomali e migliora l'interfaccia"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バージョン 4.4.2\n\n• チェコ語、ポルトガル語、ウクライナ語への翻訳を追加\n• サーバーエラーや不正な応答で中断した転送を再試行\n• バージョン 3.2 以前に保存されたデータの移行を修正\n• アルバムのフッターに表示される写真の数を修正\n• バージョン 16 より古い Piwigo サーバーの更新を案内\n• クラッシュの修正とインターフェイスの改善"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versie 4.4.2\n\n• Voegt Tsjechische, Portugese en Oekraïense vertalingen toe\n• Probeert overdrachten die door een serverfout of een ongeldig antwoord zijn afgebroken opnieuw\n• Corrigeert de migratie van gegevens uit versie 3.2 en eerder\n• Corrigeert het aantal foto's in de voettekst van albums\n• Nodigt uit om Piwigo-servers ouder dan versie 16 bij te werken\n• Lost crashes op en verbetert de interface"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wersja 4.4.2\n\n• Dodaje tłumaczenie czeskie, portugalskie i ukraińskie\n• Ponawia transfery przerwane błędem serwera lub nieprawidłową odpowiedzią\n• Poprawia migrację danych zapisanych w wersji 3.2 i starszych\n• Poprawia liczbę zdjęć wyświetlaną w stopce albumów\n• Zachęca do aktualizacji serwerów Piwigo starszych niż wersja 16\n• Poprawki awarii i usprawnienia interfejsu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.4.2\n\n• Adiciona as traduções para checo, português e ucraniano\n• Repete as transferências interrompidas por um erro do servidor ou uma resposta inválida\n• Corrige a migração dos dados salvos na versão 3.2 e anteriores\n• Corrige o número de fotos apresentado no rodapé dos álbuns\n• Convida a atualizar os servidores Piwigo anteriores à versão 16\n• Corrige falhas e melhora a interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.4.2\n\n• Adiciona as traduções para checo, português e ucraniano\n• Repete as transferências interrompidas por um erro do servidor ou uma resposta inválida\n• Corrige a migração dos dados guardados na versão 3.2 e anteriores\n• Corrige o número de fotografias apresentado no rodapé dos álbuns\n• Convida a atualizar os servidores Piwigo anteriores à versão 16\n• Corrige falhas e melhora a interface"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версия 4.4.2\n\n• Добавлены чешский, португальский и украинский переводы\n• Повторяются передачи, прерванные ошибкой сервера или неверным ответом\n• Исправлена миграция данных, сохранённых в версии 3.2 и более ранних\n• Исправлено количество фото в нижнем колонтитуле альбомов\n• Предлагается обновить серверы Piwigo старше версии 16\n• Исправлены сбои и улучшен интерфейс"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.4.2\n\n• Lägger till tjeckisk, portugisisk och ukrainsk översättning\n• Gör om överföringar som avbrutits av ett serverfel eller ett ogiltigt svar\n• Rättar migreringen av data som sparats i version 3.2 och tidigare\n• Rättar antalet foton i albumens sidfot\n• Uppmanar till att uppdatera Piwigo-servrar äldre än version 16\n• Fixar krascher och förbättrar gränssnittet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 4.4.2\n\n• Додає чеський, португальський та український переклади\n• Повторює передавання, перервані помилкою сервера або хибною відповіддю\n• Виправляє перенесення даних, збережених у версії 3.2 та давніших\n• Виправляє кількість фото в нижньому колонтитулі альбомів\n• Пропонує оновити сервери Piwigo, старіші за версію 16\n• Виправляє збої та покращує інтерфейс"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 4.4.2\n\n• 新增捷克语、葡萄牙语和乌克兰语翻译\n• 重试因服务器错误或无效响应而中断的传输\n• 修正 3.2 及更早版本所存数据的迁移\n• 修正相册页脚显示的照片数量\n• 提示更新版本低于 16 的 Piwigo 服务器\n• 修复崩溃问题并改进界面"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 4.4.2\n\n• 新增捷克語、葡萄牙語與烏克蘭語翻譯\n• 重試因伺服器錯誤或無效回應而中斷的傳輸\n• 修正 3.2 及更早版本所存資料的轉移\n• 修正相簿頁尾顯示的照片數量\n• 提示更新版本低於 16 的 Piwigo 伺服器\n• 修復當機問題並改進介面"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"
