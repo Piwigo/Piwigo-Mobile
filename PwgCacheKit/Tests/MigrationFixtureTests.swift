@@ -84,9 +84,34 @@ final class MigrationFixtureTests: XCTestCase {
         (.version0O, .version0P),   // AlbumToAlbumMigrationPolicy_Copy
     ]
 
+    /// Steps whose mapping model wires a `Tag` migration policy.
+    /// Every one of them copies the tag unchanged except `0O → 0P`, which renames
+    /// `tagId` to `pwgID` and `tagName` to `name` — a rename the mapping model performs
+    /// on its own, since that step still runs the shared copy policy.
+    ///
+    /// `09 → 0C` is missing on purpose: `TagToTagMigrationPolicy_09_to_0C` builds the
+    /// Server instance from `ServerVars.shared.serverPath`, which reads the app group
+    /// `UserDefaults`, and that suite is named after `Bundle.main.bundleIdentifier` —
+    /// nil-crashing in the test process, which is not the app. Covering it needs a test
+    /// host, not another fixture.
+    private static let tagSteps: [(source: DataMigrationVersion, destination: DataMigrationVersion)] = [
+        (.version0B, .version0C),   // TagToTagMigrationPolicy_Copy
+        (.version0F, .version0H),   // TagToTagMigrationPolicy_Copy
+        (.version0G, .version0H),   // TagToTagMigrationPolicy_Copy
+        (.version0H, .version0J),   // TagToTagMigrationPolicy_Copy
+        (.version0I, .version0J),   // TagToTagMigrationPolicy_Copy
+        (.version0J, .version0L),   // TagToTagMigrationPolicy_Copy
+        (.version0K, .version0L),   // TagToTagMigrationPolicy_Copy
+        (.version0L, .version0N),   // TagToTagMigrationPolicy_Copy
+        (.version0M, .version0N),   // TagToTagMigrationPolicy_Copy
+        (.version0N, .version0O),   // TagToTagMigrationPolicy_Copy
+        (.version0O, .version0P),   // TagToTagMigrationPolicy_Copy
+    ]
+
     private let uploadCount = 3
     private let imageCount = 3
     private let albumCount = 3
+    private let tagCount = 3
 
     // MARK: - Helpers
 
@@ -164,6 +189,34 @@ final class MigrationFixtureTests: XCTestCase {
             album.setValue(Int32(index), forKey: "pwgID")
             album.setValue("Album \(index)", forKey: "name")
         }
+    }
+
+    /**
+     A store of `tags` tags of the given model version.
+
+     `0P` renames `tagId` to `pwgID` and `tagName` to `name`, so the fixture asks the
+     entity which pair it holds rather than assuming one.
+     */
+    private func makeTagStore(version: DataMigrationVersion, tags: Int) throws -> URL {
+        try makeStore(version: version, entityName: "Tag", rows: tags) { tag, index in
+            let attributes = tag.entity.attributesByName
+            tag.setValue(Int32(index + 100), forKey: attributes["pwgID"] != nil ? "pwgID" : "tagId")
+            tag.setValue("tag-\(index)", forKey: attributes["name"] != nil ? "name" : "tagName")
+        }
+    }
+
+    /// The name of every tag held by a store, whichever attribute carries it.
+    private func cachedTagNames(at url: URL, version: DataMigrationVersion) throws -> [String] {
+        try withRows(at: url, version: version, entityName: "Tag") { tags in
+            tags.compactMap { tag in
+                let key = tag.entity.attributesByName["name"] != nil ? "name" : "tagName"
+                return tag.value(forKey: key) as? String
+            }.sorted()
+        }
+    }
+
+    private func expectedTagNames(_ count: Int) -> [String] {
+        (0..<count).map { "tag-\($0)" }.sorted()
     }
 
     /// The `uuid` of every instance of an entity held by a store, duplicates included.
@@ -543,6 +596,77 @@ final class MigrationFixtureTests: XCTestCase {
         XCTAssertEqual(try cachedUUIDs(at: urls[urls.count - 1], version: version, entityName: "Album"),
                        expectedUUIDs("album", albumCount),
                        "the upgrade from 0F did not carry every album to \(version.rawValue)")
+
+        for url in urls {
+            NSPersistentStoreCoordinator.destroyStore(at: url)
+        }
+    }
+
+    // MARK: - Tag
+
+    /// No step carrying a Tag policy adds or drops tags.
+    func testTagsSurviveEachStepUnchanged() throws {
+        for (source, destination) in Self.tagSteps {
+            let sourceURL = try makeTagStore(version: source, tags: tagCount)
+            let destinationURL = try migrate(sourceURL, from: source, to: destination)
+            XCTAssertEqual(try cachedTagNames(at: destinationURL, version: destination),
+                           expectedTagNames(tagCount),
+                           """
+                           \(source.rawValue) ► \(destination.rawValue) changed the \
+                           number of tags, or lost the name of one.
+                           """)
+            NSPersistentStoreCoordinator.destroyStore(at: sourceURL)
+            NSPersistentStoreCoordinator.destroyStore(at: destinationURL)
+        }
+    }
+
+    /**
+     `0O → 0P` renames `tagId` to `pwgID` and `tagName` to `name`, and both values have
+     to arrive intact.
+
+     Xcode has no record of a renamed attribute unless the destination model carries a
+     `renamingIdentifier`, so regenerating this mapping model makes it guess the source
+     key. On 2026-08-21 it guessed `Tag.pwgID ← $source.id`, a key no `0O` tag has.
+     `MigrationChainTests` now catches a key path which the source model does not
+     define; this catches a key path which exists but holds the wrong value.
+     */
+    func testTagIdentifiersAreRenamedBy0OTo0P() throws {
+        let sourceURL = try makeTagStore(version: .version0O, tags: tagCount)
+        let destinationURL = try migrate(sourceURL, from: .version0O, to: .version0P)
+
+        try withRows(at: destinationURL, version: .version0P, entityName: "Tag") { tags in
+            XCTAssertEqual(tags.count, tagCount)
+            let byName = Dictionary(uniqueKeysWithValues: try tags.map {
+                (try XCTUnwrap($0.value(forKey: "name") as? String), $0)
+            })
+            for index in 0..<tagCount {
+                let tag = try XCTUnwrap(byName["tag-\(index)"],
+                                       "0O ► 0P lost the tagName of tag \(index)")
+                XCTAssertEqual(tag.value(forKey: "pwgID") as? Int32, Int32(index + 100),
+                               "0O ► 0P did not carry tagId into pwgID")
+            }
+        }
+
+        NSPersistentStoreCoordinator.destroyStore(at: sourceURL)
+        NSPersistentStoreCoordinator.destroyStore(at: destinationURL)
+    }
+
+    /// The whole chain from `0A`, the oldest model this target can migrate a tag through,
+    /// to the current one. `09` is excluded for the reason given on `tagSteps`.
+    func testTagsSurviveTheUpgradeFrom0A() throws {
+        var version = DataMigrationVersion.version0A
+        var urls = [try makeTagStore(version: version, tags: tagCount)]
+
+        while let next = version.nextVersion() {
+            urls.append(try migrate(urls[urls.count - 1], from: version, to: next))
+            version = next
+        }
+
+        XCTAssertEqual(version, DataMigrationVersion.current,
+                       "nextVersion() stopped before the current model")
+        XCTAssertEqual(try cachedTagNames(at: urls[urls.count - 1], version: version),
+                       expectedTagNames(tagCount),
+                       "the upgrade from 0A did not carry every tag to \(version.rawValue)")
 
         for url in urls {
             NSPersistentStoreCoordinator.destroyStore(at: url)
