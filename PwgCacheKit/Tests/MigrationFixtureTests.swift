@@ -88,13 +88,8 @@ final class MigrationFixtureTests: XCTestCase {
     /// Every one of them copies the tag unchanged except `0O → 0P`, which renames
     /// `tagId` to `pwgID` and `tagName` to `name` — a rename the mapping model performs
     /// on its own, since that step still runs the shared copy policy.
-    ///
-    /// `09 → 0C` is missing on purpose: `TagToTagMigrationPolicy_09_to_0C` builds the
-    /// Server instance from `ServerVars.shared.serverPath`, which reads the app group
-    /// `UserDefaults`, and that suite is named after `Bundle.main.bundleIdentifier` —
-    /// nil-crashing in the test process, which is not the app. Covering it needs a test
-    /// host, not another fixture.
     private static let tagSteps: [(source: DataMigrationVersion, destination: DataMigrationVersion)] = [
+        (.version09, .version0C),   // TagToTagMigrationPolicy_09_to_0C
         (.version0B, .version0C),   // TagToTagMigrationPolicy_Copy
         (.version0F, .version0H),   // TagToTagMigrationPolicy_Copy
         (.version0G, .version0H),   // TagToTagMigrationPolicy_Copy
@@ -108,21 +103,11 @@ final class MigrationFixtureTests: XCTestCase {
         (.version0O, .version0P),   // TagToTagMigrationPolicy_Copy
     ]
 
-    /// Steps whose mapping model wires a `Sizes` migration policy and can run here.
+    /// Steps whose mapping model wires a `Sizes` migration policy.
     ///
-    /// Two families are missing, neither of them by oversight:
-    ///
-    /// `0B → 0C` runs `ImageToSizesMigrationPolicy_0B_to_0C`, which builds the Sizes out
-    /// of an Image rather than out of a Sizes, so it needs an Image fixture.
-    ///
-    /// `0L → 0N` and `0M → 0N`, the steps adding `xxxlarge` and `xxxxlarge`, run
-    /// `SizesToSizesMigrationPolicy_0M_to_0N`, which seeds them with
-    /// `Resolution(imageWidth: 1, imageHeight: 1, imagePath: nil)`. That initialiser
-    /// stores `NSURL(string: "")`, which is *not* nil, so writing the value sends
-    /// `ResolutionValueTransformer` down its URL branch and into
-    /// `ServerVars.shared.service` — the app group `UserDefaults`, named after
-    /// `Bundle.main.bundleIdentifier`, which nil-crashes outside the app. Covering those
-    /// two steps needs a test host, not another fixture.
+    /// `0B → 0C` is missing on purpose: it runs `ImageToSizesMigrationPolicy_0B_to_0C`,
+    /// which builds the Sizes out of an Image rather than out of a Sizes, so it needs an
+    /// Image fixture and belongs with the Image steps.
     private static let sizesSteps: [(source: DataMigrationVersion, destination: DataMigrationVersion)] = [
         (.version0F, .version0H),   // SizesToSizesMigrationPolicy_Copy
         (.version0G, .version0H),   // SizesToSizesMigrationPolicy_Copy
@@ -130,6 +115,8 @@ final class MigrationFixtureTests: XCTestCase {
         (.version0I, .version0J),   // SizesToSizesMigrationPolicy_Copy
         (.version0J, .version0L),   // SizesToSizesMigrationPolicy_Copy
         (.version0K, .version0L),   // SizesToSizesMigrationPolicy_Copy
+        (.version0L, .version0N),   // SizesToSizesMigrationPolicy_0M_to_0N
+        (.version0M, .version0N),   // SizesToSizesMigrationPolicy_0M_to_0N
         (.version0N, .version0O),   // SizesToSizesMigrationPolicy_Copy
         (.version0O, .version0P),   // SizesToSizesMigrationPolicy_Copy
     ]
@@ -716,10 +703,9 @@ final class MigrationFixtureTests: XCTestCase {
         NSPersistentStoreCoordinator.destroyStore(at: destinationURL)
     }
 
-    /// The whole chain from `0A`, the oldest model this target can migrate a tag through,
-    /// to the current one. `09` is excluded for the reason given on `tagSteps`.
-    func testTagsSurviveTheUpgradeFrom0A() throws {
-        var version = DataMigrationVersion.version0A
+    /// The whole chain from `09`, the oldest model holding tags, to the current one.
+    func testTagsSurviveTheUpgradeFrom09() throws {
+        var version = DataMigrationVersion.version09
         var urls = [try makeTagStore(version: version, tags: tagCount)]
 
         while let next = version.nextVersion() {
@@ -731,7 +717,7 @@ final class MigrationFixtureTests: XCTestCase {
                        "nextVersion() stopped before the current model")
         XCTAssertEqual(try cachedTagNames(at: urls[urls.count - 1], version: version),
                        expectedTagNames(tagCount),
-                       "the upgrade from 0A did not carry every tag to \(version.rawValue)")
+                       "the upgrade from 09 did not carry every tag to \(version.rawValue)")
 
         for url in urls {
             NSPersistentStoreCoordinator.destroyStore(at: url)
@@ -792,19 +778,41 @@ final class MigrationFixtureTests: XCTestCase {
         }
     }
 
-    /// The chain from `0C`, the oldest model holding a Sizes, as far as this target can
-    /// take it: the step into `0N` cannot run here, for the reason given on `sizesSteps`.
-    func testSizesSurviveTheUpgradeFrom0CTo0L() throws {
+    /// `0N` adds two larger sizes, which the steps reaching it seed with a 1×1 resolution.
+    func testLargerSizesAreInitialisedByTheStepsReaching0N() throws {
+        for source in [DataMigrationVersion.version0L, .version0M] {
+            let sourceURL = try makeSizesStore(version: source, sizes: sizesCount)
+            let destinationURL = try migrate(sourceURL, from: source, to: .version0N)
+
+            try withRows(at: destinationURL, version: .version0N, entityName: "Sizes") { rows in
+                XCTAssertEqual(rows.count, sizesCount)
+                for row in rows {
+                    for name in ["xxxlarge", "xxxxlarge"] {
+                        let resolution = try XCTUnwrap(row.value(forKey: name) as? Resolution,
+                                                      "\(source.rawValue) ► 0N left \(name) nil")
+                        XCTAssertEqual(resolution.width, 1)
+                        XCTAssertEqual(resolution.height, 1)
+                    }
+                }
+            }
+
+            NSPersistentStoreCoordinator.destroyStore(at: sourceURL)
+            NSPersistentStoreCoordinator.destroyStore(at: destinationURL)
+        }
+    }
+
+    /// The whole chain from `0C`, the oldest model holding a Sizes, to the current one.
+    func testSizesSurviveTheUpgradeFrom0C() throws {
         var version = DataMigrationVersion.version0C
         var urls = [try makeSizesStore(version: version, sizes: sizesCount)]
 
-        while let next = version.nextVersion(), next != .version0N {
+        while let next = version.nextVersion() {
             urls.append(try migrate(urls[urls.count - 1], from: version, to: next))
             version = next
         }
 
-        XCTAssertEqual(version, DataMigrationVersion.version0L,
-                       "the walk stopped somewhere other than the step into 0N")
+        XCTAssertEqual(version, DataMigrationVersion.current,
+                       "nextVersion() stopped before the current model")
         XCTAssertEqual(try cachedSquareWidths(at: urls[urls.count - 1], version: version),
                        expectedSquareWidths(sizesCount),
                        "the upgrade from 0C did not carry every set of sizes to \(version.rawValue)")
