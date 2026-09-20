@@ -15,9 +15,21 @@ extension UserDefaults: @retroactive @unchecked Sendable {
     /// - Development: one chosen by the developer
     /// - Release: the official group.org.piwigo
     public static let appGroup = { () -> String in
-        let bundleID = Bundle.main.bundleIdentifier!.components(separatedBy: ".")
-        let pos = bundleID.firstIndex(of: "piwigo")
-        let mainBundleID = bundleID[0...pos!].joined(separator: ".")
+        /// The group is derived from the bundle identifier so that the app and its extensions
+        /// share the same one: org.piwigo and org.piwigo.shareExtension both give group.org.piwigo.
+        /// A bundle which does not name piwigo is not one of ours. In a shipped target that can
+        /// only be a misconfiguration, which must be loud, but the xctest runner is such a bundle
+        /// too — it is com.apple.dt.xctest.tool — so the tests are given the group of the app.
+        let bundleID = (Bundle.main.bundleIdentifier ?? "").components(separatedBy: ".")
+        guard let pos = bundleID.firstIndex(of: "piwigo")
+        else {
+#if DEBUG
+            return "group.net.lelievre-berna.piwigo"
+#else
+            preconditionFailure("Could not derive the app group from \(Bundle.main.bundleIdentifier ?? "no bundle identifier")")
+#endif
+        }
+        let mainBundleID = bundleID[0...pos].joined(separator: ".")
         return "group." + mainBundleID
     }()
     
