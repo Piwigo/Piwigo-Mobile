@@ -69058,7 +69058,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Das Video ist nur bei Live Photos verfügbar, die in der Fotomediathek gespeichert sind. Ein in Nachrichten empfangenes Live Photo wird zum Beispiel als Foto hochgeladen, solange es nicht gesichert wurde."
+            "value" : "Das Video ist nur für Live-Fotos verfügbar, die in der Fotobibliothek gespeichert sind. Ein Live-Foto, das du beispielsweise über „Nachrichten“ erhältst, wird zunächst als Foto hochgeladen, bis du es speicherst."
           }
         },
         "en" : {
@@ -69070,7 +69070,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "El vídeo sólo está disponible para las Live Photos guardadas en la fototeca. Una Live Photo recibida en Mensajes, por ejemplo, se sube como foto mientras no se guarde."
+            "value" : "El vídeo sólo está disponible para las Live Photos guardadas en la Biblioteca de Fotografías. Una Live Photo recibida en Mensajes, por ejemplo, se sube como foto mientras no se guarde."
           }
         },
         "fr" : {
