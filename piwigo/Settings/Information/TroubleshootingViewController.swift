@@ -42,7 +42,6 @@ class TroubleshootingViewController: UIViewController {
 
         // Button for returning to albums/images
         clearBarButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(deleteJSONfiles))
-        clearBarButton?.isEnabled = false
         clearBarButton?.accessibilityIdentifier = "trash"
         
         // Fetch data
@@ -76,7 +75,7 @@ class TroubleshootingViewController: UIViewController {
         applyColorPalette()
         
         // Set navigation buttons
-        navigationItem.setRightBarButtonItems([clearBarButton].compactMap { $0 }, animated: true)
+        updateClearBarButton(animated: true)
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
@@ -195,7 +194,7 @@ class TroubleshootingViewController: UIViewController {
         getJSONfiles.completionBlock = {
             DispatchQueue.main.async {
                 self.tableView?.reloadData()
-                self.clearBarButton?.isEnabled = !self.JSONfiles.isEmpty
+                self.updateClearBarButton(animated: true)
             }
         }
         
@@ -203,6 +202,13 @@ class TroubleshootingViewController: UIViewController {
         queue.maxConcurrentOperationCount = .max   // Make it a serial queue for debugging with 1
         queue.qualityOfService = .userInteractive
         queue.addOperations([getLogs, getJSONfiles], waitUntilFinished: false)
+    }
+    
+    @MainActor
+    private func updateClearBarButton(animated: Bool) {
+        // Only present the trash button when there are JSON files to delete
+        let items = JSONfiles.isEmpty ? [] : [clearBarButton].compactMap { $0 }
+        navigationItem.setRightBarButtonItems(items, animated: animated)
     }
     
     @MainActor
@@ -219,7 +225,7 @@ class TroubleshootingViewController: UIViewController {
             hideHUD {
                 self.JSONfiles = []
                 self.tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
-                self.clearBarButton?.isEnabled = !self.JSONfiles.isEmpty
+                self.updateClearBarButton(animated: true)
             }
         } else {
             // Remove files
@@ -229,7 +235,7 @@ class TroubleshootingViewController: UIViewController {
             // Reload section
             self.JSONfiles = []
             self.tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
-            self.clearBarButton?.isEnabled = !self.JSONfiles.isEmpty
+            self.updateClearBarButton(animated: true)
         }
     }
 }
