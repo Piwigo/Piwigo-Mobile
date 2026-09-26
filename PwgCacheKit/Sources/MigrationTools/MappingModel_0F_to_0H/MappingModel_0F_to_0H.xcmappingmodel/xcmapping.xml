@@ -10,9 +10,9 @@
             <plist version="1.0">
                 <dict>
                     <key>NSPersistenceFrameworkVersion</key>
-                    <integer>1629</integer>
+                    <integer>1526</integer>
                     <key>NSPersistenceMaximumFrameworkVersion</key>
-                    <integer>1629</integer>
+                    <integer>1526</integer>
                     <key>NSStoreModelVersionChecksumKey</key>
                     <string>bMpud663vz0bXQE24C6Rh4MvJ5jVnzsD2sI3njZkKbc=</string>
                     <key>NSStoreModelVersionHashes</key>
