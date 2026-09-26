@@ -64,7 +64,7 @@ extension SettingsViewController: UITableViewDelegate
             return CGFloat(1)
         } else {
             return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
-                                                            width: tableView.frame.size.width)
+                                                     width: tableView.frame.size.width)
         }
     }
     

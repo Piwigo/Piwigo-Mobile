@@ -270,7 +270,7 @@ extension TroubleshootingViewController: UITableViewDataSource
         switch indexPath.section {
         case 0 /* Logs */:
             if pwgLogs.isEmpty {
-                cell.textLabel?.text = "None"
+                cell.textLabel?.text = String(localized: "None", comment: "None")
                 cell.accessoryType = UITableViewCell.AccessoryType.none
             }
             else if let entry = pwgLogs[indexPath.row].first {
@@ -282,12 +282,12 @@ extension TroubleshootingViewController: UITableViewDataSource
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
             }
             else {
-                cell.textLabel?.text = "None"
+                cell.textLabel?.text = String(localized: "None", comment: "None")
                 cell.accessoryType = UITableViewCell.AccessoryType.none
             }
         case 1 /* Invalid JSON data */:
             if JSONfiles.isEmpty {
-                cell.textLabel?.text = "None"
+                cell.textLabel?.text = String(localized: "None", comment: "None")
                 cell.accessoryType = UITableViewCell.AccessoryType.none
             }
             else {
@@ -326,7 +326,8 @@ extension TroubleshootingViewController: UITableViewDelegate
         var title = "", text = ""
         switch section {
         case 0 /* Logs */:
-            title = String(localized: "settings_logs", comment: "Logs")
+            title = String(format: "%@\n", String(localized: "settings_logs", comment: "Logs"))
+            text = String(localized: "settings_logsPeriod", comment: "Entries recorded during the last 24 hours")
         case 1 /* Invalid JSON data */:
             title = String(localized: "settings_JSONinvalid", comment: "Invalid JSON data")
         default:
@@ -341,7 +342,7 @@ extension TroubleshootingViewController: UITableViewDelegate
             return CGFloat(1)
         } else {
             return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
-                                                            width: tableView.frame.size.width)
+                                                     width: tableView.frame.size.width)
         }
     }
     
