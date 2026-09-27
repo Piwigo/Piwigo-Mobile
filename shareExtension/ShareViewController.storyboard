@@ -87,10 +87,10 @@
                         <viewLayoutGuide key="safeArea" id="1Xd-am-t49"/>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="1Xd-am-t49" firstAttribute="trailing" secondItem="2gQ-IL-sg9" secondAttribute="trailing" id="66e-wX-aRb"/>
+                            <constraint firstItem="wbc-yd-nQP" firstAttribute="trailing" secondItem="2gQ-IL-sg9" secondAttribute="trailing" id="66e-wX-aRb"/>
                             <constraint firstAttribute="top" secondItem="2gQ-IL-sg9" secondAttribute="top" id="TXR-qI-xze"/>
                             <constraint firstItem="2gQ-IL-sg9" firstAttribute="bottom" secondItem="wbc-yd-nQP" secondAttribute="bottom" id="la2-MV-k5y"/>
-                            <constraint firstItem="2gQ-IL-sg9" firstAttribute="leading" secondItem="1Xd-am-t49" secondAttribute="leading" id="yoG-J8-HVD"/>
+                            <constraint firstItem="2gQ-IL-sg9" firstAttribute="leading" secondItem="wbc-yd-nQP" secondAttribute="leading" id="yoG-J8-HVD"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="OG9-WZ-FHd"/>
