@@ -44,7 +44,7 @@ Your Piwigo server will generate a poster of each uploaded video with [FFmpeg](h
 If you would like to see Piwigo Mobile translated into your language, [just get in touch](iOS@piwigo.org?subject=Translation) and we'll get you access to the [Crowdin](https://crowdin.com/project/piwigo-mobile) localization platform.
 
 Piwigo Mobile is available from the [App Store](https://itunes.apple.com/app/piwigo/id472225196?mt=8) in the following languages:
-- [Czech](https://crowdin.com/project/piwigo-mobile/cs), [Portuguese (Brazil)](https://crowdin.com/project/piwigo-mobile/pt-BR), [Portuguese (Portugal)](https://crowdin.com/project/piwigo-mobile/pt-PT) and [Ukrainian](https://crowdin.com/project/piwigo-mobile/uk) since [4.4.2](https://github.com/Piwigo/Piwigo-Mobile/releases/tag/v4.4.2),
+- [Czech](https://crowdin.com/project/piwigo-mobile/cs), [Portuguese (Brazil)](https://crowdin.com/project/piwigo-mobile/pt-BR), [Portuguese (Portugal)](https://crowdin.com/project/piwigo-mobile/pt-PT) and [Ukrainian](https://crowdin.com/project/piwigo-mobile/uk) since [v4.4.2](https://github.com/Piwigo/Piwigo-Mobile/releases/tag/v4.4.2),
 - [Hungarian](https://crowdin.com/project/piwigo-mobile/hu) since [v2.7.1](https://github.com/Piwigo/Piwigo-Mobile/releases/tag/v2.7.1),
 - [Chinese (simplified)](https://crowdin.com/project/piwigo-mobile/zh-CN#), [Russian](https://crowdin.com/project/piwigo-mobile/ru#) and [Spanish (Spain)](https://crowdin.com/project/piwigo-mobile/es-ES#) since [v2.4.7](https://github.com/Piwigo/Piwigo-Mobile/releases/tag/v2.4.7),
 - [Italian](https://crowdin.com/project/piwigo-mobile/it#) since [v2.2.6](https://github.com/Piwigo/Piwigo-Mobile/releases/tag/v2.2.6),
