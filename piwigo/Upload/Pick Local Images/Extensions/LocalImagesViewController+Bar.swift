@@ -58,29 +58,22 @@ extension LocalImagesViewController {
         // Right side of the navigation bar
         updateActionButton()
         if #available(iOS 26.0, *) {
-            switch view.traitCollection.userInterfaceIdiom {
-            case .phone:
+            if view.layoutTraitCollection.hasRegularWidthAndHeight == false {
                 navigationItem.rightBarButtonItems = [uploadBarButton, .space(),
                                                       actionBarButton].compactMap { $0 }
-            case .pad:
+            } else {
                 trashBarButton?.isEnabled = canDeleteUploadedImages() || canDeleteSelectedImages()
                 navigationItem.rightBarButtonItems = [uploadBarButton, .space(),
                                                       actionBarButton, trashBarButton].compactMap { $0 }
-            default:
-                preconditionFailure("!!! User interface not managed !!!")
             }
         }
         else {
-            switch view.traitCollection.userInterfaceIdiom {
-            case .phone:
+            if view.layoutTraitCollection.hasRegularWidthAndHeight == false {
                 navigationItem.rightBarButtonItems = [uploadBarButton, actionBarButton].compactMap { $0 }
-                
-            case .pad:
+            } else {
                 trashBarButton?.isEnabled = canDeleteUploadedImages() || canDeleteSelectedImages()
                 navigationItem.rightBarButtonItems = [uploadBarButton, actionBarButton,
                                                       trashBarButton].compactMap { $0 }
-            default:
-                preconditionFailure("!!! User interface not managed !!!")
             }
         }
     }
@@ -113,8 +106,7 @@ extension LocalImagesViewController {
         
         // There is no subtitle in landscape mode on iPhone
         var subtitle = ""
-        let orientation = view.currentInterfaceOrientation
-        if !(view.traitCollection.userInterfaceIdiom == .phone && orientation.isLandscape) {
+        if view.layoutTraitCollection.hasCompactHeight == false {
             let nberOfSelectedImages = count ?? selectedImages.compactMap{ $0 }.count
             switch nberOfSelectedImages {
             case 0:
@@ -185,10 +177,10 @@ extension LocalImagesViewController {
         /// - to choose one of the 4 sort options
         /// - to select new photos in the Photo Library if the user did not grant full access to the Photo Library,
         /// - to allow/disallow re-uploading photos,
-        /// - to delete photos already uploaded to the Piwigo server on iPhone only.
+        /// - to delete photos already uploaded to the Piwigo server when the trash button is not presented.
         var children: [UIMenuElement?] = [swapOrderAction(), groupMenu(),
                                           selectPhotosMenu(), reUploadAction()]
-        if view.traitCollection.userInterfaceIdiom == .phone {
+        if view.layoutTraitCollection.hasRegularWidthAndHeight == false {
             children.append(deleteMenu())
         }
         let updatedMenu = actionBarButton?.menu?.replacingChildren(children.compactMap({$0}))

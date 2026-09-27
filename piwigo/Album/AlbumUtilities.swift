@@ -24,15 +24,21 @@ enum pwgImageCollectionType {
 struct AlbumUtilities
 {
     // MARK: - Album/Images Collections | Common Methods
+    /// Size of the scene the app is showing, used when no view is provided.
+    /// The screen is not a reliable reference: the app may share it with other apps
+    /// (Split View, Stage Manager) and iPhone Duo has two of them.
+    @MainActor
+    static var sceneSize: CGSize {
+        // Falls back to the size of the smallest supported iPhone
+        return UIWindowScene.current?.coordinateSpace.bounds.size ?? CGSize(width: 320, height: 568)
+    }
+    
     @MainActor
     static func getSafeAreaSize(ofNavigationViewController viewController: UIViewController?) -> CGSize {
-        var safeAreaWidth: CGFloat = UIScreen.main.bounds.size.width
-        let safeAreaHeight: CGFloat = UIScreen.main.bounds.size.height
-        if let root = viewController {
-            safeAreaWidth = root.view.frame.size.width
-            safeAreaWidth -= root.view.safeAreaInsets.left + root.view.safeAreaInsets.right
-        }
-        return CGSize(width: safeAreaWidth, height: safeAreaHeight)
+        guard let view = viewController?.view
+        else { return sceneSize }
+        let safeAreaWidth = view.bounds.inset(by: view.safeAreaInsets).width
+        return CGSize(width: safeAreaWidth, height: view.windowBounds.height)
     }
     
     @MainActor
@@ -40,14 +46,7 @@ struct AlbumUtilities
         if let viewBounds = view?.bounds.inset(by: view?.safeAreaInsets ?? UIEdgeInsets.zero) {
             return viewBounds.size
         }
-        return UIScreen.main.bounds.size
-    }
-    
-    @MainActor
-    static func viewWidth(for view: UIView, pageSize: CGSize) -> CGFloat {
-        // Available width in portrait mode
-        let orientation = view.currentInterfaceOrientation
-        return orientation == .portrait ? pageSize.width : pageSize.height
+        return sceneSize
     }
     
     

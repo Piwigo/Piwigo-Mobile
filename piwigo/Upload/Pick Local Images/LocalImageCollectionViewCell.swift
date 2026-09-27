@@ -63,7 +63,7 @@ final class LocalImageCollectionViewCell: UICollectionViewCell {
                          && uploadLivePhotoAs == .both) ? 2 : 1
 
         // Image: retrieve data of right size and crop image
-        let retinaScale = Int(UIScreen.main.scale)
+        let retinaScale = Int(max(traitCollection.displayScale, 1.0))
         let retinaSquare = CGSize(width: thumbnailSize.width * CGFloat(retinaScale),
                                   height: thumbnailSize.height * CGFloat(retinaScale))
 

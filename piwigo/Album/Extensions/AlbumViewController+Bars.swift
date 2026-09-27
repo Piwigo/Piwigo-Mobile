@@ -73,8 +73,7 @@ extension AlbumViewController
             addAlbumBarButton = getAddAlbumBarButton()
             
             // What follows is user interface dependent
-            switch view.traitCollection.userInterfaceIdiom {
-            case .phone:
+            if view.layoutTraitCollection.hasRegularWidthAndHeight == false {
                 // Right side of the navigation bar
                 let items = [discoverBarButton]
                 navigationItem.setRightBarButtonItems(items, animated: animated)
@@ -94,8 +93,7 @@ extension AlbumViewController
                 // Gather buttons in toolbar
                 navigationController?.setToolbarHidden(false, animated: animated)
                 setToolbarItems(toolBarItems.compactMap { $0 }, animated: animated)
-                
-            case .pad:
+            } else {
                 // Right side of the navigation bar
                 navigationItem.preferredSearchBarPlacement = .integrated
                 var items = [discoverBarButton, addAlbumBarButton]
@@ -114,8 +112,6 @@ extension AlbumViewController
                 navigationController?.setToolbarHidden(true, animated: animated)
                 setToolbarItems(nil, animated: false)
                 
-            default:
-                preconditionFailure("!!! Interface not managed !!!")
             }
         }
         else {
@@ -136,8 +132,7 @@ extension AlbumViewController
             selectBarButton?.accessibilityLabel = String(localized: "categoryImageList_selectButton", comment: "Select")
             
             // What follows is user interface dependent
-            switch view.traitCollection.userInterfaceIdiom {
-            case .phone:
+            if view.layoutTraitCollection.hasRegularWidthAndHeight == false {
                 // Right side of the navigation bar
                 navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: animated)
 
@@ -164,8 +159,7 @@ extension AlbumViewController
                     navigationController?.setToolbarHidden(false, animated: animated)
                     setToolbarItems(toolBarItems.compactMap { $0 }, animated: animated)
                 }
-                
-            case .pad:
+            } else {
                 // Right side of the navigation bar
                 addAlbumBarButton = getAddAlbumBarButton()
                 addImageBarButton = getAddImageBarButton()
@@ -183,8 +177,6 @@ extension AlbumViewController
                 navigationController?.setToolbarHidden(true, animated: animated)
                 setToolbarItems(nil, animated: false)
 
-            default:
-                preconditionFailure("!!! Interface not managed !!!")
             }
         }
     }
@@ -193,8 +185,7 @@ extension AlbumViewController
     func updateBarsInModernPreviewMode() {
         if categoryId == pwgSmartAlbum.root.rawValue {
             // What follows is user interface dependent
-            switch view.traitCollection.userInterfaceIdiom {
-            case .phone:
+            if view.layoutTraitCollection.hasRegularWidthAndHeight == false {
                 // Prepare toolbar
                 navigationItem.preferredSearchBarPlacement = .integratedButton
                 let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
@@ -211,8 +202,7 @@ extension AlbumViewController
                 // Gather buttons in toolbar
                 navigationController?.setToolbarHidden(false, animated: true)
                 setToolbarItems(toolBarItems.compactMap { $0 }, animated: true)
-                
-            case .pad:
+            } else {
                 // Right side of the navigation bar
                 addAlbumBarButton = getAddAlbumBarButton()
                 navigationItem.preferredSearchBarPlacement = .integrated
@@ -228,8 +218,6 @@ extension AlbumViewController
                 // Gather buttons in navigation bar
                 navigationItem.setRightBarButtonItems(barItems.compactMap { $0 }, animated: true)
                 
-            default:
-                preconditionFailure("!!! Interface not managed !!!")
             }
         }
         else {
@@ -248,8 +236,7 @@ extension AlbumViewController
             selectBarButton?.menu = updatedMenu
             
             // What follows is user interface dependent
-            switch view.traitCollection.userInterfaceIdiom {
-            case .phone:
+            if view.layoutTraitCollection.hasRegularWidthAndHeight == false {
                 // Toolbar
                 if categoryId > 0 {
                     var toolBarItems: [UIBarButtonItem?] = [.space(), addAlbumBarButton, addImageBarButton]
@@ -265,8 +252,7 @@ extension AlbumViewController
                     navigationController?.setToolbarHidden(false, animated: true)
                     setToolbarItems(toolBarItems.compactMap { $0 }, animated: true)
                 }
-                
-            case .pad:
+            } else {
                 // Right side of the navigation bar
                 var barItems: [UIBarButtonItem?] = [selectBarButton, addImageBarButton, addAlbumBarButton]
                 
@@ -280,8 +266,6 @@ extension AlbumViewController
                 // Gather buttons in navigation bar
                 navigationItem.setRightBarButtonItems(barItems.compactMap({ $0 }), animated: true)
 
-            default:
-                preconditionFailure("!!! Interface not managed !!!")
             }
         }
     }
@@ -370,17 +354,14 @@ extension AlbumViewController
         // Share button depends on Piwigo server version, user role and image data
         shareBarButton = getShareBarButton()
 
-        // Interface depends on device and orientation
-        let orientation = view.currentInterfaceOrientation
-
         // Admin user can do everything except may be downloading images (i.e. sharing images)
         // Community user can only be allowed to edit properties of images he/she has uploaded.
         /// This requires 'user_id' and 'added_by' values of images for checking rights.
         /// 'user_id' is deduced after a first upload, unknown before or after a clear of the data cache
         if userData.hasEditRights(forImagesAddedToAlbum: categoryId, byUserWithIDs: selectedAddedByIDs) {
-            initBarsInSelectModeForAdmin(orientation: orientation)
+            initBarsInSelectModeForAdmin()
         } else {
-            initBarsInSelectModeForStdUserOrGuest(orientation: orientation)
+            initBarsInSelectModeForStdUserOrGuest()
         }
 
         // Set initial status
@@ -388,7 +369,7 @@ extension AlbumViewController
     }
     
     @MainActor
-    private func initBarsInSelectModeForAdmin(orientation: UIInterfaceOrientation) {
+    private func initBarsInSelectModeForAdmin() {
         // The action button proposes:
         /// - to edit image parameters
         /// - to rotate a photo clockwise or counterclockwise,
@@ -403,7 +384,7 @@ extension AlbumViewController
         actionBarButton?.accessibilityIdentifier = "actions"
         actionBarButton?.accessibilityLabel = String(localized: "moreOptions_title", comment: "More")
 
-        if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
+        if view.layoutTraitCollection.hasCompactWidthRegularHeight {
             // Left side of navigation bar
             navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
 
@@ -445,12 +426,12 @@ extension AlbumViewController
     }
     
     @MainActor
-    private func initBarsInSelectModeForStdUserOrGuest(orientation: UIInterfaceOrientation) {
+    private func initBarsInSelectModeForStdUserOrGuest() {
         // Left side of navigation bar
         navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
 
         // Right side of navigation bar
-        if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
+        if view.layoutTraitCollection.hasCompactWidthRegularHeight {
             // Remaining two buttons on the right side of the navigation bar
             navigationItem.setRightBarButtonItems([shareBarButton, favoriteBarButton].compactMap { $0 }, animated: true)
         } else {
@@ -552,10 +533,9 @@ extension AlbumViewController
         view?.window?.windowScene?.title = title
         
         // No subtitle when using acessibility category or on iPhone in landscape mode
-        let orientation = view.currentInterfaceOrientation
         let tooLargeFont = traitCollection.preferredContentSizeCategory >= .accessibilityMedium
         if (tooLargeFont && categoryId != AlbumVars.shared.defaultCategory) ||
-            (view.traitCollection.userInterfaceIdiom == .phone && orientation.isLandscape) {
+            view.layoutTraitCollection.hasCompactHeight {
             // Set title and subtitle
             if prefersLargeTitles {
                 navigationItem.subtitle = nil
@@ -640,9 +620,8 @@ extension AlbumViewController
         // There is no subtitle in landscape mode on iPhone
         // nor when using acessibility category
         var subtitle = ""
-        let orientation = view.currentInterfaceOrientation
         let isAccessibilityCategory = traitCollection.preferredContentSizeCategory.isAccessibilityCategory
-        if !(view.traitCollection.userInterfaceIdiom == .phone && orientation.isLandscape) {
+        if view.layoutTraitCollection.hasCompactHeight == false {
             if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) && !isAccessibilityCategory {
                 // Inform user that the app is fetching album data
                 if progress == 0 {

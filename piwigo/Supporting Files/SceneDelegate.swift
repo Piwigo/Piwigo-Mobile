@@ -73,6 +73,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
               let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
         
+        // Remember the scale of the display presenting the app for future initialisations
+        /// Read from the scene rather than from the main screen:
+        /// iPhone Duo presents the app on either of its two displays.
+        if windowScene.traitCollection.displayScale > 0 {
+            AppVars.shared.currentDeviceScale = windowScene.traitCollection.displayScale
+        }
+        
+        // Color palette depends on system settings
+        UITools.shared.applyColorPalette(for: windowScene.traitCollection.userInterfaceStyle)
+        
         // Get other existing scenes of the main screen
         let otherScenes = UIApplication.shared.connectedScenes
             .filter({($0.session.role == .windowApplication) &&

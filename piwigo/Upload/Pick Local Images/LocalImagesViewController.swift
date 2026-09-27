@@ -93,7 +93,7 @@ final class LocalImagesViewController: UIViewController
     
     var cancelBarButton: UIBarButtonItem?           // For cancelling the selection of images
     var uploadBarButton: UIBarButtonItem?           // for uploading selected images
-    var trashBarButton: UIBarButtonItem?            // For deleting uploaded images on iPad
+    var trashBarButton: UIBarButtonItem?            // For deleting uploaded images in regular width and height
     var actionBarButton: UIBarButtonItem?           // on iPhone:
                                                     //  - for reversing the sort order
                                                     //  - for grouping by day, week or month (or not)
@@ -195,10 +195,10 @@ final class LocalImagesViewController: UIViewController
         /// - to choose one of the 4 grouping options,
         /// - to select new photos in the Photo Library if the user did not grant full access to the Photo Library,
         /// - to allow/disallow re-uploading photos,
-        /// - and to delete photos already uploaded to the Piwigo server on iPhone only.
+        /// - and to delete photos already uploaded to the Piwigo server when the trash button is not presented.
         var children: [UIMenuElement?] = [swapOrderAction(), groupMenu(),
                                           selectPhotosMenu(), reUploadAction()]
-        if view.traitCollection.userInterfaceIdiom == .phone {
+        if view.layoutTraitCollection.hasRegularWidthAndHeight == false {
             children.append(deleteMenu())
         }
         let menu = UIMenu(title: "", children: children.compactMap({$0}))
@@ -211,11 +211,10 @@ final class LocalImagesViewController: UIViewController
         actionBarButton?.accessibilityIdentifier = "Action"
         actionBarButton?.accessibilityLabel = String(localized: "moreOptions_title", comment: "More")
 
-        if view.traitCollection.userInterfaceIdiom == .pad {
-            // The deletion of photos already uploaded to a Piwigo server is performed with this trash button.
-            trashBarButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(self.deleteUploadedImages))
-            trashBarButton?.isEnabled = false
-        }
+        // In regular width and height, the deletion of photos already uploaded to a Piwigo server
+        // is performed with this trash button. Created in all cases since size classes may change.
+        trashBarButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(self.deleteUploadedImages))
+        trashBarButton?.isEnabled = false
     }
     
     @MainActor

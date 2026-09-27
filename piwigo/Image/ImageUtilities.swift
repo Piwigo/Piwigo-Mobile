@@ -187,7 +187,9 @@ struct ImageUtilities
         // Determine the resolution of the screen
         // See https://iosref.com/res
         // See https://www.apple.com/iphone/compare/ and https://www.apple.com/ipad/compare/
-        let screenSize = UIScreen.main.bounds.size
+        /// The screen of the scene the app is showing, not the main screen:
+        /// iPhone Duo presents the app on either of its two displays.
+        let screenSize = UIWindowScene.current?.screen.bounds.size ?? AlbumUtilities.sceneSize
         let screenWidth = fmin(screenSize.width, screenSize.height) * pwgImageSize.maxZoomScale
         let scale = AppVars.shared.currentDeviceScale
 

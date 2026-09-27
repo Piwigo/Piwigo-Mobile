@@ -64,11 +64,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Migrate values to shared defaults
         migrateToSharedDefaults()
         
-        // Remember the natural scale associated with the integrated screen for future initialisations
-        AppVars.shared.currentDeviceScale = UIScreen.main.scale
-        
         // Color palette depends on system settings
-        UITools.shared.applyColorPalette(for: UIScreen.main.traitCollection.userInterfaceStyle)
+        UITools.shared.applyColorPalette(for: UITraitCollection.current.userInterfaceStyle)
                 
         // "0 day" option added in v3.1.2 for allowing user to disable "recent" icon
         ServerVars.shared.correctRecentPeriodIndex()

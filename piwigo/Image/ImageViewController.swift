@@ -185,6 +185,7 @@ final class ImageViewController: UIViewController {
         
         coordinator.animate(alongsideTransition: { [self] _ in
             // Update image detail view
+            setNeedsStatusBarAppearanceUpdate()
             updateNavBar()
             setTitleViewFromImageData()
         }, completion: { [self] _ in
@@ -506,9 +507,8 @@ final class ImageViewController: UIViewController {
     
     // Display/hide status bar
     override var prefersStatusBarHidden: Bool {
-        let orientation = view.currentInterfaceOrientation
-        let phoneInLandscape = view.traitCollection.userInterfaceIdiom == .phone && orientation.isLandscape
-        return phoneInLandscape || navigationController?.isNavigationBarHidden ?? false
+        let hasCompactHeight = view.layoutTraitCollection.hasCompactHeight
+        return hasCompactHeight || navigationController?.isNavigationBarHidden ?? false
     }
     
     // Display/hide home indicator
@@ -547,7 +547,7 @@ final class ImageViewController: UIViewController {
         if displayHelpPagesWithID.count > 0 {
             // Present unseen upload management help views
             let helpVC = HelpUtilities.getHelpViewController(showingPagesWithIDs: displayHelpPagesWithID)
-            if view.traitCollection.userInterfaceIdiom == .phone {
+            if view.layoutTraitCollection.hasRegularWidthAndHeight == false {
                 helpVC.popoverPresentationController?.permittedArrowDirections = .up
                 navigationController?.present(helpVC, animated:true)
             } else {

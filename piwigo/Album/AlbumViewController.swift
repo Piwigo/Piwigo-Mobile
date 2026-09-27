@@ -499,7 +499,7 @@ final class AlbumViewController: UIViewController
         // (might have been hidden during Image Previewing)
         navigationController?.setNavigationBarHidden(false, animated: true)
         navigationItem.largeTitleDisplayMode = prefersLargeTitles ? .always : .never
-        navigationItem.backButtonDisplayMode = traitCollection.userInterfaceIdiom == .pad ? .generic : .minimal
+        navigationItem.backButtonDisplayMode = view.layoutTraitCollection.hasRegularWidthAndHeight ? .generic : .minimal
         
         // Should we reload the collection view?
         if AlbumVars.shared.displayAlbumDescriptions,
@@ -640,7 +640,7 @@ final class AlbumViewController: UIViewController
                 let whatsNewSB = UIStoryboard(name: "WhatsNewViewController", bundle: nil)
                 guard let whatsNewVC = whatsNewSB.instantiateViewController(withIdentifier: "WhatsNewViewController") as? WhatsNewViewController 
                 else { preconditionFailure("Could not load WhatsNewViewController") }
-                if view.traitCollection.userInterfaceIdiom == .phone {
+                if view.layoutTraitCollection.hasRegularWidthAndHeight == false {
                     whatsNewVC.modalPresentationStyle = .pageSheet
                     whatsNewVC.isModalInPresentation = true
                     if let sheet = whatsNewVC.sheetPresentationController {
@@ -654,10 +654,10 @@ final class AlbumViewController: UIViewController
                     whatsNewVC.modalTransitionStyle = .coverVertical
                     whatsNewVC.modalPresentationStyle = .pageSheet
                     whatsNewVC.isModalInPresentation = true
-                    let orientation = view.currentInterfaceOrientation
+                    let windowBounds = view.windowBounds
                     if let sheet = whatsNewVC.sheetPresentationController {
                         sheet.detents = [.medium(), .large()]
-                        if orientation == .landscapeLeft || orientation == .landscapeRight {
+                        if windowBounds.width > windowBounds.height {
                             sheet.selectedDetentIdentifier = .large
                         } else {
                             sheet.selectedDetentIdentifier = .medium
@@ -704,7 +704,7 @@ final class AlbumViewController: UIViewController
         if displayHelpPagesWithID.count > 0 {
             // Present unseen help views
             let helpVC = HelpUtilities.getHelpViewController(showingPagesWithIDs: displayHelpPagesWithID)
-            if view.traitCollection.userInterfaceIdiom == .phone {
+            if view.layoutTraitCollection.hasRegularWidthAndHeight == false {
                 helpVC.popoverPresentationController?.permittedArrowDirections = .up
                 present(helpVC, animated: true)
             } else {
@@ -775,11 +775,24 @@ final class AlbumViewController: UIViewController
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        
+
         // Should we update the user interface based on the appearance?
         UITools.shared.applyColorPalette(for: traitCollection.userInterfaceStyle)
+
+        // Bar buttons are placed according to size classes, which change when
+        // the window is resized or when iPhone Duo is opened or closed.
+        if let previousTraitCollection, previousTraitCollection.horizontalSizeClass != .unspecified,
+           previousTraitCollection.horizontalSizeClass != traitCollection.horizontalSizeClass ||
+            previousTraitCollection.verticalSizeClass != traitCollection.verticalSizeClass,
+           navigationController?.topViewController === self {
+            if inSelectionMode {
+                initBarsInSelectMode()
+            } else {
+                initBarsInPreviewMode()
+            }
+        }
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         #if DEBUG

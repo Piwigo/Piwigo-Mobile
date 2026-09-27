@@ -161,10 +161,10 @@ final class EditImageParamsViewController: UIViewController
         coordinator.animate(alongsideTransition: { [self] _ in
             
             // On iPad, the form is presented in a popover view
-            if view.traitCollection.userInterfaceIdiom == .pad {
-                let mainScreenBounds = UIScreen.main.bounds
+            if view.layoutTraitCollection.hasRegularWidthAndHeight {
+                let windowBounds = view.windowBounds
                 preferredContentSize = CGSize(width: pwgPadSubViewWidth,
-                                              height: ceil(mainScreenBounds.height * 2 / 3))
+                                              height: ceil(windowBounds.height * 2 / 3))
                 let navBarHeight = navigationController?.navigationBar.bounds.size.height ?? 0.0
                 editImageParamsTableView?.contentInset = UIEdgeInsets(top: CGFloat.zero, left: CGFloat.zero,
                                                                       bottom: navBarHeight, right: CGFloat.zero)
@@ -539,7 +539,7 @@ final class EditImageParamsViewController: UIViewController
         if displayHelpPagesWithID.count > 0 {
             // Present unseen upload management help views
             let helpVC = HelpUtilities.getHelpViewController(showingPagesWithIDs: displayHelpPagesWithID)
-            if view.traitCollection.userInterfaceIdiom == .phone {
+            if view.layoutTraitCollection.hasRegularWidthAndHeight == false {
                 helpVC.popoverPresentationController?.permittedArrowDirections = .up
                 navigationController?.present(helpVC, animated:true)
             } else {

@@ -449,18 +449,18 @@ final class SelectCategoryViewController: UIViewController {
         coordinator.animate(alongsideTransition: { [self] _ in
 
             // On iPad, the view is presented in a centered popover view
-            if view.traitCollection.userInterfaceIdiom == .pad {
-                let mainScreenBounds = UIScreen.main.bounds
-                self.popoverPresentationController?.sourceRect = CGRect(x: mainScreenBounds.midX,
-                                                                        y: mainScreenBounds.midY,
+            if view.layoutTraitCollection.hasRegularWidthAndHeight {
+                let windowBounds = view.windowBounds
+                self.popoverPresentationController?.sourceRect = CGRect(x: windowBounds.midX,
+                                                                        y: windowBounds.midY,
                                                                         width: 0, height: 0)
                 switch self.wantedAction {
                 case .setDefaultAlbum, .setAutoUploadAlbum:
                     self.preferredContentSize = CGSize(width: pwgPadSettingsWidth,
-                                                       height: ceil(mainScreenBounds.height*2/3));
+                                                       height: ceil(windowBounds.height*2/3));
                 default:
                     self.preferredContentSize = CGSize(width: pwgPadSubViewWidth,
-                                                       height: ceil(mainScreenBounds.height*2/3));
+                                                       height: ceil(windowBounds.height*2/3));
                 }
             }
 
