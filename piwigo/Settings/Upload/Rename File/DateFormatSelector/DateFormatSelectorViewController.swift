@@ -151,12 +151,22 @@ class DateFormatSelectorViewController: UIViewController {
         }
     }
     
+    override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+        
+        // Adapt the main header to the safe area, e.g. when the vertical bar of iPhone Duo moves
+        if tableView?.tableHeaderView != nil {
+            setTableViewMainHeader()
+        }
+    }
+    
     @MainActor
     private func setTableViewMainHeader() {
         let headerView = RenameFileTableHeaderView(frame: CGRect.zero)
         let title = RenameAction.ActionType.addDate.name
         let text = String(localized: "settings_renameDateHeader", comment: "Please select a date format…")
-        headerView.config(with: title, text: text, forWidth: view.bounds.width)
+        headerView.config(with: title, text: text, forWidth: view.bounds.width,
+                          safeAreaInsets: view.safeAreaInsets)
         headerView.updateExample(prefix: prefixBeforeUpload, prefixActions: prefixActions,
                                  replace: replaceBeforeUpload, replaceActions: replaceActions,
                                  suffix: suffixBeforeUpload, suffixActions: suffixActions,

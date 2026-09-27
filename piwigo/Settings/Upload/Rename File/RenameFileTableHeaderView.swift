@@ -28,6 +28,7 @@ class RenameFileTableHeaderView: UIView {
     private let margin: CGFloat = 14.0 + TableViewUtilities.rowCornerRadius
     private let exampleFileName: String = "IMG_0023.HEIC"
     private var widthConstraint = CGSize.zero
+    private var contentLeading: NSLayoutConstraint?
     
     // Date when Steve Jobs first announced the iPhone
     private let iPhoneAnnouncementDate: Date = {
@@ -52,8 +53,13 @@ class RenameFileTableHeaderView: UIView {
     }
     
     private func configView() {
-        let headerView = viewFromNibForClass()
-        addSubview(headerView)
+        let contentView = viewFromNibForClass()
+        addSubview(contentView)
+        
+        // Content is shifted by the leading safe area inset (e.g. vertical bar of iPhone Duo)
+        let leading = contentView.leadingAnchor.constraint(equalTo: leadingAnchor)
+        NSLayoutConstraint.activate([leading, contentView.topAnchor.constraint(equalTo: topAnchor)])
+        contentLeading = leading
     }
     
     // Loads XIB file into a view and returns this view
@@ -72,7 +78,8 @@ class RenameFileTableHeaderView: UIView {
     }
     
     @MainActor
-    func config(with title: String, text: String, forWidth width: CGFloat) {
+    func config(with title: String, text: String, forWidth width: CGFloat,
+                safeAreaInsets insets: UIEdgeInsets = .zero) {
         // Initialise drawing context
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
@@ -82,7 +89,10 @@ class RenameFileTableHeaderView: UIView {
         /// See https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/adaptivity-and-layout/
         var height: CGFloat = CGFloat.zero
         let minWidth: CGFloat = 320.0 - 2 * margin
-        let maxWidth = CGFloat(fmax(width - 2.0 * margin, minWidth))
+        /// The safe area insets may be asymmetric (e.g. vertical bar of iPhone Duo):
+        /// the content is centred between them rather than on the whole width.
+        let contentWidth = width - insets.left - insets.right
+        let maxWidth = CGFloat(fmax(contentWidth - 2.0 * margin, minWidth))
         widthConstraint = CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
 
         // Title
@@ -122,7 +132,8 @@ class RenameFileTableHeaderView: UIView {
         // Global size
         let size = CGSize(width: width, height: headerView.frame.height + 16.0 + exampleRect.height)
         frame = CGRect(origin: CGPoint.zero, size: size)
-        headerWidth.constant = width
+        headerWidth.constant = contentWidth
+        contentLeading?.constant = insets.left
         
         // Color palette
         applyColorPalette()
