@@ -80,10 +80,13 @@ struct AlbumUtilities
         let nbAlbumsPerRowInPortrait = max(1.0, (numerator / denominator).rounded())
         
         // Width of album cells determined for the portrait mode
-        let albumWidthInPortrait = (widthInPortrait - (nbAlbumsPerRowInPortrait - 1.0) * spacing + margins) / nbAlbumsPerRowInPortrait
+        let albumWidthInPortrait = (widthInPortrait - (nbAlbumsPerRowInPortrait - 1.0) * spacing - margins) / nbAlbumsPerRowInPortrait
         
         // Number of albums per row we should display right now
-        let albumsPerRow = ((size.width + spacing - margins) / (albumWidthInPortrait + spacing)).rounded()
+        /// In landscape, round up so that albums are never larger than in portrait,
+        /// since vertical space is scarce (e.g. iPhone Duo folded in landscape)
+        let rule: FloatingPointRoundingRule = size.width > size.height ? .up : .toNearestOrAwayFromZero
+        let albumsPerRow = ((size.width + spacing - margins) / (albumWidthInPortrait + spacing)).rounded(rule)
         
         // Width of albums for that number
         return ((size.width - (albumsPerRow - 1.0) * spacing - margins) / albumsPerRow).rounded(.down)
