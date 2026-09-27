@@ -28,13 +28,14 @@ class SelectCategoryHeaderView: UIView {
 
         addSubview(label)
         NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: margin),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -margin),
+            label.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: margin),
+            label.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -margin),
             label.bottomAnchor.constraint(equalTo: bottomAnchor),
             label.topAnchor.constraint(equalTo: topAnchor)
         ])
     }
 
+    /// The width must exclude the safe area insets of the table view.
     func configure(width: CGFloat, text: String) {
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0

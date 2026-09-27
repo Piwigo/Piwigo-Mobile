@@ -500,43 +500,54 @@ final class SelectCategoryViewController: UIViewController {
     }
 
 
+    override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+        
+        // Adapt the main header to the safe area, e.g. when the vertical bar of iPhone Duo moves
+        if categoriesTableView?.tableHeaderView != nil {
+            setTableViewMainHeader()
+        }
+    }
+    
+    
     // MARK: - TableView Main Header
     private func setTableViewMainHeader() {
         let headerView = SelectCategoryHeaderView(frame: .zero)
+        let tableWidth = categoriesTableView.bounds.inset(by: categoriesTableView.safeAreaInsets).width
         switch wantedAction {
         case .setDefaultAlbum:
-            headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSettingsWidth),
+            headerView.configure(width: min(tableWidth, pwgPadSettingsWidth),
                                  text: String(localized: "setDefaultCategory_select", comment: "Please select an album or sub-album which will become the new root album."))
 
         case .moveAlbum:
-            headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
+            headerView.configure(width: min(tableWidth, pwgPadSubViewWidth),
                                  text: String(format: String(localized: "moveCategory_select", comment:"Please select an album or sub-album to move album \"%@\" into."), inputAlbum.name))
 
         case .setAlbumThumbnail:
             let title = inputImages.first?.titleStr ?? ""
-            headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
+            headerView.configure(width: min(tableWidth, pwgPadSubViewWidth),
                                  text: String(format: String(localized: "categorySelection_setThumbnail", comment:"Please select the album which will use the photo \"%@\" as a thumbnail."), title.isEmpty ? inputImages.first?.fileName ?? "-?-" : title))
 
         case .setAutoUploadAlbum:
-            headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSettingsWidth),
+            headerView.configure(width: min(tableWidth, pwgPadSettingsWidth),
                                  text: Localized.autoUploadDestinationInfo)
             
         case .copyImage:
             let title = inputImages.first?.titleStr ?? ""
-            headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
+            headerView.configure(width: min(tableWidth, pwgPadSubViewWidth),
                                  text: String(format: String(localized: "copySingleImage_selectAlbum", comment:"Please, select the album in which you wish to copy the photo \"%@\"."), title.isEmpty ? inputImages.first?.fileName ?? "-?-" : title))
 
         case .moveImage:
             let title = inputImages.first?.titleStr ?? ""
-            headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
+            headerView.configure(width: min(tableWidth, pwgPadSubViewWidth),
                                  text: String(format: String(localized: "moveSingleImage_selectAlbum", comment:"Please, select the album in which you wish to move the photo \"%@\"."), title.isEmpty ? inputImages.first?.fileName ?? "-?-" : title))
 
         case .copyImages:
-            headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
+            headerView.configure(width: min(tableWidth, pwgPadSubViewWidth),
                                  text: String(localized: "copySeveralImages_selectAlbum", comment: "Please, select the album in which you wish to copy the photos."))
 
         case .moveImages:
-            headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
+            headerView.configure(width: min(tableWidth, pwgPadSubViewWidth),
                                  text: String(localized: "moveSeveralImages_selectAlbum", comment: "Please, select the album in which you wish to move the photos."))
 
         default:

@@ -327,10 +327,21 @@ final class LocalAlbumsViewController: UIViewController {
     
     // MARK: - UITableView - Header
     @MainActor
+    override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+        
+        // Adapt the main header to the safe area, e.g. when the vertical bar of iPhone Duo moves
+        if localAlbumsTableView?.tableHeaderView != nil {
+            setTableViewMainHeader()
+        }
+    }
+    
+    
     @objc private func setTableViewMainHeader() {
         // May be called from the notification center
         DispatchQueue.main.async { [self] in
             let headerView = SelectCategoryHeaderView(frame: .zero)
+            let tableWidth = localAlbumsTableView.bounds.inset(by: localAlbumsTableView.safeAreaInsets).width
             var text = Localized.autoUploadSourceInfo
             switch wantedAction {
             case .presentLocalAlbum:
@@ -341,15 +352,15 @@ final class LocalAlbumsViewController: UIViewController {
                 } else if UploadVars.shared.wifiOnlyUploading && !ServerVars.shared.isConnectedToWiFi {
                     text += "\r\r⚠️ " + String(localized: "uploadNoWiFiNetwork", comment: "No Wi-Fi Connection") + " ⚠️"
                 }
-                headerView.configure(width: min(localAlbumsTableView.frame.size.width, pwgPadSettingsWidth),
+                headerView.configure(width: min(tableWidth, pwgPadSettingsWidth),
                                      text: text)
                 
             case .setAutoUploadAlbum:
-                headerView.configure(width: min(localAlbumsTableView.frame.size.width, pwgPadSubViewWidth),
+                headerView.configure(width: min(tableWidth, pwgPadSubViewWidth),
                                      text: text)
                 
             default:
-                fatalError("Action not configured in setTableViewMainHeader().")
+                preconditionFailure("Action not configured in setTableViewMainHeader().")
             }
             localAlbumsTableView.tableHeaderView = headerView
         }
