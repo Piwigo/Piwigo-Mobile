@@ -19,15 +19,13 @@
 	<key>UTImportedTypeDeclarations</key>
 	<array>
 		<dict>
-			<key>UTTypeIdentifier</key>
-			<string>com.adobe.encapsulated-postscript</string>
-			<key>UTTypeDescription</key>
-			<string>Encapsulated PostScript</string>
 			<key>UTTypeConformsTo</key>
 			<array>
 				<string>public.data</string>
 				<string>public.content</string>
 			</array>
+			<key>UTTypeDescription</key>
+			<string>Encapsulated PostScript</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
@@ -42,6 +40,8 @@
 					<string>image/x-eps</string>
 				</array>
 			</dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.adobe.encapsulated-postscript</string>
 		</dict>
 	</array>
 	<key>CFBundleInfoDictionaryVersion</key>

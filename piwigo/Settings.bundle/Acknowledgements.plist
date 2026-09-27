@@ -2,22 +2,22 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>StringsTable</key>
-	<string>About</string>
 	<key>PreferenceSpecifiers</key>
 	<array>
 		<dict>
-			<key>Type</key>
-			<string>PSGroupSpecifier</string>
 			<key>FooterText</key>
 			<string>translators_text</string>
-		</dict>
-		<dict>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
 			<key>FooterText</key>
 			<string>licenceMIT_text</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
 		</dict>
 	</array>
+	<key>StringsTable</key>
+	<string>About</string>
 </dict>
 </plist>

@@ -1,7 +1,7 @@
 # Scripts
 
 Maintenance tools for the PwgCacheKit Core Data migration chain, plus the
-localization fixer applied to Crowdin downloads.
+localization fixer applied to Crowdin downloads and the property list sorter.
 
 ## Why these exist
 
@@ -118,3 +118,25 @@ another language ever comes down under the wrong code.
 It covers String Catalogs only — the four `.lproj` families are downloaded
 under the path Crowdin's `%osx_code%` placeholder produces, so check those
 folder names too.
+
+## sort-plists.py
+
+Xcode's property list editor shows known keys under a readable name
+(`CFBundleVersion` as "Bundle version", `NSFaceIDUsageDescription` as
+"Privacy - Face ID Usage Description") but lists them in file order, so a
+file sorted by raw key looks shuffled in the editor. This script sorts every
+dictionary by the displayed name, read from the structure definitions bundled
+with the selected Xcode: the Info.plist schema for `Info*.plist` /
+`*Info.plist`, the Settings schema for `Root.plist`. Other keys and files sort
+by raw key; array order is preserved.
+
+```bash
+Scripts/sort-plists.py                     # report which plists would change
+Scripts/sort-plists.py --write             # sort them
+Scripts/sort-plists.py piwigo/Info.plist --write
+```
+
+With no path it checks every tracked `.plist` outside `xcuserdata`,
+`xcshareddata` and `fastlane`. Files are re-emitted in Xcode's XML layout, so
+a sorted file is left untouched byte for byte and a second run is a no-op. Run
+it after adding keys in Xcode, which appends them wherever the selection was.
