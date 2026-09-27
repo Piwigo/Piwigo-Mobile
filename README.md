@@ -38,7 +38,7 @@ Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org), a **f
 ## Videos 
 For uploading videos with your iOS device, make sure the [piwigo-videojs](http://piwigo.org/ext/extension_view.php?eid=610) plugin is installed on your Piwigo server. The wiki contains some [instructions](https://github.com/xbgmsharp/piwigo-videojs/wiki/How-to-add-videos) for installing it.
 
-Your Piwigo server will generate a poster of each uploaded video with [FFmpeg](http://www.ffmpeg.org) (or [avconv](https://libav.org/documentation/avconv.html) from [Libdav](https://libav.org)). If neither of these solutions is installed, the upload may fail. From to our experience, we recommand to install the 'true' [FFmpeg](http://www.ffmpeg.org).
+Your Piwigo server will generate a poster of each uploaded video with [FFmpeg](http://www.ffmpeg.org) (or [avconv](https://libav.org/documentation/avconv.html) from [Libdav](https://libav.org)). If neither of these solutions is installed, the upload may fail. From our experience, we recommand to install the 'true' [FFmpeg](http://www.ffmpeg.org).
 
 ## Localization - Help Wanted [![Crowdin](https://d322cqt584bo4o.cloudfront.net/piwigo-mobile/localized.svg)](https://crowdin.com/project/piwigo-mobile)
 If you would like to see Piwigo Mobile translated into your language, [just get in touch](iOS@piwigo.org?subject=Translation) and we'll get you access to the [Crowdin](https://crowdin.com/project/piwigo-mobile) localization platform.
