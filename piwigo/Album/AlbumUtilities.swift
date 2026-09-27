@@ -104,6 +104,20 @@ struct AlbumUtilities
         return UIDevice.current.userInterfaceIdiom == .phone ? 6 : 10
     }()
     
+    /// Photos keep the size they have on the widest iPhone in portrait when more width
+    /// is available (e.g. iPhone Duo unfolded), instead of growing with the display.
+    static let maxPhonePortraitWidth: CGFloat = 440
+    
+    @MainActor
+    static func imagesWidthInPortrait(forSize size: CGSize) -> CGFloat {
+        // Width in portrait of the page on which the number of images per row is based
+        let widthInPortrait = min(size.width, size.height)
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            return min(widthInPortrait, maxPhonePortraitWidth)
+        }
+        return widthInPortrait
+    }
+    
     @MainActor
     static func optimumThumbnailSizeForDevice() -> pwgImageSize {
         // Returns the lowest size of sufficient resolution
@@ -154,8 +168,7 @@ struct AlbumUtilities
     @MainActor
     static func imagesPerRowInPortrait(forMaxWidth maxWidth: CGFloat) -> Int {
         // Returns the number thumbnails per row for a given image width
-        let pageSize = sizeOfPage(forView: nil)
-        let viewWidth = min(pageSize.width, pageSize.height)
+        let viewWidth = imagesWidthInPortrait(forSize: sizeOfPage(forView: nil))
         let horSpacing = imageCellHorizontalSpacing(forCollectionType: .full)
         let numerator = viewWidth - horSpacing
         let denominator = horSpacing + maxWidth
@@ -180,7 +193,7 @@ struct AlbumUtilities
         let nberOfImagesInPortrait = CGFloat(imagesPerRowInPortrait)
 
         // Size of images in portrait mode
-        let widthInPortrait = min(size.width, size.height)
+        let widthInPortrait = imagesWidthInPortrait(forSize: size)
         let imagesSizeInPortrait = (widthInPortrait - (nberOfImagesInPortrait - 1.0) * spacing - margins) / nberOfImagesInPortrait
 
         // Number of images per row we should display right now
@@ -205,7 +218,7 @@ struct AlbumUtilities
         let imageCellVerticalSpacing = imageCellVerticalSpacing(forCollectionType: .full)
         
         // Size of images determined for the portrait mode
-        let minWidth = min(screenSize.width, screenSize.height)
+        let minWidth = imagesWidthInPortrait(forSize: screenSize)
         let imagesSizeInPortrait = floor((minWidth - (nberOfImagesInPortrait - 1.0) * imageCellHorizontalSpacing) / nberOfImagesInPortrait)
         
         // Images per row in portrait and landscape modes
