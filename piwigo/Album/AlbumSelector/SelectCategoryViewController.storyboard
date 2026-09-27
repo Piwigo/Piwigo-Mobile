@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24412" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="25098" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24405"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="25073"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -40,9 +40,9 @@
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="vDu-zF-Fre" firstAttribute="leading" secondItem="VEF-oi-u2j" secondAttribute="leading" id="Fxv-Ka-riZ"/>
+                            <constraint firstAttribute="leading" secondItem="VEF-oi-u2j" secondAttribute="leading" id="Fxv-Ka-riZ"/>
                             <constraint firstAttribute="top" secondItem="VEF-oi-u2j" secondAttribute="top" id="XQN-og-Zwg"/>
-                            <constraint firstItem="VEF-oi-u2j" firstAttribute="trailing" secondItem="vDu-zF-Fre" secondAttribute="trailing" id="bwj-ej-2Ut"/>
+                            <constraint firstItem="VEF-oi-u2j" firstAttribute="trailing" secondItem="5EZ-qb-Rvc" secondAttribute="trailing" id="bwj-ej-2Ut"/>
                             <constraint firstItem="VEF-oi-u2j" firstAttribute="bottom" secondItem="5EZ-qb-Rvc" secondAttribute="bottom" id="lEB-is-X9E"/>
                         </constraints>
                     </view>
