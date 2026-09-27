@@ -10,6 +10,12 @@
             "value" : "إلغاء"
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zrušit"
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -76,6 +82,18 @@
             "value" : "Anuluj"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -86,6 +104,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avbryt"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скасувати"
           }
         },
         "zh-Hans" : {
@@ -109,6 +133,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تجاهل"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zavřít"
           }
         },
         "da" : {
@@ -177,6 +207,18 @@
             "value" : "Anuluj"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dispensar"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ignorar"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -187,6 +229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avfärda"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрити"
           }
         },
         "zh-Hans" : {
@@ -210,6 +258,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "موافق"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
           }
         },
         "da" : {
@@ -278,6 +332,18 @@
             "value" : "OK"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -288,6 +354,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ok"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
           }
         },
         "zh-Hans" : {
@@ -312,6 +384,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "نعم"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ano"
           }
         },
         "da" : {
@@ -380,6 +458,18 @@
             "value" : "Tak"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sim"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sim"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -390,6 +480,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ja"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Так"
           }
         },
         "zh-Hans" : {
@@ -413,6 +509,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "جميع الألبومات"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Všechna alba"
           }
         },
         "da" : {
@@ -481,6 +583,18 @@
             "value" : "Wszystkie albumy"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos os álbuns"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos os álbuns"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -491,6 +605,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Alla album"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Усі альбоми"
           }
         },
         "zh-Hans" : {
@@ -514,6 +634,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "جاري التحميل…"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Načítání…"
           }
         },
         "da" : {
@@ -582,6 +708,18 @@
             "value" : "Ładowanie…"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregando…"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A carregar…"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -592,6 +730,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Laddar…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завантаження…"
           }
         },
         "zh-Hans" : {
@@ -615,6 +759,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "أحدث الألبومات"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nedávná alba"
           }
         },
         "da" : {
@@ -683,6 +833,18 @@
             "value" : "Ostatnio użyte albumy"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Álbuns recentes"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Álbuns recentes"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -693,6 +855,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Senaste album"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нещодавні альбоми"
           }
         },
         "zh-Hans" : {
@@ -716,6 +884,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "أدخل رمز المرور"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zadejte kód"
           }
         },
         "da" : {
@@ -784,6 +958,18 @@
             "value" : "Wprowadź kod"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Digite o código"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Introduza o código"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -794,6 +980,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ange lösenord"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Введіть код"
           }
         },
         "zh-Hans" : {
@@ -817,6 +1009,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "مع قفل التطبيق، يلزم وجود رمز خاص بالجهاز للوصول إلى التطبيق. إذا فقدت هذا الرمز، فسيتعين عليك إعادة تثبيت التطبيق."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se zámkem aplikace je pro přístup k aplikaci vyžadován kód specifický pro dané zařízení. Pokud tento kód ztratíte, budete muset aplikaci přeinstalovat."
           }
         },
         "da" : {
@@ -885,6 +1083,18 @@
             "value" : "Z App Lock, aby uzyskać dostęp do aplikacji, wymagane jest podanie przyporządkowanego urządzeniu kodu. Jeśli utracisz kod, aplikacja będzie musiała być zainstalowana ponownie."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Com o Bloqueio do App, é necessário um código específico do dispositivo para acessar o aplicativo. Se você perder esse código, terá que reinstalar o aplicativo."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Com o Bloqueio da Aplicação, é necessário um código específico do dispositivo para aceder à aplicação. Se perder esse código, terá de reinstalar a aplicação."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -895,6 +1105,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Med App Lock krävs en enhetsspecifik kod för att komma åt appen. Om du förlorar denna kod måste du installera om appen."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "З увімкненим блокуванням програми для доступу до неї потрібен код, унікальний для цього пристрою. Якщо ви втратите цей код, доведеться перевстановити програму."
           }
         },
         "zh-Hans" : {
@@ -918,6 +1134,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تعديل رمز المرور"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Změnit kód"
           }
         },
         "da" : {
@@ -986,6 +1208,18 @@
             "value" : "Zmień kod"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alterar o código"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alterar o código"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -996,6 +1230,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ändra lösenord"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Змінити код"
           }
         },
         "zh-Hans" : {
@@ -1019,6 +1259,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "التحقق من رمز المرور"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ověřit kód"
           }
         },
         "da" : {
@@ -1087,6 +1333,18 @@
             "value" : "Potwierdź kod"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verificar o código"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verificar o código"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1097,6 +1355,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Verifiera lösenkod"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Підтвердити код"
           }
         },
         "zh-Hans" : {
@@ -1120,6 +1384,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الوصول إلى ألبومات Piwigo الخاصة بك"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přístup k vašim albům Piwigo"
           }
         },
         "da" : {
@@ -1188,6 +1458,18 @@
             "value" : "Uzyskaj dostęp do swoich albumów Piwigo"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acessar seus álbuns do Piwigo"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aceder aos seus álbuns do Piwigo"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1198,6 +1480,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Få tillgång till dina Piwigoalbum"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доступ до ваших альбомів Piwigo"
           }
         },
         "zh-Hans" : {
@@ -1221,6 +1509,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الخصوصية"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soukromí"
           }
         },
         "da" : {
@@ -1289,6 +1583,18 @@
             "value" : "Prywatność"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacidade"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacidade"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1299,6 +1605,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sekretess"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Конфіденційність"
           }
         },
         "zh-Hans" : {

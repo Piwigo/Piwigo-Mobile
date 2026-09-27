@@ -37,7 +37,7 @@ extension RenameFileViewController: UITableViewDelegate
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let (title, text) = getContentOfHeader(forSection: section)
         return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
-                                                        width: tableView.frame.size.width)
+                                                 width: tableView.frame.size.width)
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

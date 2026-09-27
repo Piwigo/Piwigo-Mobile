@@ -1,4 +1,6 @@
-• Correction de la mise en page en arabe et dans les autres langues s'écrivant de droite à gauche
-• Application des règles de pluriel de chaque langue aux nombres de photos, d'albums et de tags
-• Traduction indonésienne complétée
-• Correction de bugs et améliorations de l'interface
+• Ajout des traductions en tchèque, portugais et ukrainien
+• Relance des transferts interrompus par une erreur du serveur ou une réponse invalide
+• Correction de la migration des données enregistrées avec la version 3.2 et antérieures
+• Correction du nombre de photos présenté dans le pied des albums
+• Invitation à mettre à jour les serveurs Piwigo antérieurs à la version 16
+• Correction de plantages et améliorations de l'interface

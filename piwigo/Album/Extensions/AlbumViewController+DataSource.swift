@@ -295,8 +295,20 @@ extension AlbumViewController
         
         // Update footer if needed
         guard let indexPath = indexPath else { return }
-        if let footer = collectionView?.supplementaryView(forElementKind: UICollectionView.elementKindSectionFooter, at: indexPath) as? ImageFooterReusableView {
-            footer.nberImagesLabel?.text = getImageCount()
+        let footer = collectionView?.supplementaryView(forElementKind: UICollectionView.elementKindSectionFooter,
+                                                       at: indexPath) as? ImageFooterReusableView
+        let legend = getImageCount()
+        if footer?.nberImagesLabel?.text == legend { return }
+        footer?.nberImagesLabel?.text = legend
+        
+        // Ask the layout for the height of the footer again
+        /// The footer is as tall as the text it presents, and that text changes with the number of
+        /// images. Invalidated only when the text changed, because a series of
+        /// uploads calls this for every batch.
+        if let layout = collectionView?.collectionViewLayout as? UICollectionViewFlowLayout {
+            let context = UICollectionViewFlowLayoutInvalidationContext()
+            context.invalidateFlowLayoutDelegateMetrics = true
+            layout.invalidateLayout(with: context)
         }
     }
 }

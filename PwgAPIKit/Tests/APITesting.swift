@@ -391,6 +391,7 @@ final class PwgAPITesting: XCTestCase {
         }
         
         XCTAssertEqual(result.status, "ok")
+        XCTAssertEqual(result.nbImages?.int64Value, 3)
     }
     
     func testPwgImagesDeleteDecoding() {

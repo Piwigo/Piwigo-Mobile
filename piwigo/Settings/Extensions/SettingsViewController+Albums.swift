@@ -25,15 +25,15 @@ extension SettingsViewController: DefaultAlbumThumbnailSizeDelegate {
             DispatchQueue.global(qos: .userInitiated).async {
                 // Get server instance
                 let bckgContext = DataController.shared.newTaskContext()
-                guard let server = try? ServerProvider().getCurrentServer(inContext: bckgContext)
-                else { preconditionFailure("••> Server is not in cache!") }
-
-                // Delete useless thumbnails
-                server.clearCachedImages(ofSizes: [oldThumbnailSize], exceptVideos: true)
-
-                // Recalculate cache size
+                // Delete the useless files and measure the cache on the queue of the
+                // context owning the Server instance
                 let sizes = self.getThumbnailSizes()
-                let cacheSize = server.getCacheSize(forImageSizes: sizes)
+                let cacheSize = bckgContext.performAndWait { () -> String in
+                    guard let server = try? ServerProvider().getCurrentServer(inContext: bckgContext)
+                    else { preconditionFailure("••> Server is not in cache!") }
+                    server.clearCachedImages(ofSizes: [oldThumbnailSize], exceptVideos: true)
+                    return server.getCacheSize(forImageSizes: sizes)
+                }
                 
                 DispatchQueue.main.async {
                     // Refresh Settings cell

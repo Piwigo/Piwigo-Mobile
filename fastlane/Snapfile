@@ -62,11 +62,12 @@ devices([
 "iPad Pro 13-inch (M5)"						# 13-inch
 ])
 
-# ["pt", "pt_BR"] # Portuguese with Brazilian locale
+# List of languages
 languages([
 "en-US",
 "zh-Hans",
 "zh-Hant",
+"cs",
 "da",
 "nl-NL",
 "fr-FR",
@@ -76,21 +77,26 @@ languages([
 "id",
 "ja",
 "pl",
+"pt-BR",
+"pt-PT",
 "ru",
 "es-ES",
 "sv",
+"uk",
 "ar-SA"
 ])
 
 # Parameters
+project("piwigo.xcodeproj")
 scheme("Screenshots")
 derived_data_path("DerivedData/piwigo")
 test_without_building(true)   # must be false once before launching all languages
 output_directory("fastlane/screenshots")
 concurrent_simulators(true)
+localize_simulator(true)      # sets the simulator system language (e.g. localized date in iPad status bar)
 skip_open_summary(true)
 number_of_retries(1)
-
+clear_previous_screenshots(false)
 
 # Command below fails with iOS +16.1, 17.x, 18.x, 26.0.1:
 # See https://github.com/fastlane/fastlane/issues/22026
@@ -121,7 +127,6 @@ number_of_retries(1)
 #          Launch the iOS 18+ simulator (piwigo scheme), stop app
 #          Execute: ../SimulatorStatusMagic/build_and_inject.sh booted
 #
-# clear_previous_screenshots(true)
 
 # Arguments to pass to the app on launch.
 # See https://docs.fastlane.tools/actions/snapshot/#launch-arguments

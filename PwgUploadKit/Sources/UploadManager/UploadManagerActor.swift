@@ -88,7 +88,35 @@ public actor UploadManagerActor {
         // Update badge and default album view button
         await UploadManager.shared.updateNberOfUploadsToComplete()
     }
-
+    
+    
+    // MARK: - Retries of Transient Failures
+    /// Number of times a request whose transfer failed in a way worth retrying is re-attempted
+    /// on its own before being left to the user.
+    private static let maxNberOfRetries = 3
+    
+    /// Number of retries already granted to each request.
+    /// Kept in memory only: the counts are forgotten when the app is relaunched, where
+    /// resumeInForeground() re-arms whatever was left in an error state.
+    private var nberOfRetries: [NSManagedObjectID : Int] = [:]
+    
+    /// Grants a retry to a request which failed in a way worth retrying and returns its rank,
+    /// or nil once the request exhausted its retries — so that a server which is down for good
+    /// leaves the requests in their error state instead of spinning the queue.
+    public func grantRetry(toUploadWithID uploadID: NSManagedObjectID) -> Int? {
+        let nberOfPastRetries = nberOfRetries[uploadID, default: 0]
+        guard nberOfPastRetries < Self.maxNberOfRetries else { return nil }
+        nberOfRetries[uploadID] = nberOfPastRetries + 1
+        return nberOfPastRetries + 1
+    }
+    
+    /// Forgets the retries granted to a request whose transfer completed.
+    public func forgetRetries(ofUploadWithID uploadID: NSManagedObjectID) {
+        nberOfRetries[uploadID] = nil
+    }
+    
+    
+    // MARK: - Process Next Upload
     public func processNextUpload() async {
         // Should we postpone uploads?
         if UploadVars.shared.isPaused ||

@@ -1,4 +1,6 @@
-• Corregge l'impaginazione in arabo e nelle altre lingue che si scrivono da destra a sinistra
-• Applica le regole del plurale di ogni lingua al conteggio di foto, album e tag
-• Completa la traduzione indonesiana
-• Correzioni di bug e miglioramenti dell'interfaccia
+• Aggiunge le traduzioni in ceco, portoghese e ucraino
+• Ritenta i trasferimenti interrotti da un errore del server o da una risposta non valida
+• Corregge la migrazione dei dati salvati con la versione 3.2 e precedenti
+• Corregge il numero di foto mostrato nel piè di pagina degli album
+• Invita ad aggiornare i server Piwigo precedenti alla versione 16
+• Correzioni di arresti anomali e miglioramenti dell'interfaccia

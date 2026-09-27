@@ -112,7 +112,9 @@ public final class ImageProvider {
     public func didUploadImage(_ imageData: ImageGetInfo, inAlbumId albumId: Int32) async {
         // Import the image data into Core Data.
         // The provided sort option will not change the rankManual/rankRandom values of Int64.min
-        try? await self.importImages([imageData], inAlbum: albumId, withAlbumUpdate: true, sort: .albumDefault)
+        /// The number of images of the album is not incremented here: it is adopted as a whole from
+        /// the count returned by the server when the lounge is emptied, see emptyLounge().
+        try? await self.importImages([imageData], inAlbum: albumId, sort: .albumDefault)
     }
     
     /**
@@ -121,8 +123,7 @@ public final class ImageProvider {
      */
     public var userDidCancelSearch = false
     private let batchSize = 25
-    public func importImages(_ imageArray: [ImageGetInfo],
-                             inAlbum albumId: Int32, withAlbumUpdate: Bool = false,
+    public func importImages(_ imageArray: [ImageGetInfo], inAlbum albumId: Int32,
                              sort: pwgImageSort, fromRank rank: Int64 = Int64.min) async throws(PwgKitError) {
         // We shall perform at least one import in case where
         // the user did delete all images
@@ -155,7 +156,6 @@ public final class ImageProvider {
             // Stop the entire import if any batch is unsuccessful.
             let startRank = rank + Int64(batchStart)
             try await importOneBatch(imagesBatch, inAlbum: albumId,
-                                     withAlbumUpdate: withAlbumUpdate,
                                      sort: sort, fromRank: startRank)
         }
     }
@@ -168,8 +168,7 @@ public final class ImageProvider {
      This function catches throws within the closure and uses a return value
      to indicate whether the import is successful.
      */
-    private func importOneBatch(_ imagesBatch: [ImageGetInfo],
-                                inAlbum albumId: Int32, withAlbumUpdate: Bool = false,
+    private func importOneBatch(_ imagesBatch: [ImageGetInfo], inAlbum albumId: Int32,
                                 sort: pwgImageSort, fromRank startRank: Int64 = Int64.min) async throws(PwgKitError) {
         
         // Get background context
@@ -271,15 +270,6 @@ public final class ImageProvider {
                             try image.update(with: imageData,
                                              sort:sort, rank: rank,
                                              user: user, albums: albums)
-                            
-                            // Update album data if asked
-                            if withAlbumUpdate {
-                                // Add image to cached albums
-                                try albums.forEach { album in
-                                    try AlbumProvider().updateAlbums(addingImages: 1, toAlbum: album,
-                                                                     inContext: bckgContext)
-                                }
-                            }
                         }
                         catch let error as PwgKitError {
                             // Delete invalid Image from the private queue context.

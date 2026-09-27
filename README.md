@@ -13,7 +13,7 @@ Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org), a **f
 
 [![](https://raw.githubusercontent.com/Piwigo/Piwigo-Mobile/master/Assets/Images%20-%20Readme/iPad%20Pro%2013%20M4%20+%20iPhone%2017%20Pro%20small.webp)](https://raw.githubusercontent.com/Piwigo/Piwigo-Mobile/master/Assets/Images%20-%20Readme/iPad%20Pro%2013%20M4%20+%20iPhone%2017%20Pro%20small.webp)
 ## Description
-[Piwigo Mobile](https://itunes.apple.com/us/app/piwigo/id472225196?mt=8) for iPhone/iPad supplements the photo gallery software in the cloud [Piwigo.org](http://piwigo.org) (2.10 or higher):
+[Piwigo Mobile](https://itunes.apple.com/us/app/piwigo/id472225196?mt=8) for iPhone/iPad supplements the photo gallery software in the cloud [Piwigo.org](http://piwigo.org) (version 12 or higher):
 
 - Browse your albums,
 - Create, delete, move and rename albums,
@@ -38,12 +38,13 @@ Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org), a **f
 ## Videos 
 For uploading videos with your iOS device, make sure the [piwigo-videojs](http://piwigo.org/ext/extension_view.php?eid=610) plugin is installed on your Piwigo server. The wiki contains some [instructions](https://github.com/xbgmsharp/piwigo-videojs/wiki/How-to-add-videos) for installing it.
 
-Your Piwigo server will generate a poster of each uploaded video with [FFmpeg](http://www.ffmpeg.org) (or [avconv](https://libav.org/documentation/avconv.html) from [Libdav](https://libav.org)). If neither of these solutions is installed, the upload may fail. From to our experience, we recommand to install the 'true' [FFmpeg](http://www.ffmpeg.org).
+Your Piwigo server will generate a poster of each uploaded video with [FFmpeg](http://www.ffmpeg.org) (or [avconv](https://libav.org/documentation/avconv.html) from [Libdav](https://libav.org)). If neither of these solutions is installed, the upload may fail. From our experience, we recommand to install the 'true' [FFmpeg](http://www.ffmpeg.org).
 
 ## Localization - Help Wanted [![Crowdin](https://d322cqt584bo4o.cloudfront.net/piwigo-mobile/localized.svg)](https://crowdin.com/project/piwigo-mobile)
 If you would like to see Piwigo Mobile translated into your language, [just get in touch](iOS@piwigo.org?subject=Translation) and we'll get you access to the [Crowdin](https://crowdin.com/project/piwigo-mobile) localization platform.
 
 Piwigo Mobile is available from the [App Store](https://itunes.apple.com/app/piwigo/id472225196?mt=8) in the following languages:
+- [Czech](https://crowdin.com/project/piwigo-mobile/cs), [Portuguese (Brazil)](https://crowdin.com/project/piwigo-mobile/pt-BR), [Portuguese (Portugal)](https://crowdin.com/project/piwigo-mobile/pt-PT) and [Ukrainian](https://crowdin.com/project/piwigo-mobile/uk) since [4.4.2](https://github.com/Piwigo/Piwigo-Mobile/releases/tag/v4.4.2),
 - [Hungarian](https://crowdin.com/project/piwigo-mobile/hu) since [v2.7.1](https://github.com/Piwigo/Piwigo-Mobile/releases/tag/v2.7.1),
 - [Chinese (simplified)](https://crowdin.com/project/piwigo-mobile/zh-CN#), [Russian](https://crowdin.com/project/piwigo-mobile/ru#) and [Spanish (Spain)](https://crowdin.com/project/piwigo-mobile/es-ES#) since [v2.4.7](https://github.com/Piwigo/Piwigo-Mobile/releases/tag/v2.4.7),
 - [Italian](https://crowdin.com/project/piwigo-mobile/it#) since [v2.2.6](https://github.com/Piwigo/Piwigo-Mobile/releases/tag/v2.2.6),

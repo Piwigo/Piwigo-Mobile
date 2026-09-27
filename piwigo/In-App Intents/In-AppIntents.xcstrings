@@ -45,6 +45,36 @@
             }
           }
         },
+        "cs" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotky přidány do fronty nahrávání."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotky přidány do fronty nahrávání."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotka přidána do fronty nahrávání."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotek přidáno do fronty nahrávání."
+                }
+              }
+            }
+          }
+        },
         "da" : {
           "variations" : {
             "plural" : {
@@ -243,6 +273,42 @@
             }
           }
         },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld foto adicionada à fila de envio."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotos adicionadas à fila de envio."
+                }
+              }
+            }
+          }
+        },
+        "pt-PT" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotografia adicionada à fila de carregamento."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotografias adicionadas à fila de carregamento."
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -286,6 +352,36 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld foton har lagts till i uppladdningskön."
+                }
+              }
+            }
+          }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld фото додано до черги вивантаження."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld фото додано до черги вивантаження."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld фото додано до черги вивантаження."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld фото додано до черги вивантаження."
                 }
               }
             }
@@ -357,6 +453,36 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "أضيفت صورة %lld إلى قائمة انتظار التحميل (خادم Piwigo هذا لا يقبل ملفات PD)."
+                }
+              }
+            }
+          }
+        },
+        "cs" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotky přidány do fronty nahrávání (tento server Piwigo nepřijímá soubory PDF)."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotky přidány do fronty nahrávání (tento server Piwigo nepřijímá soubory PDF)."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotka přidána do fronty nahrávání (tento server Piwigo nepřijímá soubory PDF)."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotek přidáno do fronty nahrávání (tento server Piwigo nepřijímá soubory PDF)."
                 }
               }
             }
@@ -560,6 +686,42 @@
             }
           }
         },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld foto adicionada à fila de envio (este servidor Piwigo não aceita arquivos PDF)."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotos adicionadas à fila de envio (este servidor Piwigo não aceita arquivos PDF)."
+                }
+              }
+            }
+          }
+        },
+        "pt-PT" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotografia adicionada à fila de carregamento (este servidor Piwigo não aceita ficheiros PDF)."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fotografias adicionadas à fila de carregamento (este servidor Piwigo não aceita ficheiros PDF)."
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -608,6 +770,36 @@
             }
           }
         },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld фото додано до черги вивантаження (цей сервер Piwigo не приймає файли PDF)."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld фото додано до черги вивантаження (цей сервер Piwigo не приймає файли PDF)."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld фото додано до черги вивантаження (цей сервер Piwigo не приймає файли PDF)."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld фото додано до черги вивантаження (цей сервер Piwigo не приймає файли PDF)."
+                }
+              }
+            }
+          }
+        },
         "zh-Hans" : {
           "variations" : {
             "plural" : {
@@ -640,6 +832,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إلحاق الصور الأخيرة إلى قائمة انتظار التحميل وفقًا لإعدادات التحميل التلقائي."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přidá nedávné fotky do fronty nahrávání podle nastavení automatického nahrávání."
           }
         },
         "da" : {
@@ -708,6 +906,18 @@
             "value" : "Dodaje ostatnie zdjęcia do kolejki wysyłania zgodnie z ustawieniami automatycznego wysyłania."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adiciona as fotos recentes à fila de envio conforme os ajustes de envio automático."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adiciona as fotografias recentes à fila de carregamento de acordo com as definições de carregamento automático."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -718,6 +928,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lägger till de senaste bilderna i uppladdningskön enligt inställningarna för automatisk uppladdning."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додає нещодавні фото до черги вивантаження відповідно до налаштувань автоматичного вивантаження."
           }
         },
         "zh-Hans" : {
@@ -740,6 +956,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "لا توجد صورة تضاف إلى قائمة انتظار التحميل."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do fronty nahrávání nebyla přidána žádná fotka."
           }
         },
         "da" : {
@@ -808,6 +1030,18 @@
             "value" : "Nie dodano zdjęć do kolejki przesyłania."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma foto adicionada à fila de envio."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma fotografia adicionada à fila de carregamento."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -818,6 +1052,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Inget foto har lagts till i uppladdningskön."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "До черги вивантаження не додано жодного фото."
           }
         },
         "zh-Hans" : {
@@ -841,6 +1081,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تحميل الصور"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nahrát fotky"
           }
         },
         "da" : {
@@ -909,6 +1155,18 @@
             "value" : "Prześlij zdjęcia"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar fotos"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregar fotografias"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -919,6 +1177,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ladda upp bilder"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вивантажити фото"
           }
         },
         "zh-Hans" : {
@@ -942,6 +1206,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "إلحاق الصور إلى قائمة انتظار الرفع."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přidá fotky do fronty nahrávání."
           }
         },
         "da" : {
@@ -1010,6 +1280,18 @@
             "value" : "Dodaje zdjęcia do kolejki przesyłania."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adiciona fotos à fila de envio."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adiciona fotografias à fila de carregamento."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1020,6 +1302,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lägger till bilder i uppladdningskön."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додає фото до черги вивантаження."
           }
         },
         "zh-Hans" : {
@@ -1043,6 +1331,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ليس لديك الصلاحية للتحميل إلى هذا الألبوم."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nemáte oprávnění nahrávat do tohoto alba."
           }
         },
         "da" : {
@@ -1111,6 +1405,18 @@
             "value" : "Nie masz uprawnień do przesyłania zdjęć do tego albumu."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você não tem permissão para enviar para este álbum."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não tem permissão para carregar para este álbum."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1121,6 +1427,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Du har inte behörighet att ladda upp till det här albumet."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ви не маєте дозволу вивантажувати до цього альбому."
           }
         },
         "zh-Hans" : {
@@ -1144,6 +1456,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ولم تقدم أي صورة أو شريط فيديو إلى الاختصار."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zkratce nebyla poskytnuta žádná fotka ani video."
           }
         },
         "da" : {
@@ -1212,6 +1530,18 @@
             "value" : "Do skrótu nie dodano żadnego zdjęcia ani filmu."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma foto ou vídeo foi fornecido ao atalho."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi fornecida nenhuma fotografia ou vídeo ao atalho."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1222,6 +1552,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ingen bild eller video angavs för genvägen."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для швидкої команди не надано жодного фото чи відео."
           }
         },
         "zh-Hans" : {

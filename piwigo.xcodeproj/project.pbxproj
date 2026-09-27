@@ -489,7 +489,18 @@
 /* Begin PBXFileReference section */
 		0B153098313E8E45CAC445B4 /* AlbumEntity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AlbumEntity.swift; sourceTree = "<group>"; };
 		12695FF2A60F479AA0A5105C /* GifDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifDetailViewController.swift; sourceTree = "<group>"; };
+		14C56BF9BE67EBE05C0092A0 /* pt-BR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/PrivacyPolicy.strings"; sourceTree = "<group>"; };
+		1F4A9108F02A4D198552E7F8 /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/InAppIntents.strings; sourceTree = "<group>"; };
+		28FCE78221338A7FF16EF594 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/InAppIntents.strings; sourceTree = "<group>"; };
+		3CBDEA9E47E7622668B1A08D /* uk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
+		4899B315FF781F4B193C3290 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/AppShortcuts.strings"; sourceTree = "<group>"; };
+		59020160E02941AC165368A7 /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/InAppIntents.strings"; sourceTree = "<group>"; };
+		6110168E01D5961787AD56D9 /* cs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		70317AF024E5B739F1E7A6C1 /* UploadPhotos.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = UploadPhotos.swift; sourceTree = "<group>"; };
+		7F76AF28A758FDDB05CA59AA /* pt-BR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/About.strings"; sourceTree = "<group>"; };
+		9414D6A8113A1DE8672F1518 /* pt-PT */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/About.strings"; sourceTree = "<group>"; };
+		9DC3A90FB2836DB7AA4B46CF /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/InAppIntents.strings"; sourceTree = "<group>"; };
+		A016881C03A0767FB28D94FA /* pt-PT */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/PrivacyPolicy.strings"; sourceTree = "<group>"; };
 		AD02D2F32E9A446D0073335F /* EditImageTimePickerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditImageTimePickerTableViewCell.swift; sourceTree = "<group>"; };
 		AD02D2F52E9A665A0073335F /* EditImageParamsViewController+TimePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+TimePicker.swift"; sourceTree = "<group>"; };
 		AD06B6E02BEBBCFA00C5F078 /* AlbumViewController+Prefetching.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumViewController+Prefetching.swift"; sourceTree = "<group>"; };
@@ -649,7 +660,7 @@
 		AD36C0802DEA20E300D30C8D /* CounterFormatSelectorViewController+UITableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CounterFormatSelectorViewController+UITableViewDataSource.swift"; sourceTree = "<group>"; };
 		AD36C0822DEA258400D30C8D /* CounterPrefixSelectorTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CounterPrefixSelectorTableViewCell.swift; sourceTree = "<group>"; };
 		AD3B2C5A2A1D29380001B8B0 /* ExternalDisplayUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalDisplayUtilities.swift; sourceTree = "<group>"; };
-		AD3B2C5C2A20F6AE0001B8B0 /* LaunchScreenExternal.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = LaunchScreenExternal.storyboard; path = "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/piwigo/Resources/LaunchScreenExternal.storyboard"; sourceTree = "<absolute>"; };
+		AD3B2C5C2A20F6AE0001B8B0 /* LaunchScreenExternal.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = LaunchScreenExternal.storyboard; path = piwigo/Resources/LaunchScreenExternal.storyboard; sourceTree = SOURCE_ROOT; };
 		AD3B2C612A2932110001B8B0 /* DataMigrationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataMigrationViewController.swift; sourceTree = "<group>"; };
 		AD3B2C682A293A860001B8B0 /* DataMigrationViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = DataMigrationViewController.storyboard; sourceTree = "<group>"; };
 		AD3CD639259DE34C000C26ED /* Help06ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help06ViewController.swift; sourceTree = "<group>"; };
@@ -973,8 +984,13 @@
 		ADFA31682E5216F20019FC4B /* PasteboardImagesViewController+Menus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PasteboardImagesViewController+Menus.swift"; sourceTree = "<group>"; };
 		ADFA64BD29B3B5BB003F1B36 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InAppIntents.strings"; sourceTree = "<group>"; };
 		ADFC3A4B2401D704004CD337 /* PrivacyPolicyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyViewController.swift; sourceTree = "<group>"; };
+		B322212CFAB15487D483E77C /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
+		B90AD594935F7188AFBC7F67 /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/AppShortcuts.strings"; sourceTree = "<group>"; };
+		C35B799EC01ACA2D70D45C5F /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
+		C7003D3EBFFB44E4370F0059 /* cs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/About.strings; sourceTree = "<group>"; };
 		D0B07F397539C725E4E665D9 /* UploadPhotosError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = UploadPhotosError.swift; sourceTree = "<group>"; };
 		D82B8CBB1A67820A000E47CA /* piwigo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = piwigo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E528C938AE44B3B20B39886A /* uk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/About.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2099,6 +2115,10 @@
 				"zh-Hans",
 				hu,
 				"zh-Hant",
+				"pt-BR",
+				"pt-PT",
+				cs,
+				uk,
 			);
 			mainGroup = D82B8CB21A67820A000E47CA;
 			packageReferences = (
@@ -2619,6 +2639,10 @@
 				AD1AD62B2DFF1C8C00D25EF9 /* ru */,
 				AD1AD62C2DFF1C8D00D25EF9 /* es */,
 				AD1AD62D2DFF1C8E00D25EF9 /* sv */,
+				4899B315FF781F4B193C3290 /* pt-BR */,
+				B90AD594935F7188AFBC7F67 /* pt-PT */,
+				C35B799EC01ACA2D70D45C5F /* cs */,
+				B322212CFAB15487D483E77C /* uk */,
 			);
 			name = AppShortcuts.strings;
 			sourceTree = "<group>";
@@ -2642,6 +2666,10 @@
 				AD32036B2184739500BAD372 /* sv */,
 				AD32036E2184739800BAD372 /* ar */,
 				AD32036C2184739600BAD372 /* id */,
+				14C56BF9BE67EBE05C0092A0 /* pt-BR */,
+				A016881C03A0767FB28D94FA /* pt-PT */,
+				6110168E01D5961787AD56D9 /* cs */,
+				3CBDEA9E47E7622668B1A08D /* uk */,
 			);
 			name = PrivacyPolicy.strings;
 			sourceTree = "<group>";
@@ -2665,6 +2693,10 @@
 				AD0822721FA06B090005AA12 /* sv */,
 				AD8452601FEC70740035047B /* ar */,
 				AD8338601FE677970072104F /* id */,
+				7F76AF28A758FDDB05CA59AA /* pt-BR */,
+				9414D6A8113A1DE8672F1518 /* pt-PT */,
+				C7003D3EBFFB44E4370F0059 /* cs */,
+				E528C938AE44B3B20B39886A /* uk */,
 			);
 			name = About.strings;
 			sourceTree = "<group>";
@@ -2689,6 +2721,10 @@
 				AD8D214626ACC1790008E907 /* sv */,
 				AD8D212E26ACC1700008E907 /* ar */,
 				AD8D213A26ACC1740008E907 /* id */,
+				9DC3A90FB2836DB7AA4B46CF /* pt-BR */,
+				59020160E02941AC165368A7 /* pt-PT */,
+				1F4A9108F02A4D198552E7F8 /* cs */,
+				28FCE78221338A7FF16EF594 /* uk */,
 			);
 			name = InAppIntents.intentdefinition;
 			sourceTree = "<group>";
@@ -2875,7 +2911,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 704;
+				CURRENT_PROJECT_VERSION = 706;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZEC3W885H6;
@@ -2892,7 +2928,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 4.4.1;
+				MARKETING_VERSION = 4.4.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = NO;
@@ -2935,7 +2971,7 @@
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 704;
+				CURRENT_PROJECT_VERSION = 706;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZU5THW8T5W;
 				ENABLE_DEBUG_DYLIB = NO;
@@ -2950,7 +2986,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 4.4.1;
+				MARKETING_VERSION = 4.4.2;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo.shareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3009,7 +3045,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 704;
+				CURRENT_PROJECT_VERSION = 706;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = ZU5THW8T5W;
@@ -3086,7 +3122,7 @@
 				CODE_SIGN_IDENTITY = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 704;
+				CURRENT_PROJECT_VERSION = 706;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = ZU5THW8T5W;
@@ -3132,7 +3168,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 704;
+				CURRENT_PROJECT_VERSION = 706;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZEC3W885H6;
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = ZEC3W885H6;
@@ -3149,7 +3185,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.4.1;
+				MARKETING_VERSION = 4.4.2;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_SWIFT_FLAGS = "$(inherited) -Xfrontend -warn-long-function-bodies=300 -Xfrontend -warn-long-expression-type-checking=50";
@@ -3183,7 +3219,7 @@
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 704;
+				CURRENT_PROJECT_VERSION = 706;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZU5THW8T5W;
 				ENABLE_DEBUG_DYLIB = NO;
@@ -3198,7 +3234,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.4.1;
+				MARKETING_VERSION = 4.4.2;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo;

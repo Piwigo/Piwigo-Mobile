@@ -49,7 +49,7 @@ extension SelectCategoryViewController: UITableViewDelegate
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let (title, text) = getContentOfHeader(inSection: section)
         return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
-                                                        width: tableView.frame.size.width)
+                                                 width: tableView.frame.size.width)
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -72,7 +72,10 @@ extension SelectCategoryViewController: UITableViewDelegate
                    catIds.count > indexPath.row {
                     catId = catIds[indexPath.row]
                 }
-                albumData = AlbumProvider().getAlbum(withID: catId, inContext: mainContext)!
+                /// An album the photo belongs to is not necessarily in cache — it may be one the
+                /// current user cannot browse — so the provided album is used when it is missing,
+                /// which is the album catId was initialised with.
+                albumData = AlbumProvider().getAlbum(withID: catId, inContext: mainContext) ?? inputAlbum
             } else if hasRecentAlbums {
                 // Recent albums
                 albumData = recentAlbums.object(at: indexPath)
@@ -155,7 +158,10 @@ extension SelectCategoryViewController: UITableViewDelegate
                    catIds.count > indexPath.row {
                     catId = catIds[indexPath.row]
                 }
-                albumData = AlbumProvider().getAlbum(withID: catId, inContext: mainContext)!
+                /// An album the photo belongs to is not necessarily in cache — it may be one the
+                /// current user cannot browse — so the provided album is used when it is missing,
+                /// which is the album catId was initialised with.
+                albumData = AlbumProvider().getAlbum(withID: catId, inContext: mainContext) ?? inputAlbum
             } else if hasRecentAlbums {
                 // Recent albums
                 albumData = recentAlbums.object(at: indexPath)

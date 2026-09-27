@@ -1,4 +1,6 @@
-• Poprawia układ w języku arabskim i innych językach pisanych od prawej do lewej
-• Stosuje reguły liczby mnogiej każdego języka do liczby zdjęć, albumów i tagów
-• Uzupełnia tłumaczenie na język indonezyjski
-• Poprawki błędów i ulepszenia interfejsu
+• Dodaje tłumaczenie czeskie, portugalskie i ukraińskie
+• Ponawia transfery przerwane błędem serwera lub nieprawidłową odpowiedzią
+• Poprawia migrację danych zapisanych w wersji 3.2 i starszych
+• Poprawia liczbę zdjęć wyświetlaną w stopce albumów
+• Zachęca do aktualizacji serwerów Piwigo starszych niż wersja 16
+• Poprawki awarii i ulepszenia interfejsu

@@ -266,6 +266,13 @@ final class MigrationChainTests: XCTestCase {
      here: the mapping model resolves, keeps its policies and matches the model
      hashes. The fix is to clear that value expression so the destination keeps
      the default it was given when Core Data inserted it.
+
+     A transformable attribute is checked the same way whenever it names an
+     `attributeValueClassName`. `Image.downloadUrl ← ""` in `0F → 0H` set an
+     empty string on an `NSURL` attribute, and because this test used to wave
+     every transformable attribute through, it shipped: `nextVersion(0F)` is
+     `0H`, so every upgrade from a v3.2 store aborted on the first image of the
+     migration, from v4.3 through v4.4, with no way past the migration screen.
      */
     func testMappingModelConstantsMatchTheirAttributeTypes() {
         for (source, destination) in Self.chain {
@@ -293,17 +300,55 @@ final class MigrationChainTests: XCTestCase {
                                       """)
                         continue
                     }
-                    XCTAssertTrue(Self.isAcceptable(value, for: attribute.attributeType),
+                    XCTAssertTrue(Self.isAcceptable(value, for: attribute),
                                   """
                                   \(key) assigns the constant \(value) of type \(type(of: value)) \
                                   to \(entityName).\(name), which is not a \
-                                  \(Self.name(of: attribute.attributeType)). Core Data throws while \
+                                  \(Self.name(of: attribute)). Core Data throws while \
                                   creating the destination instances. Clear that value expression so \
                                   the attribute keeps its default value.
                                   """)
                 }
             }
         }
+    }
+
+    /**
+     Pins the rule the audit above relies on.
+
+     `isAcceptable(_:for:)` decides whether a constant may reach an attribute,
+     and it used to answer `true` for every transformable one. That is the hole
+     `Image.downloadUrl ← ""` went through, so the rule is checked here on
+     attributes built by hand: reading it off the mapping models would only
+     retest whichever mistakes happen to be in them today.
+     */
+    func testConstantTypeCheckHonoursTheValueClassOfTransformables() {
+        func attribute(_ type: NSAttributeType, valueClass: String? = nil) -> NSAttributeDescription {
+            let attribute = NSAttributeDescription()
+            attribute.name = "attribute"
+            attribute.attributeType = type
+            if let valueClass { attribute.attributeValueClassName = valueClass }
+            return attribute
+        }
+
+        // The 0F → 0H crash: an empty string on a transformable NSURL attribute.
+        let downloadUrl = attribute(.transformableAttributeType, valueClass: "NSURL")
+        XCTAssertFalse(Self.isAcceptable("", for: downloadUrl),
+                       "A String must not be accepted for a transformable NSURL attribute")
+        XCTAssertTrue(Self.isAcceptable(URL(fileURLWithPath: "/"), for: downloadUrl),
+                      "A URL is what that attribute stores")
+
+        // A transformable attribute naming no value class constrains nothing.
+        XCTAssertTrue(Self.isAcceptable("", for: attribute(.transformableAttributeType)))
+
+        // The 0O → 0P crash: a number on a Date attribute.
+        XCTAssertFalse(Self.isAcceptable(NSNumber(value: -3600), for: attribute(.dateAttributeType)))
+        XCTAssertTrue(Self.isAcceptable(Date(), for: attribute(.dateAttributeType)))
+
+        // The plain types keep answering as before.
+        XCTAssertTrue(Self.isAcceptable("", for: attribute(.stringAttributeType)))
+        XCTAssertFalse(Self.isAcceptable("", for: attribute(.URIAttributeType)))
+        XCTAssertFalse(Self.isAcceptable("", for: attribute(.integer64AttributeType)))
     }
 
     /**
@@ -351,10 +396,24 @@ final class MigrationChainTests: XCTestCase {
         }
     }
 
-    /// Whether a constant value can be stored in an attribute of that type.
-    /// Transformable and unhandled types are accepted: their value class is arbitrary.
-    private static func isAcceptable(_ value: Any, for type: NSAttributeType) -> Bool {
-        switch type {
+    /// Whether a constant value can be stored in that attribute.
+    ///
+    /// A transformable attribute is not a free-for-all: when it declares an
+    /// `attributeValueClassName`, Core Data coerces against that class and throws on a
+    /// mismatch exactly as it does for a `String` or a `Date`. Treating transformable as
+    /// "anything goes" is what let `Image.downloadUrl ← ""` through in `0F → 0H` — an
+    /// `NSURL` attribute handed an empty string — and every upgrade from a `0F` store
+    /// aborted on the first image, from v4.3 to v4.4.
+    /// Only attributes which name no value class, and types this switch does not model,
+    /// are accepted on trust.
+    private static func isAcceptable(_ value: Any, for attribute: NSAttributeDescription) -> Bool {
+        if attribute.attributeType == .transformableAttributeType {
+            guard let className = attribute.attributeValueClassName,
+                  let valueClass = NSClassFromString(className)
+            else { return true }
+            return (value as AnyObject).isKind(of: valueClass)
+        }
+        switch attribute.attributeType {
         case .dateAttributeType:        return value is Date
         case .stringAttributeType:      return value is String
         case .integer16AttributeType, .integer32AttributeType, .integer64AttributeType,
@@ -365,6 +424,14 @@ final class MigrationChainTests: XCTestCase {
         case .URIAttributeType:         return value is URL
         default:                        return true
         }
+    }
+
+    private static func name(of attribute: NSAttributeDescription) -> String {
+        if attribute.attributeType == .transformableAttributeType,
+           let className = attribute.attributeValueClassName {
+            return "Transformable holding a \(className)"
+        }
+        return name(of: attribute.attributeType)
     }
 
     private static func name(of type: NSAttributeType) -> String {

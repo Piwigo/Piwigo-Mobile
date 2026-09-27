@@ -40,9 +40,12 @@ public actor ImageDownloader {
     
     // MARK: - Create, Launch Downloads
     // Return image in cache or download it
+    /// The requester identifies the view asking for the image: when it asks again for the same
+    /// image while the download is still pending, its handlers replace the ones it provided
+    /// before instead of being added to them, see ImageDownload.addHandlers().
     public func getImage(withID imageID: Int64?, ofSize imageSize: pwgImageSize, type: pwgImageType,
                          atURL imageURL: URL?, fromServer serverID: String?, fileSize: Int64 = NSURLSessionTransferSizeUnknown,
-                         isPrefetch: Bool = false,
+                         isPrefetch: Bool = false, requestedBy requester: ObjectIdentifier? = nil,
                          progress: ((Float) -> Void)? = nil,
                          completion: @escaping (URL) -> Void,
                          failure: @escaping (PwgKitError) -> Void) {
@@ -83,7 +86,8 @@ public actor ImageDownloader {
                 if let download = downloads[imageURL],
                    download.task?.state != .running, download.task?.state != .suspended {
                     if isPrefetch == false {
-                        download.addHandlers(progress: progress, completion: completion, failure: failure)
+                        download.addHandlers(requestedBy: requester, progress: progress,
+                                             completion: completion, failure: failure)
                     }
                     completeDownload(download, for: imageURL)
                 }
@@ -100,10 +104,11 @@ public actor ImageDownloader {
         {
             // Add the handlers of this view so that it also gets the callbacks
             if isPrefetch == false {
+                download.addHandlers(requestedBy: requester, progress: progress,
+                                     completion: completion, failure: failure)
                 #if DEBUG
-                ImageDownloader.logger.notice("Add handlers to download of \(fileURL.lastPathComponent)")
+                ImageDownloader.logger.notice("Add handlers to download of \(fileURL.lastPathComponent) (\(download.requesterCount) requester(s))")
                 #endif
-                download.addHandlers(progress: progress, completion: completion, failure: failure)
             }
             
             // Already existing task?
@@ -166,6 +171,7 @@ public actor ImageDownloader {
         
         // Create a new download instance
         let download = ImageDownload(type: type, atURL: imageURL, fileSize: fileSize, toCacheAt: fileURL,
+                                     requestedBy: requester,
                                      progress: progress, completion: completion, failure: failure)
         downloads[imageURL] = download
         

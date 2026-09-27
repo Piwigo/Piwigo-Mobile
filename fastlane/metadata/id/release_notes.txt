@@ -1,4 +1,6 @@
-• Memperbaiki tata letak dalam bahasa Arab dan bahasa lain yang ditulis dari kanan ke kiri
-• Menerapkan aturan jamak setiap bahasa pada jumlah foto, album, dan tag
-• Melengkapi terjemahan bahasa Indonesia
-• Perbaikan bug dan peningkatan antarmuka
+• Menambahkan terjemahan bahasa Ceko, Portugis, dan Ukraina
+• Mengulang transfer yang terputus oleh kesalahan server atau respons tidak valid
+• Memperbaiki migrasi data yang disimpan oleh versi 3.2 dan sebelumnya
+• Memperbaiki jumlah foto yang ditampilkan di footer album
+• Menganjurkan pembaruan server Piwigo yang lebih lama dari versi 16
+• Perbaikan crash dan peningkatan antarmuka

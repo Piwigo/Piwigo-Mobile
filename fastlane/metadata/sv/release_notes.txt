@@ -1,4 +1,6 @@
-• Korrigerar layouten på arabiska och andra språk som skrivs från höger till vänster
-• Tillämpar varje språks pluralregler på antalet foton, album och etiketter
-• Färdigställer den indonesiska översättningen
-• Buggfixar och förbättringar av gränssnittet
+• Lägger till tjeckisk, portugisisk och ukrainsk översättning
+• Gör om överföringar som avbrutits av ett serverfel eller ett ogiltigt svar
+• Rättar migreringen av data som sparats i version 3.2 och tidigare
+• Rättar antalet foton i albumens sidfot
+• Uppmanar till att uppdatera Piwigo-servrar äldre än version 16
+• Kraschfixar och förbättringar av gränssnittet

@@ -56,7 +56,7 @@ public enum Localized {
 public let pwgMinVersion = "12.0.0"
 
 // At login, invites to update the Piwigo server if version is lower than:
-public let pwgRecentVersion = "15.0.0"
+public let pwgRecentVersion = "16.0.0"
 
 // Name and page of the ShareAlbum plugin on piwigo.org, suggested to admin users when not installed
 public let pwgShareAlbumPluginName = "ShareAlbum"

@@ -1,6 +1,7 @@
 # Scripts
 
-Maintenance tools for the PwgCacheKit Core Data migration chain.
+Maintenance tools for the PwgCacheKit Core Data migration chain, plus the
+localization fixer applied to Crowdin downloads.
 
 ## Why these exist
 
@@ -93,3 +94,27 @@ Local SwiftPM test targets cannot run from `piwigo.xcodeproj`:
 ```bash
 cd PwgCacheKit && xcodebuild test -scheme PwgCacheKit -destination 'platform=iOS Simulator,name=iPhone 16 Pro'
 ```
+
+## fix-crowdin-locales.py
+
+Crowdin keys the `localizations` object of an exported `.xcstrings` by its
+`osx_locale` placeholder, which for Portuguese is `pt` — while the project, its
+`knownRegions` and its `.lproj` folders use `pt-PT`, `pt` being the legacy Apple
+code for Brazilian Portuguese. Crowdin's Language Mapping is ignored for String
+Catalogs, so the codes have to be rewritten after every download:
+
+```bash
+Scripts/fix-crowdin-locales.py            					# report what would change
+Scripts/fix-crowdin-locales.py --write    					# rewrite the catalogs
+Scripts/fix-crowdin-locales.py ~/Downloads/crowdin --write 	# with path specified
+```
+
+Run it before opening the catalogs in Xcode. It re-emits them in Xcode's own
+JSON layout (2-space indent, `" : "` separator, unescaped UTF-8, localizations
+sorted by code), so a catalog that already uses the right codes is left
+untouched byte for byte and a second run is a no-op. Add to `LOCALE_MAP` if
+another language ever comes down under the wrong code.
+
+It covers String Catalogs only — the four `.lproj` families are downloaded
+under the path Crowdin's `%osx_code%` placeholder produces, so check those
+folder names too.

@@ -10,6 +10,12 @@
             "value" : "تمت مقاطعة عمليات التحميل. يرجى إعادة تشغيل التطبيق."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nahrávání bylo přerušeno. Restartujte aplikaci."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -76,6 +82,18 @@
             "value" : "Przesyłanie zostało przerwane. Uruchom aplikację ponownie."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envios interrompidos. Reinicie o aplicativo."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregamentos interrompidos. Reinicie a aplicação."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -86,6 +104,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uppladdningen avbröts. Starta om appen."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вивантаження перервано. Перезапустіть програму."
           }
         },
         "zh-Hans" : {
@@ -142,6 +166,36 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "اكتمل تحميل %lld"
+                }
+              }
+            }
+          }
+        },
+        "cs" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld nahrání dokončena"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld nahrání dokončena"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld nahrání dokončeno"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld nahrání dokončeno"
                 }
               }
             }
@@ -345,6 +399,42 @@
             }
           }
         },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld envio concluído"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld envios concluídos"
+                }
+              }
+            }
+          }
+        },
+        "pt-PT" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld carregamento concluído"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld carregamentos concluídos"
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -393,6 +483,36 @@
             }
           }
         },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld вивантаження завершено"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld вивантажень завершено"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld вивантаження завершено"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld вивантаження завершено"
+                }
+              }
+            }
+          }
+        },
         "zh-Hans" : {
           "variations" : {
             "plural" : {
@@ -426,6 +546,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يحتاج الجهاز إلى تبريد رائع."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zařízení se musí ochladit."
           }
         },
         "da" : {
@@ -494,6 +620,18 @@
             "value" : "Urządzenie musi się ochłodzić."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O dispositivo precisa esfriar."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O dispositivo precisa de arrefecer."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -504,6 +642,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Enheten måste svalna."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пристрій має охолонути."
           }
         },
         "zh-Hans" : {
@@ -527,6 +671,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تم تمكين وضع توفير الطاقة. يرجى إيقاف تشغيله."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je zapnutý režim nízké spotřeby. Vypněte jej."
           }
         },
         "da" : {
@@ -595,6 +745,18 @@
             "value" : "Włączono tryb oszczędzania energii. Wyłącz go."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo de baixo consumo ativado. Desative-o."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo de poupança de energia ativado. Desative-o."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -605,6 +767,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Energisparläge aktiverat. Stäng av det."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Увімкнено режим енергозбереження. Вимкніть його."
           }
         },
         "zh-Hans" : {
@@ -628,6 +796,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "التحميل عبر شبكة Wi-Fi فقط. يرجى الاتصال بشبكة Wi-Fi."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nahrávání pouze přes Wi-Fi. Připojte se k Wi-Fi."
           }
         },
         "da" : {
@@ -696,6 +870,18 @@
             "value" : "Przesyłanie odbywa się wyłącznie przez Wi-Fi. Połącz się z siecią Wi-Fi."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envio somente por Wi-Fi. Conecte-se a uma rede Wi-Fi."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregamento apenas por Wi-Fi. Ligue-se a uma rede Wi-Fi."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -706,6 +892,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uppladdning endast via Wi-Fi. Anslut till ett Wi-Fi-nätverk."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вивантаження лише через Wi-Fi. Під’єднайтеся до Wi-Fi."
           }
         },
         "zh-Hans" : {
@@ -729,6 +921,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "جاري التحضير لعمليات التحميل…"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Příprava nahrávání…"
           }
         },
         "da" : {
@@ -797,6 +995,18 @@
             "value" : "Przygotowywanie przesyłania…"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparando os envios…"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A preparar os carregamentos…"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -807,6 +1017,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Förbereder uppladdningar…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Підготовка вивантажень…"
           }
         },
         "zh-Hans" : {
@@ -863,6 +1079,36 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "متبقي تحميل %lld"
+                }
+              }
+            }
+          }
+        },
+        "cs" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld nahrání zbývají"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld nahrání zbývá"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld nahrání zbývá"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld nahrání zbývá"
                 }
               }
             }
@@ -1066,6 +1312,42 @@
             }
           }
         },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld envio restante"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld envios restantes"
+                }
+              }
+            }
+          }
+        },
+        "pt-PT" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld carregamento restante"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld carregamentos restantes"
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -1114,6 +1396,36 @@
             }
           }
         },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "залишилося %lld вивантаження"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "залишилося %lld вивантажень"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "залишилося %lld вивантаження"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "залишилося %lld вивантаження"
+                }
+              }
+            }
+          }
+        },
         "zh-Hans" : {
           "variations" : {
             "plural" : {
@@ -1147,6 +1459,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "جاري التحضير لعمليات التحميل…"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Příprava nahrávání…"
           }
         },
         "da" : {
@@ -1215,6 +1533,18 @@
             "value" : "Przygotowywanie przesyłania…"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparando os envios…"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A preparar os carregamentos…"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1225,6 +1555,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Förbereder uppladdningar…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Підготовка вивантажень…"
           }
         },
         "zh-Hans" : {
@@ -1248,6 +1584,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يُرجى تحديد الألبوم أو الألبوم الفرعي الذي سيتم تحميل الصور ومقاطع الفيديو فيه تلقائيًا."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte album nebo podalbum, do kterého se budou fotky a videa automaticky nahrávat."
           }
         },
         "da" : {
@@ -1316,6 +1658,18 @@
             "value" : "Wybierz album lub podalbum, do którego zdjęcia i filmy z twojego urządzenia będą automatycznie przesyłane."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecione o álbum ou subálbum para o qual as fotos e os vídeos serão enviados automaticamente."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecione o álbum ou subálbum para o qual as fotografias e os vídeos serão carregados automaticamente."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1326,6 +1680,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Välj albumet eller underalbumet till vilka foton och videor automatiskt laddas upp."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виберіть альбом або підальбом, до якого автоматично вивантажуватимуться фото та відео."
           }
         },
         "zh-Hans" : {
@@ -1349,6 +1709,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يُرجى تحديد الألبوم أو الألبوم الفرعي الذي سيتم تحميل الصور ومقاطع الفيديو الخاصة بجهازك منه تلقائيًا."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte album nebo podalbum, ze kterého se budou fotky a videa z vašeho zařízení automaticky nahrávat."
           }
         },
         "da" : {
@@ -1417,6 +1783,18 @@
             "value" : "Wybierz album lub podalbum, z którego zdjęcia i filmy z Twojego urządzenia będą automatycznie przesyłane."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecione o álbum ou subálbum do qual as fotos e os vídeos do seu dispositivo serão enviados automaticamente."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecione o álbum ou subálbum a partir do qual as fotografias e os vídeos do seu dispositivo serão carregados automaticamente."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1427,6 +1805,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Välj det album eller underalbum från vilka foton och videor på din enhet automatiskt laddas upp."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виберіть альбом або підальбом, з якого автоматично вивантажуватимуться фото та відео з вашого пристрою."
           }
         },
         "zh-Hans" : {

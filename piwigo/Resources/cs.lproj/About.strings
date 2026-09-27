@@ -1,0 +1,15 @@
+/* 
+  About.strings
+  piwigo
+
+  Created by Spencer Baker on 2/19/15.
+  Copyright (c) 2015 bakercrew. All rights reserved.
+*/
+
+"authors1" = "Od Spencera Bakera, Olafa Grecka";
+"authors2" = "a Eddyho Lelièvra-Berny";
+"version" = "Verze";
+
+"translators_text" = "Upřímně děkujeme následujícím uživatelům za čas a úsilí, které věnovali překladu Piwiga:\n\n- Arabština: Rachid Haddani,\n- Čínština (zjednodušená): Benjamin Chris,\n- Čínština (tradiční): Sean Pai,\n- Dánština: Thomas Christfort,\n- Francouzština: Eddy Lelièvre-Berna,\n- Indonéština: Arvin Noer a Alfian Silaban,\n- Italština: Alessio Perilli,\n- Japonština: Takahiro Yakoh,\n- Maďarština: Miklos Bagi,\n- Němčina: Jörg Knörchen,\n- Nizozemština: Robert Mulder a Wim Woonings,\n- Polština: Michał Majchrowicz a T00kie,\n- Ruština: Eugene Vivdich,\n- Španělština: Armando Bello, Albert Parera a Tirs Abril,\n- Švédština: Elger Lindgren.";
+
+"licenceMIT_text" = "Licence MIT (MIT)\nTímto se uděluje bezplatné svolení každé osobě, která získá kopii tohoto softwaru a souvisejících souborů dokumentace (dále jen \"Software\"), nakládat se Softwarem bez omezení, včetně neomezeného práva jej užívat, kopírovat, upravovat, slučovat, publikovat, distribuovat, poskytovat sublicence a/nebo prodávat kopie Softwaru, a umožnit osobám, kterým je Software poskytnut, činit totéž, a to za následujících podmínek:\n\nVýše uvedené oznámení o autorských právech a toto oznámení o svolení budou zahrnuty ve všech kopiích nebo podstatných částech Softwaru.\n\nSOFTWARE JE POSKYTOVÁN \"TAK, JAK JE\", BEZ JAKÉKOLI ZÁRUKY, VÝSLOVNÉ ČI PŘEDPOKLÁDANÉ, VČETNĚ, ALE NIKOLI VÝHRADNĚ, ZÁRUK PRODEJNOSTI, VHODNOSTI PRO URČITÝ ÚČEL A NEPORUŠENÍ PRÁV. AUTOŘI ANI DRŽITELÉ AUTORSKÝCH PRÁV NEBUDOU V ŽÁDNÉM PŘÍPADĚ ODPOVĚDNI ZA JAKÝKOLI NÁROK, ŠKODU ČI JINOU ODPOVĚDNOST, AŤ UŽ NA ZÁKLADĚ SMLOUVY, DELIKTU ČI JINAK, VZNIKLOU ZE SOFTWARU NEBO V SOUVISLOSTI S NÍM ČI S JEHO UŽÍVÁNÍM ČI JINÝM NAKLÁDÁNÍM S NÍM.";

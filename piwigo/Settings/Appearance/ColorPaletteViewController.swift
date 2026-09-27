@@ -145,7 +145,7 @@ extension ColorPaletteViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let title = getContentOfHeader()
         return TableViewUtilities.heightOfHeader(withTitle: title,
-                                                        width: tableView.frame.size.width)
+                                                 width: tableView.frame.size.width)
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

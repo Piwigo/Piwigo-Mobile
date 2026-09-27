@@ -1,4 +1,6 @@
-• Javítja az elrendezést arab és más, jobbról balra írt nyelveken
-• Az egyes nyelvek többesszám-szabályait alkalmazza a fotók, albumok és címkék számára
-• Teljessé teszi az indonéz fordítást
-• Hibajavítások és a felület fejlesztése
+• Cseh, portugál és ukrán fordítást ad hozzá
+• Újrapróbálja a kiszolgálóhiba vagy érvénytelen válasz miatt megszakadt átviteleket
+• Javítja a 3.2-es és korábbi verziókban tárolt adatok migrációját
+• Javítja az albumok láblécében megjelenő fotószámot
+• A 16-osnál régebbi Piwigo kiszolgálók frissítésére ösztönöz
+• Összeomlások javítása és a felület fejlesztése

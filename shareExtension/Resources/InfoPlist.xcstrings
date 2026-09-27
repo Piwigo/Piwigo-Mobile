@@ -48,6 +48,12 @@
             "value" : "استخدم معرف الوجه بدلاً من رمز المرور للوصول إلى الألبومات الخاصة بك."
           }
         },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Použijte Face ID místo kódu pro přístup ke svým albům."
+          }
+        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -114,6 +120,18 @@
             "value" : "Użyj Face ID zamiast hasła, aby uzyskać dostęp do swoich albumów."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use o Face ID em vez de um código para acessar seus álbuns."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilize o Face ID em vez de um código para aceder aos seus álbuns."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -124,6 +142,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Använd Face ID istället för en lösenkod för att komma åt dina album."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Використовуйте Face ID замість коду для доступу до ваших альбомів."
           }
         },
         "zh-Hans" : {

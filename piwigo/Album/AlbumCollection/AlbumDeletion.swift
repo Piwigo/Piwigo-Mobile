@@ -95,8 +95,13 @@ final class AlbumDeletion: NSObject
                     title: String.localizedStringWithFormat(String(localized: "deleteCategory_severalOrphanedImages", comment: "Delete %lld Orphans"), self.nbOrphans),
                     style: .destructive,
                     handler: { [self] action in
-                        confirmAlbumDeletion(withNumberOfImages: album.totalNbImages,
-                                             deletionMode: .orphaned, completion: completion)
+                        if nbOrphans == album.totalNbImages {
+                            confirmAlbumDeletion(withNumberOfImages: album.totalNbImages,
+                                                 deletionMode: .all, completion: completion)
+                        } else {
+                            confirmAlbumDeletion(withNumberOfImages: album.totalNbImages,
+                                                 deletionMode: .orphaned, completion: completion)
+                        }
                     })
                 alert.addAction(orphanImagesAction)
             }
