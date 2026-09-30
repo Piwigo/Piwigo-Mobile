@@ -13751,6 +13751,131 @@
           }
         }
       }
+    },
+    "v4.4.3_text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإصدار 4.4.3\n\n• تكييف التخطيط مع النوافذ القابلة لتغيير الحجم وهواتف iPhone القابلة للطي\n• ملاءمة الجداول والعناوين للشاشات ذات الزوايا المستديرة\n• تصحيح عرض الألبومات وحجم مصغّرات الصور\n• عرض شعار Piwigo عند مشاركة رابط ألبوم\n• تصحيح علامات الصور وتسريع استيرادها\n• إصلاح العلل وتحسين الواجهة"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verze 4.4.3\n\n• Přizpůsobuje rozvržení oknům s měnitelnou velikostí a skládacím iPhonům\n• Přizpůsobuje tabulky a záhlaví obrazovkám se zaoblenými rohy\n• Opravuje šířku alb a velikost náhledů fotek\n• Zobrazuje logo Piwigo při sdílení odkazu na album\n• Opravuje štítky fotek a zrychluje jejich import\n• Opravuje chyby a vylepšuje rozhraní"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.4.3\n\n• Tilpasser layoutet til vinduer i variabel størrelse og foldbare iPhones\n• Tilpasser tabeller og overskrifter til skærme med afrundede hjørner\n• Retter albummernes bredde og størrelsen på billedernes miniaturer\n• Viser Piwigo-logoet, når et link til et album deles\n• Retter billedernes etiketter og fremskynder importen af dem\n• Retter fejl og forbedrer brugerfladen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.4.3\n\n• Passt das Layout an Fenster mit veränderbarer Größe und faltbare iPhones an\n• Passt Tabellen und Überschriften an Bildschirme mit abgerundeten Ecken an\n• Korrigiert die Breite der Alben und die Größe der Fotominiaturen\n• Zeigt das Piwigo-Logo beim Teilen eines Links zu einem Album\n• Korrigiert die Schlagwörter der Fotos und beschleunigt deren Import\n• Behebt Fehler und verbessert die Benutzeroberfläche"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.4.3\n\n• Adapts the layout to resizable windows and foldable iPhones\n• Adjusts tables and headers to screens with rounded corners\n• Corrects the width of albums and the size of photo thumbnails\n• Presents the Piwigo logo when sharing a link to an album\n• Corrects the tags of photos and speeds up their import\n• Fixes bugs and improves the interface"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión 4.4.3\n\n• Adapta el diseño a las ventanas redimensionables y a los iPhone plegables\n• Ajusta las tablas y los encabezados a las pantallas con esquinas redondeadas\n• Corrige el ancho de los álbumes y el tamaño de las miniaturas de las fotos\n• Muestra el logotipo de Piwigo al compartir un enlace a un álbum\n• Corrige las etiquetas de las fotos y acelera su importación\n• Corrige errores y mejora la interfaz"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.4.3\n\n• Adapte la mise en page aux fenêtres redimensionnables et aux iPhone pliables\n• Ajuste les tableaux et les en-têtes aux écrans à coins arrondis\n• Corrige la largeur des albums et la taille des miniatures des photos\n• Présente le logo Piwigo lors du partage d'un lien vers un album\n• Corrige les tags des photos et accélère leur import\n• Corrige des bogues et améliore l'interface"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4.4.3-as verzió\n\n• Az elrendezést átméretezhető ablakokhoz és összecsukható iPhone-okhoz igazítja\n• A táblázatokat és fejléceket lekerekített sarkú képernyőkhöz igazítja\n• Javítja az albumok szélességét és a fotóbélyegképek méretét\n• Megjeleníti a Piwigo logóját album hivatkozásának megosztásakor\n• Javítja a fotók címkéit és gyorsítja azok importálását\n• Hibajavítások és a kezelőfelület fejlesztése"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versi 4.4.3\n\n• Menyesuaikan tata letak dengan jendela yang dapat diubah ukurannya dan iPhone lipat\n• Menyesuaikan tabel dan tajuk dengan layar bersudut membulat\n• Memperbaiki lebar album dan ukuran miniatur foto\n• Menampilkan logo Piwigo saat membagikan tautan ke album\n• Memperbaiki tag foto dan mempercepat impornya\n• Memperbaiki bug dan meningkatkan antarmuka"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versione 4.4.3\n\n• Adatta il layout alle finestre ridimensionabili e agli iPhone pieghevoli\n• Adatta le tabelle e le intestazioni agli schermi con angoli arrotondati\n• Corregge la larghezza degli album e la dimensione delle miniature delle foto\n• Mostra il logo Piwigo quando si condivide un link a un album\n• Corregge i tags delle foto e ne accelera l'importazione\n• Corregge i bug e migliora l'interfaccia"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バージョン 4.4.3\n\n• サイズ変更可能なウインドウと折りたたみ式 iPhone にレイアウトを対応\n• 角の丸い画面に合わせて表とヘッダーを調整\n• アルバムの幅と写真サムネールのサイズを修正\n• アルバムのリンクを共有する際に Piwigo のロゴを表示\n• 写真のタグを修正し、取り込みを高速化\n• 不具合の修正とインターフェイスの改善"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versie 4.4.3\n\n• Past de lay-out aan op vensters met variabele grootte en opvouwbare iPhones\n• Past tabellen en koppen aan op schermen met afgeronde hoeken\n• Corrigeert de breedte van albums en de grootte van fotominiaturen\n• Toont het Piwigo-logo bij het delen van een koppeling naar een album\n• Corrigeert de labels van foto's en versnelt het importeren ervan\n• Lost fouten op en verbetert de interface"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wersja 4.4.3\n\n• Dostosowuje układ do okien o zmiennym rozmiarze i składanych iPhone'ów\n• Dostosowuje tabele i nagłówki do ekranów o zaokrąglonych rogach\n• Poprawia szerokość albumów i rozmiar miniatur zdjęć\n• Pokazuje logo Piwigo podczas udostępniania odnośnika do albumu\n• Poprawia tagi zdjęć i przyspiesza ich import\n• Poprawki błędów i usprawnienia interfejsu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.4.3\n\n• Adapta o layout às janelas redimensionáveis e aos iPhones dobráveis\n• Ajusta as tabelas e os cabeçalhos às telas com cantos arredondados\n• Corrige a largura dos álbuns e o tamanho das miniaturas das fotos\n• Apresenta o logotipo do Piwigo ao compartilhar um link para um álbum\n• Corrige as etiquetas das fotos e acelera sua importação\n• Corrige erros e melhora a interface"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão 4.4.3\n\n• Adapta o esquema às janelas redimensionáveis e aos iPhones dobráveis\n• Ajusta as tabelas e os cabeçalhos aos ecrãs com cantos arredondados\n• Corrige a largura dos álbuns e o tamanho das miniaturas das fotografias\n• Apresenta o logótipo do Piwigo ao partilhar uma ligação para um álbum\n• Corrige as etiquetas das fotografias e acelera a sua importação\n• Corrige erros e melhora a interface"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версия 4.4.3\n\n• Макет адаптирован к окнам изменяемого размера и складным iPhone\n• Таблицы и заголовки подогнаны под экраны со скруглёнными углами\n• Исправлены ширина альбомов и размер миниатюр фото\n• Логотип Piwigo показывается при отправке ссылки на альбом\n• Исправлены теги фото и ускорен их импорт\n• Исправлены ошибки и улучшен интерфейс"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.4.3\n\n• Anpassar layouten till fönster med variabel storlek och vikbara iPhone-modeller\n• Anpassar tabeller och rubriker till skärmar med rundade hörn\n• Rättar albumens bredd och storleken på fotominiatyrerna\n• Visar Piwigo-logotypen när en länk till ett album delas\n• Rättar fotonas etiketter och snabbar upp importen av dem\n• Fixar fel och förbättrar gränssnittet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія 4.4.3\n\n• Пристосовує макет до вікон змінного розміру та складаних iPhone\n• Пристосовує таблиці та заголовки до екранів із заокругленими кутами\n• Виправляє ширину альбомів та розмір мініатюр фото\n• Показує логотип Piwigo під час поширення посилання на альбом\n• Виправляє теги фото та пришвидшує їх імпорт\n• Виправляє помилки та покращує інтерфейс"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 4.4.3\n\n• 使布局适配可调整大小的窗口与折叠屏 iPhone\n• 调整表格与标题以适配圆角屏幕\n• 修正相册宽度与照片缩略图尺寸\n• 分享相册链接时显示 Piwigo 标志\n• 修正照片的标签并加快其导入\n• 修复问题并改进界面"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 4.4.3\n\n• 使版面配置適應可調整大小的視窗與摺疊式 iPhone\n• 調整表格與標題以適應圓角螢幕\n• 修正相簿寬度與照片縮圖尺寸\n• 分享相簿連結時顯示 Piwigo 標誌\n• 修正照片的標籤並加快其匯入\n• 修復問題並改進介面"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"
