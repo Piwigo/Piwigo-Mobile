@@ -191,7 +191,7 @@ final class TagsViewController: UITableViewController {
                 let tagData = try await JSONManager.shared.fetchTags(asAdmin: self.userData.hasAdminRights)
                 
                 // Update tag data in cache
-                try await TagProvider().importTags(from: tagData)
+                try TagProvider().importTags(from: tagData)
                 
                 // Close HUD
                 await MainActor.run { [self] in
