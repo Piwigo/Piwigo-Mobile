@@ -1,6 +1,6 @@
-• Fügt tschechische, portugiesische und ukrainische Übersetzungen hinzu
-• Wiederholt Übertragungen, die durch einen Serverfehler oder eine ungültige Antwort abgebrochen wurden
-• Behebt die Migration von Daten aus Version 3.2 und früher
-• Korrigiert die Anzahl der Fotos in der Fußzeile der Alben
-• Empfiehlt die Aktualisierung von Piwigo-Servern älter als Version 16
-• Absturzbehebungen und Verbesserungen der Benutzeroberfläche
+• Passt das Layout an Fenster mit veränderbarer Größe und faltbare iPhones an
+• Passt Tabellen und Überschriften an Bildschirme mit abgerundeten Ecken an
+• Korrigiert die Breite der Alben und die Größe der Fotominiaturen
+• Zeigt das Piwigo-Logo beim Teilen eines Links zu einem Album
+• Korrigiert die Schlagwörter der Fotos und beschleunigt deren Import
+• Fehlerbehebungen und Verbesserungen der Benutzeroberfläche
