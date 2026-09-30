@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import LinkPresentation
 import UIKit
 import PwgKit
 import PwgUIKit
@@ -246,7 +245,7 @@ extension ImageViewController
 
         // A single URL item is provided, so the share sheet proposes the activities
         // which accept a link and nothing has to be excluded.
-        let itemSource = ImageLinkActivityItemSource(pageUrl: pageUrl, subject: subject)
+        let itemSource = PageLinkActivityItemSource(pageUrl: pageUrl, subject: subject)
         let activityViewController = UIActivityViewController(activityItems: [itemSource],
                                                               applicationActivities: nil)
 
@@ -298,58 +297,5 @@ extension ImageViewController: @preconcurrency ShareImageActivityItemProviderDel
             // Closes ActivityView
             presentedViewController?.dismiss(animated: true)
         }
-    }
-}
-
-
-// MARK: - Image Page URL Activity Item Source
-/**
- Shares the URL of an image page on the Piwigo server and provides the name of that
- image as the subject, which activities such as Mail use to pre-fill their subject field.
-
- A plain UIActivityItemSource is used instead of the UIActivityItemProvider subclasses
- of the other share paths: there is nothing to download or convert in the background,
- the URL is already at hand.
- */
-final class ImageLinkActivityItemSource: NSObject, UIActivityItemSource {
-
-    private let pageUrl: URL
-    private let subject: String
-
-    init(pageUrl: URL, subject: String) {
-        self.pageUrl = pageUrl
-        self.subject = subject
-        super.init()
-    }
-
-    func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {
-        // Returning a URL is what makes the share sheet propose the activities accepting a link
-        return pageUrl
-    }
-
-    func activityViewController(_ activityViewController: UIActivityViewController,
-                                itemForActivityType activityType: UIActivity.ActivityType?) -> Any? {
-        return pageUrl
-    }
-
-    func activityViewController(_ activityViewController: UIActivityViewController,
-                                subjectForActivityType activityType: UIActivity.ActivityType?) -> String {
-        return subject
-    }
-
-    func activityViewControllerLinkMetadata(_: UIActivityViewController) -> LPLinkMetadata? {
-        // Providing the metadata ourselves prevents the share sheet from fetching the page
-        // to guess a title and an icon from the theme of the Piwigo server.
-        let linkMetaData = LPLinkMetadata()
-        linkMetaData.originalURL = pageUrl
-        linkMetaData.url = pageUrl
-        linkMetaData.title = subject
-
-        // We use the Piwigo logo bundled with the app
-        if let logo = UIImage(named: "piwigoLogo") {
-            linkMetaData.iconProvider = NSItemProvider(object: logo)
-        }
-
-        return linkMetaData
     }
 }
