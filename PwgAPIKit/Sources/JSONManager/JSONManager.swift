@@ -150,13 +150,45 @@ public final class JSONManager: @unchecked Sendable {
             }
         }
         catch let error as PwgKitError {
+            JSONManager.logger.error("\(method) failed: \(JSONManager.cause(of: error))")
             throw error
         }
         catch {
-            throw PwgKitError.otherError(innerError: error)
+            let pwgError = PwgKitError.otherError(innerError: error)
+            JSONManager.logger.error("\(method) failed: \(JSONManager.cause(of: pwgError))")
+            throw pwgError
         }
     }
-    
+
+    /// Names the cause of a failed request without carrying the address of the server or the
+    /// content of the request, which the logs collected from a device are not meant to hold.
+    /// Only the cases listed here own an associated value, so the default names a case alone.
+    fileprivate static
+    func cause(of error: PwgKitError) -> String {
+        switch error {
+        case .invalidStatusCode(statusCode: let code):
+            return "HTTP status \(code)"
+        case .pwgError(code: let code, msg: let msg):
+            return "Piwigo error \(code): \(msg)"
+        case .requestFailed(innerError: let urlError):
+            return "URL error \(urlError.errorCode)"
+        case .decodingFailed:
+            return "decoding failed"
+        case .otherError(innerError: let innerError):
+            return "other error of type \(type(of: innerError))"
+        case .fileOperationFailed:
+            return "file operation failed"
+        case .photoError, .photoResourceError:
+            return "Photos error"
+        case .videoEncodingError:
+            return "video encoding error"
+        case .CoreDataError:
+            return "Core Data error"
+        default:
+            return "\(error)"
+        }
+    }
+
     fileprivate
     func cleanAndRetryDecoding<T: Decodable>(_ jsonData: Data, withDecoder decoder: JSONDecoder, forMethod method: String,
                                              jsonObjectClientExpectsToReceive: T.Type, error: DecodingError,
