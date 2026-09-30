@@ -255,7 +255,9 @@ public final class AlbumProvider {
         var importedUserProperties: UserProperties? = nil
         
         // Get background context
-        let bckgContext = DataController.shared.newTaskContext()
+        /// This context is dropped when the import returns: it has no reason to merge the saves
+        /// of the other imports running at the same time.
+        let bckgContext = DataController.shared.newTaskContext(autoMergingChanges: false)
         
         // Copied locally so that the closure below does not capture self
         let batchSize = self.batchSize

@@ -167,7 +167,7 @@ final class TagSelectorViewController: UIViewController {
                 let tagData = try await JSONManager.shared.fetchTags(asAdmin: false)
                 
                 // Update tag data in cache
-                try TagProvider().importTags(from: tagData, asAdmin: false)
+                try TagProvider().importTags(from: tagData)
                 
                 // Close HUD
                 await MainActor.run { [self] in

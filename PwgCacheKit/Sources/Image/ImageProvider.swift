@@ -172,7 +172,9 @@ public final class ImageProvider {
                                 sort: pwgImageSort, fromRank startRank: Int64 = Int64.min) async throws(PwgKitError) {
         
         // Get background context
-        let bckgContext = DataController.shared.newTaskContext()
+        /// This context is dropped when the import returns: it has no reason to merge the saves
+        /// of the other imports running at the same time.
+        let bckgContext = DataController.shared.newTaskContext(autoMergingChanges: false)
 
         // Copied locally so that the closure below does not capture self
         let userDidCancelSearch = self.userDidCancelSearch
@@ -192,8 +194,12 @@ public final class ImageProvider {
                 else { throw PwgKitError.albumCreationError }
                 
                 // Import tags which are not yet in cache
+                /// The tags are imported by this context so that update(with:sort:rank:user:albums:)
+                /// below sees the ones created here — a separate context would only have published
+                /// them after this block returns — and so that they are saved with the images.
                 let imageTags = imagesBatch.compactMap({$0.tags}).reduce([],+)
-                _ = try TagProvider().importOneBatch(imageTags, asAdmin: user.hasAdminRights, tagIDs: Set<Int32>())
+                _ = try TagProvider().importOneBatch(imageTags, tagIDs: Set<Int32>(),
+                                                     inContext: bckgContext)
                 
                 // Get favorite album (create it if necessary)
                 let favAlbum = try AlbumProvider().getOrCreateAlbum(withID: pwgSmartAlbum.favorites.rawValue,

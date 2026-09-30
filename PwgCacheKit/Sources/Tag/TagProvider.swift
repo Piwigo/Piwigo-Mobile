@@ -21,7 +21,7 @@ public final class TagProvider {
      processing the record in batches to avoid a high memory footprint.
     */
     private let batchSize = 256
-    public func importTags(from tagPropertiesArray: [TagGetInfo], asAdmin: Bool) throws(PwgKitError) {
+    public func importTags(from tagPropertiesArray: [TagGetInfo]) throws(PwgKitError) {
         // We keep IDs of tags to delete
         // Initialised and then updated at each iteration
         var tagToDeleteIDs: Set<Int32>? = nil
@@ -29,7 +29,7 @@ public final class TagProvider {
         // We shall perform at least one import in case where
         // the user did delete all tags or untag all photos
         guard tagPropertiesArray.isEmpty == false else {
-            _ = try importOneBatch([TagGetInfo](), asAdmin: asAdmin, tagIDs: tagToDeleteIDs)
+            _ = try importOneBatch([TagGetInfo](), tagIDs: tagToDeleteIDs)
             return
         }
         
@@ -52,31 +52,44 @@ public final class TagProvider {
             let tagsBatch = Array(tagPropertiesArray[range])
             
             // Stop the entire import if any batch is unsuccessful.
-            let tagIDs = try importOneBatch(tagsBatch, asAdmin: asAdmin, tagIDs: tagToDeleteIDs)
+            let tagIDs = try importOneBatch(tagsBatch, tagIDs: tagToDeleteIDs)
             tagToDeleteIDs = tagIDs
         }
     }
     
     /**
-     Imports one batch of tags, creating managed objects from the new data,
-     and saving them to the persistent store, on a private queue. After saving,
-     resets the context to clean up the cache and lower the memory footprint.
-     
+     Imports one batch of tags, creating managed objects from the new data, on a private queue.
+
+     Without a context, the tags are imported on a context of this method's own, which is saved
+     and then reset to clean up the cache and lower the memory footprint. A caller which is
+     already importing objects referring to these tags lends its context instead, and then owns
+     the save and the reset.
+
      NSManagedObjectContext.performAndWait doesn't rethrow so this function
      catches throws within the closure and uses a return value to indicate
      whether the import is successful.
-     
+
      tagIDs is nil or contains the IDs of tags to delete.
     */
-    public func importOneBatch(_ tagsBatch: [TagGetInfo], asAdmin: Bool,
-                               tagIDs: Set<Int32>?) throws(PwgKitError) -> Set<Int32> {
+    public func importOneBatch(_ tagsBatch: [TagGetInfo], tagIDs: Set<Int32>?,
+                               inContext taskContext: NSManagedObjectContext? = nil) throws(PwgKitError) -> Set<Int32> {
 
         var tagToDeleteIDs = Set<Int32>()
 
+        // A caller which is already importing objects referring to these tags lends its own
+        // context, so that both imports are performed by the same context: a tag created here
+        // is then seen immediately by the caller, and the two reach the store as a single save
+        // instead of conflicting with each other.
+        /// A context of our own is saved and reset below; a lent one is not, since its content
+        /// belongs to the caller and resetting it would discard the work in progress.
+        let ownsContext = taskContext == nil
+        let bckgContext = taskContext ?? DataController.shared.newTaskContext(autoMergingChanges: false)
+
         // Runs on the URLSession's delegate queue
         // so it won’t block the main thread.
+        /// performAndWait() is reentrant, so a caller already running on the queue of the lent
+        /// context may call this method from inside its own perform block.
         do {
-            let bckgContext = DataController.shared.newTaskContext()
             try bckgContext.performAndWait {
                 
                 // Get current server object
@@ -152,10 +165,13 @@ public final class TagProvider {
                 }
                 
                 // Save all insertions from the context to the store.
-                bckgContext.saveIfNeeded()
-                
-                // Reset the taskContext to free the cache and lower the memory footprint.
-                bckgContext.reset()
+                /// A lent context is saved and reset by its owner.
+                if ownsContext {
+                    bckgContext.saveIfNeeded()
+
+                    // Reset the taskContext to free the cache and lower the memory footprint.
+                    bckgContext.reset()
+                }
             }
         }
         catch let error as PwgKitError { throw error }

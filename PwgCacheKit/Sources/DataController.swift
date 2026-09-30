@@ -57,10 +57,15 @@ public final class DataController {
         return context
     }()
     
-    nonisolated public func newTaskContext() -> NSManagedObjectContext {
+    /// Pass `autoMergingChanges: false` for a context which is created, used inside a single
+    /// perform block, saved and dropped: such a context observes nothing, and merging every
+    /// other context's save into it is pure cost — a cost which grows with the square of the
+    /// number of contexts alive, since each one merges the saves of all the others.
+    /// The main context keeps merging, which is what brings the saves to the interface.
+    nonisolated public func newTaskContext(autoMergingChanges: Bool = true) -> NSManagedObjectContext {
         let context = self.persistentContainer.newBackgroundContext()
         context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        context.automaticallyMergesChangesFromParent = true
+        context.automaticallyMergesChangesFromParent = autoMergingChanges
         context.shouldDeleteInaccessibleFaults = true
         context.name = "Background context"
         return context
