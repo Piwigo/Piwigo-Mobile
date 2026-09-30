@@ -34,6 +34,9 @@ final class LoginViewController: UIViewController {
     @IBOutlet weak var piwigoURL: UIButton!
     
     private var isAlreadyTryingToLogin = false
+    /// The properties collected by the sequence which opened the session, which the session
+    /// checker cannot return itself since it reports an outcome and not a value.
+    private var openedUserData: UserProperties?
     var httpAlertController: UIAlertController?
     var httpLoginAction: UIAlertAction?
 
@@ -237,19 +240,46 @@ final class LoginViewController: UIViewController {
                                           account: username)
         }
 
-        // Collect list of methods supplied by Piwigo server
-        requestServerMethods()
+        // Collect the methods of the server, log in and retrieve the status of the user
+        openSession()
     }
     
-    func requestServerMethods() {
-        // Collect list of methods supplied by Piwigo server on background
+    /**
+     Opens the session: collects the methods supplied by the server, logs in, and retrieves the
+     status of the user, as a single sequence.
+
+     That sequence is handed to PwgSessionChecker so that no session check performed elsewhere —
+     by an album being restored, or by the upload manager — logs in at the same time: each login
+     opens a session which invalidates the previous one, and the requests performed meanwhile
+     with the invalidated session are answered as if the user were a guest.
+     */
+    func openSession() {
+        // The credentials are read here, i.e. before leaving the main thread
+        let username = userTextField.text ?? ""
+        let password = passwordTextField.text ?? ""
+
         Task.detached {
             do throws(PwgKitError) {
-                try await JSONManager.shared.getMethods()
-                
-                // Pursue logging in…
+                // Perform the whole sequence while no session check runs
+                /// The properties of the user are handed over by the view controller because the
+                /// checker reports an outcome and not a value, and a variable captured by the
+                /// closure below could not be written by it.
+                try await PwgSessionChecker.shared.logIn {
+                    do throws(PwgKitError) {
+                        let userData = try await self.openSession(asUser: username, withPassword: password)
+                        await MainActor.run { self.openedUserData = userData }
+                        return .success(())
+                    }
+                    catch {
+                        return .failure(error)
+                    }
+                }
+
+                // Session opened
                 await MainActor.run {
-                    self.performLogin()
+                    guard let userData = self.openedUserData else { return }
+                    self.openedUserData = nil
+                    self.didOpenSession(forUser: userData)
                 }
             }
             catch {
@@ -393,156 +423,113 @@ final class LoginViewController: UIViewController {
         // Display security message below credentials
         websiteNotSecure.isHidden = false
 
-        // Collect list of methods supplied by Piwigo server
-        requestServerMethods()
+        // Collect the methods of the server, log in and retrieve the status of the user
+        openSession()
     }
 
-    @MainActor
-    func performLogin() {
+    /**
+     Performs the requests which open the session, in the order the server expects them, and
+     returns the properties of the user who is logged in.
+
+     This method is called by openSession() from within PwgSessionChecker, i.e. while no session
+     check runs: the sequence must therefore not wait for the user, and the alert which may follow
+     it is presented by its caller once the session is opened.
+     */
+    private func openSession(asUser username: String,
+                             withPassword password: String) async throws(PwgKitError) -> UserProperties {
+        // Collect the list of methods supplied by the Piwigo server
+        try await JSONManager.shared.getMethods()
+
         // Perform login if username exists
-        let username = userTextField.text ?? ""
-        let password = passwordTextField.text ?? ""
-        
+        var userData = UserProperties.init(withStatus: .guest)
         if username.isEmpty {
             // Access the server as guest
-            ServerVars.shared.username = ""
-            ServerVars.shared.login = ""
-            
-            // Reset keychain and credentials
-            KeychainUtilities.deletePassword(forService: ServerVars.shared.serverPath,
-                                             account: username)
+            await MainActor.run {
+                ServerVars.shared.username = ""
+                ServerVars.shared.login = ""
 
-            // Check Piwigo version, get token, available sizes, etc.
-            let userData = UserProperties.init(withStatus: .guest)
-            self.getCommunityStatus(forUser: userData)
+                // Reset keychain and credentials
+                KeychainUtilities.deletePassword(forService: ServerVars.shared.serverPath,
+                                                 account: username)
+            }
         }
         else {
-            // Try logging in
             // Update HUD during login
             updateHUD(detail: String(localized: "login_newSession", comment: "Opening Session"))
 
-            Task.detached {
-                do throws(PwgKitError) {
-                    // Perform login
-                    try await JSONManager.shared.sessionLogin(withUsername: username, password: password)
-
-                    // Session now opened
-                    await MainActor.run { [self] in
-                        // Remember username for future
-                        ServerVars.shared.username = username
-                        ServerVars.shared.login = username
-                        
-                        // Prepare user account
-                        var userData = UserProperties.init(withStatus: .guest)
-                        userData.login = username
-                        userData.username = username
-                        
-                        // First determine user rights if Community extension installed
-                        self.getCommunityStatus(forUser: userData)
-                    }
-                }
-                catch {
-                    // Don't keep unaccepted credentials
-                    KeychainUtilities.deletePassword(forService: ServerVars.shared.serverPath,
-                                                     account: username)
-                    await MainActor.run { [self] in
-                        // Login request failed
-                        self.logging(inConnectionError: error)
-                    }
-                }
+            // Try logging in
+            do throws(PwgKitError) {
+                try await JSONManager.shared.sessionLogin(withUsername: username, password: password)
             }
+            catch {
+                // Don't keep unaccepted credentials
+                KeychainUtilities.deletePassword(forService: ServerVars.shared.serverPath,
+                                                 account: username)
+                throw error
+            }
+
+            // Session now opened ► Remember username for future
+            ServerVars.shared.username = username
+            ServerVars.shared.login = username
+
+            // Prepare user account
+            userData.login = username
+            userData.username = username
         }
-    }
-    
-    // Determine true user rights when Community extension installed
-    @MainActor
-    func getCommunityStatus(forUser userProperties: UserProperties) {
-        // Community plugin installed?
+
+        // Determine true user rights when Community extension installed
         if ServerVars.shared.usesCommunityPluginV29 {
             // Update HUD during login
             updateHUD(detail: String(localized: "login_communityParameters", comment: "Community Parameters"))
 
-            var userData = userProperties
-            Task.detached {
-                do throws(PwgKitError) {
-                    // Community extension installed, get real user's status
-                    try await JSONManager.shared.communityGetStatus(&userData)
-                    
-                    await MainActor.run { [self] in
-                        // Check Piwigo version, get token, available sizes, etc.
-                        self.getSessionStatus(forUser: userData)
-                    }
-                }
-                catch {
-                    // Inform user that server failed to retrieve Community parameters
-                    await MainActor.run { [self] in
-                        self.isAlreadyTryingToLogin = false
-                        self.logging(inConnectionError: error)
-                    }
-                }
-            }
-        } else {
-            // Community extension not installed
-            // Check Piwigo version, get token, available sizes, etc.
-            self.getSessionStatus(forUser: userProperties)
+            // Community extension installed, get real user's status
+            try await JSONManager.shared.communityGetStatus(&userData)
         }
-    }
-    
-    // Check Piwigo version, get username, token, available sizes, etc.
-    @MainActor
-    func getSessionStatus(forUser userProperties: UserProperties) {
-        // Update HUD during login
+
+        // Check Piwigo version, get username, token, available sizes, etc.
         updateHUD(detail: String(localized: "login_serverParameters", comment: "Piwigo Parameters"))
 
-        var userData = userProperties
-        Task.detached {
-            do throws(PwgKitError) {
-                // Get session status
-                /// The username is not the login name when using API keys
-                /// User rights are determined by the Community extension (if installed)
-                try await JSONManager.shared.sessionGetStatus(&userData)
-                
-                // Username may be diffrent from login name
-                ServerVars.shared.username = userData.username
-                
-                // Get admin user info (no API method available for non-admins)
-                if userData.hasAdminRights {
-                    let data = try? await JSONManager.shared.getUserInfo(.all, forUserName: userData.username)
-                    userData.pwgID = data?.id ?? 0
-                    userData.email = data?.email ?? ""
-                    userData.recentPeriod = data?.recentPeriod?.int16Value ?? 7
-                }
-                
-                await MainActor.run { [self] in
-                    
-                    // Should this server be updated?
-                    let now: Double = Date.timeIntervalSinceReferenceDate
-                    if now > ServerVars.shared.dateOfLastUpdateRequest + AppVars.shared.pwgOneMonth,
-                       ServerVars.shared.pwgVersion.compare(pwgRecentVersion, options: .numeric) == .orderedAscending {
-                        // Store date of last upgrade request
-                        ServerVars.shared.dateOfLastUpdateRequest = now
-                        
-                        // Piwigo server update recommanded ► Inform user
-                        let userProperties = userData
-                        self.hideHUD() {
-                            self.dismissPiwigoError(withTitle: String(localized: "serverVersionOld_title", comment: "Server Update Available"), message: String.localizedStringWithFormat(String(localized: "serverVersionOld_message", comment: "Your Piwigo server version is %@. Please ask the administrator to update it."), ServerVars.shared.pwgVersion), completion: {
-                                    // Piwigo server version is still appropriate.
-                                    self.launchApp(forUser: userProperties)
-                            })
-                        }
-                    } else {
-                        // Piwigo server version is appropriate.
+        // Get session status
+        /// The username is not the login name when using API keys
+        /// User rights are determined by the Community extension (if installed)
+        try await JSONManager.shared.sessionGetStatus(&userData)
+
+        // Username may be diffrent from login name
+        ServerVars.shared.username = userData.username
+
+        // Get admin user info (no API method available for non-admins)
+        if userData.hasAdminRights {
+            let data = try? await JSONManager.shared.getUserInfo(.all, forUserName: userData.username)
+            userData.pwgID = data?.id ?? 0
+            userData.email = data?.email ?? ""
+            userData.recentPeriod = data?.recentPeriod?.int16Value ?? 7
+        }
+
+        return userData
+    }
+
+    /// Launches the app, after having invited the user to update a server which is getting old.
+    /// That invitation waits for the user, so it is presented once openSession() has released
+    /// the session checker.
+    @MainActor
+    private func didOpenSession(forUser userData: UserProperties) {
+        // Should this server be updated?
+        let now: Double = Date.timeIntervalSinceReferenceDate
+        if now > ServerVars.shared.dateOfLastUpdateRequest + AppVars.shared.pwgOneMonth,
+           ServerVars.shared.pwgVersion.compare(pwgRecentVersion, options: .numeric) == .orderedAscending {
+            // Store date of last upgrade request
+            ServerVars.shared.dateOfLastUpdateRequest = now
+
+            // Piwigo server update recommanded ► Inform user
+            self.hideHUD() {
+                self.dismissPiwigoError(withTitle: String(localized: "serverVersionOld_title", comment: "Server Update Available"), message: String.localizedStringWithFormat(String(localized: "serverVersionOld_message", comment: "Your Piwigo server version is %@. Please ask the administrator to update it."), ServerVars.shared.pwgVersion), completion: {
+                        // Piwigo server version is still appropriate.
                         self.launchApp(forUser: userData)
-                    }
-                }
+                })
             }
-            catch {
-                await MainActor.run { [self] in
-                    self.isAlreadyTryingToLogin = false
-                    // Display error message
-                    self.logging(inConnectionError: error)
-                }
-            }
+        } else {
+            // Piwigo server version is appropriate.
+            self.launchApp(forUser: userData)
         }
     }
 
