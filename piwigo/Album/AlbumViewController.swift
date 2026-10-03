@@ -651,23 +651,17 @@ final class AlbumViewController: UIViewController
                     present(whatsNewVC, animated: true)
                 }
                 else {
+                    // Present the view in a form sheet of the width of the settings view
                     whatsNewVC.modalTransitionStyle = .coverVertical
-                    whatsNewVC.modalPresentationStyle = .pageSheet
+                    whatsNewVC.modalPresentationStyle = .formSheet
                     whatsNewVC.isModalInPresentation = true
-                    let windowBounds = view.windowBounds
-                    if let sheet = whatsNewVC.sheetPresentationController {
-                        sheet.detents = [.medium(), .large()]
-                        if windowBounds.width > windowBounds.height {
-                            sheet.selectedDetentIdentifier = .large
-                        } else {
-                            sheet.selectedDetentIdentifier = .medium
-                        }
-                        sheet.prefersGrabberVisible = false
-                        sheet.preferredCornerRadius = 40
-                    }
+                    let windowBounds = view.window?.bounds ?? .zero
                     whatsNewVC.popoverPresentationController?.sourceRect = CGRect(
-                        x: view.bounds.midX, y: view.bounds.midY,
+                        x: windowBounds.midX, y: windowBounds.midY,
                         width: 0, height: 0)
+                    whatsNewVC.preferredContentSize = CGSize(
+                        width: pwgPadSettingsWidth,
+                        height: ceil(windowBounds.height > windowBounds.width ? windowBounds.height / 2 : windowBounds.height * 2/3))
                     present(whatsNewVC, animated: true)
                 }
                 return
