@@ -627,87 +627,14 @@ final class AlbumViewController: UIViewController
         }
         
         // Display What's New in Piwigo if needed
-        /// Next line to be used for dispalying What's New in Piwigo:
-#if DEBUG
-//if categoryId == Int32.zero {
-//    AppVars.shared.didShowWhatsNewAppVersion = "4.2"
-//}
-#endif
-        if let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
-            if AppVars.shared.didShowWhatsNewAppVersion.compare("4.4", options: .numeric) == .orderedAscending,
-               appVersionString.compare(AppVars.shared.didShowWhatsNewAppVersion, options: .numeric) == .orderedDescending {
-                // Display What's New in Piwigo
-                let whatsNewSB = UIStoryboard(name: "WhatsNewViewController", bundle: nil)
-                guard let whatsNewVC = whatsNewSB.instantiateViewController(withIdentifier: "WhatsNewViewController") as? WhatsNewViewController 
-                else { preconditionFailure("Could not load WhatsNewViewController") }
-                if view.layoutTraitCollection.hasRegularWidthAndHeight == false {
-                    whatsNewVC.modalPresentationStyle = .pageSheet
-                    whatsNewVC.isModalInPresentation = true
-                    if let sheet = whatsNewVC.sheetPresentationController {
-                        sheet.detents = [.medium()]
-                        sheet.prefersGrabberVisible = false
-                        sheet.preferredCornerRadius = 40
-                    }
-                    present(whatsNewVC, animated: true)
-                }
-                else {
-                    // Present the view in a form sheet of the width of the settings view
-                    whatsNewVC.modalTransitionStyle = .coverVertical
-                    whatsNewVC.modalPresentationStyle = .formSheet
-                    whatsNewVC.isModalInPresentation = true
-                    let windowBounds = view.window?.bounds ?? .zero
-                    whatsNewVC.popoverPresentationController?.sourceRect = CGRect(
-                        x: windowBounds.midX, y: windowBounds.midY,
-                        width: 0, height: 0)
-                    whatsNewVC.preferredContentSize = CGSize(
-                        width: pwgPadSettingsWidth,
-                        height: ceil(windowBounds.height > windowBounds.width ? windowBounds.height / 2 : windowBounds.height * 2/3))
-                    present(whatsNewVC, animated: true)
-                }
-                return
-            } else {
-                // Store current version for future use
-                AppVars.shared.didShowWhatsNewAppVersion = appVersionString
-            }
-        }
+        if presentWhatsNewIfNeeded() { return }
         
-        // Display help views only when showing regular albums
-        // and less than once a day
-        let dateOfLastHelpView = AppVars.shared.dateOfLastHelpView
-        let diff = Date.timeIntervalSinceReferenceDate - dateOfLastHelpView
-        if categoryId <= 0 || diff > TimeInterval(86400) { return }
-        
-        // Determine which help pages should be presented
-        var displayHelpPagesWithID = [UInt16]()
-        if nbImages > 5,
-           (AppVars.shared.didWatchHelpViews & 0b00000000_00000001) == 0 {
-            displayHelpPagesWithID.append(1) // i.e. multiple selection of images
-        }
-        if nberOfAlbums() > 2, userData.hasAdminRights {
-            if (AppVars.shared.didWatchHelpViews & 0b00000000_00000100) == 0 {
-                displayHelpPagesWithID.append(3) // i.e. management of albums w/ description
-            }
-            if (AppVars.shared.didWatchHelpViews & 0b00000001_00000000) == 0 {
-                displayHelpPagesWithID.append(9) // i.e. management of albums w/o description
-            }
-        }
-        if albumData.upperIds.count > 3,
-           (AppVars.shared.didWatchHelpViews & 0b00000000_10000000) == 0 {
-            displayHelpPagesWithID.append(8) // i.e. back to parent album
-        }
-        if displayHelpPagesWithID.count > 0 {
-            // Present unseen help views
-            let helpVC = HelpUtilities.getHelpViewController(showingPagesWithIDs: displayHelpPagesWithID)
-            if view.layoutTraitCollection.hasRegularWidthAndHeight == false {
-                helpVC.popoverPresentationController?.permittedArrowDirections = .up
-                present(helpVC, animated: true)
-            } else {
-                helpVC.modalPresentationStyle = UIModalPresentationStyle.formSheet
-                helpVC.modalTransitionStyle = UIModalTransitionStyle.coverVertical
-                present(helpVC, animated: true)
-            }
-        }
-        
+        // Display help views if needed
+        if presentHelpViewsIfNeeded() { return }
+
+        // Invite the user to update the app if a new version is available
+        inviteToUpdateAppIfNeeded()
+
         // Replace iRate as from v2.1.5 (75) — See https://github.com/nicklockwood/iRate
         // Tells StoreKit to ask the user to rate or review the app, if appropriate.
         //#if !defined(DEBUG)
@@ -1253,6 +1180,134 @@ final class AlbumViewController: UIViewController
         // Present the root album
         if let rootAlbumViewController = rootAlbumViewController {
             navigationController?.popToViewController(rootAlbumViewController, animated: true)
+        }
+    }
+
+
+    // MARK: - Presents What's New, Help Views, Update
+    /// Presents What's New in Piwigo after an update of the app. Returns true if it was presented.
+    private func presentWhatsNewIfNeeded() -> Bool {
+        /// Next line to be used for dispalying What's New in Piwigo:
+#if DEBUG
+//if categoryId == Int32.zero {
+//    AppVars.shared.didShowWhatsNewAppVersion = "4.2"
+//}
+#endif
+        if let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
+            if AppVars.shared.didShowWhatsNewAppVersion.compare("4.4", options: .numeric) == .orderedAscending,
+               appVersionString.compare(AppVars.shared.didShowWhatsNewAppVersion, options: .numeric) == .orderedDescending {
+                // Display What's New in Piwigo
+                let whatsNewSB = UIStoryboard(name: "WhatsNewViewController", bundle: nil)
+                guard let whatsNewVC = whatsNewSB.instantiateViewController(withIdentifier: "WhatsNewViewController") as? WhatsNewViewController
+                else { preconditionFailure("Could not load WhatsNewViewController") }
+                if view.layoutTraitCollection.hasRegularWidthAndHeight == false {
+                    whatsNewVC.modalPresentationStyle = .pageSheet
+                    whatsNewVC.isModalInPresentation = true
+                    if let sheet = whatsNewVC.sheetPresentationController {
+                        sheet.detents = [.medium()]
+                        sheet.prefersGrabberVisible = false
+                        sheet.preferredCornerRadius = 40
+                    }
+                    present(whatsNewVC, animated: true)
+                }
+                else {
+                    // Present the view in a form sheet of the width of the settings view
+                    whatsNewVC.modalTransitionStyle = .coverVertical
+                    whatsNewVC.modalPresentationStyle = .formSheet
+                    whatsNewVC.isModalInPresentation = true
+                    let windowBounds = view.window?.bounds ?? .zero
+                    whatsNewVC.popoverPresentationController?.sourceRect = CGRect(
+                        x: windowBounds.midX, y: windowBounds.midY,
+                        width: 0, height: 0)
+                    whatsNewVC.preferredContentSize = CGSize(
+                        width: pwgPadSettingsWidth,
+                        height: ceil(windowBounds.height > windowBounds.width ? windowBounds.height / 2 : windowBounds.height * 2/3))
+                    present(whatsNewVC, animated: true)
+                }
+                return true
+            } else {
+                // Store current version for future use
+                AppVars.shared.didShowWhatsNewAppVersion = appVersionString
+            }
+        }
+        return false
+    }
+    
+    /// Presents the help views the user has not seen yet, when showing regular albums. Returns true if some were presented.
+    private func presentHelpViewsIfNeeded() -> Bool {
+        // Display help views only when showing regular albums
+        // and less than once a day
+        let dateOfLastHelpView = AppVars.shared.dateOfLastHelpView
+        let diff = Date.timeIntervalSinceReferenceDate - dateOfLastHelpView
+        if categoryId <= 0 || diff > TimeInterval(86400) { return false }
+        
+        // Determine which help pages should be presented
+        var displayHelpPagesWithID = [UInt16]()
+        if nberOfImages() > 5,
+           (AppVars.shared.didWatchHelpViews & 0b00000000_00000001) == 0 {
+            displayHelpPagesWithID.append(1) // i.e. multiple selection of images
+        }
+        if nberOfAlbums() > 2, userData.hasAdminRights {
+            if (AppVars.shared.didWatchHelpViews & 0b00000000_00000100) == 0 {
+                displayHelpPagesWithID.append(3) // i.e. management of albums w/ description
+            }
+            if (AppVars.shared.didWatchHelpViews & 0b00000001_00000000) == 0 {
+                displayHelpPagesWithID.append(9) // i.e. management of albums w/o description
+            }
+        }
+        if albumData.upperIds.count > 3,
+           (AppVars.shared.didWatchHelpViews & 0b00000000_10000000) == 0 {
+            displayHelpPagesWithID.append(8) // i.e. back to parent album
+        }
+        if displayHelpPagesWithID.count > 0 {
+            // Present unseen help views
+            let helpVC = HelpUtilities.getHelpViewController(showingPagesWithIDs: displayHelpPagesWithID)
+            if view.layoutTraitCollection.hasRegularWidthAndHeight == false {
+                helpVC.popoverPresentationController?.permittedArrowDirections = .up
+                present(helpVC, animated: true)
+            } else {
+                helpVC.modalPresentationStyle = UIModalPresentationStyle.formSheet
+                helpVC.modalTransitionStyle = UIModalTransitionStyle.coverVertical
+                present(helpVC, animated: true)
+            }
+            return true
+        }
+        return false
+    }
+
+    /// Invites the user to update the app when the App Store offers a newer version,
+    /// once per version (see AppUpdateChecker), from the root album only.
+    private func inviteToUpdateAppIfNeeded() {
+        guard categoryId == Int32.zero else { return }
+
+        /// Uncomment the next lines to simulate a new version on the App Store
+        /// (the App Store is not queried for the next 24 hours):
+#if DEBUG
+//AppVars.shared.dateOfLastUpdateCheck = Date.timeIntervalSinceReferenceDate
+//AppVars.shared.latestStoreVersion = "99.0"
+//AppVars.shared.latestStoreURL = "https://apps.apple.com/app/piwigo/id472225196"
+//AppVars.shared.lastInvitedStoreVersion = ""
+#endif
+        Task {
+            guard let update = await AppUpdateChecker.updateToPropose() else { return }
+
+            // Do not interfere with another view being presented or with another album
+            /// The invitation will come again the next time the root album appears.
+            guard presentedViewController == nil,
+                  navigationController?.topViewController === self,
+                  view.window != nil
+            else { return }
+
+            AppUpdateChecker.markInvitationAsShown(for: update)
+            let updateAction = UIAlertAction(title: String(localized: "appUpdate_update", comment: "Update"),
+                                             style: .default) { _ in
+                UIApplication.shared.open(update.storeURL)
+            }
+            let laterAction = UIAlertAction(title: String(localized: "appUpdate_later", comment: "Later"),
+                                            style: .cancel)
+            presentPiwigoAlert(withTitle: String(localized: "appUpdate_title", comment: "New Version Available"),
+                               message: String(format: String(localized: "appUpdate_message", comment: "Piwigo %@ is available on the App Store. Would you like to update now?"), update.version),
+                               actions: [laterAction, updateAction])
         }
     }
 }
