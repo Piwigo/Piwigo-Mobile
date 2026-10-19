@@ -1323,7 +1323,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dostępna nowa wersja"
+            "value" : "Dostępna jest nowa wersja"
           }
         },
         "pt-BR" : {
@@ -10625,7 +10625,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "حدث خطأ غير متوقع أثناء الترحيل."
+            "value" : "حدث خطأ غير متوقع أثناء الهجرة."
           }
         },
         "cs" : {
@@ -11000,7 +11000,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "جاري الترحيل ..."
+            "value" : "جاري الانتقال ..."
           }
         },
         "cs" : {
