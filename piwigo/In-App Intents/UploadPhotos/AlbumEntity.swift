@@ -39,11 +39,15 @@ struct AlbumEntity: AppEntity, Sendable {
 struct AlbumQuery: EntityStringQuery {
 
     // MARK: - Core Data Objects
+    /// Not stored: the system builds the query to list the shortcuts, even in the background,
+    /// and that must not load a store which the app has yet to migrate.
     @MainActor
-    private let mainContext = DataController.shared.mainContext
+    private var mainContext: NSManagedObjectContext { DataController.shared.mainContext }
     @MainActor
     private func currentUser() -> UserProperties? {
-        try? UserProvider().getPropertiesOfCurrentUser(inContext: mainContext)
+        guard DataMigrator().requiresMigration() == false
+        else { return nil }
+        return try? UserProvider().getPropertiesOfCurrentUser(inContext: mainContext)
     }
 
     
