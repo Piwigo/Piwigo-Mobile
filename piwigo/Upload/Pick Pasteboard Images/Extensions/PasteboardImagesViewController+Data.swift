@@ -303,6 +303,16 @@ extension PasteboardImagesViewController {
         }
     }
     
+    /// Updates the cells shown (selection and upload state)
+    func updateVisibleCells() {
+        for cell in localImagesCollection.visibleCells {
+            guard let cell = cell as? LocalImageCollectionViewCell,
+                  let indexPath = localImagesCollection.indexPath(for: cell) else { continue }
+            cell.update(selected: selection.contains(indexPath.item),
+                        state: getUploadStateOfImage(at: indexPath.item, for: cell))
+        }
+    }
+    
     func updateSelectButtonOfHeader() {
         let indexPath = IndexPath(item: 0, section: 0)
         if let header = localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? PasteboardImagesHeaderReusableView {
@@ -354,12 +364,7 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate
         refreshQueuedPositions()
         
         // Update the cells shown, the Select button and the navigation bar
-        for cell in localImagesCollection.visibleCells {
-            guard let cell = cell as? LocalImageCollectionViewCell,
-                  let indexPath = localImagesCollection.indexPath(for: cell) else { continue }
-            cell.update(selected: selection.contains(indexPath.item),
-                        state: getUploadStateOfImage(at: indexPath.item, for: cell))
-        }
+        updateVisibleCells()
         updateSelectButtonOfHeader()
         updateNavBar()
     }

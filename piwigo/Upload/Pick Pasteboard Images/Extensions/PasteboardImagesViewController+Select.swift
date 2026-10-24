@@ -21,12 +21,8 @@ extension PasteboardImagesViewController
         // Update navigation bar
         updateNavBar()
 
-        // Deselect visible cells
-        localImagesCollection.visibleCells.forEach { cell in
-            if let cell = cell as? LocalImageCollectionViewCell {
-                cell.update(selected: false)
-            }
-        }
+        // Deselect visible cells, keeping the state of their upload request
+        updateVisibleCells()
         
         // Update button
         let headers = localImagesCollection.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)

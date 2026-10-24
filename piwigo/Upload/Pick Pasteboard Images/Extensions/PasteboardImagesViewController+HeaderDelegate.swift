@@ -30,14 +30,7 @@ extension PasteboardImagesViewController: PasteboardImagesHeaderDelegate
         self.updateNavBar()
 
         // Select or deselect visible cells (only one section shown)
-        localImagesCollection.indexPathsForVisibleItems.forEach { indexPath in
-            // Get cell at index path
-            if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
-                // Select or deselect the cell
-                let uploadState = getUploadStateOfImage(at: indexPath.item, for: cell)
-                cell.update(selected: selection.contains(indexPath.item), state: uploadState)
-            }
-        }
+        updateVisibleCells()
         
         // Update button (only one section shown)
         updateSelectButtonOfHeader()
