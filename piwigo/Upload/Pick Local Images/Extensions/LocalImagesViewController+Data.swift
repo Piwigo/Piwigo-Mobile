@@ -238,7 +238,9 @@ extension LocalImagesViewController
                   let layouts, let positions, let remappedPositions else { return }
             let newSelection = IndexSet(remappedPositions)
             
-            // Show the new images
+            // Show the new images. Nothing suspends between the moment the data change and the reload of the
+            // collection view: UIKit never asks for an index path of the old sections of the new data.
+            let anchor = self.indexOfFirstVisibleImage()
             self.fetchedImages = newImages
             self.assetCache.removeAllObjects()
             self.layouts = layouts
@@ -250,15 +252,13 @@ extension LocalImagesViewController
             self.resolvingUploads = []
             self.isIndexingUploads = false
             self.isWaitingForSections = false
-            let anchor = self.indexOfFirstVisibleImage()
             self.updateLayout()
-            await self.hideHUD()
-            guard self.generation == generation else { return }
+            self.localImagesCollection.reloadData()
+            if let anchor { self.scrollTo(imageAt: min(anchor, max(0, newImages.count - 1))) }
             self.resolveMissingUploads()
             self.updateActionButton()
             self.updateNavBar()
-            self.localImagesCollection.reloadData()
-            if let anchor { self.scrollTo(imageAt: min(anchor, max(0, newImages.count - 1))) }
+            await self.hideHUD()
         }
     }
     
