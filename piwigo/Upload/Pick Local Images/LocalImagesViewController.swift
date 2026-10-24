@@ -63,16 +63,32 @@ final class LocalImagesViewController: UIViewController
     
     
     // MARK: - Variables and Cached Values
-    let queue = OperationQueue()                    // Queue used to sort and cache things
-    var fetchedImages: PHFetchResult<PHAsset>!      // Collection of images in selected non-empty local album
-    var sortType: SectionType = .none               // Images grouped by Day, Week, Month or None
-    var indexOfImageSortedByMonth: [IndexSet] = []  // Indices of images sorted by month
-    var indexOfImageSortedByWeek: [IndexSet] = []   // Indices of images sorted week
-    var indexOfImageSortedByDay: [IndexSet] = []    // Indices of images sorted day
+    var fetchedImages: PHFetchResult<PHAsset>!      // Collection of images in selected non-empty local album, newest first
+    var sortType = SectionType(rawValue: Int(UploadVars.shared.localImagesGroupingRaw)) ?? .none
+                                                    // Images grouped by Day, Week, Month or None, as chosen last time
+    var appliedGrouping: SectionType = .none        // Grouping of the sections shown, which waits for the sections to be built
+    var layout = PhotoLibraryLayout.single(count: 0)    // Sections shown, for the grouping and sort order in use
+    var layouts: PhotoLibraryLayouts?               // Day, week and month sections, nil until they are built
+    var isWaitingForSections = false                // A grouping was chosen before its sections were built
+    var generation = 0                              // Identifies the fetched images the background jobs work on
+    var layoutsTask: Task<Void, Never>?             // Builds the sections of the groupings
+    var uploadsTask: Task<Void, Never>?             // Finds the positions of the images with an upload request
+    var changeTask: Task<Void, Never>?              // Prepares the data after a change of the Photo Library
+    let assetCache: NSCache<NSNumber, PHAsset> = {   // Assets by position, filled by prefetching
+        let cache = NSCache<NSNumber, PHAsset>()
+        cache.countLimit = 3_000
+        return cache
+    }()
     
-    var indexedUploadsInQueue = [(String,pwgUploadState,Bool)?]()  // Arrays of uploads at indices of fetched image
-    var selectedImages = [UploadProperties?]()      // Array of images selected for upload
-    var selectedSections = [SelectButtonState]()    // State of Select buttons
+    var selection = PhotoLibrarySelection()         // Images selected for upload, by position
+    var uploadStates = [String: pwgUploadState]()   // State of the upload request of each asset, by local identifier
+    var uploadPositions = [String: Int]()           // Position of the assets which have an upload request
+    var queuedPositions = IndexSet()                // Same positions: those images cannot be selected
+    var deletableUploads = Set<String>()            // Identifiers of the assets with an upload request which can be deleted
+    var uploadsOutsideAlbum = Set<String>()         // Identifiers of the upload requests of assets of other albums
+    var resolvingUploads = Set<String>()            // Identifiers whose position is being looked for
+    var isIndexingUploads = true                    // Positions of the uploaded or queued images not known yet
+    var needsPreparation = false                    // The background jobs were stopped before they were done
     var imagesBeingTouched = [IndexPath]()          // Array of indexPaths of touched images
     var uploadRequests = [UploadProperties]()       // Array of upload requests
     
@@ -150,12 +166,8 @@ final class LocalImagesViewController: UIViewController
         // and store the fetched assets for future use
         fetchImagesByCreationDate()
         
-        // At start, there is no image selected
-        selectedImages = .init(repeating: nil, count: fetchedImages.count)
-        selectedSections = .init(repeating: .none, count: fetchedImages.count)
-        
-        // We provide a non-indexed list of images in the upload queue
-        // so that we can at least show images in upload queue at start
+        // We provide the state of the upload requests at once
+        // so that we can show images in upload queue at start
         // and prevent their selection
         do {
             try uploads.performFetch()
@@ -164,11 +176,13 @@ final class LocalImagesViewController: UIViewController
             debugPrint("Error: \(error.localizedDescription)")
             #endif
         }
+        uploadStates = currentUploadStates()
         
-        // Sort images in background
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.sortImagesAndIndexUploads()
-        }
+        // At start, there is no image selected and images are not grouped:
+        // the images are shown at once, the rest is prepared in the background
+        updateLayout()
+        localImagesCollection?.prefetchDataSource = self
+        startPreparation()
         
         // Navigation bar
         navigationController?.navigationBar.accessibilityIdentifier = "org.piwigo.upload.images.navigation"
@@ -239,6 +253,12 @@ final class LocalImagesViewController: UIViewController
         // Update navigation bar and title
         updateNavBar()
         
+        // Resume the background jobs if they were stopped
+        if needsPreparation {
+            needsPreparation = false
+            startPreparation()
+        }
+        
         // Register Photo Library changes
         PHPhotoLibrary.shared().register(self)
         
@@ -283,8 +303,9 @@ final class LocalImagesViewController: UIViewController
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        // Cancel operations if needed
-        queue.cancelAllOperations()
+        // Stop the background jobs, to be started again if the view appears before they are done
+        if layouts == nil || isIndexingUploads { needsPreparation = true }
+        cancelPreparation()
         
         // Allow device to sleep
         UIApplication.shared.isIdleTimerDisabled = false

@@ -129,6 +129,11 @@ public class UploadVars: NSObject, @unchecked Sendable {
     
     // MARK: - Vars in UserDefaults / App Group
     // Upload variables stored in UserDefaults / App Group
+    /// - How the images of the Photo Library are grouped in the picker: 0 by month, 1 by week, 2 by day, 3 not grouped
+    ///   (`SectionType` of the picker), as chosen by the user last time
+    @UserDefault("localImagesGroupingRaw", defaultValue: 3, userDefaults: UserDefaults.dataSuite)
+    public var localImagesGroupingRaw: Int16
+    
     /// - Default image sort option
     @UserDefault("localImagesSortRaw", defaultValue: pwgImageSort.dateCreatedDescending.rawValue, userDefaults: UserDefaults.dataSuite)
     private var localImagesSortRaw: Int16

@@ -7,19 +7,20 @@
 //
 
 import Photos
+import UIKit
 
 extension LocalImagesViewController: PHPhotoLibraryChangeObserver
 {
     // MARK: Changes occured in the Photo library
     /// Changes are not returned as expected (iOS 14.3 provides objects, not their indexes).
-    /// The image selection is therefore updated during the sort.
+    /// The selection and the upload requests are therefore found again by their local identifiers.
     func photoLibraryDidChange(_ changeInstance: PHChange) {
-        // Check each of the fetches for changes
-        guard let changes = changeInstance.changeDetails(for: self.fetchedImages)
-            else { return }
-
         // This method may be called on a background queue; use the main queue to update the UI.
         DispatchQueue.main.async {
+            // Check the fetch for changes
+            guard let changes = changeInstance.changeDetails(for: self.fetchedImages)
+                else { return }
+            
             #if DEBUG
             debugPrint(changes.fetchResultAfterChanges.count, self.fetchedImages.count)
             #endif
@@ -33,7 +34,7 @@ extension LocalImagesViewController: PHPhotoLibraryChangeObserver
             // Show HUD during update, preventing touches
             self.showHUD(withTitle: String(localized: "editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"))
 
-            // Fetch uploads before resetting the cache
+            // Fetch uploads before preparing the new data
             do {
                 try self.uploads.performFetch()
             } catch {
@@ -41,18 +42,14 @@ extension LocalImagesViewController: PHPhotoLibraryChangeObserver
                 debugPrint("Error: \(error.localizedDescription)")
                 #endif
             }
+            self.uploadStates = self.currentUploadStates()
             
-            // Update fetched asset collection
-            self.fetchedImages = changes.fetchResultAfterChanges
-
-            // Disable sort options and actions before sorting and caching
+            // Disable sort options and actions until the new images are shown
             self.actionBarButton?.isEnabled = false
             self.uploadBarButton?.isEnabled = false
 
-            // Sort images in background, reset cache and image selection
-            DispatchQueue.global(qos: .userInitiated).async {
-                self.sortImagesAndIndexUploads()
-            }
+            // Prepare the new data in the background and show it all at once
+            self.applyChange(to: changes.fetchResultAfterChanges)
         }
     }
 }

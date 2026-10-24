@@ -25,16 +25,15 @@ extension LocalImagesViewController: UICollectionViewDelegate
         let uploadState = getUploadStateOfImage(at: index, for: cell)
 
         // Update cell and selection
-        if let _ = selectedImages[index] {
+        if selection.contains(index) {
             // Deselect the cell
-            selectedImages[index] = nil
+            selection.remove(index)
             cell.update(selected: false, state: uploadState)
         } else {
             // Can we upload or re-upload this image?
             if (uploadState == nil) || reUploadAllowed {
                 // Select the image
-                selectedImages[index] = UploadProperties(localIdentifier: cell.localIdentifier,
-                                                         category: categoryId)
+                selection.insert(index)
                 cell.update(selected: true, state: uploadState)
             }
         }
@@ -63,7 +62,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
             
             // Get image asset and upload state
             let index = self.getImageIndex(for: indexPath)
-            let imageAsset = self.fetchedImages[index]
+            let imageAsset = self.asset(at: index)
             let uploadState = self.getUploadStateOfImage(at: index, for: cell)
 
             // Check if this image can be deleted
@@ -78,7 +77,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
                 }, actionProvider: { suggestedActions in
                     var children = [UIMenuElement]()
                     if upload.isEmpty {
-                        if self.selectedImages[index] != nil {
+                        if self.selection.contains(index) {
                             // Image selected ► Propose to deselect it
                             children.append(self.deselectAction(forCell: cell, at: indexPath,
                                                                 index: index, inUploadState: uploadState))
@@ -115,7 +114,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
             
             // Get image asset and upload state
             let index = self.getImageIndex(for: indexPath)
-            let imageAsset = self.fetchedImages[index]
+            let imageAsset = self.asset(at: index)
             let uploadState = self.getUploadStateOfImage(at: index, for: cell)
 
             // Check if this image can be deleted
@@ -132,7 +131,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
                 }, actionProvider: { suggestedActions in
                     var children = [UIMenuElement]()
                     if upload.isEmpty {
-                        if self.selectedImages[index] != nil {
+                        if self.selection.contains(index) {
                             // Image selected ► Propose to deselect it
                             children.append(self.deselectAction(forCell: cell, at: indexPath,
                                                                 index: index, inUploadState: uploadState))
@@ -186,8 +185,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
         return UIAction(title: String(localized: "categoryImageList_selectButton", comment: "Select"),
                         image: UIImage(systemName: "checkmark.circle")) { _ in
             // Select the cell
-            self.selectedImages[index] = UploadProperties(localIdentifier: cell.localIdentifier,
-                                                          category: self.categoryId)
+            self.selection.insert(index)
             cell.update(selected: true, state: uploadState)
             
             // Update number of selected cells
@@ -214,7 +212,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
         return UIAction(title: String(localized: "categoryImageList_deselectButton", comment: "Deselect"),
                         image: image) { _ in
             // Deselect the cell
-            self.selectedImages[index] = nil
+            self.selection.remove(index)
             cell.update(selected: false, state: uploadState)
             
             // Update number of selected cells
@@ -304,7 +302,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
                         image: UIImage(systemName: "trash"), attributes: .destructive) { action in
             // Get asset to delete
             let index = self.getImageIndex(for: indexPath)
-            let imageAsset = self.fetchedImages[index]
+            let imageAsset = self.asset(at: index)
             let uploadID = (self.uploads.fetchedObjects ?? []).filter({$0.localIdentifier == cell.localIdentifier}).first?.objectID
             Task { @MainActor in
                 do {

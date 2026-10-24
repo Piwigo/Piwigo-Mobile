@@ -52,13 +52,31 @@ extension LocalImagesViewController {
         reloadCollectionAndUpdateMenu()
     }
     
-    private func reloadCollectionAndUpdateMenu() {
+    func reloadCollectionAndUpdateMenu() {
         // May be called from background queue
         DispatchQueue.main.async {
+            // Remember the image shown at the top, to show it again after the change
+            let anchor = self.indexOfFirstVisibleImage()
+            self.updateLayout()
             self.updateActionButton()
             self.updateNavBar()
             self.localImagesCollection.reloadData()
+            if let anchor { self.scrollTo(imageAt: anchor) }
         }
+    }
+    
+    /// Groups the images by day, week or month, or does not group them. The sections of the groupings are built
+    /// in the background when the view opens: if they are not ready yet, the change waits for them.
+    func changeGrouping(to newType: SectionType) {
+        sortType = newType
+        UploadVars.shared.localImagesGroupingRaw = Int16(newType.rawValue)       // Remembered for next time
+        if newType != .none, layouts == nil {
+            isWaitingForSections = true
+            showHUD(withTitle: String(localized: "editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"))
+            updateActionButton()
+            return
+        }
+        reloadCollectionAndUpdateMenu()
     }
     
     
@@ -84,8 +102,7 @@ extension LocalImagesViewController {
             if isActive { return }
             
             // Change image grouping
-            self.sortType = .day
-            self.reloadCollectionAndUpdateMenu()
+            self.changeGrouping(to: .day)
         })
         action.accessibilityIdentifier = "groupByDay"
         return action
@@ -102,8 +119,7 @@ extension LocalImagesViewController {
             if isActive { return }
             
             // Change image grouping
-            self.sortType = .week
-            self.reloadCollectionAndUpdateMenu()
+            self.changeGrouping(to: .week)
         })
         action.accessibilityIdentifier = "groupByWeek"
         return action
@@ -120,8 +136,7 @@ extension LocalImagesViewController {
             if isActive { return }
             
             // Should image grouping be changed?
-            self.sortType = .month
-            self.reloadCollectionAndUpdateMenu()
+            self.changeGrouping(to: .month)
         })
         action.accessibilityIdentifier = "groupByMonth"
         return action
@@ -138,8 +153,7 @@ extension LocalImagesViewController {
             if isActive { return }
             
             // Change image grouping
-            self.sortType = .none
-            self.reloadCollectionAndUpdateMenu()
+            self.changeGrouping(to: .none)
         })
         action.accessibilityIdentifier = "groupByNone"
         return action
@@ -147,10 +161,7 @@ extension LocalImagesViewController {
     
     @IBAction func didChangeGroupOption(_ sender: UISegmentedControl) {
         // Did select new group option [Day, Week, Month, None in one section]
-        sortType = SectionType(rawValue: sender.selectedSegmentIndex) ?? .none
-        
-        // Change button icon and refresh collection
-        self.reloadCollectionAndUpdateMenu()
+        changeGrouping(to: SectionType(rawValue: sender.selectedSegmentIndex) ?? .none)
     }
     
     
@@ -192,50 +203,16 @@ extension LocalImagesViewController {
         reUploadAllowed = !(self.reUploadAllowed)
         updateActionButton()
 
-        // Refresh section buttons if re-uploading is allowed
+        // Deselect already uploaded photos if re-uploading is no longer allowed
         if reUploadAllowed == false {
-            // Get visible cells
-            let visibleCells = localImagesCollection.visibleCells as? [LocalImageCollectionViewCell]
-
-            // Deselect already uploaded photos if needed
-            if queue.operationCount == 0,
-               selectedImages.count <= indexedUploadsInQueue.count {
-                // Indexed uploads available
-                for index in 0..<selectedImages.count {
-                    if let upload = indexedUploadsInQueue[index],
-                       [.finished, .moderated].contains(upload.1) {
-                        // Deselect cell
-                        selectedImages[index] = nil
-                        if let cells = visibleCells,
-                           let cell = cells.first(where: {$0.localIdentifier == upload.0}) {
-                            cell.update(selected: false, state: upload.1)
-                        }
-                    }
-                }
-            } else {
-                // Use non-indexed data (might be quite slow)
-                let completed = (uploads.fetchedObjects ?? []).filter({[.finished, .moderated].contains($0.state)})
-                for index in 0..<selectedImages.count {
-                    if let localIdentifier = selectedImages[index]?.localIdentifier,
-                       let upload = completed.first(where: {$0.localIdentifier == localIdentifier}) {
-                        selectedImages[index] = nil
-                        if let cells = visibleCells,
-                           let cell = cells.first(where: {$0.localIdentifier == upload.localIdentifier}) {
-                            cell.update(selected: false, state: upload.state)
-                        }
-                    }
-                }
-            }
+            let completed = Set((uploads.fetchedObjects ?? [])
+                .filter({[.finished, .moderated].contains($0.state)}).map(\.localIdentifier))
+            selection.remove(IndexSet(completed.compactMap({ uploadPositions[$0] })))
+            updateVisibleCells()
         }
         
         // Update section buttons
-        let headers = localImagesCollection.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
-        headers.forEach { header in
-            if let sectionHeader = header as? LocalImagesHeaderReusableView {
-                let selectState = updateSelectButton(ofSection: sectionHeader.section)
-                sectionHeader.selectButton.setTitle(forState: selectState)
-            }
-        }
+        updateVisibleSelectButtons()
         self.updateNavBar()
     }
         
@@ -257,24 +234,14 @@ extension LocalImagesViewController {
     }
     
     @objc func deleteUploadedImages() {
-        // Delete uploaded images (fetched on the main queue)
-        var uploadsToDelete = [Upload]()
-        let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
+        // Uploaded images (fetched on the main queue) and selected images
         let completed = (uploads.fetchedObjects ?? []).filter({[.finished, .moderated].contains($0.state)})
-        for index in 0..<indexedUploads.count {
-            if let upload = completed.first(where: {$0.localIdentifier == indexedUploads[index].0}),
-               indexedUploads[index].2 {
-                uploadsToDelete.append(upload)
-            }
-        }
-        
-        // Also delete selected images
-        var assetIDsToDelete = Set(uploadsToDelete.map(\.localIdentifier))
-        let selectedAssetIDs = selectedImages.compactMap({$0?.localIdentifier}).compactMap({$0})
-        assetIDsToDelete.formUnion(selectedAssetIDs)
+        let uploadsToDelete = completed.filter({ deletableUploads.contains($0.localIdentifier) })
+        let selectedPositions = selection.positions
+        let assets = PhotoLibraryAssets(fetchedImages)
         
         // Anything to delete? (should always be true)
-        if assetIDsToDelete.isEmpty, uploadsToDelete.isEmpty {
+        if uploadsToDelete.isEmpty, selectedPositions.isEmpty {
             return
         }
         
@@ -287,8 +254,12 @@ extension LocalImagesViewController {
         let deleteAction = UIAlertAction(title: title, style: .destructive, handler: { action in
             // Delete images and upload requests
             let uploadIDs = uploadsToDelete.map(\.objectID)
-            let assetsToDelete = PHAsset.fetchAssets(withLocalIdentifiers: Array(assetIDsToDelete), options: nil)
+            let uploadedAssetIDs = uploadsToDelete.map(\.localIdentifier)
             Task { @MainActor in
+                // Identifiers of the selected images (reading a very large selection takes a while)
+                let selectedAssetIDs = await assets.identifiers(at: selectedPositions) ?? []
+                let assetIDsToDelete = Set(uploadedAssetIDs).union(selectedAssetIDs)
+                let assetsToDelete = PHAsset.fetchAssets(withLocalIdentifiers: Array(assetIDsToDelete), options: nil)
                 do {
                     // Delete image from Photo Library
                     try await PHPhotoLibrary.shared().performChanges {
