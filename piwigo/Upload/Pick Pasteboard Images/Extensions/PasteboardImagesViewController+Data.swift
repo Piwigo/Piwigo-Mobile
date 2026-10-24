@@ -229,23 +229,47 @@ extension PasteboardImagesViewController {
         return uploadStatesByMD5[md5Sum]
     }
     
+    /// The images are remembered per account: the upload requests are those of the server and user in use only,
+    /// and what belongs to the other accounts must not be taken for deleted requests.
+    private var accountPrefix: String {
+        return ServerVars.shared.serverPath + "|" + ServerVars.shared.username + "|"
+    }
+    
     /// Remembers the images whose upload was queued, so that they are recognised when the clipboard is opened again
     func rememberUploads(of requests: [UploadProperties]) {
+        var remembered = UploadVars.shared.uploadedPasteboardImages
         for request in requests {
             guard let pbObject = pbObjects.first(where: { $0.identifier == request.localIdentifier }),
                   !pbObject.md5Sum.isEmpty else { continue }
             uploadedImages[pbObject.md5Sum] = pbObject.identifier
+            remembered[accountPrefix + pbObject.md5Sum] = pbObject.identifier
         }
-        UploadVars.shared.uploadedPasteboardImages = uploadedImages
+        UploadVars.shared.uploadedPasteboardImages = remembered
         refreshQueuedPositions()
     }
     
-    /// Forgets the images whose upload request no longer exists (completed uploads cleared by the user, etc.)
+    /// Loads what was remembered for this account, and forgets the images whose upload request no longer exists
+    /// (completed uploads cleared by the user, etc.). The images of the other accounts are left alone.
     func forgetDeletedUploads() {
-        let remembered = UploadVars.shared.uploadedPasteboardImages
-        uploadedImages = remembered.filter { uploadStatesByIdentifier[$0.value] != nil }
-        if uploadedImages.count != remembered.count {
-            UploadVars.shared.uploadedPasteboardImages = uploadedImages
+        let prefix = accountPrefix
+        var remembered = UploadVars.shared.uploadedPasteboardImages
+        var mine = [String: String]()
+        for (key, identifier) in remembered {
+            if key.hasPrefix(prefix) {
+                if uploadStatesByIdentifier[identifier] != nil {
+                    mine[String(key.dropFirst(prefix.count))] = identifier
+                } else {
+                    remembered.removeValue(forKey: key)
+                }
+            }
+            else if key.split(separator: "|", omittingEmptySubsequences: false).count < 3 {
+                // Not an entry of an account (format of an early version)
+                remembered.removeValue(forKey: key)
+            }
+        }
+        uploadedImages = mine
+        if remembered.count != UploadVars.shared.uploadedPasteboardImages.count {
+            UploadVars.shared.uploadedPasteboardImages = remembered
         }
     }
     
