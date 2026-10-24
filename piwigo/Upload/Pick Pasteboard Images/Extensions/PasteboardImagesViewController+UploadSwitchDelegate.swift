@@ -27,6 +27,9 @@ extension PasteboardImagesViewController: UploadSwitchDelegate
         // Deselect cells when an error was encountered
         if uploadsQueued == false { self.cancelSelect() }
         
+        // Remember the images of the pasteboard whose upload was queued, to show them as uploaded next time
+        if uploadsQueued { rememberUploads(of: uploadRequests) }
+        
         // Release memory
         self.uploadRequests = []
         

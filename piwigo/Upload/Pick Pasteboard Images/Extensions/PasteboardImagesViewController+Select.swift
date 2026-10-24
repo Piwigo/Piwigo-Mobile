@@ -16,7 +16,7 @@ extension PasteboardImagesViewController
 {
     @objc func cancelSelect() {
         // Clear list of selected images
-        selectedImages = .init(repeating: nil, count: pbObjects.count)
+        selection.removeAll()
 
         // Update navigation bar
         updateNavBar()
@@ -32,7 +32,7 @@ extension PasteboardImagesViewController
         let headers = localImagesCollection.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
         headers.forEach { header in
             if let header = header as? PasteboardImagesHeaderReusableView {
-                header.selectButton.setTitle(forState: .select)
+                header.selectButton.setTitle(forState: selectState())
             }
         }
     }
@@ -86,17 +86,14 @@ extension PasteboardImagesViewController: UIGestureRecognizerDelegate
                 let uploadState = getUploadStateOfImage(at: indexPath.item, for: cell)
 
                 // Update the selection state
-                if let _ = selectedImages[indexPath.item] {
-                    selectedImages[indexPath.item] = nil
+                if selection.contains(indexPath.item) {
+                    selection.remove(indexPath.item)
                     cell.update(selected: false, state: uploadState)
                 } else {
                     // Can we upload or re-upload this image?
                     if (uploadState == nil) || reUploadAllowed {
                         // Select the cell
-                        let fileName = pbObjects.first(where: { $0.identifier == cell.localIdentifier })?.fileName
-                        selectedImages[indexPath.item] = UploadProperties(localIdentifier: cell.localIdentifier,
-                                                                          fileName: fileName ?? cell.localIdentifier,
-                                                                          category: categoryId)
+                        selection.insert(indexPath.item)
                         cell.update(selected: true, state: uploadState)
                     }
                 }
@@ -110,44 +107,9 @@ extension PasteboardImagesViewController: UIGestureRecognizerDelegate
         if gestureRecognizer?.state == .ended {
             // Clear list of touched images
             imagesBeingTouched = []
-        }
-    }
-
-    func updateSelectButton()
-    {
-        // Number of images in section
-        let nberOfImages = localImagesCollection.numberOfItems(inSection: 0)
-
-        // Job done if there is no image presented
-        if nberOfImages == 0 {
-            sectionState = .none
-            return
-        }
-        
-        // Can we calculate the number of images already in the upload queue?
-        if pendingOperations.preparationsInProgress.isEmpty == false {
-            // Keep Select button disabled
-            sectionState = .none
-            return
-        }
-
-        // Number of images already in the upload queue
-        var nberOfImagesInUploadQueue = 0
-        if reUploadAllowed == false {
-            nberOfImagesInUploadQueue = indexedUploadsInQueue.compactMap({ $0 }).count
-        }
-
-        // Update state of Select button only if needed
-        let nberOfSelectedImages = selectedImages[0..<nberOfImages].compactMap{ $0 }.count
-        if nberOfImages == nberOfImagesInUploadQueue {
-            // All images are in the upload queue or already downloaded
-            sectionState = .none
-        } else if nberOfImages == nberOfSelectedImages + nberOfImagesInUploadQueue {
-            // All images are either selected or in the upload queue
-            sectionState = .deselect
-        } else {
-            // Not all images are either selected or in the upload queue
-            sectionState = .select
+            
+            // Update state of Select button if needed
+            updateSelectButtonOfHeader()
         }
     }
 }

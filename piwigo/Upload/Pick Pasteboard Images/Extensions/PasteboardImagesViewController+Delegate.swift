@@ -22,18 +22,15 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
         let uploadState = getUploadStateOfImage(at: indexPath.item, for: cell)
 
         // Update cell and selection
-        if let _ = selectedImages[indexPath.item] {
+        if selection.contains(indexPath.item) {
             // Deselect the cell
-            selectedImages[indexPath.item] = nil
+            selection.remove(indexPath.item)
             cell.update(selected: false, state: uploadState)
         } else {
             // Can we upload or re-upload this image?
             if (uploadState == nil) || reUploadAllowed {
                 // Select the image
-                let fileName = pbObjects.first(where: { $0.identifier == cell.localIdentifier })?.fileName
-                selectedImages[indexPath.item] = UploadProperties(localIdentifier: cell.localIdentifier,
-                                                                  fileName: fileName ?? cell.localIdentifier,
-                                                                  category: categoryId)
+                selection.insert(indexPath.item)
                 cell.update(selected: true, state: uploadState)
             }
         }
@@ -42,10 +39,7 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
         updateNavBar()
 
         // Update state of Select button if needed
-        updateSelectButton()
-        if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: IndexPath(item: 0, section: 0)) as? PasteboardImagesHeaderReusableView {
-            header.selectButton.setTitle(forState: sectionState)
-        }
+        updateSelectButtonOfHeader()
     }
     
     
@@ -87,7 +81,7 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
             }, actionProvider: { suggestedActions in
                 var children = [UIMenuElement]()
                 if upload.isEmpty {
-                    if self.selectedImages[indexPath.item] != nil {
+                    if self.selection.contains(indexPath.item) {
                         // Image selected ► Propose to deselect it
                         children.append(self.deselectAction(forCell: cell, at: indexPath,
                                                             inUploadState: uploadState))
@@ -136,21 +130,14 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
         return UIAction(title: String(localized: "categoryImageList_selectButton", comment: "Select"),
                         image: UIImage(systemName: "checkmark.circle")) { _ in
             // Select the cell
-            let fileName = self.pbObjects.first(where: { $0.identifier == cell.localIdentifier })?.fileName
-            self.selectedImages[indexPath.item] = UploadProperties(localIdentifier: cell.localIdentifier,
-                                                                   fileName: fileName ?? cell.localIdentifier,
-                                                                   category: self.categoryId)
+            self.selection.insert(indexPath.item)
             cell.update(selected: true, state: uploadState)
             
             // Update number of selected cells
             self.updateNavBar()
             
             // Update state of Select button if needed
-            self.updateSelectButton()
-            let indexPath = IndexPath(item: 0, section: indexPath.section)
-            if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? PasteboardImagesHeaderReusableView {
-                header.configure(with: self.sectionState)
-            }
+            self.updateSelectButtonOfHeader()
         }
     }
     
@@ -166,18 +153,14 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
         return UIAction(title: String(localized: "categoryImageList_deselectButton", comment: "Deselect"),
                         image: image) { _ in
             // Deselect the cell
-            self.selectedImages[indexPath.item] = nil
+            self.selection.remove(indexPath.item)
             cell.update(selected: false, state: uploadState)
             
             // Update number of selected cells
             self.updateNavBar()
             
             // Update state of Select button if needed
-            self.updateSelectButton()
-            let indexPath = IndexPath(item: 0, section: indexPath.section)
-            if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? PasteboardImagesHeaderReusableView {
-                header.configure(with: self.sectionState)
-            }
+            self.updateSelectButtonOfHeader()
         }
     }
 

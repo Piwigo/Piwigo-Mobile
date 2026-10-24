@@ -134,6 +134,12 @@ public class UploadVars: NSObject, @unchecked Sendable {
     @UserDefault("localImagesGroupingRaw", defaultValue: 3, userDefaults: UserDefaults.dataSuite)
     public var localImagesGroupingRaw: Int16
     
+    /// - Images of the clipboard which were uploaded: MD5 checksum of the data of the pasteboard → identifier of
+    ///   the upload request. The checksum of the uploaded file cannot tell it: it changes as soon as the image
+    ///   is modified for the upload (resized, compressed, GPS data removed).
+    @UserDefault("uploadedPasteboardImages", defaultValue: [String: String](), userDefaults: UserDefaults.dataSuite)
+    public var uploadedPasteboardImages: [String: String]
+    
     /// - Default image sort option
     @UserDefault("localImagesSortRaw", defaultValue: pwgImageSort.dateCreatedDescending.rawValue, userDefaults: UserDefaults.dataSuite)
     private var localImagesSortRaw: Int16

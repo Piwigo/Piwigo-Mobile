@@ -17,7 +17,7 @@ extension PasteboardImagesViewController {
     // MARK: - Navigation Bar
     func updateNavBar() {
         // Buttons
-        let nberOfSelectedImages = selectedImages.compactMap{ $0 }.count
+        let nberOfSelectedImages = selection.count
         let hasSelectedImages = nberOfSelectedImages > 0
         cancelBarButton.isEnabled = hasSelectedImages
         uploadBarButton.isEnabled = hasSelectedImages
@@ -94,7 +94,7 @@ extension PasteboardImagesViewController {
         // There is no subtitle in landscape mode on iPhone
         var subtitle = ""
         if view.layoutTraitCollection.hasCompactHeight == false {
-            let nberOfSelectedImages = count ?? selectedImages.compactMap{ $0 }.count
+            let nberOfSelectedImages = count ?? selection.count
             switch nberOfSelectedImages {
             case 0:
                 subtitle = String(localized: "selectImages", comment: "Select Photos")

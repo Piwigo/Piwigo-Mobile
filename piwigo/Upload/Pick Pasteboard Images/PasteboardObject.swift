@@ -39,7 +39,7 @@ final class PasteboardObject {
 }
 
 final class PendingOperations {
-    lazy var preparationsInProgress: [IndexPath: Operation] = [:]
+    lazy var preparationsInProgress: [Int: Operation] = [:]       // By position of the object in the pasteboard objects
     lazy var preparationQueue: OperationQueue = {
         var queue = OperationQueue()
         queue.name = "Preparation queue"

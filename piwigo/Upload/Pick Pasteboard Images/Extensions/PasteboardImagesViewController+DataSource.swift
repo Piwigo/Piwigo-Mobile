@@ -26,8 +26,7 @@ extension PasteboardImagesViewController: UICollectionViewDataSource
             }
             
             // Configure the header
-            updateSelectButton()
-            header.configure(with: sectionState)
+            header.configure(with: selectState())
             header.headerDelegate = self
             return header
         }
@@ -78,7 +77,7 @@ extension PasteboardImagesViewController: UICollectionViewDataSource
         
         // Cell state
         let uploadState = getUploadStateOfImage(at: indexPath.item, for: cell)
-        cell.update(selected: selectedImages[indexPath.item] != nil, state: uploadState)
+        cell.update(selected: selection.contains(indexPath.item), state: uploadState)
 
         return cell
     }
