@@ -162,7 +162,17 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
             return
         }
         containerView.addSubview(toView)
-        
+
+        // Fill the container and follow its size changes
+        /// Without a frame, the view keeps the size of the main screen it was created with,
+        /// which is not the display presenting the app on iPhone Duo (e.g. outer vs inner display).
+        toView.frame = transitionContext.finalFrame(for: imageNavViewController)
+        if toView.frame.isEmpty {
+            toView.frame = containerView.bounds
+        }
+        toView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        toView.layoutIfNeeded()
+
         // Transparent so that it does not hide the transition view
         toView.alpha = 0
 

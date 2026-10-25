@@ -72,7 +72,7 @@ extension TagsViewController
                 let tagData = try await JSONManager.shared.addTag(with: name)
                 
                 // Add tag to cache
-                let _ = try TagProvider().importOneBatch([tagData], asAdmin: true, tagIDs: Set<Int32>())
+                let _ = try TagProvider().importOneBatch([tagData], tagIDs: Set<Int32>())
                 
                 // Update UI
                 await MainActor.run {

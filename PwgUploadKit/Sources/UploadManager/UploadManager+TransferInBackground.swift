@@ -332,14 +332,15 @@ extension UploadManager {
             await UploadManagerActor.shared.forgetRetries(ofUploadWithID: uploadID)
             
             // Finish the upload whichever task launched the transfer
+            let visibleImageIDs: Set<Int64>
             if UploadVars.shared.isProcessingTaskActive {
-                await finishTransferOfUpload(withIDs: [uploadID], inTaskType: .bckgProcessingTask)
+                visibleImageIDs = await finishTransferOfUpload(withIDs: [uploadID], inTaskType: .bckgProcessingTask)
             }
             else if UploadVars.shared.isContinuedProcessingTaskActive {
-                await finishTransferOfUpload(withIDs: [uploadID], inTaskType: .bckgContinuedProcessingTask)
+                visibleImageIDs = await finishTransferOfUpload(withIDs: [uploadID], inTaskType: .bckgContinuedProcessingTask)
             }
             else {
-                await finishTransferOfUpload(withIDs: [uploadID], inTaskType: .foreground)
+                visibleImageIDs = await finishTransferOfUpload(withIDs: [uploadID], inTaskType: .foreground)
             }
             
             // Add uploaded image to cache and update UI if needed
@@ -347,7 +348,14 @@ extension UploadManager {
             // The pwg.images.uploadAsync response may carry derivatives whose files are not
             // yet generated (empty/invalid thumbnail URLs), which would make the album show
             // the placeholder image instead of the thumbnail (see foreground copy path).
-            if var imageData = try? await JSONManager.shared.getInfos(forID: imageId) {
+            if visibleImageIDs.contains(imageId) == false {
+                // Pending moderation ► Not shown in the album
+                // An upload is an occasion to retrieve the ID of a Community user
+                try? UserProvider().updateID(getInfos.addedBy?.int16Value ?? 0,
+                                             ofUserWithURIstr: uploadData.userURIstr,
+                                             inContext: uploadBckgContext)
+            }
+            else if var imageData = try? await JSONManager.shared.getInfos(forID: imageId) {
                 imageData.fixingUnknowns()
                 await ImageProvider().didUploadImage(imageData, inAlbumId: uploadData.category)
 

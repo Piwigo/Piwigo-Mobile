@@ -18,9 +18,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" alwaysBounceVertical="YES" contentInsetAdjustmentBehavior="always" dataMode="prototypes" style="insetGrouped" separatorStyle="default" rowHeight="103" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="8xb-qD-vuv">
-                                <rect key="frame" x="0.0" y="48" width="414" height="848"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="insetGrouped" separatorStyle="default" rowHeight="103" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="8xb-qD-vuv">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <inset key="separatorInset" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="UploadImageTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="UploadImageTableViewCell" rowHeight="103" translatesAutoresizingMaskIntoConstraints="NO" id="IHQ-7A-oOS" customClass="UploadImageTableViewCell" customModule="piwigo" customModuleProvider="target">
@@ -126,6 +125,12 @@
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="apX-Ld-jW9"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="8xb-qD-vuv" firstAttribute="leading" secondItem="U7g-SB-CNE" secondAttribute="leading" id="Qe1-Lw-3Ka"/>
+                            <constraint firstItem="U7g-SB-CNE" firstAttribute="trailing" secondItem="8xb-qD-vuv" secondAttribute="trailing" id="Tr7-Uq-9Hb"/>
+                            <constraint firstItem="8xb-qD-vuv" firstAttribute="top" secondItem="U7g-SB-CNE" secondAttribute="top" id="Tp4-Xn-2Vd"/>
+                            <constraint firstItem="8xb-qD-vuv" firstAttribute="bottom" secondItem="U7g-SB-CNE" secondAttribute="bottom" id="Bm6-Rk-5Jw"/>
+                        </constraints>
                     </view>
                     <connections>
                         <outlet property="queueTableView" destination="8xb-qD-vuv" id="OPU-Zj-Fat"/>

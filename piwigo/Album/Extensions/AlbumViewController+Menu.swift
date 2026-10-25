@@ -710,7 +710,7 @@ extension AlbumViewController {
         case .publicStatus:
             // Anyone can browse a public album ► propose to send the URL of its page
             guard let pageUrl = album.pageUrl as? URL else { return nil }
-            children = [shareAlbumLinkAction(pageUrl)]
+            children = [shareAlbumLinkAction(pageUrl, ofAlbumNamed: album.name)]
             
         case .privateStatus:
             // Only the ShareAlbum plugin can share a private album.
@@ -749,28 +749,28 @@ extension AlbumViewController {
         
         // The album is not shared yet ► propose to share it
         guard let shareUrl = album.shareUrl as? URL
-        else { return [shareAlbumAction(forAlbumWithID: pwgID)] }
+        else { return [shareAlbumAction(forAlbumWithID: pwgID, named: album.name)] }
         
         // The album is already shared ► propose to send, renew or cancel its link
         let menuId = UIMenu.Identifier("org.piwigo.album.share.private")
         return [UIMenu(title: String(localized: "shareAlbum_private", comment: "Share Private Album"),
                        image: UIImage(systemName: "link"), identifier: menuId,
-                       children: [shareLinkAction(shareUrl),
-                                  renewLinkAction(forAlbumWithID: pwgID),
+                       children: [shareLinkAction(shareUrl, ofAlbumNamed: album.name),
+                                  renewLinkAction(forAlbumWithID: pwgID, named: album.name),
                                   stopSharingAction(forAlbumWithID: pwgID)])]
     }
     
     
     // MARK: - Share Album Actions
-    private func shareAlbumLinkAction(_ pageUrl: URL) -> UIAction {
+    private func shareAlbumLinkAction(_ pageUrl: URL, ofAlbumNamed name: String) -> UIAction {
         return UIAction(title: String(localized: "shareAlbum_public", comment: "Share Public Album"),
                         image: UIImage(systemName: "link")) { [self] _ in
             // Anyone can browse a public album: send the URL of its page as is
-            presentActivityView(with: pageUrl)
+            presentActivityView(with: pageUrl, titled: name)
         }
     }
     
-    private func shareAlbumAction(forAlbumWithID pwgID: Int32) -> UIAction {
+    private func shareAlbumAction(forAlbumWithID pwgID: Int32, named name: String) -> UIAction {
         return UIAction(title: String(localized: "shareAlbum_private", comment: "Share Private Album"),
                         image: UIImage(systemName: "link")) { [self] _ in
             // Share the album, then propose to send the link
@@ -778,20 +778,20 @@ extension AlbumViewController {
                 try await JSONManager.shared.createShare(ofAlbumWithID: catID)
             } completion: { [self] shareUrl in
                 if let shareUrl {
-                    presentActivityView(with: shareUrl)
+                    presentActivityView(with: shareUrl, titled: name)
                 }
             }
         }
     }
     
-    private func shareLinkAction(_ shareUrl: URL) -> UIAction {
+    private func shareLinkAction(_ shareUrl: URL, ofAlbumNamed name: String) -> UIAction {
         return UIAction(title: String(localized: "shareAlbum_shareLink", comment: "Share Link…"),
                         image: UIImage(systemName: "square.and.arrow.up")) { [self] _ in
-            presentActivityView(with: shareUrl)
+            presentActivityView(with: shareUrl, titled: name)
         }
     }
     
-    private func renewLinkAction(forAlbumWithID pwgID: Int32) -> UIAction {
+    private func renewLinkAction(forAlbumWithID pwgID: Int32, named name: String) -> UIAction {
         let title = String(localized: "shareAlbum_renewLink", comment: "Renew Link")
         return UIAction(title: title,
                         image: UIImage(systemName: "arrow.triangle.2.circlepath")) { [self] _ in
@@ -805,7 +805,7 @@ extension AlbumViewController {
                     try await JSONManager.shared.renewShare(ofAlbumWithID: catID)
                 } completion: { [self] shareUrl in
                     if let shareUrl {
-                        presentActivityView(with: shareUrl)
+                        presentActivityView(with: shareUrl, titled: name)
                     }
                 }
             }
@@ -936,8 +936,11 @@ extension AlbumViewController {
     
     /// Presents the system share sheet so that the user sends the link to people
     /// who do not have a Piwigo account.
-    private func presentActivityView(with shareUrl: URL) {
-        let activityVC = UIActivityViewController(activityItems: [shareUrl], applicationActivities: nil)
+    /// The URL is wrapped in an item source providing the link metadata: without it, the share
+    /// sheet fetches the page and presents the icon of the theme of the Piwigo server.
+    private func presentActivityView(with shareUrl: URL, titled title: String) {
+        let itemSource = PageLinkActivityItemSource(pageUrl: shareUrl, subject: title)
+        let activityVC = UIActivityViewController(activityItems: [itemSource], applicationActivities: nil)
         if let selectBarButton {
             activityVC.popoverPresentationController?.barButtonItem = selectBarButton
         } else {

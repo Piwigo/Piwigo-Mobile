@@ -1,6 +1,6 @@
-• Menambahkan terjemahan bahasa Ceko, Portugis, dan Ukraina
-• Mengulang transfer yang terputus oleh kesalahan server atau respons tidak valid
-• Memperbaiki migrasi data yang disimpan oleh versi 3.2 dan sebelumnya
-• Memperbaiki jumlah foto yang ditampilkan di footer album
-• Menganjurkan pembaruan server Piwigo yang lebih lama dari versi 16
-• Perbaikan crash dan peningkatan antarmuka
+• Menyesuaikan tata letak dengan jendela yang dapat diubah ukurannya dan iPhone lipat
+• Menyesuaikan tabel dan tajuk dengan layar bersudut membulat
+• Memperbaiki lebar album dan ukuran miniatur foto
+• Menampilkan logo Piwigo saat membagikan tautan ke album
+• Memperbaiki tag foto dan mempercepat impornya
+• Perbaikan bug dan peningkatan antarmuka

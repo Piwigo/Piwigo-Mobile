@@ -87,3 +87,4 @@ extension Float: PropertyListValue {}
 extension TimeInterval: PropertyListValue {}
 extension String: PropertyListValue {}
 extension Set<String>: PropertyListValue {}
+extension Dictionary: PropertyListValue where Key == String, Value == String {}

@@ -43,6 +43,12 @@ public final class UploadManager {
     // removed once it completes (see deleteAssets(associatedToUploads:_:)).
     var isDeletingAssets = false
     
+    // Moderation applied to the images uploaded by a Community user to an album during the
+    // current series of uploads. No API method tells whether the user has low or high trust,
+    // and the trust may differ from album to album, so it is learned from the state returned
+    // by the moderation of the first image uploaded to the album (see emptyLounge(for:)).
+    var moderationOfAlbums = [AlbumOfUser : CommunityModeration]()
+    
     private init() {
         // Disable auto-upload option
         NotificationCenter.default.addObserver(forName: Notification.Name.pwgDisableAutoUpload, object: nil, queue: nil) { [weak self] _ in

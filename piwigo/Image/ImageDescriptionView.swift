@@ -51,10 +51,9 @@ class ImageDescriptionView: UIVisualEffectView {
         self.isHidden = navController?.isNavigationBarHidden ?? false
         
         // Calculate the available width
-        var safeAreaWidth: CGFloat = UIScreen.main.bounds.size.width
+        var safeAreaWidth: CGFloat = viewController.view.windowBounds.width
         if let root = navController?.topViewController {
-            safeAreaWidth = root.view.frame.size.width
-            safeAreaWidth -= root.view.safeAreaInsets.left + root.view.safeAreaInsets.right
+            safeAreaWidth = root.view.bounds.inset(by: root.view.safeAreaInsets).width
         }
         
         // Calc the height required to display the text, corners'width deducted
@@ -69,9 +68,9 @@ class ImageDescriptionView: UIVisualEffectView {
         
         // Determine the max height according to device and orientation
         let maxHeight: CGFloat!
-        let orientation = viewController.view.currentInterfaceOrientation
-        let height = window?.bounds.height ?? UIScreen.main.bounds.height
-        if orientation.isLandscape {
+        let windowBounds = viewController.view.windowBounds
+        let height = windowBounds.height
+        if windowBounds.width > windowBounds.height {
             maxHeight = 0.20 * height
         } else {
             maxHeight = 0.23 * height

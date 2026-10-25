@@ -32,19 +32,46 @@ public actor PwgSessionChecker {
     // Prevents duplicate instances
     private init() { }
     
-    /// The check being performed, if any.
+    /// The check or the login being performed, if any.
     private var inFlight: Task<Result<Void, PwgKitError>, Never>?
-    
+
+    /// Whether the work in flight opens a session instead of checking one.
+    private var inFlightOpensSession = false
+
     public func check(_ performCheck: @escaping @Sendable () async -> Result<Void, PwgKitError>) async throws(PwgKitError) {
-        // Join the check which is already running, or start one
+        try await perform(performCheck, opensSession: false)
+    }
+
+    /**
+     Opens a session, i.e. performs the sequence of the login view, while no check runs.
+
+     A login is neither joined nor joining: the outcome of a login performed with the credentials
+     which the user has just typed says nothing about the session a check is verifying — one of
+     them may even belong to the server which is being left — and a check which logs in again
+     during the login would invalidate the session it opens.
+     */
+    public func logIn(_ performLogin: @escaping @Sendable () async -> Result<Void, PwgKitError>) async throws(PwgKitError) {
+        try await perform(performLogin, opensSession: true)
+    }
+
+    private func perform(_ work: @escaping @Sendable () async -> Result<Void, PwgKitError>,
+                         opensSession: Bool) async throws(PwgKitError) {
+        // Join the check which is already running, or queue this work behind it
         let task: Task<Result<Void, PwgKitError>, Never>
-        if let inFlight {
+        if let inFlight, opensSession == false, inFlightOpensSession == false {
             task = inFlight
         } else {
-            task = Task { await performCheck() }
+            let previous = inFlight
+            task = Task {
+                /// The waiting is performed by the task itself, so that this actor is never
+                /// suspended while the work it holds has not been awaited by its own caller.
+                if let previous { _ = await previous.value }
+                return await work()
+            }
             inFlight = task
+            inFlightOpensSession = opensSession
         }
-        
+
         // Await its outcome
         /// The actor is released while suspended here, so the callers which arrive
         /// in the meantime join this very task instead of starting another one.
@@ -54,6 +81,7 @@ public actor PwgSessionChecker {
         /// Another task may already have replaced it.
         if inFlight == task {
             inFlight = nil
+            inFlightOpensSession = false
         }
         
         switch result {

@@ -41,29 +41,12 @@ extension PasteboardImagesViewController {
         if reUploadAllowed { return }
         
         // Deselect already uploaded photos if needed
-        var didChangeSelection = false
-        if pendingOperations.preparationsInProgress.isEmpty,
-           selectedImages.count <= indexedUploadsInQueue.count {
-            for index in 0..<selectedImages.count {
-                // Indexed uploads available
-                if let upload = indexedUploadsInQueue[index],
-                   [.finished, .moderated].contains(upload.2) {
-                    // Deselect cell
-                    selectedImages[index] = nil
-                    didChangeSelection = true
-                }
-            }
-        } else {
-            // Use non-indexed data (might be quite slow)
-            let completed = (uploads.fetchedObjects ?? []).filter({[.finished, .moderated].contains($0.state)})
-            for index in 0..<selectedImages.count {
-                if let localIdentifier = selectedImages[index]?.localIdentifier,
-                   let _ = completed.firstIndex(where: { $0.localIdentifier == localIdentifier }) {
-                    selectedImages[index] = nil
-                    didChangeSelection = true
-                }
-            }
-        }
+        let uploaded = IndexSet(queuedPositions.filter { position in
+            guard let state = uploadState(at: position) else { return false }
+            return [.finished, .moderated].contains(state)
+        })
+        let didChangeSelection = selection.positions.intersection(uploaded).isEmpty == false
+        selection.remove(uploaded)
         
         // Refresh collection view if necessary
         if didChangeSelection {
@@ -77,13 +60,9 @@ extension PasteboardImagesViewController {
         if !pendingOperations.preparationsInProgress.isEmpty { return false }
 
         // Check if there are already uploaded photos
-        let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
-        let completed = (uploads.fetchedObjects ?? []).filter({[.finished, .moderated].contains($0.state)})
-        for index in 0..<indexedUploads.count {
-            if let _ = completed.first(where: {$0.md5Sum == indexedUploads[index].1}) {
-                return true
-            }
+        return queuedPositions.contains { position in
+            guard let state = uploadState(at: position) else { return false }
+            return [.finished, .moderated].contains(state)
         }
-        return false
     }
 }

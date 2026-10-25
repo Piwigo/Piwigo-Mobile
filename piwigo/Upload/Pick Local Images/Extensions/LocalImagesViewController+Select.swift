@@ -15,29 +15,17 @@ import PwgCacheKit
 extension LocalImagesViewController
 {
     @objc func cancelSelect() {
-        // Clear list of selected sections
-        selectedSections = .init(repeating: .select, count: fetchedImages.count)
-
         // Clear list of selected images
-        selectedImages = .init(repeating: nil, count: fetchedImages.count)
+        selection.removeAll()
 
         // Update navigation bar
         updateNavBar()
 
         // Deselect visible cells
-        localImagesCollection.visibleCells.forEach { cell in
-            if let cell = cell as? LocalImageCollectionViewCell {
-                cell.update(selected: false)
-            }
-        }
+        updateVisibleCells()
         
         // Update select buttons
-        let headers = localImagesCollection.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
-        headers.forEach { header in
-            if let header = header as? LocalImagesHeaderReusableView {
-                header.selectButton.setTitle(forState: .select)
-            }
-        }
+        updateVisibleSelectButtons()
     }
 }
 
@@ -82,16 +70,15 @@ extension LocalImagesViewController: UIGestureRecognizerDelegate
                 let uploadState = getUploadStateOfImage(at: index, for: cell)
 
                 // Update the selection state
-                if let _ = selectedImages[index] {
+                if selection.contains(index) {
                     // Deselect the cell
-                    selectedImages[index] = nil
+                    selection.remove(index)
                     cell.update(selected: false, state: uploadState)
                 } else {
                     // Can we upload or re-upload this image?
                     if (uploadState == nil) || reUploadAllowed {
                         // Select the cell
-                        selectedImages[index] = UploadProperties(localIdentifier: cell.localIdentifier,
-                                                                 category: categoryId)
+                        selection.insert(index)
                         cell.update(selected: true, state: uploadState)
                     }
                 }
@@ -115,64 +102,17 @@ extension LocalImagesViewController: UIGestureRecognizerDelegate
         }
     }
 
+    /// State of the Select button of a section, from the selection and the images already uploaded or queued.
+    /// Nothing is stored: the state is computed from the ranges of positions, however large the section is.
     func updateSelectButton(ofSection section: Int) -> SelectButtonState {
-        // Number of images in section
-        let nberOfImagesInSection = localImagesCollection.numberOfItems(inSection: section)
-        if nberOfImagesInSection == 0 {
-            if section < selectedSections.count {
-                selectedSections[section] = .none
-            }
-            return .none
-        }
-
-        // Get start and last indices of section
-        let firstIndex: Int, lastIndex: Int
-        if UploadVars.shared.localImagesSort == .dateCreatedDescending {
-            firstIndex = getImageIndex(for: IndexPath(item: 0, section: section))
-            lastIndex = getImageIndex(for: IndexPath(item: nberOfImagesInSection - 1, section: section))
-        } else {
-            firstIndex = getImageIndex(for: IndexPath(item: nberOfImagesInSection - 1, section: section))
-            lastIndex = getImageIndex(for: IndexPath(item: 0, section: section))
-        }
-        
-        // Number of selected images
-        let nberOfSelectedImagesInSection = selectedImages.count > lastIndex ?
-            selectedImages[firstIndex...lastIndex].compactMap{ $0 }.count : 0
-
-        // Can we calculate the number of images already in the upload queue?
-        if queue.operationCount != 0 {
-            // Keep Select button disabled
-            if section < selectedSections.count {
-                selectedSections[section] = .none
-            }
-            return .none
-        }
-
-        // Number of images already in the upload queue
-        var nberOfImagesOfSectionInUploadQueue = 0
-        if reUploadAllowed == false {
-            nberOfImagesOfSectionInUploadQueue = indexedUploadsInQueue.count > lastIndex ?  indexedUploadsInQueue[firstIndex...lastIndex].compactMap{ $0 }.count : 0
-        }
-
-        // Update state of Select button only if needed
-        if nberOfImagesInSection == nberOfImagesOfSectionInUploadQueue {
-            // All images are in the upload queue or already uploaded
-            if section < selectedSections.count {
-                selectedSections[section] = .none
-            }
-            return .none
-        } else if nberOfImagesInSection == nberOfSelectedImagesInSection + nberOfImagesOfSectionInUploadQueue {
-            // All images are either selected or in the upload queue
-            if section < selectedSections.count {
-                selectedSections[section] = .deselect
-            }
-            return .deselect
-        } else {
-            // Not all images are either selected or in the upload queue
-            if section < selectedSections.count {
-                selectedSections[section] = .select
-            }
-            return .select
+        // The positions of the images in the upload queue must be known to tell what can be selected
+        if isIndexingUploads || section >= layout.sectionCount { return .none }
+        let state = selection.selectState(of: layout.range(ofSection: section),
+                                          queued: queuedPositions, reUploadAllowed: reUploadAllowed)
+        switch state {
+        case .none:     return .none
+        case .select:   return .select
+        case .deselect: return .deselect
         }
     }
 }

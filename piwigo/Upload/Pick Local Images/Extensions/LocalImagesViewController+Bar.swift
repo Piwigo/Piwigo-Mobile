@@ -12,6 +12,7 @@ import UIKit
 import PwgKit
 import PwgCacheKit
 import PwgUIKit
+import PwgUploadKit
 
 // MARK: Navigation Bar & Buttons
 extension LocalImagesViewController {
@@ -19,10 +20,10 @@ extension LocalImagesViewController {
     @MainActor
     func updateNavBar() {
         // Buttons
-        let nberOfSelectedImages = selectedImages.compactMap{ $0 }.count
+        let nberOfSelectedImages = selection.count
         let hasSelectedImages = nberOfSelectedImages > 0
         cancelBarButton?.isEnabled = hasSelectedImages
-        actionBarButton?.isEnabled = (queue.operationCount == 0)
+        actionBarButton?.isEnabled = !isWaitingForSections
         uploadBarButton?.isEnabled = hasSelectedImages
         
         // Left side of navigation bar
@@ -58,29 +59,22 @@ extension LocalImagesViewController {
         // Right side of the navigation bar
         updateActionButton()
         if #available(iOS 26.0, *) {
-            switch view.traitCollection.userInterfaceIdiom {
-            case .phone:
+            if view.layoutTraitCollection.hasRegularWidthAndHeight == false {
                 navigationItem.rightBarButtonItems = [uploadBarButton, .space(),
                                                       actionBarButton].compactMap { $0 }
-            case .pad:
+            } else {
                 trashBarButton?.isEnabled = canDeleteUploadedImages() || canDeleteSelectedImages()
                 navigationItem.rightBarButtonItems = [uploadBarButton, .space(),
                                                       actionBarButton, trashBarButton].compactMap { $0 }
-            default:
-                preconditionFailure("!!! User interface not managed !!!")
             }
         }
         else {
-            switch view.traitCollection.userInterfaceIdiom {
-            case .phone:
+            if view.layoutTraitCollection.hasRegularWidthAndHeight == false {
                 navigationItem.rightBarButtonItems = [uploadBarButton, actionBarButton].compactMap { $0 }
-                
-            case .pad:
+            } else {
                 trashBarButton?.isEnabled = canDeleteUploadedImages() || canDeleteSelectedImages()
                 navigationItem.rightBarButtonItems = [uploadBarButton, actionBarButton,
                                                       trashBarButton].compactMap { $0 }
-            default:
-                preconditionFailure("!!! User interface not managed !!!")
             }
         }
     }
@@ -113,9 +107,8 @@ extension LocalImagesViewController {
         
         // There is no subtitle in landscape mode on iPhone
         var subtitle = ""
-        let orientation = view.currentInterfaceOrientation
-        if !(view.traitCollection.userInterfaceIdiom == .phone && orientation.isLandscape) {
-            let nberOfSelectedImages = count ?? selectedImages.compactMap{ $0 }.count
+        if view.layoutTraitCollection.hasCompactHeight == false {
+            let nberOfSelectedImages = count ?? selection.count
             switch nberOfSelectedImages {
             case 0:
                 subtitle = String(localized: "selectImages", comment: "Select Photos")
@@ -185,10 +178,10 @@ extension LocalImagesViewController {
         /// - to choose one of the 4 sort options
         /// - to select new photos in the Photo Library if the user did not grant full access to the Photo Library,
         /// - to allow/disallow re-uploading photos,
-        /// - to delete photos already uploaded to the Piwigo server on iPhone only.
+        /// - to delete photos already uploaded to the Piwigo server when the trash button is not presented.
         var children: [UIMenuElement?] = [swapOrderAction(), groupMenu(),
                                           selectPhotosMenu(), reUploadAction()]
-        if view.traitCollection.userInterfaceIdiom == .phone {
+        if view.layoutTraitCollection.hasRegularWidthAndHeight == false {
             children.append(deleteMenu())
         }
         let updatedMenu = actionBarButton?.menu?.replacingChildren(children.compactMap({$0}))
@@ -196,53 +189,70 @@ extension LocalImagesViewController {
     }
     
     func canDeleteUploadedImages() -> Bool {
-        // Don't provide access to the Trash button until the preparation work is not done
-        if queue.operationCount > 0 { return false }
+        // Don't provide access to the Trash button until the positions of the uploaded images are known
+        if isIndexingUploads { return false }
         
-        // Check if there are uploaded photos to delete
-        let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
-        let completed = (uploads.fetchedObjects ?? []).filter({[.finished, .moderated].contains($0.state)})
-        for index in 0..<indexedUploads.count {
-            if let _ = completed.first(where: {$0.localIdentifier == indexedUploads[index].0}),
-               indexedUploads[index].2 {
-                return true
+        // Check if there are uploaded photos to delete (only those of this album are known)
+        return (uploads.fetchedObjects ?? []).contains {
+            [.finished, .moderated].contains($0.state) && deletableUploads.contains($0.localIdentifier)
+        }
+    }
+    
+    func canDeleteSelectedImages() -> Bool {
+        // Look at the first selected images only: reading each of them may load the assets
+        var examined = 0
+        for range in selection.positions.rangeView {
+            for position in range {
+                if examined == 1_000 { return false }
+                examined += 1
+                if asset(at: position).canPerform(.delete) { return true }
             }
         }
         return false
     }
     
-    func canDeleteSelectedImages() -> Bool {
-        var hasImagesToDelete = false
-        let imageIDs = selectedImages.compactMap({ $0?.localIdentifier })
-        PHAsset.fetchAssets(withLocalIdentifiers: imageIDs, options: nil)
-            .enumerateObjects(options: .concurrent) { asset, _ , stop in
-                if asset.canPerform(.delete) {
-                    hasImagesToDelete = true
-                    stop.pointee = true
-                }
-            }
-        return hasImagesToDelete
-    }
-    
     
     // MARK: - Show Upload Options
     @objc func didTapUploadButton() {
-        // Avoid potential crash (should never happen, but…)
-        switch UploadVars.shared.localImagesSort {
-        case .dateCreatedDescending:
-            uploadRequests = selectedImages.compactMap({ $0 })
-        case .dateCreatedAscending:
-            uploadRequests = selectedImages.compactMap({ $0 }).reversed()
-        default:
-            uploadRequests = selectedImages.compactMap({ $0 })
-        }
-        if uploadRequests.isEmpty { return }
+        // Anything selected? (should always be true)
+        if selection.isEmpty { return }
         
         // Disable buttons
         cancelBarButton?.isEnabled = false
         uploadBarButton?.isEnabled = false
         actionBarButton?.isEnabled = false
         trashBarButton?.isEnabled = false
+        
+        // Identifiers of the selected images, in the order in which the images are shown
+        let assets = PhotoLibraryAssets(fetchedImages)
+        let positions = selection.positions
+        let newestFirst = layout.newestFirst
+        if positions.count <= 1_000 {
+            let identifiers = assets.identifiers(at: positions) ?? []
+            showUploadOptions(for: newestFirst ? identifiers : identifiers.reversed())
+        } else {
+            // Reading the assets of a very large selection takes a while
+            showHUD(withTitle: String(localized: "editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"))
+            Task { [weak self] in
+                let identifiers = await assets.identifiers(at: positions)
+                await self?.hideHUD()
+                guard let self else { return }
+                if let identifiers {
+                    self.showUploadOptions(for: newestFirst ? identifiers : identifiers.reversed())
+                } else {
+                    self.updateNavBar()
+                }
+            }
+        }
+    }
+    
+    private func showUploadOptions(for identifiers: [String]) {
+        // Avoid potential crash (should never happen, but…)
+        uploadRequests = identifiers.map { UploadProperties(localIdentifier: $0, category: categoryId) }
+        if uploadRequests.isEmpty {
+            updateNavBar()
+            return
+        }
         
         // Show upload parameter views
         let uploadSwitchSB = UIStoryboard(name: "UploadSwitchViewController", bundle: nil)

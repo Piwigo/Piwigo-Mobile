@@ -63,12 +63,10 @@ extension UIViewController {
         presentedVC.modalTransitionStyle = .coverVertical
         
         // Push album list, tag list, help view, etc.
-        switch view.traitCollection.userInterfaceIdiom {
-        case .phone:
+        if view.layoutTraitCollection.hasRegularWidthAndHeight == false {
             presentedVC.modalPresentationStyle = .popover
             presentedVC.popoverPresentationController?.sourceView = view
-            
-        case .pad:
+        } else {
             if #available(iOS 26.0, *) {
                 // Present the view in a form sheet of the wanted size
                 presentedVC.modalPresentationStyle = .formSheet
@@ -86,8 +84,6 @@ extension UIViewController {
                 presentedVC.popoverPresentationController?.permittedArrowDirections = .up
             }
             
-        default:
-            preconditionFailure("!!! Interface not supported !!!")
         }
         present(presentedVC, animated: true)
     }

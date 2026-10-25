@@ -127,7 +127,8 @@ class TroubleshootingViewController: UIViewController {
             // with entries in chronological order in each category
             let orderedCategories: [String] = {
                 var categories: [String] = [
-                    String(describing: AppDelegate.self)
+                    String(describing: AppDelegate.self),
+                    String(describing: AppUpdateChecker.self)
                 ]
                 if #available(iOS 16.4, *) {
                     categories.append(String(describing: AutoUpload.self))

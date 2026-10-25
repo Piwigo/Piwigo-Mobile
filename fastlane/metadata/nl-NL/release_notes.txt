@@ -1,6 +1,6 @@
-• Voegt Tsjechische, Portugese en Oekraïense vertalingen toe
-• Probeert overdrachten die door een serverfout of een ongeldig antwoord zijn afgebroken opnieuw
-• Corrigeert de migratie van gegevens uit versie 3.2 en eerder
-• Corrigeert het aantal foto's in de voettekst van albums
-• Nodigt uit om Piwigo-servers ouder dan versie 16 bij te werken
-• Crashes verholpen en interface verbeterd
+• Past de lay-out aan op vensters met variabele grootte en opvouwbare iPhones
+• Past tabellen en koppen aan op schermen met afgeronde hoeken
+• Corrigeert de breedte van albums en de grootte van fotominiaturen
+• Toont het Piwigo-logo bij het delen van een koppeling naar een album
+• Corrigeert de labels van foto's en versnelt het importeren ervan
+• Fouten verholpen en interface verbeterd

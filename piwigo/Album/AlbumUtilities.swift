@@ -24,15 +24,21 @@ enum pwgImageCollectionType {
 struct AlbumUtilities
 {
     // MARK: - Album/Images Collections | Common Methods
+    /// Size of the scene the app is showing, used when no view is provided.
+    /// The screen is not a reliable reference: the app may share it with other apps
+    /// (Split View, Stage Manager) and iPhone Duo has two of them.
+    @MainActor
+    static var sceneSize: CGSize {
+        // Falls back to the size of the smallest supported iPhone
+        return UIWindowScene.current?.coordinateSpace.bounds.size ?? CGSize(width: 320, height: 568)
+    }
+    
     @MainActor
     static func getSafeAreaSize(ofNavigationViewController viewController: UIViewController?) -> CGSize {
-        var safeAreaWidth: CGFloat = UIScreen.main.bounds.size.width
-        let safeAreaHeight: CGFloat = UIScreen.main.bounds.size.height
-        if let root = viewController {
-            safeAreaWidth = root.view.frame.size.width
-            safeAreaWidth -= root.view.safeAreaInsets.left + root.view.safeAreaInsets.right
-        }
-        return CGSize(width: safeAreaWidth, height: safeAreaHeight)
+        guard let view = viewController?.view
+        else { return sceneSize }
+        let safeAreaWidth = view.bounds.inset(by: view.safeAreaInsets).width
+        return CGSize(width: safeAreaWidth, height: view.windowBounds.height)
     }
     
     @MainActor
@@ -40,14 +46,7 @@ struct AlbumUtilities
         if let viewBounds = view?.bounds.inset(by: view?.safeAreaInsets ?? UIEdgeInsets.zero) {
             return viewBounds.size
         }
-        return UIScreen.main.bounds.size
-    }
-    
-    @MainActor
-    static func viewWidth(for view: UIView, pageSize: CGSize) -> CGFloat {
-        // Available width in portrait mode
-        let orientation = view.currentInterfaceOrientation
-        return orientation == .portrait ? pageSize.width : pageSize.height
+        return sceneSize
     }
     
     
@@ -81,10 +80,13 @@ struct AlbumUtilities
         let nbAlbumsPerRowInPortrait = max(1.0, (numerator / denominator).rounded())
         
         // Width of album cells determined for the portrait mode
-        let albumWidthInPortrait = (widthInPortrait - (nbAlbumsPerRowInPortrait - 1.0) * spacing + margins) / nbAlbumsPerRowInPortrait
+        let albumWidthInPortrait = (widthInPortrait - (nbAlbumsPerRowInPortrait - 1.0) * spacing - margins) / nbAlbumsPerRowInPortrait
         
         // Number of albums per row we should display right now
-        let albumsPerRow = ((size.width + spacing - margins) / (albumWidthInPortrait + spacing)).rounded()
+        /// In landscape, round up so that albums are never larger than in portrait,
+        /// since vertical space is scarce (e.g. iPhone Duo folded in landscape)
+        let rule: FloatingPointRoundingRule = size.width > size.height ? .up : .toNearestOrAwayFromZero
+        let albumsPerRow = ((size.width + spacing - margins) / (albumWidthInPortrait + spacing)).rounded(rule)
         
         // Width of albums for that number
         return ((size.width - (albumsPerRow - 1.0) * spacing - margins) / albumsPerRow).rounded(.down)
@@ -101,6 +103,20 @@ struct AlbumUtilities
     static let maxNberOfImagesPerRow: Int = {
         return UIDevice.current.userInterfaceIdiom == .phone ? 6 : 10
     }()
+    
+    /// Photos keep the size they have on the widest iPhone in portrait when more width
+    /// is available (e.g. iPhone Duo unfolded), instead of growing with the display.
+    static let maxPhonePortraitWidth: CGFloat = 440
+    
+    @MainActor
+    static func imagesWidthInPortrait(forSize size: CGSize) -> CGFloat {
+        // Width in portrait of the page on which the number of images per row is based
+        let widthInPortrait = min(size.width, size.height)
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            return min(widthInPortrait, maxPhonePortraitWidth)
+        }
+        return widthInPortrait
+    }
     
     @MainActor
     static func optimumThumbnailSizeForDevice() -> pwgImageSize {
@@ -152,8 +168,7 @@ struct AlbumUtilities
     @MainActor
     static func imagesPerRowInPortrait(forMaxWidth maxWidth: CGFloat) -> Int {
         // Returns the number thumbnails per row for a given image width
-        let pageSize = sizeOfPage(forView: nil)
-        let viewWidth = min(pageSize.width, pageSize.height)
+        let viewWidth = imagesWidthInPortrait(forSize: sizeOfPage(forView: nil))
         let horSpacing = imageCellHorizontalSpacing(forCollectionType: .full)
         let numerator = viewWidth - horSpacing
         let denominator = horSpacing + maxWidth
@@ -178,7 +193,7 @@ struct AlbumUtilities
         let nberOfImagesInPortrait = CGFloat(imagesPerRowInPortrait)
 
         // Size of images in portrait mode
-        let widthInPortrait = min(size.width, size.height)
+        let widthInPortrait = imagesWidthInPortrait(forSize: size)
         let imagesSizeInPortrait = (widthInPortrait - (nberOfImagesInPortrait - 1.0) * spacing - margins) / nberOfImagesInPortrait
 
         // Number of images per row we should display right now
@@ -203,7 +218,7 @@ struct AlbumUtilities
         let imageCellVerticalSpacing = imageCellVerticalSpacing(forCollectionType: .full)
         
         // Size of images determined for the portrait mode
-        let minWidth = min(screenSize.width, screenSize.height)
+        let minWidth = imagesWidthInPortrait(forSize: screenSize)
         let imagesSizeInPortrait = floor((minWidth - (nberOfImagesInPortrait - 1.0) * imageCellHorizontalSpacing) / nberOfImagesInPortrait)
         
         // Images per row in portrait and landscape modes

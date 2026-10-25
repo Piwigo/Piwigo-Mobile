@@ -25,13 +25,10 @@ extension TagsViewController
             // Fallback on previous version
             searchController.searchBar.showsCancelButton = false
             if #available(iOS 16.0, *) {
-                switch view.traitCollection.userInterfaceIdiom {
-                case .phone:
+                if view.layoutTraitCollection.hasRegularWidthAndHeight == false {
                     navigationItem.preferredSearchBarPlacement = .stacked
-                case .pad:
+                } else {
                     navigationItem.preferredSearchBarPlacement = .inline
-                default:
-                    break
                 }
             }
         }

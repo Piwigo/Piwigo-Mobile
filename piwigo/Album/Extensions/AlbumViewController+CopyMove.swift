@@ -104,11 +104,9 @@ extension AlbumViewController: @MainActor PushAlbumCollectionViewCellDelegate
         let navController = UINavigationController(rootViewController: viewController)
         navController.modalTransitionStyle = .coverVertical
         navController.popoverPresentationController?.sourceView = view
-        switch UIDevice.current.userInterfaceIdiom {
-        case .phone:
+        if view.layoutTraitCollection.hasRegularWidthAndHeight == false {
             navController.modalPresentationStyle = .popover
-
-        case .pad:
+        } else {
             navController.modalPresentationStyle = .formSheet
             navController.popoverPresentationController?.sourceRect = CGRect(
                 x: view.bounds.midX, y: view.bounds.midY,
@@ -117,8 +115,6 @@ extension AlbumViewController: @MainActor PushAlbumCollectionViewCellDelegate
                 width: pwgPadSubViewWidth,
                 height: ceil(view.bounds.height * 2 / 3))
 
-        default:
-            preconditionFailure("!!! Unsupported device idiom !!!")
         }
         
         present(navController, animated: true) {

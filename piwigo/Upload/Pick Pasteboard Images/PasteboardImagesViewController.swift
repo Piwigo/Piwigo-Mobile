@@ -58,12 +58,15 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
     weak var albumDelegate: (any AlbumViewControllerDelegate)?
     var reUploadAllowed = false
 
-    let pendingOperations = PendingOperations()     // Operations in queue for preparing files and cache
-    var indexedUploadsInQueue = [(String?,String?,pwgUploadState?)?]()  // Arrays of uploads at indices of corresponding image
+    let pendingOperations = PendingOperations()     // Operations in queue for preparing files
+    var generation = 0                              // Identifies the objects retrieved from the pasteboard
     lazy var imageCellSize: CGSize = getImageCellSize()
 
-    var selectedImages = [UploadProperties?]()      // Array of images selected for upload
-    var sectionState: SelectButtonState = .none     // To remember the state of the section
+    var selection = PhotoLibrarySelection()         // Images selected for upload, by position in the pasteboard objects
+    var uploadStatesByIdentifier = [String: pwgUploadState]()   // State of the upload request of each image, by identifier
+    var uploadStatesByMD5 = [String: pwgUploadState]()          // Same by MD5 checksum, to recognise an image copied again
+    var uploadedImages = [String: String]()         // Identifier of the upload request of the images uploaded earlier, by MD5 checksum of the pasteboard data
+    var queuedPositions = IndexSet()                // Positions of the images which already have an upload request
     var imagesBeingTouched = [IndexPath]()          // Array of indexPaths of touched images
     var uploadRequests = [UploadProperties]()       // Array of upload requests
 
@@ -122,8 +125,8 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
         imageSeriesRecognizer.delegate = self
         localImagesCollection?.addGestureRecognizer(imageSeriesRecognizer)
         
-        // We provide a non-indexed list of images in the upload queue
-        // so that we can at least show images in upload queue at start
+        // We provide the state of the upload requests
+        // so that we can show images in upload queue at start
         // and prevent their selection
         do {
             try uploads.performFetch()
@@ -132,6 +135,8 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
             debugPrint("Error: \(error.localizedDescription)")
             #endif
         }
+        refreshUploadStates()
+        forgetDeletedUploads()
         
         // Navigation bar
         navigationController?.navigationBar.accessibilityIdentifier = "PasteboardImagesNav"
@@ -195,6 +200,9 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
         // Update navigation bar and title
         updateNavBar()
 
+        // Prepare again the objects whose preparation was stopped when the view disappeared
+        resumePreparation()
+
         // Prevent device from sleeping if uploads are in progress before iOS 26
         if #unavailable(iOS 26.0) {
             UIApplication.shared.isIdleTimerDisabled = (UploadVars.shared.nberOfUploadsToComplete > 0)
@@ -224,8 +232,9 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        // Cancel operations if needed
+        // Cancel operations if needed, they will be started again if the view appears
         pendingOperations.preparationQueue.cancelAllOperations()
+        pendingOperations.preparationsInProgress.removeAll()
 
         // Allow device to sleep
         UIApplication.shared.isIdleTimerDisabled = false
@@ -242,8 +251,12 @@ final class PasteboardImagesViewController: UIViewController, UIScrollViewDelega
     
     // MARK: - Show Upload Options
     @objc func didTapUploadButton() {
-        // Avoid potential crash (should never happen, but…)
-        uploadRequests = selectedImages.compactMap({ $0 })
+        // Upload requests of the selected images, in the order they are shown
+        uploadRequests = selection.positions.compactMap { position in
+            guard position < pbObjects.count else { return nil }
+            return UploadProperties(localIdentifier: pbObjects[position].identifier,
+                                    fileName: pbObjects[position].fileName, category: categoryId)
+        }
         if uploadRequests.isEmpty { return }
 
         // Show upload parameter views

@@ -78,6 +78,13 @@ public final class DataMigrator: NSObject {
         guard let metadata = NSPersistentStoreCoordinator.metadata(at: storeURL)
         else { return false }
         
+        // A store which matches no shipped model cannot be opened: it has to go through
+        // the migration, which sets it aside, rather than reach DataController and trap.
+        if DataMigrationVersion.shippedVersionForStoreMetadata(metadata) == nil,
+           DataMigrationVersion.compatibleVersionForStoreMetadata(metadata) == version {
+            return true
+        }
+        
         return (DataMigrationVersion.compatibleVersionForStoreMetadata(metadata) != version)
     }
     
@@ -173,6 +180,16 @@ public final class DataMigrator: NSObject {
     }
     
     private func migrateStore(at oldStoreURL: URL, toVersion version: DataMigrationVersion, at newStoreURL: URL) throws {
+        // A store which matches no shipped model (written by a newer build, or by a model
+        // which was never shipped) cannot be migrated: set it aside, the app creates a new one.
+        if let metadata = NSPersistentStoreCoordinator.metadata(at: oldStoreURL),
+           DataMigrationVersion.shippedVersionForStoreMetadata(metadata) == nil,
+           DataMigrationVersion.compatibleVersionForStoreMetadata(metadata) == version {
+            DataMigrator.logger.error("The data store matches no known data model: moved to the incompatible stores")
+            moveIncompatibleStore(storeURL: oldStoreURL)
+            return
+        }
+        
         // Backup the store so that we can restore it if the migration could not be completed
         backupStore(storeURL: oldStoreURL)
         
@@ -423,6 +440,29 @@ public final class DataMigrator: NSObject {
 
 // MARK: - Model Version Compatibility
 private extension DataMigrationVersion {
+    /// The shipped model the store metadata matches exactly, nil if it matches none.
+    static func shippedVersionForStoreMetadata(_ metadata: [String : Any]) -> DataMigrationVersion? {
+        DataMigrationVersion.allCases.first {
+            NSManagedObjectModel.managedObjectModel(forVersion: $0)
+                .isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata)
+        }
+    }
+    
+    /// Names the entities whose version hashes differ from the current model, and logs the
+    /// hashes of the store, so that a store written by an edited or unreleased model can be
+    /// traced to the model that wrote it (compare with `ModelHashFixtures`).
+    static func logHashesOfUnrecognisedStore(_ metadata: [String : Any]) {
+        let storeHashes = metadata[NSStoreModelVersionHashesKey] as? [String : Data] ?? [:]
+        let currentHashes = NSManagedObjectModel.managedObjectModel(forVersion: .current).entityVersionHashesByName
+        let differing = Set(storeHashes.keys).union(currentHashes.keys)
+            .filter { storeHashes[$0] != currentHashes[$0] }
+            .sorted()
+        let hashes = storeHashes.sorted { $0.key < $1.key }
+            .map { "\($0.key)=\($0.value.base64EncodedString())" }
+            .joined(separator: " ")
+        DataMigrator.logger.error("Data store matches no known data model; differs from \(DataMigrationVersion.current.rawValue) in: \(differing.joined(separator: ", ")); hashes: \(hashes)")
+    }
+    
     static func compatibleVersionForStoreMetadata(_ metadata: [String : Any]) -> DataMigrationVersion? {
         let compatibleVersion = DataMigrationVersion.allCases.first {
             let model = NSManagedObjectModel.managedObjectModel(forVersion: $0)
@@ -459,6 +499,7 @@ private extension DataMigrationVersion {
         
         // In case where the data model is not found, try to guess the current data model…
         if compatibleVersion == nil {
+            logHashesOfUnrecognisedStore(metadata)
             if let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
                 let logPrefix = "Trying to guess data model from app version \(appVersion) smaller than "
                 if appVersion.compare("2.5", options: .numeric) == .orderedAscending {

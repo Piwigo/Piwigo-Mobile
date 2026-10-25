@@ -56,9 +56,11 @@ public extension JSONManager {
      When the Community plugin is installed (v2.9+) on the server,
      one must inform the moderator that a number of images have been uploaded.
      This informs the moderator that uploaded images are waiting for a validation.
+     Returns the IDs of the images pending moderation. The images validated at once
+     (user with high trust in that album) are not listed by the server.
      */
     @concurrent
-    func moderateImages(withIds imageIds: String, inCategory categoryId: Int32) async throws(PwgKitError) -> [Int64] {
+    func moderateImages(withIds imageIds: String, inCategory categoryId: Int32) async throws(PwgKitError) -> Set<Int64> {
         // Prepare parameters
         let paramDict: [String : Any] = ["image_id": imageIds,
                                          "pwg_token": ServerVars.shared.pwgToken,
@@ -69,14 +71,14 @@ public extension JSONManager {
                                             jsonObjectClientExpectsToReceive: CommunityImagesUploadCompletedJSON.self,
                                             countOfBytesClientExpectsToReceive: 1000)
         
-        // Return validated image IDs
-        var validatedIDs = [Int64]()
+        // Return the IDs of the images pending moderation
+        var pendingIDs = Set<Int64>()
         pwgData.data.forEach { (pendingData) in
             if let imageIDstr = pendingData.id, let imageID = Int64(imageIDstr),
-               let pendingState = pendingData.state, ["moderation_pending", "validated"].contains(pendingState) {
-                validatedIDs.append(imageID)
+               pendingData.state == "moderation_pending" {
+                pendingIDs.insert(imageID)
             }
         }
-        return validatedIDs
+        return pendingIDs
     }
 }

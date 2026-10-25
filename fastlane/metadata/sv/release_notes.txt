@@ -1,6 +1,6 @@
-• Lägger till tjeckisk, portugisisk och ukrainsk översättning
-• Gör om överföringar som avbrutits av ett serverfel eller ett ogiltigt svar
-• Rättar migreringen av data som sparats i version 3.2 och tidigare
-• Rättar antalet foton i albumens sidfot
-• Uppmanar till att uppdatera Piwigo-servrar äldre än version 16
-• Kraschfixar och förbättringar av gränssnittet
+• Anpassar layouten till fönster med variabel storlek och vikbara iPhone-modeller
+• Anpassar tabeller och rubriker till skärmar med rundade hörn
+• Rättar albumens bredd och storleken på fotominiatyrerna
+• Visar Piwigo-logotypen när en länk till ett album delas
+• Rättar fotonas etiketter och snabbar upp importen av dem
+• Felrättningar och förbättringar av gränssnittet

@@ -39,6 +39,11 @@ let package = Package(
                 .process("Resources")
             ],
         ),
+        .testTarget(
+            name: "PwgUploadKitTests",
+            dependencies: ["PwgUploadKit"],
+            path: "Tests"
+        ),
     ],
     swiftLanguageModes: [.v6],
 )

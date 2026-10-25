@@ -1,6 +1,6 @@
-• Adds Czech, Portuguese and Ukrainian translations
-• Retries the transfers interrupted by a server error or an invalid response
-• Fixes the migration of data stored by version 3.2 and earlier
-• Corrects the number of photos presented in album footers
-• Invites to update Piwigo servers older than version 16
-• Fixes crashes and improves the interface
+• Adapts the layout to resizable windows and foldable iPhones
+• Adjusts tables and headers to screens with rounded corners
+• Corrects the width of albums and the size of photo thumbnails
+• Presents the Piwigo logo when sharing a link to an album
+• Corrects the tags of photos and speeds up their import
+• Fixes bugs and improves the interface

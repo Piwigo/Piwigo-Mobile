@@ -1,6 +1,6 @@
-• Přidává český, portugalský a ukrajinský překlad
-• Opakuje přenosy přerušené chybou serveru nebo neplatnou odpovědí
-• Opravuje migraci dat uložených ve verzi 3.2 a starších
-• Opravuje počet fotek zobrazený v zápatí alb
-• Vyzývá k aktualizaci serverů Piwigo starších než verze 16
-• Opravuje pády a vylepšuje rozhraní
+• Přizpůsobuje rozvržení oknům s měnitelnou velikostí a skládacím iPhonům
+• Přizpůsobuje tabulky a záhlaví obrazovkám se zaoblenými rohy
+• Opravuje šířku alb a velikost náhledů fotek
+• Zobrazuje logo Piwigo při sdílení odkazu na album
+• Opravuje štítky fotek a zrychluje jejich import
+• Opravuje chyby a vylepšuje rozhraní

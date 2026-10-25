@@ -305,18 +305,15 @@ final class AppLockViewController: UIViewController {
             safeAreaHeight -= nav.navigationBar.bounds.height
         }
 
-        // Get device orientation
-        let orientation = view.currentInterfaceOrientation
-
         // Initialise constants
         let margin: CGFloat =  16
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
         let attributes = [NSAttributedString.Key.font: infoLabel.font!]
 
-        // Constraints depend on orientation
-        if orientation.isPortrait || view.traitCollection.userInterfaceIdiom == .pad {
-            // iPhone in portrait mode ▸ All centered horizontally
+        // Constraints depend on the available height
+        if view.layoutTraitCollection.hasCompactHeight == false {
+            // Regular height ▸ All centered horizontally
             titleLabelHorOffset.constant = CGFloat.zero
             mainStackHorOffset.constant = CGFloat.zero
             
@@ -344,10 +341,11 @@ final class AppLockViewController: UIViewController {
             infoLabelVertOffset.constant = (safeAreaHeight/2 - height) / 2
         }
         else {
-            // iPhone in landscape mode ▸ Labels and numpad side by side
+            // Compact height ▸ Labels and numpad side by side
+            /// The orientation only mirrors the layout, it does not determine it.
             mainStackVertOffset.constant = CGFloat.zero
             let horOffset = min(safeAreaWidth/4.0, 300.0)
-            if orientation == .landscapeLeft {
+            if view.window?.windowScene?.interfaceOrientation == .landscapeLeft {
                 titleLabelHorOffset.constant = horOffset
                 mainStackHorOffset.constant = horOffset
             } else {

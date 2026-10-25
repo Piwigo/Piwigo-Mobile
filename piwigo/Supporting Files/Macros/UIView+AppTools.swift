@@ -11,27 +11,46 @@ import UIKit
 
 extension UIView {
     
-    // MARK: - Interface Orientation
+    // MARK: - Adaptive Layout
     /**
-     Orientation of the interface presenting this view.
+     Trait collection to base layout decisions on, instead of the device idiom or the
+     interface orientation which do not describe the space available to the app
+     (Split View, Stage Manager, iPhone Duo inner display, etc.).
 
-     Not simply `window?.windowScene?.interfaceOrientation`: `window` is nil until the view
-     enters the hierarchy, and a view controller presented with a custom transition is only
-     added to the container after `viewWillAppear` — so a bar laid out from there would
-     always be told the interface is in portrait. Falls back to the scene the app is showing.
+     Not simply `traitCollection`: a view that has not entered the hierarchy yet — e.g. the view
+     of a controller presented with a custom transition, only added to the container after
+     `viewWillAppear` — reports unspecified size classes. Falls back to the scene the app is showing.
 
-     The share extension keeps the previous behaviour: it cannot reach another scene, since
-     `UIApplication.shared` — which `UIWindowScene.current` relies on — is unavailable there.
+     The share extension cannot reach another scene, since `UIApplication.shared` —
+     which `UIWindowScene.current` relies on — is unavailable there.
      */
     @MainActor
-    var currentInterfaceOrientation: UIInterfaceOrientation {
-        if let orientation = window?.windowScene?.interfaceOrientation {
-            return orientation
+    var layoutTraitCollection: UITraitCollection {
+        if traitCollection.horizontalSizeClass != .unspecified,
+           traitCollection.verticalSizeClass != .unspecified {
+            return traitCollection
+        }
+        if let sceneTraits = window?.windowScene?.traitCollection {
+            return sceneTraits
         }
         #if EXTENSION
-        return .portrait
+        return traitCollection
         #else
-        return UIWindowScene.current?.interfaceOrientation ?? .portrait
+        return UIWindowScene.current?.traitCollection ?? traitCollection
+        #endif
+    }
+
+    /// Bounds of the window presenting this view, or of the scene the app is showing
+    /// when the view is not in the hierarchy yet — never the bounds of the screen.
+    @MainActor
+    var windowBounds: CGRect {
+        if let window = window {
+            return window.bounds
+        }
+        #if EXTENSION
+        return bounds
+        #else
+        return UIWindowScene.current?.coordinateSpace.bounds ?? bounds
         #endif
     }
     
@@ -118,5 +137,27 @@ extension UIView {
         let mask = CAShapeLayer()
         mask.path = path.cgPath
         layer.mask = mask
+    }
+}
+
+
+// MARK: - Size Classes
+extension UITraitCollection {
+    /// Regular width and regular height: iPad in full screen or in a large window,
+    /// iPhone Duo inner display. Bar buttons are gathered in the navigation bar.
+    var hasRegularWidthAndHeight: Bool {
+        return horizontalSizeClass == .regular && verticalSizeClass == .regular
+    }
+    
+    /// Compact width and regular height: iPhone in portrait, narrow iPad window,
+    /// iPhone Duo outer display in portrait. Bar buttons are shared with the toolbar.
+    var hasCompactWidthRegularHeight: Bool {
+        return horizontalSizeClass == .compact && verticalSizeClass == .regular
+    }
+    
+    /// Compact height: iPhone in landscape, iPhone Duo outer display in landscape.
+    /// Vertical space is scarce: no subtitle, no status bar.
+    var hasCompactHeight: Bool {
+        return verticalSizeClass == .compact
     }
 }

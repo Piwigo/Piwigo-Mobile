@@ -104,8 +104,9 @@ extension UploadManager {
                 
             case .invalidStatusCode(let statusCode) where (500...599).contains(statusCode):
                 /// The server failed to answer this request, e.g. a PHP error while a chunk was
-                /// being stored. Such failures are transient: the chunk tasks already retry them
-                /// and the requests which complete during the same run prove the server recovers.
+                /// being stored. Such failures are transient: retryTransferOfUpload() transfers the
+                /// request again, up to the cap of grantRetry(), and the requests which complete
+                /// during the same run prove the server recovers.
                 uploadData.requestState = .uploadingError
                 uploadData.requestError = error.localizedDescription
                 

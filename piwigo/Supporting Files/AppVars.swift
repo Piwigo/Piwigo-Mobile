@@ -60,6 +60,20 @@ final class AppVars: @unchecked Sendable {
     @UserDefault("dateOfFirstOptImageV323", defaultValue: Date.distantFuture.timeIntervalSinceReferenceDate)
     var dateOfFirstOptImageV323: TimeInterval
     
+    /// - Remember when the App Store was last queried for a new version (once a day max)
+    @UserDefault("dateOfLastUpdateCheck", defaultValue: Date.distantPast.timeIntervalSinceReferenceDate)
+    var dateOfLastUpdateCheck: TimeInterval
+    
+    /// - Remember the latest version found on the App Store and its product page
+    @UserDefault("latestStoreVersion", defaultValue: "")
+    var latestStoreVersion: String
+    @UserDefault("latestStoreURL", defaultValue: "")
+    var latestStoreURL: String
+    
+    /// - Remember for which App Store version the user was invited to update the app
+    @UserDefault("lastInvitedStoreVersion", defaultValue: "")
+    var lastInvitedStoreVersion: String
+    
     
     // MARK: - Vars in UserDefaults / App Group
     // Application variables stored in UserDefaults / App Group

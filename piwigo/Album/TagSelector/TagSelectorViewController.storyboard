@@ -70,8 +70,8 @@
                         <viewLayoutGuide key="safeArea" id="GpG-x5-Jng"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="DTH-yA-3NV" firstAttribute="leading" secondItem="GpG-x5-Jng" secondAttribute="leading" id="4j4-9Q-g1v"/>
-                            <constraint firstItem="GpG-x5-Jng" firstAttribute="trailing" secondItem="DTH-yA-3NV" secondAttribute="trailing" id="bTG-YQ-vBP"/>
+                            <constraint firstItem="DTH-yA-3NV" firstAttribute="leading" secondItem="CkF-jc-PkV" secondAttribute="leading" id="4j4-9Q-g1v"/>
+                            <constraint firstItem="CkF-jc-PkV" firstAttribute="trailing" secondItem="DTH-yA-3NV" secondAttribute="trailing" id="bTG-YQ-vBP"/>
                             <constraint firstItem="DTH-yA-3NV" firstAttribute="top" secondItem="CkF-jc-PkV" secondAttribute="top" id="iqj-3V-HVx"/>
                             <constraint firstItem="DTH-yA-3NV" firstAttribute="bottom" secondItem="CkF-jc-PkV" secondAttribute="bottom" id="zPa-k2-xCs"/>
                         </constraints>

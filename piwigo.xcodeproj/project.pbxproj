@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		ADAA00A22FF000010000AAAA /* AppUpdateChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAA00A12FF000010000AAAA /* AppUpdateChecker.swift */; };
 		51EE2CD8AEA1901A1BCCBD38 /* UploadPhotosError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B07F397539C725E4E665D9 /* UploadPhotosError.swift */; };
 		71F793992AAFD8A7ABBAD967 /* UploadPhotos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70317AF024E5B739F1E7A6C1 /* UploadPhotos.swift */; };
 		AD02D2F42E9A446D0073335F /* EditImageTimePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD02D2F32E9A446D0073335F /* EditImageTimePickerTableViewCell.swift */; };
@@ -487,6 +488,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		ADAA00A12FF000010000AAAA /* AppUpdateChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUpdateChecker.swift; sourceTree = "<group>"; };
 		0B153098313E8E45CAC445B4 /* AlbumEntity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AlbumEntity.swift; sourceTree = "<group>"; };
 		12695FF2A60F479AA0A5105C /* GifDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifDetailViewController.swift; sourceTree = "<group>"; };
 		14C56BF9BE67EBE05C0092A0 /* pt-BR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/PrivacyPolicy.strings"; sourceTree = "<group>"; };
@@ -1851,6 +1853,7 @@
 		D82B8CED1A6790A3000E47CA /* Macros */ = {
 			isa = PBXGroup;
 			children = (
+				ADAA00A12FF000010000AAAA /* AppUpdateChecker.swift */,
 				ADF3EC0B2516515500379E53 /* Device+Model.swift */,
 				AD9D684927DFE9E600517261 /* HapticUtilities.swift */,
 				AD9A1BE724E04F0000D22C86 /* TableHeaderView.swift */,
@@ -2439,6 +2442,7 @@
 				ADCA7CF82E928A7F00EFC3C5 /* HelpUtilities.swift in Sources */,
 				ADEA269A285F8D5F00B6C9A0 /* ImageViewController+Share.swift in Sources */,
 				ADA74B0B2C5BC72500162BE0 /* LocalImagesViewController+FlowLayout.swift in Sources */,
+				ADAA00A22FF000010000AAAA /* AppUpdateChecker.swift in Sources */,
 				AD095BD82FE84F6E00FBBEF3 /* AppMetrics.swift in Sources */,
 				ADAF43F12FAE1AE400C8085F /* Help11ViewController.swift in Sources */,
 				AD6BA0F32BA5BDDC00755257 /* LocalImagesViewController+Data.swift in Sources */,
@@ -3037,7 +3041,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 706;
+				CURRENT_PROJECT_VERSION = 707;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = ZU5THW8T5W;
@@ -3060,8 +3064,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 4.4.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 4.4.3;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu99 gnu++11";
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -3114,7 +3118,7 @@
 				CODE_SIGN_IDENTITY = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 706;
+				CURRENT_PROJECT_VERSION = 707;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = ZU5THW8T5W;
@@ -3130,8 +3134,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 4.4.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 4.4.3;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu99 gnu++11";
 				MTL_ENABLE_DEBUG_INFO = NO;

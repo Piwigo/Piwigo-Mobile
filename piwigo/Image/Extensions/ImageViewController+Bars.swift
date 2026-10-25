@@ -20,9 +20,6 @@ extension ImageViewController {
         shareImageButton = getShareImageButton()
         favoriteBarButton = getFavoriteBarButton()
         
-        // Interface depends on device and orientation
-        let orientation = view.currentInterfaceOrientation
-        
         // Admin user can do everything except may be downloading images (i.e. sharing images)
         // Community user can only be allowed to edit properties of images he/she has uploaded.
         /// This requires 'user_id' and 'added_by' values of images for checking rights.
@@ -39,10 +36,10 @@ extension ImageViewController {
             
             // Configure the navigation bar and toolbar
             if #available(iOS 26.0, *) {
-                updateNavBarForAdmin(orientation: orientation)
+                updateNavBarForAdmin()
             } else {
                 // Fallback on previous version
-                updateLegacyNavBarForAdmin(orientation: orientation)
+                updateLegacyNavBarForAdmin()
             }
         } else {
             // The action button proposes:
@@ -54,10 +51,10 @@ extension ImageViewController {
             
             // Configure the navigation bar and toolbar
             if #available(iOS 26.0, *) {
-                updateNavBarForStdUserOrGuest(orientation: orientation)
+                updateNavBarForStdUserOrGuest()
             } else {
                 // Fallback on previous version
-                updateLegacyNavBarForStdUserOrGuest(orientation: orientation)
+                updateLegacyNavBarForStdUserOrGuest()
             }
         }
     }
@@ -77,9 +74,9 @@ extension ImageViewController {
     }
     
     @MainActor @available(iOS 26.0, *)
-    private func updateNavBarForAdmin(orientation: UIInterfaceOrientation) {
+    private func updateNavBarForAdmin() {
         // Case of users with admin or upload rights
-        if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
+        if view.layoutTraitCollection.hasCompactWidthRegularHeight {
             // Determine toolbar items
             /// Image, Video => [share - favorite delete] or [favorite - delete] or [ - delete]
             /// PDF          => [share goToPage - favorite delete] or [goToPage - favorite delete]
@@ -102,7 +99,7 @@ extension ImageViewController {
             navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
             navigationItem.rightBarButtonItems = [actionBarButton].compactMap {$0}
         }
-        else {      // iPad or iPhone in landscape orientation
+        else {      // Regular width or compact height
             // No toolbar
             isToolbarRequired = false
             setToolbarItems([], animated: false)
@@ -139,9 +136,9 @@ extension ImageViewController {
     }
     
     @MainActor @available(iOS 26.0, *)
-    private func updateNavBarForStdUserOrGuest(orientation: UIInterfaceOrientation) {
+    private func updateNavBarForStdUserOrGuest() {
         // Case of users without admin or upload rights
-        if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
+        if view.layoutTraitCollection.hasCompactWidthRegularHeight {
             // Determine toolbar items
             let toolbarItems = getToolbarItemsForStdUserOrGuest()
             
@@ -161,7 +158,7 @@ extension ImageViewController {
             navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
             navigationItem.rightBarButtonItems = [actionBarButton].compactMap {$0}
         }
-        else {      // iPad or iPhone in landscape orientation
+        else {      // Regular width or compact height
             // No toolbar
             isToolbarRequired = false
             setToolbarItems([], animated: false)
@@ -174,9 +171,9 @@ extension ImageViewController {
     }
     
     @MainActor @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Specific to iOS 15 to 18")
-    private func updateLegacyNavBarForAdmin(orientation: UIInterfaceOrientation) {
+    private func updateLegacyNavBarForAdmin() {
         // Case of users with admin or upload rights
-        if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
+        if view.layoutTraitCollection.hasCompactWidthRegularHeight {
             // Determine toolbar items
             /// Image => [favorite - delete] or [share - favorite - delete]
             /// Video =>  [favorite - delete] or [share -  favorite - delete]
@@ -197,7 +194,7 @@ extension ImageViewController {
             navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
             navigationItem.rightBarButtonItems = [actionBarButton].compactMap {$0}
         }
-        else {      // iPad or iPhone in landscape orientation
+        else {      // Regular width or compact height
             // No toolbar
             isToolbarRequired = false
             setToolbarItems([], animated: false)
@@ -210,9 +207,9 @@ extension ImageViewController {
     }
     
     @MainActor @available(iOS, introduced: 15.0, obsoleted: 26.0, message: "Specific to iOS 15 to 18")
-    private func updateLegacyNavBarForStdUserOrGuest(orientation: UIInterfaceOrientation) {
+    private func updateLegacyNavBarForStdUserOrGuest() {
         // Case of users without admin or upload rights
-        if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
+        if view.layoutTraitCollection.hasCompactWidthRegularHeight {
             // Determine toolbar items
             let toolbarItems = getToolbarItemsForStdUserOrGuest()
             
@@ -232,7 +229,7 @@ extension ImageViewController {
             navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
             navigationItem.rightBarButtonItems = [actionBarButton].compactMap {$0}
         }
-        else {      // iPad or iPhone in landscape orientation
+        else {      // Regular width or compact height
             // No toolbar
             isToolbarRequired = false
             setToolbarItems([], animated: false)
@@ -292,7 +289,7 @@ extension ImageViewController {
         if imageData.dateCreated >= DateUtilities.weekAfterInterval {
             let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
             let dateFormatter = DateUtilities.dateFormatter
-            if view.traitCollection.userInterfaceIdiom == .pad {
+            if view.layoutTraitCollection.horizontalSizeClass == .regular {
                 dateFormatter.dateStyle = .long
                 dateFormatter.timeStyle = .medium   // Without time zone (unknown)
             } else {
@@ -326,9 +323,8 @@ extension ImageViewController {
         }
         
         // No subtitle when using acessibility category or on iPhone in landscape mode
-        let orientation = view.currentInterfaceOrientation
         if traitCollection.preferredContentSizeCategory >= .accessibilityMedium ||
-            (view.traitCollection.userInterfaceIdiom == .phone && orientation.isLandscape) {
+            view.layoutTraitCollection.hasCompactHeight {
             navigationItem.titleView = getTitleView(withTitle: title, titleColor: PwgColor.whiteCream,
                                                     subtitle: "", subTitleColor: PwgColor.rightLabel)
             return
@@ -341,7 +337,7 @@ extension ImageViewController {
         if imageData.dateCreated >= DateUtilities.weekAfterInterval {
             let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
             let dateFormatter = DateUtilities.dateFormatter
-            if view.traitCollection.userInterfaceIdiom == .pad {
+            if view.layoutTraitCollection.horizontalSizeClass == .regular {
                 dateFormatter.dateStyle = .long
                 dateFormatter.timeStyle = .medium   // Without time zone (unknown)
             } else {

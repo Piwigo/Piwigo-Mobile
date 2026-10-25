@@ -33,13 +33,10 @@ extension AlbumViewController
             searchController?.searchBar.showsCancelButton = false
             searchController?.hidesNavigationBarDuringPresentation = true
             if #available(iOS 16.0, *) {
-                switch view.traitCollection.userInterfaceIdiom {
-                case .phone:
+                if view.layoutTraitCollection.hasRegularWidthAndHeight == false {
                     navigationItem.preferredSearchBarPlacement = .stacked
-                case .pad:
+                } else {
                     navigationItem.preferredSearchBarPlacement = .inline
-                default:
-                    break
                 }
             }
         }

@@ -254,12 +254,22 @@ class RenameFileViewController: UIViewController {
         }
     }
     
+    override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+        
+        // Adapt the main header to the safe area, e.g. when the vertical bar of iPhone Duo moves
+        if tableView?.tableHeaderView != nil {
+            setTableViewMainHeader()
+        }
+    }
+    
     @MainActor
     private func setTableViewMainHeader() {
         let headerView = RenameFileTableHeaderView(frame: CGRect.zero)
         let title = String(localized: "settings_renameFileLong", comment: "Rename File")
         let text = String(localized: "settings_renameFile_info", comment: "Please define how file names should be modified before uploading.")
-        headerView.config(with: title, text: text, forWidth: view.bounds.width)
+        headerView.config(with: title, text: text, forWidth: view.bounds.width,
+                          safeAreaInsets: view.safeAreaInsets)
         headerView.updateExample(prefix: prefixBeforeUpload, prefixActions: prefixActions,
                                  replace: replaceBeforeUpload, replaceActions: replaceActions,
                                  suffix: suffixBeforeUpload, suffixActions: suffixActions,
