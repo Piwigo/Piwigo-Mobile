@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		ADAA00A22FF000010000AAAA /* AppUpdateChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAA00A12FF000010000AAAA /* AppUpdateChecker.swift */; };
 		51EE2CD8AEA1901A1BCCBD38 /* UploadPhotosError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B07F397539C725E4E665D9 /* UploadPhotosError.swift */; };
 		71F793992AAFD8A7ABBAD967 /* UploadPhotos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70317AF024E5B739F1E7A6C1 /* UploadPhotos.swift */; };
 		AD02D2F42E9A446D0073335F /* EditImageTimePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD02D2F32E9A446D0073335F /* EditImageTimePickerTableViewCell.swift */; };
@@ -285,6 +284,7 @@
 		ADA74B0B2C5BC72500162BE0 /* LocalImagesViewController+FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA74B0A2C5BC72500162BE0 /* LocalImagesViewController+FlowLayout.swift */; };
 		ADA74B0D2C5D138600162BE0 /* LocalImagesViewController+Select.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA74B0C2C5D138600162BE0 /* LocalImagesViewController+Select.swift */; };
 		ADA78AFE2E6B6D100049198A /* piwigo.icon in Resources */ = {isa = PBXBuildFile; fileRef = ADA78AFD2E6B6D100049198A /* piwigo.icon */; };
+		ADAA00A22FF000010000AAAA /* AppUpdateChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAA00A12FF000010000AAAA /* AppUpdateChecker.swift */; };
 		ADABA2AF2A48194E006A1380 /* LoginViewController+UITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADABA2AE2A48194E006A1380 /* LoginViewController+UITextField.swift */; };
 		ADAC548C26170B1200301C1C /* SelectCategoryHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC548B26170B1200301C1C /* SelectCategoryHeaderView.swift */; };
 		ADAC5490261793F700301C1C /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC548F261793F700301C1C /* CategoryTableViewCell.swift */; };
@@ -488,7 +488,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		ADAA00A12FF000010000AAAA /* AppUpdateChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUpdateChecker.swift; sourceTree = "<group>"; };
 		0B153098313E8E45CAC445B4 /* AlbumEntity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AlbumEntity.swift; sourceTree = "<group>"; };
 		12695FF2A60F479AA0A5105C /* GifDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifDetailViewController.swift; sourceTree = "<group>"; };
 		14C56BF9BE67EBE05C0092A0 /* pt-BR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/PrivacyPolicy.strings"; sourceTree = "<group>"; };
@@ -825,6 +824,7 @@
 		ADA74B0A2C5BC72500162BE0 /* LocalImagesViewController+FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalImagesViewController+FlowLayout.swift"; sourceTree = "<group>"; };
 		ADA74B0C2C5D138600162BE0 /* LocalImagesViewController+Select.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalImagesViewController+Select.swift"; sourceTree = "<group>"; };
 		ADA78AFD2E6B6D100049198A /* piwigo.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = piwigo.icon; sourceTree = "<group>"; };
+		ADAA00A12FF000010000AAAA /* AppUpdateChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUpdateChecker.swift; sourceTree = "<group>"; };
 		ADABA2AE2A48194E006A1380 /* LoginViewController+UITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginViewController+UITextField.swift"; sourceTree = "<group>"; };
 		ADAC548B26170B1200301C1C /* SelectCategoryHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectCategoryHeaderView.swift; sourceTree = "<group>"; };
 		ADAC548F261793F700301C1C /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
@@ -2927,6 +2927,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 4.5;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = NO;
@@ -2983,6 +2984,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 4.5;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo.shareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3180,6 +3182,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 4.5;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_SWIFT_FLAGS = "$(inherited) -Xfrontend -warn-long-function-bodies=300 -Xfrontend -warn-long-expression-type-checking=50";
@@ -3227,6 +3230,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 4.5;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo;
