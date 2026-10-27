@@ -47,6 +47,7 @@ final class ImageViewController: UIViewController {
     var shareImageButton: UIBarButtonItem?
     var favoriteBarButton: UIBarButtonItem?
     var goToPageButton: UIBarButtonItem?
+    var isToolbarGathered = false                       // - true when the toolbar buttons are gathered (vertical bar of iPhone Duo)
     
     
     // MARK: - Rotate View & Buttons
@@ -203,6 +204,15 @@ final class ImageViewController: UIViewController {
             toolbar.setNeedsLayout()
             toolbar.layoutIfNeeded()
         })
+    }
+    
+    override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+        
+        // The vertical bar of iPhone Duo may only be known after the first presentation
+        if isToolbarRequired, isInVerticalBar != isToolbarGathered {
+            updateNavBar()
+        }
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
