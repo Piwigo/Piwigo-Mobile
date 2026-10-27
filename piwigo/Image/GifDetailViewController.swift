@@ -40,6 +40,14 @@ final class GifDetailViewController: UIViewController
     /// Size of the window presenting this view, not of the key window
     /// which may belong to another scene of the app (e.g. two windows side by side).
     private lazy var viewSize: CGSize = view.windowBounds.size
+    
+    // While the metadata panel shares the screen, the photo fills its area, centred,
+    // and is cropped on one axis if needed, instead of being fitted in the area.
+    private var fillsArea = false
+    
+    // Pages kept in memory are resized when they appear again, not the first time
+    /// (the page view controller has not been laid out yet).
+    private var hasAppeared = false
 
 
     // MARK: - View Lifecycle
@@ -63,6 +71,22 @@ final class GifDetailViewController: UIViewController
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        // A page kept in memory has the size its container had when it last appeared
+        /// and so have the views positioned relative to it, such as the description.
+        if hasAppeared { fitViewToPageContainer() }
+        
+        // The metadata panel may have changed the area available to the photo
+        /// Pages kept in memory while the panel was presented or closed still hold the previous
+        /// size: the photo is placed again if the area changed.
+        let imageVC = parent?.parent as? ImageViewController
+        let newViewSize = imageVC?.photoAreaSize(forWindowSize: view.windowBounds.size) ?? view.windowBounds.size
+        let newFillsArea = imageVC?.photoFillsArea ?? false
+        if viewSize != newViewSize || fillsArea != newFillsArea {
+            viewSize = newViewSize
+            fillsArea = newFillsArea
+            configScrollView()
+        }
+
         // Load and animate GIF image (resume download if needed)
         loadAndAnimateGifImage()
 
@@ -78,6 +102,7 @@ final class GifDetailViewController: UIViewController
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        hasAppeared = true
 
         // Should this image be also displayed on the external screen?
         self.setExternalImageView()
@@ -95,9 +120,18 @@ final class GifDetailViewController: UIViewController
             }
 
             // Update scale, insets and offsets
-            self.viewSize = size
+            self.viewSize = (parent?.parent as? ImageViewController)?.photoAreaSize(forWindowSize: size) ?? size
+            self.fillsArea = (parent?.parent as? ImageViewController)?.photoFillsArea ?? false
             configScrollView()
         })
+    }
+
+    /// Called when the area available to the photo changes, e.g. when the metadata panel moves
+    func updateViewSize(_ size: CGSize, fillsArea: Bool) {
+        guard viewSize != size || self.fillsArea != fillsArea else { return }
+        viewSize = size
+        self.fillsArea = fillsArea
+        configScrollView()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -255,7 +289,7 @@ final class GifDetailViewController: UIViewController
         scrollView.bounds = view.bounds
         let widthScale = viewSize.width / imageSize.width
         let heightScale = viewSize.height / imageSize.height
-        let minScale = min(widthScale, heightScale)
+        let minScale = fillsArea ? max(widthScale, heightScale) : min(widthScale, heightScale)
         let maxScale = max(widthScale, heightScale)
 
         // Calc zoom scale change
@@ -266,7 +300,7 @@ final class GifDetailViewController: UIViewController
 
         // Set zoom scale range
         scrollView.minimumZoomScale = minScale
-        scrollView.maximumZoomScale = max(maxScale, 1)
+        scrollView.maximumZoomScale = fillsArea ? max(maxScale, 1, 2 * minScale) : max(maxScale, 1)
 
         // Next line calls scrollViewDidZoom() if zoomScale has changed
         let newZoomScale = minScale * zoomFactor
@@ -291,6 +325,9 @@ final class GifDetailViewController: UIViewController
         scrollView.contentInset.right = horizontalSpace
         if horizontalSpace > 0 {
             scrollView.contentOffset.x = -horizontalSpace
+        } else if fillsArea, scrollView.zoomScale <= scrollView.minimumZoomScale * 1.001 {
+            // Photo wider than its area: keep the middle
+            scrollView.contentOffset.x = (imageWidth - viewSize.width) / 2
         }
 
         // Center image vertically
@@ -301,6 +338,12 @@ final class GifDetailViewController: UIViewController
         scrollView.contentInset.bottom = verticalSpace
         if verticalSpace > 0 {
             scrollView.contentOffset.y = -verticalSpace
+        } else if fillsArea, scrollView.zoomScale <= scrollView.minimumZoomScale * 1.001 {
+            // Photo taller than its area: keep the middle
+            scrollView.contentOffset.y = (imageHeight - viewSize.height) / 2
+        }
+        if fillsArea {
+            scrollView.isScrollEnabled = scrollView.zoomScale > scrollView.minimumZoomScale * 1.001
         }
     }
 

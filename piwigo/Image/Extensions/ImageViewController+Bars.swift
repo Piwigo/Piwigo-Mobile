@@ -19,6 +19,7 @@ extension ImageViewController {
         // Below button depends on Piwigo server version, user role and image data
         shareImageButton = getShareImageButton()
         favoriteBarButton = getFavoriteBarButton()
+        infoBarButton = getInfoBarButton()
         
         // Admin user can do everything except may be downloading images (i.e. sharing images)
         // Community user can only be allowed to edit properties of images he/she has uploaded.
@@ -57,6 +58,9 @@ extension ImageViewController {
                 updateLegacyNavBarForStdUserOrGuest()
             }
         }
+        
+        // Keep the metadata in line with the image
+        refreshMetadata()
     }
     
     @MainActor
@@ -103,7 +107,7 @@ extension ImageViewController {
             /// PDF          => [share goToPage - favorite delete] or [goToPage - favorite delete]
             /// The goToPage button is only available for PDF files.
             var leadingItems = [shareImageButton, goToPageButton].compactMap {$0}
-            var trailingItems = [favoriteBarButton, deleteBarButton].compactMap {$0}
+            var trailingItems = [infoBarButton, favoriteBarButton, deleteBarButton].compactMap {$0}
             if leadingItems.isEmpty, trailingItems.count > 1 {
                 /// Nothing to present on the left: spread the remaining buttons
                 leadingItems.append(trailingItems.removeFirst())
@@ -113,8 +117,7 @@ extension ImageViewController {
             // Show toolbar
             isToolbarRequired = true
             setToolbarItems(gatheredIfNeeded(toolbarItems), animated: false)
-            let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-            navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
+            navigationController?.setToolbarHidden(shouldHideToolbar, animated: true)
             
             // Set buttons in the navigation bar
             navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
@@ -128,7 +131,7 @@ extension ImageViewController {
             
             // All buttons gathered in the navigation bar
             navigationItem.leftBarButtonItems = [backButton, .space(), shareImageButton, goToPageButton].compactMap {$0}
-            navigationItem.rightBarButtonItems = [actionBarButton, deleteBarButton, favoriteBarButton].compactMap { $0 }
+            navigationItem.rightBarButtonItems = [actionBarButton, deleteBarButton, favoriteBarButton, infoBarButton].compactMap { $0 }
         }
     }
     
@@ -142,7 +145,7 @@ extension ImageViewController {
     private func getToolbarItemsForStdUserOrGuest() -> [UIBarButtonItem] {
         // Buttons are presented from the left to the right of the toolbar
         /// The goToPage button is only available for PDF files
-        let buttons = [shareImageButton, goToPageButton, favoriteBarButton].compactMap {$0}
+        let buttons = [shareImageButton, goToPageButton, infoBarButton, favoriteBarButton].compactMap {$0}
         
         // No toolbar is presented when no button is available
         guard buttons.isEmpty == false else { return [] }
@@ -171,8 +174,7 @@ extension ImageViewController {
             } else {
                 isToolbarRequired = true
                 setToolbarItems(gatheredIfNeeded(toolbarItems), animated: false)
-                let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-                navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
+                navigationController?.setToolbarHidden(shouldHideToolbar, animated: true)
             }
             
             // Set buttons in the navigation bar
@@ -187,7 +189,7 @@ extension ImageViewController {
             
             // All buttons gathered in the navigation bar
             navigationItem.leftBarButtonItems = [backButton, .space(), goToPageButton].compactMap {$0}
-            navigationItem.rightBarButtonItems = [actionBarButton, favoriteBarButton, shareImageButton].compactMap { $0 }
+            navigationItem.rightBarButtonItems = [actionBarButton, favoriteBarButton, infoBarButton, shareImageButton].compactMap { $0 }
         }
     }
     
@@ -202,14 +204,14 @@ extension ImageViewController {
             var toolbarItems = [UIBarButtonItem?]()
             toolbarItems.append(contentsOf: shareImageButton == nil ? [nil] : [shareImageButton, .space()])
             toolbarItems.append(contentsOf: goToPageButton == nil ? [nil] : [goToPageButton, .space()])
+            toolbarItems.append(contentsOf: infoBarButton == nil ? [nil] : [infoBarButton, .space()])
             toolbarItems.append(contentsOf: favoriteBarButton == nil ? [nil] : [favoriteBarButton, .space()])
             toolbarItems.append(deleteBarButton)
             
             // Show toolbar
             isToolbarRequired = true
             setToolbarItems(gatheredIfNeeded(toolbarItems.compactMap {$0}), animated: false)
-            let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-            navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
+            navigationController?.setToolbarHidden(shouldHideToolbar, animated: true)
             
             // Set buttons in the navigation bar
             navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
@@ -223,7 +225,7 @@ extension ImageViewController {
             
             // All buttons gathered in the navigation bar
             navigationItem.leftBarButtonItems = [backButton, .space(), shareImageButton, goToPageButton].compactMap {$0}
-            navigationItem.rightBarButtonItems = [actionBarButton, deleteBarButton, favoriteBarButton].compactMap { $0 }
+            navigationItem.rightBarButtonItems = [actionBarButton, deleteBarButton, favoriteBarButton, infoBarButton].compactMap { $0 }
         }
     }
     
@@ -242,8 +244,7 @@ extension ImageViewController {
             } else {
                 isToolbarRequired = true
                 setToolbarItems(gatheredIfNeeded(toolbarItems), animated: false)
-                let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-                navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
+                navigationController?.setToolbarHidden(shouldHideToolbar, animated: true)
             }
             
             // Set buttons in the navigation bar
@@ -258,7 +259,7 @@ extension ImageViewController {
             
             // All buttons gathered in the navigation bar
             navigationItem.leftBarButtonItems = [backButton, .space(), shareImageButton].compactMap {$0}
-            navigationItem.rightBarButtonItems = [actionBarButton, favoriteBarButton, goToPageButton].compactMap { $0 }
+            navigationItem.rightBarButtonItems = [actionBarButton, favoriteBarButton, goToPageButton, infoBarButton].compactMap { $0 }
         }
     }
     
@@ -270,6 +271,7 @@ extension ImageViewController {
         shareImageButton?.isEnabled = state
         deleteBarButton.isEnabled = state
         favoriteBarButton?.isEnabled = state
+        infoBarButton?.isEnabled = state
         goToPageButton?.isEnabled = state
     }
     

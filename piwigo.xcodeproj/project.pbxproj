@@ -150,6 +150,7 @@
 		AD3DB4112773957A00017542 /* ImageViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3DB4102773957A00017542 /* ImageViewController.storyboard */; };
 		AD3DB4132773958200017542 /* ImageDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3DB4122773958200017542 /* ImageDetailViewController.swift */; };
 		AD3DB4152773958A00017542 /* ImageDescriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3DB4142773958A00017542 /* ImageDescriptionView.swift */; };
+		AD2610260000000000000002 /* ImageMetadataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000001 /* ImageMetadataViewController.swift */; };
 		AD400B212C61334200DC9A61 /* PasteboardImagesViewController+FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD400B202C61334200DC9A61 /* PasteboardImagesViewController+FlowLayout.swift */; };
 		AD400B232C6137A200DC9A61 /* PasteboardImagesViewController+Select.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD400B222C6137A200DC9A61 /* PasteboardImagesViewController+Select.swift */; };
 		AD41530F27C6D35D00DE01CB /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD41530E27C6D35D00DE01CB /* LoginViewController.swift */; };
@@ -303,6 +304,7 @@
 		ADAF43EF2FAE199700C8085F /* help11.png in Resources */ = {isa = PBXBuildFile; fileRef = ADAF43EE2FAE199700C8085F /* help11.png */; };
 		ADAF43F12FAE1AE400C8085F /* Help11ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAF43F02FAE1AE400C8085F /* Help11ViewController.swift */; };
 		ADB007D72D7B0A5F004A84A7 /* ImageViewController+Bars.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB007D62D7B0A5F004A84A7 /* ImageViewController+Bars.swift */; };
+		AD2610260000000000000004 /* ImageViewController+Metadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000003 /* ImageViewController+Metadata.swift */; };
 		ADB253A930364CCB00154A24 /* ImageViewController+PDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB253A830364CCB00154A24 /* ImageViewController+PDF.swift */; };
 		ADB2E93A2DCBF737000F3F7C /* SeparatorSelectorTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB2E9392DCBF737000F3F7C /* SeparatorSelectorTableViewCell.swift */; };
 		ADB2E9422DD5A864000F3F7C /* TimeFormatSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB2E9412DD5A864000F3F7C /* TimeFormatSelectorViewController.swift */; };
@@ -668,6 +670,7 @@
 		AD3DB4102773957A00017542 /* ImageViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ImageViewController.storyboard; sourceTree = "<group>"; };
 		AD3DB4122773958200017542 /* ImageDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageDetailViewController.swift; sourceTree = "<group>"; };
 		AD3DB4142773958A00017542 /* ImageDescriptionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageDescriptionView.swift; sourceTree = "<group>"; };
+		AD2610260000000000000001 /* ImageMetadataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageMetadataViewController.swift"; sourceTree = "<group>"; };
 		AD3FDDE91F2E23F700F71C81 /* da */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/About.strings; sourceTree = "<group>"; };
 		AD400B202C61334200DC9A61 /* PasteboardImagesViewController+FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PasteboardImagesViewController+FlowLayout.swift"; sourceTree = "<group>"; };
 		AD400B222C6137A200DC9A61 /* PasteboardImagesViewController+Select.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PasteboardImagesViewController+Select.swift"; sourceTree = "<group>"; };
@@ -854,6 +857,7 @@
 		ADAF64A729B3AEE2005F3501 /* zh-Hant */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/About.strings"; sourceTree = "<group>"; };
 		ADAF64AB29B3AEE2005F3501 /* zh-Hant */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/PrivacyPolicy.strings"; sourceTree = "<group>"; };
 		ADB007D62D7B0A5F004A84A7 /* ImageViewController+Bars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Bars.swift"; sourceTree = "<group>"; };
+		AD2610260000000000000003 /* ImageViewController+Metadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Metadata.swift"; sourceTree = "<group>"; };
 		ADB253A830364CCB00154A24 /* ImageViewController+PDF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+PDF.swift"; sourceTree = "<group>"; };
 		ADB2E9392DCBF737000F3F7C /* SeparatorSelectorTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeparatorSelectorTableViewCell.swift; sourceTree = "<group>"; };
 		ADB2E9412DD5A864000F3F7C /* TimeFormatSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeFormatSelectorViewController.swift; sourceTree = "<group>"; };
@@ -1678,6 +1682,7 @@
 				ADB65D4E26FBAE0F0094DAF1 /* ImageViewController.swift */,
 				AD3DB4102773957A00017542 /* ImageViewController.storyboard */,
 				AD3DB4142773958A00017542 /* ImageDescriptionView.swift */,
+				AD2610260000000000000001 /* ImageMetadataViewController.swift */,
 				AD3DB4122773958200017542 /* ImageDetailViewController.swift */,
 				12695FF2A60F479AA0A5105C /* GifDetailViewController.swift */,
 				AD09E2FE2A90D6DD00D8E134 /* VideoDetailViewController.swift */,
@@ -1763,6 +1768,7 @@
 			isa = PBXGroup;
 			children = (
 				ADB007D62D7B0A5F004A84A7 /* ImageViewController+Bars.swift */,
+				AD2610260000000000000003 /* ImageViewController+Metadata.swift */,
 				ADEA269F285F962800B6C9A0 /* ImageViewController+Menus.swift */,
 				ADEA26A1285F9E2400B6C9A0 /* ImageViewController+CopyMove.swift */,
 				ADEA26A7285FA2C300B6C9A0 /* ImageViewController+AlbumThumnail.swift */,
@@ -2543,6 +2549,7 @@
 				AD97CFBD265D1AF800719ED5 /* AlbumVars.swift in Sources */,
 				AD2BEF642D25EA23001FA165 /* UploadQueueViewController+Delegate.swift in Sources */,
 				AD3DB4152773958A00017542 /* ImageDescriptionView.swift in Sources */,
+				AD2610260000000000000002 /* ImageMetadataViewController.swift in Sources */,
 				ADEA26A2285F9E2400B6C9A0 /* ImageViewController+CopyMove.swift in Sources */,
 				ADDB2A6F2B416FF500FDC1B1 /* EditImageParamsViewController+UITableViewDataSource.swift in Sources */,
 				ADACD2972C31906E00F8790B /* SettingsUtilities.swift in Sources */,
@@ -2563,6 +2570,7 @@
 				AD07CABE26DBE4BA00BEAEFB /* EditImageShiftPickerTableViewCell.swift in Sources */,
 				ADAC548C26170B1200301C1C /* SelectCategoryHeaderView.swift in Sources */,
 				ADB007D72D7B0A5F004A84A7 /* ImageViewController+Bars.swift in Sources */,
+				AD2610260000000000000004 /* ImageViewController+Metadata.swift in Sources */,
 				ADD063B926A04C12002558D2 /* UploadVideoSizeViewController.swift in Sources */,
 				AD7E9AE72A6D7AEA0079BE8F /* PlayerViewControllerCoordinator.swift in Sources */,
 				AD07CAC226DD4B4100BEAEFB /* EditImageThumbCollectionViewCell.swift in Sources */,

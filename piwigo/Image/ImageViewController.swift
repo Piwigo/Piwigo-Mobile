@@ -48,6 +48,11 @@ final class ImageViewController: UIViewController {
     var favoriteBarButton: UIBarButtonItem?
     var goToPageButton: UIBarButtonItem?
     var isToolbarGathered = false                       // - true when the toolbar buttons are gathered (vertical bar of iPhone Duo)
+    var infoBarButton: UIBarButtonItem?                 // - for presenting the metadata (iPhone: panel, iPad: popover)
+    
+    
+    // MARK: - Metadata Panel
+    let metadataPanel = MetadataPanel()
     
     
     // MARK: - Rotate View & Buttons
@@ -112,8 +117,16 @@ final class ImageViewController: UIViewController {
         swipeDown.direction = .down
         tapOnce.require(toFail: swipeDown)
         
+        // The panel presenting the metadata keeps its touches
+        tapOnce.delegate = self
+        tapTwice.delegate = self
+        swipeDown.delegate = self
+        
         // Add gestures to view
         view.gestureRecognizers = [tapOnce, tapTwice, swipeDown]
+        
+        // Up swipes present the metadata
+        addMetadataGesture()
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
@@ -138,7 +151,8 @@ final class ImageViewController: UIViewController {
     @MainActor
     @objc func applyColorPalette() {
         // Set background color according to navigation bar visibility
-        if navigationController?.isNavigationBarHidden ?? false {
+        /// It remains the palette background while the metadata panel is presented.
+        if (navigationController?.isNavigationBarHidden ?? false) && metadataPanel.isPresented == false {
             view.backgroundColor = .black
         } else {
             view.backgroundColor = PwgColor.background
@@ -190,6 +204,9 @@ final class ImageViewController: UIViewController {
             updateNavBar()
             setTitleViewFromImageData()
         }, completion: { [self] _ in
+            // The area left to the photo may differ from the estimate of the detail view
+            updatePhotoArea()
+            
             // Force reload flexible spaces (known iOS bug)
             guard let toolbar = self.navigationController?.toolbar else { return }
             
@@ -213,6 +230,13 @@ final class ImageViewController: UIViewController {
         if isToolbarRequired, isInVerticalBar != isToolbarGathered {
             updateNavBar()
         }
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        // Keep the panel presenting the metadata in line with the view
+        updateMetadataLayoutIfNeeded()
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -463,11 +487,13 @@ final class ImageViewController: UIViewController {
     
     
     // MARK: - User Interaction
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true
-    }
-    
     @objc func didTapOnce() {
+        // A tap on the photo closes the panel presenting the metadata
+        if metadataPanel.isPresented {
+            setMetadataState(.closed, animated: true)
+            return
+        }
+        
         // Display/hide the navigation bar
         let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
         navigationController?.setNavigationBarHidden(!isNavigationBarHidden, animated: true)
@@ -577,6 +603,9 @@ extension ImageViewController: UIPageViewControllerDelegate
     // Called before a gesture-driven transition begins
     func pageViewController(_ pageViewController: UIPageViewController,
                             willTransitionTo pendingViewControllers: [UIViewController]) {
+        // A page without metadata closes the panel while the pages slide
+        metadataPageWillTurn(to: pendingViewControllers.first)
+        
         // Image disappearing
         if let imageDVC = pageViewController.viewControllers?.first as? ImageDetailViewController,
            let imageURL = imageDVC.imageURL {
@@ -601,7 +630,11 @@ extension ImageViewController: UIPageViewControllerDelegate
                             previousViewControllers: [UIViewController],
                             transitionCompleted completed: Bool) {
         // Check if the user completed the page-turn gesture
-        if completed == false { return }
+        if completed == false {
+            metadataPageTurnWasCancelled()
+            return
+        }
+        metadataPageTurnDidComplete()
         
         // Case of an image
         if let imageDVC = pageViewController.viewControllers?.first as? ImageDetailViewController {
@@ -646,6 +679,7 @@ extension ImageViewController: UIPageViewControllerDelegate
         setTitleViewFromImageData()
         updateNavBar()
         setEnableStateOfButtons(imageData.fileSize != Int64.zero)
+        updatePhotoArea()
         
         // Determine if the page-turn gesture is in forward or reverse direction
         if let imageDVC = previousViewControllers.first as? ImageDetailViewController {

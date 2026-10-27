@@ -16,6 +16,15 @@ final class VideoDetailViewController: UIViewController
 {
     var userData: UserProperties!
     var indexPath = IndexPath(item: 0, section: 0)
+    private var laidOutSize = CGSize.zero
+    
+    // While the metadata panel shares the screen, the video fills its area, centred,
+    // and is cropped on one axis if needed, as photos are.
+    private var fillsArea = false
+    
+    // Pages kept in memory are resized when they appear again, not the first time
+    /// (the page view controller has not been laid out yet).
+    private var hasAppeared = false
     var imageData: Image! {
         didSet {
             video = imageData.video
@@ -83,7 +92,18 @@ final class VideoDetailViewController: UIViewController
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
+        // A page kept in memory has the size its container had when it last appeared
+        /// and so have the views positioned relative to it, such as the description.
+        if hasAppeared { fitViewToPageContainer() }
+
+        // The metadata panel may have changed the area available to the video
+        let newFillsArea = (parent?.parent as? ImageViewController)?.photoFillsArea ?? false
+        if newFillsArea != fillsArea {
+            fillsArea = newFillsArea
+            updateViewSize(fillsArea: newFillsArea)
+        }
+
         // Initialise video controls delegate
         videoControls.videoControlsDelegate = self
         
@@ -104,6 +124,7 @@ final class VideoDetailViewController: UIViewController
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        hasAppeared = true
         
         // Should this video be also displayed on the external screen?
         self.configExternalVideoViews()
@@ -121,6 +142,7 @@ final class VideoDetailViewController: UIViewController
             }
             
             // Set place holder view frame for this orientation
+            fillsArea = (parent?.parent as? ImageViewController)?.photoFillsArea ?? false
             setPlaceHolderViewFrame()
             
             // Update scale, insets and offsets
@@ -128,6 +150,28 @@ final class VideoDetailViewController: UIViewController
                 configScrollView(withSize: size)
             }
         })
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        // A page kept in memory while the metadata panel moved has the size of its container
+        /// when it appears again: place the video again.
+        if view.bounds.size != laidOutSize {
+            let isFirstLayout = (laidOutSize == .zero)
+            laidOutSize = view.bounds.size
+            if isFirstLayout == false { updateViewSize(fillsArea: fillsArea) }
+        }
+    }
+    
+    /// Called when the area available to the video changes, e.g. when the metadata panel moves
+    /// The view bounds already have their new size.
+    func updateViewSize(fillsArea: Bool) {
+        self.fillsArea = fillsArea
+        setPlaceHolderViewFrame()
+        if let size = video?.frameSize {
+            configScrollView(withSize: size)
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -170,13 +214,15 @@ final class VideoDetailViewController: UIViewController
         // Calc scale for displaying it fullscreen
         let widthScale = view.bounds.size.width / imageSize.width
         let heightScale = view.bounds.size.height / imageSize.height
-        let scale = min(widthScale, heightScale)
+        let scale = fillsArea ? max(widthScale, heightScale) : min(widthScale, heightScale)
         
-        // Center image on screen
+        // Center image on screen (cropped when it fills the area)
         let imageWidth = CGFloat(imageSize.width * scale)
-        let horizontalSpace = max(0, (CGFloat(view.bounds.width) - imageWidth) / 2)
+        let horizontalSpace = fillsArea ? (CGFloat(view.bounds.width) - imageWidth) / 2
+                                        : max(0, (CGFloat(view.bounds.width) - imageWidth) / 2)
         let imageHeight = CGFloat(imageSize.height * scale)
-        let verticalSpace: CGFloat = max(0, (CGFloat(view.bounds.height) - imageHeight) / 2)
+        let verticalSpace: CGFloat = fillsArea ? (CGFloat(view.bounds.height) - imageHeight) / 2
+                                               : max(0, (CGFloat(view.bounds.height) - imageHeight) / 2)
         placeHolderView.frame = CGRect(x: horizontalSpace, y: verticalSpace,
                                        width: imageWidth, height: imageHeight)
     }
@@ -226,7 +272,7 @@ final class VideoDetailViewController: UIViewController
 //        debugPrint("••> configScrollView withSize:\(view.bounds.size), \(videoContainerView.bounds.size), \(size)")
         let widthScale = view.bounds.size.width / size.width
         let heightScale = view.bounds.size.height / size.height
-        let minScale = min(widthScale, heightScale)
+        let minScale = fillsArea ? max(widthScale, heightScale) : min(widthScale, heightScale)
         let maxScale = max(widthScale, heightScale)
         
         // Calc zoom scale change
@@ -265,6 +311,9 @@ final class VideoDetailViewController: UIViewController
         scrollView.contentInset.right = horizontalSpace
         if horizontalSpace > 0 {
             scrollView.contentOffset.x = -horizontalSpace
+        } else if fillsArea, scrollView.zoomScale <= scrollView.minimumZoomScale * 1.001 {
+            // Video wider than its area: keep the middle
+            scrollView.contentOffset.x = (videoWidth - view.bounds.width) / 2
         }
         
         // Center image vertically  in scrollview
@@ -274,6 +323,13 @@ final class VideoDetailViewController: UIViewController
         scrollView.contentInset.bottom = verticalSpace
         if verticalSpace > 0 {
             scrollView.contentOffset.y = -verticalSpace
+        } else if fillsArea, scrollView.zoomScale <= scrollView.minimumZoomScale * 1.001 {
+            // Video taller than its area: keep the middle
+            scrollView.contentOffset.y = (videoHeight - view.bounds.height) / 2
+        }
+        if fillsArea {
+            // Nothing to scroll until the video is zoomed
+            scrollView.isScrollEnabled = scrollView.zoomScale > scrollView.minimumZoomScale * 1.001
         }
         
         //        debugPrint("••> Did updateScrollViewInset: ")

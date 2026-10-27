@@ -52,6 +52,16 @@ extension UIBarButtonItem {
     }
 
     
+    static func infoImageButton(isShown: Bool, target: Any?, action: Selector?) -> UIBarButtonItem {
+        let button = UIBarButtonItem(image: UIImage(systemName: isShown ? "info.circle.fill" : "info.circle"),
+                                     style: .plain, target: target, action: action)
+        button.accessibilityIdentifier = "info"
+        button.accessibilityLabel = String(localized: "imageInfo_title", comment: "Information")
+        button.tintColor = PwgColor.tintColor
+        return button
+    }
+
+    
     // MARK: - Set Album Thumbnail Bar Button Item
     static func setThumbnailButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
         let button = UIBarButtonItem(image: UIImage(systemName: "rectangle.and.paperclip"),
