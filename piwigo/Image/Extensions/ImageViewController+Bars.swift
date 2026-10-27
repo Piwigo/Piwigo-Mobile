@@ -73,6 +73,27 @@ extension ImageViewController {
         return button
     }
     
+    /// The folded iPhone Duo moves the toolbar buttons to a vertical bar beside the status bar,
+    /// which makes the horizontal safe area insets large in portrait.
+    @MainActor
+    var isInVerticalBar: Bool {
+        guard view.layoutTraitCollection.hasCompactWidthRegularHeight else { return false }
+        let insets = view.window?.safeAreaInsets ?? view.safeAreaInsets
+        return insets.left + insets.right > 0
+    }
+    
+    /// Gathers the buttons of a vertical bar, except the share and go-to-page buttons
+    /// which stay apart, separated by a flexible space from the other buttons.
+    @MainActor
+    private func gatheredIfNeeded(_ items: [UIBarButtonItem]) -> [UIBarButtonItem] {
+        isToolbarGathered = isInVerticalBar
+        guard isToolbarGathered else { return items }
+        let buttons = items.filter { $0.action != nil || $0.menu != nil || $0.customView != nil }
+        let leading = buttons.filter { ["share", "goToPage"].contains($0.accessibilityIdentifier) }
+        let trailing = buttons.filter { !leading.contains($0) }
+        return leading.isEmpty || trailing.isEmpty ? buttons : leading + [.space()] + trailing
+    }
+    
     @MainActor @available(iOS 26.0, *)
     private func updateNavBarForAdmin() {
         // Case of users with admin or upload rights
@@ -91,7 +112,7 @@ extension ImageViewController {
             
             // Show toolbar
             isToolbarRequired = true
-            setToolbarItems(toolbarItems, animated: false)
+            setToolbarItems(gatheredIfNeeded(toolbarItems), animated: false)
             let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
             navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
             
@@ -149,7 +170,7 @@ extension ImageViewController {
                 navigationController?.setToolbarHidden(true, animated: true)
             } else {
                 isToolbarRequired = true
-                setToolbarItems(toolbarItems, animated: false)
+                setToolbarItems(gatheredIfNeeded(toolbarItems), animated: false)
                 let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
                 navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
             }
@@ -186,7 +207,7 @@ extension ImageViewController {
             
             // Show toolbar
             isToolbarRequired = true
-            setToolbarItems(toolbarItems.compactMap {$0}, animated: false)
+            setToolbarItems(gatheredIfNeeded(toolbarItems.compactMap {$0}), animated: false)
             let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
             navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
             
@@ -220,7 +241,7 @@ extension ImageViewController {
                 navigationController?.setToolbarHidden(true, animated: true)
             } else {
                 isToolbarRequired = true
-                setToolbarItems(toolbarItems, animated: false)
+                setToolbarItems(gatheredIfNeeded(toolbarItems), animated: false)
                 let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
                 navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
             }
