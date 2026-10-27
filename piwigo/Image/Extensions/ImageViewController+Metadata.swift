@@ -100,16 +100,22 @@ extension UIViewController {
 extension ImageViewController {
     /// Photos and videos shot with a device knowing its position
     func metadataCoordinate(of image: Image?) -> CLLocationCoordinate2D? {
-        guard let image = image, image.isPDF == false,
-              image.latitude != 0.0, image.longitude != 0.0
+        guard supportsMetadata(image),
+              let image = image, image.latitude != 0.0, image.longitude != 0.0
         else { return nil }
         let coordinate = CLLocationCoordinate2D(latitude: image.latitude, longitude: image.longitude)
         return CLLocationCoordinate2DIsValid(coordinate) ? coordinate : nil
     }
 
+    /// Metadata are presented for photos and videos, whether they contain any or not
+    func supportsMetadata(_ image: Image?) -> Bool {
+        guard let image = image else { return false }
+        return image.isPDF == false
+    }
+
     @MainActor
     func getInfoBarButton() -> UIBarButtonItem? {
-        guard metadataCoordinate(of: imageData) != nil else { return nil }
+        guard supportsMetadata(imageData) else { return nil }
         return UIBarButtonItem.infoImageButton(isShown: isMetadataShown, target: self,
                                                action: #selector(toggleMetadata))
     }
@@ -151,21 +157,23 @@ extension ImageViewController {
     /// Keeps the panel in line with the photo or video being presented
     @MainActor
     func refreshMetadata() {
-        // iPad: the card follows the photo, and waits while the photo has no location
+        // iPad: the card follows the photo, and waits while the photo has no metadata to present
         if metadataPanel.card != nil {
-            if let coordinate = metadataCoordinate(of: imageData) {
-                metadataPanel.cardViewController?.configure(with: coordinate)
+            if supportsMetadata(imageData) {
+                metadataPanel.cardViewController?.configure(with: metadataCoordinate(of: imageData))
                 setMetadataCardSuspended(false)
+                layoutMetadataCard()
             } else {
                 setMetadataCardSuspended(true)
             }
             return
         }
 
-        // iPhone: close the panel if the location is unknown
+        // iPhone: close the panel if the file has no metadata to present
         guard metadataPanel.state == .half, metadataPanel.animator == nil else { return }
-        if let coordinate = metadataCoordinate(of: imageData) {
-            metadataPanel.viewController?.configure(with: coordinate)
+        if supportsMetadata(imageData) {
+            metadataPanel.viewController?.configure(with: metadataCoordinate(of: imageData))
+            view.setNeedsLayout()
         } else {
             setMetadataState(.closed, animated: true)
         }
@@ -178,11 +186,11 @@ extension ImageViewController {
     @MainActor
     func presentMetadataCard() {
         let panel = metadataPanel
-        guard panel.card == nil, let coordinate = metadataCoordinate(of: imageData) else { return }
+        guard panel.card == nil, supportsMetadata(imageData) else { return }
         
         // Table presenting the metadata, in a card above the photo
-        let metadataVC = ImageMetadataViewController()
-        metadataVC.configure(with: coordinate)
+        let metadataVC = storyboard?.instantiateViewController(withIdentifier: "ImageMetadataViewController") as! ImageMetadataViewController
+        metadataVC.configure(with: metadataCoordinate(of: imageData))
         addChild(metadataVC)
         let card = MetadataCardView(contentView: metadataVC.view)
         card.onClose = { [weak self] in self?.dismissMetadataCard() }
@@ -247,7 +255,7 @@ extension ImageViewController {
         let availableWidth = view.bounds.width - insets.left - insets.right - 2 * margin
         let availableHeight = view.bounds.height - insets.top - insets.bottom - 2 * margin
         let width = min(MetadataCardView.width, availableWidth)
-        let height = min(MetadataCardView.preferredHeight, availableHeight)
+        let height = min(MetadataCardView.preferredHeight(hasLocation: metadataCoordinate(of: imageData) != nil), availableHeight)
         let minX = insets.left + margin
         let maxX = view.bounds.width - insets.right - margin - width
         let minY = insets.top + margin
@@ -329,7 +337,7 @@ extension ImageViewController {
             let width = min(max(size.width * 0.4, 340), 440) + insets.right
             return MetadataGeometry(isSideBySide: true, panelLength: width, containerInset: width)
         }
-        let content = ImageMetadataViewController.preferredContentHeight
+        let content = ImageMetadataViewController.preferredContentHeight(hasLocation: metadataCoordinate(of: imageData) != nil)
         if #available(iOS 26.0, *) {
             let height = min(content + insets.bottom, 0.75 * size.height)
             return MetadataGeometry(isSideBySide: false, panelLength: height, containerInset: height)
@@ -456,7 +464,7 @@ extension ImageViewController {
         }
 
         // Table presenting the metadata
-        let metadataVC = ImageMetadataViewController()
+        let metadataVC = storyboard?.instantiateViewController(withIdentifier: "ImageMetadataViewController") as! ImageMetadataViewController
         panel.viewController = metadataVC
         addChild(metadataVC)
 
@@ -572,7 +580,7 @@ extension ImageViewController {
             animator.finishAnimation(at: .current)
         }
         guard state != panel.state else { return }
-        guard state == .closed || metadataCoordinate(of: imageData) != nil else { return }
+        guard state == .closed || supportsMetadata(imageData) else { return }
 
         let animator = makeMetadataAnimator(to: state)
         if animated {
@@ -678,7 +686,7 @@ extension ImageViewController {
         let panel = metadataPanel
         panel.isPageTurning = true
         guard panel.state == .half, traitCollection.userInterfaceIdiom != .pad,
-              metadataCoordinate(of: imageData(ofPage: pendingPage)) == nil
+              supportsMetadata(imageData(ofPage: pendingPage)) == false
         else { return }
         panel.didCloseForPageTurn = true
         setMetadataState(.closed, animated: true)
@@ -761,7 +769,7 @@ extension ImageViewController: UIGestureRecognizerDelegate {
             return true
         } else {
             // A drag up opens the panel
-            guard velocity.y < 0, metadataCoordinate(of: imageData) != nil,
+            guard velocity.y < 0, supportsMetadata(imageData),
                   isCurrentPageZoomed == false
             else { return false }
             return true

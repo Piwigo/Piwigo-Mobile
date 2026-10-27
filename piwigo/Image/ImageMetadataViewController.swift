@@ -27,8 +27,8 @@ final class ImageMetadataViewController: UITableViewController
     static let sectionGap: CGFloat = 16
 
     /// Height of the table content for a default size of text
-    static var preferredContentHeight: CGFloat {
-        return 2 * sectionGap + mapRowHeight + addressRowHeight
+    static func preferredContentHeight(hasLocation: Bool) -> CGFloat {
+        return 2 * sectionGap + (hasLocation ? mapRowHeight + addressRowHeight : 0)
     }
 
 
@@ -43,18 +43,12 @@ final class ImageMetadataViewController: UITableViewController
     private var placeName = ""
     private var streetName = ""
     private var isRequestPending = false
+    private var isMapPending = false                    // Tiles of the map not yet rendered
+    private var mapGeneration = 0
+    private var mapKey: String?
+    private static var renderedMaps = Set<String>()     // Maps rendered once, whose tiles MapKit keeps
     private var locationHash: Int?
     private let locationProvider = LocationProvider()
-
-
-    // MARK: - Initialisation
-    init() {
-        super.init(style: .insetGrouped)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 
 
     // MARK: - View Lifecycle
@@ -62,8 +56,6 @@ final class ImageMetadataViewController: UITableViewController
         super.viewDidLoad()
 
         // Table
-        tableView.register(MapTableViewCell.self, forCellReuseIdentifier: MapTableViewCell.reuseIdentifier)
-        tableView.register(AddressTableViewCell.self, forCellReuseIdentifier: AddressTableViewCell.reuseIdentifier)
         tableView.alwaysBounceVertical = false
         if #available(iOS 26.0, *) {
             // The table sits beside the toolbar: no blur where its content passes under the bars
@@ -127,6 +119,7 @@ final class ImageMetadataViewController: UITableViewController
         streetName = ""
         isRequestPending = false
         locationHash = nil
+        waitForMap(for: coordinate)
         
         // The cells are updated where they are, without animation: reloading them
         /// would create new cells whose size could animate from zero when the location
@@ -135,6 +128,7 @@ final class ImageMetadataViewController: UITableViewController
             if hadLocation, coordinate != nil, isViewLoaded,
                let mapCell = tableView.cellForRow(at: IndexPath(row: Row.map.rawValue, section: 0)) as? MapTableViewCell,
                let coordinate = coordinate {
+                mapCell.onRendered = { [weak self] in self?.mapDidRender() }
                 mapCell.configure(with: coordinate)
                 tableView.reloadRows(at: [IndexPath(row: Row.address.rawValue, section: 0)], with: .none)
             } else {
@@ -165,6 +159,12 @@ final class ImageMetadataViewController: UITableViewController
         } failure: { [weak self] in
             self?.setAddress(placeName: "", streetName: "")
         }
+        
+        // The address cell shows the spinner while the address is retrieved
+        /// A cached address is delivered at once, which leaves nothing pending.
+        if isRequestPending {
+            reloadAddressRow()
+        }
     }
 
     @MainActor
@@ -185,12 +185,43 @@ final class ImageMetadataViewController: UITableViewController
         locationHash = nil
 
         // Update the address cell if visible
+        reloadAddressRow()
+    }
+    
+    /// The spinner of the address cell also covers the rendering of the map.
+    /// A timeout releases it if the map never reports its end (e.g. no network).
+    @MainActor
+    private func waitForMap(for coordinate: CLLocationCoordinate2D?) {
+        // A map already rendered may not report anything again
+        mapGeneration += 1
+        mapKey = coordinate.map { String(format: "%.4f,%.4f", $0.latitude, $0.longitude) }
+        isMapPending = mapKey != nil && Self.renderedMaps.contains(mapKey!) == false
+        guard isMapPending else { return }
+        let generation = mapGeneration
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(nanoseconds: 10_000_000_000)
+            guard let self = self, self.mapGeneration == generation else { return }
+            self.mapDidRender(isRendered: false)
+        }
+    }
+    
+    @MainActor
+    private func mapDidRender(isRendered: Bool = true) {
+        if isRendered, let key = mapKey {
+            Self.renderedMaps.insert(key)
+        }
+        guard isMapPending else { return }
+        isMapPending = false
+        reloadAddressRow()
+    }
+    
+    @MainActor
+    private func reloadAddressRow() {
         let indexPath = IndexPath(row: Row.address.rawValue, section: 0)
-        if tableView.numberOfRows(inSection: 0) > indexPath.row {
-            UIView.performWithoutAnimation {
-                tableView.reloadRows(at: [indexPath], with: .none)
-                tableView.layoutIfNeeded()
-            }
+        guard isViewLoaded, tableView.numberOfRows(inSection: 0) > indexPath.row else { return }
+        UIView.performWithoutAnimation {
+            tableView.reloadRows(at: [indexPath], with: .none)
+            tableView.layoutIfNeeded()
         }
     }
 
@@ -231,6 +262,7 @@ final class ImageMetadataViewController: UITableViewController
         case .map:
             let cell = tableView.dequeueReusableCell(withIdentifier: MapTableViewCell.reuseIdentifier,
                                                      for: indexPath) as! MapTableViewCell
+            cell.onRendered = { [weak self] in self?.mapDidRender() }
             if let coordinate = coordinate {
                 cell.configure(with: coordinate)
             }
@@ -239,9 +271,9 @@ final class ImageMetadataViewController: UITableViewController
             let cell = tableView.dequeueReusableCell(withIdentifier: AddressTableViewCell.reuseIdentifier,
                                                      for: indexPath) as! AddressTableViewCell
             if placeName.isEmpty {
-                cell.configure(title: readableCoordinateString, subtitle: "", isLoading: isRequestPending)
+                cell.configure(title: readableCoordinateString, subtitle: "", isLoading: isRequestPending || isMapPending)
             } else {
-                cell.configure(title: placeName, subtitle: streetName, isLoading: false)
+                cell.configure(title: placeName, subtitle: streetName, isLoading: isMapPending)
             }
             return cell
         }
@@ -323,34 +355,32 @@ final class ImageMetadataViewController: UITableViewController
 
 
 // MARK: - Map Cell
-private final class MapTableViewCell: UITableViewCell
+final class MapTableViewCell: UITableViewCell, MKMapViewDelegate
 {
-    static let reuseIdentifier = "ImageMapCell"
+    static let reuseIdentifier = "MapTableViewCell"
 
-    private let mapView = MKMapView()
+    /// Called when the map has rendered its tiles, or has failed to load them
+    var onRendered: (() -> Void)?
+
+    @IBOutlet weak var mapView: MKMapView!
     private let regionSize: CLLocationDistance = 400    // meters
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override func awakeFromNib() {
+        super.awakeFromNib()
 
         // The table handles touches (scrolling, tap)
-        selectionStyle = .none
         clipsToBounds = true
-        mapView.isUserInteractionEnabled = false
-        mapView.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(mapView)
-        NSLayoutConstraint.activate([
-            mapView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            mapView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            mapView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            mapView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
-        ])
         isAccessibilityElement = true
         accessibilityTraits = .image
+        mapView.delegate = self
     }
 
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    func mapViewDidFinishRenderingMap(_ mapView: MKMapView, fullyRendered: Bool) {
+        onRendered?()
+    }
+
+    func mapViewDidFailLoadingMap(_ mapView: MKMapView, withError error: any Error) {
+        onRendered?()
     }
 
     func configure(with coordinate: CLLocationCoordinate2D) {
@@ -367,49 +397,13 @@ private final class MapTableViewCell: UITableViewCell
 
 
 // MARK: - Address Cell
-private final class AddressTableViewCell: UITableViewCell
+final class AddressTableViewCell: UITableViewCell
 {
-    static let reuseIdentifier = "ImageAddressCell"
+    static let reuseIdentifier = "AddressTableViewCell"
 
-    private let titleLabel = UILabel()
-    private let subtitleLabel = UILabel()
-    private let spinner = UIActivityIndicatorView(style: .medium)
-
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-
-        titleLabel.font = .preferredFont(forTextStyle: .body)
-        titleLabel.adjustsFontForContentSizeCategory = true
-        titleLabel.numberOfLines = 0
-        subtitleLabel.font = .preferredFont(forTextStyle: .subheadline)
-        subtitleLabel.adjustsFontForContentSizeCategory = true
-        subtitleLabel.numberOfLines = 0
-
-        let stack = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel])
-        stack.axis = .vertical
-        stack.spacing = 2
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(stack)
-
-        spinner.translatesAutoresizingMaskIntoConstraints = false
-        spinner.hidesWhenStopped = true
-        contentView.addSubview(spinner)
-
-        let margins = contentView.layoutMarginsGuide
-        NSLayoutConstraint.activate([
-            stack.topAnchor.constraint(equalTo: margins.topAnchor, constant: 8),
-            stack.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: -8),
-            stack.leadingAnchor.constraint(equalTo: margins.leadingAnchor),
-            stack.trailingAnchor.constraint(equalTo: spinner.leadingAnchor, constant: -8),
-            spinner.trailingAnchor.constraint(equalTo: margins.trailingAnchor),
-            spinner.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: ImageMetadataViewController.addressRowHeight)
-        ])
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var subtitleLabel: UILabel!
+    @IBOutlet weak var spinner: UIActivityIndicatorView!
 
     func configure(title: String, subtitle: String, isLoading: Bool) {
         titleLabel.text = title
@@ -443,8 +437,8 @@ final class MetadataCardView: UIView, UIGestureRecognizerDelegate
     static let width: CGFloat = pwgPadSubViewWidth
     static let headerHeight: CGFloat = 56
     static let footerHeight: CGFloat = 24
-    static var preferredHeight: CGFloat {
-        return headerHeight + ImageMetadataViewController.preferredContentHeight + footerHeight
+    static func preferredHeight(hasLocation: Bool) -> CGFloat {
+        return headerHeight + ImageMetadataViewController.preferredContentHeight(hasLocation: hasLocation) + footerHeight
     }
     
     // MARK: - Views
