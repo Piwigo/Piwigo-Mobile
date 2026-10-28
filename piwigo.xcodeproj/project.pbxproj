@@ -91,6 +91,8 @@
 		AD2610260000000000000016 /* MapTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000015 /* MapTableViewCell.swift */; };
 		AD2610260000000000000018 /* AddressTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000017 /* AddressTableViewCell.swift */; };
 		AD261026000000000000001A /* MetadataCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000019 /* MetadataCardView.swift */; };
+		AD261026000000000000001C /* ImageMetadataEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD261026000000000000001B /* ImageMetadataEntry.swift */; };
+		AD261026000000000000001E /* ImageIptc.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD261026000000000000001D /* ImageIptc.swift */; };
 		AD2610260000000000000012 /* ImageExif.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000011 /* ImageExif.swift */; };
 		AD26F0FF2FB8D3B600C86BAC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD26F0FE2FB8D3B600C86BAC /* CoreData.framework */; };
 		AD26F1012FB8D3BD00C86BAC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD26F1002FB8D3BD00C86BAC /* UIKit.framework */; };
@@ -606,6 +608,8 @@
 		AD2610260000000000000015 /* MapTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapTableViewCell.swift; sourceTree = "<group>"; };
 		AD2610260000000000000017 /* AddressTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressTableViewCell.swift; sourceTree = "<group>"; };
 		AD2610260000000000000019 /* MetadataCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataCardView.swift; sourceTree = "<group>"; };
+		AD261026000000000000001B /* ImageMetadataEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMetadataEntry.swift; sourceTree = "<group>"; };
+		AD261026000000000000001D /* ImageIptc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageIptc.swift; sourceTree = "<group>"; };
 		AD2610260000000000000011 /* ImageExif.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageExif.swift; sourceTree = "<group>"; };
 		AD26F0FE2FB8D3B600C86BAC /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/CoreData.framework; sourceTree = DEVELOPER_DIR; };
 		AD26F1002FB8D3BD00C86BAC /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/iOSSupport/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -1551,6 +1555,8 @@
 			isa = PBXGroup;
 			children = (
 				AD2610260000000000000011 /* ImageExif.swift */,
+				AD261026000000000000001D /* ImageIptc.swift */,
+				AD261026000000000000001B /* ImageMetadataEntry.swift */,
 				AD2610260000000000000013 /* MetadataPanel.swift */,
 				AD2610260000000000000015 /* MapTableViewCell.swift */,
 				AD2610260000000000000017 /* AddressTableViewCell.swift */,
@@ -2573,6 +2579,8 @@
 				AD2BEF642D25EA23001FA165 /* UploadQueueViewController+Delegate.swift in Sources */,
 				AD3DB4152773958A00017542 /* ImageDescriptionView.swift in Sources */,
 				AD2610260000000000000012 /* ImageExif.swift in Sources */,
+				AD261026000000000000001E /* ImageIptc.swift in Sources */,
+				AD261026000000000000001C /* ImageMetadataEntry.swift in Sources */,
 				AD261026000000000000001A /* MetadataCardView.swift in Sources */,
 				AD2610260000000000000018 /* AddressTableViewCell.swift in Sources */,
 				AD2610260000000000000016 /* MapTableViewCell.swift in Sources */,

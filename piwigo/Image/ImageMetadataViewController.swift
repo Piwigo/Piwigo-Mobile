@@ -6,7 +6,7 @@
 //  Copyright © 2026 Piwigo.org. All rights reserved.
 //
 //  Table presenting the metadata of a photo or a video: a map centred on the location
-//  where it was taken with the address of this location, and the EXIF metadata of the file.
+//  where it was taken with the address of this location, then the EXIF and IPTC metadata of the file.
 //
 
 import UIKit
@@ -34,16 +34,18 @@ final class ImageMetadataViewController: UITableViewController
 
     /// Height of the cell inviting to show more metadata
     static let moreRowHeight: CGFloat = 39
-    /// Number of EXIF metadata shown before the user asks for more
-    static let exifRowsLimit = 5
+    /// Number of metadata of a section shown before the user asks for more
+    static let metadataRowsLimit = 5
 
-    /// Called when the height of the content changes, e.g. when the EXIF metadata are known
+    /// Called when the height of the content changes, e.g. when the metadata are known
     var onContentChange: (() -> Void)?
 
 
     // MARK: - Sections and Rows
-    private enum Section: Int {
-        case location = 0, exif
+    /// The sections shown depend on the metadata of the file: there is always one,
+    /// the last one telling that the file has no metadata.
+    private enum Section {
+        case location, exif, iptc, empty
     }
     private enum Row: Int, CaseIterable {
         case map = 0, address
@@ -62,28 +64,51 @@ final class ImageMetadataViewController: UITableViewController
     private var locationHash: Int?
     private let locationProvider = LocationProvider()
 
+    // MARK: - EXIF and IPTC
+    /// Metadata of a section: at most a few rows are shown until the user asks for more
+    private struct MetadataList {
+        var entries = [ImageMetadataEntry]()
+        var isExpanded = false
 
-    // MARK: - EXIF
-    private(set) var exif: ImageExif?
-    /// The section is shown once the file has been read: without EXIF metadata, it tells so.
-    private var isExifKnown = false
-    private var isExifExpanded = false
+        var displayedCount: Int {
+            return isExpanded ? entries.count : min(entries.count, ImageMetadataViewController.metadataRowsLimit)
+        }
+        var showsMoreRow: Bool {
+            return isExpanded == false && entries.count > ImageMetadataViewController.metadataRowsLimit
+        }
+        /// A section without metadata tells so in its only row
+        var rowCount: Int {
+            return entries.isEmpty ? 1 : displayedCount + (showsMoreRow ? 1 : 0)
+        }
+    }
+    private var lists: [Section: MetadataList] = [.exif: MetadataList(), .iptc: MetadataList()]
+    private var exifVersion: String?
+    /// The sections are shown once the file has been read: without metadata, they tell so.
+    private var isMetadataKnown = false
     private var heightWhileReading: CGFloat?
     private var measuredHeight: CGFloat = 0
     private var measuredWidth: CGFloat = 0
-    /// ID of the image whose EXIF metadata are presented or being read
-    var exifImageID: Int64?
+    /// ID of the image whose metadata are presented or being read
+    var metadataImageID: Int64?
 
-    private var hasExifSection: Bool {
-        return isExifKnown
+    private func list(of section: Section) -> MetadataList {
+        return lists[section] ?? MetadataList()
     }
-    private var displayedExifCount: Int {
-        guard let count = exif?.entries.count else { return 0 }
-        return isExifExpanded ? count : min(count, Self.exifRowsLimit)
+
+    private var visibleSections: [Section] {
+        var sections = [Section]()
+        if coordinate != nil { sections.append(.location) }
+        if isMetadataKnown {
+            if list(of: .exif).entries.isEmpty == false { sections.append(.exif) }
+            if list(of: .iptc).entries.isEmpty == false { sections.append(.iptc) }
+            if sections.isEmpty { sections.append(.empty) }
+        }
+        return sections
     }
-    private var showsMoreRow: Bool {
-        guard let count = exif?.entries.count else { return false }
-        return isExifExpanded == false && count > Self.exifRowsLimit
+
+    private func section(at index: Int) -> Section? {
+        let sections = visibleSections
+        return sections.indices.contains(index) ? sections[index] : nil
     }
 
 
@@ -151,66 +176,79 @@ final class ImageMetadataViewController: UITableViewController
     }
 
 
-    // MARK: - EXIF Data
-    /// Presents the EXIF metadata of a photo or a video, or tells that the file has none.
+    // MARK: - EXIF and IPTC Data
+    /// Presents the EXIF and IPTC metadata of a photo or a video, or tells that the file has none.
     @MainActor
-    func configure(exif newExif: ImageExif?) {
-        update(exif: (newExif?.entries.isEmpty == false) ? newExif : nil, isKnown: true)
+    func configure(exif: ImageExif?, iptc: ImageIptc?) {
+        update(exif: exif, iptc: iptc, isKnown: true)
     }
 
-    /// Removes the section while the EXIF metadata of the file are not known.
+    /// Removes the sections while the metadata of the file are not known.
     /// The panel keeps its height while they are read, which usually leaves it unchanged
     /// and spares the user a panel and a photo that resize twice.
     @MainActor
-    func clearExif(keepingHeight: Bool = false) {
+    func clearMetadata(keepingHeight: Bool = false) {
         if keepingHeight == false { heightWhileReading = nil }
-        update(exif: nil, isKnown: false)
+        update(exif: nil, iptc: nil, isKnown: false)
     }
 
     @MainActor
-    private func update(exif newExif: ImageExif?, isKnown: Bool) {
-        let hadSection = hasExifSection
-        exif = newExif
-        isExifKnown = isKnown
-        isExifExpanded = false
+    private func update(exif: ImageExif?, iptc: ImageIptc?, isKnown: Bool) {
+        let oldSections = visibleSections
+        lists = [.exif: MetadataList(entries: exif?.entries ?? []),
+                 .iptc: MetadataList(entries: iptc?.entries ?? [])]
+        exifVersion = exif?.version
+        isMetadataKnown = isKnown
         guard isViewLoaded else { return }
 
-        // Only the section changes: the map and the address remain as they are
+        // Only the sections of the metadata change: the map and the address remain as they are
+        let newSections = visibleSections
+        let removed = IndexSet(oldSections.indices.filter { newSections.contains(oldSections[$0]) == false })
+        let inserted = IndexSet(newSections.indices.filter { oldSections.contains(newSections[$0]) == false })
+        let reloaded = IndexSet(oldSections.indices.filter {
+            oldSections[$0] != .location && newSections.contains(oldSections[$0]) })
         UIView.performWithoutAnimation {
             tableView.performBatchUpdates {
-                switch (hadSection, hasExifSection) {
-                case (false, true):
-                    tableView.insertSections([Section.exif.rawValue], with: .none)
-                case (true, false):
-                    tableView.deleteSections([Section.exif.rawValue], with: .none)
-                case (true, true):
-                    tableView.reloadSections([Section.exif.rawValue], with: .none)
-                default:
-                    break
-                }
+                tableView.deleteSections(removed, with: .none)
+                tableView.insertSections(inserted, with: .none)
+                tableView.reloadSections(reloaded, with: .none)
             }
             tableView.layoutIfNeeded()
         }
         onContentChange?()
     }
 
-    /// Shows all the EXIF metadata
+    /// Shows all the metadata of a section
     @MainActor
-    private func expandExif() {
-        guard showsMoreRow, let count = exif?.entries.count else { return }
-        let limit = Self.exifRowsLimit
-        isExifExpanded = true
+    private func expand(_ section: Section) {
+        var list = list(of: section)
+        guard list.showsMoreRow, let index = visibleSections.firstIndex(of: section) else { return }
+        let limit = Self.metadataRowsLimit
+        let count = list.entries.count
+        list.isExpanded = true
+        lists[section] = list
         tableView.performBatchUpdates {
-            tableView.deleteRows(at: [IndexPath(row: limit, section: Section.exif.rawValue)], with: .fade)
-            tableView.insertRows(at: (limit..<count).map { IndexPath(row: $0, section: Section.exif.rawValue) },
+            tableView.deleteRows(at: [IndexPath(row: limit, section: index)], with: .fade)
+            tableView.insertRows(at: (limit..<count).map { IndexPath(row: $0, section: index) },
                                  with: .fade)
         }
         onContentChange?()
     }
 
-    private var exifHeaderContent: (title: String, text: String) {
-        guard let version = exif?.version else { return ("EXIF", "") }
-        return ("EXIF\n", String(format: String(localized: "imageExifHeader_version", comment: "Version %@"), version))
+    private func headerContent(of section: Section) -> (title: String, text: String) {
+        switch section {
+        case .exif, .iptc:
+            // "Version 2.3 • 31 items" or "31 items"
+            var parts = [String]()
+            if section == .exif, let version = exifVersion {
+                parts.append(String(format: String(localized: "imageExifHeader_version", comment: "Version %@"), version))
+            }
+            parts.append(String.localizedStringWithFormat(
+                String(localized: "imageMetadata_itemCount", comment: "%lld items"), list(of: section).entries.count))
+            return (section == .exif ? "EXIF\n" : "IPTC\n", parts.joined(separator: " • "))
+        case .location, .empty:
+            return ("", "")
+        }
     }
 
     /// Height of the whole table, to size the panel presenting it
@@ -220,22 +258,28 @@ final class ImageMetadataViewController: UITableViewController
         /// It is not read from the table, whose properties would be tracked by the layout of the parent:
         /// the panel sizes itself from the table which sizes itself from the panel.
         if measuredHeight > 0 {
-            if isExifKnown {
+            if isMetadataKnown {
                 heightWhileReading = measuredHeight
                 return measuredHeight
             }
             return max(measuredHeight, heightWhileReading ?? 0)
         }
-        
+
         // Estimation otherwise
-        var height = Self.preferredContentHeight(hasLocation: coordinate != nil)
-        if hasExifSection {
-            let header = exifHeaderContent
-            let width = measuredWidth > 0 ? measuredWidth : 375
-            height += TableViewUtilities.heightOfHeader(withTitle: header.title, text: header.text, width: width)
-            height += CGFloat(max(displayedExifCount, 1)) * TableViewUtilities.rowHeight
-            height += showsMoreRow ? Self.moreRowHeight : 0
-            height += Self.sectionGap
+        var height: CGFloat = 0
+        let width = measuredWidth > 0 ? measuredWidth : 375
+        for section in visibleSections {
+            switch section {
+            case .location:
+                height += Self.preferredContentHeight(hasLocation: true)
+            case .empty:
+                height += 2 * Self.sectionGap + TableViewUtilities.rowHeight
+            case .exif, .iptc:
+                let header = headerContent(of: section)
+                height += TableViewUtilities.heightOfHeader(withTitle: header.title, text: header.text, width: width)
+                height += CGFloat(list(of: section).rowCount) * TableViewUtilities.rowHeight
+                height += Self.sectionGap
+            }
         }
         return height
     }
@@ -390,30 +434,35 @@ final class ImageMetadataViewController: UITableViewController
 
     // MARK: - UITableViewDataSource
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return hasExifSection ? 2 : 1
+        return visibleSections.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch Section(rawValue: section) {
-        case .exif:
-            return exif == nil ? 1 : displayedExifCount + (showsMoreRow ? 1 : 0)
+        switch self.section(at: section) {
+        case .exif, .iptc:
+            return list(of: self.section(at: section)!).rowCount
+        case .empty:
+            return 1
+        case .location:
+            return Row.allCases.count
         default:
-            return coordinate == nil ? 0 : Row.allCases.count
+            return 0
         }
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // EXIF metadata
-        if Section(rawValue: indexPath.section) == .exif {
-            if exif == nil || indexPath.row < displayedExifCount {
+        // EXIF and IPTC metadata, or the absence of metadata
+        if let section = section(at: indexPath.section), section != .location {
+            let list = list(of: section)
+            if section == .empty || indexPath.row < list.displayedCount {
                 let identifier = traitCollection.preferredContentSizeCategory < .accessibilityMedium
                     ? "LabelTableViewCell" : "LabelTableViewCell2"
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
-                if let entries = exif?.entries {
-                    cell.configure(with: entries[indexPath.row].name, detail: entries[indexPath.row].value)
-                } else {
+                if section == .empty {
                     cell.configure(with: String(localized: "imageExifNone_message", comment: "No metadata"), detail: "")
+                } else {
+                    cell.configure(with: list.entries[indexPath.row].name, detail: list.entries[indexPath.row].value)
                 }
                 return cell
             }
@@ -448,8 +497,9 @@ final class ImageMetadataViewController: UITableViewController
 
     // MARK: - UITableViewDelegate
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if Section(rawValue: indexPath.section) == .exif {
-            return exif == nil || indexPath.row < displayedExifCount ? UITableView.automaticDimension : Self.moreRowHeight
+        if let section = section(at: indexPath.section), section != .location {
+            return section == .empty || indexPath.row < list(of: section).displayedCount
+                ? UITableView.automaticDimension : Self.moreRowHeight
         }
         switch Row(rawValue: indexPath.row) {
         case .map:
@@ -460,15 +510,16 @@ final class ImageMetadataViewController: UITableViewController
     }
 
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        if Section(rawValue: indexPath.section) == .exif {
-            return exif == nil || indexPath.row < displayedExifCount ? TableViewUtilities.rowHeight : Self.moreRowHeight
+        if let section = section(at: indexPath.section), section != .location {
+            return section == .empty || indexPath.row < list(of: section).displayedCount
+                ? TableViewUtilities.rowHeight : Self.moreRowHeight
         }
         return Row(rawValue: indexPath.row) == .map ? Self.mapRowHeight : Self.addressRowHeight
     }
 
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if Section(rawValue: section) == .exif {
-            let header = exifHeaderContent
+        if let kind = self.section(at: section), kind == .exif || kind == .iptc {
+            let header = headerContent(of: kind)
             return TableViewUtilities.heightOfHeader(withTitle: header.title, text: header.text,
                                                      width: tableView.bounds.width)
         }
@@ -480,8 +531,8 @@ final class ImageMetadataViewController: UITableViewController
     }
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if Section(rawValue: section) == .exif {
-            let header = exifHeaderContent
+        if let kind = self.section(at: section), kind == .exif || kind == .iptc {
+            let header = headerContent(of: kind)
             return TableViewUtilities.viewOfHeader(withTitle: header.title, text: header.text)
         }
         return UIView()
@@ -497,19 +548,28 @@ final class ImageMetadataViewController: UITableViewController
 
     override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         // Only the location and the cell asking for more metadata respond to taps
-        if Section(rawValue: indexPath.section) == .exif {
-            return showsMoreRow && indexPath.row == displayedExifCount
+        switch section(at: indexPath.section) {
+        case .exif?, .iptc?:
+            let list = list(of: section(at: indexPath.section)!)
+            return list.showsMoreRow && indexPath.row == list.displayedCount
+        case .empty?:
+            return false
+        default:
+            return true
         }
-        return true
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        if Section(rawValue: indexPath.section) == .exif {
-            if showsMoreRow, indexPath.row == displayedExifCount { expandExif() }
-            return
+        guard let section = section(at: indexPath.section) else { return }
+        switch section {
+        case .exif, .iptc:
+            if list(of: section).showsMoreRow, indexPath.row == list(of: section).displayedCount { expand(section) }
+        case .location:
+            presentLocationActions()
+        case .empty:
+            break
         }
-        presentLocationActions()
     }
 
 

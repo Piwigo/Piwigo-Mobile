@@ -86,53 +86,93 @@ extension ImageViewController {
         return ImageMetadataViewController.preferredContentHeight(hasLocation: metadataCoordinate(of: imageData) != nil)
     }
 
-    /// Presents the location and the EXIF metadata of the photo or video in the table
+    /// Presents the location, the EXIF and the IPTC metadata of the photo or video in the table
     @MainActor
     func configureMetadata(of metadataVC: ImageMetadataViewController) {
         metadataVC.onContentChange = { [weak self] in self?.metadataContentDidChange() }
         metadataVC.configure(with: metadataCoordinate(of: imageData))
-        loadExif(into: metadataVC)
+        loadMetadata(into: metadataVC)
     }
 
-    /// Reads the EXIF metadata of the files in cache, which keep those of the original
+    /// Reads the EXIF and IPTC metadata of the files in cache, which keep those of the original
     @MainActor
-    private func loadExif(into metadataVC: ImageMetadataViewController) {
+    private func loadMetadata(into metadataVC: ImageMetadataViewController, force: Bool = false) {
         guard supportsMetadata(imageData) else {
-            metadataVC.exifImageID = nil
-            metadataVC.clearExif()
+            metadataVC.metadataImageID = nil
+            metadataVC.clearMetadata()
             return
         }
         let imageID = imageData.pwgID
-        guard metadataVC.exifImageID != imageID else { return }
+        guard force || metadataVC.metadataImageID != imageID else { return }
 
         // Files in cache, from the largest to the smallest
         let urls = pwgImageSize.allCases.sorted { $0.rawValue > $1.rawValue }
             .compactMap { imageData.cacheURL(ofSize: $0) }
             .filter { FileManager.default.fileExists(atPath: $0.path) }
         guard urls.isEmpty == false else {
-            metadataVC.clearExif()
+            /// No file in cache yet: the metadata are looked for again when one arrives
+            metadataVC.metadataImageID = nil
+            metadataVC.clearMetadata()
             return
         }
-        metadataVC.exifImageID = imageID
+        metadataVC.metadataImageID = imageID
 
         // Metadata already read?
-        if let url = urls.first, let cached = ImageExifReader.cachedExif(at: url), let exif = cached {
-            metadataVC.configure(exif: exif)
+        if let cached = Self.cachedMetadata(in: urls) {
+            metadataVC.configure(exif: cached.exif, iptc: cached.iptc)
             return
         }
 
         // Read the files in the background
-        metadataVC.clearExif(keepingHeight: true)
-        Task { [weak metadataVC] in
-            let exif = await Task.detached(priority: .userInitiated) { () -> ImageExif? in
-                for url in urls {
-                    if let exif = ImageExifReader.read(from: url) { return exif }
-                }
-                return nil
-            }.value
-            guard let metadataVC = metadataVC, metadataVC.exifImageID == imageID else { return }
-            metadataVC.configure(exif: exif)
+        if force == false {
+            metadataVC.clearMetadata(keepingHeight: true)
         }
+        Task { [weak metadataVC] in
+            let metadata = await Task.detached(priority: .userInitiated) {
+                Self.readMetadata(in: urls)
+            }.value
+            guard let metadataVC = metadataVC, metadataVC.metadataImageID == imageID else { return }
+            metadataVC.configure(exif: metadata.exif, iptc: metadata.iptc)
+        }
+    }
+
+    /// A file of the image has just been downloaded: it may hold metadata the table does not show yet
+    @MainActor
+    func metadataFilesDidChange(of image: Image?) {
+        guard let image = image, image.pwgID == imageData.pwgID, supportsMetadata(image) else { return }
+        let panel = metadataPanel
+        if let metadataVC = panel.cardViewController {
+            loadMetadata(into: metadataVC, force: true)
+        } else if panel.state == .half, let metadataVC = panel.viewController {
+            loadMetadata(into: metadataVC, force: true)
+        }
+    }
+
+    /// Metadata of the first files containing some, if all the files have already been read
+    private nonisolated static func cachedMetadata(in urls: [URL]) -> (exif: ImageExif?, iptc: ImageIptc?)? {
+        var exif: ImageExif?
+        var iptc: ImageIptc?
+        for url in urls {
+            guard let cachedExif = ImageExifReader.cachedExif(at: url),
+                  let cachedIptc = ImageIptcReader.cachedIptc(at: url)
+            else { return nil }
+            exif = exif ?? cachedExif
+            iptc = iptc ?? cachedIptc
+            if exif != nil, iptc != nil { break }
+        }
+        return (exif, iptc)
+    }
+
+    /// Metadata of the first files containing some
+    private nonisolated static func readMetadata(in urls: [URL]) -> (exif: ImageExif?, iptc: ImageIptc?) {
+        var exif: ImageExif?
+        var iptc: ImageIptc?
+        for url in urls {
+            exif = exif ?? ImageExifReader.read(from: url)
+            iptc = iptc ?? ImageIptcReader.read(from: url)
+            if exif != nil, iptc != nil { break }
+        }
+        return (exif, iptc)
     }
 
     /// The panel or the card follows the height of the table, e.g. when more metadata are shown

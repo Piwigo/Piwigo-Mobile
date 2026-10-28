@@ -206,6 +206,8 @@ final class ImageDetailViewController: UIViewController
                         Task { @MainActor in
                             guard let self else { return }
                             self.downsampleImage(atURL: cachedImageURL)
+                            // The metadata of the file may now be known
+                            (self.parent?.parent as? ImageViewController)?.metadataFilesDidChange(of: self.imageData)
                         }
                     }
                     failure: { _ in }

@@ -197,6 +197,8 @@ final class GifDetailViewController: UIViewController
                             self.progressView.isHidden = true
                             // Replace thumbnail with animated full-resolution image
                             self.startAnimation(withFileAt: cachedImageURL)
+                            // The metadata of the file may now be known
+                            (self.parent?.parent as? ImageViewController)?.metadataFilesDidChange(of: self.imageData)
                         }
                     }
                     failure: { _ in }
