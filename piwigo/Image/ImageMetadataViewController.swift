@@ -87,6 +87,8 @@ final class ImageMetadataViewController: UITableViewController
     private var gpsVersion: String?
     /// The sections are shown once the file has been read: without metadata, they tell so.
     private var isMetadataKnown = false
+    /// The file read is smaller than the original and may have lost its metadata
+    private var noteAboutSize = false
     private var heightWhileReading: CGFloat?
     private var measuredHeight: CGFloat = 0
     private var measuredWidth: CGFloat = 0
@@ -185,8 +187,8 @@ final class ImageMetadataViewController: UITableViewController
     // MARK: - Metadata of the File
     /// Presents the EXIF, GPS, IPTC and WebP metadata of a photo or a video, or tells that the file has none.
     @MainActor
-    func configure(_ metadata: ImageMetadata) {
-        update(metadata, isKnown: true)
+    func configure(_ metadata: ImageMetadata, noteAboutSize: Bool = false) {
+        update(metadata, isKnown: true, noteAboutSize: noteAboutSize)
     }
 
     /// Removes the sections while the metadata of the file are not known.
@@ -195,11 +197,11 @@ final class ImageMetadataViewController: UITableViewController
     @MainActor
     func clearMetadata(keepingHeight: Bool = false) {
         if keepingHeight == false { heightWhileReading = nil }
-        update(ImageMetadata(), isKnown: false)
+        update(ImageMetadata(), isKnown: false, noteAboutSize: false)
     }
 
     @MainActor
-    private func update(_ metadata: ImageMetadata, isKnown: Bool) {
+    private func update(_ metadata: ImageMetadata, isKnown: Bool, noteAboutSize: Bool) {
         let oldSections = visibleSections
         lists = [.exif: MetadataList(entries: metadata.exif?.entries ?? []),
                  .gps: MetadataList(entries: metadata.gps?.entries ?? []),
@@ -208,6 +210,7 @@ final class ImageMetadataViewController: UITableViewController
         exifVersion = metadata.exif?.version
         gpsVersion = metadata.gps?.version
         isMetadataKnown = isKnown
+        self.noteAboutSize = noteAboutSize
         guard isViewLoaded else { return }
 
         // Only the sections of the metadata change: the map and the address remain as they are
@@ -263,6 +266,20 @@ final class ImageMetadataViewController: UITableViewController
         }
     }
 
+    /// Explanation given when a file without metadata is smaller than the original
+    private var sizeNote: String? {
+        guard noteAboutSize else { return nil }
+        return String(localized: "imageMetadata_sizeNote",
+                      comment: "Note that metadata are not available below a certain preview size…")
+    }
+
+    private func footerHeight(of section: Section, width: CGFloat) -> CGFloat {
+        if section == .empty, let note = sizeNote {
+            return TableViewUtilities.heightOfFooter(withText: note, width: width)
+        }
+        return Self.sectionGap
+    }
+
     /// Height of the whole table, to size the panel presenting it
     @MainActor
     var contentHeight: CGFloat {
@@ -285,7 +302,7 @@ final class ImageMetadataViewController: UITableViewController
             case .location:
                 height += Self.preferredContentHeight(hasLocation: true)
             case .empty:
-                height += 2 * Self.sectionGap + TableViewUtilities.rowHeight
+                height += Self.sectionGap + TableViewUtilities.rowHeight + footerHeight(of: .empty, width: width)
             case .exif, .gps, .iptc, .webp:
                 let header = headerContent(of: section)
                 height += TableViewUtilities.heightOfHeader(withTitle: header.title, text: header.text, width: width)
@@ -539,7 +556,8 @@ final class ImageMetadataViewController: UITableViewController
     }
 
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return Self.sectionGap
+        guard let kind = self.section(at: section) else { return Self.sectionGap }
+        return footerHeight(of: kind, width: tableView.bounds.width)
     }
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -551,6 +569,9 @@ final class ImageMetadataViewController: UITableViewController
     }
 
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        if self.section(at: section) == .empty, let note = sizeNote {
+            return TableViewUtilities.viewOfFooter(withText: note)
+        }
         return UIView()
     }
 

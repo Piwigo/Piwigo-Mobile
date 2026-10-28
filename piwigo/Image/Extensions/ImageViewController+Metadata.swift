@@ -149,8 +149,19 @@ extension ImageViewController {
         if metadata.isEmpty, isFileOfPageMissing {
             metadataVC.clearMetadata(keepingHeight: true)
         } else {
-            metadataVC.configure(metadata)
+            metadataVC.configure(metadata, noteAboutSize: metadata.isEmpty && isLargestFileBelowOriginal)
         }
+    }
+
+    /// The largest file in cache is not the original: a file without metadata may have lost them,
+    /// which the table explains below its "No metadata" cell.
+    @MainActor
+    private var isLargestFileBelowOriginal: Bool {
+        guard imageData.hasFullResThumbnail else { return false }
+        let largest = pwgImageSize.allCases.sorted { $0.rawValue > $1.rawValue }.first {
+            imageData.cacheURL(ofSize: $0).map { FileManager.default.fileExists(atPath: $0.path) } ?? false
+        }
+        return largest.map { $0 < .fullRes } ?? false
     }
 
     /// The file the current page shows is not in cache yet
