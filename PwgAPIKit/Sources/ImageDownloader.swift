@@ -206,6 +206,12 @@ public actor ImageDownloader {
     }
     
     
+    /// A download of this image is enqueued or running
+    public func isDownloading(atURL imageURL: URL) -> Bool {
+        return downloads[imageURL] != nil
+    }
+    
+    
     // MARK: - Pause, Cancel Downloads
     public func pauseDownload(atURL imageURL: URL) {
         // Retrieve download instance

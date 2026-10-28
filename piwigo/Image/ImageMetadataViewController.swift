@@ -45,7 +45,7 @@ final class ImageMetadataViewController: UITableViewController
     /// The sections shown depend on the metadata of the file: there is always one,
     /// the last one telling that the file has no metadata.
     private enum Section {
-        case location, exif, gps, iptc, webp, empty
+        case location, exif, gps, iptc, webp, empty, loading
     }
     private enum Row: Int, CaseIterable {
         case map = 0, address
@@ -104,7 +104,10 @@ final class ImageMetadataViewController: UITableViewController
     private var visibleSections: [Section] {
         var sections = [Section]()
         if coordinate != nil { sections.append(.location) }
-        if isMetadataKnown {
+        if isMetadataKnown == false {
+            /// The metadata are being read, or the file holding them is being downloaded
+            sections.append(.loading)
+        } else {
             if list(of: .exif).entries.isEmpty == false { sections.append(.exif) }
             if list(of: .gps).entries.isEmpty == false { sections.append(.gps) }
             if list(of: .iptc).entries.isEmpty == false { sections.append(.iptc) }
@@ -261,7 +264,7 @@ final class ImageMetadataViewController: UITableViewController
             let titles: [Section: String] = [.exif: "Exif", .gps: "GPS", .iptc: "IPTC", .webp: "WebP"]
             let title = titles[section] ?? ""
             return (title + "\n", parts.joined(separator: " • "))
-        case .location, .empty:
+        case .location, .empty, .loading:
             return ("", "")
         }
     }
@@ -303,6 +306,8 @@ final class ImageMetadataViewController: UITableViewController
                 height += Self.preferredContentHeight(hasLocation: true)
             case .empty:
                 height += Self.sectionGap + TableViewUtilities.rowHeight + footerHeight(of: .empty, width: width)
+            case .loading:
+                height += 2 * Self.sectionGap + TableViewUtilities.rowHeight
             case .exif, .gps, .iptc, .webp:
                 let header = headerContent(of: section)
                 height += TableViewUtilities.heightOfHeader(withTitle: header.title, text: header.text, width: width)
@@ -470,7 +475,7 @@ final class ImageMetadataViewController: UITableViewController
         switch self.section(at: section) {
         case .exif, .gps, .iptc, .webp:
             return list(of: self.section(at: section)!).rowCount
-        case .empty:
+        case .empty, .loading:
             return 1
         case .location:
             return Row.allCases.count
@@ -483,13 +488,21 @@ final class ImageMetadataViewController: UITableViewController
         // EXIF and IPTC metadata, or the absence of metadata
         if let section = section(at: indexPath.section), section != .location {
             let list = list(of: section)
-            if section == .empty || indexPath.row < list.displayedCount {
+            if section == .empty || section == .loading || indexPath.row < list.displayedCount {
                 let identifier = traitCollection.preferredContentSizeCategory < .accessibilityMedium
                     ? "LabelTableViewCell" : "LabelTableViewCell2"
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
+                cell.accessoryView = nil
                 if section == .empty {
                     cell.configure(with: String(localized: "imageExifNone_message", comment: "No metadata"), detail: "")
+                } else if section == .loading {
+                    /// The metadata are being read, or the file holding them is being downloaded
+                    cell.configure(with: Localized.loading, detail: "")
+                    let spinner = UIActivityIndicatorView(style: .medium)
+                    spinner.color = PwgColor.rightLabel
+                    spinner.startAnimating()
+                    cell.accessoryView = spinner
                 } else {
                     cell.configure(with: list.entries[indexPath.row].name, detail: list.entries[indexPath.row].value)
                 }
@@ -527,7 +540,7 @@ final class ImageMetadataViewController: UITableViewController
     // MARK: - UITableViewDelegate
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if let section = section(at: indexPath.section), section != .location {
-            return section == .empty || indexPath.row < list(of: section).displayedCount
+            return section == .empty || section == .loading || indexPath.row < list(of: section).displayedCount
                 ? UITableView.automaticDimension : Self.moreRowHeight
         }
         switch Row(rawValue: indexPath.row) {
@@ -540,7 +553,7 @@ final class ImageMetadataViewController: UITableViewController
 
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         if let section = section(at: indexPath.section), section != .location {
-            return section == .empty || indexPath.row < list(of: section).displayedCount
+            return section == .empty || section == .loading || indexPath.row < list(of: section).displayedCount
                 ? TableViewUtilities.rowHeight : Self.moreRowHeight
         }
         return Row(rawValue: indexPath.row) == .map ? Self.mapRowHeight : Self.addressRowHeight
@@ -585,7 +598,7 @@ final class ImageMetadataViewController: UITableViewController
         case .exif?, .gps?, .iptc?, .webp?:
             let list = list(of: section(at: indexPath.section)!)
             return list.showsMoreRow && indexPath.row == list.displayedCount
-        case .empty?:
+        case .empty?, .loading?:
             return false
         default:
             return true
@@ -600,7 +613,7 @@ final class ImageMetadataViewController: UITableViewController
             if list(of: section).showsMoreRow, indexPath.row == list(of: section).displayedCount { expand(section) }
         case .location:
             presentLocationActions()
-        case .empty:
+        case .empty, .loading:
             break
         }
     }

@@ -105,9 +105,14 @@ public final nonisolated class Image: NSManagedObject, Identifiable {
         
         let newMD5 = imageData.md5checksum ?? ""
         if newMD5.isEmpty == false, md5sum != newMD5 {
+            /// A checksum not known yet does not tell that the image changed: the files downloaded
+            /// before the first pwg.images.getInfo, e.g. the file shown by the page, must be kept.
+            let hadChecksum = md5sum.isEmpty == false
             md5sum = newMD5
             // Delete cache files to force a reload
-            self.deleteCachedFiles()
+            if hadChecksum {
+                self.deleteCachedFiles()
+            }
         }
         let newFile = imageData.fileName?.utf8mb4Encoded ?? ""
         if newFile.isEmpty == false {
@@ -198,9 +203,14 @@ public final nonisolated class Image: NSManagedObject, Identifiable {
                                  imageHeight: imageData.fullResHeight ?? 1,
                                  imageURL: NSURL(string: fullResUrl?.absoluteString ?? ""))
         if fullRes == nil || fullRes?.isEqual(newFull) == false {
+            /// A full resolution record without URL, e.g. before the first pwg.images.getInfo,
+            /// does not tell that the image changed: the files in cache must be kept.
+            let hadFullRes = (fullRes?.url?.absoluteString ?? "").isEmpty == false
             fullRes = newFull
             // Delete cached image files (image updated, was probably rotated)
-            deleteCachedFiles()
+            if hadFullRes {
+                deleteCachedFiles()
+            }
         }
         
         // Derivatives

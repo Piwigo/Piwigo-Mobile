@@ -148,6 +148,8 @@ extension ImageViewController {
     private func present(_ metadata: ImageMetadata, in metadataVC: ImageMetadataViewController) {
         if metadata.isEmpty, isFileOfPageMissing {
             metadataVC.clearMetadata(keepingHeight: true)
+            /// The file may have been deleted after the page showed the photo: download it again if needed
+            (pageViewController?.viewControllers?.first as? ImageDetailViewController)?.downloadHighResImageIfMissing()
         } else {
             metadataVC.configure(metadata, noteAboutSize: metadata.isEmpty && isLargestFileBelowOriginal)
         }

@@ -194,25 +194,47 @@ final class ImageDetailViewController: UIViewController
             // Download high-resolution image
             self.imageURL = self.imageData.url(for: previewSize)
             if let imageURL = self.imageURL {
-                Task {
-                    await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, type: .image, atURL: imageURL,
-                                                          fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self = self] fractionCompleted in
-                        Task { @MainActor in
-                            guard let self else { return }
-                            self.updateProgressView(with: fractionCompleted)
-                        }
-                    }
-                    completion: { [weak self = self] cachedImageURL in
-                        Task { @MainActor in
-                            guard let self else { return }
-                            self.downsampleImage(atURL: cachedImageURL)
-                            // The metadata of the file may now be known
-                            (self.parent?.parent as? ImageViewController)?.metadataFilesDidChange(of: self.imageData)
-                        }
-                    }
-                    failure: { _ in }
+                requestHighResImage(at: imageURL)
+            }
+        }
+    }
+    
+    /// Downloads the file of the page again if it has disappeared from the cache,
+    /// e.g. when an update of the image data deleted the cached files after the page showed the photo.
+    @MainActor
+    func downloadHighResImageIfMissing() {
+        guard let fileURL = imageData.cacheURL(ofSize: previewSize),
+              FileManager.default.fileExists(atPath: fileURL.path) == false,
+              let imageURL = imageData.url(for: previewSize)
+        else { return }
+        self.imageURL = imageURL
+        Task {
+            guard await ImageDownloader.shared.isDownloading(atURL: imageURL) == false else { return }
+            requestHighResImage(at: imageURL)
+        }
+    }
+    
+    /// A page asking again for its file replaces its own handlers instead of adding others
+    private func requestHighResImage(at imageURL: URL) {
+        let requester = ObjectIdentifier(self)
+        Task {
+            await ImageDownloader.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, type: .image, atURL: imageURL,
+                                                  fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
+                                                  requestedBy: requester) { [weak self = self] fractionCompleted in
+                Task { @MainActor in
+                    guard let self else { return }
+                    self.updateProgressView(with: fractionCompleted)
                 }
             }
+            completion: { [weak self = self] cachedImageURL in
+                Task { @MainActor in
+                    guard let self else { return }
+                    self.downsampleImage(atURL: cachedImageURL)
+                    // The metadata of the file may now be known
+                    (self.parent?.parent as? ImageViewController)?.metadataFilesDidChange(of: self.imageData)
+                }
+            }
+            failure: { _ in }
         }
     }
     
