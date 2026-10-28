@@ -17,10 +17,11 @@ struct ImageMetadata: Sendable {
     var webp: ImageWebP?
     var nikon: ImageNikon?
     var canon: ImageCanon?
+    var apple: ImageApple?
 
     /// True if the file has no metadata of any kind
     var isEmpty: Bool {
-        return exif == nil && gps == nil && iptc == nil && webp == nil && nikon == nil && canon == nil
+        return exif == nil && gps == nil && iptc == nil && webp == nil && nikon == nil && canon == nil && apple == nil
     }
 
     /// Metadata of the first file containing some: the files of an image keep the metadata of the original.
@@ -31,7 +32,8 @@ struct ImageMetadata: Sendable {
                                          iptc: ImageIptcReader.read(from: url),
                                          webp: ImageWebPReader.read(from: url),
                                          nikon: ImageNikonReader.read(from: url),
-                                         canon: ImageCanonReader.read(from: url))
+                                         canon: ImageCanonReader.read(from: url),
+                                         apple: ImageAppleReader.read(from: url))
             if metadata.isEmpty == false { return metadata }
         }
         return ImageMetadata()
@@ -45,9 +47,11 @@ struct ImageMetadata: Sendable {
                   let iptc = ImageIptcReader.cachedIptc(at: url),
                   let webp = ImageWebPReader.cachedWebP(at: url),
                   let nikon = ImageNikonReader.cachedNikon(at: url),
-                  let canon = ImageCanonReader.cachedCanon(at: url)
+                  let canon = ImageCanonReader.cachedCanon(at: url),
+                  let apple = ImageAppleReader.cachedApple(at: url)
             else { return nil }
-            let metadata = ImageMetadata(exif: exif, gps: gps, iptc: iptc, webp: webp, nikon: nikon, canon: canon)
+            let metadata = ImageMetadata(exif: exif, gps: gps, iptc: iptc, webp: webp, nikon: nikon,
+                                         canon: canon, apple: apple)
             if metadata.isEmpty == false { return metadata }
         }
         return ImageMetadata()
