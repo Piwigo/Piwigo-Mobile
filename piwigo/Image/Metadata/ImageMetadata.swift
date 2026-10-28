@@ -15,10 +15,11 @@ struct ImageMetadata: Sendable {
     var gps: ImageGps?
     var iptc: ImageIptc?
     var webp: ImageWebP?
+    var nikon: ImageNikon?
 
     /// True if the file has no metadata of any kind
     var isEmpty: Bool {
-        return exif == nil && gps == nil && iptc == nil && webp == nil
+        return exif == nil && gps == nil && iptc == nil && webp == nil && nikon == nil
     }
 
     /// Metadata of the first file containing some: the files of an image keep the metadata of the original.
@@ -27,7 +28,8 @@ struct ImageMetadata: Sendable {
             let metadata = ImageMetadata(exif: ImageExifReader.read(from: url),
                                          gps: ImageGpsReader.read(from: url),
                                          iptc: ImageIptcReader.read(from: url),
-                                         webp: ImageWebPReader.read(from: url))
+                                         webp: ImageWebPReader.read(from: url),
+                                         nikon: ImageNikonReader.read(from: url))
             if metadata.isEmpty == false { return metadata }
         }
         return ImageMetadata()
@@ -39,9 +41,10 @@ struct ImageMetadata: Sendable {
             guard let exif = ImageExifReader.cachedExif(at: url),
                   let gps = ImageGpsReader.cachedGps(at: url),
                   let iptc = ImageIptcReader.cachedIptc(at: url),
-                  let webp = ImageWebPReader.cachedWebP(at: url)
+                  let webp = ImageWebPReader.cachedWebP(at: url),
+                  let nikon = ImageNikonReader.cachedNikon(at: url)
             else { return nil }
-            let metadata = ImageMetadata(exif: exif, gps: gps, iptc: iptc, webp: webp)
+            let metadata = ImageMetadata(exif: exif, gps: gps, iptc: iptc, webp: webp, nikon: nikon)
             if metadata.isEmpty == false { return metadata }
         }
         return ImageMetadata()
