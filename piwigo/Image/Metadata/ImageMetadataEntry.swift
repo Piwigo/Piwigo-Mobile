@@ -85,7 +85,7 @@ enum ImageMetadataFormatter
         return Set(strings.keys.filter { $0.hasPrefix("imageExif_") || $0.hasPrefix("imageGps_")
                                          || $0.hasPrefix("imageIptc_") || $0.hasPrefix("imageWebP_")
                                          || $0.hasPrefix("imageNikon_") || $0.hasPrefix("imageCanon_")
-                                         || $0.hasPrefix("imageApple_") })
+                                         || $0.hasPrefix("imageApple_") || $0.hasPrefix("imageProp_") })
     }()
 
     /// "SubjectDistRange" → "Subject Dist Range", "ISOSpeed" → "ISO Speed"
@@ -158,6 +158,11 @@ enum ImageMetadataFormatter
             return ByteCountFormatter.string(fromByteCount: Int64(data.count), countStyle: .file)
         }
         if let array = value as? [Any] {
+            /// Long lists, such as tables of numbers, are not written out
+            if array.count > 16 {
+                return String.localizedStringWithFormat(
+                    String(localized: "imageMetadata_valueCount", comment: "%lld values"), array.count)
+            }
             return array.compactMap { formattedValue(of: $0, forKey: key, scalar: scalar) }
                 .filter { $0.isEmpty == false }.joined(separator: "; ")
         }
