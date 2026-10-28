@@ -638,6 +638,39 @@ final class ImageMetadataViewController: UITableViewController
     }
 
 
+    // MARK: - Copy
+    /// A long press on a row proposes to copy its value
+    override func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath,
+                            point: CGPoint) -> UIContextMenuConfiguration? {
+        guard let text = copyableText(at: indexPath), text.isEmpty == false else { return nil }
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
+            let copy = UIAction(title: String(localized: "imageMetadata_copy", comment: "Copy"),
+                                image: UIImage(systemName: "doc.on.doc")) { _ in
+                UIPasteboard.general.string = text
+            }
+            return UIMenu(children: [copy])
+        }
+    }
+
+    /// Value of a metadata, address of the location or its coordinates
+    private func copyableText(at indexPath: IndexPath) -> String? {
+        guard let section = section(at: indexPath.section) else { return nil }
+        switch section {
+        case .exif, .gps, .iptc, .webp:
+            let entries = list(of: section).entries
+            return entries.indices.contains(indexPath.row) && indexPath.row < list(of: section).displayedCount
+                ? entries[indexPath.row].value : nil
+        case .location:
+            if Row(rawValue: indexPath.row) == .address, placeName.isEmpty == false {
+                return [placeName, streetName].filter { $0.isEmpty == false }.joined(separator: "\n")
+            }
+            return coordinateString
+        case .empty, .loading:
+            return nil
+        }
+    }
+
+
     // MARK: - Location Actions
     /// Proposes to copy the GPS coordinates or to open Apple Maps at the location
     @MainActor
