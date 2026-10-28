@@ -84,7 +84,7 @@ enum ImageMetadataFormatter
         else { return nil }
         return Set(strings.keys.filter { $0.hasPrefix("imageExif_") || $0.hasPrefix("imageGps_")
                                          || $0.hasPrefix("imageIptc_") || $0.hasPrefix("imageWebP_")
-                                         || $0.hasPrefix("imageNikon_") })
+                                         || $0.hasPrefix("imageNikon_") || $0.hasPrefix("imageCanon_") })
     }()
 
     /// "SubjectDistRange" → "Subject Dist Range", "ISOSpeed" → "ISO Speed"

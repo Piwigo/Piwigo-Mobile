@@ -45,7 +45,7 @@ final class ImageMetadataViewController: UITableViewController
     /// The sections shown depend on the metadata of the file: there is always one,
     /// the last one telling that the file has no metadata.
     private enum Section {
-        case location, exif, gps, iptc, webp, nikon, empty, loading
+        case location, exif, gps, iptc, webp, nikon, canon, empty, loading
     }
     private enum Row: Int, CaseIterable {
         case map = 0, address
@@ -83,7 +83,7 @@ final class ImageMetadataViewController: UITableViewController
     }
     private var lists: [Section: MetadataList] = [.exif: MetadataList(), .gps: MetadataList(),
                                                    .iptc: MetadataList(), .webp: MetadataList(),
-                                                   .nikon: MetadataList()]
+                                                   .nikon: MetadataList(), .canon: MetadataList()]
     private var exifVersion: String?
     private var gpsVersion: String?
     /// The sections are shown once the file has been read: without metadata, they tell so.
@@ -114,6 +114,7 @@ final class ImageMetadataViewController: UITableViewController
             if list(of: .iptc).entries.isEmpty == false { sections.append(.iptc) }
             if list(of: .webp).entries.isEmpty == false { sections.append(.webp) }
             if list(of: .nikon).entries.isEmpty == false { sections.append(.nikon) }
+            if list(of: .canon).entries.isEmpty == false { sections.append(.canon) }
             if sections.isEmpty { sections.append(.empty) }
         }
         return sections
@@ -217,7 +218,8 @@ final class ImageMetadataViewController: UITableViewController
                  .gps: MetadataList(entries: metadata.gps?.entries ?? []),
                  .iptc: MetadataList(entries: metadata.iptc?.entries ?? []),
                  .webp: MetadataList(entries: metadata.webp?.entries ?? []),
-                 .nikon: MetadataList(entries: metadata.nikon?.entries ?? [])]
+                 .nikon: MetadataList(entries: metadata.nikon?.entries ?? []),
+                 .canon: MetadataList(entries: metadata.canon?.entries ?? [])]
         exifVersion = metadata.exif?.version
         gpsVersion = metadata.gps?.version
         isMetadataKnown = isKnown
@@ -260,7 +262,7 @@ final class ImageMetadataViewController: UITableViewController
 
     private func headerContent(of section: Section) -> (title: String, text: String) {
         switch section {
-        case .exif, .gps, .iptc, .webp, .nikon:
+        case .exif, .gps, .iptc, .webp, .nikon, .canon:
             // "Version 2.3 • 31 items" or "31 items"
             var parts = [String]()
             let version = section == .exif ? exifVersion : section == .gps ? gpsVersion : nil
@@ -270,7 +272,8 @@ final class ImageMetadataViewController: UITableViewController
             parts.append(String.localizedStringWithFormat(
                 String(localized: "imageMetadata_itemCount", comment: "%lld items"), list(of: section).entries.count))
             let titles: [Section: String] = [.exif: "Exif", .gps: "GPS", .iptc: "IPTC", .webp: "WebP",
-                                             .nikon: String(localized: "imageNikonHeader_title", comment: "Nikon Camera")]
+                                             .nikon: String(localized: "imageNikonHeader_title", comment: "Nikon Camera"),
+                                             .canon: String(localized: "imageCanonHeader_title", comment: "Canon Camera")]
             let title = titles[section] ?? ""
             return (title + "\n", parts.joined(separator: " • "))
         case .location, .empty, .loading:
@@ -301,7 +304,7 @@ final class ImageMetadataViewController: UITableViewController
         guard width > 0, isMetadataKnown, abs(width - widthOfRowLayouts) > 1 else { return }
         widthOfRowLayouts = width
         let sections = IndexSet(visibleSections.indices.filter {
-            [.exif, .gps, .iptc, .webp, .nikon].contains(visibleSections[$0]) })
+            [.exif, .gps, .iptc, .webp, .nikon, .canon].contains(visibleSections[$0]) })
         guard sections.isEmpty == false else { return }
         DispatchQueue.main.async { [weak self] in
             UIView.performWithoutAnimation {
@@ -349,7 +352,7 @@ final class ImageMetadataViewController: UITableViewController
                 height += Self.sectionGap + TableViewUtilities.rowHeight + footerHeight(of: .empty, width: width)
             case .loading:
                 height += 2 * Self.sectionGap + TableViewUtilities.rowHeight
-            case .exif, .gps, .iptc, .webp, .nikon:
+            case .exif, .gps, .iptc, .webp, .nikon, .canon:
                 let header = headerContent(of: section)
                 height += TableViewUtilities.heightOfHeader(withTitle: header.title, text: header.text, width: width)
                 height += CGFloat(list(of: section).rowCount) * TableViewUtilities.rowHeight
@@ -514,7 +517,7 @@ final class ImageMetadataViewController: UITableViewController
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch self.section(at: section) {
-        case .exif, .gps, .iptc, .webp, .nikon:
+        case .exif, .gps, .iptc, .webp, .nikon, .canon:
             return list(of: self.section(at: section)!).rowCount
         case .empty, .loading:
             return 1
@@ -583,7 +586,7 @@ final class ImageMetadataViewController: UITableViewController
 
     // MARK: - UITableViewDelegate
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if let kind = self.section(at: section), kind == .exif || kind == .gps || kind == .iptc || kind == .webp || kind == .nikon {
+        if let kind = self.section(at: section), kind == .exif || kind == .gps || kind == .iptc || kind == .webp || kind == .nikon || kind == .canon {
             let header = headerContent(of: kind)
             return TableViewUtilities.heightOfHeader(withTitle: header.title, text: header.text,
                                                      width: tableView.bounds.width)
@@ -597,7 +600,7 @@ final class ImageMetadataViewController: UITableViewController
     }
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if let kind = self.section(at: section), kind == .exif || kind == .gps || kind == .iptc || kind == .webp || kind == .nikon {
+        if let kind = self.section(at: section), kind == .exif || kind == .gps || kind == .iptc || kind == .webp || kind == .nikon || kind == .canon {
             let header = headerContent(of: kind)
             return TableViewUtilities.viewOfHeader(withTitle: header.title, text: header.text)
         }
@@ -618,7 +621,7 @@ final class ImageMetadataViewController: UITableViewController
     override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         // Only the location and the cell asking for more metadata respond to taps
         switch section(at: indexPath.section) {
-        case .exif?, .gps?, .iptc?, .webp?, .nikon?:
+        case .exif?, .gps?, .iptc?, .webp?, .nikon?, .canon?:
             let list = list(of: section(at: indexPath.section)!)
             return list.showsMoreRow && indexPath.row == list.displayedCount
         case .empty?, .loading?:
@@ -632,7 +635,7 @@ final class ImageMetadataViewController: UITableViewController
         tableView.deselectRow(at: indexPath, animated: true)
         guard let section = section(at: indexPath.section) else { return }
         switch section {
-        case .exif, .gps, .iptc, .webp, .nikon:
+        case .exif, .gps, .iptc, .webp, .nikon, .canon:
             if list(of: section).showsMoreRow, indexPath.row == list(of: section).displayedCount { expand(section) }
         case .location:
             presentLocationActions()
@@ -660,7 +663,7 @@ final class ImageMetadataViewController: UITableViewController
     private func copyableText(at indexPath: IndexPath) -> String? {
         guard let section = section(at: indexPath.section) else { return nil }
         switch section {
-        case .exif, .gps, .iptc, .webp, .nikon:
+        case .exif, .gps, .iptc, .webp, .nikon, .canon:
             let entries = list(of: section).entries
             return entries.indices.contains(indexPath.row) && indexPath.row < list(of: section).displayedCount
                 ? entries[indexPath.row].value : nil
