@@ -45,7 +45,7 @@ final class ImageMetadataViewController: UITableViewController
     /// The sections shown depend on the metadata of the file: there is always one,
     /// the last one telling that the file has no metadata.
     private enum Section {
-        case location, exif, iptc, empty
+        case location, exif, gps, iptc, empty
     }
     private enum Row: Int, CaseIterable {
         case map = 0, address
@@ -81,8 +81,9 @@ final class ImageMetadataViewController: UITableViewController
             return entries.isEmpty ? 1 : displayedCount + (showsMoreRow ? 1 : 0)
         }
     }
-    private var lists: [Section: MetadataList] = [.exif: MetadataList(), .iptc: MetadataList()]
+    private var lists: [Section: MetadataList] = [.exif: MetadataList(), .gps: MetadataList(), .iptc: MetadataList()]
     private var exifVersion: String?
+    private var gpsVersion: String?
     /// The sections are shown once the file has been read: without metadata, they tell so.
     private var isMetadataKnown = false
     private var heightWhileReading: CGFloat?
@@ -100,6 +101,7 @@ final class ImageMetadataViewController: UITableViewController
         if coordinate != nil { sections.append(.location) }
         if isMetadataKnown {
             if list(of: .exif).entries.isEmpty == false { sections.append(.exif) }
+            if list(of: .gps).entries.isEmpty == false { sections.append(.gps) }
             if list(of: .iptc).entries.isEmpty == false { sections.append(.iptc) }
             if sections.isEmpty { sections.append(.empty) }
         }
@@ -176,11 +178,11 @@ final class ImageMetadataViewController: UITableViewController
     }
 
 
-    // MARK: - EXIF and IPTC Data
-    /// Presents the EXIF and IPTC metadata of a photo or a video, or tells that the file has none.
+    // MARK: - EXIF, GPS and IPTC Data
+    /// Presents the EXIF, GPS and IPTC metadata of a photo or a video, or tells that the file has none.
     @MainActor
-    func configure(exif: ImageExif?, iptc: ImageIptc?) {
-        update(exif: exif, iptc: iptc, isKnown: true)
+    func configure(exif: ImageExif?, gps: ImageGps?, iptc: ImageIptc?) {
+        update(exif: exif, gps: gps, iptc: iptc, isKnown: true)
     }
 
     /// Removes the sections while the metadata of the file are not known.
@@ -189,15 +191,17 @@ final class ImageMetadataViewController: UITableViewController
     @MainActor
     func clearMetadata(keepingHeight: Bool = false) {
         if keepingHeight == false { heightWhileReading = nil }
-        update(exif: nil, iptc: nil, isKnown: false)
+        update(exif: nil, gps: nil, iptc: nil, isKnown: false)
     }
 
     @MainActor
-    private func update(exif: ImageExif?, iptc: ImageIptc?, isKnown: Bool) {
+    private func update(exif: ImageExif?, gps: ImageGps?, iptc: ImageIptc?, isKnown: Bool) {
         let oldSections = visibleSections
         lists = [.exif: MetadataList(entries: exif?.entries ?? []),
+                 .gps: MetadataList(entries: gps?.entries ?? []),
                  .iptc: MetadataList(entries: iptc?.entries ?? [])]
         exifVersion = exif?.version
+        gpsVersion = gps?.version
         isMetadataKnown = isKnown
         guard isViewLoaded else { return }
 
@@ -237,15 +241,17 @@ final class ImageMetadataViewController: UITableViewController
 
     private func headerContent(of section: Section) -> (title: String, text: String) {
         switch section {
-        case .exif, .iptc:
+        case .exif, .gps, .iptc:
             // "Version 2.3 • 31 items" or "31 items"
             var parts = [String]()
-            if section == .exif, let version = exifVersion {
+            let version = section == .exif ? exifVersion : section == .gps ? gpsVersion : nil
+            if let version = version {
                 parts.append(String(format: String(localized: "imageExifHeader_version", comment: "Version %@"), version))
             }
             parts.append(String.localizedStringWithFormat(
                 String(localized: "imageMetadata_itemCount", comment: "%lld items"), list(of: section).entries.count))
-            return (section == .exif ? "Exif\n" : "IPTC\n", parts.joined(separator: " • "))
+            let title = section == .exif ? "Exif" : section == .gps ? "GPS" : "IPTC"
+            return (title + "\n", parts.joined(separator: " • "))
         case .location, .empty:
             return ("", "")
         }
@@ -274,7 +280,7 @@ final class ImageMetadataViewController: UITableViewController
                 height += Self.preferredContentHeight(hasLocation: true)
             case .empty:
                 height += 2 * Self.sectionGap + TableViewUtilities.rowHeight
-            case .exif, .iptc:
+            case .exif, .gps, .iptc:
                 let header = headerContent(of: section)
                 height += TableViewUtilities.heightOfHeader(withTitle: header.title, text: header.text, width: width)
                 height += CGFloat(list(of: section).rowCount) * TableViewUtilities.rowHeight
@@ -439,7 +445,7 @@ final class ImageMetadataViewController: UITableViewController
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch self.section(at: section) {
-        case .exif, .iptc:
+        case .exif, .gps, .iptc:
             return list(of: self.section(at: section)!).rowCount
         case .empty:
             return 1
@@ -518,7 +524,7 @@ final class ImageMetadataViewController: UITableViewController
     }
 
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if let kind = self.section(at: section), kind == .exif || kind == .iptc {
+        if let kind = self.section(at: section), kind == .exif || kind == .gps || kind == .iptc {
             let header = headerContent(of: kind)
             return TableViewUtilities.heightOfHeader(withTitle: header.title, text: header.text,
                                                      width: tableView.bounds.width)
@@ -531,7 +537,7 @@ final class ImageMetadataViewController: UITableViewController
     }
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if let kind = self.section(at: section), kind == .exif || kind == .iptc {
+        if let kind = self.section(at: section), kind == .exif || kind == .gps || kind == .iptc {
             let header = headerContent(of: kind)
             return TableViewUtilities.viewOfHeader(withTitle: header.title, text: header.text)
         }
@@ -549,7 +555,7 @@ final class ImageMetadataViewController: UITableViewController
     override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         // Only the location and the cell asking for more metadata respond to taps
         switch section(at: indexPath.section) {
-        case .exif?, .iptc?:
+        case .exif?, .gps?, .iptc?:
             let list = list(of: section(at: indexPath.section)!)
             return list.showsMoreRow && indexPath.row == list.displayedCount
         case .empty?:
@@ -563,7 +569,7 @@ final class ImageMetadataViewController: UITableViewController
         tableView.deselectRow(at: indexPath, animated: true)
         guard let section = section(at: indexPath.section) else { return }
         switch section {
-        case .exif, .iptc:
+        case .exif, .gps, .iptc:
             if list(of: section).showsMoreRow, indexPath.row == list(of: section).displayedCount { expand(section) }
         case .location:
             presentLocationActions()

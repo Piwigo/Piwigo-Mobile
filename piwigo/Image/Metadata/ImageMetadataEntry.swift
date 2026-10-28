@@ -82,7 +82,8 @@ enum ImageMetadataFormatter
                                           inDirectory: nil, forLocalization: "en"),
               let strings = NSDictionary(contentsOfFile: path) as? [String: Any]
         else { return nil }
-        return Set(strings.keys.filter { $0.hasPrefix("imageExif_") || $0.hasPrefix("imageIptc_") })
+        return Set(strings.keys.filter { $0.hasPrefix("imageExif_") || $0.hasPrefix("imageGps_")
+                                         || $0.hasPrefix("imageIptc_") })
     }()
 
     /// "SubjectDistRange" → "Subject Dist Range", "ISOSpeed" → "ISO Speed"
@@ -100,6 +101,18 @@ enum ImageMetadataFormatter
             result.append(character)
         }
         return result
+    }
+
+
+    // MARK: Versions
+    /// Version written as digits: [2, 3, 0] → "2.3", [2, 2, 1] → "2.21"
+    static func formattedVersion(_ value: Any) -> String? {
+        guard let digits = (value as? [Any])?.compactMap({ ($0 as? NSNumber)?.intValue }),
+              let major = digits.first
+        else { return nil }
+        var minor = digits.dropFirst().map(String.init).joined()
+        while minor.hasSuffix("0") { minor.removeLast() }
+        return minor.isEmpty ? "\(major)" : "\(major).\(minor)"
     }
 
 

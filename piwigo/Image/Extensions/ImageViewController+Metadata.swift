@@ -86,7 +86,7 @@ extension ImageViewController {
         return ImageMetadataViewController.preferredContentHeight(hasLocation: metadataCoordinate(of: imageData) != nil)
     }
 
-    /// Presents the location, the EXIF and the IPTC metadata of the photo or video in the table
+    /// Presents the location, the EXIF, the GPS and the IPTC metadata of the photo or video in the table
     @MainActor
     func configureMetadata(of metadataVC: ImageMetadataViewController) {
         metadataVC.onContentChange = { [weak self] in self?.metadataContentDidChange() }
@@ -94,7 +94,7 @@ extension ImageViewController {
         loadMetadata(into: metadataVC)
     }
 
-    /// Reads the EXIF and IPTC metadata of the files in cache, which keep those of the original
+    /// Reads the EXIF, GPS and IPTC metadata of the files in cache, which keep those of the original
     @MainActor
     private func loadMetadata(into metadataVC: ImageMetadataViewController, force: Bool = false) {
         guard supportsMetadata(imageData) else {
@@ -119,7 +119,7 @@ extension ImageViewController {
 
         // Metadata already read?
         if let cached = Self.cachedMetadata(in: urls) {
-            metadataVC.configure(exif: cached.exif, iptc: cached.iptc)
+            metadataVC.configure(exif: cached.exif, gps: cached.gps, iptc: cached.iptc)
             return
         }
 
@@ -132,7 +132,7 @@ extension ImageViewController {
                 Self.readMetadata(in: urls)
             }.value
             guard let metadataVC = metadataVC, metadataVC.metadataImageID == imageID else { return }
-            metadataVC.configure(exif: metadata.exif, iptc: metadata.iptc)
+            metadataVC.configure(exif: metadata.exif, gps: metadata.gps, iptc: metadata.iptc)
         }
     }
 
@@ -149,30 +149,35 @@ extension ImageViewController {
     }
 
     /// Metadata of the first files containing some, if all the files have already been read
-    private nonisolated static func cachedMetadata(in urls: [URL]) -> (exif: ImageExif?, iptc: ImageIptc?)? {
+    private nonisolated static func cachedMetadata(in urls: [URL]) -> (exif: ImageExif?, gps: ImageGps?, iptc: ImageIptc?)? {
         var exif: ImageExif?
+        var gps: ImageGps?
         var iptc: ImageIptc?
         for url in urls {
             guard let cachedExif = ImageExifReader.cachedExif(at: url),
+                  let cachedGps = ImageGpsReader.cachedGps(at: url),
                   let cachedIptc = ImageIptcReader.cachedIptc(at: url)
             else { return nil }
             exif = exif ?? cachedExif
+            gps = gps ?? cachedGps
             iptc = iptc ?? cachedIptc
-            if exif != nil, iptc != nil { break }
+            if exif != nil, gps != nil, iptc != nil { break }
         }
-        return (exif, iptc)
+        return (exif, gps, iptc)
     }
 
     /// Metadata of the first files containing some
-    private nonisolated static func readMetadata(in urls: [URL]) -> (exif: ImageExif?, iptc: ImageIptc?) {
+    private nonisolated static func readMetadata(in urls: [URL]) -> (exif: ImageExif?, gps: ImageGps?, iptc: ImageIptc?) {
         var exif: ImageExif?
+        var gps: ImageGps?
         var iptc: ImageIptc?
         for url in urls {
             exif = exif ?? ImageExifReader.read(from: url)
+            gps = gps ?? ImageGpsReader.read(from: url)
             iptc = iptc ?? ImageIptcReader.read(from: url)
-            if exif != nil, iptc != nil { break }
+            if exif != nil, gps != nil, iptc != nil { break }
         }
-        return (exif, iptc)
+        return (exif, gps, iptc)
     }
 
     /// The panel or the card follows the height of the table, e.g. when more metadata are shown

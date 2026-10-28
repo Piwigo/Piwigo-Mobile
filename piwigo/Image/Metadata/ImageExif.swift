@@ -59,7 +59,7 @@ enum ImageExifReader
         guard values.isEmpty == false else { return nil }
 
         // Version of the EXIF standard
-        let version = (values[kCGImagePropertyExifVersion as String]).flatMap { formattedVersion($0) }
+        let version = (values[kCGImagePropertyExifVersion as String]).flatMap { ImageMetadataFormatter.formattedVersion($0) }
 
         // Entries sorted by natural name
         var entries = [ImageMetadataEntry]()
@@ -83,16 +83,6 @@ enum ImageExifReader
 
 
     // MARK: - Values
-    private static func formattedVersion(_ value: Any) -> String? {
-        // [2, 3, 0] → "2.3", [2, 2, 1] → "2.21"
-        guard let digits = (value as? [Any])?.compactMap({ ($0 as? NSNumber)?.intValue }),
-              let major = digits.first
-        else { return nil }
-        var minor = digits.dropFirst().map(String.init).joined()
-        while minor.hasSuffix("0") { minor.removeLast() }
-        return minor.isEmpty ? "\(major)" : "\(major).\(minor)"
-    }
-
     private static let exifDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
