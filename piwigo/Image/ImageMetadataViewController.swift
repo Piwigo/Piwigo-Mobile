@@ -245,7 +245,7 @@ final class ImageMetadataViewController: UITableViewController
             }
             parts.append(String.localizedStringWithFormat(
                 String(localized: "imageMetadata_itemCount", comment: "%lld items"), list(of: section).entries.count))
-            return (section == .exif ? "EXIF\n" : "IPTC\n", parts.joined(separator: " • "))
+            return (section == .exif ? "Exif\n" : "IPTC\n", parts.joined(separator: " • "))
         case .location, .empty:
             return ("", "")
         }
