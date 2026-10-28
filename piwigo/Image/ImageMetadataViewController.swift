@@ -5,8 +5,8 @@
 //  Created by Eddy Lelièvre-Berna on 26/10/2026.
 //  Copyright © 2026 Piwigo.org. All rights reserved.
 //
-//  Table presenting the metadata of a photo or a video: for the time being,
-//  a map centred on the location where it was taken and the address of this location.
+//  Table presenting the metadata of a photo or a video: a map centred on the location
+//  where it was taken with the address of this location, and the EXIF metadata of the file.
 //
 
 import UIKit
@@ -32,7 +32,19 @@ final class ImageMetadataViewController: UITableViewController
     }
 
 
-    // MARK: - Rows
+    /// Height of the cell inviting to show more metadata
+    static let moreRowHeight: CGFloat = 39
+    /// Number of EXIF metadata shown before the user asks for more
+    static let exifRowsLimit = 5
+
+    /// Called when the height of the content changes, e.g. when the EXIF metadata are known
+    var onContentChange: (() -> Void)?
+
+
+    // MARK: - Sections and Rows
+    private enum Section: Int {
+        case location = 0, exif
+    }
     private enum Row: Int, CaseIterable {
         case map = 0, address
     }
@@ -49,6 +61,30 @@ final class ImageMetadataViewController: UITableViewController
     private static var renderedMaps = Set<String>()     // Maps rendered once, whose tiles MapKit keeps
     private var locationHash: Int?
     private let locationProvider = LocationProvider()
+
+
+    // MARK: - EXIF
+    private(set) var exif: ImageExif?
+    /// The section is shown once the file has been read: without EXIF metadata, it tells so.
+    private var isExifKnown = false
+    private var isExifExpanded = false
+    private var heightWhileReading: CGFloat?
+    private var measuredHeight: CGFloat = 0
+    private var measuredWidth: CGFloat = 0
+    /// ID of the image whose EXIF metadata are presented or being read
+    var exifImageID: Int64?
+
+    private var hasExifSection: Bool {
+        return isExifKnown
+    }
+    private var displayedExifCount: Int {
+        guard let count = exif?.entries.count else { return 0 }
+        return isExifExpanded ? count : min(count, Self.exifRowsLimit)
+    }
+    private var showsMoreRow: Bool {
+        guard let count = exif?.entries.count else { return false }
+        return isExifExpanded == false && count > Self.exifRowsLimit
+    }
 
 
     // MARK: - View Lifecycle
@@ -81,6 +117,20 @@ final class ImageMetadataViewController: UITableViewController
         applyColorPalette()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        // Keep the height of the content for the panel or the card presenting the table
+        let height = tableView.contentSize.height
+        let width = tableView.bounds.width
+        guard width > 0, height > 0, abs(height - measuredHeight) > 1 else { return }
+        measuredHeight = height
+        measuredWidth = width
+        DispatchQueue.main.async { [weak self] in
+            self?.onContentChange?()
+        }
+    }
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -98,6 +148,96 @@ final class ImageMetadataViewController: UITableViewController
     @MainActor
     @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
         tableView.reloadData()
+    }
+
+
+    // MARK: - EXIF Data
+    /// Presents the EXIF metadata of a photo or a video, or tells that the file has none.
+    @MainActor
+    func configure(exif newExif: ImageExif?) {
+        update(exif: (newExif?.entries.isEmpty == false) ? newExif : nil, isKnown: true)
+    }
+
+    /// Removes the section while the EXIF metadata of the file are not known.
+    /// The panel keeps its height while they are read, which usually leaves it unchanged
+    /// and spares the user a panel and a photo that resize twice.
+    @MainActor
+    func clearExif(keepingHeight: Bool = false) {
+        if keepingHeight == false { heightWhileReading = nil }
+        update(exif: nil, isKnown: false)
+    }
+
+    @MainActor
+    private func update(exif newExif: ImageExif?, isKnown: Bool) {
+        let hadSection = hasExifSection
+        exif = newExif
+        isExifKnown = isKnown
+        isExifExpanded = false
+        guard isViewLoaded else { return }
+
+        // Only the section changes: the map and the address remain as they are
+        UIView.performWithoutAnimation {
+            tableView.performBatchUpdates {
+                switch (hadSection, hasExifSection) {
+                case (false, true):
+                    tableView.insertSections([Section.exif.rawValue], with: .none)
+                case (true, false):
+                    tableView.deleteSections([Section.exif.rawValue], with: .none)
+                case (true, true):
+                    tableView.reloadSections([Section.exif.rawValue], with: .none)
+                default:
+                    break
+                }
+            }
+            tableView.layoutIfNeeded()
+        }
+        onContentChange?()
+    }
+
+    /// Shows all the EXIF metadata
+    @MainActor
+    private func expandExif() {
+        guard showsMoreRow, let count = exif?.entries.count else { return }
+        let limit = Self.exifRowsLimit
+        isExifExpanded = true
+        tableView.performBatchUpdates {
+            tableView.deleteRows(at: [IndexPath(row: limit, section: Section.exif.rawValue)], with: .fade)
+            tableView.insertRows(at: (limit..<count).map { IndexPath(row: $0, section: Section.exif.rawValue) },
+                                 with: .fade)
+        }
+        onContentChange?()
+    }
+
+    private var exifHeaderContent: (title: String, text: String) {
+        guard let version = exif?.version else { return ("EXIF", "") }
+        return ("EXIF\n", String(format: String(localized: "imageExifHeader_version", comment: "Version %@"), version))
+    }
+
+    /// Height of the whole table, to size the panel presenting it
+    @MainActor
+    var contentHeight: CGFloat {
+        // Height measured once the table has been laid out
+        /// It is not read from the table, whose properties would be tracked by the layout of the parent:
+        /// the panel sizes itself from the table which sizes itself from the panel.
+        if measuredHeight > 0 {
+            if isExifKnown {
+                heightWhileReading = measuredHeight
+                return measuredHeight
+            }
+            return max(measuredHeight, heightWhileReading ?? 0)
+        }
+        
+        // Estimation otherwise
+        var height = Self.preferredContentHeight(hasLocation: coordinate != nil)
+        if hasExifSection {
+            let header = exifHeaderContent
+            let width = measuredWidth > 0 ? measuredWidth : 375
+            height += TableViewUtilities.heightOfHeader(withTitle: header.title, text: header.text, width: width)
+            height += CGFloat(max(displayedExifCount, 1)) * TableViewUtilities.rowHeight
+            height += showsMoreRow ? Self.moreRowHeight : 0
+            height += Self.sectionGap
+        }
+        return height
     }
 
 
@@ -250,14 +390,40 @@ final class ImageMetadataViewController: UITableViewController
 
     // MARK: - UITableViewDataSource
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return hasExifSection ? 2 : 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return coordinate == nil ? 0 : Row.allCases.count
+        switch Section(rawValue: section) {
+        case .exif:
+            return exif == nil ? 1 : displayedExifCount + (showsMoreRow ? 1 : 0)
+        default:
+            return coordinate == nil ? 0 : Row.allCases.count
+        }
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        // EXIF metadata
+        if Section(rawValue: indexPath.section) == .exif {
+            if exif == nil || indexPath.row < displayedExifCount {
+                let identifier = traitCollection.preferredContentSizeCategory < .accessibilityMedium
+                    ? "LabelTableViewCell" : "LabelTableViewCell2"
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
+                if let entries = exif?.entries {
+                    cell.configure(with: entries[indexPath.row].name, detail: entries[indexPath.row].value)
+                } else {
+                    cell.configure(with: String(localized: "imageExifNone_message", comment: "No metadata"), detail: "")
+                }
+                return cell
+            }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocalAlbumsMoreTableViewCell", for: indexPath) as? LocalAlbumsMoreTableViewCell
+            else { preconditionFailure("Could not load LocalAlbumsMoreTableViewCell") }
+            cell.configure()
+            return cell
+        }
+        
+        // Location
         switch Row(rawValue: indexPath.row) {
         case .map:
             let cell = tableView.dequeueReusableCell(withIdentifier: MapTableViewCell.reuseIdentifier,
@@ -282,6 +448,9 @@ final class ImageMetadataViewController: UITableViewController
 
     // MARK: - UITableViewDelegate
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if Section(rawValue: indexPath.section) == .exif {
+            return exif == nil || indexPath.row < displayedExifCount ? UITableView.automaticDimension : Self.moreRowHeight
+        }
         switch Row(rawValue: indexPath.row) {
         case .map:
             return Self.mapRowHeight
@@ -290,7 +459,19 @@ final class ImageMetadataViewController: UITableViewController
         }
     }
 
+    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        if Section(rawValue: indexPath.section) == .exif {
+            return exif == nil || indexPath.row < displayedExifCount ? TableViewUtilities.rowHeight : Self.moreRowHeight
+        }
+        return Row(rawValue: indexPath.row) == .map ? Self.mapRowHeight : Self.addressRowHeight
+    }
+
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if Section(rawValue: section) == .exif {
+            let header = exifHeaderContent
+            return TableViewUtilities.heightOfHeader(withTitle: header.title, text: header.text,
+                                                     width: tableView.bounds.width)
+        }
         return Self.sectionGap
     }
 
@@ -299,6 +480,10 @@ final class ImageMetadataViewController: UITableViewController
     }
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        if Section(rawValue: section) == .exif {
+            let header = exifHeaderContent
+            return TableViewUtilities.viewOfHeader(withTitle: header.title, text: header.text)
+        }
         return UIView()
     }
 
@@ -310,8 +495,20 @@ final class ImageMetadataViewController: UITableViewController
         cell.backgroundColor = PwgColor.cellBackground
     }
 
+    override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        // Only the location and the cell asking for more metadata respond to taps
+        if Section(rawValue: indexPath.section) == .exif {
+            return showsMoreRow && indexPath.row == displayedExifCount
+        }
+        return true
+    }
+
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        if Section(rawValue: indexPath.section) == .exif {
+            if showsMoreRow, indexPath.row == displayedExifCount { expandExif() }
+            return
+        }
         presentLocationActions()
     }
 
@@ -350,219 +547,5 @@ final class ImageMetadataViewController: UITableViewController
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = PwgColor.tintColor
         }
-    }
-}
-
-
-// MARK: - Map Cell
-final class MapTableViewCell: UITableViewCell, MKMapViewDelegate
-{
-    static let reuseIdentifier = "MapTableViewCell"
-
-    /// Called when the map has rendered its tiles, or has failed to load them
-    var onRendered: (() -> Void)?
-
-    @IBOutlet weak var mapView: MKMapView!
-    private let regionSize: CLLocationDistance = 400    // meters
-
-    override func awakeFromNib() {
-        super.awakeFromNib()
-
-        // The table handles touches (scrolling, tap)
-        clipsToBounds = true
-        isAccessibilityElement = true
-        accessibilityTraits = .image
-        mapView.delegate = self
-    }
-
-    func mapViewDidFinishRenderingMap(_ mapView: MKMapView, fullyRendered: Bool) {
-        onRendered?()
-    }
-
-    func mapViewDidFailLoadingMap(_ mapView: MKMapView, withError error: any Error) {
-        onRendered?()
-    }
-
-    func configure(with coordinate: CLLocationCoordinate2D) {
-        mapView.removeAnnotations(mapView.annotations)
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = coordinate
-        mapView.addAnnotation(annotation)
-        mapView.setRegion(MKCoordinateRegion(center: coordinate,
-                                             latitudinalMeters: regionSize,
-                                             longitudinalMeters: regionSize), animated: false)
-        accessibilityLabel = String(localized: "imageLocation_map", comment: "Map")
-    }
-}
-
-
-// MARK: - Address Cell
-final class AddressTableViewCell: UITableViewCell
-{
-    static let reuseIdentifier = "AddressTableViewCell"
-
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var subtitleLabel: UILabel!
-    @IBOutlet weak var spinner: UIActivityIndicatorView!
-
-    func configure(title: String, subtitle: String, isLoading: Bool) {
-        titleLabel.text = title
-        titleLabel.textColor = PwgColor.leftLabel
-        subtitleLabel.text = subtitle
-        subtitleLabel.textColor = PwgColor.rightLabel
-        subtitleLabel.isHidden = subtitle.isEmpty
-        spinner.color = PwgColor.rightLabel
-        if isLoading { spinner.startAnimating() } else { spinner.stopAnimating() }
-    }
-
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        titleLabel.text = nil
-        subtitleLabel.text = nil
-        spinner.stopAnimating()
-    }
-}
-
-
-// MARK: - Floating Card (iPad)
-/// Card floating over the photo, presenting the metadata table below a title and a close button.
-/// The user drags the card by its title or its grabber, and it settles in the nearest corner.
-final class MetadataCardView: UIView, UIGestureRecognizerDelegate
-{
-    enum Corner: CaseIterable {
-        case topLeft, topRight, bottomLeft, bottomRight
-    }
-    
-    // MARK: - Dimensions
-    static let width: CGFloat = pwgPadSubViewWidth
-    static let headerHeight: CGFloat = 56
-    static let footerHeight: CGFloat = 24
-    static func preferredHeight(hasLocation: Bool) -> CGFloat {
-        return headerHeight + ImageMetadataViewController.preferredContentHeight(hasLocation: hasLocation) + footerHeight
-    }
-    
-    // MARK: - Views
-    var onClose: (() -> Void)?
-    let panGesture = UIPanGestureRecognizer()
-    private let effectView = UIVisualEffectView(effect: UIBlurEffect(style: .systemThickMaterial))
-    private let titleLabel = UILabel()
-    private let closeButton = UIButton(type: .system)
-    private let grabber = UIView()
-    
-    // MARK: - Initialisation
-    init(contentView: UIView) {
-        super.init(frame: .zero)
-        
-        // Shadow, around a view clipping its content to rounded corners
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOpacity = 0.25
-        layer.shadowRadius = 20
-        layer.shadowOffset = CGSize(width: 0, height: 8)
-        accessibilityIdentifier = "ImageMetadataCard"
-        
-        effectView.translatesAutoresizingMaskIntoConstraints = false
-        effectView.layer.cornerRadius = 24
-        effectView.layer.cornerCurve = .continuous
-        effectView.clipsToBounds = true
-        addSubview(effectView)
-        NSLayoutConstraint.activate([
-            effectView.topAnchor.constraint(equalTo: topAnchor),
-            effectView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            effectView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            effectView.trailingAnchor.constraint(equalTo: trailingAnchor)
-        ])
-        
-        // Title
-        titleLabel.text = String(localized: "imageInfo_title", comment: "Information")
-        titleLabel.font = .systemFont(ofSize: 28, weight: .semibold)
-        titleLabel.textColor = PwgColor.leftLabel
-        titleLabel.adjustsFontSizeToFitWidth = true
-        titleLabel.minimumScaleFactor = 0.7
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.accessibilityTraits = .header
-        
-        // Close button
-        closeButton.setImage(UIImage(systemName: "xmark",
-                                     withConfiguration: UIImage.SymbolConfiguration(pointSize: 18, weight: .medium)),
-                             for: .normal)
-        closeButton.tintColor = PwgColor.leftLabel
-        closeButton.accessibilityLabel = Localized.dismiss
-        closeButton.accessibilityIdentifier = "closeMetadata"
-        closeButton.addTarget(self, action: #selector(didTapClose), for: .touchUpInside)
-        closeButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        // Grabber
-        grabber.backgroundColor = PwgColor.rightLabel.withAlphaComponent(0.6)
-        grabber.layer.cornerRadius = 2.5
-        grabber.translatesAutoresizingMaskIntoConstraints = false
-        
-        // Table
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        
-        let container = effectView.contentView
-        container.addSubview(contentView)
-        container.addSubview(titleLabel)
-        container.addSubview(closeButton)
-        container.addSubview(grabber)
-        NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 20),
-            titleLabel.trailingAnchor.constraint(equalTo: closeButton.leadingAnchor, constant: -8),
-            titleLabel.centerYAnchor.constraint(equalTo: container.topAnchor, constant: Self.headerHeight / 2 + 4),
-            closeButton.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -12),
-            closeButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
-            closeButton.widthAnchor.constraint(equalToConstant: 44),
-            closeButton.heightAnchor.constraint(equalToConstant: 44),
-            contentView.topAnchor.constraint(equalTo: container.topAnchor, constant: Self.headerHeight),
-            contentView.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -Self.footerHeight),
-            contentView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
-            grabber.centerXAnchor.constraint(equalTo: container.centerXAnchor),
-            grabber.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -10),
-            grabber.widthAnchor.constraint(equalToConstant: 36),
-            grabber.heightAnchor.constraint(equalToConstant: 5)
-        ])
-        
-        // The card is dragged by its title and its grabber, not by the table
-        panGesture.maximumNumberOfTouches = 1
-        panGesture.delegate = self
-        addGestureRecognizer(panGesture)
-        
-        // Colors follow the palette of the app
-        applyColorPalette()
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: Notification.Name.pwgPaletteChanged, object: nil)
-    }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
-    @MainActor
-    @objc func applyColorPalette() {
-        // The palette of the app is independent from the appearance of the system:
-        /// the material, the label colors and the map in the table adopt that of the palette.
-        overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
-        titleLabel.textColor = PwgColor.leftLabel
-        closeButton.tintColor = PwgColor.leftLabel
-        grabber.backgroundColor = PwgColor.rightLabel.withAlphaComponent(0.6)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: 24).cgPath
-    }
-    
-    // MARK: - Actions
-    @objc private func didTapClose() {
-        onClose?()
-    }
-    
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        let y = touch.location(in: self).y
-        return y < Self.headerHeight || y > bounds.height - Self.footerHeight
     }
 }

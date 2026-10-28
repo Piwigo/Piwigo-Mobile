@@ -537,7 +537,9 @@ extension VideoDetailViewController: UIScrollViewDelegate
             // Hide navigation bar, toolbar and description if needed
             if navigationController?.isNavigationBarHidden == false,
                scrollView.zoomScale > scrollView.minimumZoomScale {
-                if let imageVC = parent?.parent as? ImageViewController {
+                /// The metadata panel keeps the bars: a zoom set by the layout must not close it
+                if let imageVC = parent?.parent as? ImageViewController,
+                   imageVC.metadataPanel.isPresented == false {
                     imageVC.didTapOnce()
                 }
             }

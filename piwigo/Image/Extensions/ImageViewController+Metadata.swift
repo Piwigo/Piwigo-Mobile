@@ -18,84 +18,6 @@ import PwgKit
 import PwgCacheKit
 import PwgUIKit
 
-// MARK: - Panel State
-/// The panel moves between states. A state where the table covers the photo
-/// will be added with the sections presenting the metadata.
-enum MetadataPanelState {
-    case closed
-    case half
-}
-
-/// Everything the panel needs to remember
-final class MetadataPanel {
-    var state: MetadataPanelState = .closed
-    var isPresented: Bool { return state != .closed }
-    var animator: UIViewPropertyAnimator?
-    var panGesture: UIPanGestureRecognizer?
-
-    // Views
-    var viewController: ImageMetadataViewController?
-    var panelView: UIView?
-
-    // Layout
-    var isSideBySide = false
-    var portraitConstraints = [NSLayoutConstraint]()
-    var sideConstraints = [NSLayoutConstraint]()
-    var heightConstraint: NSLayoutConstraint?
-    var widthConstraint: NSLayoutConstraint?
-    var containerBottom: NSLayoutConstraint?
-    var containerTrailing: NSLayoutConstraint?
-
-    // Bars hidden by the panel and restored when it closes
-    var navigationBarWasHidden = false
-
-    // Distance covered by a drag between the closed and the open states
-    var travel = CGFloat.zero
-    
-    // State the panel is moving to: the pages are laid out for it
-    var target: MetadataPanelState = .closed
-    
-    // iPad: card floating over the photo
-    static var lastCardCorner = MetadataCardView.Corner.topRight
-    var card: MetadataCardView?
-    var cardViewController: ImageMetadataViewController?
-    var cardCorner: MetadataCardView.Corner {
-        get { return Self.lastCardCorner }
-        set { Self.lastCardCorner = newValue }
-    }
-    var isCardSuspended = false         // Hidden while the photo has no location
-    var isDraggingCard = false
-    var cardDragStart = CGPoint.zero
-    
-    // Page turns
-    var isPageTurning = false
-    var didCloseForPageTurn = false
-    var needsPageCacheReset = false
-}
-
-/// Dimensions of the panel for a given size of the view
-struct MetadataGeometry {
-    let isSideBySide: Bool
-    let panelLength: CGFloat        // Height (portrait) or width (side by side) of the panel
-    let containerInset: CGFloat     // Space taken from the photo container
-}
-
-
-// MARK: - Pages Kept in Memory
-extension UIViewController {
-    /// Gives the view of a page the size of the page view controller presenting it, and lays it out.
-    /// The page view controller only does so once the page is shown.
-    @MainActor
-    func fitViewToPageContainer() {
-        guard let size = (parent as? UIPageViewController)?.view.bounds.size,
-              size != .zero, isViewLoaded, view.bounds.size != size
-        else { return }
-        view.frame.size = size
-        view.layoutIfNeeded()
-    }
-}
-
-
 // MARK: - Info Button
 extension ImageViewController {
     /// Photos and videos shot with a device knowing its position
@@ -154,13 +76,100 @@ extension ImageViewController {
         }
     }
 
+    /// Height of the table presenting the metadata of the photo or video
+    @MainActor
+    var metadataContentHeight: CGFloat {
+        let panel = metadataPanel
+        if let metadataVC = panel.cardViewController ?? panel.viewController {
+            return metadataVC.contentHeight
+        }
+        return ImageMetadataViewController.preferredContentHeight(hasLocation: metadataCoordinate(of: imageData) != nil)
+    }
+
+    /// Presents the location and the EXIF metadata of the photo or video in the table
+    @MainActor
+    func configureMetadata(of metadataVC: ImageMetadataViewController) {
+        metadataVC.onContentChange = { [weak self] in self?.metadataContentDidChange() }
+        metadataVC.configure(with: metadataCoordinate(of: imageData))
+        loadExif(into: metadataVC)
+    }
+
+    /// Reads the EXIF metadata of the files in cache, which keep those of the original
+    @MainActor
+    private func loadExif(into metadataVC: ImageMetadataViewController) {
+        guard supportsMetadata(imageData) else {
+            metadataVC.exifImageID = nil
+            metadataVC.clearExif()
+            return
+        }
+        let imageID = imageData.pwgID
+        guard metadataVC.exifImageID != imageID else { return }
+
+        // Files in cache, from the largest to the smallest
+        let urls = pwgImageSize.allCases.sorted { $0.rawValue > $1.rawValue }
+            .compactMap { imageData.cacheURL(ofSize: $0) }
+            .filter { FileManager.default.fileExists(atPath: $0.path) }
+        guard urls.isEmpty == false else {
+            metadataVC.clearExif()
+            return
+        }
+        metadataVC.exifImageID = imageID
+
+        // Metadata already read?
+        if let url = urls.first, let cached = ImageExifReader.cachedExif(at: url), let exif = cached {
+            metadataVC.configure(exif: exif)
+            return
+        }
+
+        // Read the files in the background
+        metadataVC.clearExif(keepingHeight: true)
+        Task { [weak metadataVC] in
+            let exif = await Task.detached(priority: .userInitiated) { () -> ImageExif? in
+                for url in urls {
+                    if let exif = ImageExifReader.read(from: url) { return exif }
+                }
+                return nil
+            }.value
+            guard let metadataVC = metadataVC, metadataVC.exifImageID == imageID else { return }
+            metadataVC.configure(exif: exif)
+        }
+    }
+
+    /// The panel or the card follows the height of the table, e.g. when more metadata are shown
+    @MainActor
+    func metadataContentDidChange() {
+        let panel = metadataPanel
+        // iPad: only the card changes, the photo and its page are left alone
+        /// A layout of the whole view inside the animation would animate the pages being laid out.
+        if let card = panel.card {
+            UIView.animate(withDuration: 0.3, delay: 0, options: [.beginFromCurrentState, .allowUserInteraction]) {
+                self.layoutMetadataCard()
+                card.layoutIfNeeded()
+            }
+            return
+        }
+        guard panel.state == .half && panel.animator == nil else { return }
+        
+        // iPhone: nothing to animate if the panel keeps its size, e.g. when turning pages
+        let geometry = metadataGeometry(for: view.bounds.size)
+        let current = geometry.isSideBySide ? panel.widthConstraint?.constant : panel.heightConstraint?.constant
+        guard current != geometry.panelLength else { return }
+        
+        // Layouts pending, such as the one of a page just turned, must not be part of the animation
+        view.layoutIfNeeded()
+        UIView.animate(withDuration: 0.3, delay: 0, options: [.beginFromCurrentState, .allowUserInteraction]) {
+            self.updateMetadataLayoutIfNeeded()
+            self.view.layoutIfNeeded()
+        }
+    }
+
     /// Keeps the panel in line with the photo or video being presented
     @MainActor
     func refreshMetadata() {
         // iPad: the card follows the photo, and waits while the photo has no metadata to present
         if metadataPanel.card != nil {
             if supportsMetadata(imageData) {
-                metadataPanel.cardViewController?.configure(with: metadataCoordinate(of: imageData))
+                if let metadataVC = metadataPanel.cardViewController { configureMetadata(of: metadataVC) }
                 setMetadataCardSuspended(false)
                 layoutMetadataCard()
             } else {
@@ -172,7 +181,7 @@ extension ImageViewController {
         // iPhone: close the panel if the file has no metadata to present
         guard metadataPanel.state == .half, metadataPanel.animator == nil else { return }
         if supportsMetadata(imageData) {
-            metadataPanel.viewController?.configure(with: metadataCoordinate(of: imageData))
+            if let metadataVC = metadataPanel.viewController { configureMetadata(of: metadataVC) }
             view.setNeedsLayout()
         } else {
             setMetadataState(.closed, animated: true)
@@ -189,8 +198,9 @@ extension ImageViewController {
         guard panel.card == nil, supportsMetadata(imageData) else { return }
         
         // Table presenting the metadata, in a card above the photo
-        let metadataVC = storyboard?.instantiateViewController(withIdentifier: "ImageMetadataViewController") as! ImageMetadataViewController
-        metadataVC.configure(with: metadataCoordinate(of: imageData))
+        guard let metadataVC = storyboard?.instantiateViewController(withIdentifier: "ImageMetadataViewController") as? ImageMetadataViewController
+        else { preconditionFailure("Could not load ImageMetadataViewController") }
+        configureMetadata(of: metadataVC)
         addChild(metadataVC)
         let card = MetadataCardView(contentView: metadataVC.view)
         card.onClose = { [weak self] in self?.dismissMetadataCard() }
@@ -255,7 +265,7 @@ extension ImageViewController {
         let availableWidth = view.bounds.width - insets.left - insets.right - 2 * margin
         let availableHeight = view.bounds.height - insets.top - insets.bottom - 2 * margin
         let width = min(MetadataCardView.width, availableWidth)
-        let height = min(MetadataCardView.preferredHeight(hasLocation: metadataCoordinate(of: imageData) != nil), availableHeight)
+        let height = min(MetadataCardView.preferredHeight(contentHeight: metadataContentHeight), availableHeight)
         let minX = insets.left + margin
         let maxX = view.bounds.width - insets.right - margin - width
         let minY = insets.top + margin
@@ -325,24 +335,31 @@ extension ImageViewController {
 
 // MARK: - iPhone Panel Geometry
 extension ImageViewController {
-    /// Portrait: the panel takes the bottom of the screen
+    /// Fraction of the screen height kept for the photo in portrait, whatever the height of the table
+    static let minPhotoFraction: CGFloat = 0.4
+
+    /// Portrait: the panel takes the bottom of the screen, up to 60% of its height,
     /// - up to the toolbar before iOS 26, as the toolbar remains visible,
     /// - down to the edge of the screen since iOS 26, where the toolbar floats above it.
-    /// Landscape: the panel takes the right of the screen, which leaves little room
-    /// for the table and makes it scroll.
+    /// Landscape: the panel takes the right half of the screen, the photo the left half.
     @MainActor
     func metadataGeometry(for size: CGSize) -> MetadataGeometry {
         let insets = view.safeAreaInsets
         if size.width > size.height {
-            let width = min(max(size.width * 0.4, 340), 440) + insets.right
+            let width = size.width / 2
             return MetadataGeometry(isSideBySide: true, panelLength: width, containerInset: width)
         }
-        let content = ImageMetadataViewController.preferredContentHeight(hasLocation: metadataCoordinate(of: imageData) != nil)
+        let content = metadataContentHeight
+        /// The unfolded iPhone Duo is tall enough to share its height equally, whatever the content
+        let isDuoUnfolded = traitCollection.userInterfaceIdiom == .phone && traitCollection.hasRegularWidthAndHeight
+        let panelFraction = isDuoUnfolded ? 0.5 : 1 - Self.minPhotoFraction
         if #available(iOS 26.0, *) {
-            let height = min(content + insets.bottom, 0.75 * size.height)
+            let height = isDuoUnfolded ? panelFraction * size.height
+                                       : min(content + insets.bottom, panelFraction * size.height)
             return MetadataGeometry(isSideBySide: false, panelLength: height, containerInset: height)
         } else {
-            let height = min(content, 0.75 * (size.height - insets.bottom))
+            let height = isDuoUnfolded ? panelFraction * size.height - insets.bottom
+                                       : min(content, panelFraction * size.height - insets.bottom)
             return MetadataGeometry(isSideBySide: false, panelLength: height,
                                     containerInset: height + insets.bottom)
         }
@@ -464,7 +481,8 @@ extension ImageViewController {
         }
 
         // Table presenting the metadata
-        let metadataVC = storyboard?.instantiateViewController(withIdentifier: "ImageMetadataViewController") as! ImageMetadataViewController
+        guard let metadataVC = storyboard?.instantiateViewController(withIdentifier: "ImageMetadataViewController") as? ImageMetadataViewController
+        else { preconditionFailure("Could not load ImageMetadataViewController") }
         panel.viewController = metadataVC
         addChild(metadataVC)
 
@@ -522,7 +540,7 @@ extension ImageViewController {
         installMetadataPanel()
         let panel = metadataPanel
         guard let panelView = panel.panelView else { return }
-        panel.viewController?.configure(with: metadataCoordinate(of: imageData))
+        if let metadataVC = panel.viewController { configureMetadata(of: metadataVC) }
 
         // Layout according to the orientation
         setMetadataLayout(sideBySide: view.bounds.width > view.bounds.height)

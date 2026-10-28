@@ -85,6 +85,13 @@
 		AD21EB7D2E54D22A004458D7 /* UIToolbar+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD21EB7C2E54D22A004458D7 /* UIToolbar+AppTools.swift */; };
 		AD21EB7F2E54D349004458D7 /* UISearchBar+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD21EB7E2E54D349004458D7 /* UISearchBar+AppTools.swift */; };
 		AD24011B2BF0BC7D0039B416 /* AlbumViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD24011A2BF0BC7D0039B416 /* AlbumViewData.swift */; };
+		AD2610260000000000000002 /* ImageMetadataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000001 /* ImageMetadataViewController.swift */; };
+		AD2610260000000000000004 /* ImageViewController+Metadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000003 /* ImageViewController+Metadata.swift */; };
+		AD2610260000000000000014 /* MetadataPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000013 /* MetadataPanel.swift */; };
+		AD2610260000000000000016 /* MapTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000015 /* MapTableViewCell.swift */; };
+		AD2610260000000000000018 /* AddressTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000017 /* AddressTableViewCell.swift */; };
+		AD261026000000000000001A /* MetadataCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000019 /* MetadataCardView.swift */; };
+		AD2610260000000000000012 /* ImageExif.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000011 /* ImageExif.swift */; };
 		AD26F0FF2FB8D3B600C86BAC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD26F0FE2FB8D3B600C86BAC /* CoreData.framework */; };
 		AD26F1012FB8D3BD00C86BAC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD26F1002FB8D3BD00C86BAC /* UIKit.framework */; };
 		AD26F1032FB8D3F500C86BAC /* UniformTypeIdentifiers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD26F1022FB8D3F500C86BAC /* UniformTypeIdentifiers.framework */; };
@@ -150,7 +157,6 @@
 		AD3DB4112773957A00017542 /* ImageViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3DB4102773957A00017542 /* ImageViewController.storyboard */; };
 		AD3DB4132773958200017542 /* ImageDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3DB4122773958200017542 /* ImageDetailViewController.swift */; };
 		AD3DB4152773958A00017542 /* ImageDescriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3DB4142773958A00017542 /* ImageDescriptionView.swift */; };
-		AD2610260000000000000002 /* ImageMetadataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000001 /* ImageMetadataViewController.swift */; };
 		AD400B212C61334200DC9A61 /* PasteboardImagesViewController+FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD400B202C61334200DC9A61 /* PasteboardImagesViewController+FlowLayout.swift */; };
 		AD400B232C6137A200DC9A61 /* PasteboardImagesViewController+Select.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD400B222C6137A200DC9A61 /* PasteboardImagesViewController+Select.swift */; };
 		AD41530F27C6D35D00DE01CB /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD41530E27C6D35D00DE01CB /* LoginViewController.swift */; };
@@ -304,7 +310,6 @@
 		ADAF43EF2FAE199700C8085F /* help11.png in Resources */ = {isa = PBXBuildFile; fileRef = ADAF43EE2FAE199700C8085F /* help11.png */; };
 		ADAF43F12FAE1AE400C8085F /* Help11ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAF43F02FAE1AE400C8085F /* Help11ViewController.swift */; };
 		ADB007D72D7B0A5F004A84A7 /* ImageViewController+Bars.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB007D62D7B0A5F004A84A7 /* ImageViewController+Bars.swift */; };
-		AD2610260000000000000004 /* ImageViewController+Metadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000003 /* ImageViewController+Metadata.swift */; };
 		ADB253A930364CCB00154A24 /* ImageViewController+PDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB253A830364CCB00154A24 /* ImageViewController+PDF.swift */; };
 		ADB2E93A2DCBF737000F3F7C /* SeparatorSelectorTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB2E9392DCBF737000F3F7C /* SeparatorSelectorTableViewCell.swift */; };
 		ADB2E9422DD5A864000F3F7C /* TimeFormatSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB2E9412DD5A864000F3F7C /* TimeFormatSelectorViewController.swift */; };
@@ -595,6 +600,13 @@
 		AD21EB7C2E54D22A004458D7 /* UIToolbar+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIToolbar+AppTools.swift"; sourceTree = "<group>"; };
 		AD21EB7E2E54D349004458D7 /* UISearchBar+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UISearchBar+AppTools.swift"; sourceTree = "<group>"; };
 		AD24011A2BF0BC7D0039B416 /* AlbumViewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumViewData.swift; sourceTree = "<group>"; };
+		AD2610260000000000000001 /* ImageMetadataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMetadataViewController.swift; sourceTree = "<group>"; };
+		AD2610260000000000000003 /* ImageViewController+Metadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Metadata.swift"; sourceTree = "<group>"; };
+		AD2610260000000000000013 /* MetadataPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataPanel.swift; sourceTree = "<group>"; };
+		AD2610260000000000000015 /* MapTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapTableViewCell.swift; sourceTree = "<group>"; };
+		AD2610260000000000000017 /* AddressTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressTableViewCell.swift; sourceTree = "<group>"; };
+		AD2610260000000000000019 /* MetadataCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataCardView.swift; sourceTree = "<group>"; };
+		AD2610260000000000000011 /* ImageExif.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageExif.swift; sourceTree = "<group>"; };
 		AD26F0FE2FB8D3B600C86BAC /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/CoreData.framework; sourceTree = DEVELOPER_DIR; };
 		AD26F1002FB8D3BD00C86BAC /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/iOSSupport/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		AD26F1022FB8D3F500C86BAC /* UniformTypeIdentifiers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UniformTypeIdentifiers.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/UniformTypeIdentifiers.framework; sourceTree = DEVELOPER_DIR; };
@@ -670,7 +682,6 @@
 		AD3DB4102773957A00017542 /* ImageViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ImageViewController.storyboard; sourceTree = "<group>"; };
 		AD3DB4122773958200017542 /* ImageDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageDetailViewController.swift; sourceTree = "<group>"; };
 		AD3DB4142773958A00017542 /* ImageDescriptionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageDescriptionView.swift; sourceTree = "<group>"; };
-		AD2610260000000000000001 /* ImageMetadataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageMetadataViewController.swift"; sourceTree = "<group>"; };
 		AD3FDDE91F2E23F700F71C81 /* da */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/About.strings; sourceTree = "<group>"; };
 		AD400B202C61334200DC9A61 /* PasteboardImagesViewController+FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PasteboardImagesViewController+FlowLayout.swift"; sourceTree = "<group>"; };
 		AD400B222C6137A200DC9A61 /* PasteboardImagesViewController+Select.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PasteboardImagesViewController+Select.swift"; sourceTree = "<group>"; };
@@ -857,7 +868,6 @@
 		ADAF64A729B3AEE2005F3501 /* zh-Hant */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/About.strings"; sourceTree = "<group>"; };
 		ADAF64AB29B3AEE2005F3501 /* zh-Hant */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/PrivacyPolicy.strings"; sourceTree = "<group>"; };
 		ADB007D62D7B0A5F004A84A7 /* ImageViewController+Bars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Bars.swift"; sourceTree = "<group>"; };
-		AD2610260000000000000003 /* ImageViewController+Metadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Metadata.swift"; sourceTree = "<group>"; };
 		ADB253A830364CCB00154A24 /* ImageViewController+PDF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+PDF.swift"; sourceTree = "<group>"; };
 		ADB2E9392DCBF737000F3F7C /* SeparatorSelectorTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeparatorSelectorTableViewCell.swift; sourceTree = "<group>"; };
 		ADB2E9412DD5A864000F3F7C /* TimeFormatSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeFormatSelectorViewController.swift; sourceTree = "<group>"; };
@@ -1537,6 +1547,18 @@
 			path = "In-App Intents";
 			sourceTree = "<group>";
 		};
+		ADC7F4B73091E1B50032E277 /* Metadata */ = {
+			isa = PBXGroup;
+			children = (
+				AD2610260000000000000011 /* ImageExif.swift */,
+				AD2610260000000000000013 /* MetadataPanel.swift */,
+				AD2610260000000000000015 /* MapTableViewCell.swift */,
+				AD2610260000000000000017 /* AddressTableViewCell.swift */,
+				AD2610260000000000000019 /* MetadataCardView.swift */,
+			);
+			path = Metadata;
+			sourceTree = "<group>";
+		};
 		ADCCFC3327D5318100E42A6E /* Privacy */ = {
 			isa = PBXGroup;
 			children = (
@@ -1689,6 +1711,7 @@
 				AD6E6C4D2E2C001F00600E5A /* PdfDetailViewController.swift */,
 				ADC1FD9E29E3202500D8ADDC /* PieProgressView.swift */,
 				D818EA031A74D32100733991 /* Extensions */,
+				ADC7F4B73091E1B50032E277 /* Metadata */,
 				AD770FD123B4BD3B007DAD50 /* Parameters */,
 				AD0CC81121EA8A050009FFF6 /* Share */,
 			);
@@ -2549,6 +2572,11 @@
 				AD97CFBD265D1AF800719ED5 /* AlbumVars.swift in Sources */,
 				AD2BEF642D25EA23001FA165 /* UploadQueueViewController+Delegate.swift in Sources */,
 				AD3DB4152773958A00017542 /* ImageDescriptionView.swift in Sources */,
+				AD2610260000000000000012 /* ImageExif.swift in Sources */,
+				AD261026000000000000001A /* MetadataCardView.swift in Sources */,
+				AD2610260000000000000018 /* AddressTableViewCell.swift in Sources */,
+				AD2610260000000000000016 /* MapTableViewCell.swift in Sources */,
+				AD2610260000000000000014 /* MetadataPanel.swift in Sources */,
 				AD2610260000000000000002 /* ImageMetadataViewController.swift in Sources */,
 				ADEA26A2285F9E2400B6C9A0 /* ImageViewController+CopyMove.swift in Sources */,
 				ADDB2A6F2B416FF500FDC1B1 /* EditImageParamsViewController+UITableViewDataSource.swift in Sources */,
