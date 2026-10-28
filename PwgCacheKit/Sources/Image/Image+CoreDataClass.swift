@@ -370,7 +370,30 @@ public final nonisolated class Image: NSManagedObject, Identifiable {
         return self.url(for: thumbnailSize)
     }
     
+    /// Size of the largest file available for this image up to the wanted size.
+    /// The server makes no derivative larger than the original: when the original is smaller
+    /// than the wanted size, the original is the file to use, e.g. for its metadata
+    /// which the smaller derivatives may have lost.
     public func thumbnailSize(ofMaxSize size: pwgImageSize) -> pwgImageSize {
+        // Largest derivative available
+        let availableSize = largestDerivativeSize(upTo: size)
+        guard availableSize < size, size < .fullRes, hasFullResThumbnail,
+              let original = fullRes, let originalURL = original.url,
+              (originalURL.absoluteString ?? "").isEmpty == false
+        else { return availableSize }
+
+        // Does the original fit inside the box of the wanted size?
+        /// Piwigo scales an image down to fit a box of (width, height) pixels but never enlarges it:
+        /// the widths and heights of its default boxes are the maximum and minimum number of points at scale 1.
+        let boxWidth = Int(size.maxPoints(forScale: 1).rounded())
+        let boxHeight = Int(size.minPoints(forScale: 1).rounded())
+        if original.width <= boxWidth, original.height <= boxHeight {
+            return .fullRes
+        }
+        return availableSize
+    }
+
+    private func largestDerivativeSize(upTo size: pwgImageSize) -> pwgImageSize {
         // ATTENTION: Some URLs may not be available!
         /// - Check available image sizes from the smallest to the highest resolution
         /// - assuming that there exists a thumbnail of the smallest size
