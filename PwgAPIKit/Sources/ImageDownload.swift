@@ -19,6 +19,12 @@ final class ImageDownload: @unchecked Sendable {
     let placeHolder: UIImage!
     var task: URLSessionDownloadTask?
     var isCancelled: Bool = false
+    /// The delegate reports the downloaded file and the end of the task in two separate calls
+    /// which may be handled in any order: the handlers are called once both are known.
+    var isStored: Bool = false
+    var isTaskCompleted: Bool = false
+    /// Number of times the completion handlers have been called, to detect repeated calls
+    var completionCount: Int = 0
     var resumeData: Data?
     var progress = Float.zero
 

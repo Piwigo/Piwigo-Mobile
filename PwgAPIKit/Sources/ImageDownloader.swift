@@ -293,22 +293,41 @@ public actor ImageDownloader {
         guard let download = downloads[imageURL],
               let fileURL = download.fileURL
         else {
+            #if DEBUG
+            ImageDownloader.logger.error("DOWNLOAD LOST: no download instance when storing the file of \(imageURL.absoluteString): temporary file deleted")
+            #endif
             try? FileManager.default.removeItem(at: tempFile)
             return
         }
-        storeDownloadedFile(from: tempFile, to: fileURL, forImageURL: imageURL)
+        let isStored = storeDownloadedFile(from: tempFile, to: fileURL, forImageURL: imageURL)
         try? FileManager.default.removeItem(at: tempFile)
-//        #if DEBUG
-//        ImageDownloader.logger.notice("Downloaded file of \(download.fileURL.lastPathComponent) stored in cache")
-//        #endif
+        guard isStored else { return }
+        download.isStored = true
+        #if DEBUG
+        ImageDownloader.logger.notice("Downloaded file of \(fileURL.lastPathComponent) stored in cache (task completed: \(download.isTaskCompleted))")
+        #endif
+
+        // The end of the task may have been reported first
+        if download.isTaskCompleted {
+            completeDownload(download, for: imageURL)
+        }
     }
     
     func completeDownloadIfReady(for imageURL: URL) {
         guard let download = downloads[imageURL]
-        else { return }
-//        #if DEBUG
-//        ImageDownloader.logger.notice("Download of \(download.fileURL.lastPathComponent) completed")
-//        #endif
+        else {
+            #if DEBUG
+            ImageDownloader.logger.error("DOWNLOAD LOST: no download instance at the end of the task for \(imageURL.absoluteString)")
+            #endif
+            return
+        }
+        download.isTaskCompleted = true
+        #if DEBUG
+        ImageDownloader.logger.notice("Task of \(download.fileURL.lastPathComponent) completed (file stored: \(download.isStored))")
+        #endif
+
+        // The handlers are called once the file is in cache, by storeAndComplete() if it is not yet
+        guard download.isStored else { return }
         completeDownload(download, for: imageURL)
     }
     
@@ -330,9 +349,17 @@ public actor ImageDownloader {
     private func completeDownload(_ download: ImageDownload, for imageURL: URL) {
         guard let fileURL = download.fileURL
         else { return }
-//        #if DEBUG
-//        ImageDownloader.logger.notice("Calling \(download.completionHandlers.count) completion handler(s) for \(fileURL.lastPathComponent)")
-//        #endif
+        download.completionCount += 1
+        #if DEBUG
+        let handlersCount = download.completionHandlers.count
+        if download.completionCount > 1 {
+            ImageDownloader.logger.error("COMPLETION HANDLERS CALLED AGAIN (\(download.completionCount) times) for \(fileURL.lastPathComponent)")
+        }
+        ImageDownloader.logger.notice("Calling \(handlersCount) completion handler(s) for \(fileURL.lastPathComponent) (stored: \(download.isStored), task completed: \(download.isTaskCompleted), file size: \(fileURL.fileSize))")
+        if fileURL.fileSize == 0 {
+            ImageDownloader.logger.error("COMPLETION HANDLERS CALLED WITHOUT FILE for \(fileURL.lastPathComponent)")
+        }
+        #endif
         download.completionHandlers.forEach { complete(with: $0, fileURL: fileURL) }
         downloads.removeValue(forKey: imageURL)
 
@@ -355,7 +382,8 @@ public actor ImageDownloader {
         }
     }
 
-    private func storeDownloadedFile(from location: URL, to fileURL: URL, forImageURL imageURL: URL) {
+    @discardableResult
+    private func storeDownloadedFile(from location: URL, to fileURL: URL, forImageURL imageURL: URL) -> Bool {
         do {
             let fm = FileManager.default
             let dirURL = fileURL.deletingLastPathComponent()
@@ -364,9 +392,11 @@ public actor ImageDownloader {
             }
             try? fm.removeItem(at: fileURL)
             try fm.copyItem(at: location, to: fileURL)
+            return true
         }
         catch {
             failDownload(for: imageURL, error: .otherError(innerError: error))
+            return false
         }
     }
     
