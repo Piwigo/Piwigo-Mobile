@@ -6,9 +6,9 @@
 //  Copyright © 2026 Piwigo.org. All rights reserved.
 //
 //  Properties of an image file kept in directories of ImageIO, other than EXIF, GPS, IPTC and the maker
-//  notes of Nikon, Canon and Apple which have their own readers: the maker notes of other cameras
-//  and the properties specific to a format of image. They share their reading, which opens
-//  the file once for all of them, and their presentation.
+//  notes of Nikon, Canon and Apple which have their own readers: the maker notes of other cameras,
+//  the RAW properties and the properties specific to a format of image. They share their reading,
+//  which opens the file once for all of them, and their presentation.
 //
 
 import Foundation
@@ -17,6 +17,7 @@ import ImageIO
 /// A directory of the properties of ImageIO presented in its own section
 enum ImagePropertiesKind: String, CaseIterable, Sendable {
     case minolta, fuji, olympus, pentax, raw
+    case ciff, dng, gif, heics, jfif, png, tga, tiff, photoshop
 
     /// Name of the directory in the properties of ImageIO
     var dictionary: String {
@@ -26,6 +27,15 @@ enum ImagePropertiesKind: String, CaseIterable, Sendable {
         case .olympus:  return kCGImagePropertyMakerOlympusDictionary as String
         case .pentax:   return kCGImagePropertyMakerPentaxDictionary as String
         case .raw:      return kCGImagePropertyRawDictionary as String
+        case .ciff:     return kCGImagePropertyCIFFDictionary as String
+        case .dng:      return kCGImagePropertyDNGDictionary as String
+        case .gif:      return kCGImagePropertyGIFDictionary as String
+        case .heics:    return kCGImagePropertyHEICSDictionary as String
+        case .jfif:     return kCGImagePropertyJFIFDictionary as String
+        case .png:      return kCGImagePropertyPNGDictionary as String
+        case .tga:      return kCGImagePropertyTGADictionary as String
+        case .tiff:     return kCGImagePropertyTIFFDictionary as String
+        case .photoshop: return kCGImageProperty8BIMDictionary as String
         }
     }
 
@@ -33,7 +43,7 @@ enum ImagePropertiesKind: String, CaseIterable, Sendable {
     var isMakerNote: Bool {
         switch self {
         case .minolta, .fuji, .olympus, .pentax:    return true
-        case .raw:                                  return false
+        default:                                    return false
         }
     }
 
@@ -45,7 +55,20 @@ enum ImagePropertiesKind: String, CaseIterable, Sendable {
         case .olympus:  return Self.cameraTitle(of: "Olympus")
         case .pentax:   return Self.cameraTitle(of: "Pentax")
         case .raw:      return "RAW"
+        case .ciff:     return Self.propertiesTitle(of: "CIFF")
+        case .dng:      return Self.propertiesTitle(of: "DNG")
+        case .gif:      return Self.propertiesTitle(of: "GIF")
+        case .heics:    return Self.propertiesTitle(of: "HEIC")
+        case .jfif:     return Self.propertiesTitle(of: "JFIF")
+        case .png:      return Self.propertiesTitle(of: "PNG")
+        case .tga:      return Self.propertiesTitle(of: "TGA")
+        case .tiff:     return Self.propertiesTitle(of: "TIFF")
+        case .photoshop: return Self.propertiesTitle(of: "8BIM")
         }
+    }
+
+    private static func propertiesTitle(of format: String) -> String {
+        return String(format: String(localized: "imageProperties_title", comment: "%@ Properties"), format)
     }
 
     private static func cameraTitle(of brand: String) -> String {
@@ -105,9 +128,21 @@ enum ImagePropertiesReader
 
     private static func entries(of kind: ImagePropertiesKind, from values: [String: Any]) -> ImageProperties? {
         var entries = [ImageMetadataEntry]()
-        for (key, value) in values {
-            guard let text = formattedValue(of: value, forKey: key), text.isEmpty == false else { continue }
+        func add(_ key: String, _ text: String?) {
+            guard let text = text, text.isEmpty == false else { return }
             entries.append(ImageMetadataEntry(key: key, name: naturalName(ofKey: key, kind: kind), value: text))
+        }
+        for (key, value) in values where key != "FrameInfo" {
+            add(key, formattedValue(of: value, forKey: key))
+        }
+
+        // The frames of an animation are summarised by their number and the duration of the animation
+        if let frames = values["FrameInfo"] as? [[String: Any]], frames.isEmpty == false {
+            add("FrameCount", ImageMetadataFormatter.plain(Double(frames.count)))
+            let duration = frames.compactMap { number($0["UnclampedDelayTime"]) }.reduce(0, +)
+            if duration > 0 {
+                add("Duration", ImageMetadataFormatter.fixed(duration, digits: 2) + " s")
+            }
         }
         guard entries.isEmpty == false else { return nil }
 
@@ -127,14 +162,60 @@ enum ImagePropertiesReader
         if kind.isMakerNote, Int(key) != nil {
             return String(format: String(localized: "imageAppleMakerKey_name", comment: "Maker Key %@"), key)
         }
-        return ImageMetadataFormatter.naturalName(ofKey: key, prefix: "imageProp_")
+        return ImageMetadataFormatter.naturalName(ofKey: key, prefixes: namePrefixes)
     }
+
+    /// Names are shared with the other sections when their keys have the same meaning
+    private static let namePrefixes = ["imageProp_", "imageExif_", "imageNikon_", "imageCanon_",
+                                       "imageIptc_", "imageGps_", "imageWebP_"]
 
 
     // MARK: - Values
     /// Text presenting the value of a key
     static func formattedValue(of value: Any, forKey key: String) -> String? {
         typealias Formatter = ImageMetadataFormatter
-        return Formatter.formattedValue(of: value, forKey: key)
+        /// Versions are written as digits: [1, 4, 0, 0] → "1.4"
+        if ["JFIFVersion", "DNGVersion", "DNGBackwardVersion"].contains(key),
+           let version = Formatter.formattedVersion(value) {
+            return version
+        }
+        return Formatter.formattedValue(of: value, forKey: key) { value, key in
+            switch key {
+            case "DelayTime", "UnclampedDelayTime":
+                /// Seconds, written as numbers or as texts
+                return number(value).map { Formatter.fixed($0, digits: 2) + " s" }
+            case "LoopCount":
+                /// 0 loops forever
+                return number(value).map { $0 == 0 ? "∞" : Formatter.plain($0) }
+            case "DateTime":
+                /// Dates are written "2024:01:05 12:34:56"
+                if let text = value as? String, let date = tiffDateFormatter.date(from: text) {
+                    return displayDateFormatter.string(from: date)
+                }
+                return nil
+            default:
+                return nil
+            }
+        }
     }
+
+    private static func number(_ value: Any?) -> Double? {
+        if let number = value as? NSNumber { return number.doubleValue }
+        if let text = value as? String { return Double(text.trimmingCharacters(in: .whitespaces)) }
+        return nil
+    }
+
+    private static let tiffDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy:MM:dd HH:mm:ss"
+        return formatter
+    }()
+
+    private static let displayDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .medium
+        return formatter
+    }()
 }

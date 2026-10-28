@@ -68,12 +68,20 @@ enum ImageMetadataFormatter
     // MARK: Names
     /// Natural name of a key: translated if known, otherwise the key split into words
     static func naturalName(ofKey key: String, prefix: String) -> String {
-        // Keys without translation are not looked up, which the system would report as errors
-        let localizationKey = prefix + key
-        guard translatedKeys?.contains(localizationKey) ?? true else { return humanized(key) }
-        let name = Bundle.main.localizedString(forKey: localizationKey, value: nil, table: nil)
-        // NSShowNonLocalizedStrings returns the key in upper case
-        return name.caseInsensitiveCompare(localizationKey) == .orderedSame ? humanized(key) : name
+        return naturalName(ofKey: key, prefixes: [prefix])
+    }
+
+    /// Natural name of a key translated under one of the prefixes, tried in turn
+    static func naturalName(ofKey key: String, prefixes: [String]) -> String {
+        for prefix in prefixes {
+            // Keys without translation are not looked up, which the system would report as errors
+            let localizationKey = prefix + key
+            guard translatedKeys?.contains(localizationKey) ?? true else { continue }
+            let name = Bundle.main.localizedString(forKey: localizationKey, value: nil, table: nil)
+            // NSShowNonLocalizedStrings returns the key in upper case
+            if name.caseInsensitiveCompare(localizationKey) != .orderedSame { return name }
+        }
+        return humanized(key)
     }
 
     /// Keys of the names translated in the app, read once from its source language
