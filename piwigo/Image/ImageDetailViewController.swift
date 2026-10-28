@@ -51,7 +51,7 @@ final class ImageDetailViewController: UIViewController
     // Cached variables
     private lazy var scale = CGFloat.zero
     private lazy var imageSize = CGSize.zero
-    private lazy var previewSize: pwgImageSize = {
+    lazy var previewSize: pwgImageSize = {
         let defaultSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
         return imageData.thumbnailSize(ofMaxSize: defaultSize)
     }()

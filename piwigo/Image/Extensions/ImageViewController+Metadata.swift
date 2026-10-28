@@ -94,7 +94,7 @@ extension ImageViewController {
         loadMetadata(into: metadataVC)
     }
 
-    /// Reads the EXIF, GPS and IPTC metadata of the files in cache, which keep those of the original
+    /// Reads the EXIF, GPS, IPTC and WebP metadata of the files in cache, which keep those of the original
     @MainActor
     private func loadMetadata(into metadataVC: ImageMetadataViewController, force: Bool = false) {
         guard supportsMetadata(imageData) else {
@@ -116,10 +116,12 @@ extension ImageViewController {
             return
         }
         metadataVC.metadataImageID = imageID
+        metadataVC.metadataLoadNumber += 1
+        let loadNumber = metadataVC.metadataLoadNumber
 
         // Metadata already read?
-        if let cached = Self.cachedMetadata(in: urls) {
-            metadataVC.configure(exif: cached.exif, gps: cached.gps, iptc: cached.iptc)
+        if let cached = ImageMetadata.cached(in: urls) {
+            present(cached, in: metadataVC)
             return
         }
 
@@ -129,11 +131,42 @@ extension ImageViewController {
         }
         Task { [weak metadataVC] in
             let metadata = await Task.detached(priority: .userInitiated) {
-                Self.readMetadata(in: urls)
+                ImageMetadata.read(in: urls)
             }.value
-            guard let metadataVC = metadataVC, metadataVC.metadataImageID == imageID else { return }
-            metadataVC.configure(exif: metadata.exif, gps: metadata.gps, iptc: metadata.iptc)
+            /// Readings overlap, e.g. when a file is downloaded while the previous ones are read:
+            /// a reading started earlier may end later and must not replace the last one.
+            guard let metadataVC = metadataVC, metadataVC.metadataImageID == imageID,
+                  metadataVC.metadataLoadNumber == loadNumber else { return }
+            present(metadata, in: metadataVC)
         }
+    }
+
+    /// The smaller files of an image may have lost their metadata, which only the file shown
+    /// by the page is sure to keep: while that file is being downloaded, a file without metadata
+    /// does not tell that the image has none.
+    @MainActor
+    private func present(_ metadata: ImageMetadata, in metadataVC: ImageMetadataViewController) {
+        if metadata.isEmpty, isFileOfPageMissing {
+            metadataVC.clearMetadata(keepingHeight: true)
+        } else {
+            metadataVC.configure(metadata)
+        }
+    }
+
+    /// The file the current page shows is not in cache yet
+    @MainActor
+    private var isFileOfPageMissing: Bool {
+        let size: pwgImageSize
+        switch pageViewController?.viewControllers?.first {
+        case let page as ImageDetailViewController where page.imageData?.pwgID == imageData.pwgID:
+            size = page.previewSize
+        case let page as GifDetailViewController where page.imageData?.pwgID == imageData.pwgID:
+            size = .fullRes
+        default:
+            return false
+        }
+        guard let url = imageData.cacheURL(ofSize: size) else { return false }
+        return FileManager.default.fileExists(atPath: url.path) == false
     }
 
     /// A file of the image has just been downloaded: it may hold metadata the table does not show yet
@@ -146,38 +179,6 @@ extension ImageViewController {
         } else if panel.state == .half, let metadataVC = panel.viewController {
             loadMetadata(into: metadataVC, force: true)
         }
-    }
-
-    /// Metadata of the first files containing some, if all the files have already been read
-    private nonisolated static func cachedMetadata(in urls: [URL]) -> (exif: ImageExif?, gps: ImageGps?, iptc: ImageIptc?)? {
-        var exif: ImageExif?
-        var gps: ImageGps?
-        var iptc: ImageIptc?
-        for url in urls {
-            guard let cachedExif = ImageExifReader.cachedExif(at: url),
-                  let cachedGps = ImageGpsReader.cachedGps(at: url),
-                  let cachedIptc = ImageIptcReader.cachedIptc(at: url)
-            else { return nil }
-            exif = exif ?? cachedExif
-            gps = gps ?? cachedGps
-            iptc = iptc ?? cachedIptc
-            if exif != nil, gps != nil, iptc != nil { break }
-        }
-        return (exif, gps, iptc)
-    }
-
-    /// Metadata of the first files containing some
-    private nonisolated static func readMetadata(in urls: [URL]) -> (exif: ImageExif?, gps: ImageGps?, iptc: ImageIptc?) {
-        var exif: ImageExif?
-        var gps: ImageGps?
-        var iptc: ImageIptc?
-        for url in urls {
-            exif = exif ?? ImageExifReader.read(from: url)
-            gps = gps ?? ImageGpsReader.read(from: url)
-            iptc = iptc ?? ImageIptcReader.read(from: url)
-            if exif != nil, gps != nil, iptc != nil { break }
-        }
-        return (exif, gps, iptc)
     }
 
     /// The panel or the card follows the height of the table, e.g. when more metadata are shown
