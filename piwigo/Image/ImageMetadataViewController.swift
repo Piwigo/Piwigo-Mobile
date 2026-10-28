@@ -134,7 +134,10 @@ final class ImageMetadataViewController: UITableViewController
             tableView.topEdgeEffect.isHidden = true
             tableView.bottomEdgeEffect.isHidden = true
         }
-        tableView.estimatedRowHeight = Self.addressRowHeight
+        /// The heights of the rows come from the constraints of their cells, as the text wraps
+        /// differently when the table changes of width: the map has a fixed height in the storyboard.
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = TableViewUtilities.rowHeight
         tableView.accessibilityIdentifier = "ImageMetadata"
 
         // Register palette changes
@@ -155,6 +158,8 @@ final class ImageMetadataViewController: UITableViewController
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+
+        updateRowLayoutsIfNeeded()
 
         // Keep the height of the content for the panel or the card presenting the table
         let height = tableView.contentSize.height
@@ -266,6 +271,38 @@ final class ImageMetadataViewController: UITableViewController
             return (title + "\n", parts.joined(separator: " • "))
         case .location, .empty, .loading:
             return ("", "")
+        }
+    }
+
+    /// Width of the table for which the layout of the rows was chosen
+    private var widthOfRowLayouts: CGFloat = 0
+
+    /// Space taken beside the text of a row: margins of the grouped table and of its cells,
+    /// and the minimum space between the title and the value
+    private static let rowSideSpace: CGFloat = 2 * 20 + 2 * 20 + 10
+
+    /// The title and the value of an entry fit on a single line of the table
+    private func fitsOnOneLine(_ entry: ImageMetadataEntry) -> Bool {
+        widthOfRowLayouts = tableView.bounds.width
+        let attributes = [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .body)]
+        let titleWidth = ceil((entry.name as NSString).size(withAttributes: attributes).width)
+        let valueWidth = ceil((entry.value as NSString).size(withAttributes: attributes).width)
+        return titleWidth + valueWidth <= widthOfRowLayouts - Self.rowSideSpace
+    }
+
+    /// The layout of the rows depends on the width of the table, which may not be final
+    /// when the rows are first created: they are created again if it changed.
+    private func updateRowLayoutsIfNeeded() {
+        let width = tableView.bounds.width
+        guard width > 0, isMetadataKnown, abs(width - widthOfRowLayouts) > 1 else { return }
+        widthOfRowLayouts = width
+        let sections = IndexSet(visibleSections.indices.filter {
+            [.exif, .gps, .iptc, .webp].contains(visibleSections[$0]) })
+        guard sections.isEmpty == false else { return }
+        DispatchQueue.main.async { [weak self] in
+            UIView.performWithoutAnimation {
+                self?.tableView.reloadSections(sections, with: .none)
+            }
         }
     }
 
@@ -489,8 +526,11 @@ final class ImageMetadataViewController: UITableViewController
         if let section = section(at: indexPath.section), section != .location {
             let list = list(of: section)
             if section == .empty || section == .loading || indexPath.row < list.displayedCount {
-                let identifier = traitCollection.preferredContentSizeCategory < .accessibilityMedium
-                    ? "LabelTableViewCell" : "LabelTableViewCell2"
+                /// The value goes under the title when both do not fit on one line
+                let isEntry = section != .empty && section != .loading
+                let isStacked = traitCollection.preferredContentSizeCategory >= .accessibilityMedium
+                    || (isEntry && fitsOnOneLine(list.entries[indexPath.row]) == false)
+                let identifier = isStacked ? "LabelTableViewCell2" : "LabelTableViewCell"
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 cell.accessoryView = nil
@@ -538,27 +578,6 @@ final class ImageMetadataViewController: UITableViewController
 
 
     // MARK: - UITableViewDelegate
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if let section = section(at: indexPath.section), section != .location {
-            return section == .empty || section == .loading || indexPath.row < list(of: section).displayedCount
-                ? UITableView.automaticDimension : Self.moreRowHeight
-        }
-        switch Row(rawValue: indexPath.row) {
-        case .map:
-            return Self.mapRowHeight
-        default:
-            return UITableView.automaticDimension
-        }
-    }
-
-    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        if let section = section(at: indexPath.section), section != .location {
-            return section == .empty || section == .loading || indexPath.row < list(of: section).displayedCount
-                ? TableViewUtilities.rowHeight : Self.moreRowHeight
-        }
-        return Row(rawValue: indexPath.row) == .map ? Self.mapRowHeight : Self.addressRowHeight
-    }
-
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if let kind = self.section(at: section), kind == .exif || kind == .gps || kind == .iptc || kind == .webp {
             let header = headerContent(of: kind)

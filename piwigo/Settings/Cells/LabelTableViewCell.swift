@@ -40,8 +40,10 @@ class LabelTableViewCell: UITableViewCell {
         // so the alignment is derived from the layout direction. Short details are
         // already flush because the label hugs them, but a long one stretches the
         // label and would otherwise be pushed away from that edge.
-        // The accessibility variant stacks both labels, where leading is correct.
-        if traitCollection.preferredContentSizeCategory < .accessibilityMedium {
+        // The accessibility variant stacks both labels, where leading is correct,
+        // as does the stacked variant chosen when the title and the detail do not fit on one line.
+        if traitCollection.preferredContentSizeCategory < .accessibilityMedium,
+           reuseIdentifier != "LabelTableViewCell2" {
             detailLabel.textAlignment =
                 effectiveUserInterfaceLayoutDirection == .rightToLeft ? .left : .right
         } else {
