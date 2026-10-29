@@ -78,11 +78,12 @@ final class ImageMetadataViewController: UITableViewController
         var entries = [ImageMetadataEntry]()
         var isExpanded = false
 
+        /// The "more" row stands for at least two entries: with one entry over the limit, it is shown instead
         var displayedCount: Int {
-            return isExpanded ? entries.count : min(entries.count, ImageMetadataViewController.metadataRowsLimit)
+            return showsMoreRow ? ImageMetadataViewController.metadataRowsLimit : entries.count
         }
         var showsMoreRow: Bool {
-            return isExpanded == false && entries.count > ImageMetadataViewController.metadataRowsLimit
+            return isExpanded == false && entries.count > ImageMetadataViewController.metadataRowsLimit + 1
         }
         /// A section without metadata tells so in its only row
         var rowCount: Int {
