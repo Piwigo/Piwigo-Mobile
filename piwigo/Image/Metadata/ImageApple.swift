@@ -15,7 +15,7 @@ import Foundation
 import ImageIO
 
 struct ImageApple: Sendable {
-    /// Entries sorted alphabetically by natural name
+    /// Entries in the order of their keys, the unknown ones alphabetically
     let entries: [ImageMetadataEntry]
 }
 
@@ -37,6 +37,11 @@ enum ImageAppleReader
         "29", "32", "33", "35", "37", "39", "43", "45"
     ]
 
+    /// Order of the known tags: the identifiers, the capture, the exposure and focus, the device, the quality
+    private static let keyOrder = ["1", "17", "43", "11", "32", "23", "20", "10", "33", "13",
+                                   "2", "4", "5", "6", "7", "35", "12", "45", "3", "8",
+                                   "25", "26", "29", "39", "37"]
+
     /// Reads the Apple data of an image file. Returns nil if the file has none.
     static func read(from url: URL) -> ImageApple? {
         if let cached = cachedApple(at: url) { return cached }
@@ -52,7 +57,7 @@ enum ImageAppleReader
               let values = properties[kCGImagePropertyMakerAppleDictionary as String] as? [String: Any]
         else { return nil }
 
-        // Known tags sorted by natural name, then the other ones sorted by number
+        // Known tags in the order below, then the other ones sorted by number
         var known = [ImageMetadataEntry]()
         var unknown = [ImageMetadataEntry]()
         for (key, value) in values {
@@ -61,7 +66,7 @@ enum ImageAppleReader
             if knownKeys.contains(key) { known.append(entry) } else { unknown.append(entry) }
         }
         unknown.sort { (Int($0.key) ?? Int.max, $0.key) < (Int($1.key) ?? Int.max, $1.key) }
-        let entries = known.sortedByName() + unknown
+        let entries = known.sorted(byKeyOrder: keyOrder) + unknown
         return entries.isEmpty ? nil : ImageApple(entries: entries)
     }
 
@@ -97,6 +102,38 @@ enum ImageAppleReader
                 return uptimeFormatter.string(from: ticks / scale)
             }
             return nil
+        case "8":
+            /// Acceleration of the device along its three axes, in units of g: (x, y, z) g
+            if let array = value as? [Any], array.count == 3 {
+                let components = array.compactMap { ($0 as? NSNumber)?.doubleValue }
+                if components.count == 3 {
+                    return "(" + components.map { Formatter.fixed($0, digits: 2) }.joined(separator: ", ") + ") g"
+                }
+            }
+        case "4", "7":
+            /// Flags telling whether the auto exposure and the auto focus had settled
+            switch (value as? NSNumber)?.intValue {
+            case 0:     return String(localized: "imageAppleStable_0", comment: "No")
+            case 1:     return String(localized: "imageAppleStable_1", comment: "Yes")
+            default:    break
+            }
+        case "12":
+            /// Range of the distances in focus, in metres: nearest and farthest
+            if let array = value as? [Any], array.count == 2,
+               let distances = Optional(array.compactMap { ($0 as? NSNumber)?.doubleValue }), distances.count == 2 {
+                let (near, far) = (min(distances[0], distances[1]), max(distances[0], distances[1]))
+                func metres(_ value: Double) -> String { Formatter.plain((value * 100).rounded() / 100) }
+                return metres(near) + " – " + metres(far) + " m"
+            }
+            return nil
+        case "20":
+            /// Type of capture: only the values known with certainty are decoded
+            switch (value as? NSNumber)?.intValue {
+            case 1:     return "ProRAW"
+            case 2:     return String(localized: "imageAppleCaptureType_2", comment: "Portrait")
+            case 10:    return String(localized: "imageAppleCaptureType_10", comment: "Photo")
+            default:    break
+            }
         case "39":
             /// Signal-to-noise ratio in decibels
             if let ratio = (value as? NSNumber)?.doubleValue {

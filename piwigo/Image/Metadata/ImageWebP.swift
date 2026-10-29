@@ -14,7 +14,7 @@ import Foundation
 import ImageIO
 
 struct ImageWebP: Sendable {
-    /// Entries sorted alphabetically by natural name
+    /// Entries in the order of their keys, the unknown ones alphabetically
     let entries: [ImageMetadataEntry]
 }
 
@@ -38,6 +38,9 @@ enum ImageWebPReader
         return webp
     }
 
+    /// Order of the keys: the size of the canvas, then the animation
+    private static let keyOrder = ["CanvasPixelWidth", "CanvasPixelHeight", "FrameCount", "Duration", "LoopCount"]
+
     private static func readFile(at url: URL) -> ImageWebP? {
         let options = [kCGImageSourceShouldCache: false] as CFDictionary
         guard let source = CGImageSourceCreateWithURL(url as CFURL, options),
@@ -45,7 +48,7 @@ enum ImageWebPReader
               let values = properties[kCGImagePropertyWebPDictionary as String] as? [String: Any]
         else { return nil }
 
-        // Entries sorted by natural name
+        // Entries in their natural order
         var entries = [ImageMetadataEntry]()
         func add(_ key: String, _ text: String?) {
             guard let text = text, text.isEmpty == false else { return }
@@ -65,7 +68,7 @@ enum ImageWebPReader
                 add("Duration", ImageMetadataFormatter.fixed(duration, digits: 2) + " s")
             }
         }
-        return entries.isEmpty ? nil : ImageWebP(entries: entries.sortedByName())
+        return entries.isEmpty ? nil : ImageWebP(entries: entries.sorted(byKeyOrder: keyOrder))
     }
 
 
@@ -85,6 +88,8 @@ enum ImageWebPReader
             case "LoopCount":
                 /// 0 loops forever
                 return number == 0 ? "∞" : ImageMetadataFormatter.plain(number)
+            case "CanvasPixelWidth", "CanvasPixelHeight":
+                return ImageMetadataFormatter.plain(number) + " px"
             default:
                 return nil
             }

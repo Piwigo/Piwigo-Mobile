@@ -16,7 +16,7 @@ import ImageIO
 struct ImageGps: Sendable {
     /// Version of the GPS tags, e.g. "2.2"
     let version: String?
-    /// Entries sorted alphabetically by natural name
+    /// Entries in the order of their keys, the unknown ones alphabetically
     let entries: [ImageMetadataEntry]
 }
 
@@ -40,6 +40,13 @@ enum ImageGpsReader
         return gps
     }
 
+    /// Order of the keys: the position, then the movement, the time, the destination, the quality of the fix
+    private static let keyOrder = ["Latitude", "Longitude", "Altitude", "ImgDirection", "Speed", "Track",
+                                   "TimeStamp", "DateStamp",
+                                   "DestLatitude", "DestLongitude", "DestBearing", "DestDistance",
+                                   "Satellites", "Status", "MeasureMode", "DOP", "HPositioningError",
+                                   "Differential", "MapDatum", "ProcessingMethod", "AreaInformation"]
+
     private static func readFile(at url: URL) -> ImageGps? {
         let options = [kCGImageSourceShouldCache: false] as CFDictionary
         guard let source = CGImageSourceCreateWithURL(url as CFURL, options),
@@ -54,7 +61,7 @@ enum ImageGpsReader
         // References written with their value
         let merged = Set(references.compactMap { values[$0.key] != nil && values[$0.value] != nil ? $0.value : nil })
 
-        // Entries sorted by natural name
+        // Entries in their natural order
         var entries = [ImageMetadataEntry]()
         for (key, value) in values where key != versionKey && merged.contains(key) == false {
             let reference = references[key].flatMap { values[$0] }
@@ -62,7 +69,7 @@ enum ImageGpsReader
             else { continue }
             entries.append(ImageMetadataEntry(key: key, name: naturalName(ofKey: key), value: text))
         }
-        return entries.isEmpty ? nil : ImageGps(version: version, entries: entries.sortedByName())
+        return entries.isEmpty ? nil : ImageGps(version: version, entries: entries.sorted(byKeyOrder: keyOrder))
     }
 
 
@@ -101,6 +108,18 @@ enum ImageGpsReader
         let letter = (reference as? String)?.trimmingCharacters(in: .whitespacesAndNewlines).uppercased() ?? ""
 
         return Formatter.formattedValue(of: value, forKey: key) { value, key in
+            /// Letters and codes, which ImageIO may give as texts or as numbers
+            let token = (value as? String)?.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+                ?? (value as? NSNumber)?.stringValue
+            switch (key, token) {
+            case ("Status", "A"):       return String(localized: "imageGpsStatus_A", comment: "Measurement active")
+            case ("Status", "V"):       return String(localized: "imageGpsStatus_V", comment: "Measurement void")
+            case ("MeasureMode", "2"):  return "2D"
+            case ("MeasureMode", "3"):  return "3D"
+            case ("Differential", "0"): return String(localized: "imageGpsDifferential_0", comment: "No correction")
+            case ("Differential", "1"): return String(localized: "imageGpsDifferential_1", comment: "Differential correction applied")
+            default:                    break
+            }
             if let number = (value as? NSNumber)?.doubleValue {
                 switch key {
                 case "Latitude", "Longitude", "DestLatitude", "DestLongitude":

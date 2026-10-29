@@ -45,7 +45,7 @@ final class ImageMetadataViewController: UITableViewController
     /// The sections shown depend on the metadata of the file: there is always one,
     /// the last one telling that the file has no metadata.
     private enum Section: Hashable {
-        case location, exif, gps, iptc, webp, nikon, canon, apple, properties(ImagePropertiesKind), empty, loading
+        case location, exif(ImageExifGroup), gps, iptc, webp, nikon, canon, apple, properties(ImagePropertiesKind), empty, loading
 
         /// A section listing the metadata of the file
         var isList: Bool {
@@ -90,7 +90,7 @@ final class ImageMetadataViewController: UITableViewController
             return entries.isEmpty ? 1 : displayedCount + (showsMoreRow ? 1 : 0)
         }
     }
-    private var lists: [Section: MetadataList] = [.exif: MetadataList(), .gps: MetadataList(),
+    private var lists: [Section: MetadataList] = [.gps: MetadataList(),
                                                    .iptc: MetadataList(), .webp: MetadataList(),
                                                    .nikon: MetadataList(), .canon: MetadataList(),
                                                    .apple: MetadataList()]
@@ -119,7 +119,9 @@ final class ImageMetadataViewController: UITableViewController
             /// The metadata are being read, or the file holding them is being downloaded
             sections.append(.loading)
         } else {
-            if list(of: .exif).entries.isEmpty == false { sections.append(.exif) }
+            for group in ImageExifGroup.allCases where list(of: .exif(group)).entries.isEmpty == false {
+                sections.append(.exif(group))
+            }
             if list(of: .gps).entries.isEmpty == false { sections.append(.gps) }
             if list(of: .iptc).entries.isEmpty == false { sections.append(.iptc) }
             if list(of: .webp).entries.isEmpty == false { sections.append(.webp) }
@@ -232,7 +234,10 @@ final class ImageMetadataViewController: UITableViewController
         for (kind, properties) in metadata.properties {
             newLists[.properties(kind)] = MetadataList(entries: properties.entries)
         }
-        lists = newLists.merging([.exif: MetadataList(entries: metadata.exif?.entries ?? []),
+        for (group, entries) in metadata.exif?.groups ?? [:] {
+            newLists[.exif(group)] = MetadataList(entries: entries)
+        }
+        lists = newLists.merging([
                  .gps: MetadataList(entries: metadata.gps?.entries ?? []),
                  .iptc: MetadataList(entries: metadata.iptc?.entries ?? []),
                  .webp: MetadataList(entries: metadata.webp?.entries ?? []),
@@ -282,20 +287,41 @@ final class ImageMetadataViewController: UITableViewController
     private func headerContent(of section: Section) -> (title: String, text: String) {
         switch section {
         case .exif, .gps, .iptc, .webp, .nikon, .canon, .apple, .properties:
-            // "Version 2.3 • 31 items" or "31 items"
+            // "Exif • Version 2.3 • 31 items", "Version 2.2 • 9 items" or "31 items"
             var parts = [String]()
-            let version = section == .exif ? exifVersion : section == .gps ? gpsVersion : nil
+            var version: String?
+            var title = ""
+            switch section {
+            case .exif(let group):
+                /// The groups of the Exif metadata name their content: the first one tells what they are
+                title = group.title
+                parts.append("Exif")
+                if visibleSections.first(where: { if case .exif = $0 { return true } else { return false } }) == section {
+                    version = exifVersion
+                }
+            case .gps:
+                title = "GPS"
+                version = gpsVersion
+            case .iptc:
+                title = "IPTC"
+            case .webp:
+                title = "WebP"
+            case .nikon:
+                title = String(localized: "imageNikonHeader_title", comment: "Nikon Camera")
+            case .canon:
+                title = String(localized: "imageCanonHeader_title", comment: "Canon Camera")
+            case .apple:
+                title = String(localized: "imageAppleHeader_title", comment: "Apple Camera")
+            case .properties(let kind):
+                title = kind.title
+            default:
+                break
+            }
             if let version = version {
                 parts.append(String(format: String(localized: "imageExifHeader_version", comment: "Version %@"), version))
             }
             parts.append(String.localizedStringWithFormat(
                 String(localized: "imageMetadata_itemCount", comment: "%lld items"), list(of: section).entries.count))
-            let titles: [Section: String] = [.exif: "Exif", .gps: "GPS", .iptc: "IPTC", .webp: "WebP",
-                                             .nikon: String(localized: "imageNikonHeader_title", comment: "Nikon Camera"),
-                                             .canon: String(localized: "imageCanonHeader_title", comment: "Canon Camera"),
-                                             .apple: String(localized: "imageAppleHeader_title", comment: "Apple Camera")]
-            var title = titles[section] ?? ""
-            if case .properties(let kind) = section { title = kind.title }
             return (title + "\n", parts.joined(separator: " • "))
         case .location, .empty, .loading:
             return ("", "")

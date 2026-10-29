@@ -13,7 +13,7 @@ import Foundation
 import ImageIO
 
 struct ImageIptc: Sendable {
-    /// Entries sorted alphabetically by natural name
+    /// Entries in the order of their keys, the unknown ones alphabetically
     let entries: [ImageMetadataEntry]
 }
 
@@ -37,6 +37,15 @@ enum ImageIptcReader
         return iptc
     }
 
+    /// Order of the keys: the description, the creator and the rights, the dates, the place, the rest
+    private static let keyOrder = ["ObjectName", "Headline", "Caption/Abstract", "Keywords", "StarRating",
+                                   "Category", "SupplementalCategory", "SpecialInstructions", "Urgency",
+                                   "Writer/Editor", "Byline", "BylineTitle", "Credit", "Source",
+                                   "CopyrightNotice", "UsageTerms", "Contact", "CreatorContactInfo",
+                                   "DateCreated", "TimeCreated", "DigitalCreationDate", "DigitalCreationTime",
+                                   "SubLocation", "City", "Province/State", "Country/PrimaryLocationName",
+                                   "Country/PrimaryLocationCode"]
+
     private static func readFile(at url: URL) -> ImageIptc? {
         let options = [kCGImageSourceShouldCache: false] as CFDictionary
         guard let source = CGImageSourceCreateWithURL(url as CFURL, options),
@@ -44,13 +53,13 @@ enum ImageIptcReader
               let values = properties[kCGImagePropertyIPTCDictionary as String] as? [String: Any]
         else { return nil }
 
-        // Entries sorted by natural name
+        // Entries in their natural order
         var entries = [ImageMetadataEntry]()
         for (key, value) in values {
             guard let text = formattedValue(of: value, forKey: key), text.isEmpty == false else { continue }
             entries.append(ImageMetadataEntry(key: key, name: naturalName(ofKey: key), value: text))
         }
-        return entries.isEmpty ? nil : ImageIptc(entries: entries.sortedByName())
+        return entries.isEmpty ? nil : ImageIptc(entries: entries.sorted(byKeyOrder: keyOrder))
     }
 
 
@@ -87,6 +96,11 @@ enum ImageIptcReader
         return ImageMetadataFormatter.formattedValue(of: value, forKey: key) { value, key in
             let text = (value as? String) ?? (value as? NSNumber)?.stringValue
             guard let text = text?.trimmingCharacters(in: .whitespacesAndNewlines) else { return nil }
+            if key == "StarRating", let rating = Int(text) {
+                /// 1 to 5 stars, 0 for none and -1 for a rejected image
+                if rating < 0 { return String(localized: "imageIptcStarRating_rejected", comment: "Rejected") }
+                if rating <= 5 { return String(repeating: "★", count: rating) + String(repeating: "☆", count: 5 - rating) }
+            }
             if dateKeys.contains(key), let date = iptcDateFormatter.date(from: String(text.prefix(8))) {
                 return displayDateFormatter.string(from: date)
             }

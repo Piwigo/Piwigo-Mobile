@@ -19,6 +19,17 @@ struct ImageMetadataEntry: Sendable {
 }
 
 extension Array where Element == ImageMetadataEntry {
+    /// Entries in the order of a list of keys, those not in the list coming last, sorted alphabetically
+    func sorted(byKeyOrder order: [String]) -> [ImageMetadataEntry] {
+        let ranks = Dictionary(order.enumerated().map { ($1, $0) }, uniquingKeysWith: { first, _ in first })
+        return sortedByName().enumerated().sorted {
+            let rank0 = ranks[$0.element.key] ?? Int.max
+            let rank1 = ranks[$1.element.key] ?? Int.max
+            return rank0 == rank1 ? $0.offset < $1.offset : rank0 < rank1
+        }.map { $0.element }
+    }
+
+
     /// Entries sorted alphabetically by natural name
     func sortedByName() -> [ImageMetadataEntry] {
         return sorted {
@@ -123,6 +134,24 @@ enum ImageMetadataFormatter
         var minor = digits.dropFirst().map(String.init).joined()
         while minor.hasSuffix("0") { minor.removeLast() }
         return minor.isEmpty ? "\(major)" : "\(major).\(minor)"
+    }
+
+
+    // MARK: Lenses
+    /// Lens specification: the shortest and longest focal lengths, then the widest apertures at both ends
+    /// of the zoom, e.g. [24, 70, 2.8, 4] → "24–70 mm f/2.8–4.0" and [50, 50, 1.8, 1.8] → "50 mm f/1.8".
+    /// Returns nil if the value is not made of four numbers or if the shortest focal length is unknown (zero).
+    static func formattedLensSpecification(_ value: Any) -> String? {
+        guard let lens = (value as? [Any])?.compactMap({ ($0 as? NSNumber)?.doubleValue }),
+              lens.count == 4, lens[0] > 0
+        else { return nil }
+        let focal = lens[0] == lens[1] ? plain(lens[0]) : plain(lens[0]) + "–" + plain(lens[1])
+        var text = focal + " mm"
+        if lens[2] > 0 {
+            text += " f/" + fixed(lens[2], digits: 1)
+            if lens[3] > lens[2] { text += "–" + fixed(lens[3], digits: 1) }
+        }
+        return text
     }
 
 

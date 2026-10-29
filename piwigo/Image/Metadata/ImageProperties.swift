@@ -39,6 +39,36 @@ enum ImagePropertiesKind: String, CaseIterable, Sendable {
         }
     }
 
+    /// Keys presented elsewhere: the Exif section shows the make, model, software, artist and copyright
+    /// of the TIFF directory with the camera information, and the resolutions and densities show their unit
+    var hidden: Set<String> {
+        switch self {
+        case .tiff: return ["Make", "Model", "Software", "Artist", "Copyright", "ResolutionUnit"]
+        case .jfif: return ["DensityUnit"]
+        default:    return []
+        }
+    }
+
+    /// Order of the keys of the formats whose keys have a natural one, the others being alphabetical
+    var keyOrder: [String] {
+        switch self {
+        case .tiff:
+            return ["DateTime", "Orientation", "XResolution", "YResolution", "ResolutionUnit", "Compression",
+                    "PhotometricInterpretation", "DocumentName", "ImageDescription", "HostComputer",
+                    "TileWidth", "TileLength"]
+        case .jfif:
+            return ["JFIFVersion", "DensityUnit", "XDensity", "YDensity", "IsProgressive"]
+        case .png:
+            return ["Title", "Author", "Description", "Comment", "Copyright", "Creation Time",
+                    "ModificationTime", "Software", "Source", "Disclaimer", "Warning", "Gamma", "sRGBIntent",
+                    "InterlaceType", "XPixelsPerMeter", "YPixelsPerMeter"]
+        case .gif:
+            return ["FrameCount", "Duration", "LoopCount", "DelayTime", "UnclampedDelayTime", "HasGlobalColorMap"]
+        default:
+            return []
+        }
+    }
+
     /// The keys of a maker note are the numbers of its tags
     var isMakerNote: Bool {
         switch self {
@@ -132,8 +162,19 @@ enum ImagePropertiesReader
             guard let text = text, text.isEmpty == false else { return }
             entries.append(ImageMetadataEntry(key: key, name: naturalName(ofKey: key, kind: kind), value: text))
         }
-        for (key, value) in values where key != "FrameInfo" {
-            add(key, formattedValue(of: value, forKey: key))
+        for (key, value) in values where key != "FrameInfo" && kind.hidden.contains(key) == false {
+            if kind == .tiff, key == "XResolution" || key == "YResolution" {
+                add(key, resolution(value, unit: number(values["ResolutionUnit"])))
+            } else if kind == .jfif, key == "XDensity" || key == "YDensity" {
+                /// 1: dots per inch, 2: dots per centimeter, 0: no unit (the density gives the aspect ratio)
+                let unit = number(values["DensityUnit"]).flatMap { Int(exactly: $0) }
+                add(key, number(value).map {
+                    let text = ImageMetadataFormatter.plain($0)
+                    return unit == 1 ? text + " dpi" : unit == 2 ? text + " dpcm" : text
+                })
+            } else {
+                add(key, formattedValue(of: value, forKey: key))
+            }
         }
 
         // The frames of an animation are summarised by their number and the duration of the animation
@@ -151,7 +192,7 @@ enum ImagePropertiesReader
             entries.sort { (Int($0.key) ?? Int.max, $0.key) < (Int($1.key) ?? Int.max, $1.key) }
             return ImageProperties(entries: entries)
         }
-        return ImageProperties(entries: entries.sortedByName())
+        return ImageProperties(entries: entries.sorted(byKeyOrder: kind.keyOrder))
     }
 
 
@@ -187,6 +228,78 @@ enum ImagePropertiesReader
             case "LoopCount":
                 /// 0 loops forever
                 return number(value).map { $0 == 0 ? "∞" : Formatter.plain($0) }
+            case "Orientation":
+                /// How the image is to be rotated or mirrored to be displayed upright
+                switch number(value).flatMap({ Int(exactly: $0) }) {
+                case 1: return String(localized: "imagePropOrientation_1", comment: "Normal")
+                case 2: return String(localized: "imagePropOrientation_2", comment: "Mirrored horizontally")
+                case 3: return String(localized: "imagePropOrientation_3", comment: "Rotated 180°")
+                case 4: return String(localized: "imagePropOrientation_4", comment: "Mirrored vertically")
+                case 5: return String(localized: "imagePropOrientation_5", comment: "Mirrored horizontally, rotated 90° counterclockwise")
+                case 6: return String(localized: "imagePropOrientation_6", comment: "Rotated 90° clockwise")
+                case 7: return String(localized: "imagePropOrientation_7", comment: "Mirrored horizontally, rotated 90° clockwise")
+                case 8: return String(localized: "imagePropOrientation_8", comment: "Rotated 90° counterclockwise")
+                default: return nil
+                }
+            case "Compression":
+                /// Method of compression of the pixel data; the names of the methods are not translated
+                switch number(value).flatMap({ Int(exactly: $0) }) {
+                case 1:     return String(localized: "imagePropCompression_1", comment: "Uncompressed")
+                case 2:     return "CCITT 1D"
+                case 3:     return "CCITT Group 3"
+                case 4:     return "CCITT Group 4"
+                case 5:     return "LZW"
+                case 6, 7:  return "JPEG"
+                case 8:     return "Deflate (ZIP)"
+                case 32773: return "PackBits"
+                case 32946: return "Deflate"
+                case 34712: return "JPEG 2000"
+                case 34925: return "LZMA2"
+                case 50000: return "Zstandard"
+                case 50001: return "WebP"
+                default:    return nil
+                }
+            case "PhotometricInterpretation":
+                /// How the values of the pixels map to colours; the names of the colour models are not translated
+                switch number(value).flatMap({ Int(exactly: $0) }) {
+                case 0: return String(localized: "imagePropPhotometric_0", comment: "Grayscale (0 is white)")
+                case 1: return String(localized: "imagePropPhotometric_1", comment: "Grayscale (0 is black)")
+                case 3: return String(localized: "imagePropPhotometric_3", comment: "Color palette")
+                case 4: return String(localized: "imagePropPhotometric_4", comment: "Transparency mask")
+                case 32803: return String(localized: "imagePropPhotometric_32803", comment: "Color filter array")
+                case 34892: return String(localized: "imagePropPhotometric_34892", comment: "Linear raw")
+                case 2: return "RGB"
+                case 5: return "CMYK"
+                case 6: return "YCbCr"
+                case 8: return "CIE L*a*b*"
+                default: return nil
+                }
+            case "sRGBIntent":
+                /// Rendering intent of the sRGB profile of a PNG
+                switch number(value).flatMap({ Int(exactly: $0) }) {
+                case 0: return String(localized: "imagePropSRGBIntent_0", comment: "Perceptual")
+                case 1: return String(localized: "imagePropSRGBIntent_1", comment: "Relative colorimetric")
+                case 2: return String(localized: "imagePropSRGBIntent_2", comment: "Saturation")
+                case 3: return String(localized: "imagePropSRGBIntent_3", comment: "Absolute colorimetric")
+                default: return nil
+                }
+            case "InterlaceType":
+                switch number(value).flatMap({ Int(exactly: $0) }) {
+                case 0: return String(localized: "imagePropInterlaceType_0", comment: "None")
+                case 1: return "Adam7"
+                default: return nil
+                }
+            case "XPixelsPerMeter", "YPixelsPerMeter":
+                return number(value).map { Formatter.plain($0) + " px/m" }
+            case "TileWidth", "TileLength":
+                return number(value).map { Formatter.plain($0) + " px" }
+            case "HasGlobalColorMap", "IsProgressive":
+                /// Yes or no, written with the translations used for the flags of the Apple tags
+                switch number(value).flatMap({ Int(exactly: $0) }) {
+                case 0: return String(localized: "imageAppleStable_0", comment: "No")
+                case 1: return String(localized: "imageAppleStable_1", comment: "Yes")
+                default: return nil
+                }
             case "DateTime":
                 /// Dates are written "2024:01:05 12:34:56"
                 if let text = value as? String, let date = tiffDateFormatter.date(from: text) {
@@ -196,6 +309,17 @@ enum ImagePropertiesReader
             default:
                 return nil
             }
+        }
+    }
+
+    /// Resolution followed by its unit: 72 → "72 dpi" (unit 2, the default), "28 dpcm" (unit 3), "72" (unit 1)
+    private static func resolution(_ value: Any, unit: Double?) -> String? {
+        guard let resolution = number(value) else { return nil }
+        let text = ImageMetadataFormatter.plain(resolution)
+        switch Int(unit ?? 2) {
+        case 2:     return text + " dpi"
+        case 3:     return text + " dpcm"
+        default:    return text
         }
     }
 

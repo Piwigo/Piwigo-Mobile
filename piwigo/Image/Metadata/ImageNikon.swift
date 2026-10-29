@@ -13,7 +13,7 @@ import Foundation
 import ImageIO
 
 struct ImageNikon: Sendable {
-    /// Entries sorted alphabetically by natural name
+    /// Entries in the order of their keys, the unknown ones alphabetically
     let entries: [ImageMetadataEntry]
 }
 
@@ -37,6 +37,12 @@ enum ImageNikonReader
         return nikon
     }
 
+    /// Order of the keys: the body, the lens, the shooting, the image
+    private static let keyOrder = ["CameraSerialNumber", "ShutterCount", "LensType", "LensInfo", "LensAdapter",
+                                   "ShootingMode", "ISOSetting", "ISOSelection", "FocusMode", "FocusDistance",
+                                   "DigitalZoom", "FlashSetting", "FlashExposureComp",
+                                   "Quality", "ColorMode", "ImageAdjustment", "SharpenMode", "WhiteBalanceMode"]
+
     private static func readFile(at url: URL) -> ImageNikon? {
         let options = [kCGImageSourceShouldCache: false] as CFDictionary
         guard let source = CGImageSourceCreateWithURL(url as CFURL, options),
@@ -44,13 +50,13 @@ enum ImageNikonReader
               let values = properties[kCGImagePropertyMakerNikonDictionary as String] as? [String: Any]
         else { return nil }
 
-        // Entries sorted by natural name
+        // Entries in their natural order
         var entries = [ImageMetadataEntry]()
         for (key, value) in values {
             guard let text = formattedValue(of: value, forKey: key), text.isEmpty == false else { continue }
             entries.append(ImageMetadataEntry(key: key, name: naturalName(ofKey: key), value: text))
         }
-        return entries.isEmpty ? nil : ImageNikon(entries: entries.sortedByName())
+        return entries.isEmpty ? nil : ImageNikon(entries: entries.sorted(byKeyOrder: keyOrder))
     }
 
 
@@ -71,18 +77,11 @@ enum ImageNikonReader
         case "ISOSetting":
             /// Two numbers, the first of which is often zero: the last one is the sensitivity
             if let iso = numbers?.last(where: { $0 > 0 }) {
-                return Formatter.plain(iso)
+                return "ISO " + Formatter.plain(iso)
             }
         case "LensInfo":
             /// Shortest and longest focal lengths, then the widest apertures at both ends of the zoom
-            if let lens = numbers, lens.count == 4, lens[0] > 0 {
-                let focal = lens[0] == lens[1]
-                    ? Formatter.plain(lens[0]) : Formatter.plain(lens[0]) + "–" + Formatter.plain(lens[1])
-                var text = focal + " mm"
-                if lens[2] > 0 {
-                    text += " f/" + Formatter.fixed(lens[2], digits: 1)
-                    if lens[3] > lens[2] { text += "–" + Formatter.fixed(lens[3], digits: 1) }
-                }
+            if let text = Formatter.formattedLensSpecification(value) {
                 return text
             }
         default:
