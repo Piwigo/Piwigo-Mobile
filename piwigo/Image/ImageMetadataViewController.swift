@@ -305,17 +305,39 @@ final class ImageMetadataViewController: UITableViewController
     /// Width of the table for which the layout of the rows was chosen
     private var widthOfRowLayouts: CGFloat = 0
 
-    /// Space taken beside the text of a row: margins of the grouped table and of its cells,
+    /// Space taken beside the text of a row: margins of its cell,
     /// and the minimum space between the title and the value
-    private static let rowSideSpace: CGFloat = 2 * 20 + 2 * 20 + 10
+    private static let rowSideSpace: CGFloat = 2 * 20 + 10
+
+    /// Width of the cells as displayed, which depends on the insets of the grouped table
+    /// (margins of the card, readable width, safe area…) and is known only once a cell is displayed
+    private var measuredCellWidth: CGFloat?
 
     /// The title and the value of an entry fit on a single line of the table
     private func fitsOnOneLine(_ entry: ImageMetadataEntry) -> Bool {
         widthOfRowLayouts = tableView.bounds.width
+        let cellWidth = measuredCellWidth ?? (widthOfRowLayouts - 2 * 20)
         let attributes = [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .body)]
         let titleWidth = ceil((entry.name as NSString).size(withAttributes: attributes).width)
         let valueWidth = ceil((entry.value as NSString).size(withAttributes: attributes).width)
-        return titleWidth + valueWidth <= widthOfRowLayouts - Self.rowSideSpace
+        return titleWidth + valueWidth <= cellWidth - Self.rowSideSpace
+    }
+
+    /// The width of the displayed cells differs from the one the layouts were chosen for:
+    /// the rows are created again
+    private func updateMeasuredCellWidth(with cell: UITableViewCell) {
+        let width = cell.bounds.width
+        guard width > 0, isMetadataKnown, abs(width - (measuredCellWidth ?? 0)) > 1 else { return }
+        let isFirstMeasure = measuredCellWidth == nil
+        measuredCellWidth = width
+        let sections = IndexSet(visibleSections.indices.filter { visibleSections[$0].isList })
+        guard sections.isEmpty == false, isFirstMeasure == false || abs(width - (widthOfRowLayouts - 2 * 20)) > 1
+        else { return }
+        DispatchQueue.main.async { [weak self] in
+            UIView.performWithoutAnimation {
+                self?.tableView.reloadSections(sections, with: .none)
+            }
+        }
     }
 
     /// The layout of the rows depends on the width of the table, which may not be final
@@ -637,6 +659,7 @@ final class ImageMetadataViewController: UITableViewController
 
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         cell.backgroundColor = PwgColor.cellBackground
+        if cell is LabelTableViewCell { updateMeasuredCellWidth(with: cell) }
     }
 
     override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
