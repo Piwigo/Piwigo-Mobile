@@ -202,7 +202,8 @@ public final class ServerVars: @unchecked Sendable {
     /// - User's default language
     public var language = ""
         
-    /// - Available image sizes
+    /// - Available image sizes, known once the server has answered the login request
+    public var areImageSizesKnown = false
     public var hasSquareSizeImages = false
     public var hasThumbSizeImages = false
     public var hasXXSmallSizeImages = false
@@ -227,7 +228,10 @@ public final class ServerVars: @unchecked Sendable {
 
 extension pwgImageSize {
     // Availability on server
+    /// The sizes are assumed to be available until the server tells which ones are, e.g. when the app
+    /// shows a photo at launch before the login: the URLs of the image data then decide.
     public var isAvailable: Bool {
+        guard ServerVars.shared.areImageSizesKnown else { return true }
         switch self {
         case .square:
             return ServerVars.shared.hasSquareSizeImages

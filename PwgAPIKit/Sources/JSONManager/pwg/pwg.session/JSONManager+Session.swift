@@ -152,6 +152,7 @@ public extension JSONManager {
         ServerVars.shared.hasXXLargeSizeImages = data.imageSizes?.contains("xxlarge") ?? false
         ServerVars.shared.hasXXXLargeSizeImages = data.imageSizes?.contains("3xlarge") ?? false
         ServerVars.shared.hasXXXXLargeSizeImages = data.imageSizes?.contains("4xlarge") ?? false
+        ServerVars.shared.areImageSizesKnown = true
 
         // Should the app log visits and downloads? (since Piwigo 14)
         ServerVars.shared.saveVisits = data.saveVisits ?? false
