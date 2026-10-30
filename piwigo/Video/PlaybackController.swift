@@ -55,6 +55,11 @@ final class PlaybackController {
         return duration
     }
     
+    /// Returns the frame rate of a video whose playback item already exists, nil while it is unknown.
+    func frameRate(ofVideoWithID pwgID: Int64) -> Float? {
+        return playbackItems[pwgID]?.video.frameRate
+    }
+    
     func embed(contentOfVideo video: Video, in parentViewController: UIViewController, containerView: UIView) {
         coordinator(for: video).embedInline(in: parentViewController, container: containerView)
     }

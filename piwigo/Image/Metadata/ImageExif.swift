@@ -84,6 +84,16 @@ struct ImageExif: Sendable {
     let version: String?
     /// Entries of each group, in the order of the table of keys (unknown keys alphabetically)
     let groups: [ImageExifGroup: [ImageMetadataEntry]]
+    /// The flash fired
+    let flashFired: Bool
+
+    /// Text presenting the value of a key, whatever its group
+    func value(forKey key: String) -> String? {
+        for entries in groups.values {
+            if let entry = entries.first(where: { $0.key == key }) { return entry.value }
+        }
+        return nil
+    }
 }
 
 enum ImageExifReader
@@ -170,7 +180,8 @@ enum ImageExifReader
             groups[ImageExifGroup.group(ofKey: key), default: []]
                 .append(ImageMetadataEntry(key: key, name: naturalName(ofKey: key), value: text))
         }
-        return groups.isEmpty ? nil : ImageExif(version: version, groups: groups.mapValues { ImageExifGroup.sorted($0) })
+        return groups.isEmpty ? nil : ImageExif(version: version, groups: groups.mapValues { ImageExifGroup.sorted($0) },
+                                                  flashFired: ((values[kCGImagePropertyExifFlash as String] as? NSNumber)?.intValue ?? 0) & 1 != 0)
     }
 
     private static let tiffKeys = [kCGImagePropertyTIFFMake, kCGImagePropertyTIFFModel,
@@ -216,7 +227,7 @@ enum ImageExifReader
                 case "DigitalZoomRatio":
                     return Formatter.plain((number * 100).rounded() / 100) + "×"
                 case "ApertureValue", "MaxApertureValue":
-                    return "f/" + Formatter.fixed(pow(2, number / 2), digits: 1)
+                    return fNumber(pow(2, number / 2))
                 case "ShutterSpeedValue":
                     return shutterSpeed(fromAPEX: number)
                 case "BrightnessValue":
@@ -231,16 +242,19 @@ enum ImageExifReader
                     guard number > 0 else { return nil }
                     return number < 1 ? "1/\(Int((1 / number).rounded())) s" : "\(Formatter.plain(number)) s"
                 case "FNumber":
-                    return "f/" + Formatter.fixed(number, digits: 1)
+                    return fNumber(number)
                 case "FocalLength", "FocalLenIn35mmFilm":
                     return Formatter.plain(number) + " mm"
                 case "SubjectDistance":
                     return Formatter.plain(number) + " m"
                 case "ExposureBiasValue":
-                    return (number > 0 ? "+" : "") + Formatter.plain(number) + " EV"
+                    return Formatter.exposureCompensation(number) + " EV"
                 default:
                     return nil
                 }
+            }
+            if let text = value as? String, key == "LensModel" {
+                return Formatter.spacedMillimetres(text.trimmingCharacters(in: .whitespacesAndNewlines))
             }
             // Dates are written "2024:01:05 12:34:56"
             if let text = value as? String, key == "DateTimeOriginal" || key == "DateTimeDigitized",
@@ -300,6 +314,11 @@ enum ImageExifReader
         case [4, 5, 6]: return "RGB"
         default:        return bytes.compactMap { names[$0] }.joined(separator: " ")
         }
+    }
+
+    /// F-number written with up to two decimals: 1.78 → "ƒ1.78", 2.8 → "ƒ2.8" and 4 → "ƒ4"
+    private static func fNumber(_ value: Double) -> String {
+        return "ƒ" + ImageMetadataFormatter.plain((value * 100).rounded() / 100)
     }
 
     /// Shutter speed from its APEX value: Tv = -log2(t), e.g. 8 → "1/256 s" and -1 → "2 s"

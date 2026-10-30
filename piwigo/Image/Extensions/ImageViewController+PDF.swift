@@ -25,6 +25,8 @@ extension ImageViewController
 
             // The title view reads the count from the presented PDF view controller
             setTitleViewFromImageData()
+            // The document is in cache: the table presents its attributes
+            metadataFilesDidChange(of: imageData)
         }
     }
 }

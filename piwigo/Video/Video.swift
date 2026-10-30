@@ -20,6 +20,7 @@ struct Video: Hashable {
     let artwork: UIImage
     var frameSize: CGSize?
     var duration = TimeInterval.nan
+    var frameRate: Float?
     var resumeTime = TimeInterval(0)
     
     init(pwgID: Int64, pwgURL: URL, cacheURL: URL, title: String, artwork: UIImage) {

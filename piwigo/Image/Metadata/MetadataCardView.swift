@@ -129,6 +129,8 @@ final class MetadataCardView: UIView, UIGestureRecognizerDelegate
         // The palette of the app is independent from the appearance of the system:
         /// the material, the label colors and the map in the table adopt that of the palette.
         overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
+        /// The dark palette has its own background, which the material would only approximate: it is the one of the Settings
+        effectView.contentView.backgroundColor = UIVars.shared.isDarkPaletteActive ? PwgColor.background : nil
         titleLabel.textColor = PwgColor.leftLabel
         closeButton.tintColor = PwgColor.leftLabel
         grabber.backgroundColor = PwgColor.rightLabel.withAlphaComponent(0.6)

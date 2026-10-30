@@ -137,7 +137,38 @@ enum ImageMetadataFormatter
     }
 
 
+    // MARK: Exposure Compensation
+    /// Exposure compensation in EV as it is set on cameras, in whole numbers and fractions: 0.333 → "+1/3",
+    /// -0.667 → "-2/3", 1.5 → "+1 1/2" and 0 → "0". A value close to none of them is written as a decimal number.
+    static func exposureCompensation(_ value: Double) -> String {
+        let magnitude = abs(value)
+        let sign = value > 0 ? "+" : value < 0 ? "-" : ""
+        for denominator in [1, 2, 3, 4, 8] {
+            let numerator = Int((magnitude * Double(denominator)).rounded())
+            guard abs(Double(numerator) / Double(denominator) - magnitude) < 0.02 else { continue }
+            let whole = numerator / denominator
+            var remainder = numerator % denominator
+            var divisor = denominator
+            let common = greatestCommonDivisor(remainder, divisor)
+            if common > 1 { remainder /= common; divisor /= common }
+            if numerator == 0 { return "0" }
+            if remainder == 0 { return sign + "\(whole)" }
+            return sign + (whole > 0 ? "\(whole) " : "") + "\(remainder)/\(divisor)"
+        }
+        return sign + plain((magnitude * 1000).rounded() / 1000)
+    }
+
+    private static func greatestCommonDivisor(_ a: Int, _ b: Int) -> Int {
+        return b == 0 ? a : greatestCommonDivisor(b, a % b)
+    }
+
+
     // MARK: Lenses
+    /// Space between a number and the unit "mm" in the model of a lens: "4mm" → "4 mm", "24-70mm" → "24-70 mm"
+    static func spacedMillimetres(_ text: String) -> String {
+        return text.replacingOccurrences(of: #"(\d)mm\b"#, with: "$1 mm", options: .regularExpression)
+    }
+
     /// Lens specification: the shortest and longest focal lengths, then the widest apertures at both ends
     /// of the zoom, e.g. [24, 70, 2.8, 4] → "24–70 mm f/2.8–4.0" and [50, 50, 1.8, 1.8] → "50 mm f/1.8".
     /// Returns nil if the value is not made of four numbers or if the shortest focal length is unknown (zero).

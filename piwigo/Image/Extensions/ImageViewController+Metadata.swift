@@ -29,10 +29,9 @@ extension ImageViewController {
         return CLLocationCoordinate2DIsValid(coordinate) ? coordinate : nil
     }
 
-    /// Metadata are presented for photos and videos, whether they contain any or not
+    /// Metadata are presented for photos, videos and PDF files, whether they contain any or not
     func supportsMetadata(_ image: Image?) -> Bool {
-        guard let image = image else { return false }
-        return image.isPDF == false
+        return image != nil
     }
 
     @MainActor
@@ -86,10 +85,27 @@ extension ImageViewController {
         return ImageMetadataViewController.preferredContentHeight(hasLocation: metadataCoordinate(of: imageData) != nil)
     }
 
+    /// What the data of the photo or video tell for its summary, with the duration and the frame rate of a video once known
+    @MainActor
+    func metadataSummarySource() -> ImageSummary.Source {
+        guard let image = imageData else { return ImageSummary.Source() }
+        return ImageSummary.Source(image,
+                                   duration: PlaybackController.shared.duration(ofVideoWithID: image.pwgID),
+                                   frameRate: PlaybackController.shared.frameRate(ofVideoWithID: image.pwgID))
+    }
+
+    /// The duration or the frame rate of the video is known: the summary shows it
+    @MainActor
+    func refreshMetadataSummary() {
+        guard let metadataVC = metadataPanel.cardViewController ?? metadataPanel.viewController else { return }
+        metadataVC.configure(summaryOf: metadataSummarySource())
+    }
+
     /// Presents the location, the EXIF, the GPS and the IPTC metadata of the photo or video in the table
     @MainActor
     func configureMetadata(of metadataVC: ImageMetadataViewController) {
         metadataVC.onContentChange = { [weak self] in self?.metadataContentDidChange() }
+        metadataVC.configure(summaryOf: metadataSummarySource())
         metadataVC.configure(with: metadataCoordinate(of: imageData))
         loadMetadata(into: metadataVC)
     }
@@ -104,6 +120,12 @@ extension ImageViewController {
         }
         let imageID = imageData.pwgID
         guard force || metadataVC.metadataImageID != imageID else { return }
+
+        // A PDF tells about itself: its document is read instead of the files of its thumbnails
+        if imageData.isPDF {
+            loadPdfInfo(into: metadataVC)
+            return
+        }
 
         // Files in cache, from the largest to the smallest
         let urls = pwgImageSize.allCases.sorted { $0.rawValue > $1.rawValue }
@@ -138,6 +160,31 @@ extension ImageViewController {
             guard let metadataVC = metadataVC, metadataVC.metadataImageID == imageID,
                   metadataVC.metadataLoadNumber == loadNumber else { return }
             present(metadata, in: metadataVC)
+        }
+    }
+
+    /// Reads the title, the author, the dates and the producer of the document of a PDF in cache
+    @MainActor
+    private func loadPdfInfo(into metadataVC: ImageMetadataViewController) {
+        let imageID = imageData.pwgID
+        guard let url = imageData.cacheURL(ofSize: .fullRes),
+              FileManager.default.fileExists(atPath: url.path)
+        else {
+            /// The file is not in cache yet: the document is read again when it arrives
+            metadataVC.metadataImageID = nil
+            metadataVC.configure(pdf: nil)
+            return
+        }
+        metadataVC.metadataImageID = imageID
+        metadataVC.metadataLoadNumber += 1
+        let loadNumber = metadataVC.metadataLoadNumber
+        Task { [weak metadataVC] in
+            let info = await Task.detached(priority: .userInitiated) {
+                PdfInfo.read(from: url)
+            }.value
+            guard let metadataVC = metadataVC, metadataVC.metadataImageID == imageID,
+                  metadataVC.metadataLoadNumber == loadNumber else { return }
+            metadataVC.configure(pdf: info)
         }
     }
 
@@ -846,7 +893,8 @@ extension ImageViewController: UIGestureRecognizerDelegate {
             return true
         } else {
             // A drag up opens the panel
-            guard velocity.y < 0, supportsMetadata(imageData),
+            /// A PDF scrolls: its metadata are opened with the info button only
+            guard velocity.y < 0, supportsMetadata(imageData), imageData.isPDF == false,
                   isCurrentPageZoomed == false
             else { return false }
             return true

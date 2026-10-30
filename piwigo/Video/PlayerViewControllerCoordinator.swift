@@ -401,6 +401,28 @@ final class PlayerViewControllerCoordinator: NSObject {
                         "duration" : video.duration] as [String : Any]
         NotificationCenter.default.post(name: .pwgVideoDuration,
                                         object: nil, userInfo: userInfo)
+        
+        // The frame rate is read from the video track, then notified in turn
+        if video.frameRate == nil {
+            loadFrameRate()
+        }
+    }
+    
+    private var isLoadingFrameRate = false
+    private func loadFrameRate() {
+        guard isLoadingFrameRate == false,
+              let asset = playerViewControllerIfLoaded?.player?.currentItem?.asset
+        else { return }
+        isLoadingFrameRate = true
+        Task { @MainActor [weak self] in
+            let track = try? await asset.loadTracks(withMediaType: .video).first
+            let frameRate = try? await track?.load(.nominalFrameRate)
+            guard let self else { return }
+            self.isLoadingFrameRate = false
+            guard let frameRate, frameRate > 0 else { return }
+            self.video.frameRate = frameRate
+            self.postVideoDuration()
+        }
     }
     
     /// Names why the player waits instead of playing, which explains the delay between

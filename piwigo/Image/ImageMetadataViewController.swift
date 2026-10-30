@@ -26,9 +26,12 @@ final class ImageMetadataViewController: UITableViewController
     /// Space above and below the group of cells
     static let sectionGap: CGFloat = 16
 
+    /// Height of the summary: the file, the camera, the lens and the settings of the shot, with the space above
+    static let summaryHeight: CGFloat = 200 + sectionGap
+
     /// Height of the table content for a default size of text
     static func preferredContentHeight(hasLocation: Bool) -> CGFloat {
-        return 2 * sectionGap + (hasLocation ? mapRowHeight + addressRowHeight : 0)
+        return 2 * sectionGap + summaryHeight + (hasLocation ? mapRowHeight + addressRowHeight : 0)
     }
 
 
@@ -45,18 +48,67 @@ final class ImageMetadataViewController: UITableViewController
     /// The sections shown depend on the metadata of the file: there is always one,
     /// the last one telling that the file has no metadata.
     private enum Section: Hashable {
-        case location, exif(ImageExifGroup), gps, iptc, webp, nikon, canon, apple, properties(ImagePropertiesKind), empty, loading
+        case summary, location, exif(ImageExifGroup), gps, iptc, webp, nikon, canon, apple, properties(ImagePropertiesKind), empty, loading
 
         /// A section listing the metadata of the file
         var isList: Bool {
             switch self {
-            case .location, .empty, .loading:   return false
-            default:                            return true
+            case .summary, .location, .empty, .loading: return false
+            default:                                    return true
             }
         }
     }
     private enum Row: Int, CaseIterable {
         case map = 0, address
+    }
+    /// Rows of the summary: the settings of the shot of a photo, or the frame rate and the duration of a video
+    private enum SummaryRow: Int, CaseIterable {
+        case file = 0, camera, settings
+    }
+    /// Rows of the summary of a PDF: the file, its title with its author and its size, its dates and its producer
+    private enum PdfRow: Int, CaseIterable {
+        case file = 0, title, creationDate, modificationDate, producer
+    }
+
+    // MARK: - Summary
+    private var summary = ImageSummary()
+
+    /// Presents the summary of the photo or video, whose file and camera are known as soon as its data are
+    @MainActor
+    func configure(summaryOf source: ImageSummary.Source) {
+        guard summary.source != source else { return }
+        // A PDF has a summary of its own and no other section: the table changes of structure
+        let changesKind = summary.source.isPDF != source.isPDF
+        if source.fileName != summary.source.fileName { summary.pdf = nil }
+        summary.source = source
+        if changesKind {
+            if isViewLoaded {
+                UIView.performWithoutAnimation {
+                    tableView.reloadData()
+                    tableView.layoutIfNeeded()
+                }
+                onContentChange?()
+            }
+            return
+        }
+        guard isViewLoaded, let index = visibleSections.firstIndex(of: .summary) else { return }
+        UIView.performWithoutAnimation {
+            tableView.reloadSections(IndexSet(integer: index), with: .none)
+            tableView.layoutIfNeeded()
+        }
+        onContentChange?()
+    }
+
+    /// Presents what the document of a PDF tells about itself, nil while it is not known
+    @MainActor
+    func configure(pdf: PdfInfo?) {
+        summary.pdf = pdf
+        guard isViewLoaded, summary.source.isPDF, let index = visibleSections.firstIndex(of: .summary) else { return }
+        UIView.performWithoutAnimation {
+            tableView.reloadSections(IndexSet(integer: index), with: .none)
+            tableView.layoutIfNeeded()
+        }
+        onContentChange?()
     }
 
 
@@ -113,7 +165,9 @@ final class ImageMetadataViewController: UITableViewController
     }
 
     private var visibleSections: [Section] {
-        var sections = [Section]()
+        /// A PDF has no other metadata than its summary
+        if summary.source.isPDF { return [.summary] }
+        var sections: [Section] = [.summary]
         if coordinate != nil { sections.append(.location) }
         if isMetadataKnown == false {
             /// The metadata are being read, or the file holding them is being downloaded
@@ -131,7 +185,7 @@ final class ImageMetadataViewController: UITableViewController
             for kind in ImagePropertiesKind.allCases where list(of: .properties(kind)).entries.isEmpty == false {
                 sections.append(.properties(kind))
             }
-            if sections.isEmpty { sections.append(.empty) }
+            if sections == [.summary] { sections.append(.empty) }
         }
         return sections
     }
@@ -245,6 +299,7 @@ final class ImageMetadataViewController: UITableViewController
                  .canon: MetadataList(entries: metadata.canon?.entries ?? []),
                  .apple: MetadataList(entries: metadata.apple?.entries ?? [])]) { $1 }
         exifVersion = metadata.exif?.version
+        summary.exif = metadata.exif
         gpsVersion = metadata.gps?.version
         isMetadataKnown = isKnown
         self.noteAboutSize = noteAboutSize
@@ -323,7 +378,7 @@ final class ImageMetadataViewController: UITableViewController
             parts.append(String.localizedStringWithFormat(
                 String(localized: "imageMetadata_itemCount", comment: "%lld items"), list(of: section).entries.count))
             return (title + "\n", parts.joined(separator: " • "))
-        case .location, .empty, .loading:
+        case .summary, .location, .empty, .loading:
             return ("", "")
         }
     }
@@ -415,8 +470,10 @@ final class ImageMetadataViewController: UITableViewController
         let width = measuredWidth > 0 ? measuredWidth : 375
         for section in visibleSections {
             switch section {
+            case .summary:
+                height += summary.source.isPDF ? 300 + Self.sectionGap : Self.summaryHeight
             case .location:
-                height += Self.preferredContentHeight(hasLocation: true)
+                height += Self.mapRowHeight + Self.addressRowHeight + Self.sectionGap
             case .empty:
                 height += Self.sectionGap + TableViewUtilities.rowHeight + footerHeight(of: .empty, width: width)
             case .loading:
@@ -457,11 +514,12 @@ final class ImageMetadataViewController: UITableViewController
         /// changes while the bars or the pages are animating.
         UIView.performWithoutAnimation {
             if hadLocation, coordinate != nil, isViewLoaded,
-               let mapCell = tableView.cellForRow(at: IndexPath(row: Row.map.rawValue, section: 0)) as? MapTableViewCell,
+               let section = visibleSections.firstIndex(of: .location),
+               let mapCell = tableView.cellForRow(at: IndexPath(row: Row.map.rawValue, section: section)) as? MapTableViewCell,
                let coordinate = coordinate {
                 mapCell.onRendered = { [weak self] in self?.mapDidRender() }
                 mapCell.configure(with: coordinate)
-                tableView.reloadRows(at: [IndexPath(row: Row.address.rawValue, section: 0)], with: .none)
+                tableView.reloadRows(at: [IndexPath(row: Row.address.rawValue, section: section)], with: .none)
             } else {
                 tableView.reloadData()
             }
@@ -548,8 +606,9 @@ final class ImageMetadataViewController: UITableViewController
     
     @MainActor
     private func reloadAddressRow() {
-        let indexPath = IndexPath(row: Row.address.rawValue, section: 0)
-        guard isViewLoaded, tableView.numberOfRows(inSection: 0) > indexPath.row else { return }
+        guard isViewLoaded, let section = visibleSections.firstIndex(of: .location) else { return }
+        let indexPath = IndexPath(row: Row.address.rawValue, section: section)
+        guard tableView.numberOfRows(inSection: section) > indexPath.row else { return }
         UIView.performWithoutAnimation {
             tableView.reloadRows(at: [indexPath], with: .none)
             tableView.layoutIfNeeded()
@@ -590,6 +649,8 @@ final class ImageMetadataViewController: UITableViewController
             return list(of: self.section(at: section)!).rowCount
         case .empty, .loading:
             return 1
+        case .summary:
+            return summary.source.isPDF ? PdfRow.allCases.count : SummaryRow.allCases.count
         case .location:
             return Row.allCases.count
         default:
@@ -598,6 +659,11 @@ final class ImageMetadataViewController: UITableViewController
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        // Summary
+        if section(at: indexPath.section) == .summary {
+            return summaryCell(at: indexPath)
+        }
+
         // EXIF and IPTC metadata, or the absence of metadata
         if let section = section(at: indexPath.section), section != .location {
             let list = list(of: section)
@@ -653,6 +719,116 @@ final class ImageMetadataViewController: UITableViewController
     }
 
 
+    // MARK: - Summary Cells
+    private func summaryCell(at indexPath: IndexPath) -> UITableViewCell {
+        if summary.source.isPDF { return pdfCell(at: indexPath) }
+        func labelCell(stacked: Bool) -> LabelTableViewCell {
+            let identifier = stacked ? "LabelTableViewCell2" : "LabelTableViewCell"
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as? LabelTableViewCell
+            else { preconditionFailure("Could not load LabelTableViewCell") }
+            cell.accessoryView = nil
+            return cell
+        }
+
+        switch SummaryRow(rawValue: indexPath.row) {
+        case .file:
+            // Name of the original file and its format
+            let cell = labelCell(stacked: false)
+            cell.configure(with: summary.title, detail: "")
+            if summary.format.isEmpty == false {
+                cell.accessoryView = formatBadge(summary.format)
+            }
+            return cell
+        case .camera:
+            // Camera, lens, and size of the image
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: LabelTableViewCell4.reuseIdentifier,
+                                                           for: indexPath) as? LabelTableViewCell4
+            else { preconditionFailure("Could not load LabelTableViewCell4") }
+            cell.accessoryView = nil
+            cell.configure(with: summary.camera, detail: summary.lens, bottomDetail: summary.details,
+                           showsFlash: summary.flashFired)
+            return cell
+        default:
+            if summary.source.isVideo {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: VideoSummaryTableViewCell.reuseIdentifier,
+                                                               for: indexPath) as? VideoSummaryTableViewCell
+                else { preconditionFailure("Could not load VideoSummaryTableViewCell") }
+                cell.configure(with: summary.video)
+                return cell
+            }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: MetadataSummaryTableViewCell.reuseIdentifier,
+                                                           for: indexPath) as? MetadataSummaryTableViewCell
+            else { preconditionFailure("Could not load MetadataSummaryTableViewCell") }
+            cell.configure(with: summary.shooting)
+            return cell
+        }
+    }
+
+    /// Rows of the summary of a PDF
+    private func pdfCell(at indexPath: IndexPath) -> UITableViewCell {
+        func labelCell(stacked: Bool) -> LabelTableViewCell {
+            let identifier = stacked ? "LabelTableViewCell2" : "LabelTableViewCell"
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as? LabelTableViewCell
+            else { preconditionFailure("Could not load LabelTableViewCell") }
+            cell.accessoryView = nil
+            return cell
+        }
+        /// A date or the producer: the value goes under the title if both do not fit on one line
+        func entryCell(name: String, value: String) -> LabelTableViewCell {
+            let entry = ImageMetadataEntry(key: "", name: name, value: value)
+            let cell = labelCell(stacked: traitCollection.preferredContentSizeCategory >= .accessibilityMedium
+                                           || fitsOnOneLine(entry) == false)
+            cell.configure(with: name, detail: value)
+            return cell
+        }
+
+        switch PdfRow(rawValue: indexPath.row) {
+        case .file:
+            let cell = labelCell(stacked: false)
+            cell.configure(with: summary.title, detail: "")
+            if summary.format.isEmpty == false {
+                cell.accessoryView = formatBadge(summary.format)
+            }
+            return cell
+        case .title:
+            // Title, author, and pages, size of the page and size of the file
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: LabelTableViewCell4.reuseIdentifier,
+                                                           for: indexPath) as? LabelTableViewCell4
+            else { preconditionFailure("Could not load LabelTableViewCell4") }
+            cell.accessoryView = nil
+            cell.configure(with: summary.pdfTitle, detail: summary.pdfAuthor, bottomDetail: summary.pdfDetails)
+            return cell
+        case .creationDate:
+            return entryCell(name: String(localized: "imagePdf_creationDate", comment: "Creation Date"),
+                             value: summary.pdfCreationDate)
+        case .modificationDate:
+            return entryCell(name: String(localized: "imagePdf_modificationDate", comment: "Modification Date"),
+                             value: summary.pdfModificationDate)
+        default:
+            return entryCell(name: String(localized: "imagePdf_producer", comment: "Producer"),
+                             value: summary.pdfProducer)
+        }
+    }
+
+    /// Grey filled capsule naming the format of a file
+    private func formatBadge(_ format: String) -> UIButton {
+        var configuration = UIButton.Configuration.gray()
+        configuration.cornerStyle = .capsule
+        configuration.title = format
+        configuration.contentInsets = NSDirectionalEdgeInsets(top: 3, leading: 10, bottom: 3, trailing: 10)
+        configuration.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { attributes in
+            var attributes = attributes
+            attributes.font = UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .caption1).pointSize,
+                                                weight: .semibold)
+            return attributes
+        }
+        let button = UIButton(configuration: configuration)
+        button.isUserInteractionEnabled = false
+        button.sizeToFit()
+        return button
+    }
+
+
     // MARK: - UITableViewDelegate
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if let kind = self.section(at: section), kind.isList {
@@ -694,7 +870,7 @@ final class ImageMetadataViewController: UITableViewController
         case .exif?, .gps?, .iptc?, .webp?, .nikon?, .canon?, .apple?, .properties?:
             let list = list(of: section(at: indexPath.section)!)
             return list.showsMoreRow && indexPath.row == list.displayedCount
-        case .empty?, .loading?:
+        case .summary?, .empty?, .loading?:
             return false
         default:
             return true
@@ -709,7 +885,7 @@ final class ImageMetadataViewController: UITableViewController
             if list(of: section).showsMoreRow, indexPath.row == list(of: section).displayedCount { expand(section) }
         case .location:
             presentLocationActions()
-        case .empty, .loading:
+        case .summary, .empty, .loading:
             break
         }
     }
@@ -742,6 +918,21 @@ final class ImageMetadataViewController: UITableViewController
                 return [placeName, streetName].filter { $0.isEmpty == false }.joined(separator: "\n")
             }
             return coordinateString
+        case .summary:
+            if summary.source.isPDF {
+                switch PdfRow(rawValue: indexPath.row) {
+                case .file:             return summary.title
+                case .title:            return [summary.pdfTitle, summary.pdfAuthor, summary.pdfDetails].joined(separator: "\n")
+                case .creationDate:     return summary.pdfCreationDate
+                case .modificationDate: return summary.pdfModificationDate
+                default:                return summary.pdfProducer
+                }
+            }
+            switch SummaryRow(rawValue: indexPath.row) {
+            case .file:     return summary.title
+            case .camera:   return [summary.camera, summary.lens, summary.details].joined(separator: "\n")
+            default:        return (summary.source.isVideo ? summary.video : summary.shooting).joined(separator: " | ")
+            }
         case .empty, .loading:
             return nil
         }

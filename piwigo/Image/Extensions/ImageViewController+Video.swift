@@ -25,6 +25,7 @@ extension ImageViewController
 
             // The title view reads the duration from the playback controller
             setTitleViewFromImageData()
+            refreshMetadataSummary()
         }
     }
 }

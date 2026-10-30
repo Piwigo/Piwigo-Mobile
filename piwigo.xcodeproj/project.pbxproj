@@ -90,6 +90,10 @@
 		AD2610260000000000000014 /* MetadataPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000013 /* MetadataPanel.swift */; };
 		AD2610260000000000000016 /* MapTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000015 /* MapTableViewCell.swift */; };
 		AD2610260000000000000018 /* AddressTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000017 /* AddressTableViewCell.swift */; };
+		AD2610260000000000000034 /* LabelTableViewCell4.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000033 /* LabelTableViewCell4.swift */; };
+		AD2610260000000000000032 /* VideoSummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000031 /* VideoSummaryTableViewCell.swift */; };
+		AD2610260000000000000030 /* MetadataSummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD261026000000000000002F /* MetadataSummaryTableViewCell.swift */; };
+		AD261026000000000000002E /* ImageSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD261026000000000000002D /* ImageSummary.swift */; };
 		AD261026000000000000001A /* MetadataCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000019 /* MetadataCardView.swift */; };
 		AD261026000000000000001C /* ImageMetadataEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD261026000000000000001B /* ImageMetadataEntry.swift */; };
 		AD261026000000000000001E /* ImageIptc.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD261026000000000000001D /* ImageIptc.swift */; };
@@ -614,6 +618,10 @@
 		AD2610260000000000000013 /* MetadataPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataPanel.swift; sourceTree = "<group>"; };
 		AD2610260000000000000015 /* MapTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapTableViewCell.swift; sourceTree = "<group>"; };
 		AD2610260000000000000017 /* AddressTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressTableViewCell.swift; sourceTree = "<group>"; };
+		AD2610260000000000000033 /* LabelTableViewCell4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelTableViewCell4.swift; sourceTree = "<group>"; };
+		AD2610260000000000000031 /* VideoSummaryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoSummaryTableViewCell.swift; sourceTree = "<group>"; };
+		AD261026000000000000002F /* MetadataSummaryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataSummaryTableViewCell.swift; sourceTree = "<group>"; };
+		AD261026000000000000002D /* ImageSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSummary.swift; sourceTree = "<group>"; };
 		AD2610260000000000000019 /* MetadataCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataCardView.swift; sourceTree = "<group>"; };
 		AD261026000000000000001B /* ImageMetadataEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMetadataEntry.swift; sourceTree = "<group>"; };
 		AD261026000000000000001D /* ImageIptc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageIptc.swift; sourceTree = "<group>"; };
@@ -1581,6 +1589,10 @@
 				AD2610260000000000000013 /* MetadataPanel.swift */,
 				AD2610260000000000000015 /* MapTableViewCell.swift */,
 				AD2610260000000000000017 /* AddressTableViewCell.swift */,
+				AD2610260000000000000033 /* LabelTableViewCell4.swift */,
+				AD2610260000000000000031 /* VideoSummaryTableViewCell.swift */,
+				AD261026000000000000002F /* MetadataSummaryTableViewCell.swift */,
+				AD261026000000000000002D /* ImageSummary.swift */,
 				AD2610260000000000000019 /* MetadataCardView.swift */,
 			);
 			path = Metadata;
@@ -2611,6 +2623,10 @@
 				AD261026000000000000001C /* ImageMetadataEntry.swift in Sources */,
 				AD261026000000000000001A /* MetadataCardView.swift in Sources */,
 				AD2610260000000000000018 /* AddressTableViewCell.swift in Sources */,
+				AD2610260000000000000034 /* LabelTableViewCell4.swift in Sources */,
+				AD2610260000000000000032 /* VideoSummaryTableViewCell.swift in Sources */,
+				AD2610260000000000000030 /* MetadataSummaryTableViewCell.swift in Sources */,
+				AD261026000000000000002E /* ImageSummary.swift in Sources */,
 				AD2610260000000000000016 /* MapTableViewCell.swift in Sources */,
 				AD2610260000000000000014 /* MetadataPanel.swift in Sources */,
 				AD2610260000000000000002 /* ImageMetadataViewController.swift in Sources */,

@@ -73,6 +73,9 @@ enum ImageCanonReader
     static func formattedValue(of value: Any, forKey key: String) -> String? {
         typealias Formatter = ImageMetadataFormatter
         return Formatter.formattedValue(of: value, forKey: key) { value, key in
+            if let text = value as? String, key == "LensModel" {
+                return Formatter.spacedMillimetres(text.trimmingCharacters(in: .whitespacesAndNewlines))
+            }
             guard let number = (value as? NSNumber)?.doubleValue else { return nil }
             switch key {
             case "MaxAperture", "MinAperture":
@@ -103,7 +106,7 @@ enum ImageCanonReader
                 /// Metres: Canon writes a value above 655 m for an infinite distance
                 return number > 655 ? "∞" : Formatter.plain((number * 100).rounded() / 100) + " m"
             case "FlashExposureComp":
-                return (number > 0 ? "+" : "") + Formatter.plain(number) + " EV"
+                return Formatter.exposureCompensation(number) + " EV"
             default:
                 return nil
             }
