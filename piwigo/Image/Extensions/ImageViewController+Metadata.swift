@@ -316,6 +316,7 @@ extension ImageViewController {
         panel.card = card
         panel.cardViewController = metadataVC
         panel.isCardSuspended = false
+        updatePageScrollLock()
         
         // Appear in the corner where the user left it
         let frame = metadataCardFrame(for: panel.cardCorner)
@@ -340,6 +341,7 @@ extension ImageViewController {
         panel.isCardSuspended = false
         panel.isDraggingCard = false
         updateInfoButtonImage()
+        updatePageScrollLock()
         
         metadataVC.willMove(toParent: nil)
         UIView.animate(withDuration: 0.2, animations: {
@@ -489,6 +491,19 @@ extension ImageViewController {
         return metadataPanel.target != .closed && traitCollection.userInterfaceIdiom != .pad
     }
     
+    /// The photo of the current page does not scroll while the metadata are presented
+    @MainActor
+    func updatePageScrollLock() {
+        switch pageViewController?.viewControllers?.first {
+        case let imageDVC as ImageDetailViewController:
+            imageDVC.updateScrollLock()
+        case let gifDVC as GifDetailViewController:
+            gifDVC.updateScrollLock()
+        default:
+            break
+        }
+    }
+
     /// Tells the current page that the area available to the photo has changed
     @MainActor
     func updatePhotoArea(isPanelOpen: Bool? = nil) {
@@ -497,8 +512,10 @@ extension ImageViewController {
         switch pageViewController?.viewControllers?.first {
         case let imageDVC as ImageDetailViewController:
             imageDVC.updateViewSize(size, fillsArea: fillsArea)
+            imageDVC.updateScrollLock()
         case let gifDVC as GifDetailViewController:
             gifDVC.updateViewSize(size, fillsArea: fillsArea)
+            gifDVC.updateScrollLock()
         case let videoDVC as VideoDetailViewController:
             videoDVC.updateViewSize(fillsArea: fillsArea)
         default:

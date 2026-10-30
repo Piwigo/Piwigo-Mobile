@@ -347,8 +347,23 @@ final class GifDetailViewController: UIViewController
         if fillsArea {
             scrollView.isScrollEnabled = scrollView.zoomScale > scrollView.minimumZoomScale * 1.001
         }
+        if isScrollLocked {
+            scrollView.isScrollEnabled = false
+        }
     }
 
+    /// The photo does not scroll while the metadata are presented
+    private var isScrollLocked: Bool {
+        return (parent?.parent as? ImageViewController)?.isMetadataShown ?? false
+    }
+    
+    /// Called when the metadata are presented or closed
+    @MainActor
+    func updateScrollLock() {
+        scrollView.isScrollEnabled = isScrollLocked == false
+            && scrollView.zoomScale > scrollView.minimumZoomScale * 1.001
+    }
+    
     func updateImageMetadata(with imageData: Image) {
         // Update image description
         descContainer.config(withImage: imageData, inViewController: self, forVideo: false)
@@ -447,8 +462,8 @@ extension GifDetailViewController: UIScrollViewDelegate
 
     // Zooming of the content in the scroll view is about to commence
     func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
-        // Allows scrolling zoomed image
-        scrollView.isScrollEnabled = true
+        // Allows scrolling zoomed image, except while the metadata are presented
+        scrollView.isScrollEnabled = isScrollLocked == false
         // Store zoom scale value before starting zooming
         startingZoomScale = scrollView.zoomScale
     }
