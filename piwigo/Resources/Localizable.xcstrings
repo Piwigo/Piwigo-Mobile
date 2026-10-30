@@ -25241,7 +25241,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Durée de fonctionnement de l’appareil"
+            "value" : "Durée de fonctionnement"
           }
         },
         "hu" : {
@@ -29015,7 +29015,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Numéro de série de l’appareil"
+            "value" : "Numéro de série"
           }
         },
         "hu" : {
@@ -29141,7 +29141,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Température de l’appareil"
+            "value" : "Température"
           }
         },
         "hu" : {
@@ -33406,7 +33406,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Propriétaire de l’appareil"
+            "value" : "Propriétaire"
           }
         },
         "hu" : {
@@ -37186,7 +37186,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fabricant de l’appareil"
+            "value" : "Fabricant"
           }
         },
         "hu" : {
@@ -37690,7 +37690,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Modèle de l’appareil"
+            "value" : "Modèle"
           }
         },
         "hu" : {
@@ -63286,7 +63286,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Numéro de série de l’appareil"
+            "value" : "Numéro de série"
           }
         },
         "hu" : {
