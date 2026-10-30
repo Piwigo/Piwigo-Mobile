@@ -23,6 +23,9 @@ final class ImageDownload: @unchecked Sendable {
     /// which may be handled in any order: the handlers are called once both are known.
     var isStored: Bool = false
     var isTaskCompleted: Bool = false
+    /// The downloaded file was rejected, e.g. because it is truncated: it is not stored
+    /// and the failure handlers are called once the end of the task is known.
+    var rejectionError: PwgKitError?
     /// Number of times the completion handlers have been called, to detect repeated calls
     var completionCount: Int = 0
     var resumeData: Data?

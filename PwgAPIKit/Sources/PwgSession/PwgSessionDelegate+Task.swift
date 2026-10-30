@@ -95,6 +95,13 @@ extension PwgSessionDelegate: URLSessionDownloadDelegate {
             Task { await ImageDownloader.shared.failDownload(for: imageURL, error: .otherError(innerError: error)) }
             return
         }
-        Task { await ImageDownloader.shared.storeAndComplete(tempFile: tempCopy, for: imageURL) }
+        let response = downloadTask.response as? HTTPURLResponse
+        let info = DownloadedFileInfo(statusCode: response?.statusCode,
+                                      contentType: response?.value(forHTTPHeaderField: "Content-Type"),
+                                      expectedBytes: downloadTask.countOfBytesExpectedToReceive)
+        #if DEBUG
+        PwgSessionDelegate.logger.notice("Task #\(downloadTask.taskIdentifier): status \(info.statusCode ?? 0), content type \(info.contentType ?? "unknown"), \(downloadTask.countOfBytesReceived) bytes received of \(info.expectedBytes) announced")
+        #endif
+        Task { await ImageDownloader.shared.storeAndComplete(tempFile: tempCopy, for: imageURL, info: info) }
     }
 }

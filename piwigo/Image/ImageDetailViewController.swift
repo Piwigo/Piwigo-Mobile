@@ -53,8 +53,45 @@ final class ImageDetailViewController: UIViewController
     private lazy var imageSize = CGSize.zero
     lazy var previewSize: pwgImageSize = {
         let defaultSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
-        return imageData.thumbnailSize(ofMaxSize: defaultSize)
+        return usableSize(upTo: defaultSize)
     }()
+    
+    // Derivatives which the server failed to deliver, e.g. truncated files written by a failing image library:
+    /// they are not requested again during the session, the next smaller size being requested instead.
+    private static var failedDerivatives = Set<String>()
+    
+    private func key(of size: pwgImageSize) -> String {
+        return "\(imageData.server?.uuid ?? "")-\(imageData.pwgID)-\(size.rawValue)"
+    }
+    
+    /// Largest size available up to the wanted one which did not fail, down to the size of the thumbnail
+    private func usableSize(upTo size: pwgImageSize) -> pwgImageSize {
+        let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+        var candidate = imageData.thumbnailSize(ofMaxSize: size)
+        while Self.failedDerivatives.contains(key(of: candidate)), candidate > thumbSize,
+              let lower = pwgImageSize(rawValue: candidate.rawValue - 1) {
+            candidate = imageData.thumbnailSize(ofMaxSize: lower)
+        }
+        return candidate
+    }
+    
+    /// The server did not deliver the file of the preview: the next smaller size is requested
+    /// A failure of the network is not held against the file: it may be fine the next time.
+    @MainActor
+    private func downloadDidFail(with error: PwgKitError) {
+        switch error {
+        case .unexpectedData, .invalidStatusCode:
+            break
+        default:
+            return
+        }
+        Self.failedDerivatives.insert(key(of: previewSize))
+        progressView.isHidden = true
+        let size = usableSize(upTo: previewSize)
+        guard size != previewSize else { return }
+        previewSize = size
+        loadAndDisplayHighResImage()
+    }
     
     
     // MARK: - View Lifecycle
@@ -158,7 +195,7 @@ final class ImageDetailViewController: UIViewController
         
         // Look for the first available image of lower resolution
         let smallerSize = pwgImageSize(rawValue: max(pwgImageSize.medium.rawValue, previewSize.rawValue - 1)) ?? .medium
-        previewSize = imageData.thumbnailSize(ofMaxSize: smallerSize)
+        previewSize = usableSize(upTo: smallerSize)
         
         // Store for future use
         ImageVars.shared.defaultImagePreviewSize = previewSize.rawValue
@@ -234,7 +271,11 @@ final class ImageDetailViewController: UIViewController
                     (self.parent?.parent as? ImageViewController)?.metadataFilesDidChange(of: self.imageData)
                 }
             }
-            failure: { _ in }
+            failure: { [weak self = self] error in
+                Task { @MainActor in
+                    self?.downloadDidFail(with: error)
+                }
+            }
         }
     }
     

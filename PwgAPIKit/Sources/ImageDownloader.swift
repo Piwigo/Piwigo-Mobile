@@ -8,7 +8,16 @@
 
 import os
 import Foundation
+import ImageIO
 import PwgKit
+
+/// What the server answered for a downloaded file, to check the file before it is stored
+struct DownloadedFileInfo: Sendable {
+    let statusCode: Int?
+    let contentType: String?
+    /// Length announced by the server, if any
+    let expectedBytes: Int64
+}
 
 public actor ImageDownloader {
     
@@ -295,7 +304,7 @@ public actor ImageDownloader {
         download.progressHandlers.forEach { $0(progress) }
     }
     
-    func storeAndComplete(tempFile: URL, for imageURL: URL) {
+    func storeAndComplete(tempFile: URL, for imageURL: URL, info: DownloadedFileInfo) {
         guard let download = downloads[imageURL],
               let fileURL = download.fileURL
         else {
@@ -303,6 +312,15 @@ public actor ImageDownloader {
             ImageDownloader.logger.error("DOWNLOAD LOST: no download instance when storing the file of \(imageURL.absoluteString): temporary file deleted")
             #endif
             try? FileManager.default.removeItem(at: tempFile)
+            return
+        }
+        // A truncated or invalid file must not replace the one in cache: it would be shown, or served again, as it is
+        if let error = validationError(ofFile: tempFile, info: info, of: download) {
+            try? FileManager.default.removeItem(at: tempFile)
+            download.rejectionError = error
+            if download.isTaskCompleted {
+                failDownload(for: imageURL, error: error)
+            }
             return
         }
         let isStored = storeDownloadedFile(from: tempFile, to: fileURL, forImageURL: imageURL)
@@ -332,11 +350,58 @@ public actor ImageDownloader {
         ImageDownloader.logger.notice("Task of \(download.fileURL.lastPathComponent) completed (file stored: \(download.isStored))")
         #endif
 
+        // The file was rejected when it was received
+        if let error = download.rejectionError {
+            failDownload(for: imageURL, error: error)
+            return
+        }
+
         // The handlers are called once the file is in cache, by storeAndComplete() if it is not yet
         guard download.isStored else { return }
         completeDownload(download, for: imageURL)
     }
     
+    /// The file which was downloaded is not the expected one: nil if it looks complete and valid
+    private func validationError(ofFile file: URL, info: DownloadedFileInfo, of download: ImageDownload) -> PwgKitError? {
+        let name = download.fileURL.lastPathComponent
+        let received = Int64(file.fileSize)
+
+        // The server did not send the file
+        if let status = info.statusCode, (200...299).contains(status) == false {
+            ImageDownloader.logger.error("Rejected file of \(name): status code \(status), content type \(info.contentType ?? "unknown")")
+            return .invalidStatusCode(statusCode: status)
+        }
+
+        // Fewer bytes than announced by the server
+        if info.expectedBytes > 0, received != info.expectedBytes {
+            ImageDownloader.logger.error("Rejected file of \(name): \(received) bytes received instead of \(info.expectedBytes) announced, content type \(info.contentType ?? "unknown")")
+            return .unexpectedData
+        }
+
+        // Much smaller than the original file whose size is known (a margin covers its rounding to a kilobyte)
+        let isOriginal = download.fileURL.deletingLastPathComponent().lastPathComponent == pwgImageSize.fullRes.path
+        if isOriginal, download.fileSize > 0,
+           Double(received) < Double(download.fileSize) * 0.9 - 2048 {
+            ImageDownloader.logger.error("Rejected file of \(name): \(received) bytes received for a file of \(download.fileSize) bytes, content type \(info.contentType ?? "unknown")")
+            return .unexpectedData
+        }
+
+        // An image whose header is cut cannot be opened, whatever the length announced
+        let imageTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"]
+        if let type = info.contentType?.lowercased(), imageTypes.contains(where: { type.hasPrefix($0) }) {
+            let options = [kCGImageSourceCreateThumbnailFromImageAlways: true,
+                           kCGImageSourceThumbnailMaxPixelSize: 32,
+                           kCGImageSourceShouldCache: false] as CFDictionary
+            guard let source = CGImageSourceCreateWithURL(file as CFURL, nil),
+                  CGImageSourceCreateThumbnailAtIndex(source, 0, options) != nil
+            else {
+                ImageDownloader.logger.error("Rejected file of \(name): \(received) bytes received which do not make an image, content type \(type)")
+                return .unexpectedData
+            }
+        }
+        return nil
+    }
+
     func failDownload(for imageURL: URL, error: PwgKitError) {
         guard let download = downloads[imageURL]
         else { return }
