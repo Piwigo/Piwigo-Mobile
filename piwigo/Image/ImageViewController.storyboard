@@ -822,12 +822,12 @@
                                     <rect key="frame" x="0.0" y="0.0" width="353" height="155"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <mapView userInteractionEnabled="NO" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="mC1-Mp-vw1">
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="mC1-Mp-vw1">
                                             <rect key="frame" x="0.0" y="0.0" width="353" height="155"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="155" id="mC1-Hg-t01"/>
                                             </constraints>
-                                        </mapView>
+                                        </imageView>
                                     </subviews>
                                     <constraints>
                                         <constraint firstAttribute="bottom" secondItem="mC1-Mp-vw1" secondAttribute="bottom" id="mC1-Bt-c02"/>
@@ -837,7 +837,7 @@
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <outlet property="mapView" destination="mC1-Mp-vw1" id="mC1-Ot-lt1"/>
+                                    <outlet property="mapImageView" destination="mC1-Mp-vw1" id="mC1-Ot-lt1"/>
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="AddressTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="AddressTableViewCell" rowHeight="72" id="aD1-Ce-ll1" customClass="AddressTableViewCell" customModule="piwigo" customModuleProvider="target">
