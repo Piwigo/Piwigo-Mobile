@@ -15,6 +15,7 @@ import CoreLocation
 import PwgKit
 import PwgCacheKit
 import PwgUIKit
+import PwgMetadataKit
 
 final class ImageMetadataViewController: UITableViewController
 {
@@ -38,26 +39,15 @@ final class ImageMetadataViewController: UITableViewController
     /// Height of the cell inviting to show more metadata
     static let moreRowHeight: CGFloat = 39
     /// Number of metadata of a section shown before the user asks for more
-    static let metadataRowsLimit = 5
+    static let metadataRowsLimit = MetadataList.rowsLimit
 
     /// Called when the height of the content changes, e.g. when the metadata are known
     var onContentChange: (() -> Void)?
 
 
     // MARK: - Sections and Rows
-    /// The sections shown depend on the metadata of the file: there is always one,
-    /// the last one telling that the file has no metadata.
-    private enum Section: Hashable {
-        case summary, location, exif(ImageExifGroup), gps, iptc, webp, nikon, canon, apple, properties(ImagePropertiesKind), empty, loading
-
-        /// A section listing the metadata of the file
-        var isList: Bool {
-            switch self {
-            case .summary, .location, .empty, .loading: return false
-            default:                                    return true
-            }
-        }
-    }
+    /// The sections shown depend on the metadata of the file: see the model of the table
+    private typealias Section = MetadataSection
     private enum Row: Int, CaseIterable {
         case map = 0, address
     }
@@ -71,7 +61,11 @@ final class ImageMetadataViewController: UITableViewController
     }
 
     // MARK: - Summary
-    private var summary = ImageSummary()
+    private var model = MetadataTableModel()
+    private var summary: ImageSummary {
+        get { model.summary }
+        set { model.summary = newValue }
+    }
 
     /// Presents the summary of the photo or video, whose file and camera are known as soon as its data are
     @MainActor
@@ -113,7 +107,9 @@ final class ImageMetadataViewController: UITableViewController
 
 
     // MARK: - Location
-    private(set) var coordinate: CLLocationCoordinate2D?
+    private(set) var coordinate: CLLocationCoordinate2D? {
+        didSet { model.hasLocation = (coordinate != nil) }
+    }
     private var placeName = ""
     private var streetName = ""
     private var isRequestPending = false
@@ -125,31 +121,8 @@ final class ImageMetadataViewController: UITableViewController
     private let locationProvider = LocationProvider()
 
     // MARK: - EXIF and IPTC
-    /// Metadata of a section: at most a few rows are shown until the user asks for more
-    private struct MetadataList {
-        var entries = [ImageMetadataEntry]()
-        var isExpanded = false
-
-        /// The "more" row stands for at least two entries: with one entry over the limit, it is shown instead
-        var displayedCount: Int {
-            return showsMoreRow ? ImageMetadataViewController.metadataRowsLimit : entries.count
-        }
-        var showsMoreRow: Bool {
-            return isExpanded == false && entries.count > ImageMetadataViewController.metadataRowsLimit + 1
-        }
-        /// A section without metadata tells so in its only row
-        var rowCount: Int {
-            return entries.isEmpty ? 1 : displayedCount + (showsMoreRow ? 1 : 0)
-        }
-    }
-    private var lists: [Section: MetadataList] = [.gps: MetadataList(),
-                                                   .iptc: MetadataList(), .webp: MetadataList(),
-                                                   .nikon: MetadataList(), .canon: MetadataList(),
-                                                   .apple: MetadataList()]
-    private var exifVersion: String?
-    private var gpsVersion: String?
     /// The sections are shown once the file has been read: without metadata, they tell so.
-    private var isMetadataKnown = false
+    private var isMetadataKnown: Bool { model.isKnown }
     /// The file read is smaller than the original and may have lost its metadata
     private var noteAboutSize = false
     private var heightWhileReading: CGFloat?
@@ -161,33 +134,11 @@ final class ImageMetadataViewController: UITableViewController
     var metadataLoadNumber = 0
 
     private func list(of section: Section) -> MetadataList {
-        return lists[section] ?? MetadataList()
+        return model.list(of: section)
     }
 
     private var visibleSections: [Section] {
-        /// A PDF has no other metadata than its summary
-        if summary.source.isPDF { return [.summary] }
-        var sections: [Section] = [.summary]
-        if coordinate != nil { sections.append(.location) }
-        if isMetadataKnown == false {
-            /// The metadata are being read, or the file holding them is being downloaded
-            sections.append(.loading)
-        } else {
-            for group in ImageExifGroup.allCases where list(of: .exif(group)).entries.isEmpty == false {
-                sections.append(.exif(group))
-            }
-            if list(of: .gps).entries.isEmpty == false { sections.append(.gps) }
-            if list(of: .iptc).entries.isEmpty == false { sections.append(.iptc) }
-            if list(of: .webp).entries.isEmpty == false { sections.append(.webp) }
-            if list(of: .nikon).entries.isEmpty == false { sections.append(.nikon) }
-            if list(of: .canon).entries.isEmpty == false { sections.append(.canon) }
-            if list(of: .apple).entries.isEmpty == false { sections.append(.apple) }
-            for kind in ImagePropertiesKind.allCases where list(of: .properties(kind)).entries.isEmpty == false {
-                sections.append(.properties(kind))
-            }
-            if sections == [.summary] { sections.append(.empty) }
-        }
-        return sections
+        return model.sections
     }
 
     private func section(at index: Int) -> Section? {
@@ -284,24 +235,7 @@ final class ImageMetadataViewController: UITableViewController
     @MainActor
     private func update(_ metadata: ImageMetadata, isKnown: Bool, noteAboutSize: Bool) {
         let oldSections = visibleSections
-        var newLists = [Section: MetadataList]()
-        for (kind, properties) in metadata.properties {
-            newLists[.properties(kind)] = MetadataList(entries: properties.entries)
-        }
-        for (group, entries) in metadata.exif?.groups ?? [:] {
-            newLists[.exif(group)] = MetadataList(entries: entries)
-        }
-        lists = newLists.merging([
-                 .gps: MetadataList(entries: metadata.gps?.entries ?? []),
-                 .iptc: MetadataList(entries: metadata.iptc?.entries ?? []),
-                 .webp: MetadataList(entries: metadata.webp?.entries ?? []),
-                 .nikon: MetadataList(entries: metadata.nikon?.entries ?? []),
-                 .canon: MetadataList(entries: metadata.canon?.entries ?? []),
-                 .apple: MetadataList(entries: metadata.apple?.entries ?? [])]) { $1 }
-        exifVersion = metadata.exif?.version
-        summary.exif = metadata.exif
-        gpsVersion = metadata.gps?.version
-        isMetadataKnown = isKnown
+        model.update(with: metadata, isKnown: isKnown)
         self.noteAboutSize = noteAboutSize
         guard isViewLoaded else { return }
 
@@ -325,12 +259,10 @@ final class ImageMetadataViewController: UITableViewController
     /// Shows all the metadata of a section
     @MainActor
     private func expand(_ section: Section) {
-        var list = list(of: section)
-        guard list.showsMoreRow, let index = visibleSections.firstIndex(of: section) else { return }
+        guard let index = visibleSections.firstIndex(of: section) else { return }
         let limit = Self.metadataRowsLimit
-        let count = list.entries.count
-        list.isExpanded = true
-        lists[section] = list
+        let count = list(of: section).entries.count
+        guard model.expand(section) else { return }
         tableView.performBatchUpdates {
             tableView.deleteRows(at: [IndexPath(row: limit, section: index)], with: .fade)
             tableView.insertRows(at: (limit..<count).map { IndexPath(row: $0, section: index) },
@@ -340,47 +272,8 @@ final class ImageMetadataViewController: UITableViewController
     }
 
     private func headerContent(of section: Section) -> (title: String, text: String) {
-        switch section {
-        case .exif, .gps, .iptc, .webp, .nikon, .canon, .apple, .properties:
-            // "Exif • Version 2.3 • 31 items", "Version 2.2 • 9 items" or "31 items"
-            var parts = [String]()
-            var version: String?
-            var title = ""
-            switch section {
-            case .exif(let group):
-                /// The groups of the Exif metadata name their content: the first one tells what they are
-                title = group.title
-                parts.append("Exif")
-                if visibleSections.first(where: { if case .exif = $0 { return true } else { return false } }) == section {
-                    version = exifVersion
-                }
-            case .gps:
-                title = "GPS"
-                version = gpsVersion
-            case .iptc:
-                title = "IPTC"
-            case .webp:
-                title = "WebP"
-            case .nikon:
-                title = String(localized: "imageNikonHeader_title", comment: "Nikon Camera")
-            case .canon:
-                title = String(localized: "imageCanonHeader_title", comment: "Canon Camera")
-            case .apple:
-                title = String(localized: "imageAppleHeader_title", comment: "Apple Camera")
-            case .properties(let kind):
-                title = kind.title
-            default:
-                break
-            }
-            if let version = version {
-                parts.append(String(format: String(localized: "imageExifHeader_version", comment: "Version %@"), version))
-            }
-            parts.append(String.localizedStringWithFormat(
-                String(localized: "imageMetadata_itemCount", comment: "%lld items"), list(of: section).entries.count))
-            return (title + "\n", parts.joined(separator: " • "))
-        case .summary, .location, .empty, .loading:
-            return ("", "")
-        }
+        let header = model.header(of: section)
+        return (header.title, header.text)
     }
 
     /// Width of the table for which the layout of the rows was chosen
@@ -677,7 +570,7 @@ final class ImageMetadataViewController: UITableViewController
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 cell.accessoryView = nil
                 if section == .empty {
-                    cell.configure(with: String(localized: "imageExifNone_message", comment: "No metadata"), detail: "")
+                    cell.configure(with: String(localized: "imageExifNone_message", bundle: .pwgMetadataKit, comment: "No metadata"), detail: "")
                 } else if section == .loading {
                     /// The metadata are being read, or the file holding them is being downloaded
                     cell.configure(with: Localized.loading, detail: "")
@@ -897,7 +790,7 @@ final class ImageMetadataViewController: UITableViewController
                             point: CGPoint) -> UIContextMenuConfiguration? {
         guard let text = copyableText(at: indexPath), text.isEmpty == false else { return nil }
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
-            let copy = UIAction(title: String(localized: "imageMetadata_copy", comment: "Copy"),
+            let copy = UIAction(title: String(localized: "imageMetadata_copy", bundle: .pwgMetadataKit, comment: "Copy"),
                                 image: UIImage(systemName: "doc.on.doc")) { _ in
                 UIPasteboard.general.string = text
             }
@@ -950,14 +843,14 @@ final class ImageMetadataViewController: UITableViewController
                                       preferredStyle: .alert)
 
         // Copy the GPS coordinates
-        let copyAction = UIAlertAction(title: String(localized: "imageLocation_copy", comment: "Copy GPS Coordinates"),
+        let copyAction = UIAlertAction(title: String(localized: "imageLocation_copy", bundle: .pwgMetadataKit, comment: "Copy GPS Coordinates"),
                                        style: .default) { [coordinateString] _ in
             UIPasteboard.general.string = coordinateString
         }
         alert.addAction(copyAction)
 
         // Open Apple Maps at the location
-        let mapsAction = UIAlertAction(title: String(localized: "imageLocation_openMaps", comment: "Open in Maps"),
+        let mapsAction = UIAlertAction(title: String(localized: "imageLocation_openMaps", bundle: .pwgMetadataKit, comment: "Open in Maps"),
                                        style: .default) { [placeName] _ in
             let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: coordinate))
             mapItem.name = placeName.isEmpty ? nil : placeName

@@ -17,6 +17,7 @@ import CoreLocation
 import PwgKit
 import PwgCacheKit
 import PwgUIKit
+import PwgMetadataKit
 
 // MARK: - Info Button
 extension ImageViewController {
@@ -969,5 +970,23 @@ extension ImageViewController: UIGestureRecognizerDelegate {
         default:
             break
         }
+    }
+}
+
+
+// MARK: - Summary Source
+extension ImageSummary.Source {
+    /// What the data of the photo or video tell, with the duration and the frame rate of a video once known
+    @MainActor
+    init(_ image: Image, duration: TimeInterval?, frameRate: Float?) {
+        self.init()
+        fileName = image.fileName
+        fileSize = image.fileSize
+        width = image.fullRes?.width ?? 0
+        height = image.fullRes?.height ?? 0
+        isVideo = image.isVideo
+        isPDF = image.isPDF
+        self.duration = duration
+        self.frameRate = frameRate
     }
 }

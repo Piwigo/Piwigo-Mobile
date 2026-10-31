@@ -90,21 +90,11 @@
 		AD2610260000000000000014 /* MetadataPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000013 /* MetadataPanel.swift */; };
 		AD2610260000000000000016 /* MapTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000015 /* MapTableViewCell.swift */; };
 		AD2610260000000000000018 /* AddressTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000017 /* AddressTableViewCell.swift */; };
-		AD2610260000000000000034 /* LabelTableViewCell4.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000033 /* LabelTableViewCell4.swift */; };
-		AD2610260000000000000032 /* VideoSummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000031 /* VideoSummaryTableViewCell.swift */; };
-		AD2610260000000000000030 /* MetadataSummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD261026000000000000002F /* MetadataSummaryTableViewCell.swift */; };
-		AD261026000000000000002E /* ImageSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD261026000000000000002D /* ImageSummary.swift */; };
 		AD261026000000000000001A /* MetadataCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000019 /* MetadataCardView.swift */; };
-		AD261026000000000000001C /* ImageMetadataEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD261026000000000000001B /* ImageMetadataEntry.swift */; };
-		AD261026000000000000001E /* ImageIptc.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD261026000000000000001D /* ImageIptc.swift */; };
-		AD2610260000000000000020 /* ImageGps.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD261026000000000000001F /* ImageGps.swift */; };
-		AD2610260000000000000022 /* ImageWebP.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000021 /* ImageWebP.swift */; };
-		AD2610260000000000000024 /* ImageMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000023 /* ImageMetadata.swift */; };
-		AD2610260000000000000026 /* ImageNikon.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000025 /* ImageNikon.swift */; };
-		AD2610260000000000000028 /* ImageCanon.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000027 /* ImageCanon.swift */; };
-		AD261026000000000000002A /* ImageApple.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000029 /* ImageApple.swift */; };
-		AD261026000000000000002C /* ImageProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD261026000000000000002B /* ImageProperties.swift */; };
-		AD2610260000000000000012 /* ImageExif.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000011 /* ImageExif.swift */; };
+		AD2610260000000000000030 /* MetadataSummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD261026000000000000002F /* MetadataSummaryTableViewCell.swift */; };
+		AD2610260000000000000032 /* VideoSummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000031 /* VideoSummaryTableViewCell.swift */; };
+		AD2610260000000000000034 /* LabelTableViewCell4.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000033 /* LabelTableViewCell4.swift */; };
+		AD26102600000000000000A2 /* PwgMetadataKit in Frameworks */ = {isa = PBXBuildFile; productRef = AD26102600000000000000A1 /* PwgMetadataKit */; };
 		AD26F0FF2FB8D3B600C86BAC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD26F0FE2FB8D3B600C86BAC /* CoreData.framework */; };
 		AD26F1012FB8D3BD00C86BAC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD26F1002FB8D3BD00C86BAC /* UIKit.framework */; };
 		AD26F1032FB8D3F500C86BAC /* UniformTypeIdentifiers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD26F1022FB8D3F500C86BAC /* UniformTypeIdentifiers.framework */; };
@@ -618,21 +608,10 @@
 		AD2610260000000000000013 /* MetadataPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataPanel.swift; sourceTree = "<group>"; };
 		AD2610260000000000000015 /* MapTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapTableViewCell.swift; sourceTree = "<group>"; };
 		AD2610260000000000000017 /* AddressTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressTableViewCell.swift; sourceTree = "<group>"; };
-		AD2610260000000000000033 /* LabelTableViewCell4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelTableViewCell4.swift; sourceTree = "<group>"; };
-		AD2610260000000000000031 /* VideoSummaryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoSummaryTableViewCell.swift; sourceTree = "<group>"; };
-		AD261026000000000000002F /* MetadataSummaryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataSummaryTableViewCell.swift; sourceTree = "<group>"; };
-		AD261026000000000000002D /* ImageSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSummary.swift; sourceTree = "<group>"; };
 		AD2610260000000000000019 /* MetadataCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataCardView.swift; sourceTree = "<group>"; };
-		AD261026000000000000001B /* ImageMetadataEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMetadataEntry.swift; sourceTree = "<group>"; };
-		AD261026000000000000001D /* ImageIptc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageIptc.swift; sourceTree = "<group>"; };
-		AD261026000000000000001F /* ImageGps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGps.swift; sourceTree = "<group>"; };
-		AD2610260000000000000021 /* ImageWebP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageWebP.swift; sourceTree = "<group>"; };
-		AD2610260000000000000023 /* ImageMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMetadata.swift; sourceTree = "<group>"; };
-		AD2610260000000000000025 /* ImageNikon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageNikon.swift; sourceTree = "<group>"; };
-		AD2610260000000000000027 /* ImageCanon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCanon.swift; sourceTree = "<group>"; };
-		AD2610260000000000000029 /* ImageApple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageApple.swift; sourceTree = "<group>"; };
-		AD261026000000000000002B /* ImageProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageProperties.swift; sourceTree = "<group>"; };
-		AD2610260000000000000011 /* ImageExif.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageExif.swift; sourceTree = "<group>"; };
+		AD261026000000000000002F /* MetadataSummaryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataSummaryTableViewCell.swift; sourceTree = "<group>"; };
+		AD2610260000000000000031 /* VideoSummaryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoSummaryTableViewCell.swift; sourceTree = "<group>"; };
+		AD2610260000000000000033 /* LabelTableViewCell4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelTableViewCell4.swift; sourceTree = "<group>"; };
 		AD26F0FE2FB8D3B600C86BAC /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/CoreData.framework; sourceTree = DEVELOPER_DIR; };
 		AD26F1002FB8D3BD00C86BAC /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/iOSSupport/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		AD26F1022FB8D3F500C86BAC /* UniformTypeIdentifiers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UniformTypeIdentifiers.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/UniformTypeIdentifiers.framework; sourceTree = DEVELOPER_DIR; };
@@ -1090,6 +1069,7 @@
 				ADE920442FBCC7CD00CAF83A /* PwgUIKit in Frameworks */,
 				ADC82BA32FB8AD7500118FD4 /* PwgKit in Frameworks */,
 				ADC6690F2FB87FEA0089A564 /* PwgUploadKit in Frameworks */,
+				AD26102600000000000000A2 /* PwgMetadataKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1576,23 +1556,12 @@
 		ADC7F4B73091E1B50032E277 /* Metadata */ = {
 			isa = PBXGroup;
 			children = (
-				AD2610260000000000000011 /* ImageExif.swift */,
-				AD261026000000000000002B /* ImageProperties.swift */,
-				AD2610260000000000000029 /* ImageApple.swift */,
-				AD2610260000000000000027 /* ImageCanon.swift */,
-				AD2610260000000000000025 /* ImageNikon.swift */,
-				AD2610260000000000000023 /* ImageMetadata.swift */,
-				AD2610260000000000000021 /* ImageWebP.swift */,
-				AD261026000000000000001F /* ImageGps.swift */,
-				AD261026000000000000001D /* ImageIptc.swift */,
-				AD261026000000000000001B /* ImageMetadataEntry.swift */,
 				AD2610260000000000000013 /* MetadataPanel.swift */,
 				AD2610260000000000000015 /* MapTableViewCell.swift */,
 				AD2610260000000000000017 /* AddressTableViewCell.swift */,
 				AD2610260000000000000033 /* LabelTableViewCell4.swift */,
 				AD2610260000000000000031 /* VideoSummaryTableViewCell.swift */,
 				AD261026000000000000002F /* MetadataSummaryTableViewCell.swift */,
-				AD261026000000000000002D /* ImageSummary.swift */,
 				AD2610260000000000000019 /* MetadataCardView.swift */,
 			);
 			path = Metadata;
@@ -2126,7 +2095,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastSwiftUpdateCheck = 2650;
+				LastSwiftUpdateCheck = 2710;
 				LastUpgradeCheck = 2600;
 				ORGANIZATIONNAME = Piwigo.org;
 				TargetAttributes = {
@@ -2198,6 +2167,7 @@
 				AD5F5C332FB9A1D600D16523 /* XCLocalSwiftPackageReference "PwgAPIKit" */,
 				ADDD41252FBA0FC7005D8775 /* XCLocalSwiftPackageReference "PwgCacheKit" */,
 				ADE920422FBCC7CD00CAF83A /* XCLocalSwiftPackageReference "PwgUIKit" */,
+				AD26102600000000000000A0 /* XCLocalSwiftPackageReference "PwgMetadataKit" */,
 			);
 			productRefGroup = D82B8CBC1A67820A000E47CA /* Products */;
 			projectDirPath = "";
@@ -2611,22 +2581,11 @@
 				AD97CFBD265D1AF800719ED5 /* AlbumVars.swift in Sources */,
 				AD2BEF642D25EA23001FA165 /* UploadQueueViewController+Delegate.swift in Sources */,
 				AD3DB4152773958A00017542 /* ImageDescriptionView.swift in Sources */,
-				AD2610260000000000000012 /* ImageExif.swift in Sources */,
-				AD261026000000000000002C /* ImageProperties.swift in Sources */,
-				AD261026000000000000002A /* ImageApple.swift in Sources */,
-				AD2610260000000000000028 /* ImageCanon.swift in Sources */,
-				AD2610260000000000000026 /* ImageNikon.swift in Sources */,
-				AD2610260000000000000024 /* ImageMetadata.swift in Sources */,
-				AD2610260000000000000022 /* ImageWebP.swift in Sources */,
-				AD2610260000000000000020 /* ImageGps.swift in Sources */,
-				AD261026000000000000001E /* ImageIptc.swift in Sources */,
-				AD261026000000000000001C /* ImageMetadataEntry.swift in Sources */,
 				AD261026000000000000001A /* MetadataCardView.swift in Sources */,
 				AD2610260000000000000018 /* AddressTableViewCell.swift in Sources */,
 				AD2610260000000000000034 /* LabelTableViewCell4.swift in Sources */,
 				AD2610260000000000000032 /* VideoSummaryTableViewCell.swift in Sources */,
 				AD2610260000000000000030 /* MetadataSummaryTableViewCell.swift in Sources */,
-				AD261026000000000000002E /* ImageSummary.swift in Sources */,
 				AD2610260000000000000016 /* MapTableViewCell.swift in Sources */,
 				AD2610260000000000000014 /* MetadataPanel.swift in Sources */,
 				AD2610260000000000000002 /* ImageMetadataViewController.swift in Sources */,
@@ -3390,6 +3349,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
+		AD26102600000000000000A0 /* XCLocalSwiftPackageReference "PwgMetadataKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = PwgMetadataKit;
+		};
 		AD5F5C332FB9A1D600D16523 /* XCLocalSwiftPackageReference "PwgAPIKit" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = PwgAPIKit;
@@ -3416,6 +3379,11 @@
 		AD10AF352FB9E31C000F0AB4 /* PwgCacheKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PwgCacheKit;
+		};
+		AD26102600000000000000A1 /* PwgMetadataKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AD26102600000000000000A0 /* XCLocalSwiftPackageReference "PwgMetadataKit" */;
+			productName = PwgMetadataKit;
 		};
 		AD3D3AA12FB8C7C60022EF50 /* PwgKit */ = {
 			isa = XCSwiftPackageProductDependency;

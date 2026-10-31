@@ -10,24 +10,38 @@
 
 import Foundation
 
-struct ImageMetadata: Sendable {
-    var exif: ImageExif?
-    var gps: ImageGps?
-    var iptc: ImageIptc?
-    var webp: ImageWebP?
-    var nikon: ImageNikon?
-    var canon: ImageCanon?
-    var apple: ImageApple?
-    var properties = [ImagePropertiesKind: ImageProperties]()
+public struct ImageMetadata: Sendable {
+    public var exif: ImageExif?
+    public var gps: ImageGps?
+    public var iptc: ImageIptc?
+    public var webp: ImageWebP?
+    public var nikon: ImageNikon?
+    public var canon: ImageCanon?
+    public var apple: ImageApple?
+    public var properties = [ImagePropertiesKind: ImageProperties]()
+
+    public init() {}
+
+    init(exif: ImageExif?, gps: ImageGps?, iptc: ImageIptc?, webp: ImageWebP?, nikon: ImageNikon?,
+         canon: ImageCanon?, apple: ImageApple?, properties: [ImagePropertiesKind: ImageProperties]) {
+        self.exif = exif
+        self.gps = gps
+        self.iptc = iptc
+        self.webp = webp
+        self.nikon = nikon
+        self.canon = canon
+        self.apple = apple
+        self.properties = properties
+    }
 
     /// True if the file has no metadata of any kind
-    var isEmpty: Bool {
+    public var isEmpty: Bool {
         return exif == nil && gps == nil && iptc == nil && webp == nil && nikon == nil && canon == nil && apple == nil
             && properties.isEmpty
     }
 
     /// Metadata of the first file containing some: the files of an image keep the metadata of the original.
-    static func read(in urls: [URL]) -> ImageMetadata {
+    public static func read(in urls: [URL]) -> ImageMetadata {
         for url in urls {
             let metadata = ImageMetadata(exif: ImageExifReader.read(from: url),
                                          gps: ImageGpsReader.read(from: url),
@@ -43,7 +57,7 @@ struct ImageMetadata: Sendable {
     }
 
     /// Same as `read(in:)` if all the files to read have already been read, nil otherwise
-    static func cached(in urls: [URL]) -> ImageMetadata? {
+    public static func cached(in urls: [URL]) -> ImageMetadata? {
         for url in urls {
             guard let exif = ImageExifReader.cachedExif(at: url),
                   let gps = ImageGpsReader.cachedGps(at: url),

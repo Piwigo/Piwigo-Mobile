@@ -12,9 +12,9 @@
 import Foundation
 import ImageIO
 
-struct ImageCanon: Sendable {
+public struct ImageCanon: Sendable {
     /// Entries in the order of their keys, the unknown ones alphabetically
-    let entries: [ImageMetadataEntry]
+    public let entries: [ImageMetadataEntry]
 }
 
 enum ImageCanonReader
@@ -83,23 +83,23 @@ enum ImageCanonReader
             case "DriveMode", "ContinuousDrive":
                 /// Only the values known with certainty are decoded
                 switch Int(exactly: number) {
-                case 0: return String(localized: "imageCanonDriveMode_0", comment: "Single shot")
-                case 1: return String(localized: "imageCanonDriveMode_1", comment: "Continuous")
-                case 2: return String(localized: "imageCanonDriveMode_2", comment: "Movie")
+                case 0: return String(localized: "imageCanonDriveMode_0", bundle: .module, comment: "Single shot")
+                case 1: return String(localized: "imageCanonDriveMode_1", bundle: .module, comment: "Continuous")
+                case 2: return String(localized: "imageCanonDriveMode_2", bundle: .module, comment: "Movie")
                 default: return nil
                 }
             case "WhiteBalanceIndex":
                 switch Int(exactly: number) {
-                case 0: return String(localized: "imageCanonWhiteBalanceIndex_0", comment: "Auto")
-                case 1: return String(localized: "imageCanonWhiteBalanceIndex_1", comment: "Daylight")
-                case 2: return String(localized: "imageCanonWhiteBalanceIndex_2", comment: "Cloudy weather")
-                case 3: return String(localized: "imageCanonWhiteBalanceIndex_3", comment: "Tungsten")
-                case 4: return String(localized: "imageCanonWhiteBalanceIndex_4", comment: "Fluorescent")
-                case 5: return String(localized: "imageCanonWhiteBalanceIndex_5", comment: "Flash")
-                case 6: return String(localized: "imageCanonWhiteBalanceIndex_6", comment: "Custom")
-                case 7: return String(localized: "imageCanonWhiteBalanceIndex_7", comment: "Black and white")
-                case 8: return String(localized: "imageCanonWhiteBalanceIndex_8", comment: "Shade")
-                case 9: return String(localized: "imageCanonWhiteBalanceIndex_9", comment: "Manual temperature (Kelvin)")
+                case 0: return String(localized: "imageCanonWhiteBalanceIndex_0", bundle: .module, comment: "Auto")
+                case 1: return String(localized: "imageCanonWhiteBalanceIndex_1", bundle: .module, comment: "Daylight")
+                case 2: return String(localized: "imageCanonWhiteBalanceIndex_2", bundle: .module, comment: "Cloudy weather")
+                case 3: return String(localized: "imageCanonWhiteBalanceIndex_3", bundle: .module, comment: "Tungsten")
+                case 4: return String(localized: "imageCanonWhiteBalanceIndex_4", bundle: .module, comment: "Fluorescent")
+                case 5: return String(localized: "imageCanonWhiteBalanceIndex_5", bundle: .module, comment: "Flash")
+                case 6: return String(localized: "imageCanonWhiteBalanceIndex_6", bundle: .module, comment: "Custom")
+                case 7: return String(localized: "imageCanonWhiteBalanceIndex_7", bundle: .module, comment: "Black and white")
+                case 8: return String(localized: "imageCanonWhiteBalanceIndex_8", bundle: .module, comment: "Shade")
+                case 9: return String(localized: "imageCanonWhiteBalanceIndex_9", bundle: .module, comment: "Manual temperature (Kelvin)")
                 default: return nil
                 }
             case "FocusDistanceLower", "FocusDistanceUpper":

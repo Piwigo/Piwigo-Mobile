@@ -12,6 +12,7 @@
 import UIKit
 import MapKit
 import CoreLocation
+import PwgMetadataKit
 
 final class MapTableViewCell: UITableViewCell
 {
@@ -42,7 +43,7 @@ final class MapTableViewCell: UITableViewCell
 
     func configure(with coordinate: CLLocationCoordinate2D) {
         self.coordinate = coordinate
-        accessibilityLabel = String(localized: "imageLocation_map", comment: "Map")
+        accessibilityLabel = String(localized: "imageLocation_map", bundle: .pwgMetadataKit, comment: "Map")
         takeSnapshotIfNeeded()
     }
 

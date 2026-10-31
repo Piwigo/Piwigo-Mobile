@@ -11,52 +11,53 @@
 //
 
 import Foundation
+import ImageIO
 import PDFKit
-import PwgCacheKit
 
-struct ImageSummary: Sendable {
+public struct ImageSummary: Sendable {
     /// What the data of the image tell, even before any file is read
-    struct Source: Sendable, Equatable {
-        var fileName = ""
-        var fileSize: Int64 = 0
-        var width = 0
-        var height = 0
-        var isVideo = false
-        var isPDF = false
-        var duration: TimeInterval?
-        var frameRate: Float?
+    public struct Source: Sendable, Equatable {
+        public var fileName = ""
+        public var fileSize: Int64 = 0
+        public var width = 0
+        public var height = 0
+        public var isVideo = false
+        public var isPDF = false
+        public var duration: TimeInterval?
+        public var frameRate: Float?
 
-        init() {}
+        public init() {}
 
-        @MainActor
-        init(_ image: Image, duration: TimeInterval?, frameRate: Float?) {
-            fileName = image.fileName
-            fileSize = image.fileSize
-            width = image.fullRes?.width ?? 0
-            height = image.fullRes?.height ?? 0
-            isVideo = image.isVideo
-            isPDF = image.isPDF
-            self.duration = duration
-            self.frameRate = frameRate
+        /// What a file tells: its name, its size and the dimensions of its image
+        public init(fileURL: URL) {
+            fileName = fileURL.lastPathComponent
+            fileSize = Int64((try? fileURL.resourceValues(forKeys: [.fileSizeKey]))?.fileSize ?? 0)
+            if let source = CGImageSourceCreateWithURL(fileURL as CFURL, nil),
+               let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [String: Any] {
+                width = (properties[kCGImagePropertyPixelWidth as String] as? NSNumber)?.intValue ?? 0
+                height = (properties[kCGImagePropertyPixelHeight as String] as? NSNumber)?.intValue ?? 0
+            }
         }
     }
 
-    var source = Source()
-    var exif: ImageExif?
-    var pdf: PdfInfo?
+    public var source = Source()
+    public var exif: ImageExif?
+    public var pdf: PdfInfo?
+
+    public init() {}
 
     /// Written in place of a value which is not available
-    static let unavailable = "-"
+    public static let unavailable = "-"
 
 
     // MARK: - Original File
     /// Name of the original file without its extension
-    var title: String {
+    public var title: String {
         return (source.fileName as NSString).deletingPathExtension
     }
 
     /// Format of the original file, e.g. "HEIC", "JPEG" or "GIF"
-    var format: String {
+    public var format: String {
         let fileExtension = (source.fileName as NSString).pathExtension.lowercased()
         switch fileExtension {
         case "jpg", "jpeg": return "JPEG"
@@ -68,11 +69,11 @@ struct ImageSummary: Sendable {
 
     // MARK: - Camera and Lens
     /// Make and model of the camera, without repeating the make if the model starts with it
-    var camera: String {
+    public var camera: String {
         let make = exif?.value(forKey: "Make")?.trimmingCharacters(in: .whitespaces) ?? ""
         let model = exif?.value(forKey: "Model")?.trimmingCharacters(in: .whitespaces) ?? ""
         if model.isEmpty {
-            return make.isEmpty ? String(localized: "imageSummary_noCamera", comment: "No camera information") : make
+            return make.isEmpty ? String(localized: "imageSummary_noCamera", bundle: .module, comment: "No camera information") : make
         }
         return make.isEmpty || Self.model(model, containsPartOf: make) ? model : make + " " + model
     }
@@ -91,9 +92,9 @@ struct ImageSummary: Sendable {
 
     /// Model of the lens without the model of the camera which often starts it, e.g. "iPhone X back dual camera 4mm f/1.8"
     /// is written "Back dual camera 4mm f/1.8"
-    var lens: String {
+    public var lens: String {
         guard var lens = exif?.value(forKey: "LensModel")?.trimmingCharacters(in: .whitespaces), lens.isEmpty == false
-        else { return String(localized: "imageSummary_noLens", comment: "No lens information") }
+        else { return String(localized: "imageSummary_noLens", bundle: .module, comment: "No lens information") }
         for prefix in [exif?.value(forKey: "Model"), exif?.value(forKey: "Make")] {
             guard let prefix = prefix?.trimmingCharacters(in: .whitespaces), prefix.isEmpty == false,
                   lens.lowercased().hasPrefix(prefix.lowercased()), lens.count > prefix.count
@@ -108,7 +109,7 @@ struct ImageSummary: Sendable {
     }
 
     /// Number of pixels, dimensions and size of the original file, e.g. "12 MP • 4032 × 3024 • 1.2 MB"
-    var details: String {
+    public var details: String {
         var parts = [String]()
         if source.width > 1, source.height > 1 {
             let megapixels = Double(source.width) * Double(source.height) / 1_000_000
@@ -123,7 +124,7 @@ struct ImageSummary: Sendable {
     }
 
     /// Size in KB, or in MB or GB with one decimal
-    static func fileSize(_ bytes: Int64) -> String {
+    public static func fileSize(_ bytes: Int64) -> String {
         let size = Double(bytes)
         if size < 1_000_000 { return ImageMetadataFormatter.plain((size / 1_000).rounded()) + " KB" }
         if size < 1_000_000_000 { return ImageMetadataFormatter.fixed(size / 1_000_000, digits: 1) + " MB" }
@@ -133,12 +134,12 @@ struct ImageSummary: Sendable {
 
     // MARK: - Settings of the Shot
     /// The flash fired
-    var flashFired: Bool {
+    public var flashFired: Bool {
         return exif?.flashFired ?? false
     }
 
     /// ISO speed, focal length (35 mm), exposure bias, f-number and exposure time
-    var shooting: [String] {
+    public var shooting: [String] {
         let iso = ["ISOSpeedRatings", "ISOSpeed", "RecommendedExposureIndex", "StandardOutputSensitivity"]
             .lazy.compactMap { exif?.value(forKey: $0) }.first
         let values = [iso,
@@ -152,13 +153,13 @@ struct ImageSummary: Sendable {
 
     // MARK: - Video
     /// Frame rate and duration of a video
-    var video: [String] {
+    public var video: [String] {
         let frameRate = source.frameRate.flatMap { $0 > 0 ? ImageMetadataFormatter.plain(Double(($0 * 100).rounded() / 100)) + " fps" : nil }
         return [frameRate ?? Self.unavailable, Self.duration(source.duration) ?? Self.unavailable]
     }
 
     /// Minutes and seconds, or hours, minutes and seconds beyond an hour
-    static func duration(_ duration: TimeInterval?) -> String? {
+    public static func duration(_ duration: TimeInterval?) -> String? {
         guard let duration = duration, duration.isFinite, duration > 0 else { return nil }
         let seconds = Int(duration.rounded())
         if seconds < 3600 {
@@ -170,23 +171,23 @@ struct ImageSummary: Sendable {
 
     // MARK: - PDF
     /// Title of the document, or a text telling it has none; unknown until the document is read
-    var pdfTitle: String {
+    public var pdfTitle: String {
         guard let pdf = pdf else { return Self.unavailable }
-        return pdf.title ?? String(localized: "imagePdf_noTitle", comment: "No title")
+        return pdf.title ?? String(localized: "imagePdf_noTitle", bundle: .module, comment: "No title")
     }
 
-    var pdfAuthor: String {
+    public var pdfAuthor: String {
         guard let pdf = pdf else { return Self.unavailable }
-        return pdf.author ?? String(localized: "imagePdf_noAuthor", comment: "No author information")
+        return pdf.author ?? String(localized: "imagePdf_noAuthor", bundle: .module, comment: "No author information")
     }
 
     /// Number of pages, size of the first page and size of the file, e.g. "5 pages • 21.59 × 27.94 cm • 12.1 MB"
-    var pdfDetails: String {
+    public var pdfDetails: String {
         var parts = [String]()
         if let pdf = pdf {
             if pdf.pageCount > 0 {
                 parts.append(String.localizedStringWithFormat(
-                    String(localized: "pdfPageCount", comment: "%lld pages"), pdf.pageCount))
+                    String(localized: "pdfPageCount", bundle: .module, comment: "%lld pages"), pdf.pageCount))
             }
             if let size = pdf.pageSize, size.width > 0, size.height > 0 {
                 let width = ImageMetadataFormatter.fixed(Double(size.width) * 2.54 / 72, digits: 2)
@@ -200,15 +201,15 @@ struct ImageSummary: Sendable {
         return parts.isEmpty ? Self.unavailable : parts.joined(separator: " • ")
     }
 
-    var pdfCreationDate: String {
+    public var pdfCreationDate: String {
         return pdf?.creationDate.map { Self.dateFormatter.string(from: $0) } ?? Self.unavailable
     }
 
-    var pdfModificationDate: String {
+    public var pdfModificationDate: String {
         return pdf?.modificationDate.map { Self.dateFormatter.string(from: $0) } ?? Self.unavailable
     }
 
-    var pdfProducer: String {
+    public var pdfProducer: String {
         return pdf?.producer ?? Self.unavailable
     }
 
@@ -223,18 +224,20 @@ struct ImageSummary: Sendable {
 
 // MARK: - PDF Document
 /// What the document of a PDF file tells about itself
-struct PdfInfo: Sendable {
-    var title: String?
-    var author: String?
-    var producer: String?
-    var creationDate: Date?
-    var modificationDate: Date?
-    var pageCount = 0
+public struct PdfInfo: Sendable {
+    public var title: String?
+    public var author: String?
+    public var producer: String?
+    public var creationDate: Date?
+    public var modificationDate: Date?
+    public var pageCount = 0
     /// Size of the first page in points (1/72 inch), as it is displayed
-    var pageSize: CGSize?
+    public var pageSize: CGSize?
+
+    public init() {}
 
     /// Reads the attributes of the document of a file, nil if it cannot be opened
-    static func read(from url: URL) -> PdfInfo? {
+    public static func read(from url: URL) -> PdfInfo? {
         guard let document = PDFDocument(url: url) else { return nil }
         let attributes = document.documentAttributes ?? [:]
         func text(_ key: PDFDocumentAttribute) -> String? {

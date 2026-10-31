@@ -14,18 +14,18 @@ import ImageIO
 
 /// Groups of the EXIF metadata, in the order they are presented
 /// (the grouping of the tags follows the one of https://exif.pro/tags)
-enum ImageExifGroup: CaseIterable, Sendable {
+public enum ImageExifGroup: CaseIterable, Sendable {
     case camera, exposure, image, dateTime, authorship, other
 
     /// Title of the section
-    var title: String {
+    public var title: String {
         switch self {
-        case .camera:       return String(localized: "imageExifGroup_camera", comment: "Camera")
-        case .exposure:     return String(localized: "imageExifGroup_exposure", comment: "Exposure")
-        case .image:        return String(localized: "imageExifGroup_image", comment: "Image")
-        case .dateTime:     return String(localized: "imageExifGroup_dateTime", comment: "Date and Time")
-        case .authorship:   return String(localized: "imageExifGroup_authorship", comment: "Authorship")
-        case .other:        return String(localized: "imageExifGroup_other", comment: "Other")
+        case .camera:       return String(localized: "imageExifGroup_camera", bundle: .module, comment: "Camera")
+        case .exposure:     return String(localized: "imageExifGroup_exposure", bundle: .module, comment: "Exposure")
+        case .image:        return String(localized: "imageExifGroup_image", bundle: .module, comment: "Image")
+        case .dateTime:     return String(localized: "imageExifGroup_dateTime", bundle: .module, comment: "Date and Time")
+        case .authorship:   return String(localized: "imageExifGroup_authorship", bundle: .module, comment: "Authorship")
+        case .other:        return String(localized: "imageExifGroup_other", bundle: .module, comment: "Other")
         }
     }
 
@@ -79,16 +79,16 @@ enum ImageExifGroup: CaseIterable, Sendable {
     }
 }
 
-struct ImageExif: Sendable {
+public struct ImageExif: Sendable {
     /// Version of the EXIF standard, e.g. "2.3"
-    let version: String?
+    public let version: String?
     /// Entries of each group, in the order of the table of keys (unknown keys alphabetically)
-    let groups: [ImageExifGroup: [ImageMetadataEntry]]
+    public let groups: [ImageExifGroup: [ImageMetadataEntry]]
     /// The flash fired
-    let flashFired: Bool
+    public let flashFired: Bool
 
     /// Text presenting the value of a key, whatever its group
-    func value(forKey key: String) -> String? {
+    public func value(forKey key: String) -> String? {
         for entries in groups.values {
             if let entry = entries.first(where: { $0.key == key }) { return entry.value }
         }
@@ -361,7 +361,7 @@ enum ImageExifReader
     private static func meaning(of number: Double, forKey key: String) -> String? {
         guard let value = Int(exactly: number), meanings[key]?.contains(value) == true else { return nil }
         let localizationKey = "imageExif\(key)_\(value)"
-        let text = Bundle.main.localizedString(forKey: localizationKey, value: nil, table: nil)
+        let text = Bundle.module.localizedString(forKey: localizationKey, value: nil, table: nil)
         return text.caseInsensitiveCompare(localizationKey) == .orderedSame ? nil : text
     }
 
@@ -379,49 +379,49 @@ enum ImageExifReader
         // The detection of the return light alone describes the flash which fired in the default mode
         if fired, hasNoFunction == false, mode == 0, redEyeReduction == false, returnLight >= 2 {
             return returnLight == 2
-                ? String(localized: "imageExifFlash_returnNotDetected", comment: "Strobe return light not detected")
-                : String(localized: "imageExifFlash_returnDetected", comment: "Strobe return light detected")
+                ? String(localized: "imageExifFlash_returnNotDetected", bundle: .module, comment: "Strobe return light not detected")
+                : String(localized: "imageExifFlash_returnDetected", bundle: .module, comment: "Strobe return light detected")
         }
         var parts = [String]()
         if hasNoFunction {
-            parts.append(String(localized: "imageExifFlash_noFunction", comment: "No flash function"))
+            parts.append(String(localized: "imageExifFlash_noFunction", bundle: .module, comment: "No flash function"))
         } else if fired {
-            parts.append(String(localized: "imageExifFlash_fired", comment: "Flash fired"))
+            parts.append(String(localized: "imageExifFlash_fired", bundle: .module, comment: "Flash fired"))
         } else {
-            parts.append(String(localized: "imageExifFlash_notFired", comment: "Flash did not fire"))
+            parts.append(String(localized: "imageExifFlash_notFired", bundle: .module, comment: "Flash did not fire"))
         }
         switch mode {
         case 1, 2:
-            parts.append(String(localized: "imageExifFlash_compulsory", comment: "compulsory flash mode"))
+            parts.append(String(localized: "imageExifFlash_compulsory", bundle: .module, comment: "compulsory flash mode"))
         case 3:
-            parts.append(String(localized: "imageExifFlash_auto", comment: "auto mode"))
+            parts.append(String(localized: "imageExifFlash_auto", bundle: .module, comment: "auto mode"))
         default:
             break
         }
         if returnLight == 2 {
-            parts.append(String(localized: "imageExifFlash_partReturnNotDetected", comment: "strobe return light not detected"))
+            parts.append(String(localized: "imageExifFlash_partReturnNotDetected", bundle: .module, comment: "strobe return light not detected"))
         } else if returnLight == 3 {
-            parts.append(String(localized: "imageExifFlash_partReturnDetected", comment: "strobe return light detected"))
+            parts.append(String(localized: "imageExifFlash_partReturnDetected", bundle: .module, comment: "strobe return light detected"))
         }
         if redEyeReduction {
-            parts.append(String(localized: "imageExifFlash_redEye", comment: "red-eye reduction mode"))
+            parts.append(String(localized: "imageExifFlash_redEye", bundle: .module, comment: "red-eye reduction mode"))
         }
-        let separator = String(localized: "imageExifFlash_separator", comment: "Separator of the parts of the description of the flash")
+        let separator = String(localized: "imageExifFlash_separator", bundle: .module, comment: "Separator of the parts of the description of the flash")
         return parts.joined(separator: separator)
     }
 
     /// Meaning of the value of the exposure program
     private static func exposureProgram(_ value: Int) -> String? {
         switch value {
-        case 0: return String(localized: "imageExifExposureProgram_0", comment: "Not defined")
-        case 1: return String(localized: "imageExifExposureProgram_1", comment: "Manual")
-        case 2: return String(localized: "imageExifExposureProgram_2", comment: "Normal program")
-        case 3: return String(localized: "imageExifExposureProgram_3", comment: "Aperture priority")
-        case 4: return String(localized: "imageExifExposureProgram_4", comment: "Shutter priority")
-        case 5: return String(localized: "imageExifExposureProgram_5", comment: "Creative program")
-        case 6: return String(localized: "imageExifExposureProgram_6", comment: "Action program")
-        case 7: return String(localized: "imageExifExposureProgram_7", comment: "Portrait mode")
-        case 8: return String(localized: "imageExifExposureProgram_8", comment: "Landscape mode")
+        case 0: return String(localized: "imageExifExposureProgram_0", bundle: .module, comment: "Not defined")
+        case 1: return String(localized: "imageExifExposureProgram_1", bundle: .module, comment: "Manual")
+        case 2: return String(localized: "imageExifExposureProgram_2", bundle: .module, comment: "Normal program")
+        case 3: return String(localized: "imageExifExposureProgram_3", bundle: .module, comment: "Aperture priority")
+        case 4: return String(localized: "imageExifExposureProgram_4", bundle: .module, comment: "Shutter priority")
+        case 5: return String(localized: "imageExifExposureProgram_5", bundle: .module, comment: "Creative program")
+        case 6: return String(localized: "imageExifExposureProgram_6", bundle: .module, comment: "Action program")
+        case 7: return String(localized: "imageExifExposureProgram_7", bundle: .module, comment: "Portrait mode")
+        case 8: return String(localized: "imageExifExposureProgram_8", bundle: .module, comment: "Landscape mode")
         default: return nil
         }
     }
@@ -429,14 +429,14 @@ enum ImageExifReader
     /// Meaning of the value of the metering mode
     private static func meteringMode(_ value: Int) -> String? {
         switch value {
-        case 0: return String(localized: "imageExifMeteringMode_0", comment: "Unknown")
-        case 1: return String(localized: "imageExifMeteringMode_1", comment: "Average")
-        case 2: return String(localized: "imageExifMeteringMode_2", comment: "Center-weighted average")
-        case 3: return String(localized: "imageExifMeteringMode_3", comment: "Spot")
-        case 4: return String(localized: "imageExifMeteringMode_4", comment: "Multi-spot")
-        case 5: return String(localized: "imageExifMeteringMode_5", comment: "Pattern")
-        case 6: return String(localized: "imageExifMeteringMode_6", comment: "Partial")
-        case 255: return String(localized: "imageExifMeteringMode_255", comment: "Other")
+        case 0: return String(localized: "imageExifMeteringMode_0", bundle: .module, comment: "Unknown")
+        case 1: return String(localized: "imageExifMeteringMode_1", bundle: .module, comment: "Average")
+        case 2: return String(localized: "imageExifMeteringMode_2", bundle: .module, comment: "Center-weighted average")
+        case 3: return String(localized: "imageExifMeteringMode_3", bundle: .module, comment: "Spot")
+        case 4: return String(localized: "imageExifMeteringMode_4", bundle: .module, comment: "Multi-spot")
+        case 5: return String(localized: "imageExifMeteringMode_5", bundle: .module, comment: "Pattern")
+        case 6: return String(localized: "imageExifMeteringMode_6", bundle: .module, comment: "Partial")
+        case 255: return String(localized: "imageExifMeteringMode_255", bundle: .module, comment: "Other")
         default: return nil
         }
     }
@@ -444,9 +444,9 @@ enum ImageExifReader
     /// Meaning of the value of the exposure mode
     private static func exposureMode(_ value: Int) -> String? {
         switch value {
-        case 0: return String(localized: "imageExifExposureMode_0", comment: "Auto exposure")
-        case 1: return String(localized: "imageExifExposureMode_1", comment: "Manual exposure")
-        case 2: return String(localized: "imageExifExposureMode_2", comment: "Auto bracket")
+        case 0: return String(localized: "imageExifExposureMode_0", bundle: .module, comment: "Auto exposure")
+        case 1: return String(localized: "imageExifExposureMode_1", bundle: .module, comment: "Manual exposure")
+        case 2: return String(localized: "imageExifExposureMode_2", bundle: .module, comment: "Auto bracket")
         default: return nil
         }
     }

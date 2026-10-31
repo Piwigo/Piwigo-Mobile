@@ -13,9 +13,9 @@
 import Foundation
 import ImageIO
 
-struct ImageWebP: Sendable {
+public struct ImageWebP: Sendable {
     /// Entries in the order of their keys, the unknown ones alphabetically
-    let entries: [ImageMetadataEntry]
+    public let entries: [ImageMetadataEntry]
 }
 
 enum ImageWebPReader

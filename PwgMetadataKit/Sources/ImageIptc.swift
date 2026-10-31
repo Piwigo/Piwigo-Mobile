@@ -12,9 +12,9 @@
 import Foundation
 import ImageIO
 
-struct ImageIptc: Sendable {
+public struct ImageIptc: Sendable {
     /// Entries in the order of their keys, the unknown ones alphabetically
-    let entries: [ImageMetadataEntry]
+    public let entries: [ImageMetadataEntry]
 }
 
 enum ImageIptcReader
@@ -98,7 +98,7 @@ enum ImageIptcReader
             guard let text = text?.trimmingCharacters(in: .whitespacesAndNewlines) else { return nil }
             if key == "StarRating", let rating = Int(text) {
                 /// 1 to 5 stars, 0 for none and -1 for a rejected image
-                if rating < 0 { return String(localized: "imageIptcStarRating_rejected", comment: "Rejected") }
+                if rating < 0 { return String(localized: "imageIptcStarRating_rejected", bundle: .module, comment: "Rejected") }
                 if rating <= 5 { return String(repeating: "★", count: rating) + String(repeating: "☆", count: 5 - rating) }
             }
             if dateKeys.contains(key), let date = iptcDateFormatter.date(from: String(text.prefix(8))) {

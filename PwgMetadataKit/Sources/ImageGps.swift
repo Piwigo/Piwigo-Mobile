@@ -13,11 +13,14 @@
 import Foundation
 import ImageIO
 
-struct ImageGps: Sendable {
+public struct ImageGps: Sendable {
     /// Version of the GPS tags, e.g. "2.2"
-    let version: String?
+    public let version: String?
     /// Entries in the order of their keys, the unknown ones alphabetically
-    let entries: [ImageMetadataEntry]
+    public let entries: [ImageMetadataEntry]
+    /// Position of the photo in degrees, nil if the file does not tell it
+    public let latitude: Double?
+    public let longitude: Double?
 }
 
 enum ImageGpsReader
@@ -69,7 +72,17 @@ enum ImageGpsReader
             else { continue }
             entries.append(ImageMetadataEntry(key: key, name: naturalName(ofKey: key), value: text))
         }
-        return entries.isEmpty ? nil : ImageGps(version: version, entries: entries.sorted(byKeyOrder: keyOrder))
+        return entries.isEmpty ? nil : ImageGps(version: version, entries: entries.sorted(byKeyOrder: keyOrder),
+                                                 latitude: signed(values, "Latitude", "LatitudeRef", negative: "S"),
+                                                 longitude: signed(values, "Longitude", "LongitudeRef", negative: "W"))
+    }
+
+
+    /// A coordinate with the sign given by its reference: south and west are negative
+    private static func signed(_ values: [String: Any], _ key: String, _ referenceKey: String, negative: String) -> Double? {
+        guard let value = (values[key] as? NSNumber)?.doubleValue else { return nil }
+        let reference = (values[referenceKey] as? String)?.trimmingCharacters(in: .whitespaces).uppercased()
+        return reference == negative ? -abs(value) : abs(value)
     }
 
 
@@ -112,12 +125,12 @@ enum ImageGpsReader
             let token = (value as? String)?.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
                 ?? (value as? NSNumber)?.stringValue
             switch (key, token) {
-            case ("Status", "A"):       return String(localized: "imageGpsStatus_A", comment: "Measurement active")
-            case ("Status", "V"):       return String(localized: "imageGpsStatus_V", comment: "Measurement void")
+            case ("Status", "A"):       return String(localized: "imageGpsStatus_A", bundle: .module, comment: "Measurement active")
+            case ("Status", "V"):       return String(localized: "imageGpsStatus_V", bundle: .module, comment: "Measurement void")
             case ("MeasureMode", "2"):  return "2D"
             case ("MeasureMode", "3"):  return "3D"
-            case ("Differential", "0"): return String(localized: "imageGpsDifferential_0", comment: "No correction")
-            case ("Differential", "1"): return String(localized: "imageGpsDifferential_1", comment: "Differential correction applied")
+            case ("Differential", "0"): return String(localized: "imageGpsDifferential_0", bundle: .module, comment: "No correction")
+            case ("Differential", "1"): return String(localized: "imageGpsDifferential_1", bundle: .module, comment: "Differential correction applied")
             default:                    break
             }
             if let number = (value as? NSNumber)?.doubleValue {

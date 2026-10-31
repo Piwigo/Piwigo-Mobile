@@ -12,10 +12,16 @@
 import Foundation
 
 /// One metadata of an image file, e.g. the f-number of the EXIF directory
-struct ImageMetadataEntry: Sendable {
-    let key: String         // Name of the key, e.g. "FNumber"
-    let name: String        // Natural name, e.g. "F-Number"
-    let value: String       // Readable value, e.g. "f/1.8"
+public struct ImageMetadataEntry: Sendable {
+    public let key: String         // Name of the key, e.g. "FNumber"
+    public let name: String        // Natural name, e.g. "F-Number"
+    public let value: String       // Readable value, e.g. "f/1.8"
+
+    public init(key: String, name: String, value: String) {
+        self.key = key
+        self.name = name
+        self.value = value
+    }
 }
 
 extension Array where Element == ImageMetadataEntry {
@@ -88,7 +94,7 @@ enum ImageMetadataFormatter
             // Keys without translation are not looked up, which the system would report as errors
             let localizationKey = prefix + key
             guard translatedKeys?.contains(localizationKey) ?? true else { continue }
-            let name = Bundle.main.localizedString(forKey: localizationKey, value: nil, table: nil)
+            let name = Bundle.module.localizedString(forKey: localizationKey, value: nil, table: nil)
             // NSShowNonLocalizedStrings returns the key in upper case
             if name.caseInsensitiveCompare(localizationKey) != .orderedSame { return name }
         }
@@ -97,7 +103,7 @@ enum ImageMetadataFormatter
 
     /// Keys of the names translated in the app, read once from its source language
     private static let translatedKeys: Set<String>? = {
-        guard let path = Bundle.main.path(forResource: "Localizable", ofType: "strings",
+        guard let path = Bundle.module.path(forResource: "Localizable", ofType: "strings",
                                           inDirectory: nil, forLocalization: "en"),
               let strings = NSDictionary(contentsOfFile: path) as? [String: Any]
         else { return nil }
@@ -229,7 +235,7 @@ enum ImageMetadataFormatter
             /// Long lists, such as tables of numbers, are not written out
             if array.count > 16 {
                 return String.localizedStringWithFormat(
-                    String(localized: "imageMetadata_valueCount", comment: "%lld values"), array.count)
+                    String(localized: "imageMetadata_valueCount", bundle: .module, comment: "%lld values"), array.count)
             }
             return array.compactMap { formattedValue(of: $0, forKey: key, scalar: scalar) }
                 .filter { $0.isEmpty == false }.joined(separator: "; ")

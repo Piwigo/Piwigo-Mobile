@@ -15,7 +15,7 @@ import Foundation
 import ImageIO
 
 /// A directory of the properties of ImageIO presented in its own section
-enum ImagePropertiesKind: String, CaseIterable, Sendable {
+public enum ImagePropertiesKind: String, CaseIterable, Sendable {
     case minolta, fuji, olympus, pentax, raw
     case ciff, dng, gif, heics, jfif, png, tga, tiff, photoshop
 
@@ -78,7 +78,7 @@ enum ImagePropertiesKind: String, CaseIterable, Sendable {
     }
 
     /// Title of the section
-    var title: String {
+    public var title: String {
         switch self {
         case .minolta:  return Self.cameraTitle(of: "Minolta")
         case .fuji:     return Self.cameraTitle(of: "Fuji")
@@ -98,17 +98,17 @@ enum ImagePropertiesKind: String, CaseIterable, Sendable {
     }
 
     private static func propertiesTitle(of format: String) -> String {
-        return String(format: String(localized: "imageProperties_title", comment: "%@ Properties"), format)
+        return String(format: String(localized: "imageProperties_title", bundle: .module, comment: "%@ Properties"), format)
     }
 
     private static func cameraTitle(of brand: String) -> String {
-        return String(format: String(localized: "imageMakerCamera_title", comment: "%@ Camera"), brand)
+        return String(format: String(localized: "imageMakerCamera_title", bundle: .module, comment: "%@ Camera"), brand)
     }
 }
 
-struct ImageProperties: Sendable {
+public struct ImageProperties: Sendable {
     /// Entries sorted alphabetically by natural name, or by number for the keys of a maker note
-    let entries: [ImageMetadataEntry]
+    public let entries: [ImageMetadataEntry]
 }
 
 enum ImagePropertiesReader
@@ -201,7 +201,7 @@ enum ImagePropertiesReader
     /// otherwise the key split into words
     static func naturalName(ofKey key: String, kind: ImagePropertiesKind) -> String {
         if kind.isMakerNote, Int(key) != nil {
-            return String(format: String(localized: "imageAppleMakerKey_name", comment: "Maker Key %@"), key)
+            return String(format: String(localized: "imageAppleMakerKey_name", bundle: .module, comment: "Maker Key %@"), key)
         }
         return ImageMetadataFormatter.naturalName(ofKey: key, prefixes: namePrefixes)
     }
@@ -231,20 +231,20 @@ enum ImagePropertiesReader
             case "Orientation":
                 /// How the image is to be rotated or mirrored to be displayed upright
                 switch number(value).flatMap({ Int(exactly: $0) }) {
-                case 1: return String(localized: "imagePropOrientation_1", comment: "Normal")
-                case 2: return String(localized: "imagePropOrientation_2", comment: "Mirrored horizontally")
-                case 3: return String(localized: "imagePropOrientation_3", comment: "Rotated 180°")
-                case 4: return String(localized: "imagePropOrientation_4", comment: "Mirrored vertically")
-                case 5: return String(localized: "imagePropOrientation_5", comment: "Mirrored horizontally, rotated 90° counterclockwise")
-                case 6: return String(localized: "imagePropOrientation_6", comment: "Rotated 90° clockwise")
-                case 7: return String(localized: "imagePropOrientation_7", comment: "Mirrored horizontally, rotated 90° clockwise")
-                case 8: return String(localized: "imagePropOrientation_8", comment: "Rotated 90° counterclockwise")
+                case 1: return String(localized: "imagePropOrientation_1", bundle: .module, comment: "Normal")
+                case 2: return String(localized: "imagePropOrientation_2", bundle: .module, comment: "Mirrored horizontally")
+                case 3: return String(localized: "imagePropOrientation_3", bundle: .module, comment: "Rotated 180°")
+                case 4: return String(localized: "imagePropOrientation_4", bundle: .module, comment: "Mirrored vertically")
+                case 5: return String(localized: "imagePropOrientation_5", bundle: .module, comment: "Mirrored horizontally, rotated 90° counterclockwise")
+                case 6: return String(localized: "imagePropOrientation_6", bundle: .module, comment: "Rotated 90° clockwise")
+                case 7: return String(localized: "imagePropOrientation_7", bundle: .module, comment: "Mirrored horizontally, rotated 90° clockwise")
+                case 8: return String(localized: "imagePropOrientation_8", bundle: .module, comment: "Rotated 90° counterclockwise")
                 default: return nil
                 }
             case "Compression":
                 /// Method of compression of the pixel data; the names of the methods are not translated
                 switch number(value).flatMap({ Int(exactly: $0) }) {
-                case 1:     return String(localized: "imagePropCompression_1", comment: "Uncompressed")
+                case 1:     return String(localized: "imagePropCompression_1", bundle: .module, comment: "Uncompressed")
                 case 2:     return "CCITT 1D"
                 case 3:     return "CCITT Group 3"
                 case 4:     return "CCITT Group 4"
@@ -262,12 +262,12 @@ enum ImagePropertiesReader
             case "PhotometricInterpretation":
                 /// How the values of the pixels map to colours; the names of the colour models are not translated
                 switch number(value).flatMap({ Int(exactly: $0) }) {
-                case 0: return String(localized: "imagePropPhotometric_0", comment: "Grayscale (0 is white)")
-                case 1: return String(localized: "imagePropPhotometric_1", comment: "Grayscale (0 is black)")
-                case 3: return String(localized: "imagePropPhotometric_3", comment: "Color palette")
-                case 4: return String(localized: "imagePropPhotometric_4", comment: "Transparency mask")
-                case 32803: return String(localized: "imagePropPhotometric_32803", comment: "Color filter array")
-                case 34892: return String(localized: "imagePropPhotometric_34892", comment: "Linear raw")
+                case 0: return String(localized: "imagePropPhotometric_0", bundle: .module, comment: "Grayscale (0 is white)")
+                case 1: return String(localized: "imagePropPhotometric_1", bundle: .module, comment: "Grayscale (0 is black)")
+                case 3: return String(localized: "imagePropPhotometric_3", bundle: .module, comment: "Color palette")
+                case 4: return String(localized: "imagePropPhotometric_4", bundle: .module, comment: "Transparency mask")
+                case 32803: return String(localized: "imagePropPhotometric_32803", bundle: .module, comment: "Color filter array")
+                case 34892: return String(localized: "imagePropPhotometric_34892", bundle: .module, comment: "Linear raw")
                 case 2: return "RGB"
                 case 5: return "CMYK"
                 case 6: return "YCbCr"
@@ -277,15 +277,15 @@ enum ImagePropertiesReader
             case "sRGBIntent":
                 /// Rendering intent of the sRGB profile of a PNG
                 switch number(value).flatMap({ Int(exactly: $0) }) {
-                case 0: return String(localized: "imagePropSRGBIntent_0", comment: "Perceptual")
-                case 1: return String(localized: "imagePropSRGBIntent_1", comment: "Relative colorimetric")
-                case 2: return String(localized: "imagePropSRGBIntent_2", comment: "Saturation")
-                case 3: return String(localized: "imagePropSRGBIntent_3", comment: "Absolute colorimetric")
+                case 0: return String(localized: "imagePropSRGBIntent_0", bundle: .module, comment: "Perceptual")
+                case 1: return String(localized: "imagePropSRGBIntent_1", bundle: .module, comment: "Relative colorimetric")
+                case 2: return String(localized: "imagePropSRGBIntent_2", bundle: .module, comment: "Saturation")
+                case 3: return String(localized: "imagePropSRGBIntent_3", bundle: .module, comment: "Absolute colorimetric")
                 default: return nil
                 }
             case "InterlaceType":
                 switch number(value).flatMap({ Int(exactly: $0) }) {
-                case 0: return String(localized: "imagePropInterlaceType_0", comment: "None")
+                case 0: return String(localized: "imagePropInterlaceType_0", bundle: .module, comment: "None")
                 case 1: return "Adam7"
                 default: return nil
                 }
@@ -296,8 +296,8 @@ enum ImagePropertiesReader
             case "HasGlobalColorMap", "IsProgressive":
                 /// Yes or no, written with the translations used for the flags of the Apple tags
                 switch number(value).flatMap({ Int(exactly: $0) }) {
-                case 0: return String(localized: "imageAppleStable_0", comment: "No")
-                case 1: return String(localized: "imageAppleStable_1", comment: "Yes")
+                case 0: return String(localized: "imageAppleStable_0", bundle: .module, comment: "No")
+                case 1: return String(localized: "imageAppleStable_1", bundle: .module, comment: "Yes")
                 default: return nil
                 }
             case "DateTime":

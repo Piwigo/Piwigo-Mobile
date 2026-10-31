@@ -12,9 +12,9 @@
 import Foundation
 import ImageIO
 
-struct ImageNikon: Sendable {
+public struct ImageNikon: Sendable {
     /// Entries in the order of their keys, the unknown ones alphabetically
-    let entries: [ImageMetadataEntry]
+    public let entries: [ImageMetadataEntry]
 }
 
 enum ImageNikonReader

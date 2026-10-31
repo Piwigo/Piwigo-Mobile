@@ -14,9 +14,9 @@
 import Foundation
 import ImageIO
 
-struct ImageApple: Sendable {
+public struct ImageApple: Sendable {
     /// Entries in the order of their keys, the unknown ones alphabetically
-    let entries: [ImageMetadataEntry]
+    public let entries: [ImageMetadataEntry]
 }
 
 enum ImageAppleReader
@@ -75,7 +75,7 @@ enum ImageAppleReader
     /// Natural name of an Apple tag: translated if known, otherwise "Maker Key" and its number
     static func naturalName(ofKey key: String) -> String {
         guard knownKeys.contains(key) else {
-            return String(format: String(localized: "imageAppleMakerKey_name", comment: "Maker Key %@"), key)
+            return String(format: String(localized: "imageAppleMakerKey_name", bundle: .module, comment: "Maker Key %@"), key)
         }
         return ImageMetadataFormatter.naturalName(ofKey: key, prefix: "imageApple_")
     }
@@ -113,8 +113,8 @@ enum ImageAppleReader
         case "4", "7":
             /// Flags telling whether the auto exposure and the auto focus had settled
             switch (value as? NSNumber)?.intValue {
-            case 0:     return String(localized: "imageAppleStable_0", comment: "No")
-            case 1:     return String(localized: "imageAppleStable_1", comment: "Yes")
+            case 0:     return String(localized: "imageAppleStable_0", bundle: .module, comment: "No")
+            case 1:     return String(localized: "imageAppleStable_1", bundle: .module, comment: "Yes")
             default:    break
             }
         case "12":
@@ -130,8 +130,8 @@ enum ImageAppleReader
             /// Type of capture: only the values known with certainty are decoded
             switch (value as? NSNumber)?.intValue {
             case 1:     return "ProRAW"
-            case 2:     return String(localized: "imageAppleCaptureType_2", comment: "Portrait")
-            case 10:    return String(localized: "imageAppleCaptureType_10", comment: "Photo")
+            case 2:     return String(localized: "imageAppleCaptureType_2", bundle: .module, comment: "Portrait")
+            case 10:    return String(localized: "imageAppleCaptureType_10", bundle: .module, comment: "Photo")
             default:    break
             }
         case "39":
