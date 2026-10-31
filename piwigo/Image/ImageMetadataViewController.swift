@@ -148,8 +148,19 @@ final class ImageMetadataViewController: UITableViewController
 
 
     // MARK: - View Lifecycle
+    /// Text to copy with the menu shown when the user taps a row, and the interaction presenting it
+    private var pendingCopyText: String?
+    private var editMenuInteraction: Any?
+
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        // Menu proposing to copy the value of a row
+        if #available(iOS 16.0, *) {
+            let interaction = UIEditMenuInteraction(delegate: self)
+            tableView.addInteraction(interaction)
+            editMenuInteraction = interaction
+        }
 
         // Table
         tableView.alwaysBounceVertical = false
@@ -758,12 +769,13 @@ final class ImageMetadataViewController: UITableViewController
     }
 
     override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-        // Only the location and the cell asking for more metadata respond to taps
+        // The location, the cell asking for more metadata and the rows holding a value respond to taps
         switch section(at: indexPath.section) {
         case .exif?, .gps?, .iptc?, .webp?, .nikon?, .canon?, .apple?, .properties?:
-            let list = list(of: section(at: indexPath.section)!)
-            return list.showsMoreRow && indexPath.row == list.displayedCount
-        case .summary?, .empty?, .loading?:
+            return true
+        case .summary?:
+            return copyableText(at: indexPath)?.isEmpty == false
+        case .empty?, .loading?:
             return false
         default:
             return true
@@ -775,27 +787,50 @@ final class ImageMetadataViewController: UITableViewController
         guard let section = section(at: indexPath.section) else { return }
         switch section {
         case .exif, .gps, .iptc, .webp, .nikon, .canon, .apple, .properties:
-            if list(of: section).showsMoreRow, indexPath.row == list(of: section).displayedCount { expand(section) }
+            if list(of: section).showsMoreRow, indexPath.row == list(of: section).displayedCount {
+                expand(section)
+            } else {
+                presentCopyMenu(at: indexPath)
+            }
         case .location:
             presentLocationActions()
-        case .summary, .empty, .loading:
+        case .summary:
+            presentCopyMenu(at: indexPath)
+        case .empty, .loading:
             break
         }
     }
 
 
     // MARK: - Copy
-    /// A long press on a row proposes to copy its value
-    override func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath,
-                            point: CGPoint) -> UIContextMenuConfiguration? {
-        guard let text = copyableText(at: indexPath), text.isEmpty == false else { return nil }
-        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
-            let copy = UIAction(title: String(localized: "imageMetadata_copy", bundle: .pwgMetadataKit, comment: "Copy"),
-                                image: UIImage(systemName: "doc.on.doc")) { _ in
-                UIPasteboard.general.string = text
-            }
-            return UIMenu(children: [copy])
+    /// A tap on a row proposes to copy its value, in the menu which the system shows above a text
+    private func presentCopyMenu(at indexPath: IndexPath) {
+        guard let text = copyableText(at: indexPath), text.isEmpty == false else { return }
+        pendingCopyText = text
+        let rect = tableView.rectForRow(at: indexPath)
+        if #available(iOS 16.0, *), let interaction = editMenuInteraction as? UIEditMenuInteraction {
+            let point = CGPoint(x: rect.midX, y: rect.midY)
+            interaction.presentEditMenu(with: UIEditMenuConfiguration(identifier: nil, sourcePoint: point))
+        } else {
+            presentLegacyCopyMenu(from: rect)
         }
+    }
+
+    @available(iOS, deprecated: 16.0)
+    private func presentLegacyCopyMenu(from rect: CGRect) {
+        becomeFirstResponder()
+        UIMenuController.shared.showMenu(from: tableView, rect: rect)
+    }
+
+    // Responds to the "Copy" of the menu of iOS 15
+    override var canBecomeFirstResponder: Bool { true }
+
+    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        return action == #selector(copy(_:)) && pendingCopyText != nil
+    }
+
+    override func copy(_ sender: Any?) {
+        UIPasteboard.general.string = pendingCopyText
     }
 
     /// Value of a metadata, address of the location or its coordinates
@@ -866,5 +901,21 @@ final class ImageMetadataViewController: UITableViewController
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = PwgColor.tintColor
         }
+    }
+}
+
+
+// MARK: - UIEditMenuInteractionDelegate
+@available(iOS 16.0, *)
+extension ImageMetadataViewController: @MainActor UIEditMenuInteractionDelegate
+{
+    func editMenuInteraction(_ interaction: UIEditMenuInteraction, menuFor configuration: UIEditMenuConfiguration,
+                             suggestedActions: [UIMenuElement]) -> UIMenu? {
+        guard let text = pendingCopyText else { return nil }
+        let copy = UIAction(title: String(localized: "imageMetadata_copy", bundle: .pwgMetadataKit, comment: "Copy"),
+                            image: UIImage(systemName: "doc.on.doc")) { _ in
+            UIPasteboard.general.string = text
+        }
+        return UIMenu(children: [copy])
     }
 }
