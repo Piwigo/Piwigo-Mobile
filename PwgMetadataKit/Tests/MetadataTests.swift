@@ -156,4 +156,39 @@ final class MetadataTests: XCTestCase
         XCTAssertTrue(header.title.hasPrefix(ImageExifGroup.camera.title))
         XCTAssertTrue(header.text.hasPrefix("Exif"))
     }
+
+    func testListOfTheMetadataIsGroupedAndSorted() throws {
+        let url = try makeJPEG(properties: phoneProperties)
+        var model = MetadataTableModel()
+        model.update(with: ImageMetadata.read(in: [url]), isKnown: true)
+        let location = MetadataLocation(latitude: 52.0116, longitude: -4.3571, place: "Delft", address: "Markt 57")
+        let text = model.asciiList(location: location)
+        let blocks = text.components(separatedBy: "\n\n")
+        XCTAssertEqual(blocks.first?.components(separatedBy: "\n").first, "[Location]")
+        XCTAssertTrue(text.contains("52.011600, -4.357100"))
+        XCTAssertTrue(text.contains("Delft, Markt 57"))
+        // The sections come in the order of the table, and their rows are sorted by name
+        let titles = blocks.compactMap { $0.components(separatedBy: "\n").first }
+        XCTAssertEqual(titles.firstIndex(of: "[Location]"), 0)
+        XCTAssertEqual(titles.contains("[Exif - \(ImageExifGroup.camera.title)]"), true)
+        for block in blocks {
+            let names = block.components(separatedBy: "\n").dropFirst().map { $0.components(separatedBy: ": ")[0] }
+            XCTAssertEqual(names, names.sorted { $0.localizedStandardCompare($1) == .orderedAscending })
+        }
+    }
+
+    func testJsonObjectKeepsTheOrderOfTheSections() throws {
+        let url = try makeJPEG(properties: phoneProperties)
+        var model = MetadataTableModel()
+        model.update(with: ImageMetadata.read(in: [url]), isKnown: true)
+        let text = model.jsonObject(location: MetadataLocation(latitude: 1, longitude: 2, place: "A \"quoted\" place"))
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(text.utf8)) as? [String: Any])
+        XCTAssertNotNil(object["Exif"] as? [String: Any])
+        XCTAssertEqual((object["Location"] as? [String: Any])?["place"] as? String, "A \"quoted\" place")
+        // Location, then Exif, then the other groups
+        let location = try XCTUnwrap(text.range(of: "\"Location\""))
+        let exif = try XCTUnwrap(text.range(of: "\"Exif\""))
+        XCTAssertLessThan(location.lowerBound, exif.lowerBound)
+        XCTAssertEqual(MetadataTableModel().jsonObject(), "{}")
+    }
 }

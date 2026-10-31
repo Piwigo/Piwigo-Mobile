@@ -47,6 +47,10 @@ final class MetadataViewController: UITableViewController
     private var isMapPending = false
     private let geocoder = CLGeocoder()
 
+    /// Text to copy with the menu shown when the user taps a row, and the interaction presenting it
+    private var pendingCopyText: String?
+    private var editMenuInteraction: Any?
+
     /// Width of the cells as displayed, known once a cell is displayed
     private var measuredCellWidth: CGFloat?
     private static let rowSideSpace: CGFloat = 2 * 20 + 10
@@ -57,9 +61,18 @@ final class MetadataViewController: UITableViewController
         super.viewDidLoad()
 
         title = String(localized: "metadataExtension_title", comment: "Metadata")
-        navigationItem.rightBarButtonItem = UIBarButtonItem(systemItem: .done, primaryAction: UIAction { [weak self] _ in
+        let closeButton = UIBarButtonItem(systemItem: .done, primaryAction: UIAction { [weak self] _ in
             self?.extensionContext?.completeRequest(returningItems: nil)
         })
+        closeButton.style = .plain
+        closeButton.tintColor = PwgColor.tintColor
+        navigationItem.leftBarButtonItem = closeButton
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: actionsMenu())
+        if #available(iOS 16.0, *) {
+            let interaction = UIEditMenuInteraction(delegate: self)
+            tableView.addInteraction(interaction)
+            editMenuInteraction = interaction
+        }
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = TableViewUtilities.rowHeight
         applyColorPalette()
@@ -73,19 +86,28 @@ final class MetadataViewController: UITableViewController
         }
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        // The palette follows the settings of the app, shared through the app group, and the system appearance.
+        /// The window of the extension is never told that the system appearance changed while it is shown
+        let systemStyle = view.window?.windowScene?.traitCollection.userInterfaceStyle ?? traitCollection.userInterfaceStyle
+        UITools.shared.applyColorPalette(for: systemStyle)
+        applyColorPalette()
+    }
+
     private func applyColorPalette() {
         // The palette of the app is independent from the appearance of the system
-        overrideUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
+        let style: UIUserInterfaceStyle = UIVars.shared.isDarkPaletteActive ? .dark : .light
+        overrideUserInterfaceStyle = style
+        navigationController?.overrideUserInterfaceStyle = style
         view.backgroundColor = PwgColor.background
         tableView.backgroundColor = PwgColor.background
         tableView.separatorColor = PwgColor.separator
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = PwgColor.background
-        appearance.titleTextAttributes = [.foregroundColor: PwgColor.leftLabel]
-        navigationController?.navigationBar.standardAppearance = appearance
-        navigationController?.navigationBar.scrollEdgeAppearance = appearance
-        navigationController?.navigationBar.tintColor = PwgColor.orange
+        tableView.indicatorStyle = UIVars.shared.isDarkPaletteActive ? .white : .black
+        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+        navigationItem.leftBarButtonItem?.tintColor = PwgColor.tintColor
+        tableView.reloadData()
     }
 
     override func viewDidLayoutSubviews() {
@@ -187,6 +209,7 @@ final class MetadataViewController: UITableViewController
         }
         updateHeaderView(force: true)
         tableView.reloadData()
+        updateActionsMenu()
     }
 
 
@@ -472,14 +495,15 @@ final class MetadataViewController: UITableViewController
     }
 
     override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-        // Only the location and the cell asking for more metadata respond to taps
+        // The location, the cell asking for more metadata and the rows holding a value respond to taps
         guard let kind = section(at: indexPath.section) else { return false }
         switch kind {
         case .location:                         return true
-        case .summary, .empty, .loading:        return false
+        case .empty, .loading:                  return false
+        case .summary:                          return copyableText(at: indexPath)?.isEmpty == false
         default:
             let list = model.list(of: kind)
-            return list.showsMoreRow && indexPath.row == list.displayedCount
+            return (list.showsMoreRow && indexPath.row == list.displayedCount) || indexPath.row < list.displayedCount
         }
     }
 
@@ -489,11 +513,17 @@ final class MetadataViewController: UITableViewController
         switch kind {
         case .location:
             presentLocationActions()
-        case .summary, .empty, .loading:
+        case .empty, .loading:
             break
+        case .summary:
+            presentCopyMenu(at: indexPath)
         default:
             let list = model.list(of: kind)
-            if list.showsMoreRow, indexPath.row == list.displayedCount { expand(kind, at: indexPath.section) }
+            if list.showsMoreRow, indexPath.row == list.displayedCount {
+                expand(kind, at: indexPath.section)
+            } else {
+                presentCopyMenu(at: indexPath)
+            }
         }
     }
 
@@ -506,6 +536,86 @@ final class MetadataViewController: UITableViewController
             tableView.deleteRows(at: [IndexPath(row: limit, section: index)], with: .fade)
             tableView.insertRows(at: (limit..<count).map { IndexPath(row: $0, section: index) }, with: .fade)
         }
+    }
+
+
+    // MARK: - Copy of a Value
+    /// Value of a metadata, or lines of the summary
+    private func copyableText(at indexPath: IndexPath) -> String? {
+        guard let kind = section(at: indexPath.section) else { return nil }
+        switch kind {
+        case .summary:
+            switch SummaryRow(rawValue: indexPath.row) {
+            case .file:     return summary.title
+            case .camera:   return [summary.camera, summary.lens, summary.details].filter { $0.isEmpty == false }.joined(separator: "\n")
+            default:        return summary.shooting.joined(separator: " | ")
+            }
+        case .location, .empty, .loading:
+            return nil
+        default:
+            let list = model.list(of: kind)
+            return indexPath.row < list.displayedCount ? list.entries[indexPath.row].value : nil
+        }
+    }
+
+    /// Proposes to copy the value of a row, in the menu which the system shows above a text
+    private func presentCopyMenu(at indexPath: IndexPath) {
+        guard let text = copyableText(at: indexPath), text.isEmpty == false else { return }
+        pendingCopyText = text
+        let rect = tableView.rectForRow(at: indexPath)
+        if #available(iOS 16.0, *), let interaction = editMenuInteraction as? UIEditMenuInteraction {
+            let point = CGPoint(x: rect.midX, y: rect.midY)
+            interaction.presentEditMenu(with: UIEditMenuConfiguration(identifier: nil, sourcePoint: point))
+        } else {
+            presentLegacyCopyMenu(from: rect)
+        }
+    }
+
+    @available(iOS, deprecated: 16.0)
+    private func presentLegacyCopyMenu(from rect: CGRect) {
+        becomeFirstResponder()
+        UIMenuController.shared.showMenu(from: tableView, rect: rect)
+    }
+
+    // Responds to the "Copy" of the menu of iOS 15
+    override var canBecomeFirstResponder: Bool { true }
+
+    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        return action == #selector(copy(_:)) && pendingCopyText != nil
+    }
+
+    override func copy(_ sender: Any?) {
+        UIPasteboard.general.string = pendingCopyText
+    }
+
+
+    // MARK: - Menu of the Navigation Bar
+    /// The location of the photo as it is known
+    private var exportedLocation: MetadataLocation? {
+        guard let coordinate = coordinate else { return nil }
+        return MetadataLocation(latitude: coordinate.latitude, longitude: coordinate.longitude,
+                                place: placeName, address: streetName)
+    }
+
+    /// Copy of all the metadata, as a list or as a JSON object
+    private func actionsMenu() -> UIMenu {
+        let hasContent = model.sections.contains { $0.isList } || coordinate != nil
+        let attributes: UIMenuElement.Attributes = hasContent ? [] : .disabled
+        let copyList = UIAction(title: String(localized: "metadataExtension_copyList", comment: "Copy as List"),
+                                image: UIImage(systemName: "list.bullet"), attributes: attributes) { [weak self] _ in
+            guard let self = self else { return }
+            UIPasteboard.general.string = self.model.asciiList(location: self.exportedLocation)
+        }
+        let copyJSON = UIAction(title: String(localized: "metadataExtension_copyJSON", comment: "Copy as JSON Object"),
+                                image: UIImage(systemName: "curlybraces"), attributes: attributes) { [weak self] _ in
+            guard let self = self else { return }
+            UIPasteboard.general.string = self.model.jsonObject(location: self.exportedLocation)
+        }
+        return UIMenu(children: [copyList, copyJSON])
+    }
+
+    private func updateActionsMenu() {
+        navigationItem.rightBarButtonItem?.menu = actionsMenu()
     }
 
 
@@ -531,5 +641,21 @@ final class MetadataViewController: UITableViewController
         })
         alert.addAction(UIAlertAction(title: Localized.cancel, style: .cancel))
         present(alert, animated: true)
+    }
+}
+
+
+// MARK: - UIEditMenuInteractionDelegate
+@available(iOS 16.0, *)
+extension MetadataViewController: @MainActor UIEditMenuInteractionDelegate
+{
+    func editMenuInteraction(_ interaction: UIEditMenuInteraction, menuFor configuration: UIEditMenuConfiguration,
+                             suggestedActions: [UIMenuElement]) -> UIMenu? {
+        guard let text = pendingCopyText else { return nil }
+        let copy = UIAction(title: String(localized: "imageMetadata_copy", bundle: .pwgMetadataKit, comment: "Copy"),
+                            image: UIImage(systemName: "doc.on.doc")) { _ in
+            UIPasteboard.general.string = text
+        }
+        return UIMenu(children: [copy])
     }
 }
