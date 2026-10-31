@@ -134,10 +134,12 @@ final class MetadataViewController: UITableViewController
         }
         let identifier = provider.registeredTypeIdentifiers.first { UTType($0)?.conforms(to: .image) == true }
             ?? UTType.image.identifier
+        let type = UTType(identifier) ?? .image
         let suggestedName = provider.suggestedName
         model.update(with: ImageMetadata(), isKnown: false)
-        provider.loadFileRepresentation(forTypeIdentifier: identifier) { [weak self] url, _ in
-            // The file only exists during this call
+
+        // The file only exists during this call
+        let handleLoadedFile: @Sendable (URL?) -> Void = { [weak self] url in
             var copy: URL?
             if let url = url {
                 let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
@@ -151,6 +153,18 @@ final class MetadataViewController: UITableViewController
             }
             Task { @MainActor in
                 self?.didReceive(fileAt: copy)
+            }
+        }
+
+        // Asynchronously writes a copy of the provided, typed data to a temporary file
+        if #available(iOS 16.0, *) {
+            _ = provider.loadFileRepresentation(for: type, openInPlace: false) { url, _, _ in
+                handleLoadedFile(url)
+            }
+        } else {
+            // Fallback on older version
+            _ = provider.loadFileRepresentation(forTypeIdentifier: type.identifier) { url, _ in
+                handleLoadedFile(url)
             }
         }
     }
