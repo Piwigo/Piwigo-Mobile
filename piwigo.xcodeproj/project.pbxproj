@@ -95,6 +95,22 @@
 		AD2610260000000000000032 /* VideoSummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000031 /* VideoSummaryTableViewCell.swift */; };
 		AD2610260000000000000034 /* LabelTableViewCell4.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2610260000000000000033 /* LabelTableViewCell4.swift */; };
 		AD26102600000000000000A2 /* PwgMetadataKit in Frameworks */ = {isa = PBXBuildFile; productRef = AD26102600000000000000A1 /* PwgMetadataKit */; };
+		AD26102600000000000000C1 /* MetadataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD26102600000000000000B1 /* MetadataViewController.swift */; };
+		AD26102600000000000000C2 /* LabelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD26102600000000000000B2 /* LabelTableViewCell.swift */; };
+		AD26102600000000000000C3 /* LabelTableViewCell4.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD26102600000000000000B3 /* LabelTableViewCell4.swift */; };
+		AD26102600000000000000C4 /* MetadataSummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD26102600000000000000B4 /* MetadataSummaryTableViewCell.swift */; };
+		AD26102600000000000000C5 /* AddressTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD26102600000000000000B5 /* AddressTableViewCell.swift */; };
+		AD26102600000000000000C6 /* MapTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD26102600000000000000B6 /* MapTableViewCell.swift */; };
+		AD26102600000000000000C7 /* MoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD26102600000000000000B7 /* MoreTableViewCell.swift */; };
+		AD26102600000000000000C8 /* MetadataViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD26102600000000000000B8 /* MetadataViewController.storyboard */; };
+		AD26102600000000000000C9 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = AD26102600000000000000B9 /* Localizable.xcstrings */; };
+		AD26102600000000000000CA /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = AD26102600000000000000BA /* InfoPlist.xcstrings */; };
+		AD26102600000000000000CB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD26102600000000000000BB /* Images.xcassets */; };
+		AD26102600000000000000CC /* piwigo.icon in Resources */ = {isa = PBXBuildFile; fileRef = ADA78AFD2E6B6D100049198A /* piwigo.icon */; };
+		AD26102600000000000000CD /* PwgUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = AD26102600000000000000D0 /* PwgUIKit */; };
+		AD26102600000000000000CE /* PwgMetadataKit in Frameworks */ = {isa = PBXBuildFile; productRef = AD26102600000000000000D1 /* PwgMetadataKit */; };
+		AD26102600000000000000CF /* PwgKit in Frameworks */ = {isa = PBXBuildFile; productRef = AD26102600000000000000D2 /* PwgKit */; };
+		AD26102600000000000000DC /* metadataExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AD26102600000000000000BE /* metadataExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AD26F0FF2FB8D3B600C86BAC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD26F0FE2FB8D3B600C86BAC /* CoreData.framework */; };
 		AD26F1012FB8D3BD00C86BAC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD26F1002FB8D3BD00C86BAC /* UIKit.framework */; };
 		AD26F1032FB8D3F500C86BAC /* UniformTypeIdentifiers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD26F1022FB8D3F500C86BAC /* UniformTypeIdentifiers.framework */; };
@@ -177,6 +193,9 @@
 		AD46C1DB2FB3C92B00CE3D1C /* ShareTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD46C1D92FB3C92B00CE3D1C /* ShareTableViewCell.swift */; };
 		AD46C1DE2FB3CBFE00CE3D1C /* ShareViewHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD46C1DD2FB3CBFE00CE3D1C /* ShareViewHeaderView.swift */; };
 		AD46C1E02FB3CE2A00CE3D1C /* ShareViewController+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD46C1DF2FB3CE2A00CE3D1C /* ShareViewController+DataSource.swift */; };
+		AD47E136309520D800BC9FFC /* metadataExtensionIcon@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = AD47E133309520D800BC9FFC /* metadataExtensionIcon@1x.png */; };
+		AD47E137309520D800BC9FFC /* metadataExtensionIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AD47E134309520D800BC9FFC /* metadataExtensionIcon@2x.png */; };
+		AD47E138309520D800BC9FFC /* metadataExtensionIcon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = AD47E135309520D800BC9FFC /* metadataExtensionIcon@3x.png */; };
 		AD4902E324C2142800A96066 /* TagsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD4902E224C2142800A96066 /* TagsViewController.storyboard */; };
 		AD4AAFB625A0A1E4007DCD54 /* PasteboardImagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4AAFB225A0A1E4007DCD54 /* PasteboardImagesViewController.swift */; };
 		AD4AAFB725A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD4AAFB325A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard */; };
@@ -450,6 +469,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		AD26102600000000000000DA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D82B8CB31A67820A000E47CA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AD26102600000000000000D6;
+			remoteInfo = metadataExtension;
+		};
 		AD30FD3921316DA8009AA30E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D82B8CB31A67820A000E47CA /* Project object */;
@@ -491,6 +517,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				ADE2A7462FAF89F600E5E12A /* shareExtension.appex in Embed Foundation Extensions */,
+				AD26102600000000000000DC /* metadataExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -612,6 +639,21 @@
 		AD261026000000000000002F /* MetadataSummaryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataSummaryTableViewCell.swift; sourceTree = "<group>"; };
 		AD2610260000000000000031 /* VideoSummaryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoSummaryTableViewCell.swift; sourceTree = "<group>"; };
 		AD2610260000000000000033 /* LabelTableViewCell4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelTableViewCell4.swift; sourceTree = "<group>"; };
+		AD26102600000000000000B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AD26102600000000000000B1 /* MetadataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataViewController.swift; sourceTree = "<group>"; };
+		AD26102600000000000000B2 /* LabelTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelTableViewCell.swift; sourceTree = "<group>"; };
+		AD26102600000000000000B3 /* LabelTableViewCell4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelTableViewCell4.swift; sourceTree = "<group>"; };
+		AD26102600000000000000B4 /* MetadataSummaryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataSummaryTableViewCell.swift; sourceTree = "<group>"; };
+		AD26102600000000000000B5 /* AddressTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressTableViewCell.swift; sourceTree = "<group>"; };
+		AD26102600000000000000B6 /* MapTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapTableViewCell.swift; sourceTree = "<group>"; };
+		AD26102600000000000000B7 /* MoreTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreTableViewCell.swift; sourceTree = "<group>"; };
+		AD26102600000000000000B8 /* MetadataViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MetadataViewController.storyboard; sourceTree = "<group>"; };
+		AD26102600000000000000B9 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		AD26102600000000000000BA /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
+		AD26102600000000000000BB /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		AD26102600000000000000BC /* debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = debug.entitlements; sourceTree = "<group>"; };
+		AD26102600000000000000BD /* release.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = release.entitlements; sourceTree = "<group>"; };
+		AD26102600000000000000BE /* metadataExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = metadataExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD26F0FE2FB8D3B600C86BAC /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/CoreData.framework; sourceTree = DEVELOPER_DIR; };
 		AD26F1002FB8D3BD00C86BAC /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/iOSSupport/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		AD26F1022FB8D3F500C86BAC /* UniformTypeIdentifiers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UniformTypeIdentifiers.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk/System/Library/Frameworks/UniformTypeIdentifiers.framework; sourceTree = DEVELOPER_DIR; };
@@ -706,6 +748,9 @@
 		AD46C1D92FB3C92B00CE3D1C /* ShareTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareTableViewCell.swift; sourceTree = "<group>"; };
 		AD46C1DD2FB3CBFE00CE3D1C /* ShareViewHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewHeaderView.swift; sourceTree = "<group>"; };
 		AD46C1DF2FB3CE2A00CE3D1C /* ShareViewController+DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShareViewController+DataSource.swift"; sourceTree = "<group>"; };
+		AD47E133309520D800BC9FFC /* metadataExtensionIcon@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "metadataExtensionIcon@1x.png"; sourceTree = "<group>"; };
+		AD47E134309520D800BC9FFC /* metadataExtensionIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "metadataExtensionIcon@2x.png"; sourceTree = "<group>"; };
+		AD47E135309520D800BC9FFC /* metadataExtensionIcon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "metadataExtensionIcon@3x.png"; sourceTree = "<group>"; };
 		AD4902E224C2142800A96066 /* TagsViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TagsViewController.storyboard; sourceTree = "<group>"; };
 		AD4AAFB225A0A1E4007DCD54 /* PasteboardImagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasteboardImagesViewController.swift; sourceTree = "<group>"; };
 		AD4AAFB325A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = PasteboardImagesViewController.storyboard; sourceTree = "<group>"; };
@@ -1015,6 +1060,16 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		AD26102600000000000000D4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AD26102600000000000000CD /* PwgUIKit in Frameworks */,
+				AD26102600000000000000CE /* PwgMetadataKit in Frameworks */,
+				AD26102600000000000000CF /* PwgKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AD30FD3121316DA7009AA30E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1185,6 +1240,38 @@
 				ADAE3C332E19215200E1D634 /* ReleaseNotes.xcstrings */,
 			);
 			name = Strings;
+			sourceTree = "<group>";
+		};
+		AD26102600000000000000BF /* metadataExtension */ = {
+			isa = PBXGroup;
+			children = (
+				AD26102600000000000000B1 /* MetadataViewController.swift */,
+				AD26102600000000000000B8 /* MetadataViewController.storyboard */,
+				AD26102600000000000000B2 /* LabelTableViewCell.swift */,
+				AD26102600000000000000B3 /* LabelTableViewCell4.swift */,
+				AD26102600000000000000B4 /* MetadataSummaryTableViewCell.swift */,
+				AD26102600000000000000B5 /* AddressTableViewCell.swift */,
+				AD26102600000000000000B6 /* MapTableViewCell.swift */,
+				AD26102600000000000000B7 /* MoreTableViewCell.swift */,
+				AD26102600000000000000C0 /* Resources */,
+				AD26102600000000000000B0 /* Info.plist */,
+			);
+			path = metadataExtension;
+			sourceTree = "<group>";
+		};
+		AD26102600000000000000C0 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				AD26102600000000000000BC /* debug.entitlements */,
+				AD26102600000000000000BD /* release.entitlements */,
+				AD26102600000000000000B9 /* Localizable.xcstrings */,
+				AD26102600000000000000BA /* InfoPlist.xcstrings */,
+				AD26102600000000000000BB /* Images.xcassets */,
+				AD47E133309520D800BC9FFC /* metadataExtensionIcon@1x.png */,
+				AD47E134309520D800BC9FFC /* metadataExtensionIcon@2x.png */,
+				AD47E135309520D800BC9FFC /* metadataExtensionIcon@3x.png */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		AD27CE7A2FF91C6D00553B8E /* AutoUpload */ = {
@@ -1831,6 +1918,7 @@
 			children = (
 				D82B8CBD1A67820A000E47CA /* piwigo */,
 				ADADADEB2FB0AA6F003FB43F /* shareExtension */,
+				AD26102600000000000000BF /* metadataExtension */,
 				AD084E3C265984B000159FE1 /* Supporting Targets */,
 				1F042DC0C96A55B227088605 /* Frameworks */,
 				D82B8CBC1A67820A000E47CA /* Products */,
@@ -1844,6 +1932,7 @@
 				AD30FD3421316DA7009AA30E /* Screenshots.xctest */,
 				AD7F1C0E2B6675AC008E100E /* AppPreviews.xctest */,
 				ADE2A73C2FAF89F600E5E12A /* shareExtension.appex */,
+				AD26102600000000000000BE /* metadataExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2010,6 +2099,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		AD26102600000000000000D6 /* metadataExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AD26102600000000000000D7 /* Build configuration list for PBXNativeTarget "metadataExtension" */;
+			buildPhases = (
+				AD26102600000000000000D3 /* Sources */,
+				AD26102600000000000000D4 /* Frameworks */,
+				AD26102600000000000000D5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = metadataExtension;
+			packageProductDependencies = (
+				AD26102600000000000000D2 /* PwgKit */,
+				AD26102600000000000000D0 /* PwgUIKit */,
+				AD26102600000000000000D1 /* PwgMetadataKit */,
+			);
+			productName = metadataExtension;
+			productReference = AD26102600000000000000BE /* metadataExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		AD30FD3321316DA7009AA30E /* Screenshots */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AD30FD3B21316DA8009AA30E /* Build configuration list for PBXNativeTarget "Screenshots" */;
@@ -2082,6 +2193,7 @@
 			);
 			dependencies = (
 				ADE2A7452FAF89F600E5E12A /* PBXTargetDependency */,
+				AD26102600000000000000DB /* PBXTargetDependency */,
 			);
 			name = piwigo;
 			productName = piwigo;
@@ -2099,6 +2211,9 @@
 				LastUpgradeCheck = 2600;
 				ORGANIZATIONNAME = Piwigo.org;
 				TargetAttributes = {
+					AD26102600000000000000D6 = {
+						CreatedOnToolsVersion = 26.4.1;
+					};
 					AD30FD3321316DA7009AA30E = {
 						CreatedOnToolsVersion = 9.4.1;
 						LastSwiftMigration = 1020;
@@ -2175,6 +2290,7 @@
 			targets = (
 				D82B8CBA1A67820A000E47CA /* piwigo */,
 				ADE2A73B2FAF89F600E5E12A /* shareExtension */,
+				AD26102600000000000000D6 /* metadataExtension */,
 				AD30FD3321316DA7009AA30E /* Screenshots */,
 				AD7F1C002B6675AC008E100E /* AppPreviews */,
 			);
@@ -2182,6 +2298,21 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		AD26102600000000000000D5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AD26102600000000000000C9 /* Localizable.xcstrings in Resources */,
+				AD26102600000000000000CA /* InfoPlist.xcstrings in Resources */,
+				AD26102600000000000000CB /* Images.xcassets in Resources */,
+				AD26102600000000000000C8 /* MetadataViewController.storyboard in Resources */,
+				AD47E136309520D800BC9FFC /* metadataExtensionIcon@1x.png in Resources */,
+				AD47E137309520D800BC9FFC /* metadataExtensionIcon@2x.png in Resources */,
+				AD47E138309520D800BC9FFC /* metadataExtensionIcon@3x.png in Resources */,
+				AD26102600000000000000CC /* piwigo.icon in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AD30FD3221316DA7009AA30E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2316,6 +2447,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		AD26102600000000000000D3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AD26102600000000000000C1 /* MetadataViewController.swift in Sources */,
+				AD26102600000000000000C2 /* LabelTableViewCell.swift in Sources */,
+				AD26102600000000000000C3 /* LabelTableViewCell4.swift in Sources */,
+				AD26102600000000000000C4 /* MetadataSummaryTableViewCell.swift in Sources */,
+				AD26102600000000000000C5 /* AddressTableViewCell.swift in Sources */,
+				AD26102600000000000000C6 /* MapTableViewCell.swift in Sources */,
+				AD26102600000000000000C7 /* MoreTableViewCell.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AD30FD3021316DA7009AA30E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2653,6 +2798,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		AD26102600000000000000DB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AD26102600000000000000D6 /* metadataExtension */;
+			targetProxy = AD26102600000000000000DA /* PBXContainerItemProxy */;
+		};
 		AD30FD3A21316DA8009AA30E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = D82B8CBA1A67820A000E47CA /* piwigo */;
@@ -2783,6 +2933,118 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		AD26102600000000000000D8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = metadataExtension/Resources/debug.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
+				CODE_SIGN_STYLE = Manual;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZEC3W885H6;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = ZEC3W885H6;
+				ENABLE_DEBUG_DYLIB = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				INFOPLIST_FILE = metadataExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Metadata;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Piwigo.org. All rights reserved.";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 4.5;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "net.lelievre-berna.piwigo.metadataExtension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Dev profile for Piwigo Metadata Extension";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "Dev profile for Piwigo Mac Catalyst Metadata Ext.";
+				REGISTER_APP_GROUPS = YES;
+				SKIP_INSTALL = NO;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG EXTENSION $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = NO;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_STRICT_MEMORY_SAFETY = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AD26102600000000000000D9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = metadataExtension/Resources/release.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZU5THW8T5W;
+				ENABLE_DEBUG_DYLIB = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				INFOPLIST_FILE = metadataExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Metadata;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Piwigo.org. All rights reserved.";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 4.5;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo.metadataExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Piwigo Distribution MetadataExtension";
+				REGISTER_APP_GROUPS = YES;
+				SKIP_INSTALL = NO;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "EXTENSION $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = NO;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_STRICT_MEMORY_SAFETY = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		AD30FD3C21316DA8009AA30E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3301,6 +3563,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		AD26102600000000000000D7 /* Build configuration list for PBXNativeTarget "metadataExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD26102600000000000000D8 /* Debug */,
+				AD26102600000000000000D9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		AD30FD3B21316DA8009AA30E /* Build configuration list for PBXNativeTarget "Screenshots" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -3384,6 +3655,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = AD26102600000000000000A0 /* XCLocalSwiftPackageReference "PwgMetadataKit" */;
 			productName = PwgMetadataKit;
+		};
+		AD26102600000000000000D0 /* PwgUIKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = ADE920422FBCC7CD00CAF83A /* XCLocalSwiftPackageReference "PwgUIKit" */;
+			productName = PwgUIKit;
+		};
+		AD26102600000000000000D1 /* PwgMetadataKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AD26102600000000000000A0 /* XCLocalSwiftPackageReference "PwgMetadataKit" */;
+			productName = PwgMetadataKit;
+		};
+		AD26102600000000000000D2 /* PwgKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = ADC82BA12FB8AD7500118FD4 /* XCLocalSwiftPackageReference "PwgKit" */;
+			productName = PwgKit;
 		};
 		AD3D3AA12FB8C7C60022EF50 /* PwgKit */ = {
 			isa = XCSwiftPackageProductDependency;
