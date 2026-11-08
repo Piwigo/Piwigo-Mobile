@@ -116,19 +116,19 @@ public struct MetadataTableModel: Sendable {
 
     /// Directory of the file a metadata comes from
     private enum Source: String {
-        case exif = "Exif", gps = "GPS", iptc = "IPTC", webp = "WebP", tiff = "TIFF", jfif = "JFIF", png = "PNG",
+        case exif = "Exif", gps = "GPS", iptc = "IPTC", xmp = "XMP", webp = "WebP", tiff = "TIFF", jfif = "JFIF", png = "PNG",
              gif = "GIF", heics = "HEIC", dng = "DNG", ciff = "CIFF", tga = "TGA", photoshop = "8BIM", raw = "RAW"
     }
 
     /// Directories whose metadata a theme gathers, in the order they are listed
     private static let sources: [MetadataGroup: [Source]] = [
-        .description: [.iptc, .exif, .tiff, .png],
-        .dateTime: [.exif, .tiff, .gps, .iptc, .png],
+        .description: [.iptc, .exif, .tiff, .png, .xmp],
+        .dateTime: [.exif, .tiff, .gps, .iptc, .xmp, .png],
         .cameraLens: [.exif],
         .exposure: [.exif],
         .location: [.gps, .iptc],
-        .rights: [.exif, .iptc, .png],
-        .image: [.exif, .tiff, .jfif, .png, .gif, .heics, .dng, .ciff, .tga, .photoshop, .raw, .webp, .iptc]
+        .rights: [.exif, .iptc, .png, .xmp],
+        .image: [.exif, .tiff, .jfif, .png, .gif, .heics, .dng, .ciff, .tga, .photoshop, .raw, .webp, .xmp, .iptc]
     ]
 
     /// Theme of a metadata: the keys which describe, date, locate or sign the photo go to the matching theme,
@@ -156,6 +156,13 @@ public struct MetadataTableModel: Sendable {
             if ["SubLocation", "City", "Province/State", "Country/PrimaryLocationName",
                 "Country/PrimaryLocationCode"].contains(key) { return .location }
             return .image
+        case .xmp:
+            switch key {
+            case "DigitalCreationDate", "ModifyDate", "DateCreated": return .dateTime
+            case "WebStatement", "Marked":                      return .rights
+            case "Label":                                       return .description
+            default:                                            return .image
+            }
         case .tiff:
             if key == "DateTime" { return .dateTime }
             return ["ImageDescription", "DocumentName"].contains(key) ? .description : .image
@@ -184,6 +191,13 @@ public struct MetadataTableModel: Sendable {
         }
         add(metadata.gps?.entries ?? [], from: .gps)
         add(metadata.iptc?.entries ?? [], from: .iptc)
+        // The dates of the XMP packet are left out when the IPTC metadata, which ImageIO fills from it, already tell them
+        let iptcKeys = Set((metadata.iptc?.entries ?? []).map(\.key))
+        add((metadata.xmp?.entries ?? []).filter {
+            let isTold = ($0.key == "DigitalCreationDate" && iptcKeys.contains("DigitalCreationDate"))
+                || ($0.key == "DateCreated" && iptcKeys.contains("DateCreated"))
+            return isTold == false
+        }, from: .xmp)
         add(metadata.webp?.entries ?? [], from: .webp)
         var newLists = [MetadataSection: MetadataList]()
         for (kind, properties) in metadata.properties {

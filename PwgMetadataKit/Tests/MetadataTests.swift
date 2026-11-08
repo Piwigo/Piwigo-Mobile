@@ -29,6 +29,30 @@ final class MetadataTests: XCTestCase
         return url
     }
 
+    /// A JPEG whose only metadata is an XMP packet: ImageIO writes the IPTC block as well, which is removed
+    private func makeJPEG(xmp packet: String) throws -> URL {
+        let url = try makeJPEG(properties: [:])
+        let metadata = try XCTUnwrap(CGImageMetadataCreateFromXMPData(Data(packet.utf8) as CFData))
+        let context = CGContext(data: nil, width: 8, height: 6, bitsPerComponent: 8, bytesPerRow: 0,
+                                space: CGColorSpaceCreateDeviceRGB(),
+                                bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)!
+        let destination = CGImageDestinationCreateWithURL(url as CFURL, UTType.jpeg.identifier as CFString, 1, nil)!
+        CGImageDestinationAddImageAndMetadata(destination, context.makeImage()!, metadata, nil)
+        XCTAssertTrue(CGImageDestinationFinalize(destination))
+        // Drop the segments of the Photoshop resources (marker 0xED), which hold the IPTC block
+        let data = try Data(contentsOf: url)
+        var stripped = data.prefix(2), index = 2
+        while index + 4 <= data.count, data[index] == 0xFF {
+            let marker = data[index + 1]
+            if marker == 0xDA { stripped.append(data.suffix(from: index)); break }
+            let length = Int(data[index + 2]) << 8 | Int(data[index + 3])
+            if marker != 0xED { stripped.append(data[index..<(index + 2 + length)]) }
+            index += 2 + length
+        }
+        try stripped.write(to: url)
+        return url
+    }
+
     private var phoneProperties: [String: Any] {
         return [
             kCGImagePropertyTIFFDictionary as String: [
@@ -212,5 +236,42 @@ final class MetadataTests: XCTestCase
         XCTAssertNotNil((object["Location"] as? [String: Any])?["Latitude"])
         XCTAssertEqual(text.components(separatedBy: "\"Location\"").count, 2)
         XCTAssertEqual(MetadataTableModel().jsonObject(), "{}")
+    }
+
+    func testXmpOnlyFileGivesItsMetadata() throws {
+        let packet = """
+        <x:xmpmeta xmlns:x="adobe:ns:meta/"><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+        <rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xmp="http://ns.adobe.com/xap/1.0/" \
+        xmlns:xmpRights="http://ns.adobe.com/xap/1.0/rights/" xmp:Rating="4" xmp:CreatorTool="Probe 1.0" \
+        xmp:CreateDate="2024-01-05T12:34:56+01:00" xmpRights:Marked="True" xmpRights:WebStatement="https://example.org/rights">
+        <dc:title><rdf:Alt><rdf:li xml:lang="x-default">The title</rdf:li></rdf:Alt></dc:title>
+        <dc:subject><rdf:Bag><rdf:li>alpha</rdf:li><rdf:li>beta</rdf:li></rdf:Bag></dc:subject>
+        </rdf:Description></rdf:RDF></x:xmpmeta>
+        """
+        let url = try makeJPEG(xmp: packet)
+        let metadata = ImageMetadata.read(in: [url])
+        var model = MetadataTableModel()
+        model.update(with: metadata, isKnown: true)
+
+        // ImageIO gives the title, keywords and rating with the IPTC metadata
+        let description = model.list(of: .group(.description)).entries
+        XCTAssertEqual(description.first(where: { $0.key == "ObjectName" })?.value, "The title")
+        XCTAssertEqual(description.first(where: { $0.key == "Keywords" })?.value, "alpha; beta")
+        XCTAssertNotNil(description.first(where: { $0.key == "StarRating" }))
+        // The rest is read from the packet
+        let dates = model.list(of: .group(.dateTime)).entries
+        XCTAssertTrue(try XCTUnwrap(dates.first(where: { $0.key == "DigitalCreationDate" })).value.hasSuffix("12:34:56 +01:00"))
+        let rights = model.list(of: .group(.rights)).entries
+        XCTAssertEqual(rights.first(where: { $0.key == "Marked" })?.value, "Yes")
+        XCTAssertEqual(rights.first(where: { $0.key == "WebStatement" })?.value, "https://example.org/rights")
+        XCTAssertEqual(model.list(of: .group(.image)).entries.first(where: { $0.key == "CreatorTool" })?.value, "Probe 1.0")
+    }
+
+    func testXmpDates() {
+        XCTAssertTrue(try XCTUnwrap(ImageXmpReader.formattedDate("2024-01-05T12:34:56+01:00")).hasSuffix("12:34:56 +01:00"))
+        XCTAssertTrue(try XCTUnwrap(ImageXmpReader.formattedDate("2024-01-05T12:34Z")).hasSuffix("12:34 UTC"))
+        XCTAssertTrue(try XCTUnwrap(ImageXmpReader.formattedDate("2024-01-05T12:34:56.789")).hasSuffix("12:34:56"))
+        XCTAssertFalse(try XCTUnwrap(ImageXmpReader.formattedDate("2024-01-05")).contains(":"))
+        XCTAssertNil(ImageXmpReader.formattedDate("last Tuesday"))
     }
 }
