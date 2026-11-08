@@ -122,9 +122,8 @@ final class MetadataTests: XCTestCase
         model.update(with: ImageMetadata.read(in: [url]), isKnown: true)
         let sections = model.sections
         XCTAssertEqual(Array(sections.prefix(2)), [.summary, .location])
-        XCTAssertTrue(sections.contains(.exif(.camera)))
-        XCTAssertTrue(sections.contains(.exif(.exposure)))
-        XCTAssertTrue(sections.contains(.gps))
+        // The themes come in a fixed order whatever the directories of the file which feed them
+        XCTAssertEqual(Array(sections.dropFirst(2)), [.group(.cameraLens), .group(.exposure), .group(.location), .group(.image)])
         XCTAssertFalse(sections.contains(.empty))
 
         // Without any
@@ -148,13 +147,34 @@ final class MetadataTests: XCTestCase
         XCTAssertEqual(list.rowCount, 7)
     }
 
-    func testHeaderOfAnExifGroup() throws {
+    func testHeaderOfAGroup() throws {
         let url = try makeJPEG(properties: phoneProperties)
         var model = MetadataTableModel()
         model.update(with: ImageMetadata.read(in: [url]), isKnown: true)
-        let header = model.header(of: .exif(.camera))
-        XCTAssertTrue(header.title.hasPrefix(ImageExifGroup.camera.title))
-        XCTAssertTrue(header.text.hasPrefix("Exif"))
+        let header = model.header(of: .group(.cameraLens))
+        XCTAssertTrue(header.title.hasPrefix(MetadataGroup.cameraLens.title))
+        XCTAssertFalse(header.text.isEmpty)
+        // Only the number of items is told: the source of the metadata is not
+        XCTAssertFalse(header.text.contains("Exif"))
+    }
+
+    func testMetadataOfSeveralDirectoriesShareATheme() {
+        var metadata = ImageMetadata()
+        metadata.iptc = ImageIptc(entries: [
+            ImageMetadataEntry(key: "Caption/Abstract", name: "Caption", value: "A caption"),
+            ImageMetadataEntry(key: "Byline", name: "Creator", value: "Eddy"),
+            ImageMetadataEntry(key: "City", name: "City", value: "Grenoble"),
+            ImageMetadataEntry(key: "DateCreated", name: "Date Created", value: "5 Jan 2024")])
+        metadata.gps = ImageGps(version: "2.2", entries: [
+            ImageMetadataEntry(key: "Latitude", name: "Latitude", value: "45° N"),
+            ImageMetadataEntry(key: "DateStamp", name: "Date Stamp", value: "5 Jan 2024")],
+                                latitude: 45, longitude: 5)
+        var model = MetadataTableModel()
+        model.update(with: metadata, isKnown: true)
+        XCTAssertEqual(model.sections, [.summary, .group(.description), .group(.dateTime), .group(.location),
+                                        .group(.rights)])
+        XCTAssertEqual(model.list(of: .group(.location)).entries.map(\.key), ["Latitude", "City", "GPSVersion"])
+        XCTAssertEqual(model.list(of: .group(.dateTime)).entries.map(\.key), ["DateStamp", "DateCreated"])
     }
 
     func testListOfTheMetadataIsGroupedAndSorted() throws {
@@ -170,7 +190,7 @@ final class MetadataTests: XCTestCase
         // The sections come in the order of the table, and their rows are sorted by name
         let titles = blocks.compactMap { $0.components(separatedBy: "\n").first }
         XCTAssertEqual(titles.firstIndex(of: "[Location]"), 0)
-        XCTAssertEqual(titles.contains("[Exif - \(ImageExifGroup.camera.title)]"), true)
+        XCTAssertEqual(titles.contains("[\(MetadataGroup.cameraLens.title)]"), true)
         for block in blocks {
             let names = block.components(separatedBy: "\n").dropFirst().map { $0.components(separatedBy: ": ")[0] }
             XCTAssertEqual(names, names.sorted { $0.localizedStandardCompare($1) == .orderedAscending })
@@ -183,12 +203,14 @@ final class MetadataTests: XCTestCase
         model.update(with: ImageMetadata.read(in: [url]), isKnown: true)
         let text = model.jsonObject(location: MetadataLocation(latitude: 1, longitude: 2, place: "A \"quoted\" place"))
         let object = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(text.utf8)) as? [String: Any])
-        XCTAssertNotNil(object["Exif"] as? [String: Any])
+        XCTAssertNotNil(object["CameraLens"] as? [String: Any])
         XCTAssertEqual((object["Location"] as? [String: Any])?["place"] as? String, "A \"quoted\" place")
-        // Location, then Exif, then the other groups
+        // Location, then the other groups; the GPS metadata join the location of the map
         let location = try XCTUnwrap(text.range(of: "\"Location\""))
-        let exif = try XCTUnwrap(text.range(of: "\"Exif\""))
-        XCTAssertLessThan(location.lowerBound, exif.lowerBound)
+        let camera = try XCTUnwrap(text.range(of: "\"CameraLens\""))
+        XCTAssertLessThan(location.lowerBound, camera.lowerBound)
+        XCTAssertNotNil((object["Location"] as? [String: Any])?["Latitude"])
+        XCTAssertEqual(text.components(separatedBy: "\"Location\"").count, 2)
         XCTAssertEqual(MetadataTableModel().jsonObject(), "{}")
     }
 }

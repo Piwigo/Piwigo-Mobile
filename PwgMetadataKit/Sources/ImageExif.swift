@@ -17,18 +17,6 @@ import ImageIO
 public enum ImageExifGroup: CaseIterable, Sendable {
     case camera, exposure, image, dateTime, authorship, other
 
-    /// Title of the section
-    public var title: String {
-        switch self {
-        case .camera:       return String(localized: "imageExifGroup_camera", bundle: .module, comment: "Camera")
-        case .exposure:     return String(localized: "imageExifGroup_exposure", bundle: .module, comment: "Exposure")
-        case .image:        return String(localized: "imageExifGroup_image", bundle: .module, comment: "Image")
-        case .dateTime:     return String(localized: "imageExifGroup_dateTime", bundle: .module, comment: "Date and Time")
-        case .authorship:   return String(localized: "imageExifGroup_authorship", bundle: .module, comment: "Authorship")
-        case .other:        return String(localized: "imageExifGroup_other", bundle: .module, comment: "Other")
-        }
-    }
-
     /// Keys of each group, in the order they are presented: from the body of the camera to its lens,
     /// from the mode of the exposure to its measures, from the dimensions of the image to its origin.
     private static let keys: [ImageExifGroup: [String]] = [

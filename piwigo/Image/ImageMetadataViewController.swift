@@ -61,7 +61,11 @@ final class ImageMetadataViewController: UITableViewController
     }
 
     // MARK: - Summary
-    private var model = MetadataTableModel()
+    private var model: MetadataTableModel = {
+        var model = MetadataTableModel()
+        model.movesDatesAndDescriptionToEnd = true
+        return model
+    }()
     private var summary: ImageSummary {
         get { model.summary }
         set { model.summary = newValue }
@@ -382,7 +386,7 @@ final class ImageMetadataViewController: UITableViewController
                 height += Self.sectionGap + TableViewUtilities.rowHeight + footerHeight(of: .empty, width: width)
             case .loading:
                 height += 2 * Self.sectionGap + TableViewUtilities.rowHeight
-            case .exif, .gps, .iptc, .webp, .nikon, .canon, .apple, .properties:
+            case .group, .maker:
                 let header = headerContent(of: section)
                 height += TableViewUtilities.heightOfHeader(withTitle: header.title, text: header.text, width: width)
                 height += CGFloat(list(of: section).rowCount) * TableViewUtilities.rowHeight
@@ -549,7 +553,7 @@ final class ImageMetadataViewController: UITableViewController
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch self.section(at: section) {
-        case .exif, .gps, .iptc, .webp, .nikon, .canon, .apple, .properties:
+        case .group, .maker:
             return list(of: self.section(at: section)!).rowCount
         case .empty, .loading:
             return 1
@@ -771,7 +775,7 @@ final class ImageMetadataViewController: UITableViewController
     override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         // The location, the cell asking for more metadata and the rows holding a value respond to taps
         switch section(at: indexPath.section) {
-        case .exif?, .gps?, .iptc?, .webp?, .nikon?, .canon?, .apple?, .properties?:
+        case .group?, .maker?:
             return true
         case .summary?:
             return copyableText(at: indexPath)?.isEmpty == false
@@ -786,7 +790,7 @@ final class ImageMetadataViewController: UITableViewController
         tableView.deselectRow(at: indexPath, animated: true)
         guard let section = section(at: indexPath.section) else { return }
         switch section {
-        case .exif, .gps, .iptc, .webp, .nikon, .canon, .apple, .properties:
+        case .group, .maker:
             if list(of: section).showsMoreRow, indexPath.row == list(of: section).displayedCount {
                 expand(section)
             } else {
@@ -837,7 +841,7 @@ final class ImageMetadataViewController: UITableViewController
     private func copyableText(at indexPath: IndexPath) -> String? {
         guard let section = section(at: indexPath.section) else { return nil }
         switch section {
-        case .exif, .gps, .iptc, .webp, .nikon, .canon, .apple, .properties:
+        case .group, .maker:
             let entries = list(of: section).entries
             return entries.indices.contains(indexPath.row) && indexPath.row < list(of: section).displayedCount
                 ? entries[indexPath.row].value : nil

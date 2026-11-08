@@ -12,10 +12,51 @@
 
 import Foundation
 
+/// Themes of the metadata, in the order they are presented: what the photo is about comes first, then when,
+/// with which camera, where, by whom, and finally how the file is made. Each theme gathers the metadata of
+/// all the directories of the file (Exif, IPTC, GPS, TIFF, PNG…) which belong to it.
+public enum MetadataGroup: String, CaseIterable, Sendable {
+    case description, dateTime, cameraLens, exposure, location, rights, image
+
+    /// Title of the section
+    public var title: String {
+        switch self {
+        case .description:  return String(localized: "imageGroup_description", bundle: .module, comment: "Description")
+        case .dateTime:     return String(localized: "imageExifGroup_dateTime", bundle: .module, comment: "Date and Time")
+        case .cameraLens:   return String(localized: "imageGroup_cameraLens", bundle: .module, comment: "Camera and Lens")
+        case .exposure:     return String(localized: "imageExifGroup_exposure", bundle: .module, comment: "Exposure")
+        case .location:     return String(localized: "imageLocation_title", bundle: .module, comment: "Location")
+        case .rights:       return String(localized: "imageGroup_rights", bundle: .module, comment: "Authorship and Rights")
+        case .image:        return String(localized: "imageExifGroup_image", bundle: .module, comment: "Image")
+        }
+    }
+}
+
+/// Metadata which a maker of cameras keeps in notes of its own, shown after the other themes
+public enum MetadataMaker: String, CaseIterable, Sendable {
+    case nikon, canon, apple, minolta, fuji, olympus, pentax
+
+    /// Title of the section
+    public var title: String {
+        switch self {
+        case .nikon:    return String(localized: "imageNikonHeader_title", bundle: .module, comment: "Nikon Camera")
+        case .canon:    return String(localized: "imageCanonHeader_title", bundle: .module, comment: "Canon Camera")
+        case .apple:    return String(localized: "imageAppleHeader_title", bundle: .module, comment: "Apple Camera")
+        case .minolta:  return Self.cameraTitle(of: "Minolta")
+        case .fuji:     return Self.cameraTitle(of: "Fuji")
+        case .olympus:  return Self.cameraTitle(of: "Olympus")
+        case .pentax:   return Self.cameraTitle(of: "Pentax")
+        }
+    }
+
+    private static func cameraTitle(of brand: String) -> String {
+        return String(format: String(localized: "imageMakerCamera_title", bundle: .module, comment: "%@ Camera"), brand)
+    }
+}
+
 /// A section of the table presenting the metadata of a photo
 public enum MetadataSection: Hashable, Sendable {
-    case summary, location, exif(ImageExifGroup), gps, iptc, webp, nikon, canon, apple
-    case properties(ImagePropertiesKind), empty, loading
+    case summary, location, group(MetadataGroup), maker(MetadataMaker), empty, loading
 
     /// A section listing the metadata of the file
     public var isList: Bool {
@@ -64,33 +105,143 @@ public struct MetadataTableModel: Sendable {
     public var summary = ImageSummary()
     /// The photo has a location, which the target presents in a section of its own
     public var hasLocation = false
+    /// The date and time and the description come after the metadata of the makers, instead of first
+    public var movesDatesAndDescriptionToEnd = false
 
     /// The sections are shown once the file has been read: without metadata, they tell so
     public private(set) var isKnown = false
     private var lists = [MetadataSection: MetadataList]()
-    private var exifVersion: String?
-    private var gpsVersion: String?
 
     public init() {}
 
+    /// Directory of the file a metadata comes from
+    private enum Source: String {
+        case exif = "Exif", gps = "GPS", iptc = "IPTC", webp = "WebP", tiff = "TIFF", jfif = "JFIF", png = "PNG",
+             gif = "GIF", heics = "HEIC", dng = "DNG", ciff = "CIFF", tga = "TGA", photoshop = "8BIM", raw = "RAW"
+    }
+
+    /// Directories whose metadata a theme gathers, in the order they are listed
+    private static let sources: [MetadataGroup: [Source]] = [
+        .description: [.iptc, .exif, .tiff, .png],
+        .dateTime: [.exif, .tiff, .gps, .iptc, .png],
+        .cameraLens: [.exif],
+        .exposure: [.exif],
+        .location: [.gps, .iptc],
+        .rights: [.exif, .iptc, .png],
+        .image: [.exif, .tiff, .jfif, .png, .gif, .heics, .dng, .ciff, .tga, .photoshop, .raw, .webp, .iptc]
+    ]
+
+    /// Theme of a metadata: the keys which describe, date, locate or sign the photo go to the matching theme,
+    /// the others describe the file
+    private static func group(of source: Source, key: String, exifGroup: ImageExifGroup? = nil) -> MetadataGroup {
+        switch source {
+        case .exif:
+            switch exifGroup {
+            case .camera?:      return .cameraLens
+            case .exposure?:    return .exposure
+            case .dateTime?:    return .dateTime
+            default:
+                if ["ImageDescription", "UserComment"].contains(key) { return .description }
+                if ["Artist", "Copyright"].contains(key) { return .rights }
+                return .image
+            }
+        case .gps:
+            return ["TimeStamp", "DateStamp"].contains(key) ? .dateTime : .location
+        case .iptc:
+            if ["ObjectName", "Headline", "Caption/Abstract", "Keywords", "StarRating", "Category",
+                "SupplementalCategory", "SpecialInstructions", "Urgency"].contains(key) { return .description }
+            if ["Writer/Editor", "Byline", "BylineTitle", "Credit", "Source", "CopyrightNotice", "UsageTerms",
+                "Contact", "CreatorContactInfo"].contains(key) { return .rights }
+            if key.hasSuffix("Date") || key.hasSuffix("Time") || key.hasSuffix("Created") { return .dateTime }
+            if ["SubLocation", "City", "Province/State", "Country/PrimaryLocationName",
+                "Country/PrimaryLocationCode"].contains(key) { return .location }
+            return .image
+        case .tiff:
+            if key == "DateTime" { return .dateTime }
+            return ["ImageDescription", "DocumentName"].contains(key) ? .description : .image
+        case .png:
+            if ["Title", "Description", "Comment"].contains(key) { return .description }
+            if ["Author", "Copyright", "Disclaimer"].contains(key) { return .rights }
+            if ["Creation Time", "ModificationTime"].contains(key) { return .dateTime }
+            return .image
+        default:
+            return .image
+        }
+    }
+
     /// Metadata of the file, or nothing while they are not known
     public mutating func update(with metadata: ImageMetadata, isKnown: Bool) {
+        // Gather the metadata of every directory in the theme they belong to
+        var gathered = [MetadataGroup: [(source: Source, entry: ImageMetadataEntry)]]()
+        func add(_ entries: [ImageMetadataEntry], from source: Source, exifGroup: ImageExifGroup? = nil) {
+            for entry in entries {
+                gathered[Self.group(of: source, key: entry.key, exifGroup: exifGroup), default: []]
+                    .append((source, entry))
+            }
+        }
+        for group in ImageExifGroup.allCases {
+            add(metadata.exif?.groups[group] ?? [], from: .exif, exifGroup: group)
+        }
+        add(metadata.gps?.entries ?? [], from: .gps)
+        add(metadata.iptc?.entries ?? [], from: .iptc)
+        add(metadata.webp?.entries ?? [], from: .webp)
         var newLists = [MetadataSection: MetadataList]()
         for (kind, properties) in metadata.properties {
-            newLists[.properties(kind)] = MetadataList(entries: properties.entries)
+            let source: Source?
+            switch kind {
+            case .tiff:         source = .tiff
+            case .jfif:         source = .jfif
+            case .png:          source = .png
+            case .gif:          source = .gif
+            case .heics:        source = .heics
+            case .dng:          source = .dng
+            case .ciff:         source = .ciff
+            case .tga:          source = .tga
+            case .photoshop:    source = .photoshop
+            case .minolta:      source = nil
+            case .fuji:         source = nil
+            case .olympus:      source = nil
+            case .pentax:       source = nil
+            case .raw:          source = .raw
+            }
+            if let source = source {
+                add(properties.entries, from: source)
+            } else if let maker = MetadataMaker(rawValue: kind.rawValue) {
+                newLists[.maker(maker)] = MetadataList(entries: properties.entries)
+            }
         }
-        for (group, entries) in metadata.exif?.groups ?? [:] {
-            newLists[.exif(group)] = MetadataList(entries: entries)
+        for (group, sources) in Self.sources {
+            let order = Dictionary(uniqueKeysWithValues: sources.enumerated().map { ($1, $0) })
+            let ordered = (gathered[group] ?? []).enumerated().sorted {
+                let rank0 = order[$0.element.source] ?? Int.max, rank1 = order[$1.element.source] ?? Int.max
+                return rank0 == rank1 ? $0.offset < $1.offset : rank0 < rank1
+            }.map { $0.element }
+            // Two directories may use the same key: the second one is named after its directory
+            var keys = Set<String>()
+            let entries = ordered.map { item -> ImageMetadataEntry in
+                if keys.insert(item.entry.key).inserted { return item.entry }
+                let key = item.source.rawValue + "." + item.entry.key
+                keys.insert(key)
+                return ImageMetadataEntry(key: key, name: item.entry.name, value: item.entry.value)
+            }
+            newLists[.group(group)] = MetadataList(entries: entries)
         }
-        newLists[.gps] = MetadataList(entries: metadata.gps?.entries ?? [])
-        newLists[.iptc] = MetadataList(entries: metadata.iptc?.entries ?? [])
-        newLists[.webp] = MetadataList(entries: metadata.webp?.entries ?? [])
-        newLists[.nikon] = MetadataList(entries: metadata.nikon?.entries ?? [])
-        newLists[.canon] = MetadataList(entries: metadata.canon?.entries ?? [])
-        newLists[.apple] = MetadataList(entries: metadata.apple?.entries ?? [])
+        // The versions of the Exif and GPS tags are metadata like the others: the Exif version opens the description
+        // of the file, the GPS version closes the location
+        if let version = metadata.exif?.version {
+            let name = String(localized: "imageExif_ExifVersion", bundle: .module, comment: "Exif Version")
+            newLists[.group(.image), default: MetadataList()].entries.insert(
+                ImageMetadataEntry(key: "ExifVersion", name: name, value: version), at: 0)
+        }
+        if let version = metadata.gps?.version {
+            let name = String(localized: "imageGps_GPSVersion", bundle: .module, comment: "GPS Version")
+            newLists[.group(.location), default: MetadataList()].entries.append(
+                ImageMetadataEntry(key: "GPSVersion", name: name, value: version))
+        }
+        newLists[.maker(.nikon)] = MetadataList(entries: metadata.nikon?.entries ?? [])
+        newLists[.maker(.canon)] = MetadataList(entries: metadata.canon?.entries ?? [])
+        newLists[.maker(.apple)] = MetadataList(entries: metadata.apple?.entries ?? [])
         lists = newLists
-        exifVersion = metadata.exif?.version
-        gpsVersion = metadata.gps?.version
         summary.exif = metadata.exif
         self.isKnown = isKnown
     }
@@ -119,56 +270,36 @@ public struct MetadataTableModel: Sendable {
             sections.append(.loading)
             return sections
         }
-        for group in ImageExifGroup.allCases where list(of: .exif(group)).entries.isEmpty == false {
-            sections.append(.exif(group))
+        /// A target may show the dates and the description after the other metadata, the dates first
+        let lastGroups: [MetadataGroup] = movesDatesAndDescriptionToEnd ? [.dateTime, .description] : []
+        let firstGroups = MetadataGroup.allCases.filter { lastGroups.contains($0) == false }
+        for group in firstGroups where list(of: .group(group)).entries.isEmpty == false {
+            sections.append(.group(group))
         }
-        let others: [MetadataSection] = [.gps, .iptc, .webp, .nikon, .canon, .apple]
-        sections += others.filter { list(of: $0).entries.isEmpty == false }
-        for kind in ImagePropertiesKind.allCases where list(of: .properties(kind)).entries.isEmpty == false {
-            sections.append(.properties(kind))
+        for maker in MetadataMaker.allCases where list(of: .maker(maker)).entries.isEmpty == false {
+            sections.append(.maker(maker))
+        }
+        for group in lastGroups where list(of: .group(group)).entries.isEmpty == false {
+            sections.append(.group(group))
         }
         if sections == [.summary] { sections.append(.empty) }
         return sections
     }
 
-    /// Title and text of the header of a section, e.g. "Exif • Version 2.3 • 31 items"
+    /// Title and text of the header of a section, e.g. "Image\n12 items"
     public func header(of section: MetadataSection) -> MetadataSectionHeader {
         guard section.isList else { return MetadataSectionHeader(title: "", text: "") }
-        var parts = [String]()
-        var version: String?
         var title = ""
         switch section {
-        case .exif(let group):
-            /// The groups of the Exif metadata name their content: the first one tells what they are
+        case .group(let group):
             title = group.title
-            parts.append("Exif")
-            let firstExif = sections.first(where: { if case .exif = $0 { return true } else { return false } })
-            if firstExif == section {
-                version = exifVersion
-            }
-        case .gps:
-            title = "GPS"
-            version = gpsVersion
-        case .iptc:
-            title = "IPTC"
-        case .webp:
-            title = "WebP"
-        case .nikon:
-            title = String(localized: "imageNikonHeader_title", bundle: .module, comment: "Nikon Camera")
-        case .canon:
-            title = String(localized: "imageCanonHeader_title", bundle: .module, comment: "Canon Camera")
-        case .apple:
-            title = String(localized: "imageAppleHeader_title", bundle: .module, comment: "Apple Camera")
-        case .properties(let kind):
-            title = kind.title
+        case .maker(let maker):
+            title = maker.title
         default:
             break
         }
-        if let version = version {
-            parts.append(String(format: String(localized: "imageExifHeader_version", bundle: .module, comment: "Version %@"), version))
-        }
-        parts.append(String.localizedStringWithFormat(
-            String(localized: "imageMetadata_itemCount", bundle: .module, comment: "%lld items"), list(of: section).entries.count))
-        return MetadataSectionHeader(title: title + "\n", text: parts.joined(separator: " • "))
+        let text = String.localizedStringWithFormat(
+            String(localized: "imageMetadata_itemCount", bundle: .module, comment: "%lld items"), list(of: section).entries.count)
+        return MetadataSectionHeader(title: title + "\n", text: text)
     }
 }

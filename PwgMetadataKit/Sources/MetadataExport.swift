@@ -40,9 +40,10 @@ public struct MetadataLocation: Sendable {
 extension MetadataTableModel {
     /// A group of metadata with the name it is given in each export
     private struct ExportedSection {
-        let title: String                       // e.g. "Exif - Camera", as in the list
-        let path: [String]                      // e.g. ["Exif", "camera"], as in the JSON object
+        let title: String                       // e.g. "Camera and Lens", as in the list
+        let path: [String]                      // e.g. ["CameraAndLens"], as in the JSON object
         let entries: [ImageMetadataEntry]
+        let isLocation: Bool
     }
 
     /// The sections listing metadata of the file, as shown in the table
@@ -51,23 +52,12 @@ extension MetadataTableModel {
             let entries = list(of: section).entries
             guard section.isList, entries.isEmpty == false else { return nil }
             switch section {
-            case .exif(let group):
-                return ExportedSection(title: "Exif - " + group.title, path: ["Exif", String(describing: group)],
-                                       entries: entries)
-            case .gps:
-                return ExportedSection(title: "GPS", path: ["GPS"], entries: entries)
-            case .iptc:
-                return ExportedSection(title: "IPTC", path: ["IPTC"], entries: entries)
-            case .webp:
-                return ExportedSection(title: "WebP", path: ["WebP"], entries: entries)
-            case .nikon:
-                return ExportedSection(title: "Nikon", path: ["Nikon"], entries: entries)
-            case .canon:
-                return ExportedSection(title: "Canon", path: ["Canon"], entries: entries)
-            case .apple:
-                return ExportedSection(title: "Apple", path: ["Apple"], entries: entries)
-            case .properties(let kind):
-                return ExportedSection(title: kind.title, path: [kind.rawValue.uppercased()], entries: entries)
+            case .group(let group):
+                return ExportedSection(title: group.title, path: [group.rawValue.prefix(1).uppercased() + group.rawValue.dropFirst()],
+                                       entries: entries, isLocation: group == .location)
+            case .maker(let maker):
+                return ExportedSection(title: maker.title, path: [maker.rawValue.prefix(1).uppercased() + maker.rawValue.dropFirst()],
+                                       entries: entries, isLocation: false)
             default:
                 return nil
             }
@@ -76,21 +66,27 @@ extension MetadataTableModel {
 
 
     // MARK: - List
-    /// The location and the metadata as text: a block per section, whose metadata are sorted alphabetically
+    /// The location and the metadata as text: a block per section, whose metadata are sorted alphabetically.
+    /// The location of the map and the GPS metadata share the block of the location.
     public func asciiList(location: MetadataLocation? = nil) -> String {
         var blocks = [String]()
+        let sections = exportedSections
+        var rows = [(name: String, value: String)]()
         if let location = location {
-            var rows = [(name: String, value: String)]()
             rows.append((String(localized: "imageLocation_coordinates", bundle: .module, comment: "Coordinates"),
                          location.coordinates))
             if location.fullAddress.isEmpty == false {
                 rows.append((String(localized: "imageLocation_address", bundle: .module, comment: "Address"),
                              location.fullAddress))
             }
-            let title = String(localized: "imageLocation_title", bundle: .module, comment: "Location")
-            blocks.append(Self.block(title: title, rows: rows))
         }
-        for section in exportedSections {
+        if let gps = sections.first(where: { $0.isLocation }) {
+            rows += gps.entries.map { ($0.name, $0.value) }
+        }
+        if rows.isEmpty == false {
+            blocks.append(Self.block(title: MetadataGroup.location.title, rows: rows))
+        }
+        for section in sections where section.isLocation == false {
             blocks.append(Self.block(title: section.title, rows: section.entries.map { ($0.name, $0.value) }))
         }
         return blocks.joined(separator: "\n\n")
@@ -115,22 +111,34 @@ extension MetadataTableModel {
     /// The keys do not depend on the language: they are those of the metadata, and the values are as readable as in the table.
     public func jsonObject(location: MetadataLocation? = nil) -> String {
         var root = JSONNode()
+        let sections = exportedSections
+        /// The location of the map and the GPS metadata share the object of the location
+        var locationNode = JSONNode()
         if let location = location {
-            var node = JSONNode()
-            node.add("latitude", number: location.latitude)
-            node.add("longitude", number: location.longitude)
-            if location.place.isEmpty == false { node.add("place", string: location.place) }
-            if location.address.isEmpty == false { node.add("address", string: location.address) }
-            root.add("Location", node: node)
+            locationNode.add("latitude", number: location.latitude)
+            locationNode.add("longitude", number: location.longitude)
+            if location.place.isEmpty == false { locationNode.add("place", string: location.place) }
+            if location.address.isEmpty == false { locationNode.add("address", string: location.address) }
         }
-        for section in exportedSections {
+        let gps = sections.first(where: { $0.isLocation })
+        for entry in Self.sortedByKey(gps?.entries ?? []) {
+            locationNode.add(entry.key, string: entry.value)
+        }
+        if location != nil || gps != nil {
+            root.add("Location", node: locationNode)
+        }
+        for section in sections where section.isLocation == false {
             var node = JSONNode()
-            for entry in section.entries.sorted(by: { $0.key.localizedStandardCompare($1.key) == .orderedAscending }) {
+            for entry in Self.sortedByKey(section.entries) {
                 node.add(entry.key, string: entry.value)
             }
             root.insert(node, at: section.path)
         }
         return root.text()
+    }
+
+    private static func sortedByKey(_ entries: [ImageMetadataEntry]) -> [ImageMetadataEntry] {
+        return entries.sorted(by: { $0.key.localizedStandardCompare($1.key) == .orderedAscending })
     }
 }
 
