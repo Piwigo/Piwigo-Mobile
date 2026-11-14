@@ -370,6 +370,27 @@ final class AlbumViewController: UIViewController
         NotificationCenter.default.addObserver(self, selector: #selector(didUpdateAlbumData(_:)),
                                                name: .NSManagedObjectContextObjectsDidChange,
                                                object: mainContext)
+        
+        // Register the return of the app to the foreground
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadImagesWhichFailedToLoad),
+                                               name: UIApplication.didBecomeActiveNotification, object: nil)
+    }
+    
+    @MainActor
+    @objc func reloadImagesWhichFailedToLoad() {
+        // Request again the thumbnails which could not be downloaded
+        /// A cell requests its thumbnail only when it is configured, so the visible cells whose
+        /// download failed, e.g. because the network was not available, would otherwise keep
+        /// their placeholder until the user scrolls them out of the screen and back.
+        guard isViewLoaded, let collectionView, _diffableDataSource != nil else { return }
+        collectionView.indexPathsForVisibleItems.forEach { indexPath in
+            if let cell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell,
+               cell.didFailLoadingImage,
+               let objectID = diffableDataSource.itemIdentifier(for: indexPath),
+               let image = try? self.mainContext.existingObject(with: objectID) as? Image {
+                cell.config(withImageData: image, size: self.imageSize, sortOption: self.sortOption)
+            }
+        }
     }
     
     @MainActor

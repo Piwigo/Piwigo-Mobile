@@ -43,6 +43,11 @@ public actor ImageDownloader {
     }()
     // Maximum number of simultaneous downloads
     let maxConcurrentDownloads = 4
+    // Maximum number of times a download is launched again after a network failure
+    let maxRetries = 2
+    // Network failures after which a download is launched again
+    let transientErrors: Set<URLError.Code> = [.timedOut, .networkConnectionLost, .notConnectedToInternet,
+                                               .cannotConnectToHost, .cannotFindHost, .dnsLookupFailed]
     // Enqueued and running downloads
     var downloads: [URL : ImageDownload] = [ : ]
     
@@ -405,6 +410,24 @@ public actor ImageDownloader {
     func failDownload(for imageURL: URL, error: PwgKitError) {
         guard let download = downloads[imageURL]
         else { return }
+
+        // Launch the download again if the network failed
+        /// The tasks which are running when the app is suspended fail with a timeout or a lost
+        /// connection, and the views are told so when the app returns to the foreground. They
+        /// request an image only when they are configured, so nothing would load it afterwards.
+        /// A download failing while the app is still running in the background is launched again
+        /// there and fails once more when the app resumes, hence the second attempt.
+        if download.isCancelled == false, download.retryCount < maxRetries,
+           case .requestFailed(let urlError) = error, transientErrors.contains(urlError.code) {
+            download.retryCount += 1
+            download.task = nil
+            download.resumeData = nil
+            download.progress = Float.zero
+            ImageDownloader.logger.notice("Retry download of \(download.fileURL.lastPathComponent) (attempt \(download.retryCount)/\(self.maxRetries))")
+            launchDownloadsIfAnyAndPossible()
+            return
+        }
+
         if !download.isCancelled {
             download.failureHandlers.forEach { $0(error) }
         }

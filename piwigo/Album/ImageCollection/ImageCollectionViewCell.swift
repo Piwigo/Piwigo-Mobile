@@ -14,10 +14,13 @@ import PwgAPIKit
 import PwgCacheKit
 import PwgUIKit
 
-class ImageCollectionViewCell: UICollectionViewCell {
+final class ImageCollectionViewCell: UICollectionViewCell {
     
     var imageData: Image!
     var imageURL: URL?
+    /// Remembers that the thumbnail could not be downloaded so that the album view
+    /// requests it again when the app returns to the foreground.
+    private(set) var didFailLoadingImage = false
 
     @IBOutlet weak var cellImage: UIImageView!
     @IBOutlet weak var darkenView: UIView!
@@ -138,6 +141,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         let scale = max(traitCollection.displayScale, 1.0)
         let cellSize = CGSizeMake(self.bounds.size.width * scale, self.bounds.size.height * scale)
         imageURL = imageData.url(forMaxSize: size)
+        didFailLoadingImage = false
         /// The cell is reconfigured whenever the collection view applies a snapshot, e.g. after
         /// each upload, so it identifies itself: the handlers below then replace the ones of its
         /// previous request instead of adding a set which would decode the same image once more.
@@ -159,6 +163,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
                 Task { @MainActor in
                     // Guard against cell reuse
                     guard let self, self.imageURL == expectedURL else { return }
+                    self.didFailLoadingImage = true
                     self.configImage(pwgImageType.image.placeHolder, withHiddenLabel: false)
                 }
             }
@@ -266,6 +271,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
 
         // Reset cell
         self.imageURL = nil
+        self.didFailLoadingImage = false
         self.nameLabel?.text = ""
         self.noDataLabel?.text = Localized.loading
         self.cellImage?.image = pwgImageType.image.placeHolder

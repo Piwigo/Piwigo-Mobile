@@ -83,7 +83,14 @@ extension PwgSessionDelegate: URLSessionDownloadDelegate {
         #endif
         guard let imageURL = imageURL(fromTask: downloadTask)
         else { return }
-        
+
+        // Do not store the body of an error page in cache as if it were the image
+        /// The failure is reported by urlSession(_:task:didCompleteWithError:)
+        if let response = downloadTask.response as? HTTPURLResponse,
+           (200...299).contains(response.statusCode) == false {
+            return
+        }
+
         // Copy the temp file synchronously before URLSession deletes it
         // then hand off the final URL to the actor.
         let tempCopy = FileManager.default.temporaryDirectory
