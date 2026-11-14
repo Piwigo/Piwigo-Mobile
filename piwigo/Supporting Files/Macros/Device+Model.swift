@@ -345,6 +345,10 @@ extension UIDevice {
             return "iPad Pro 13-inch (M5) (Wi-Fi)"
         case "iPad17,4":
             return "iPad Pro 13-inch (M5) (Wi-Fi + Cellular)"
+        case "iPad19,1":
+            return "iPad mini A20 Pro (Wi-Fi)"
+        case "iPad19,2":
+            return "iPad mini A20 Pro (Wi-Fi + Cellular)"
 
         // MARK: iPod
         case "iPod1,1":
@@ -564,6 +568,10 @@ extension UIDevice {
             return false
         case "iPad17,4":
             return true
+        case "iPad19,1":
+            return false
+        case "iPad19,2":
+            return true
 
         // MARK: iPod
         case "iPod1,1":
@@ -647,7 +655,8 @@ extension UIDevice {
              "iPad15,3", "iPad15,4", "iPad15,5", "iPad15,6", "iPad15,7", "iPad15,8",
              "iPad16,1", "iPad16,2", "iPad16,3", "iPad16,4", "iPad16,5", "iPad16,6",
              "iPad16,8", "iPad16,9", "iPad16,10", "iPad16,11",
-             "iPad17,1", "iPad17,2", "iPad17,3", "iPad17,4":
+             "iPad17,1", "iPad17,2", "iPad17,3", "iPad17,4",
+             "iPad19,1", "iPad19,2":
             return "12 Mpx"
             
         // MARK: iPod
@@ -728,7 +737,8 @@ extension UIDevice {
              "iPad15,3", "iPad15,4", "iPad15,5", "iPad15,6", "iPad15,7", "iPad15,8",
              "iPad16,1", "iPad16,2", "iPad16,3", "iPad16,4", "iPad16,5", "iPad16,6",
              "iPad16,8", "iPad16,9", "iPad16,10", "iPad16,11",
-             "iPad17,1", "iPad17,2", "iPad17,3", "iPad17,4":
+             "iPad17,1", "iPad17,2", "iPad17,3", "iPad17,4",
+             "iPad19,1", "iPad19,2":
             return "4K, 60 fps"
             
         // MARK: iPod
@@ -824,7 +834,8 @@ extension UIDevice {
              "iPad15,3", "iPad15,4", "iPad15,5", "iPad15,6",
              "iPad16,1", "iPad16,2", "iPad16,3", "iPad16,4", "iPad16,5", "iPad16,6":
             return 8192
-        case "iPad16,8", "iPad16,9", "iPad16,10", "iPad16,11":
+        case "iPad16,8", "iPad16,9", "iPad16,10", "iPad16,11",
+             "iPad19,1", "iPad19,2":
             return 12288
         case "iPad13,5", "iPad13,7", "iPad13,9", "iPad13,11",
              "iPad17,1", "iPad17,2", "iPad17,3", "iPad17,4":
