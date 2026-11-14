@@ -21,6 +21,7 @@ final class ImageDownload: @unchecked Sendable {
     var isCancelled: Bool = false
     var resumeData: Data?
     var progress = Float.zero
+    var retryCount = 0
 
     /// The same image can be requested by several views at the same time, e.g. by an album cell
     /// and by an image cell when album and image thumbnails have the same size.
