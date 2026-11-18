@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import UIKit
 
 final class PwgScreenshots: XCTestCase {
     
@@ -59,7 +60,11 @@ final class PwgScreenshots: XCTestCase {
         
         // Open Discover menu when not displaying albums with description
         if ["iPhone SE (1st generation)", "iPhone SE (3rd generation)"].contains(deviceType) == false {
-            app.navigationBars["AlbumImagesNav"].buttons["discover"].tap()
+//            if deviceType == "iPhone Duo" {
+//                app.toolbars["Toolbar"].buttons["discover"].tap()
+//            } else {
+                app.navigationBars["AlbumImagesNav"].buttons["discover"].tap()
+//            }
             sleep(2);
             snapshot("01")
             app.collectionViews.buttons["Tagged"].tap()
@@ -103,6 +108,8 @@ final class PwgScreenshots: XCTestCase {
             case "iPhone 14 Plus":                                      // 6.5-inch
                 swipeCount = 2
             case "iPhone Air":                                          // 6.7-inch
+                swipeCount = 2
+            case "iPhone Duo":
                 swipeCount = 2
             default:
                 preconditionFailure("Unmanaged model")
@@ -158,6 +165,10 @@ final class PwgScreenshots: XCTestCase {
             image.pinch(withScale: 1.75, velocity: 2.0)
             sleep(1)
             image.tap()
+        case "iPhone Duo":
+            image.pinch(withScale: 1.18, velocity: 2.0)
+            sleep(1)
+            image.tap()
         case "iPad Pro 9.7-inch (Wi-Fi + Cellular)":                // 9.7-inch
             break
         case "iPad Pro 10.5 inch (Wi-Fi)":                          // 10.5-inch
@@ -185,7 +196,11 @@ final class PwgScreenshots: XCTestCase {
         sleep(1)                        // Leave time for animation
         app.buttons["cancelEdit"].tap()
         sleep(1)                        // Leave time for animation
-        app.navigationBars["ImageViewNav"].buttons["back"].tap()
+//        if deviceType == "iPhone Duo" {
+//            app.toolbars["Toolbar"].buttons["BackButton"].tap()
+//        } else {
+            app.navigationBars["ImageViewNav"].buttons["back"].tap()
+//        }
         sleep(2)                        // Leave time for animation
 
         // MARK: Screenshot #4 -> 05
@@ -227,7 +242,11 @@ final class PwgScreenshots: XCTestCase {
         // Dismiss "Properties" view
         app.buttons["cancelEdit"].tap()
         sleep(2)                        // Leave time for animation
-        app.navigationBars["ImageViewNav"].buttons["back"].tap()
+//        if deviceType == "iPhone Duo" {
+//            app.toolbars["Toolbar"].buttons["BackButton"].tap()
+//        } else {
+            app.navigationBars["ImageViewNav"].buttons["back"].tap()
+//        }
         sleep(2)                        // Leave time for animation
 
         // Scroll until image "Charles Chaplin" is hittable
@@ -241,7 +260,11 @@ final class PwgScreenshots: XCTestCase {
 
         // MARK: Screenshot #5 -> 04
         // Select images with the aim to modify properties
-        app.navigationBars.buttons["select"].tap()
+//        if deviceType == "iPhone Duo" {
+//            app.toolbars["Toolbar"].buttons["select"].tap()
+//        } else {
+            app.navigationBars.buttons["select"].tap()
+//        }
         sleep(1)
         app.buttons["selectPhotos"].tap()
         sleep(1)
@@ -281,6 +304,11 @@ final class PwgScreenshots: XCTestCase {
             app.collectionViews.children(matching: .cell).element(boundBy: 9).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
+        case "iPhone Duo":
+            app.collectionViews.children(matching: .cell).element(boundBy: 8).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 9).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
         case "iPad Pro 9.7-inch (Wi-Fi + Cellular)":                // 9.7-inch
             app.collectionViews.children(matching: .cell).element(boundBy: 10).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 11).tap()
@@ -314,13 +342,21 @@ final class PwgScreenshots: XCTestCase {
         default:
             preconditionFailure("Unmanaged model")
         }
-        app.navigationBars.buttons["actions"].tap()
+//        if deviceType == "iPhone Duo" {
+//            app.toolbars["Toolbar"].buttons["actions"].tap()
+//        } else {
+            app.navigationBars.buttons["actions"].tap()
+//        }
         snapshot("04")
         
         // Deselect images
         app.collectionViews.buttons["editProperties"].tap()
         sleep(1)                        // Leave time for animation
-        app.navigationBars["editParams"].buttons["cancelEdit"].tap()
+//        if deviceType == "iPhone Duo" {
+//            app.toolbars["Toolbar"].buttons["cancelEdit"].tap()
+//        } else {
+            app.navigationBars["editParams"].buttons["cancelEdit"].tap()
+//        }
         sleep(1)                        // Leave time for animation
         
         // Scroll quickly to the bottom
@@ -331,7 +367,8 @@ final class PwgScreenshots: XCTestCase {
              "iPhone 17e",                                          // 6.1-inch
              "iPhone 17 Pro",                                       // 6.3-inch
              "iPhone 14 Plus",                                      // 6.5-inch
-             "iPhone Air":                                          // 6.9-inch
+             "iPhone Air",                                          // 6.9-inch
+             "iPhone Duo":
             swipeCount = 2
         case "iPad Pro 9.7-inch (Wi-Fi + Cellular)":                // 9.7-inch
             swipeCount = 2
@@ -375,7 +412,12 @@ final class PwgScreenshots: XCTestCase {
         images.element(boundBy: 5).children(matching: .other).element.tap()
         images.element(boundBy: 6).children(matching: .other).element.tap()
         images.element(boundBy: 8).children(matching: .other).element.tap()
-        let moreButton = app.navigationBars["org.piwigo.upload.images.navigation"].buttons["Action"]
+        var moreButton: XCUIElement
+//        if deviceType == "iPhone Duo" {
+//            moreButton = app.toolbars["Toolbar"].buttons["Action"]
+//        } else {
+            moreButton = app.navigationBars["org.piwigo.upload.images.navigation"].buttons["Action"]
+//        }
         moreButton.tap()
         app.collectionViews.buttons["groupByWeek"].tap()
         sleep(1)                        // Leave time for animation
@@ -391,7 +433,11 @@ final class PwgScreenshots: XCTestCase {
             app.collectionViews.buttons["groupByWeek"].tap()
             sleep(1)                        // Leave time for animation
         }
-        app.navigationBars["org.piwigo.upload.images.navigation"].buttons["Upload"].tap()
+//        if deviceType == "iPhone Duo" {
+//            app.toolbars["Toolbar"].buttons["Upload"].tap()
+//        } else {
+            app.navigationBars["org.piwigo.upload.images.navigation"].buttons["Upload"].tap()
+//        }
         sleep(1)
         snapshot("08")
         
@@ -413,11 +459,19 @@ final class PwgScreenshots: XCTestCase {
         snapshot("09")
         
         // Dismiss upload views
-        app.navigationBars["org.piwigo.upload.switchView"].buttons["cancelUpload"].tap()
-        sleep(1)                        // Leave time for animation
-        app.navigationBars["org.piwigo.upload.images.navigation"].buttons.element(boundBy: 0).tap()
-        sleep(1)                        // Leave time for animation
-        app.navigationBars["org.piwigo.upload.album.navigation"].buttons["cancelLocalAlbums"].tap()
+//        if deviceType == "iPhone Duo" {
+//            app.toolbars["Toolbar"].buttons["cancelUpload"].tap()
+//            sleep(1)                        // Leave time for animation
+//            app.toolbars["Toolbar"].buttons.element(boundBy: 0).tap()
+//            sleep(1)                        // Leave time for animation
+//            app.toolbars["Toolbar"].buttons["cancelLocalAlbums"].tap()
+//        } else {
+            app.navigationBars["org.piwigo.upload.switchView"].buttons["cancelUpload"].tap()
+            sleep(1)                        // Leave time for animation
+            app.navigationBars["org.piwigo.upload.images.navigation"].buttons.element(boundBy: 0).tap()
+            sleep(1)                        // Leave time for animation
+            app.navigationBars["org.piwigo.upload.album.navigation"].buttons["cancelLocalAlbums"].tap()
+//        }
         if #available(iOS 26.0, *) {
             app/*@START_MENU_TOKEN@*/.buttons["BackButton"].firstMatch.press(forDuration: 1.7)/*[[".navigationBars",".buttons[\"Album\"].firstMatch",".tap()",".press(forDuration: 1.7)",".buttons[\"BackButton\"].firstMatch"],[[[-1,4,2],[-1,1,2],[-1,0,1]],[[-1,4,2],[-1,1,2]],[[-1,3],[-1,2]]],[0,0]]@END_MENU_TOKEN@*/
             app/*@START_MENU_TOKEN@*/.buttons["discover"]/*[[".navigationBars",".buttons",".buttons[\"Mere\"]",".buttons[\"discover\"]"],[[[-1,3],[-1,2],[-1,0,1]],[[-1,3],[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
@@ -435,7 +489,8 @@ final class PwgScreenshots: XCTestCase {
             cellID = "switchAutoPlayOnDevice"
         case "iPhone 8 Plus",                                       // 5.5-inch
              "iPhone 17e",                                          // 6.1-inch
-             "iPhone 17 Pro":                                       // 6.3-inch
+             "iPhone 17 Pro",                                       // 6.3-inch
+             "iPhone Duo":
             cellID = "switchLoopVideosOnDevice"
         case "iPhone 14 Plus",                                      // 6.5-inch
              "iPhone Air":                                          // 6.9-inch
