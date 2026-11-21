@@ -3,7 +3,7 @@
     {
       "value" : {
         "linear-gradient" : [
-          "srgb:1.00000,0.49071,0.04882,1.00000",
+          "srgb:1.00000,0.49412,0.04706,1.00000",
           "srgb:0.97793,0.45637,0.00000,1.00000"
         ]
       }
@@ -11,7 +11,10 @@
     {
       "appearance" : "dark",
       "value" : {
-        "automatic-gradient" : "display-p3:0.00000,0.00000,0.00000,1.00000"
+        "linear-gradient" : [
+          "display-p3:0.03922,0.03922,0.03922,1.00000",
+          "display-p3:0.00000,0.00000,0.00000,1.00000"
+        ]
       }
     }
   ],
@@ -50,7 +53,12 @@
             },
             {
               "appearance" : "dark",
-              "value" : "automatic"
+              "value" : {
+                "linear-gradient" : [
+                  "display-p3:0.03922,0.03922,0.03922,1.00000",
+                  "display-p3:0.00000,0.00000,0.00000,1.00000"
+                ]
+              }
             },
             {
               "appearance" : "tinted",
@@ -200,7 +208,9 @@
             },
             {
               "appearance" : "dark",
-              "value" : "automatic"
+              "value" : {
+                "solid" : "display-p3:1.00000,0.49412,0.04706,1.00000"
+              }
             },
             {
               "appearance" : "tinted",
@@ -220,7 +230,15 @@
               "value" : true
             }
           ],
-          "hidden" : false,
+          "hidden-specializations" : [
+            {
+              "value" : false
+            },
+            {
+              "idiom" : "iOS",
+              "value" : false
+            }
+          ],
           "image-name" : "1_WhiteLens.svg",
           "name" : "1_WhiteLens",
           "position-specializations" : [
