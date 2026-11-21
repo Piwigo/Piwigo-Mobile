@@ -52,6 +52,10 @@ final class AlbumVars: @unchecked Sendable {
     @UserDefault("displayAlbumDescriptions", defaultValue: false)
     var displayAlbumDescriptions: Bool
 
+    /// - Display the description of the current album at the top of its view
+    @UserDefault("displayAlbumDescriptionHeader", defaultValue: true)
+    var displayAlbumDescriptionHeader: Bool
+
     /// - Default image sort option
     @UserDefault("defaultSortRaw", defaultValue: pwgImageSort.albumDefault.rawValue)
     private var defaultSortRaw: Int16

@@ -71,6 +71,7 @@ struct SettingsUtilities
         msg += "• isBiometricsEnabled: \(UIVars.shared.isBiometricsEnabled ? "Yes" : "No")\n"
         msg += "• userStatus: \(pwgUserStatus(rawValue: userData?.status ?? pwgUserStatus.guest.rawValue) ?? .guest)\n"
         msg += "• displayAlbumDescriptions: \(AlbumVars.shared.displayAlbumDescriptions ? "Yes" : "No")\n"
+        msg += "• displayAlbumDescriptionHeader: \(AlbumVars.shared.displayAlbumDescriptionHeader ? "Yes" : "No")\n"
         msg += "• defaultAlbumThumbnailSize: \((pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize)?.name ?? "?"))\n"
         msg += "• displayImageTitles: \(AlbumVars.shared.displayImageTitles ? "Yes" : "No")\n"
         msg += "• defaultThumbnailSize: \((pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize)?.name ?? "?"))\n"

@@ -136,6 +136,10 @@ extension AlbumViewController
     
     // MARK: - Headers
     func attributedComment() -> NSAttributedString {
+        // Return an empty string if the user prefers not to see album descriptions
+        guard AlbumVars.shared.displayAlbumDescriptionHeader
+        else { return NSAttributedString() }
+        
         // Return the HTML version when available
         guard albumData.commentHTML.characters.isEmpty
         else { return NSAttributedString(albumData.commentHTML) }

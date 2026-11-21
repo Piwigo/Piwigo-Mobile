@@ -515,15 +515,39 @@ extension AlbumViewController {
     
 
     // MARK: - Show Options
-    /// - for choosing whether to show image titles and album descriptions
+    /// - for choosing whether to show the album description, image titles and sub-album descriptions
     func showMenu() -> UIMenu? {
         // Create a menu for selecting what to show
-        let children = [showHideTitlesAction(), showHideDescriptionsAction()].compactMap({$0})
+        let children = [showHideAlbumDescriptionAction(), showHideTitlesAction(),
+                        showHideDescriptionsAction()].compactMap({$0})
         return UIMenu(title: String(localized: "categoryView_show", comment: "Show…"),
                       image: nil,
                       identifier: UIMenu.Identifier("org.piwigo.images.show.main"),
                       options: categoryId == Int32.zero ? .displayInline : [],
                       children: children)
+    }
+
+    func showHideAlbumDescriptionAction() -> UIAction? {
+        // No description at the top of the root album
+        guard categoryId != pwgSmartAlbum.root.rawValue else { return nil }
+        
+        let isActive = AlbumVars.shared.displayAlbumDescriptionHeader
+        let action = UIAction(title: String(localized: "settings_displayAlbumDescription", comment: "Album Description"),
+                              image: isActive ? UIImage(systemName: "checkmark") : nil,
+                              identifier: UIAction.Identifier("org.piwigo.images.show.albumDescription"),
+                              handler: { [weak self] action in
+            guard let self else { return }
+            // Show or hide the album description at the top of all album views
+            AlbumVars.shared.displayAlbumDescriptionHeader = !isActive
+            (navigationController?.viewControllers ?? []).forEach({ viewController in
+                if let albumVC = viewController as? AlbumViewController {
+                    albumVC.collectionView?.collectionViewLayout.invalidateLayout()
+                    albumVC.collectionView?.reloadData()
+                }
+            })
+        })
+        action.accessibilityIdentifier = "showHideAlbumDescription"
+        return action
     }
 
     func showHideTitlesAction() -> UIAction? {
@@ -553,8 +577,12 @@ extension AlbumViewController {
     }
 
     func showHideDescriptionsAction() -> UIAction? {
+        // "Album Descriptions" in the root album, "Sub-album Descriptions" in other albums
+        let title = categoryId == pwgSmartAlbum.root.rawValue
+            ? String(localized: "settings_displayDescriptions", comment: "Album Descriptions")
+            : String(localized: "settings_displaySubAlbumDescriptions", comment: "Sub-album Descriptions")
         let isActive = AlbumVars.shared.displayAlbumDescriptions
-        let action = UIAction(title: String(localized: "settings_displayDescriptions", comment: "Album Descriptions"),
+        let action = UIAction(title: title,
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: UIAction.Identifier("org.piwigo.images.show.descriptions"),
                               handler: { [weak self] action in
