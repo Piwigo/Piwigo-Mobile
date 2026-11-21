@@ -146,8 +146,6 @@
 		AD31E75D2EB106CD00584ECB /* help07-top.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7522EB106CD00584ECB /* help07-top.png */; };
 		AD31E75E2EB106CD00584ECB /* help01.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7492EB106CD00584ECB /* help01.png */; };
 		AD31E7622EB106CD00584ECB /* help05-top.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E74F2EB106CD00584ECB /* help05-top.png */; };
-		AD31E7642EB1082500584ECB /* help03-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7632EB1082500584ECB /* help03-iOS18.png */; };
-		AD31E7662EB1082D00584ECB /* help03.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7652EB1082D00584ECB /* help03.png */; };
 		AD31E7682EB109F400584ECB /* help05-bot-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7672EB109F400584ECB /* help05-bot-iOS18.png */; };
 		AD31E76A2EB10A3800584ECB /* help05-bot.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7692EB10A3800584ECB /* help05-bot.png */; };
 		AD31F5F5242FA75C00BD65FC /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD31F5F4242FA75C00BD65FC /* AboutViewController.swift */; };
@@ -197,6 +195,8 @@
 		AD51D1C130B1AD09001A67F6 /* metadataExtensionIcon@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = AD51D1BE30B1AD09001A67F6 /* metadataExtensionIcon@1x.png */; };
 		AD51D1C230B1AD09001A67F6 /* metadataExtensionIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AD51D1BF30B1AD09001A67F6 /* metadataExtensionIcon@2x.png */; };
 		AD51D1C330B1AD09001A67F6 /* metadataExtensionIcon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = AD51D1C030B1AD09001A67F6 /* metadataExtensionIcon@3x.png */; };
+		AD51D1C530B1E6CE001A67F6 /* help03-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = AD51D1C430B1E6CE001A67F6 /* help03-iOS18.png */; };
+		AD51D1C930B1E911001A67F6 /* help03.png in Resources */ = {isa = PBXBuildFile; fileRef = AD51D1C830B1E911001A67F6 /* help03.png */; };
 		AD5317E125ADC47C0027A26A /* ShareVideoActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5317E025ADC47B0027A26A /* ShareVideoActivityItemProvider.swift */; };
 		AD54834A2EA3A9F50032A95E /* EditImageParamsViewController+ShiftDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5483492EA3A9F50032A95E /* EditImageParamsViewController+ShiftDatePicker.swift */; };
 		AD54834C2EA3CC740032A95E /* EditImageParamsViewController+ShiftTimePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD54834B2EA3CC740032A95E /* EditImageParamsViewController+ShiftTimePicker.swift */; };
@@ -204,6 +204,8 @@
 		AD563B422603FCE800B6EF93 /* AutoUploadViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD563B412603FCE800B6EF93 /* AutoUploadViewController.storyboard */; };
 		AD58F77F24EFC62F00ECF6BD /* UploadImageHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD58F77E24EFC62F00ECF6BD /* UploadImageHeaderView.swift */; };
 		AD5B498124E5C02300BDF5B4 /* UploadQueueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5B498024E5C02300BDF5B4 /* UploadQueueViewController.swift */; };
+		AD5DC0012ECF4A1000C0FFEE /* AlbumDescCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5DC0032ECF4A1000C0FFEE /* AlbumDescCollectionViewCell.swift */; };
+		AD5DC0022ECF4A1000C0FFEE /* AlbumDescCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD5DC0042ECF4A1000C0FFEE /* AlbumDescCollectionViewCell.xib */; };
 		AD5F5C352FB9A1D600D16523 /* PwgAPIKit in Frameworks */ = {isa = PBXBuildFile; productRef = AD5F5C342FB9A1D600D16523 /* PwgAPIKit */; };
 		AD5FB3A32D96A49400802895 /* RenameFileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5FB3A22D96A49400802895 /* RenameFileViewController.swift */; };
 		AD5FB3A52D96A4AB00802895 /* RenameFileViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD5FB3A42D96A4AB00802895 /* RenameFileViewController.storyboard */; };
@@ -215,9 +217,7 @@
 		AD68317D2F66CCFF00518E87 /* AdvancedOptionsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD68317C2F66CCFF00518E87 /* AdvancedOptionsViewController.storyboard */; };
 		AD69739B271885D10015303E /* UIBarButtonItem+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD69739A271885D10015303E /* UIBarButtonItem+AppTools.swift */; };
 		AD6A0E782C445C750089A25E /* AlbumCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6A0E772C445C750089A25E /* AlbumCollectionViewCell.swift */; };
-		AD5DC0012ECF4A1000C0FFEE /* AlbumDescCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5DC0032ECF4A1000C0FFEE /* AlbumDescCollectionViewCell.swift */; };
 		AD6A0E7A2C445C860089A25E /* AlbumCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD6A0E792C445C860089A25E /* AlbumCollectionViewCell.xib */; };
-		AD5DC0022ECF4A1000C0FFEE /* AlbumDescCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD5DC0042ECF4A1000C0FFEE /* AlbumDescCollectionViewCell.xib */; };
 		AD6A813C2DE3846100F03151 /* TimeFormatSelectorViewController+UITableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6A813B2DE3846100F03151 /* TimeFormatSelectorViewController+UITableViewDataSource.swift */; };
 		AD6A813E2DE78CB300F03151 /* RenameFileViewController+TimeFormatSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6A813D2DE78CB300F03151 /* RenameFileViewController+TimeFormatSelector.swift */; };
 		AD6A81402DE7A57900F03151 /* TimeFormatSelectorViewController+UITableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6A813F2DE7A57900F03151 /* TimeFormatSelectorViewController+UITableViewDelegate.swift */; };
@@ -693,8 +693,6 @@
 		AD31E7522EB106CD00584ECB /* help07-top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help07-top.png"; sourceTree = "<group>"; };
 		AD31E7532EB106CD00584ECB /* help08-bot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help08-bot.png"; sourceTree = "<group>"; };
 		AD31E7542EB106CD00584ECB /* help08-top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help08-top.png"; sourceTree = "<group>"; };
-		AD31E7632EB1082500584ECB /* help03-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help03-iOS18.png"; sourceTree = "<group>"; };
-		AD31E7652EB1082D00584ECB /* help03.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help03.png; sourceTree = "<group>"; };
 		AD31E7672EB109F400584ECB /* help05-bot-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help05-bot-iOS18.png"; sourceTree = "<group>"; };
 		AD31E7692EB10A3800584ECB /* help05-bot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help05-bot.png"; sourceTree = "<group>"; };
 		AD31F5F4242FA75C00BD65FC /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
@@ -753,6 +751,8 @@
 		AD51D1BE30B1AD09001A67F6 /* metadataExtensionIcon@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "metadataExtensionIcon@1x.png"; sourceTree = "<group>"; };
 		AD51D1BF30B1AD09001A67F6 /* metadataExtensionIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "metadataExtensionIcon@2x.png"; sourceTree = "<group>"; };
 		AD51D1C030B1AD09001A67F6 /* metadataExtensionIcon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "metadataExtensionIcon@3x.png"; sourceTree = "<group>"; };
+		AD51D1C430B1E6CE001A67F6 /* help03-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help03-iOS18.png"; sourceTree = "<group>"; };
+		AD51D1C830B1E911001A67F6 /* help03.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help03.png; sourceTree = "<group>"; };
 		AD5317E025ADC47B0027A26A /* ShareVideoActivityItemProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareVideoActivityItemProvider.swift; sourceTree = "<group>"; };
 		AD5483492EA3A9F50032A95E /* EditImageParamsViewController+ShiftDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+ShiftDatePicker.swift"; sourceTree = "<group>"; };
 		AD54834B2EA3CC740032A95E /* EditImageParamsViewController+ShiftTimePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+ShiftTimePicker.swift"; sourceTree = "<group>"; };
@@ -762,6 +762,8 @@
 		AD58F77E24EFC62F00ECF6BD /* UploadImageHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadImageHeaderView.swift; sourceTree = "<group>"; };
 		AD591A3A1F9116FA008D02B6 /* de */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/About.strings; sourceTree = "<group>"; };
 		AD5B498024E5C02300BDF5B4 /* UploadQueueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadQueueViewController.swift; sourceTree = "<group>"; };
+		AD5DC0032ECF4A1000C0FFEE /* AlbumDescCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumDescCollectionViewCell.swift; sourceTree = "<group>"; };
+		AD5DC0042ECF4A1000C0FFEE /* AlbumDescCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AlbumDescCollectionViewCell.xib; sourceTree = "<group>"; };
 		AD5FB3A22D96A49400802895 /* RenameFileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameFileViewController.swift; sourceTree = "<group>"; };
 		AD5FB3A42D96A4AB00802895 /* RenameFileViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = RenameFileViewController.storyboard; sourceTree = "<group>"; };
 		AD61B7B13032138300E29E00 /* UploadLivePhotoViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = UploadLivePhotoViewController.storyboard; sourceTree = "<group>"; };
@@ -773,8 +775,6 @@
 		AD69739A271885D10015303E /* UIBarButtonItem+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIBarButtonItem+AppTools.swift"; sourceTree = "<group>"; };
 		AD6A0E772C445C750089A25E /* AlbumCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumCollectionViewCell.swift; sourceTree = "<group>"; };
 		AD6A0E792C445C860089A25E /* AlbumCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AlbumCollectionViewCell.xib; sourceTree = "<group>"; };
-		AD5DC0032ECF4A1000C0FFEE /* AlbumDescCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumDescCollectionViewCell.swift; sourceTree = "<group>"; };
-		AD5DC0042ECF4A1000C0FFEE /* AlbumDescCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AlbumDescCollectionViewCell.xib; sourceTree = "<group>"; };
 		AD6A813B2DE3846100F03151 /* TimeFormatSelectorViewController+UITableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeFormatSelectorViewController+UITableViewDataSource.swift"; sourceTree = "<group>"; };
 		AD6A813D2DE78CB300F03151 /* RenameFileViewController+TimeFormatSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RenameFileViewController+TimeFormatSelector.swift"; sourceTree = "<group>"; };
 		AD6A813F2DE7A57900F03151 /* TimeFormatSelectorViewController+UITableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeFormatSelectorViewController+UITableViewDelegate.swift"; sourceTree = "<group>"; };
@@ -1306,7 +1306,7 @@
 			isa = PBXGroup;
 			children = (
 				AD31E72F2EB106C100584ECB /* help01-iOS18.png */,
-				AD31E7632EB1082500584ECB /* help03-iOS18.png */,
+				AD51D1C430B1E6CE001A67F6 /* help03-iOS18.png */,
 				AD31E7332EB106C100584ECB /* help04-iOS18.png */,
 				AD31E7672EB109F400584ECB /* help05-bot-iOS18.png */,
 				AD31E7352EB106C100584ECB /* help05-top-iOS18.png */,
@@ -1326,7 +1326,7 @@
 			isa = PBXGroup;
 			children = (
 				AD31E7492EB106CD00584ECB /* help01.png */,
-				AD31E7652EB1082D00584ECB /* help03.png */,
+				AD51D1C830B1E911001A67F6 /* help03.png */,
 				AD31E74D2EB106CD00584ECB /* help04.png */,
 				AD31E7692EB10A3800584ECB /* help05-bot.png */,
 				AD31E74F2EB106CD00584ECB /* help05-top.png */,
@@ -2342,7 +2342,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD31E7642EB1082500584ECB /* help03-iOS18.png in Resources */,
 				ADA6DA4721B2AD9900F941F1 /* Settings.bundle in Resources */,
 				ADC115DC2DC91E59000EA45B /* DateFormatSelectorViewController.storyboard in Resources */,
 				AD31E7682EB109F400584ECB /* help05-bot-iOS18.png in Resources */,
@@ -2352,6 +2351,7 @@
 				AD61D2FA2571555A00B8DEA0 /* HelpViewController.storyboard in Resources */,
 				ADEFBD632074E19000DFAD26 /* CategoryTableViewCell.xib in Resources */,
 				AD1477CD2A3BA3020010BD78 /* WhatsNewViewController.storyboard in Resources */,
+				AD51D1C930B1E911001A67F6 /* help03.png in Resources */,
 				AD3B2C692A293A860001B8B0 /* DataMigrationViewController.storyboard in Resources */,
 				AD2B0A15243D001A00AF1FEE /* DefaultAlbumThumbnailSizeViewController.storyboard in Resources */,
 				ADF1CC77243D132100D75319 /* SelectCategoryViewController.storyboard in Resources */,
@@ -2391,6 +2391,7 @@
 				ADF3AE5E2803529C009F5931 /* ClearClipboardViewController.storyboard in Resources */,
 				AD6A0E7A2C445C860089A25E /* AlbumCollectionViewCell.xib in Resources */,
 				AD5DC0022ECF4A1000C0FFEE /* AlbumDescCollectionViewCell.xib in Resources */,
+				AD51D1C530B1E6CE001A67F6 /* help03-iOS18.png in Resources */,
 				ADC592682C0333B0002B6F82 /* ImageHeaderReusableView.xib in Resources */,
 				ADD210412440CC7600DD79A6 /* SettingsViewController.storyboard in Resources */,
 				AD563B422603FCE800B6EF93 /* AutoUploadViewController.storyboard in Resources */,
@@ -2398,7 +2399,6 @@
 				AD1AD61E2DFF195700D25EF9 /* AppShortcuts.strings in Resources */,
 				ADD741F82699976100B47056 /* UploadPhotoSizeViewController.storyboard in Resources */,
 				AD6FD1FA24BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard in Resources */,
-				AD31E7662EB1082D00584ECB /* help03.png in Resources */,
 				ADC019742471A70F00532A81 /* UploadQueueViewController.storyboard in Resources */,
 				AD8F4B8B23F04B8C009483B6 /* TagSelectorViewController.storyboard in Resources */,
 				AD4902E324C2142800A96066 /* TagsViewController.storyboard in Resources */,
