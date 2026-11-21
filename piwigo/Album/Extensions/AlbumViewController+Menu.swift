@@ -562,14 +562,7 @@ extension AlbumViewController {
             guard let self else { return }
             // Show or hide image titles
             AlbumVars.shared.displayImageTitles = !isActive
-            // Update menu
-            if categoryId == Int32.zero {
-                let children = [smartAlbumsMenu(), viewOptionsMenu(), settingsMenu()].compactMap({$0})
-                let updatedMenu = discoverBarButton.menu?.replacingChildren(children)
-                discoverBarButton.menu = updatedMenu
-            } else {
-                updateCollectionAndMenu()
-            }
+            // Update collection and menu (this action is not offered in the root album)
             updateCollectionAndMenu()
         })
         action.accessibilityIdentifier = "showHideImageTitles"
