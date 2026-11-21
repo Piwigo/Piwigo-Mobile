@@ -85,8 +85,8 @@ extension AlbumViewController: @MainActor SelectCategoryDelegate
 }
 
 
-// MARK: - PushAlbumCollectionViewCellDelegate
-extension AlbumViewController: @MainActor PushAlbumCollectionViewCellDelegate
+// MARK: - Push Album View or Album Selector
+extension AlbumViewController
 {
     func pushAlbumView(_ viewController: UIViewController?,
                        completion: @escaping (Bool) -> Void) {

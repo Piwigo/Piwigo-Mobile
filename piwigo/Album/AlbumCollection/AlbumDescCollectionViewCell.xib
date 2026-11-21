@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
+        <capability name="collection view cell content view" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="AlbumDescCollectionViewCell" preservesSuperviewLayoutMargins="YES" id="dSc-Ce-L01" customClass="AlbumDescCollectionViewCell" customModule="piwigo" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="360" height="170"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="dSc-Cv-W01">
+                <rect key="frame" x="0.0" y="0.0" width="360" height="170"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dSc-Lp-V01" userLabel="leftPage">
+                        <rect key="frame" x="0.0" y="0.0" width="180" height="170"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" clearsContextBeforeDrawing="NO" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="unknownAlbum" translatesAutoresizingMaskIntoConstraints="NO" id="dSc-Th-B01" userLabel="albumThumbnail">
+                                <rect key="frame" x="0.0" y="0.0" width="180" height="120"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="180" id="dSc-Cn-C12"/>
+                                </constraints>
+                            </imageView>
+                            <view clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dSc-Bn-R01" userLabel="banner">
+                                <rect key="frame" x="0.0" y="120" width="180" height="50"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dSc-Nm-L01" userLabel="albumName">
+                                        <rect key="frame" x="5" y="4" width="170" height="20.333333333333332"/>
+                                        <accessibility key="accessibilityConfiguration" label="albumName"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dSc-Nb-L01" userLabel="numberOfImages">
+                                        <rect key="frame" x="8" y="30.666666666666657" width="164" height="15.333333333333336"/>
+                                        <accessibility key="accessibilityConfiguration" label="nberImages"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstItem="dSc-Nm-L01" firstAttribute="top" secondItem="dSc-Bn-R01" secondAttribute="top" constant="4" id="dSc-Cn-C01"/>
+                                    <constraint firstAttribute="trailing" secondItem="dSc-Nm-L01" secondAttribute="trailing" constant="5" id="dSc-Cn-C02"/>
+                                    <constraint firstAttribute="bottom" secondItem="dSc-Nb-L01" secondAttribute="bottom" constant="4" id="dSc-Cn-C03"/>
+                                    <constraint firstAttribute="trailing" secondItem="dSc-Nb-L01" secondAttribute="trailing" constant="8" id="dSc-Cn-C04"/>
+                                    <constraint firstAttribute="height" constant="50" id="dSc-Cn-C05"/>
+                                    <constraint firstItem="dSc-Nb-L01" firstAttribute="leading" secondItem="dSc-Bn-R01" secondAttribute="leading" constant="8" id="dSc-Cn-C06"/>
+                                    <constraint firstItem="dSc-Nm-L01" firstAttribute="leading" secondItem="dSc-Bn-R01" secondAttribute="leading" constant="5" id="dSc-Cn-C07"/>
+                                </constraints>
+                            </view>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dSc-Rc-I01" userLabel="recentlyModified">
+                                <rect key="frame" x="8" y="8" width="27" height="27"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="dSc-Rc-I01" secondAttribute="height" multiplier="1:1" id="dSc-Cn-C08"/>
+                                </constraints>
+                                <imageReference key="image" image="sparkles" catalog="system" renderingMode="template"/>
+                                <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="regular"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowRadius">
+                                        <integer key="value" value="2"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowOpacity">
+                                        <integer key="value" value="1"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="size" keyPath="layer.shadowOffset">
+                                        <size key="value" width="0.0" height="0.0"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="dSc-Th-B01" firstAttribute="top" secondItem="dSc-Lp-V01" secondAttribute="top" id="dSc-Cn-C10"/>
+                            <constraint firstItem="dSc-Th-B01" firstAttribute="leading" secondItem="dSc-Lp-V01" secondAttribute="leading" id="dSc-Cn-C11"/>
+                            <constraint firstAttribute="trailing" secondItem="dSc-Th-B01" secondAttribute="trailing" id="dSc-Cn-C40"/>
+                            <constraint firstItem="dSc-Bn-R01" firstAttribute="top" secondItem="dSc-Th-B01" secondAttribute="bottom" id="dSc-Cn-C13"/>
+                            <constraint firstItem="dSc-Bn-R01" firstAttribute="leading" secondItem="dSc-Lp-V01" secondAttribute="leading" id="dSc-Cn-C14"/>
+                            <constraint firstAttribute="trailing" secondItem="dSc-Bn-R01" secondAttribute="trailing" id="dSc-Cn-C15"/>
+                            <constraint firstAttribute="bottom" secondItem="dSc-Bn-R01" secondAttribute="bottom" id="dSc-Cn-C16"/>
+                            <constraint firstItem="dSc-Rc-I01" firstAttribute="top" secondItem="dSc-Th-B01" secondAttribute="top" constant="8" id="dSc-Cn-C22"/>
+                            <constraint firstItem="dSc-Rc-I01" firstAttribute="leading" secondItem="dSc-Th-B01" secondAttribute="leading" constant="8" id="dSc-Cn-C23"/>
+                            <constraint firstItem="dSc-Rc-I01" firstAttribute="width" secondItem="dSc-Th-B01" secondAttribute="width" multiplier="0.15" id="dSc-Cn-C24"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                <integer key="value" value="14"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                    <view clipsSubviews="YES" userInteractionEnabled="NO" contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="dSc-Pn-V01" userLabel="rightPage" customClass="RuledPaperView" customModule="piwigo" customModuleProvider="target">
+                        <rect key="frame" x="180" y="0.0" width="180" height="170"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                <integer key="value" value="14"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                    <view opaque="NO" userInteractionEnabled="NO" contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="dSc-Sp-V01" userLabel="binding" customClass="BindingHolesView" customModule="piwigo" customModuleProvider="target">
+                        <rect key="frame" x="177" y="0.0" width="6" height="170"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="dSc-Lp-V01" firstAttribute="top" secondItem="dSc-Cv-W01" secondAttribute="top" id="dSc-Cn-C41"/>
+                    <constraint firstItem="dSc-Lp-V01" firstAttribute="leading" secondItem="dSc-Cv-W01" secondAttribute="leading" id="dSc-Cn-C42"/>
+                    <constraint firstAttribute="bottom" secondItem="dSc-Lp-V01" secondAttribute="bottom" id="dSc-Cn-C43"/>
+                    <constraint firstItem="dSc-Pn-V01" firstAttribute="leading" secondItem="dSc-Lp-V01" secondAttribute="trailing" id="dSc-Cn-C17"/>
+                    <constraint firstAttribute="trailing" secondItem="dSc-Pn-V01" secondAttribute="trailing" id="dSc-Cn-C18"/>
+                    <constraint firstItem="dSc-Pn-V01" firstAttribute="top" secondItem="dSc-Cv-W01" secondAttribute="top" id="dSc-Cn-C19"/>
+                    <constraint firstAttribute="bottom" secondItem="dSc-Pn-V01" secondAttribute="bottom" id="dSc-Cn-C20"/>
+                    <constraint firstItem="dSc-Sp-V01" firstAttribute="leading" secondItem="dSc-Lp-V01" secondAttribute="trailing" constant="-3" id="dSc-Cn-C44"/>
+                    <constraint firstItem="dSc-Pn-V01" firstAttribute="leading" secondItem="dSc-Sp-V01" secondAttribute="trailing" constant="-3" id="dSc-Cn-C45"/>
+                    <constraint firstItem="dSc-Sp-V01" firstAttribute="top" secondItem="dSc-Cv-W01" secondAttribute="top" id="dSc-Cn-C46"/>
+                    <constraint firstAttribute="bottom" secondItem="dSc-Sp-V01" secondAttribute="bottom" id="dSc-Cn-C47"/>
+                </constraints>
+            </collectionViewCellContentView>
+            <size key="customSize" width="360" height="170"/>
+            <connections>
+                <outlet property="albumName" destination="dSc-Nm-L01" id="dSc-Ot-O02"/>
+                <outlet property="albumThumbnail" destination="dSc-Th-B01" id="dSc-Ot-O03"/>
+                <outlet property="binding" destination="dSc-Sp-V01" id="dSc-Ot-O10"/>
+                <outlet property="leftPage" destination="dSc-Lp-V01" id="dSc-Ot-O08"/>
+                <outlet property="legendHeight" destination="dSc-Cn-C05" id="dSc-Ot-O04"/>
+                <outlet property="numberOfImages" destination="dSc-Nb-L01" id="dSc-Ot-O05"/>
+                <outlet property="recentlyModified" destination="dSc-Rc-I01" id="dSc-Ot-O06"/>
+                <outlet property="rightPage" destination="dSc-Pn-V01" id="dSc-Ot-O09"/>
+                <outlet property="thumbnailWidth" destination="dSc-Cn-C12" id="dSc-Ot-O07"/>
+            </connections>
+            <point key="canvasLocation" x="23.664122137404579" y="-229.22535211267606"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="sparkles" catalog="system" width="115" height="128"/>
+        <image name="unknownAlbum" width="640" height="310"/>
+    </resources>
+</document>

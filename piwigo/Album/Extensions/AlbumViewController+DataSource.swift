@@ -27,34 +27,23 @@ extension AlbumViewController
 
             // Is this item an album or an image?
             if let album = try? self.mainContext.existingObject(with: objectID) as? Album {
-                // Configure album cell
-                if AlbumVars.shared.displayAlbumDescriptions {
-                    // Dequeue reusable cell with album description
-                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AlbumCollectionViewCellOld", for: indexPath) as? AlbumCollectionViewCellOld
-                    else { preconditionFailure("Could not load AlbumCollectionViewCellOld") }
-                    
-                    // Configure cell with album data
-                    cell.album = album
-                    cell.pushAlbumDelegate = self
-                    
-                    // Disable album cells in Image selection mode
-                    cell.contentView.alpha = self.inSelectionMode ? 0.5 : 1.0
-                    cell.isUserInteractionEnabled = !self.inSelectionMode
-                    return cell
-                }
-                else {
-                    // Dequeue reusable cell w/o album description
-                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AlbumCollectionViewCell", for: indexPath) as? AlbumCollectionViewCell
-                    else { preconditionFailure("Could not load AlbumCollectionViewCell") }
-                    
-                    // Configure cell with album data
+                // Configure album cell with or w/o album description
+                /// AlbumDescCollectionViewCell is a subclass of AlbumCollectionViewCell
+                let identifier = AlbumVars.shared.displayAlbumDescriptions ? "AlbumDescCollectionViewCell" : "AlbumCollectionViewCell"
+                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as? AlbumCollectionViewCell
+                else { preconditionFailure("Could not load \(identifier)") }
+                
+                // Configure cell with album data
+                if let descCell = cell as? AlbumDescCollectionViewCell {
+                    descCell.config(withAlbum: album, thumbnailWidth: self.getAlbumWidth())
+                } else {
                     cell.config(withAlbum: album)
-                    
-                    // Disable album cells in Image selection mode
-                    cell.contentView.alpha = self.inSelectionMode ? 0.5 : 1.0
-                    cell.isUserInteractionEnabled = !self.inSelectionMode
-                    return cell
                 }
+                
+                // Disable album cells in Image selection mode
+                cell.contentView.alpha = self.inSelectionMode ? 0.5 : 1.0
+                cell.isUserInteractionEnabled = !self.inSelectionMode
+                return cell
             }
             else if let image = try? self.mainContext.existingObject(with: objectID) as? Image {
                 // Configure image cell

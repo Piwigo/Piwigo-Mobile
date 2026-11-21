@@ -62,10 +62,6 @@ extension AlbumViewController: @MainActor NSFetchedResultsControllerDelegate
                     if let cell = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCell {
                         cell.config(withAlbum: album)
                     }
-                    else if let cell = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCellOld,
-                            cell.album != album {
-                        cell.tableView?.reloadData()
-                    }
                 }
             }
         }

@@ -52,7 +52,7 @@ struct AlbumUtilities
     
     // MARK: - Album/Images Collections | Album Thumbnails
     static func optimumAlbumThumbnailSizeForDevice() -> pwgImageSize {
-        // Size of album thumbnails is 144x144 points (see AlbumTableViewCell.xib)
+        // Size of album thumbnails is 144x144 points (see getAlbumCellSize())
         let albumThumbnailSize: CGFloat = 144
 //        albumThumbnailSize *= pwgImageSize.maxSaliencyScale
         

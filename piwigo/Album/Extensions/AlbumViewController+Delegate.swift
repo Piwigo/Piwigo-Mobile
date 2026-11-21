@@ -106,9 +106,10 @@ extension AlbumViewController: UICollectionViewDelegate
     func collectionView(_ collectionView: UICollectionView,
                         contextMenuConfigurationForItemAt indexPath: IndexPath,
                         point: CGPoint) -> UIContextMenuConfiguration? {
-        // Only admins can rename, move and delete albums
+        // Only users with upload rights can add photos and share albums
+        /// AlbumDescCollectionViewCell is a subclass of AlbumCollectionViewCell
         if collectionView.cellForItem(at: indexPath) is AlbumCollectionViewCell,
-           userData.hasAdminRights {
+           canPresentContextMenu(forAlbumAt: indexPath) {
             // Return context menu configuration
             return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions in
                 return self.albumContextMenu(indexPath)
@@ -138,9 +139,10 @@ extension AlbumViewController: UICollectionViewDelegate
         guard indexPaths.count == 1, let indexPath = indexPaths.first
         else { return nil }
         
-        // Only admins can rename, move and delete albums
+        // Only users with upload rights can add photos and share albums
+        /// AlbumDescCollectionViewCell is a subclass of AlbumCollectionViewCell
         if collectionView.cellForItem(at: indexPath) is AlbumCollectionViewCell,
-           userData.hasAdminRights {
+           canPresentContextMenu(forAlbumAt: indexPath) {
             // Return context menu configuration
             return UIContextMenuConfiguration(actionProvider: { suggestedActions in
                 return self.albumContextMenu(indexPath)
@@ -163,13 +165,23 @@ extension AlbumViewController: UICollectionViewDelegate
     
     
     // MARK: - Album Context Menu
+    /// Admins and users with upload rights for the album (Community plugin) can add photos and share it.
+    private func canPresentContextMenu(forAlbumAt indexPath: IndexPath) -> Bool {
+        guard let objectID = self.diffableDataSource.itemIdentifier(for: indexPath),
+              let album = try? self.mainContext.existingObject(with: objectID) as? Album
+        else { return false }
+        return userData.hasUploadRights(forCatID: album.pwgID)
+    }
+    
     private func albumContextMenu(_ indexPath: IndexPath) -> UIMenu {
-        let addPhotos = self.addPhotosMenu(indexPath)
-        let share = self.shareAlbumMenu(forAlbumAt: indexPath)
-        let rename = self.renameAlbumAction(indexPath)
-        let move = self.moveAlbumAction(indexPath)
-        let delete = self.deleteAlbumMenu(indexPath)
-        let children: [UIMenuElement?] = [addPhotos, share, rename, move, delete]
+        var children: [UIMenuElement?] = [self.addPhotosMenu(indexPath),
+                                          self.shareAlbumMenu(forAlbumAt: indexPath)]
+        // Only admins can rename, move and delete albums
+        if userData.hasAdminRights {
+            children.append(contentsOf: [self.renameAlbumAction(indexPath),
+                                         self.moveAlbumAction(indexPath),
+                                         self.deleteAlbumMenu(indexPath)])
+        }
         return UIMenu(title: "", children: children.compactMap({$0}))
     }
     
@@ -228,7 +240,14 @@ extension AlbumViewController: UICollectionViewDelegate
         }
     }
     
-    private func deleteAlbumMenu(_ indexPath: IndexPath) -> UIMenu {
+    private func deleteAlbumMenu(_ indexPath: IndexPath) -> UIMenu? {
+        // Disallow user to delete the active auto-upload destination album
+        guard let objectID = self.diffableDataSource.itemIdentifier(for: indexPath),
+              let album = try? self.mainContext.existingObject(with: objectID) as? Album,
+              UploadVars.shared.isAutoUploadActive == false ||
+                UploadVars.shared.autoUploadCategoryId != Int(album.pwgID)
+        else { return nil }
+        
         let delete = deleteAlbumAction(indexPath)
         let menuId = UIMenu.Identifier("org.piwigo.deleteAlbum")
         return UIMenu(identifier: menuId, options: UIMenu.Options.displayInline, children: [delete])

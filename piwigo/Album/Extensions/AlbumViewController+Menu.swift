@@ -609,10 +609,6 @@ extension AlbumViewController: @MainActor ImageHeaderDelegate
                     albumCell.contentView.alpha = 0.5
                     albumCell.isUserInteractionEnabled = false
                 }
-                else if let albumCell = cell as? AlbumCollectionViewCellOld {
-                    albumCell.contentView.alpha = 0.5
-                    albumCell.isUserInteractionEnabled = false
-                }
             }
             
             // Initialisae navigation bar and toolbar

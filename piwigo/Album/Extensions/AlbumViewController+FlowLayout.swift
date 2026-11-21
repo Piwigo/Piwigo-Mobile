@@ -83,18 +83,25 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
     
     
     // MARK: - Album & Image Cells
-    func getAlbumCellSize() -> CGSize {
-        // Get safe area width
+    /// Width of AlbumCollectionViewCell cells, i.e. of album thumbnails in both cell types
+    func getAlbumWidth() -> CGFloat {
         let safeAreaSize = AlbumUtilities.getSafeAreaSize(ofNavigationViewController: navigationController?.topViewController)
-        
-        // Calculate album cell size
+        return AlbumUtilities.albumWidth(forSafeAreaSize: safeAreaSize, maxCellWidth: albumMaxWidth)
+    }
+
+    func getAlbumCellSize() -> CGSize {
+        // Calculate album cell height (identical with and w/o album description)
+        let albumWidth = getAlbumWidth()
+        let albumHeight = albumWidth * 2 / 3 + albumLabelsHeight
+
+        // Calculate album cell width
         if AlbumVars.shared.displayAlbumDescriptions {
-            let albumWidth = AlbumUtilities.albumWidth(forSafeAreaSize: safeAreaSize, maxCellWidth: CGFloat(384))
-//            debugPrint("••> getAlbumCellSize: \(albumWidth) x \(oldAlbumHeight) points")
-            return CGSize(width: albumWidth, height: oldAlbumHeight)
+            // Thumbnail of AlbumCollectionViewCell cells + description (see AlbumDescCollectionViewCell.xib)
+            let safeAreaSize = AlbumUtilities.getSafeAreaSize(ofNavigationViewController: navigationController?.topViewController)
+            let albumDescWidth = AlbumUtilities.albumWidth(forSafeAreaSize: safeAreaSize, maxCellWidth: CGFloat(384))
+//            debugPrint("••> getAlbumCellSize: \(albumDescWidth) x \(albumHeight) points")
+            return CGSize(width: albumDescWidth, height: albumHeight)
         } else {
-            let albumWidth = AlbumUtilities.albumWidth(forSafeAreaSize: safeAreaSize, maxCellWidth: albumMaxWidth)
-            let albumHeight = albumWidth * 2 / 3 + albumLabelsHeight
 //            debugPrint("••> getAlbumCellSize: \(albumWidth) x \(albumHeight) points")
             return CGSize(width: albumWidth, height: albumHeight)
         }

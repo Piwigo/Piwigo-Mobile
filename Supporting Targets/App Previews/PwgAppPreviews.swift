@@ -90,12 +90,16 @@ final class PwgAppPreviews: XCTestCase {
         sleep(18)                        // Leave time for animation
         
         // Delete temporary album
+        // Long-press the album cell to open its context menu
         let collectionCell = app.collectionViews.children(matching: .cell).element(boundBy: 0)
-        let tableQuery = collectionCell.children(matching: .other).element.tables.element(boundBy: 0)
-        tableQuery/*@START_MENU_TOKEN@*/.staticTexts["comment"]/*[[".cells[\"albumName, comment, nberImages\"].staticTexts[\"comment\"]",".staticTexts[\"comment\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.swipeLeft()
-        tableQuery.buttons["swipeTrash"].tap()
-        sleep(1)                        // Leave time for animation
-        app.scrollViews.otherElements.buttons["DeleteAll"].tap()
+        collectionCell.press(forDuration: 1.0)
+        let deleteAction = app.buttons["deleteAlbumAction"]
+        XCTAssert(deleteAction.waitForExistence(timeout: 5))
+        deleteAction.tap()
+        // The alert appears once the number of orphans has been retrieved
+        let deleteAllButton = app.scrollViews.otherElements.buttons["DeleteAll"]
+        XCTAssert(deleteAllButton.waitForExistence(timeout: 10))
+        deleteAllButton.tap()
         app.typeText("1")
         app.typeText("1")
         app.typeText(XCUIKeyboardKey.delete.rawValue)
