@@ -193,13 +193,13 @@
 		AD46C1DB2FB3C92B00CE3D1C /* ShareTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD46C1D92FB3C92B00CE3D1C /* ShareTableViewCell.swift */; };
 		AD46C1DE2FB3CBFE00CE3D1C /* ShareViewHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD46C1DD2FB3CBFE00CE3D1C /* ShareViewHeaderView.swift */; };
 		AD46C1E02FB3CE2A00CE3D1C /* ShareViewController+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD46C1DF2FB3CE2A00CE3D1C /* ShareViewController+DataSource.swift */; };
-		AD47E136309520D800BC9FFC /* metadataExtensionIcon@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = AD47E133309520D800BC9FFC /* metadataExtensionIcon@1x.png */; };
-		AD47E137309520D800BC9FFC /* metadataExtensionIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AD47E134309520D800BC9FFC /* metadataExtensionIcon@2x.png */; };
-		AD47E138309520D800BC9FFC /* metadataExtensionIcon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = AD47E135309520D800BC9FFC /* metadataExtensionIcon@3x.png */; };
 		AD4902E324C2142800A96066 /* TagsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD4902E224C2142800A96066 /* TagsViewController.storyboard */; };
 		AD4AAFB625A0A1E4007DCD54 /* PasteboardImagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4AAFB225A0A1E4007DCD54 /* PasteboardImagesViewController.swift */; };
 		AD4AAFB725A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD4AAFB325A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard */; };
 		AD4AAFB825A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4AAFB425A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift */; };
+		AD51D1C130B1AD09001A67F6 /* metadataExtensionIcon@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = AD51D1BE30B1AD09001A67F6 /* metadataExtensionIcon@1x.png */; };
+		AD51D1C230B1AD09001A67F6 /* metadataExtensionIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AD51D1BF30B1AD09001A67F6 /* metadataExtensionIcon@2x.png */; };
+		AD51D1C330B1AD09001A67F6 /* metadataExtensionIcon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = AD51D1C030B1AD09001A67F6 /* metadataExtensionIcon@3x.png */; };
 		AD5317E125ADC47C0027A26A /* ShareVideoActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5317E025ADC47B0027A26A /* ShareVideoActivityItemProvider.swift */; };
 		AD54834A2EA3A9F50032A95E /* EditImageParamsViewController+ShiftDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5483492EA3A9F50032A95E /* EditImageParamsViewController+ShiftDatePicker.swift */; };
 		AD54834C2EA3CC740032A95E /* EditImageParamsViewController+ShiftTimePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD54834B2EA3CC740032A95E /* EditImageParamsViewController+ShiftTimePicker.swift */; };
@@ -748,13 +748,13 @@
 		AD46C1D92FB3C92B00CE3D1C /* ShareTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareTableViewCell.swift; sourceTree = "<group>"; };
 		AD46C1DD2FB3CBFE00CE3D1C /* ShareViewHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewHeaderView.swift; sourceTree = "<group>"; };
 		AD46C1DF2FB3CE2A00CE3D1C /* ShareViewController+DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShareViewController+DataSource.swift"; sourceTree = "<group>"; };
-		AD47E133309520D800BC9FFC /* metadataExtensionIcon@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "metadataExtensionIcon@1x.png"; sourceTree = "<group>"; };
-		AD47E134309520D800BC9FFC /* metadataExtensionIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "metadataExtensionIcon@2x.png"; sourceTree = "<group>"; };
-		AD47E135309520D800BC9FFC /* metadataExtensionIcon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "metadataExtensionIcon@3x.png"; sourceTree = "<group>"; };
 		AD4902E224C2142800A96066 /* TagsViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TagsViewController.storyboard; sourceTree = "<group>"; };
 		AD4AAFB225A0A1E4007DCD54 /* PasteboardImagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasteboardImagesViewController.swift; sourceTree = "<group>"; };
 		AD4AAFB325A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = PasteboardImagesViewController.storyboard; sourceTree = "<group>"; };
 		AD4AAFB425A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasteboardImagesHeaderReusableView.swift; sourceTree = "<group>"; };
+		AD51D1BE30B1AD09001A67F6 /* metadataExtensionIcon@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "metadataExtensionIcon@1x.png"; sourceTree = "<group>"; };
+		AD51D1BF30B1AD09001A67F6 /* metadataExtensionIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "metadataExtensionIcon@2x.png"; sourceTree = "<group>"; };
+		AD51D1C030B1AD09001A67F6 /* metadataExtensionIcon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "metadataExtensionIcon@3x.png"; sourceTree = "<group>"; };
 		AD5317E025ADC47B0027A26A /* ShareVideoActivityItemProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareVideoActivityItemProvider.swift; sourceTree = "<group>"; };
 		AD5483492EA3A9F50032A95E /* EditImageParamsViewController+ShiftDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+ShiftDatePicker.swift"; sourceTree = "<group>"; };
 		AD54834B2EA3CC740032A95E /* EditImageParamsViewController+ShiftTimePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+ShiftTimePicker.swift"; sourceTree = "<group>"; };
@@ -1267,9 +1267,9 @@
 				AD26102600000000000000B9 /* Localizable.xcstrings */,
 				AD26102600000000000000BA /* InfoPlist.xcstrings */,
 				AD26102600000000000000BB /* Images.xcassets */,
-				AD47E133309520D800BC9FFC /* metadataExtensionIcon@1x.png */,
-				AD47E134309520D800BC9FFC /* metadataExtensionIcon@2x.png */,
-				AD47E135309520D800BC9FFC /* metadataExtensionIcon@3x.png */,
+				AD51D1BE30B1AD09001A67F6 /* metadataExtensionIcon@1x.png */,
+				AD51D1BF30B1AD09001A67F6 /* metadataExtensionIcon@2x.png */,
+				AD51D1C030B1AD09001A67F6 /* metadataExtensionIcon@3x.png */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -2306,9 +2306,9 @@
 				AD26102600000000000000CA /* InfoPlist.xcstrings in Resources */,
 				AD26102600000000000000CB /* Images.xcassets in Resources */,
 				AD26102600000000000000C8 /* MetadataViewController.storyboard in Resources */,
-				AD47E136309520D800BC9FFC /* metadataExtensionIcon@1x.png in Resources */,
-				AD47E137309520D800BC9FFC /* metadataExtensionIcon@2x.png in Resources */,
-				AD47E138309520D800BC9FFC /* metadataExtensionIcon@3x.png in Resources */,
+				AD51D1C130B1AD09001A67F6 /* metadataExtensionIcon@1x.png in Resources */,
+				AD51D1C230B1AD09001A67F6 /* metadataExtensionIcon@2x.png in Resources */,
+				AD51D1C330B1AD09001A67F6 /* metadataExtensionIcon@3x.png in Resources */,
 				AD26102600000000000000CC /* piwigo.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
