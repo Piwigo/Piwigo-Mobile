@@ -18,7 +18,7 @@ protocol ImageHeaderDelegate: NSObjectProtocol {
     func didSelectImagesOfSection(_ section: Int)
 }
 
-class ImageHeaderReusableView: UICollectionReusableView
+final class ImageHeaderReusableView: UICollectionReusableView
 {
     var section = 0
     private var locationHash = Int.zero

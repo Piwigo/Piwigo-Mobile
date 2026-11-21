@@ -12,7 +12,7 @@ import UIKit
 import PwgKit
 import PwgUIKit
 
-class AlbumHeaderReusableView: UICollectionReusableView {
+final class AlbumHeaderReusableView: UICollectionReusableView {
 
     @IBOutlet weak var albumDesc: UITextView!
     @IBOutlet weak var albumDescHeight: NSLayoutConstraint!
