@@ -53,7 +53,7 @@ public enum Localized {
 }
 
 // Disconnects and asks to update the Piwigo server if version is lower than:
-public let pwgMinVersion = "12.0.0"
+public let pwgMinVersion = "13.0.0"
 
 // At login, invites to update the Piwigo server if version is lower than:
 public let pwgRecentVersion = "16.0.0"

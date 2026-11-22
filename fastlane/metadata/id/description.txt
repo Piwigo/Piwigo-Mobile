@@ -1,4 +1,4 @@
-Piwigo untuk iPhone/iPad/iPod melengkapi perangkat lunak galeri foto berbasis cloud Piwigo (v12.0 atau yang lebih baru):
+Piwigo untuk iPhone/iPad/iPod melengkapi perangkat lunak galeri foto berbasis cloud Piwigo (v13.0 atau yang lebih baru):
 
 • Menjelajahi album Anda,
 • Membuat, menghapus, memindahkan, dan mengganti nama album,

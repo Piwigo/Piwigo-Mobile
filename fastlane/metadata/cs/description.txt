@@ -1,4 +1,4 @@
-Piwigo pro iPhone/iPad/iPod doplňuje software fotogalerie v cloudu Piwigo (v12.0 nebo novější):
+Piwigo pro iPhone/iPad/iPod doplňuje software fotogalerie v cloudu Piwigo (v13.0 nebo novější):
 
 • Procházejte svá alba,
 • Vytvářejte, mažte, přesouvejte a přejmenovávejte alba,
