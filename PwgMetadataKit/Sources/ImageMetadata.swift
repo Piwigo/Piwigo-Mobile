@@ -15,6 +15,7 @@ public struct ImageMetadata: Sendable {
     public var gps: ImageGps?
     public var iptc: ImageIptc?
     public var xmp: ImageXmp?
+    public var dates: ImageDates?
     public var webp: ImageWebP?
     public var nikon: ImageNikon?
     public var canon: ImageCanon?
@@ -23,12 +24,13 @@ public struct ImageMetadata: Sendable {
 
     public init() {}
 
-    init(exif: ImageExif?, gps: ImageGps?, iptc: ImageIptc?, xmp: ImageXmp?, webp: ImageWebP?, nikon: ImageNikon?,
+    init(exif: ImageExif?, gps: ImageGps?, iptc: ImageIptc?, xmp: ImageXmp?, dates: ImageDates?, webp: ImageWebP?, nikon: ImageNikon?,
          canon: ImageCanon?, apple: ImageApple?, properties: [ImagePropertiesKind: ImageProperties]) {
         self.exif = exif
         self.gps = gps
         self.iptc = iptc
         self.xmp = xmp
+        self.dates = dates
         self.webp = webp
         self.nikon = nikon
         self.canon = canon
@@ -38,7 +40,7 @@ public struct ImageMetadata: Sendable {
 
     /// True if the file has no metadata of any kind
     public var isEmpty: Bool {
-        return exif == nil && gps == nil && iptc == nil && xmp == nil && webp == nil && nikon == nil && canon == nil && apple == nil
+        return exif == nil && gps == nil && iptc == nil && xmp == nil && dates == nil && webp == nil && nikon == nil && canon == nil && apple == nil
             && properties.isEmpty
     }
 
@@ -49,6 +51,7 @@ public struct ImageMetadata: Sendable {
                                          gps: ImageGpsReader.read(from: url),
                                          iptc: ImageIptcReader.read(from: url),
                                          xmp: ImageXmpReader.read(from: url),
+                                         dates: ImageDatesReader.read(from: url),
                                          webp: ImageWebPReader.read(from: url),
                                          nikon: ImageNikonReader.read(from: url),
                                          canon: ImageCanonReader.read(from: url),
@@ -66,13 +69,14 @@ public struct ImageMetadata: Sendable {
                   let gps = ImageGpsReader.cachedGps(at: url),
                   let iptc = ImageIptcReader.cachedIptc(at: url),
                   let xmp = ImageXmpReader.cachedXmp(at: url),
+                  let dates = ImageDatesReader.cachedDates(at: url),
                   let webp = ImageWebPReader.cachedWebP(at: url),
                   let nikon = ImageNikonReader.cachedNikon(at: url),
                   let canon = ImageCanonReader.cachedCanon(at: url),
                   let apple = ImageAppleReader.cachedApple(at: url),
                   let properties = ImagePropertiesReader.cachedProperties(at: url)
             else { return nil }
-            let metadata = ImageMetadata(exif: exif, gps: gps, iptc: iptc, xmp: xmp, webp: webp, nikon: nikon,
+            let metadata = ImageMetadata(exif: exif, gps: gps, iptc: iptc, xmp: xmp, dates: dates, webp: webp, nikon: nikon,
                                          canon: canon, apple: apple, properties: properties)
             if metadata.isEmpty == false { return metadata }
         }

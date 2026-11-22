@@ -8,8 +8,8 @@
 //  XMP metadata of an image file which the IPTC directory of ImageIO does not give: ImageIO reconciles the
 //  XMP packet with the IPTC data, so that the title, caption, keywords, rating, creators, rights, contact
 //  details, place names and credits are already read with the IPTC metadata, whichever of the two holds them.
-//  What remains is read here: the dates of the packet (its creation date is the digital creation date of IPTC), the tool which created the file, the label,
-//  and the web page and mark of the rights.
+//  What remains is read here: the tool which created the file, the label, and the web page and mark of the
+//  rights. The dates of the packet are read with the other dates of the file.
 //
 
 import Foundation
@@ -42,7 +42,6 @@ enum ImageXmpReader
 
     /// Keys, in the order they are presented, with the path of their property in the XMP packet
     private static let paths: [(key: String, path: String)] = [
-        ("DigitalCreationDate", "xmp:CreateDate"), ("ModifyDate", "xmp:ModifyDate"), ("DateCreated", "photoshop:DateCreated"),
         ("CreatorTool", "xmp:CreatorTool"), ("Label", "xmp:Label"),
         ("WebStatement", "xmpRights:WebStatement"), ("Marked", "xmpRights:Marked")
     ]
@@ -76,8 +75,6 @@ enum ImageXmpReader
     static func formattedValue(of value: String, forKey key: String) -> String? {
         let text = value.trimmingCharacters(in: .whitespacesAndNewlines)
         switch key {
-        case "DigitalCreationDate", "ModifyDate", "DateCreated":
-            return formattedDate(text) ?? text
         case "Marked":
             /// A boolean, written "True" or "False"
             switch text.lowercased() {
@@ -89,43 +86,4 @@ enum ImageXmpReader
             return text
         }
     }
-
-    /// Dates are written "2024-01-05T12:34:56+01:00", the time, its seconds and its offset being optional:
-    /// the date and the time are shown as they are written, followed by the offset ("Z" being UTC)
-    static func formattedDate(_ text: String) -> String? {
-        guard let match = datePattern.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)),
-              let range = Range(match.range(at: 1), in: text)
-        else { return nil }
-        func group(_ index: Int) -> String? {
-            return Range(match.range(at: index), in: text).map { String(text[$0]) }
-        }
-        let day = String(text[range])
-        guard let date = dayFormatter.date(from: day) else { return nil }
-        guard let time = group(2) else { return displayDay.string(from: date) }
-        var result = displayDay.string(from: date) + " " + time.dropFirst().prefix(8)
-        if let offset = group(3) {
-            result += " " + (offset == "Z" ? "UTC" : offset)
-        }
-        return result
-    }
-
-    /// 1: the day, 2: the time with its "T", 3: the offset
-    private static let datePattern = try! NSRegularExpression(
-        pattern: #"^(\d{4}-\d{2}-\d{2})(T\d{2}:\d{2}(?::\d{2})?)?(?:\.\d+)?(Z|[+-]\d{2}:\d{2})?$"#)
-
-    private static let dayFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter
-    }()
-
-    private static let displayDay: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        return formatter
-    }()
 }

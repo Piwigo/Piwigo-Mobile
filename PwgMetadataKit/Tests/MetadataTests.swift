@@ -260,18 +260,67 @@ final class MetadataTests: XCTestCase
         XCTAssertNotNil(description.first(where: { $0.key == "StarRating" }))
         // The rest is read from the packet
         let dates = model.list(of: .group(.dateTime)).entries
-        XCTAssertTrue(try XCTUnwrap(dates.first(where: { $0.key == "DigitalCreationDate" })).value.hasSuffix("12:34:56 +01:00"))
+        XCTAssertTrue(try XCTUnwrap(dates.first(where: { $0.key == "DateDigitized" })).value.hasSuffix("+01:00"))
         let rights = model.list(of: .group(.rights)).entries
         XCTAssertEqual(rights.first(where: { $0.key == "Marked" })?.value, "Yes")
         XCTAssertEqual(rights.first(where: { $0.key == "WebStatement" })?.value, "https://example.org/rights")
         XCTAssertEqual(model.list(of: .group(.image)).entries.first(where: { $0.key == "CreatorTool" })?.value, "Probe 1.0")
     }
 
-    func testXmpDates() {
-        XCTAssertTrue(try XCTUnwrap(ImageXmpReader.formattedDate("2024-01-05T12:34:56+01:00")).hasSuffix("12:34:56 +01:00"))
-        XCTAssertTrue(try XCTUnwrap(ImageXmpReader.formattedDate("2024-01-05T12:34Z")).hasSuffix("12:34 UTC"))
-        XCTAssertTrue(try XCTUnwrap(ImageXmpReader.formattedDate("2024-01-05T12:34:56.789")).hasSuffix("12:34:56"))
-        XCTAssertFalse(try XCTUnwrap(ImageXmpReader.formattedDate("2024-01-05")).contains(":"))
-        XCTAssertNil(ImageXmpReader.formattedDate("last Tuesday"))
+    func testMomentsAreParsedAndWrittenWithTheirOffset() throws {
+        typealias Moment = ImageDatesReader.Moment
+        XCTAssertTrue(try XCTUnwrap(Moment(iso: "2024-01-05T12:34:56+01:00")).text.hasSuffix("+01:00"))
+        XCTAssertTrue(try XCTUnwrap(Moment(iso: "2024-01-05T12:34Z")).text.hasSuffix(" UTC"))
+        XCTAssertTrue(try XCTUnwrap(Moment(iso: "2024-01-05T12:34:56.789")).text.contains(":34:56.789"))
+        XCTAssertFalse(try XCTUnwrap(Moment(iso: "2024-01-05")).text.contains(":"))
+        XCTAssertNil(Moment(iso: "last Tuesday"))
+        XCTAssertNil(Moment(iso: "2024-13-05"))
+        // Exif, with sub-seconds and offset which have keys of their own
+        let exif = try XCTUnwrap(Moment(exif: "2015:10:11 14:23:17", subsec: "538", offset: "+09:00"))
+        XCTAssertTrue(exif.text.contains(":23:17.538") && exif.text.hasSuffix("+09:00"))
+        // IPTC writes the offset without a colon
+        let iptc = try XCTUnwrap(Moment(iptcDate: "20151011", time: "142317+0900"))
+        XCTAssertEqual(iptc.offset, "+09:00")
+        XCTAssertTrue(exif.isSameMoment(as: iptc))
+        // The GPS tells UTC
+        XCTAssertEqual(Moment(gpsDate: "2015:10:11", time: "05:23:11")?.offset, "UTC")
+        XCTAssertFalse(exif.isSameMoment(as: try XCTUnwrap(Moment(iptcDate: "20151011", time: "142318"))))
+    }
+
+    func testDatesAreMergedByMeaning() throws {
+        let url = try makeJPEG(properties: [
+            kCGImagePropertyExifDictionary as String: [
+                kCGImagePropertyExifDateTimeOriginal as String: "2015:10:11 14:23:17",
+                kCGImagePropertyExifSubsecTimeOriginal as String: "538",
+                kCGImagePropertyExifDateTimeDigitized as String: "2015:10:11 14:23:17",
+                "OffsetTimeOriginal": "+09:00"],
+            kCGImagePropertyTIFFDictionary as String: [kCGImagePropertyTIFFDateTime as String: "2015:10:12 08:00:00"],
+            kCGImagePropertyGPSDictionary as String: [
+                kCGImagePropertyGPSDateStamp as String: "2015:10:11", kCGImagePropertyGPSTimeStamp as String: "05:23:11"],
+            kCGImagePropertyIPTCDictionary as String: [
+                kCGImagePropertyIPTCDateCreated as String: "20151011", kCGImagePropertyIPTCTimeCreated as String: "142317+0900"]])
+        var model = MetadataTableModel()
+        model.update(with: ImageMetadata.read(in: [url]), isKnown: true)
+        let dates = model.list(of: .group(.dateTime)).entries
+        // One row for each moment, the date, time, sub-seconds and offset together
+        XCTAssertEqual(dates.map(\.key), ["DateTaken", "DateDigitized", "DateModified", "GPSDateTime"])
+        XCTAssertTrue(dates[0].value.contains(":23:17.538") && dates[0].value.hasSuffix("+09:00"))
+        XCTAssertTrue(dates[3].value.hasSuffix("UTC"))
+        // The rows of the directories are not shown again
+        XCTAssertNil(model.list(of: .group(.dateTime)).entries.first(where: { $0.key == "TimeCreated" }))
+    }
+
+    func testAnotherMomentOfADirectoryHasARowOfItsOwn() throws {
+        typealias Moment = ImageDatesReader.Moment
+        typealias Candidate = ImageDatesReader.Candidate
+        let exif = Candidate(source: "Exif", moment: try XCTUnwrap(Moment(iso: "2015-10-11T14:23:17")), consumed: ["exif.A"])
+        let same = Candidate(source: "IPTC", moment: try XCTUnwrap(Moment(iso: "2015-10-11T14:23:17+09:00")), consumed: ["iptc.B"])
+        let other = Candidate(source: "XMP", moment: try XCTUnwrap(Moment(iso: "2020-03-04T05:06:07")), consumed: [])
+        let merged = ImageDatesReader.merge("DateDigitized", "Date Digitized", [exif, same, other])
+        XCTAssertEqual(merged.entries.map(\.key), ["DateDigitized", "DateDigitized.XMP"])
+        XCTAssertEqual(merged.entries.map(\.name), ["Date Digitized", "Date Digitized (XMP)"])
+        // The directory which agrees completes the moment with its offset
+        XCTAssertTrue(merged.entries[0].value.hasSuffix("+09:00"))
+        XCTAssertEqual(merged.consumed, ["exif.A", "iptc.B"])
     }
 }

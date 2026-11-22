@@ -116,14 +116,14 @@ public struct MetadataTableModel: Sendable {
 
     /// Directory of the file a metadata comes from
     private enum Source: String {
-        case exif = "Exif", gps = "GPS", iptc = "IPTC", xmp = "XMP", webp = "WebP", tiff = "TIFF", jfif = "JFIF", png = "PNG",
+        case exif = "Exif", gps = "GPS", iptc = "IPTC", xmp = "XMP", dates = "Dates", webp = "WebP", tiff = "TIFF", jfif = "JFIF", png = "PNG",
              gif = "GIF", heics = "HEIC", dng = "DNG", ciff = "CIFF", tga = "TGA", photoshop = "8BIM", raw = "RAW"
     }
 
     /// Directories whose metadata a theme gathers, in the order they are listed
     private static let sources: [MetadataGroup: [Source]] = [
         .description: [.iptc, .exif, .tiff, .png, .xmp],
-        .dateTime: [.exif, .tiff, .gps, .iptc, .xmp, .png],
+        .dateTime: [.dates, .exif, .tiff, .gps, .iptc, .png],
         .cameraLens: [.exif],
         .exposure: [.exif],
         .location: [.gps, .iptc],
@@ -158,11 +158,12 @@ public struct MetadataTableModel: Sendable {
             return .image
         case .xmp:
             switch key {
-            case "DigitalCreationDate", "ModifyDate", "DateCreated": return .dateTime
             case "WebStatement", "Marked":                      return .rights
             case "Label":                                       return .description
             default:                                            return .image
             }
+        case .dates:
+            return .dateTime
         case .tiff:
             if key == "DateTime" { return .dateTime }
             return ["ImageDescription", "DocumentName"].contains(key) ? .description : .image
@@ -180,8 +181,9 @@ public struct MetadataTableModel: Sendable {
     public mutating func update(with metadata: ImageMetadata, isKnown: Bool) {
         // Gather the metadata of every directory in the theme they belong to
         var gathered = [MetadataGroup: [(source: Source, entry: ImageMetadataEntry)]]()
+        let consumed = metadata.dates?.consumedKeys ?? []
         func add(_ entries: [ImageMetadataEntry], from source: Source, exifGroup: ImageExifGroup? = nil) {
-            for entry in entries {
+            for entry in entries where consumed.contains(source.rawValue.lowercased() + "." + entry.key) == false {
                 gathered[Self.group(of: source, key: entry.key, exifGroup: exifGroup), default: []]
                     .append((source, entry))
             }
@@ -190,14 +192,9 @@ public struct MetadataTableModel: Sendable {
             add(metadata.exif?.groups[group] ?? [], from: .exif, exifGroup: group)
         }
         add(metadata.gps?.entries ?? [], from: .gps)
+        add(metadata.dates?.entries ?? [], from: .dates)
         add(metadata.iptc?.entries ?? [], from: .iptc)
-        // The dates of the XMP packet are left out when the IPTC metadata, which ImageIO fills from it, already tell them
-        let iptcKeys = Set((metadata.iptc?.entries ?? []).map(\.key))
-        add((metadata.xmp?.entries ?? []).filter {
-            let isTold = ($0.key == "DigitalCreationDate" && iptcKeys.contains("DigitalCreationDate"))
-                || ($0.key == "DateCreated" && iptcKeys.contains("DateCreated"))
-            return isTold == false
-        }, from: .xmp)
+        add(metadata.xmp?.entries ?? [], from: .xmp)
         add(metadata.webp?.entries ?? [], from: .webp)
         var newLists = [MetadataSection: MetadataList]()
         for (kind, properties) in metadata.properties {
