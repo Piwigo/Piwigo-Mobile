@@ -43,6 +43,8 @@ final class ImageMetadataViewController: UITableViewController
 
     /// Called when the height of the content changes, e.g. when the metadata are known
     var onContentChange: (() -> Void)?
+    /// Adjusts the location of the photo, nil if the user cannot: the location alert then does not propose it
+    var onAdjustLocation: (() -> Void)?
 
 
     // MARK: - Sections and Rows
@@ -896,6 +898,14 @@ final class ImageMetadataViewController: UITableViewController
             mapItem.openInMaps(launchOptions: nil)
         }
         alert.addAction(mapsAction)
+
+        // Adjust the location of the photo
+        if let onAdjustLocation {
+            alert.addAction(UIAlertAction(title: String(localized: "imageOptions_adjustLocation", comment: "Adjust Location"),
+                                          style: .default) { _ in
+                onAdjustLocation()
+            })
+        }
 
         // Cancel the request
         alert.addAction(UIAlertAction(title: Localized.cancel, style: .cancel, handler: nil))

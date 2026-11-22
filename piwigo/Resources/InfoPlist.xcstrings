@@ -630,6 +630,131 @@
         }
       }
     },
+    "NSLocationWhenInUseUsageDescription" : {
+      "comment" : "Piwigo uses your location to start the map where you are when you add the location of a photo.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يستخدم Piwigo موقعك لبدء الخريطة من مكانك عند إضافة موقع صورة."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo používá vaši polohu, aby se mapa při přidávání polohy fotografie otevřela tam, kde se nacházíte."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo bruger din placering til at starte kortet, hvor du er, når du tilføjer et fotos placering."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo verwendet Ihren Standort, um die Karte beim Hinzufügen eines Fotoorts an Ihrer Position zu starten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo uses your location to start the map where you are when you add the location of a photo."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo usa tu ubicación para iniciar el mapa donde estás al añadir la ubicación de una foto."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo utilise votre position pour ouvrir la carte là où vous êtes lorsque vous ajoutez la position d'une photo."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Piwigo a tartózkodási helyedet használja, hogy a térkép ott nyíljon meg, ahol vagy, amikor egy fénykép helyét hozzáadod."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo menggunakan lokasi Anda untuk membuka peta di tempat Anda berada saat menambahkan lokasi foto."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo usa la tua posizione per aprire la mappa dove ti trovi quando aggiungi la posizione di una foto."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真の位置情報を追加するとき、現在地を中心に地図を開くために位置情報を使用します。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo gebruikt je locatie om de kaart te openen waar je bent wanneer je de locatie van een foto toevoegt."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo używa Twojej lokalizacji, aby ustawić mapę tam, gdzie jesteś, podczas dodawania lokalizacji zdjęcia."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Piwigo usa sua localização para abrir o mapa onde você está ao adicionar a localização de uma foto."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Piwigo usa a sua localização para abrir o mapa onde se encontra ao adicionar a localização de uma foto."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo использует ваше местоположение, чтобы открыть карту там, где вы находитесь, когда вы добавляете местоположение фото."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo använder din plats för att öppna kartan där du är när du lägger till ett fotos plats."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo використовує ваше місцезнаходження, щоб відкрити карту там, де ви перебуваєте, коли додаєте місцезнаходження фото."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加照片位置时，Piwigo 会使用你的位置将地图定位到你所在之处。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新增照片位置時，Piwigo 會使用你的位置將地圖定位到你所在之處。"
+          }
+        }
+      }
+    },
     "NSPhotoLibraryUsageDescription" : {
       "comment" : "InfoPlist.strings\n  piwigo\n\n  Created by Eddy Lelièvre-Berna on 13/08/2017.\n  Copyright © 2017 Piwigo.org. All rights reserved.",
       "localizations" : {

@@ -47,8 +47,9 @@ extension ImageViewController
     // MARK: - Image Edition
     /// - for rotating image (not video, nor EPS, PDF, and GIF whose animation would be lost)
     /// - for editing image parameters
+    /// - for adding or adjusting the location of a photo
     func editMenu() -> UIMenu {
-        var children: [UIMenuElement?] = [editParamsAction()]
+        var children: [UIMenuElement?] = [editParamsAction(), locationAction()]
         if ServerVars.shared.usesImageRotate, imageData.hasFullResThumbnail {
             children.append(rotateMenu())
         }

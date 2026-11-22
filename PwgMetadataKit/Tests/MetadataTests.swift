@@ -323,4 +323,163 @@ final class MetadataTests: XCTestCase
         XCTAssertTrue(merged.entries[0].value.hasSuffix("+09:00"))
         XCTAssertEqual(merged.consumed, ["exif.A", "iptc.B"])
     }
+
+    // MARK: - Coordinates
+    func testCoordinatesAreParsedInAllFormats() throws {
+        func parsed(_ text: String) -> (Double, Double)? {
+            return GeographicCoordinates.parse(text).map { ($0.latitude, $0.longitude) }
+        }
+        // Decimal degrees
+        for text in ["48.8566, 2.3522", "48.8566 2.3522", "48.8566,2.3522", "48,8566 2,3522", "48.8566;2.3522",
+                     "48.8566° N, 2.3522° E", "N 48.8566 E 2.3522", "2.3522° E 48.8566° N", "+48.8566 +2.3522"] {
+            let value = try XCTUnwrap(parsed(text), text)
+            XCTAssertEqual(value.0, 48.8566, accuracy: 1e-6, text)
+            XCTAssertEqual(value.1, 2.3522, accuracy: 1e-6, text)
+        }
+        // Degrees and decimal minutes
+        let ddm = try XCTUnwrap(parsed("N 48° 51.396' E 2° 21.132'"))
+        XCTAssertEqual(ddm.0, 48.8566, accuracy: 1e-6)
+        XCTAssertEqual(ddm.1, 2.3522, accuracy: 1e-6)
+        // Degrees, minutes and seconds, with typographic marks and the hemisphere after
+        for text in ["48°51'23.76\"N 2°21'7.92\"E", "48° 51′ 23.76″ N, 2° 21′ 7.92″ E"] {
+            let dms = try XCTUnwrap(parsed(text), text)
+            XCTAssertEqual(dms.0, 48.8566, accuracy: 1e-6, text)
+            XCTAssertEqual(dms.1, 2.3522, accuracy: 1e-6, text)
+        }
+        // South and west are negative
+        let south = try XCTUnwrap(parsed("33.8688° S, 70.6693° W"))
+        XCTAssertEqual(south.0, -33.8688, accuracy: 1e-6)
+        XCTAssertEqual(south.1, -70.6693, accuracy: 1e-6)
+        let signed = try XCTUnwrap(parsed("-33.8688,-70.6693"))
+        XCTAssertEqual(signed.0, -33.8688, accuracy: 1e-6)
+        XCTAssertEqual(signed.1, -70.6693, accuracy: 1e-6)
+        // A single comma may separate the two numbers
+        let comma = try XCTUnwrap(parsed("48,2"))
+        XCTAssertEqual(comma.0, 48, accuracy: 1e-6)
+        XCTAssertEqual(comma.1, 2, accuracy: 1e-6)
+    }
+
+    func testAddressesAndInvalidCoordinatesAreNotParsed() {
+        for text in ["", "Paris", "10 rue de Rivoli 75001 Paris", "91.0, 2.0", "48.0, 181.0", "48.5", "48° 75' N 2° 3' E",
+                     "N 48.0 N 2.0", "48.0 E 2.0 N N"] {
+            XCTAssertNil(GeographicCoordinates.parse(text), text)
+        }
+    }
+
+    func testCoordinatesAreWrittenWithTheirHemisphere() {
+        XCTAssertEqual(GeographicCoordinates.string(latitude: 48.8566, longitude: 2.3522, digits: 4)
+            .replacingOccurrences(of: ",", with: ".").replacingOccurrences(of: ". ", with: ", "), "48.8566° N, 2.3522° E")
+        XCTAssertTrue(GeographicCoordinates.string(latitude: -33.8688, longitude: -70.6693).hasSuffix("W"))
+    }
+
+    // MARK: - Writing the location
+    private var locatedProperties: [String: Any] {
+        return [kCGImagePropertyExifDictionary as String: [kCGImagePropertyExifDateTimeOriginal as String: "2015:10:11 14:23:17",
+                                                          kCGImagePropertyExifLensModel as String: "Test lens"],
+                kCGImagePropertyTIFFDictionary as String: [kCGImagePropertyTIFFMake as String: "Maker",
+                                                          kCGImagePropertyTIFFModel as String: "Model"],
+                kCGImagePropertyGPSDictionary as String: [kCGImagePropertyGPSLatitude as String: 52.0001,
+                                                         kCGImagePropertyGPSLatitudeRef as String: "N",
+                                                         kCGImagePropertyGPSLongitude as String: 4.354,
+                                                         kCGImagePropertyGPSLongitudeRef as String: "E",
+                                                         kCGImagePropertyGPSAltitude as String: 12.5,
+                                                         kCGImagePropertyGPSAltitudeRef as String: 0,
+                                                         kCGImagePropertyGPSSpeed as String: 3.0,
+                                                         kCGImagePropertyGPSSpeedRef as String: "K",
+                                                         kCGImagePropertyGPSTrack as String: 90.0,
+                                                         kCGImagePropertyGPSTrackRef as String: "T",
+                                                         kCGImagePropertyGPSHPositioningError as String: 5.0,
+                                                         kCGImagePropertyGPSImgDirection as String: 45.0,
+                                                         kCGImagePropertyGPSImgDirectionRef as String: "T",
+                                                         kCGImagePropertyGPSDateStamp as String: "2015:10:11",
+                                                         kCGImagePropertyGPSTimeStamp as String: "13:23:17.00"]]
+    }
+
+    private func gpsProperties(of url: URL) throws -> [String: Any] {
+        let source = try XCTUnwrap(CGImageSourceCreateWithURL(url as CFURL, nil))
+        let properties = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [String: Any])
+        return properties[kCGImagePropertyGPSDictionary as String] as? [String: Any] ?? [:]
+    }
+
+    func testLocationIsMovedAndObsoleteTagsAreRemoved() throws {
+        let source = try makeJPEG(properties: locatedProperties)
+        let destination = source.deletingLastPathComponent().appendingPathComponent("moved.jpg")
+        try ImageGpsWriter.write(latitude: -33.8688, longitude: -70.6693, from: source, to: destination)
+
+        // New position, with the signs
+        let gps = try gpsProperties(of: destination)
+        XCTAssertEqual((gps[kCGImagePropertyGPSLatitude as String] as? Double) ?? 0, 33.8688, accuracy: 1e-4)
+        XCTAssertEqual(gps[kCGImagePropertyGPSLatitudeRef as String] as? String, "S")
+        XCTAssertEqual((gps[kCGImagePropertyGPSLongitude as String] as? Double) ?? 0, 70.6693, accuracy: 1e-4)
+        XCTAssertEqual(gps[kCGImagePropertyGPSLongitudeRef as String] as? String, "W")
+        let read = try XCTUnwrap(ImageMetadata.read(in: [destination]).gps)
+        XCTAssertEqual(try XCTUnwrap(read.latitude), -33.8688, accuracy: 1e-4)
+        XCTAssertEqual(try XCTUnwrap(read.longitude), -70.6693, accuracy: 1e-4)
+
+        // Altitude, speed, track and positioning error are gone, the others stay
+        for key in [kCGImagePropertyGPSAltitude, kCGImagePropertyGPSAltitudeRef, kCGImagePropertyGPSSpeed,
+                    kCGImagePropertyGPSSpeedRef, kCGImagePropertyGPSTrack, kCGImagePropertyGPSTrackRef,
+                    kCGImagePropertyGPSHPositioningError] {
+            XCTAssertNil(gps[key as String], key as String)
+        }
+        XCTAssertEqual(gps[kCGImagePropertyGPSDateStamp as String] as? String, "2015:10:11")
+        XCTAssertNotNil(gps[kCGImagePropertyGPSTimeStamp as String])
+        XCTAssertEqual((gps[kCGImagePropertyGPSImgDirection as String] as? Double) ?? 0, 45, accuracy: 1e-6)
+    }
+
+    func testOtherMetadataAndPixelsAreUnchanged() throws {
+        let source = try makeJPEG(properties: locatedProperties)
+        let destination = source.deletingLastPathComponent().appendingPathComponent("moved.jpg")
+        try ImageGpsWriter.write(latitude: 35.6762, longitude: 139.6503, from: source, to: destination)
+
+        func properties(_ url: URL) throws -> [String: Any] {
+            let source = try XCTUnwrap(CGImageSourceCreateWithURL(url as CFURL, nil))
+            return try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [String: Any])
+        }
+        let before = try properties(source), after = try properties(destination)
+        for key in [kCGImagePropertyExifDictionary, kCGImagePropertyTIFFDictionary] {
+            let old = try XCTUnwrap(before[key as String] as? [String: Any])
+            let new = try XCTUnwrap(after[key as String] as? [String: Any])
+            for (name, value) in old {
+                XCTAssertEqual("\(new[name] ?? "missing")", "\(value)", "\(key) \(name)")
+            }
+        }
+        XCTAssertEqual(before[kCGImagePropertyPixelWidth as String] as? Int, after[kCGImagePropertyPixelWidth as String] as? Int)
+
+        // The image data is copied, not encoded again: the same pixels come out
+        func pixels(_ url: URL) throws -> Data {
+            let source = try XCTUnwrap(CGImageSourceCreateWithURL(url as CFURL, nil))
+            let image = try XCTUnwrap(CGImageSourceCreateImageAtIndex(source, 0, nil))
+            return try XCTUnwrap(image.dataProvider?.data as Data?)
+        }
+        XCTAssertEqual(try pixels(source), try pixels(destination))
+    }
+
+    func testLocationIsAddedToAFileWithoutGps() throws {
+        let source = try makeJPEG(properties: [kCGImagePropertyExifDictionary as String:
+                                                [kCGImagePropertyExifDateTimeOriginal as String: "2015:10:11 14:23:17"]])
+        XCTAssertNil(ImageMetadata.read(in: [source]).gps)
+        let destination = source.deletingLastPathComponent().appendingPathComponent("located.jpg")
+        try ImageGpsWriter.write(latitude: 48.8566, longitude: 2.3522, from: source, to: destination)
+        let gps = try XCTUnwrap(ImageMetadata.read(in: [destination]).gps)
+        XCTAssertEqual(try XCTUnwrap(gps.latitude), 48.8566, accuracy: 1e-4)
+        XCTAssertEqual(try XCTUnwrap(gps.longitude), 2.3522, accuracy: 1e-4)
+    }
+
+    func testWriterReplacesTheDestinationAndRefusesOtherFormats() throws {
+        let source = try makeJPEG(properties: locatedProperties)
+        // The source itself can be the destination
+        try ImageGpsWriter.write(latitude: 10, longitude: 20, from: source, to: source)
+        let gps = try XCTUnwrap(ImageMetadata.read(in: [source]).gps)
+        XCTAssertEqual(try XCTUnwrap(gps.latitude), 10, accuracy: 1e-4)
+        XCTAssertEqual(try XCTUnwrap(gps.longitude), 20, accuracy: 1e-4)
+
+        XCTAssertFalse(ImageGpsWriter.canWriteLocation(inFileWithExtension: "png"))
+        XCTAssertFalse(ImageGpsWriter.canWriteLocation(inFileWithExtension: "webp"))
+        XCTAssertTrue(ImageGpsWriter.canWriteLocation(inFileWithExtension: "HEIC"))
+        let png = source.deletingLastPathComponent().appendingPathComponent("a.png")
+        try FileManager.default.copyItem(at: source, to: png)
+        XCTAssertThrowsError(try ImageGpsWriter.write(latitude: 1, longitude: 2, from: png, to: png))
+        XCTAssertThrowsError(try ImageGpsWriter.write(latitude: 91, longitude: 2, from: source, to: source))
+    }
 }

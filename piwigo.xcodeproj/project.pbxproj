@@ -51,6 +51,9 @@
 		AD12D6F62AA657080038BBFF /* VideoControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD12D6F52AA657080038BBFF /* VideoControlsView.swift */; };
 		AD13BF5529E9A77B0099DCF5 /* Device+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF3EC0B2516515500379E53 /* Device+Model.swift */; };
 		AD13CD712B8E5A79001ACBE8 /* ImageViewController+Rotate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD13CD702B8E5A79001ACBE8 /* ImageViewController+Rotate.swift */; };
+		AD2611260000000000000002 /* LocationPanelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2611260000000000000001 /* LocationPanelViewController.swift */; };
+		AD2611260000000000000004 /* LocationPanelViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2611260000000000000003 /* LocationPanelViewController.storyboard */; };
+		AD2611260000000000000006 /* ImageViewController+Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2611260000000000000005 /* ImageViewController+Location.swift */; };
 		AD1477CD2A3BA3020010BD78 /* WhatsNewViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD1477CC2A3BA3020010BD78 /* WhatsNewViewController.storyboard */; };
 		AD1477D32A3BB23B0010BD78 /* WhatsNewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1477D22A3BB23B0010BD78 /* WhatsNewViewController.swift */; };
 		AD1644032E8942C5002B555F /* RenameFileTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1644022E8942C5002B555F /* RenameFileTableHeaderView.swift */; };
@@ -578,6 +581,9 @@
 		AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
 		AD12D6F52AA657080038BBFF /* VideoControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoControlsView.swift; sourceTree = "<group>"; };
 		AD13CD702B8E5A79001ACBE8 /* ImageViewController+Rotate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Rotate.swift"; sourceTree = "<group>"; };
+		AD2611260000000000000001 /* LocationPanelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationPanelViewController.swift; sourceTree = "<group>"; };
+		AD2611260000000000000003 /* LocationPanelViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LocationPanelViewController.storyboard; sourceTree = "<group>"; };
+		AD2611260000000000000005 /* ImageViewController+Location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Location.swift"; sourceTree = "<group>"; };
 		AD1477CC2A3BA3020010BD78 /* WhatsNewViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = WhatsNewViewController.storyboard; sourceTree = "<group>"; };
 		AD1477D22A3BB23B0010BD78 /* WhatsNewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewViewController.swift; sourceTree = "<group>"; };
 		AD1644022E8942C5002B555F /* RenameFileTableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameFileTableHeaderView.swift; sourceTree = "<group>"; };
@@ -1647,6 +1653,8 @@
 				AD2610260000000000000031 /* VideoSummaryTableViewCell.swift */,
 				AD261026000000000000002F /* MetadataSummaryTableViewCell.swift */,
 				AD2610260000000000000019 /* MetadataCardView.swift */,
+				AD2611260000000000000001 /* LocationPanelViewController.swift */,
+				AD2611260000000000000003 /* LocationPanelViewController.storyboard */,
 			);
 			path = Metadata;
 			sourceTree = "<group>";
@@ -1890,6 +1898,7 @@
 				AD9833A52E37834200159DEA /* ImageViewController+GoTo.swift */,
 				ADEA269D285F909F00B6C9A0 /* ImageViewController+Edit.swift */,
 				AD13CD702B8E5A79001ACBE8 /* ImageViewController+Rotate.swift */,
+				AD2611260000000000000005 /* ImageViewController+Location.swift */,
 				ADEA26A5285FA1EB00B6C9A0 /* ImageViewController+Delete.swift */,
 				ADEA2699285F8D5F00B6C9A0 /* ImageViewController+Share.swift */,
 				ADEA269B285F8F2E00B6C9A0 /* ImageViewController+Favorites.swift */,
@@ -2360,6 +2369,7 @@
 				ADA24DAF243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard in Resources */,
 				AD9697DA2BE2536300520614 /* LocalImageCollectionViewCell.xib in Resources */,
 				AD770FD623B4BDB5007DAD50 /* EditImageParamsViewController.storyboard in Resources */,
+				AD2611260000000000000004 /* LocationPanelViewController.storyboard in Resources */,
 				AD311FFA27CB7B730044AC5A /* LoginViewController.storyboard in Resources */,
 				AD09B7A1303B40DC00E2BC15 /* help09-iOS18.png in Resources */,
 				ADC80E4823BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib in Resources */,
@@ -2533,6 +2543,8 @@
 				AD0B62F12DEB2273001E9684 /* CounterFormatSelectorViewController+UITextField.swift in Sources */,
 				ADA24DB1243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift in Sources */,
 				AD13CD712B8E5A79001ACBE8 /* ImageViewController+Rotate.swift in Sources */,
+				AD2611260000000000000006 /* ImageViewController+Location.swift in Sources */,
+				AD2611260000000000000002 /* LocationPanelViewController.swift in Sources */,
 				AD6A813C2DE3846100F03151 /* TimeFormatSelectorViewController+UITableViewDataSource.swift in Sources */,
 				AD9F9C332B4B230600943A96 /* LoginViewController+Keyboard.swift in Sources */,
 				ADD511A4285F79C700AD3FEC /* TagsViewController+Add.swift in Sources */,

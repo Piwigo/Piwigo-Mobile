@@ -106,6 +106,10 @@ extension ImageViewController {
     @MainActor
     func configureMetadata(of metadataVC: ImageMetadataViewController) {
         metadataVC.onContentChange = { [weak self] in self?.metadataContentDidChange() }
+        /// The location can be adjusted from the table by the users who can edit the photo
+        let canAdjustLocation = userData.hasEditRights(forImagesAddedToAlbum: categoryId, byUserWithIDs: [imageData.addedBy])
+            && canEditLocation(of: imageData)
+        metadataVC.onAdjustLocation = canAdjustLocation ? { [weak self] in self?.editLocation() } : nil
         metadataVC.configure(summaryOf: metadataSummarySource())
         metadataVC.configure(with: metadataCoordinate(of: imageData))
         loadMetadata(into: metadataVC)

@@ -78,6 +78,17 @@ final class ImageVars: @unchecked Sendable {
     @UserDefault("shareKeepsContactInfo", defaultValue: true)
     var shareKeepsContactInfo: Bool
 
+    /// Last location chosen to add or adjust the location of a photo (0 if none): the map starts there
+    @UserDefault("lastLocationLatitude", defaultValue: 0.0)
+    var lastLocationLatitude: Double
+
+    @UserDefault("lastLocationLongitude", defaultValue: 0.0)
+    var lastLocationLongitude: Double
+
+    /// Last mode of the map of the location panel, see LocationMapMode
+    @UserDefault("locationMapMode", defaultValue: 0)
+    var locationMapMode: Int
+
 
     // MARK: - Vars in UserDefaults / App Group
     // Image variables stored in UserDefaults / App Group
