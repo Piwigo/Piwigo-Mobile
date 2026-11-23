@@ -269,40 +269,4 @@ extension UploadManager {
             NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
         }
     }
-    
-    
-    // MARK: - Utilities
-    nonisolated func createBoundary(from identifier: String) -> String {
-        /// We don't use the UUID to be able to test uploads with a simulator.
-        var suffix = ""
-        if #available(iOS 16.0, *) {
-            suffix = identifier.replacing("/", with: "").map { $0.lowercased() }.joined()
-        } else {
-            // Fallback on earlier versions
-            suffix = identifier.replacingOccurrences(of: "/", with: "").map { $0.lowercased() }.joined()
-        }
-        let boundary = String(repeating: "-", count: 68 - suffix.count) + suffix
-//        debugPrint("\(dbg()) \(boundary)")
-        return boundary
-    }
-
-    nonisolated func convertFormField(named name: String, value: String, using boundary: String) -> String {
-      var fieldString = "--\(boundary)\r\n"
-      fieldString += "Content-Disposition: form-data; name=\"\(name)\"\r\n"
-      fieldString += "\r\n"
-      fieldString += "\(value)\r\n"
-
-      return fieldString
-    }
-    
-    nonisolated func convertFileData(fieldName: String, fileName: String, mimeType: String,
-                         fileData: Data, using boundary: String) -> Data {
-        var data = Data()
-        data.append("--\(boundary)\r\n".data(using: .utf8)!)
-        data.append("Content-Disposition: form-data; name=\"\(fieldName)\"; filename=\"\(fileName)\"\r\n".data(using: .utf8)!)
-        data.append("Content-Type: \(mimeType)\r\n\r\n".data(using: .utf8)!)
-        data.append(fileData)
-        data.append("\r\n".data(using: .utf8)!)
-        return data
-    }
 }

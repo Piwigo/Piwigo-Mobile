@@ -13,7 +13,7 @@ import PwgKit
 import PwgAPIKit
 import PwgCacheKit
 
-// MARK: - Transfer in Background
+// MARK: Transfer in Background
 // See https://tools.ietf.org/html/rfc7578
 @UploadManagerActor
 extension UploadManager {
@@ -64,7 +64,7 @@ extension UploadManager {
 //        catch { throw .otherError(innerError: error) }
         
         // Prepare boundary, chunk size, creation date as Piwigo string
-        let boundary = createBoundary(from: uploadData.md5Sum)
+        let boundary = MultipartFormData.boundary(from: uploadData.md5Sum)
         let creationDate = DateUtilities.string(from: uploadData.creationDate)
 
         // Stop preparing the transfer if called by a background task now expired
@@ -433,34 +433,34 @@ extension UploadManager {
         // Append credentials if not using API keys
         if (NetworkVars.shared.usesAPIkeys && username.isValidPublicKey() &&
              !NetworkVars.shared.apiKeysProhibitedMethods.contains(pwgImagesUploadAsync)) == false {
-            httpBody.append(convertFormField(named: "username", value: username, using: boundary).data(using: .utf8)!)
-            httpBody.append(convertFormField(named: "password", value: password, using: boundary).data(using: .utf8)!)
+            httpBody.append(MultipartFormData.field(named: "username", value: username, using: boundary))
+            httpBody.append(MultipartFormData.field(named: "password", value: password, using: boundary))
         }
 
         // Append parameters requested by API method
-        httpBody.append(convertFormField(named: "chunk", value: chunkStr, using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "chunks", value: chunksStr, using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "original_sum", value: uploadData.md5Sum, using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "category", value: "\(uploadData.category)", using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "filename", value: uploadData.fileName, using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "name", value: uploadData.imageTitle.utf8mb3Encoded, using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "author", value: uploadData.author.utf8mb3Encoded, using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "comment", value: uploadData.comment.utf8mb3Encoded, using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "date_creation", value: creationDate, using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "level", value: "\(NSNumber(value: uploadData.privacyLevel.rawValue))", using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "tag_ids", value: uploadData.tagIds, using: boundary).data(using: .utf8)!)
+        httpBody.append(MultipartFormData.field(named: "chunk", value: chunkStr, using: boundary))
+        httpBody.append(MultipartFormData.field(named: "chunks", value: chunksStr, using: boundary))
+        httpBody.append(MultipartFormData.field(named: "original_sum", value: uploadData.md5Sum, using: boundary))
+        httpBody.append(MultipartFormData.field(named: "category", value: "\(uploadData.category)", using: boundary))
+        httpBody.append(MultipartFormData.field(named: "filename", value: uploadData.fileName, using: boundary))
+        httpBody.append(MultipartFormData.field(named: "name", value: uploadData.imageTitle.utf8mb3Encoded, using: boundary))
+        httpBody.append(MultipartFormData.field(named: "author", value: uploadData.author.utf8mb3Encoded, using: boundary))
+        httpBody.append(MultipartFormData.field(named: "comment", value: uploadData.comment.utf8mb3Encoded, using: boundary))
+        httpBody.append(MultipartFormData.field(named: "date_creation", value: creationDate, using: boundary))
+        httpBody.append(MultipartFormData.field(named: "level", value: "\(NSNumber(value: uploadData.privacyLevel.rawValue))", using: boundary))
+        httpBody.append(MultipartFormData.field(named: "tag_ids", value: uploadData.tagIds, using: boundary))
         
         // Chunk of data
         let chunkOfData = imageData.subdata(in: (chunk - 1)*chunkSize..<min(chunk*chunkSize, imageData.count))
         let md5Checksum = chunkOfData.MD5checksum
-        httpBody.append(convertFormField(named: "chunk_sum", value: md5Checksum, using: boundary).data(using: .utf8)!)
-        httpBody.append(self.convertFileData(fieldName: "file",
-                                             fileName: uploadData.fileName,
-                                             mimeType: uploadData.mimeType,
-                                             fileData: chunkOfData,
-                                             using: boundary))
+        httpBody.append(MultipartFormData.field(named: "chunk_sum", value: md5Checksum, using: boundary))
+        httpBody.append(MultipartFormData.file(fieldName: "file",
+                                               fileName: uploadData.fileName,
+                                               mimeType: uploadData.mimeType,
+                                               fileData: chunkOfData,
+                                               using: boundary))
 
-        httpBody.append("--\(boundary)--".data(using: .utf8)!)
+        httpBody.append(MultipartFormData.closing(using: boundary))
         
         return httpBody
     }
@@ -510,7 +510,7 @@ extension UploadManager {
         /// The boundary is derived from the checksum, i.e. it is the one adopted for the body.
         guard let uploadUrl = URL(string: ServerVars.shared.service + "/ws.php?format=json&method=\(pwgImagesUploadAsync)")
         else { preconditionFailure("!!! Invalid uploadAsync URL") }
-        let boundary = createBoundary(from: uploadData.md5Sum)
+        let boundary = MultipartFormData.boundary(from: uploadData.md5Sum)
         let request = getHttpRequestForChunk("\(chunks)", ofChunks: "\(chunks)", with: boundary,
                                              for: uploadUrl, uploadData: uploadData, withID: uploadID)
         

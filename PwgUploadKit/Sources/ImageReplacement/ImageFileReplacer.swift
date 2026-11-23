@@ -76,7 +76,7 @@ public enum ImageFileReplacer
         let username = ServerVars.shared.login
         let password = KeychainUtilities.password(forService: ServerVars.shared.serverPath, account: username)
         guard password.isEmpty == false else { throw .invalidCredentials }
-        let boundary = String(repeating: "-", count: 40) + md5Sum
+        let boundary = MultipartFormData.boundary(from: md5Sum)
         let mimeType = UTType(filenameExtension: URL(fileURLWithPath: replacement.fileName).pathExtension)?
             .preferredMIMEType ?? "application/octet-stream"
 
@@ -87,29 +87,30 @@ public enum ImageFileReplacer
             // Credentials, unless API keys are used
             if (NetworkVars.shared.usesAPIkeys && username.isValidPublicKey() &&
                 NetworkVars.shared.apiKeysProhibitedMethods.contains(pwgImagesUploadAsync) == false) == false {
-                body.append(field("username", username, boundary))
-                body.append(field("password", password, boundary))
+                body.append(MultipartFormData.field(named: "username", value: username, using: boundary))
+                body.append(MultipartFormData.field(named: "password", value: password, using: boundary))
             }
             if ServerVars.shared.pwgToken.isEmpty == false {
-                body.append(field("pwg_token", ServerVars.shared.pwgToken, boundary))
+                body.append(MultipartFormData.field(named: "pwg_token", value: ServerVars.shared.pwgToken, using: boundary))
             }
 
             // Parameters of the method: image_id makes the server replace the file of the image
-            body.append(field("chunk", "\(chunk)", boundary))
-            body.append(field("chunks", "\(chunks)", boundary))
-            body.append(field("original_sum", md5Sum, boundary))
-            body.append(field("image_id", "\(replacement.imageID)", boundary))
-            body.append(field("category", "\(replacement.albumID)", boundary))
-            body.append(field("filename", replacement.fileName, boundary))
-            body.append(field("name", replacement.title, boundary))
-            body.append(field("author", replacement.author, boundary))
-            body.append(field("comment", replacement.comment, boundary))
-            body.append(field("date_creation", replacement.dateCreated, boundary))
-            body.append(field("level", replacement.privacyLevel, boundary))
-            body.append(field("tag_ids", replacement.tagIDs, boundary))
-            body.append(field("chunk_sum", chunkData.MD5checksum, boundary))
-            body.append(file("file", replacement.fileName, mimeType, chunkData, boundary))
-            body.append(Data("--\(boundary)--".utf8))
+            body.append(MultipartFormData.field(named: "chunk", value: "\(chunk)", using: boundary))
+            body.append(MultipartFormData.field(named: "chunks", value: "\(chunks)", using: boundary))
+            body.append(MultipartFormData.field(named: "original_sum", value: md5Sum, using: boundary))
+            body.append(MultipartFormData.field(named: "image_id", value: "\(replacement.imageID)", using: boundary))
+            body.append(MultipartFormData.field(named: "category", value: "\(replacement.albumID)", using: boundary))
+            body.append(MultipartFormData.field(named: "filename", value: replacement.fileName, using: boundary))
+            body.append(MultipartFormData.field(named: "name", value: replacement.title.utf8mb3Encoded, using: boundary))
+            body.append(MultipartFormData.field(named: "author", value: replacement.author.utf8mb3Encoded, using: boundary))
+            body.append(MultipartFormData.field(named: "comment", value: replacement.comment.utf8mb3Encoded, using: boundary))
+            body.append(MultipartFormData.field(named: "date_creation", value: replacement.dateCreated, using: boundary))
+            body.append(MultipartFormData.field(named: "level", value: replacement.privacyLevel, using: boundary))
+            body.append(MultipartFormData.field(named: "tag_ids", value: replacement.tagIDs, using: boundary))
+            body.append(MultipartFormData.field(named: "chunk_sum", value: chunkData.MD5checksum, using: boundary))
+            body.append(MultipartFormData.file(fieldName: "file", fileName: replacement.fileName, mimeType: mimeType,
+                                               fileData: chunkData, using: boundary))
+            body.append(MultipartFormData.closing(using: boundary))
 
             var request = URLRequest(url: uploadURL)
             request.httpMethod = "POST"
@@ -192,16 +193,5 @@ public enum ImageFileReplacer
         }
         catch let error as PwgKitError { throw error }
         catch { throw .otherError(innerError: error) }
-    }
-
-    private static func field(_ name: String, _ value: String, _ boundary: String) -> Data {
-        return Data("--\(boundary)\r\nContent-Disposition: form-data; name=\"\(name)\"\r\n\r\n\(value)\r\n".utf8)
-    }
-
-    private static func file(_ name: String, _ fileName: String, _ mimeType: String, _ content: Data, _ boundary: String) -> Data {
-        var data = Data("--\(boundary)\r\nContent-Disposition: form-data; name=\"\(name)\"; filename=\"\(fileName)\"\r\nContent-Type: \(mimeType)\r\n\r\n".utf8)
-        data.append(content)
-        data.append(Data("\r\n".utf8))
-        return data
     }
 }
